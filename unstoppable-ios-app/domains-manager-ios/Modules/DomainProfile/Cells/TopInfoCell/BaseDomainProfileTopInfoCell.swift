@@ -19,6 +19,7 @@ class BaseDomainProfileTopInfoCell: UICollectionViewCell {
     private(set) var avatarDropCallback: ImageDropCallback?
     private(set) var bannerDropCallback: ImageDropCallback?
     
+    var minBannerOffset: CGFloat { 0 }
     var avatarPlaceholder: UIImage? { nil }
     
     override func layoutSubviews() {
@@ -28,6 +29,7 @@ class BaseDomainProfileTopInfoCell: UICollectionViewCell {
         DispatchQueue.main.async {
             self.setAvatarImageViewMask()
         }
+        bannerTopConstraint.constant = minBannerOffset
     }
     
     func set(with data: DomainProfileViewController.ItemTopInfoData) {
@@ -94,7 +96,7 @@ class BaseDomainProfileTopInfoCell: UICollectionViewCell {
 extension BaseDomainProfileTopInfoCell: ScrollViewOffsetListener {
     func didScrollTo(offset: CGPoint) {
         let yOffset = offset.y
-        let bannerTopSpace = min(yOffset, 0)
+        let bannerTopSpace = min(yOffset, minBannerOffset)
         if bannerTopConstraint.constant != bannerTopSpace {
             UIView.performWithoutAnimation {
                 bannerTopConstraint.constant = bannerTopSpace

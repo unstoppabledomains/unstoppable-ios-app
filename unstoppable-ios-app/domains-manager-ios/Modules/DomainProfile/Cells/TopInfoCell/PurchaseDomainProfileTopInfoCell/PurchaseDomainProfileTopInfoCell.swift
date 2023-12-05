@@ -15,6 +15,7 @@ final class PurchaseDomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
     @IBOutlet private weak var addAvatarButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var addCoverButton: SmallRaisedTertiaryWhiteButton!
 
+    override var minBannerOffset: CGFloat { 0 }
     override var avatarPlaceholder: UIImage? { .domainSharePlaceholder }
     
     override func awakeFromNib() {

@@ -115,5 +115,11 @@ extension DashesProgressView {
         var numberOfDashes = 2
         var dashHeight: CGFloat = 4
         var dashesSpacing: CGFloat = 8
+        
+        static func white(numberOfDashes: Int) -> Configuration {
+            Configuration(notFilledColor: .foregroundOnEmphasis.withAlphaComponent(0.32),
+                          filledColor: .foregroundOnEmphasis,
+                          numberOfDashes: numberOfDashes)
+        }
     }
 }

@@ -235,7 +235,7 @@ private extension DomainProfileViewController {
 private extension DomainProfileViewController {
     func setup() {
         view.backgroundColor = .brandUnstoppableBlue
-        addProgressDashesView(configuration: .init(numberOfDashes: 3))
+        addProgressDashesView(configuration: .white(numberOfDashes: 3))
         setupNavigation(actionGroups: [])
         setupCollectionView()
         setupConfirmButton()
