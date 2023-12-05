@@ -17,6 +17,7 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     private var profile: SerializedUserDomainProfile
     private let domain: DomainToPurchase
     private let domainDisplayInfoHolder: DomainDisplayInfoHolder
+    weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
     init(view: any DomainProfileViewProtocol,
          domain: DomainToPurchase) {
@@ -43,7 +44,7 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
 
     func viewDidLoad() {
         view?.setAvailableActionsGroups([])
-        view?.set(title: domain.name)
+//        view?.set(title: domain.name)
         view?.setConfirmButtonHidden(true, counter: 0)
         updateSectionsData()
         refreshDomainProfileDetails(animated: true)

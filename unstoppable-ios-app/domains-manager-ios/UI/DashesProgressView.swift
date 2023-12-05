@@ -45,7 +45,9 @@ final class DashesProgressView: UIView {
 extension DashesProgressView {
     func setWith(configuration: Configuration) {
         self.configuration = configuration
-        drawDashes()
+        UIView.performWithoutAnimation {
+            drawDashes()
+        }
         setProgress(progress)
     }
     

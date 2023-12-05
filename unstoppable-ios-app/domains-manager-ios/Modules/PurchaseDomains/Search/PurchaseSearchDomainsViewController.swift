@@ -14,6 +14,7 @@ final class PurchaseSearchDomainsViewController: BaseViewController, ViewWithDas
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
     override var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
     var progress: Double? { 1 / 6 }
 
     override func viewDidLoad() {

@@ -68,6 +68,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     private(set) var dataSource: DataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private let minScrollYOffset: CGFloat = -40
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .white(numberOfDashes: 3) }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -235,7 +236,7 @@ private extension DomainProfileViewController {
 private extension DomainProfileViewController {
     func setup() {
         view.backgroundColor = .brandUnstoppableBlue
-        addProgressDashesView(configuration: .white(numberOfDashes: 3))
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         setupNavigation(actionGroups: [])
         setupCollectionView()
         setupConfirmButton()
