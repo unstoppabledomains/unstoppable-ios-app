@@ -14,3 +14,9 @@ struct TransactionItem: Codable {
     var domainName: String?
     
 }
+
+extension Array where Element == TransactionItem {
+    func containPending(_ domain: DomainItem) -> Bool {
+        false
+    }
+}

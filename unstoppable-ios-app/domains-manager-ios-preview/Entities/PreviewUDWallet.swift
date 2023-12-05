@@ -309,8 +309,16 @@ struct WCWalletsProvider {
 struct BackedUpWallet {
     let dateTime: Date
     let passwordHash: String
-
+    let type: WalletType
 }
+
+extension Array where Element == BackedUpWallet {
+    func containUDVault() -> Bool {
+        self.first(where: { $0.type == .generatedLocally || $0.type == .defaultGeneratedLocally }) != nil
+    }
+}
+
+
 struct LegacyUnitaryWallet: Codable {
     
 }

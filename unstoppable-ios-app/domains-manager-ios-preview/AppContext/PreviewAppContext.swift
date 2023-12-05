@@ -12,7 +12,7 @@ struct AppContext: AppContextProtocol {
     
     var permissionsService: PermissionsServiceProtocol = PermissionsService()
     
-    var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService()
+    var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: AuthentificationService())
     
     var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService()
     

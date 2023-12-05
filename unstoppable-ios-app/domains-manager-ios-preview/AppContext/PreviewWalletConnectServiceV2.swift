@@ -24,8 +24,24 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     }
     struct WCServiceAppInfo: Hashable {
+        var isTrusted: Bool { true }
         func getDisplayName() -> String {
             ""
+        }
+        func getDappName() -> String {
+        ""
+        }
+        func getDappHostName() -> String {
+        ""
+        }
+        func getChainIds() -> [Int] {
+         [8001]
+        }
+        func getDappHostDisplayName() -> String {
+            ""
+        }
+        func getIconURL() -> URL? {
+            nil
         }
     }
 }

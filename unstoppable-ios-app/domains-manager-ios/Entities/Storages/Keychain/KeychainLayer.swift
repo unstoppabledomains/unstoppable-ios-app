@@ -139,17 +139,3 @@ extension PrivateKeyStorage {
         }
     }
 }
-
-enum Seed: CustomStringConvertible, Equatable {
-    case encryptedPrivateKey (String)
-    case encryptedSeedPhrase (String)
-    
-    var description: String {
-        switch self {
-        case .encryptedPrivateKey(let pk): return pk
-        case .encryptedSeedPhrase(let phrase): return phrase
-        }
-    }
-    
-    static let seedWordsCount = 12
-}

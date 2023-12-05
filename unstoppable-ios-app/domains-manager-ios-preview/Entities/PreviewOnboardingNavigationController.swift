@@ -13,4 +13,6 @@ final class OnboardingNavigationController {
         
         
     }
+    
+    enum OnboardingFlow { }
 }

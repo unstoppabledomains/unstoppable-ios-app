@@ -65,13 +65,6 @@ protocol WalletConnectDelegate: AnyObject {
     func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?)
 }
 
-@MainActor
-protocol WalletConnectClientUIHandler: AnyObject {
-    func didDisconnect(walletDisplayInfo: WalletDisplayInfo)
-    func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool
-    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async
-}
-
 enum WalletConnectUIError: Error {
     case cancelled, noControllerToPresent
 }
@@ -1521,17 +1514,7 @@ extension WalletConnectServiceV2 {
     }
 }
 
-extension WalletConnectServiceV2 {
-    struct ConnectionUISettings {
-        let domain: DomainItem
-        let blockchainType: BlockchainType
-    }
-    
-    struct ConnectionConfig {
-        let domain: DomainItem
-        let appInfo: WCServiceAppInfo
-    }
-    
+extension WalletConnectServiceV2 { 
     struct ClientDataV2 {
         let appMetaData: WalletConnectSign.AppMetadata
         let proposalNamespace: [String: ProposalNamespace]
@@ -1582,22 +1565,6 @@ extension WalletConnectServiceV2 {
     }
 
 }
-
-enum WCRequestUIConfiguration {
-    case signMessage(_ configuration: SignMessageTransactionUIConfiguration),
-         payment(_ configuration: SignPaymentTransactionUIConfiguration),
-         connectWallet(_ configuration: WalletConnectServiceV2.ConnectionConfig)
-    
-    var isSARequired: Bool {
-        switch self {
-        case .connectWallet:
-            return false
-        case .signMessage, .payment:
-            return true
-        }
-    }
-}
-
 
 extension EthereumTransaction {
     func convertToAnyCodable() -> AnyCodable {

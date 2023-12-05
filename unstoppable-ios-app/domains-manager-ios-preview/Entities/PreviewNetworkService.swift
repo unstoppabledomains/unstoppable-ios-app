@@ -164,7 +164,93 @@ struct NetworkService {
 }
 
 extension NetworkService {
+    public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+        try await fetchPublicProfile(for: domain.name, fields: fields)
+    }
     
+    public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+        .init(profile: .init(displayName: nil,
+                             description: nil,
+                             location: nil,
+                             web2Url: nil,
+                             imagePath: nil,
+                             imageType: nil,
+                             coverPath: nil,
+                             phoneNumber: nil,
+                             domainPurchased: nil,
+                             udBlue: nil),
+              socialAccounts: nil,
+              referralCode: nil,
+              social: nil,
+              records: nil)
+    }
+    
+    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
+        .init(ok: true, refresh: true, next: Date())
+    }
+    public func fetchBadgesInfo(for domain: DomainItem) async throws -> BadgesInfo {
+        try await fetchBadgesInfo(for: domain.name)
+    }
+    public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
+        .init(badges: [], refresh: nil)
+    }
+    public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
+        .init(badge: .init(code: "", name: "", logo: "", description: ""), usage: .init(rank: 0, holders: 1, domains: 1, featured: []))
+    }
+    public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
+        .init(profile: .init(),
+              messaging: .init(),
+              socialAccounts: .init(),
+              humanityCheck: .init(verified: false),
+              records: [:],
+              storage: nil,
+              social: nil)
+    }
+    @discardableResult
+    public func updateUserDomainProfile(for domain: DomainItem,
+                                        request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
+        .init(profile: .init(),
+              messaging: .init(),
+              socialAccounts: .init(),
+              humanityCheck: .init(verified: false),
+              records: [:],
+              storage: nil,
+              social: nil)
+    }
+}
+
+extension NetworkService {
+    public func searchForDomainsWith(name: String,
+                                     shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
+        []
+    }
+    
+    func isDomain(_ followerDomain: String, following followingDomain: String) async throws -> Bool {
+        true
+    }
+    
+    func fetchListOfFollowers(for domain: DomainName,
+                              relationshipType: DomainProfileFollowerRelationshipType,
+                              count: Int,
+                              cursor: Int?) async throws -> DomainProfileFollowersResponse {
+        .init(domain: domain,
+              data: [],
+              relationshipType: relationshipType,
+              meta: .init(totalCount: 0, pagination: .init(cursor: nil, take: 1)))
+    }
+    
+    func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
+   
+    }
+    
+    func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
+       
+    }
+}
+
+extension NetworkService {
+    static let ipfsRedirectKey = "ipfs.html.value"
+
     struct SplitQuantity: Hashable {
         let doubleEth: Double
         let intEther: UInt64

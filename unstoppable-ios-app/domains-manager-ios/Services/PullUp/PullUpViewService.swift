@@ -129,21 +129,6 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         }
     }
     
-    func showCopyWalletAddressSelectionPullUp(in viewController: UIViewController,
-                                              wallet: UDWallet,
-                                              transactionSelectedCallback: @escaping (WalletCopyAddressAction)->()) {
-        let selectionViewHeight: CGFloat = 224
-        let walletAddress: [WalletCopyAddressAction] = [.ethereum(address: wallet.getActiveAddress(for: .UNS) ?? ""),
-                                                        .zil(address: wallet.getActiveAddress(for: .ZNS) ?? "")]
-        
-        let selectionView = PullUpSelectionView(configuration: .init(title: nil,
-                                                                     contentAlignment: .left),
-                                                items: walletAddress,
-                                                itemSelectedCallback: transactionSelectedCallback)
-        
-        showOrUpdate(in: viewController, pullUp: .copyWalletAddressSelection, contentView: selectionView, height: selectionViewHeight)
-    }
-    
     func showRemoveWalletPullUp(in viewController: UIViewController,
                                 walletInfo: WalletDisplayInfo) async throws {
         let selectionViewHeight: CGFloat

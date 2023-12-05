@@ -167,26 +167,6 @@ private extension BaseAddWalletPresenter {
     }
     
     @MainActor
-    func createWatchWalletWith(walletAddress: HexAddress) {
-        defer { view?.setContinueButtonEnabled(true) }
-        
-        guard let udWallet = UDWallet.createUnverified(address: walletAddress) else {
-            Debugger.printFailure("Failed to create an unverified wallet")
-            view?.showSimpleAlert(title: String.Constants.creationFailed.localized(),
-                                  body: String.Constants.failedToCreateWatchWallet.localized())
-            return
-        }
-        
-        guard !udWallet.isAlreadyConnected() else {
-            view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                  body: String.Constants.walletAlreadyConnectedError.localized())
-            return
-        }
-        
-        didCreateWallet(wallet: udWallet)
-    }
-    
-    @MainActor
     func checkPasteButtonHidden() {
         guard let view = self.view else { return }
         
