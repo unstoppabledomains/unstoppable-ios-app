@@ -22,6 +22,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
     @State private var error: PullUpErrorConfiguration?
+    @State private var pullUp: ViewPullUpConfiguration?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
     @State private var isSelectWalletPresented = false
@@ -71,7 +72,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                                       selectedWallet: selectedWallet,
                                       wallets: wallets,
                                       analyticsName: analyticsName,
-                                      selectedWalletCallback: { wallet in didSelectWallet(wallet) }))
+                                      selectedWalletCallback: { wallet in warnUserIfNeededAndSelectWallet(wallet) }))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
                 .environment(\.analyticsViewName, analyticsName)
@@ -82,6 +83,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
         })
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
+        .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
     }
 }
@@ -137,10 +139,15 @@ private extension PurchaseDomainsCheckoutView {
                            image: .vaultIcon,
                            rightViewStyle: walletSelectionIndicatorStyle)
         }, callback: {
-            logButtonPressedAnalyticEvents(button: .selectWallet)
-            isSelectWalletPresented = true
+            if !canSelectWallet,
+                isFailedToAuthWallet {
+                warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
+            } else {
+                logButtonPressedAnalyticEvents(button: .selectWallet)
+                isSelectWalletPresented = true
+            }
         })
-        .allowsHitTesting(canSelectWallet)
+        .allowsHitTesting(canSelectWallet || isFailedToAuthWallet)
     }
     
     var walletSelectionIndicatorStyle: UDListItemView.RightViewStyle? {
@@ -152,6 +159,13 @@ private extension PurchaseDomainsCheckoutView {
     
     var canSelectWallet: Bool {
         wallets.count > 1
+    }
+    
+    var isFailedToAuthWallet: Bool {
+        if case .failedToAuthoriseWallet = cartStatus {
+            return true
+        }
+        return false
     }
     
     var selectedWalletName: String {
@@ -350,7 +364,12 @@ private extension PurchaseDomainsCheckoutView {
                     .foregroundStyle(Color.foregroundAccent)
                 }
             } else {
-                Text(formatCartPrice(cartStatus.totalPrice))
+                switch cartStatus {
+                case .ready(let cart):
+                    Text(formatCartPrice(cart.totalPrice))
+                default:
+                    Text("-")
+                }
             }
         }
         .font(.currentFont(size: 16, weight: .medium))
@@ -403,14 +422,26 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
-        didSelectWallet(selectedWallet, forceReload: true)
+        warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
         Task {
             domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
         }
     }
     
-    func didSelectWallet(_ wallet: WalletWithInfo, forceReload: Bool = false) {
-        guard wallet.address != selectedWallet.address || error != nil || forceReload else { return }
+    func warnUserIfNeededAndSelectWallet(_ wallet: WalletWithInfo, forceReload: Bool = false) {
+        switch wallet.displayInfo?.source {
+        case .external(let name, let walletMake):
+            warnToSignInExternalWallet(wallet,
+                                       externalWalletInfo: .init(name: name,
+                                                                 icon: walletMake.icon),
+                                       forceReload: forceReload)
+        default:
+            authorizeWithSelectedWalle(wallet, forceReload: forceReload)
+        }
+    }
+    
+    func authorizeWithSelectedWalle(_ wallet: WalletWithInfo, forceReload: Bool = false) { 
+        guard wallet.address != selectedWallet.address || isFailedToAuthWallet || forceReload else { return }
         
         error = nil
         Task {
@@ -456,17 +487,37 @@ private extension PurchaseDomainsCheckoutView {
         switch cartStatus {
         case .failedToAuthoriseWallet(let wallet):
             error = .selectWalletError(wallet: wallet,
+                                       canSelectWallet: canSelectWallet,
                                        selectAnotherCallback: {
                 isSelectWalletPresented = true
             }, tryAgainCallback: {
                 guard let walletWithInfo = self.wallets.first(where: { $0.address == wallet.address }) else { return }
-                didSelectWallet(walletWithInfo, forceReload: true)
+                authorizeWithSelectedWalle(walletWithInfo, forceReload: true)
             })
         case .failedToLoadCalculations(let callback):
             error = .loadCalculationsError(tryAgainCallback: callback)
         default:
             return
         }
+    }
+    
+    func warnToSignInExternalWallet(_ wallet: WalletWithInfo, externalWalletInfo: ExternalWalletInfo, forceReload: Bool = false) {
+        pullUp = .init(icon: .init(icon: externalWalletInfo.icon,
+                                   size: .large),
+                       title: .text("Signature required"),
+                       subtitle: .label(.text("You will be redirected to \(externalWalletInfo.name) to sign a message")),
+                       actionButton: .main(content: .init(title: "Got it",
+                                                          analyticsName: .aboutProfile,
+                                                          action: {
+            pullUp = nil
+            authorizeWithSelectedWalle(wallet, forceReload: forceReload)
+        })),
+                       dismissAble: false)
+    }
+    
+    struct ExternalWalletInfo {
+        let name: String
+        let icon: UIImage
     }
 }
 
@@ -525,37 +576,46 @@ private extension PurchaseDomainsCheckoutView {
 
 private extension PullUpErrorConfiguration {
     static func selectWalletError(wallet: UDWallet,
+                                  canSelectWallet: Bool,
                                   selectAnotherCallback: @escaping EmptyCallback,
                                   tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
-        .init(title: String.Constants.purchaseWalletAuthErrorTitle.localized(wallet.address.walletAddressTruncated),
+        let primaryAction: PullUpErrorConfiguration.ActionConfiguration
+        var secondaryAction: PullUpErrorConfiguration.ActionConfiguration?
+        if canSelectWallet {
+            primaryAction = .init(title: String.Constants.selectAnotherWallet.localized(),
+                                  callback: selectAnotherCallback)
+            secondaryAction = .init(title: String.Constants.tryAgain.localized(),
+                                    callback: tryAgainCallback)
+        } else {
+            primaryAction = .init(title: String.Constants.tryAgain.localized(),
+                                  callback: tryAgainCallback)
+        }
+        
+        return .init(title: String.Constants.purchaseWalletAuthErrorTitle.localized(wallet.address.walletAddressTruncated),
               subtitle: String.Constants.purchaseWalletAuthErrorSubtitle.localized(),
-              primaryAction: .init(title: String.Constants.selectAnotherWallet.localized(),
-                                   callback: selectAnotherCallback),
-              secondaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                    callback: tryAgainCallback))
+              primaryAction: primaryAction,
+              secondaryAction: secondaryAction)
     }
     
     static func loadCalculationsError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback),
-              height: deviceSize == .i4_7Inch ? 350 : 320)
+                                   callback: tryAgainCallback))
     }
     
     static func purchaseError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletPurchaseErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletPurchaseErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback),
-              height: deviceSize == .i4_7Inch ? 330 : 300)
+                                   callback: tryAgainCallback))
     }
 }
 
 #Preview {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                 selectedWallet: WalletWithInfo.mock[0],
-                                wallets: WalletWithInfo.mock,
+                                wallets: Array(WalletWithInfo.mock.prefix(4)),
                                 purchasedCallback: { })
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }

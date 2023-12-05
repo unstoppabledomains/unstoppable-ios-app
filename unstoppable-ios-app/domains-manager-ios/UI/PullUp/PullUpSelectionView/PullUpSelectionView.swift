@@ -505,6 +505,7 @@ struct PullUpSelectionViewConfiguration {
     var extraButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
     var isScrollingEnabled: Bool = false
+    var dismissAble: Bool = true
 
     // Title
     enum LabelType {
