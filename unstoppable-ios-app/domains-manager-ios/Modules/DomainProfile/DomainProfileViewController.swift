@@ -236,10 +236,10 @@ private extension DomainProfileViewController {
 // MARK: - Private functions
 private extension DomainProfileViewController {
     func setBottomContentInset() {
-        if confirmUpdateButton.isHidden {
+        if confirmButtonGradientView.isHidden {
             collectionView.contentInset.bottom = defaultBottomOffset
         } else {
-            collectionView.contentInset.bottom = (view.frame.height - confirmUpdateButton.frame.minY) + defaultBottomOffset
+            collectionView.contentInset.bottom = (view.frame.height - confirmButtonGradientView.frame.minY) + defaultBottomOffset
         }
     }
     
