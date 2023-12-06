@@ -927,3 +927,5 @@
 "PURCHASE_WALLET_CALCULATIONS_ERROR_SUBTITLE" = "No worries, just give it another moment and try again.";
 "PURCHASE_WALLET_PURCHASE_ERROR_TITLE" = "Purchase couldn’t be completed";
 "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE" = "Please check your internet connection and try again.";
+"PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE" = "Signature required";
+"PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE" = "You will be redirected to %@ to sign a message";

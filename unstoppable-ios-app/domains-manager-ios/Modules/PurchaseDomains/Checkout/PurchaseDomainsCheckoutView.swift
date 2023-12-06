@@ -504,9 +504,9 @@ private extension PurchaseDomainsCheckoutView {
     func warnToSignInExternalWallet(_ wallet: WalletWithInfo, externalWalletInfo: ExternalWalletInfo, forceReload: Bool = false) {
         pullUp = .init(icon: .init(icon: externalWalletInfo.icon,
                                    size: .large),
-                       title: .text("Signature required"),
-                       subtitle: .label(.text("You will be redirected to \(externalWalletInfo.name) to sign a message")),
-                       actionButton: .main(content: .init(title: "Got it",
+                       title: .text(String.Constants.purchaseWalletAuthSigRequiredTitle.localized()),
+                       subtitle: .label(.text(String.Constants.purchaseWalletAuthSigRequiredSubtitle.localized(externalWalletInfo.name))),
+                       actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
                                                           analyticsName: .aboutProfile,
                                                           action: {
             pullUp = nil

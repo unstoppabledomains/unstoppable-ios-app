@@ -1018,6 +1018,8 @@ extension String {
         static let purchaseWalletCalculationsErrorSubtitle = "PURCHASE_WALLET_CALCULATIONS_ERROR_SUBTITLE"
         static let purchaseWalletPurchaseErrorTitle = "PURCHASE_WALLET_PURCHASE_ERROR_TITLE"
         static let purchaseWalletPurchaseErrorSubtitle = "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE"
+        static let purchaseWalletAuthSigRequiredTitle = "PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE"
+        static let purchaseWalletAuthSigRequiredSubtitle = "PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE"
     }
     
     enum BlockChainIcons: String {
