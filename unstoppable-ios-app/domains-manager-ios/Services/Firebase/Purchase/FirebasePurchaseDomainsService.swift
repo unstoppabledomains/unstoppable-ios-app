@@ -259,6 +259,7 @@ private extension FirebasePurchaseDomainsService {
             } else {
                 try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
                 try await refreshUserCart(shouldFailIfCartContainsUnsupportedProducts: true)
+                return 
             }
         }
         
