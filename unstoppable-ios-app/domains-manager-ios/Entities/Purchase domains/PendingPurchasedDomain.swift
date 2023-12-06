@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PendingPurchasedDomain: Codable {
+struct PendingPurchasedDomain: Codable, Hashable {
     let name: String
     let walletAddress: String
 }
