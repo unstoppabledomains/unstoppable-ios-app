@@ -23,7 +23,7 @@ extension UDWallet {
         guard let walletName = self.getExternalWalletName()?.lowercased() else {
             return false
         }
-        return walletName.contains("meta")
+        return walletName.contains("meta") || walletName.contains("rain") 
     }
     
     static func createSignaturesByPersonalSign(messages: [String],
