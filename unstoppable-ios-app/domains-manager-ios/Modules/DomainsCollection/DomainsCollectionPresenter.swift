@@ -636,6 +636,7 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                     Task {
                         await resolvePrimaryDomain(domains: domains)
                         await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+                        await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
                     }
                 case .domainsPFPUpdated(let domains):
                     let isDomainsChanged = stateController.domains != domains
