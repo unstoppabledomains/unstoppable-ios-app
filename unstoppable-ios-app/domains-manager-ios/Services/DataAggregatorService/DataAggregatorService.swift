@@ -167,12 +167,12 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
-        let domains = await getDomainsDisplayInfo()
+        let domains = await getDomainsDisplayInfo().filter { $0.isOwned(by: [wallet]) }
         let domainNames = domains.map({ $0.name })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
         
         /// Restrict to change RR if any domain within wallet already changing RR.
-        if !transactions.filterPending(extraCondition: {$0.operation == .setReverseResolution || $0.operation == .removeReverseResolution})
+        if !transactions.filterPending(extraCondition: { $0.operation == .setReverseResolution || $0.operation == .removeReverseResolution })
                         .isEmpty { return false }
         
         let rrDomain = await reverseResolutionDomain(for: wallet)
