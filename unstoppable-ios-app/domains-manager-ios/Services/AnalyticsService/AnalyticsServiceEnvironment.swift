@@ -64,7 +64,7 @@ extension Analytics {
         case didDiscoverBTDomain
         
         // Purchase domain
-        case didPurchaseDomains
+        case didPurchaseDomains, accountHasUnpaidDomains
     }
 }
 

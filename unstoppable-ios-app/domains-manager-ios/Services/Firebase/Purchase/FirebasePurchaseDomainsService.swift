@@ -255,12 +255,12 @@ private extension FirebasePurchaseDomainsService {
         if !filterUnsupportedProductsFrom(products: cartResponse.cart).isEmpty || !filterUnsupportedProductsFrom(products: calculationsResponse.cartItems).isEmpty  {
             if shouldFailIfCartContainsUnsupportedProducts {
                 cartStatus = .hasUnpaidDomains
-                return
+                appContext.analyticsService.log(event: .accountHasUnpaidDomains, withParameters: nil)
             } else {
                 try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
                 try await refreshUserCart(shouldFailIfCartContainsUnsupportedProducts: true)
-                return 
             }
+            return
         }
         
         self.udCart = UDUserCart(products: cartResponse.cart,
