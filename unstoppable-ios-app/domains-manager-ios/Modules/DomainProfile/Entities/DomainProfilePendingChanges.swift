@@ -9,12 +9,12 @@ import UIKit
 
 struct DomainProfilePendingChanges: Codable, Hashable {
     let domainName: String 
-    var avatarData: Data?
-    var bannerData: Data?
-    var name: String?
-    var bio: String?
-    var location: String?
-    var website: String?
+    var avatarData: Data? = nil
+    var bannerData: Data? = nil
+    var name: String? = nil
+    var bio: String? = nil
+    var location: String? = nil
+    var website: String? = nil
     
     var isEmpty: Bool {
         avatarData == nil &&

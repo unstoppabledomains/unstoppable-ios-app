@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
-                                               profileChanges: .init(),
+                                               profileChanges: .init(domainName: "oleg.x"),
                                                purchasedCallback: { [weak self] in
             
         },
