@@ -19,11 +19,12 @@ extension UDWallet {
         return walletName.contains("alpha")
     }
     
+    static var walletNameBitsShouldEncodeHexMessage: [String] = ["meta", "rain", "okx", "spot", "crypto.com", "zerion"]
     var shouldEncodeHexMessage: Bool {
         guard let walletName = self.getExternalWalletName()?.lowercased() else {
             return false
         }
-        return walletName.contains("meta") || walletName.contains("rain") || walletName.contains("okx") || walletName.contains("spot") || walletName.contains("crypto.com") || walletName.contains("zerion")
+        return !Self.walletNameBitsShouldEncodeHexMessage.allSatisfy { !walletName.contains($0)}
     }
     
     static func createSignaturesByPersonalSign(messages: [String],
