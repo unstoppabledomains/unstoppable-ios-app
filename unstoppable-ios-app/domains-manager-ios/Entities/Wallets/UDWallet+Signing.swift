@@ -37,7 +37,16 @@ extension UDWallet {
                 let message = messageString.convertedIntoReadableMessage
                 return try await signViaWalletConnectPersonalSign(message: message)
             }
-            return try await signViaWalletConnectPersonalSign(message: messageString)
+            
+            if messageString.hasHexPrefix {
+                return try await signViaWalletConnectPersonalSign(message: messageString)
+            }
+            
+            guard let data = messageString.data(using: .utf8) else {
+                throw UDWallet.Error.failedSignature
+            }
+            let stringToSend = data.hexString
+            return try await signViaWalletConnectPersonalSign(message: stringToSend)
         }
         
         let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
