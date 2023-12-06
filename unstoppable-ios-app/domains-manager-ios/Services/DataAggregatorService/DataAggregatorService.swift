@@ -657,7 +657,7 @@ private extension DataAggregatorService {
                        ownerWallet: $0.walletAddress,
                        blockchain: .Matic)
         }
-        PurchasedDomainsStorage.savePurchasedDomains(pendingPurchasedDomains)
+        PurchasedDomainsStorage.setPurchasedDomains(pendingPurchasedDomains)
         return pendingDomains
     }
     

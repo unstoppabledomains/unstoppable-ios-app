@@ -482,8 +482,8 @@ private extension PurchaseDomainsCheckoutView {
                                                                      .count: String(1)])
                 let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
                                                                     walletAddress: walletToMint.address)
-                PurchasedDomainsStorage.savePurchasedDomains([pendingPurchasedDomain])
-                PurchasedDomainsStorage.savePendingNonEmptyProfiles([profileChanges])
+                PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
+                PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
                 await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 purchasedCallback()
             } catch {

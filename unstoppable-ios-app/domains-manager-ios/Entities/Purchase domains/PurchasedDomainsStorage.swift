@@ -12,7 +12,7 @@ struct PurchasedDomainsStorage {
     @UserDefaultsCodableValue(key: .purchasedDomains) private static var purchasedDomains: [PendingPurchasedDomain]?
     @UserDefaultsCodableValue(key: .purchasedDomainsPendingProfiles) private static var purchasedDomainsPendingProfiles: [DomainProfilePendingChanges]?
 
-    static func savePurchasedDomains(_ purchasedDomains: [PendingPurchasedDomain]) {
+    static func setPurchasedDomains(_ purchasedDomains: [PendingPurchasedDomain]) {
         PurchasedDomainsStorage.purchasedDomains = purchasedDomains
     }
     
@@ -20,8 +20,14 @@ struct PurchasedDomainsStorage {
         PurchasedDomainsStorage.purchasedDomains ?? []
     }
   
-    static func savePendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
+    static func setPendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
         PurchasedDomainsStorage.purchasedDomainsPendingProfiles = pendingProfiles.filter { !$0.isEmpty }
+    }
+   
+    static func addPendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
+        let currentProfiles = Set(retrievePendingProfiles())
+        let allProfiles = Array(currentProfiles.union(pendingProfiles))
+        setPendingNonEmptyProfiles(allProfiles)
     }
     
     static func retrievePendingProfiles() -> [DomainProfilePendingChanges] {

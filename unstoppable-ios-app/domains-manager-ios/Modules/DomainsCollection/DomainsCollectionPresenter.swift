@@ -545,7 +545,7 @@ private extension DomainsCollectionPresenter {
                 let pendingProfilesLeft = pendingProfiles.filter { profile in
                     requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
                 }
-                PurchasedDomainsStorage.savePendingNonEmptyProfiles(pendingProfilesLeft)
+                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
                 await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             } catch {
                 await view.showAlertWith(error: error, handler: nil)
