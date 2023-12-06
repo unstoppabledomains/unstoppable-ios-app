@@ -85,6 +85,14 @@ private extension ViewPullUp {
                                 bottom: ViewPullUp.sideOffset,
                                 trailing: ViewPullUp.sideOffset))
             .interactiveDismissDisabled(!configuration.dismissAble)
+            .onAppear {
+                appContext.analyticsService.log(event: .pullUpDidAppear,
+                                                withParameters: [.pullUpName : configuration.analyticName.rawValue])
+            }
+            .onDisappear {
+                appContext.analyticsService.log(event: .pullUpClosed,
+                                                withParameters: [.pullUpName : configuration.analyticName.rawValue])
+            }
         }
     }
     
@@ -146,7 +154,12 @@ private extension ViewPullUp {
                      icon: content.icon == nil ? nil : Image(uiImage: content.icon!),
                      iconAlignment: buttonIconAlignmentFor(buttonImageLayout: content.imageLayout),
                      style: style,
-                     isLoading: content.isLoading, isSuccess: content.isSuccessState, callback: { closeAndPassCallback(content.action) })
+                     isLoading: content.isLoading, isSuccess: content.isSuccessState, callback: {
+            appContext.analyticsService.log(event: .buttonPressed,
+                                            withParameters: [.button : content.analyticsName.rawValue,
+                                                             .pullUpName: configuration?.analyticName.rawValue ?? ""])
+            closeAndPassCallback(content.action)
+        })
         .allowsHitTesting(content.isUserInteractionEnabled)
     }
     
@@ -261,6 +274,7 @@ struct ViewPullUpConfiguration {
     var cancelButton: ButtonType? = nil
     var isScrollingEnabled: Bool = false
     var dismissAble: Bool = true
+    var analyticName: Analytics.PullUp
     
     // Title
     enum LabelType {

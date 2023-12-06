@@ -32,13 +32,14 @@ struct PullUpError: ViewModifier {
                                 subtitle: .label(.text(error.subtitle)),
                                 actionButton: .main(content: .init(title: error.primaryAction.title,
                                                                    icon: nil,
-                                                                   analyticsName: .clear,
+                                                                   analyticsName: error.primaryAction.analyticsName,
                                                                    action: error.primaryAction.callback)),
                                 extraButton: error.secondaryAction == nil ? nil : .secondary(content: .init(title: error.secondaryAction!.title,
                                                                                                             icon: nil,
-                                                                                                            analyticsName: .clear,
+                                                                                                            analyticsName: error.secondaryAction!.analyticsName,
                                                                                                             action: error.secondaryAction?.callback)),
-                                dismissAble: error.dismissAble)
+                                dismissAble: error.dismissAble, 
+                                analyticName: error.analyticsName)
     }
 }
 
@@ -54,9 +55,11 @@ struct PullUpErrorConfiguration {
     let primaryAction: ActionConfiguration
     var secondaryAction: ActionConfiguration? = nil
     var dismissAble: Bool = true
+    let analyticsName: Analytics.PullUp
     
     struct ActionConfiguration {
         let title: String
         let callback: EmptyCallback
+        let analyticsName: Analytics.Button
     }
 }

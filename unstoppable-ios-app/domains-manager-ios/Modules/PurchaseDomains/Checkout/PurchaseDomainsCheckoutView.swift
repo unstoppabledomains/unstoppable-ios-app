@@ -507,12 +507,13 @@ private extension PurchaseDomainsCheckoutView {
                        title: .text(String.Constants.purchaseWalletAuthSigRequiredTitle.localized()),
                        subtitle: .label(.text(String.Constants.purchaseWalletAuthSigRequiredSubtitle.localized(externalWalletInfo.name))),
                        actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
-                                                          analyticsName: .aboutProfile,
+                                                          analyticsName: .gotIt,
                                                           action: {
             pullUp = nil
             authorizeWithSelectedWalle(wallet, forceReload: forceReload)
         })),
-                       dismissAble: false)
+                       dismissAble: false, 
+                       analyticName: .purchaseDomainsAskToSign)
     }
     
     struct ExternalWalletInfo {
@@ -583,32 +584,40 @@ private extension PullUpErrorConfiguration {
         var secondaryAction: PullUpErrorConfiguration.ActionConfiguration?
         if canSelectWallet {
             primaryAction = .init(title: String.Constants.selectAnotherWallet.localized(),
-                                  callback: selectAnotherCallback)
+                                  callback: selectAnotherCallback, 
+                                  analyticsName: .selectWallet)
             secondaryAction = .init(title: String.Constants.tryAgain.localized(),
-                                    callback: tryAgainCallback)
+                                    callback: tryAgainCallback,
+                                    analyticsName: .tryAgain)
         } else {
             primaryAction = .init(title: String.Constants.tryAgain.localized(),
-                                  callback: tryAgainCallback)
+                                  callback: tryAgainCallback,
+                                  analyticsName: .tryAgain)
         }
         
         return .init(title: String.Constants.purchaseWalletAuthErrorTitle.localized(wallet.address.walletAddressTruncated),
               subtitle: String.Constants.purchaseWalletAuthErrorSubtitle.localized(),
               primaryAction: primaryAction,
-              secondaryAction: secondaryAction)
+                     secondaryAction: secondaryAction, 
+                     analyticsName: .purchaseDomainsAuthWalletError)
     }
     
     static func loadCalculationsError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback))
+                                   callback: tryAgainCallback,
+                                   analyticsName: .tryAgain),
+              analyticsName: .purchaseDomainsCalculationsError)
     }
     
     static func purchaseError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletPurchaseErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletPurchaseErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback))
+                                   callback: tryAgainCallback,
+                                   analyticsName: .tryAgain), 
+              analyticsName: .purchaseDomainsError)
     }
 }
 

@@ -361,6 +361,8 @@ extension Analytics {
         case messagingChannelInfo, messagingBlockConfirmation, messagingOpenExternalLink, messagingGroupChatInfo, messagingCommunityChatInfo
         case unencryptedMessageInfo
         case walletsMaxNumberLimitReached, walletsMaxNumberLimitReachedAlready
+        case purchaseDomainsAskToSign
+        case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
