@@ -176,7 +176,7 @@ extension Analytics {
         case publicDomainProfile
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
         case shakeToFind
-        case purchaseDomainsSearch, purchaseDomainsCheckout
+        case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
     }
 }
 

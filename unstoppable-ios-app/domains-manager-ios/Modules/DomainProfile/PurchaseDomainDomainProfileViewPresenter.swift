@@ -10,7 +10,7 @@ import UIKit
 @MainActor
 final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     
-    var analyticsName: Analytics.ViewName { .unspecified }
+    var analyticsName: Analytics.ViewName { .purchaseDomainsProfile }
 
     private weak var view: (any DomainProfileViewProtocol)?
     private var sections = [any DomainProfileSection]()
