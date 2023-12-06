@@ -18,6 +18,7 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     private let domain: DomainToPurchase
     private let domainDisplayInfoHolder: DomainDisplayInfoHolder
     private var didDiscardChanges = false
+    private var domainProfileChanges = DomainProfilePendingChanges()
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
     init(view: any DomainProfileViewProtocol,
@@ -50,15 +51,12 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
         refreshDomainProfileDetails(animated: true)
     }
     
-    func isNavEnabled() -> Bool {  true }
-    
-    func didSelectItem(_ item: DomainProfileViewController.Item) {
-        
-    }
-    
     func confirmChangesButtonPressed() {
         Task {
-            try? await purchaseDomainsFlowManager?.handle(action: .didFillProfileForDomain(domain))
+            sections.forEach { section in
+                section.injectChanges(in: &domainProfileChanges)
+            }
+            try? await purchaseDomainsFlowManager?.handle(action: .didFillProfileForDomain(domain, profileChanges: domainProfileChanges))
         }
     }
     
@@ -79,6 +77,8 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
         return true
     }
     
+    func isNavEnabled() -> Bool {  true }
+    func didSelectItem(_ item: DomainProfileViewController.Item) { }
     func shareButtonPressed() { }
     func didTapShowWalletDetailsButton() { }
     func didTapViewInBrowserButton() { }
@@ -103,17 +103,11 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileSectionsControl
     
     func backgroundImageDidUpdate(_ image: UIImage?) {
         Task { @MainActor in
-//            dataHolder.domainImagesInfo.bannerImage = image
             view?.setBackgroundImage(image)
         }
     }
     
-    func avatarImageDidUpdate(_ image: UIImage?, avatarType: DomainProfileImageType) {
-        Task { @MainActor in
-//            dataHolder.domainImagesInfo.avatarImage = image
-//            dataHolder.domainImagesInfo.avatarType = avatarType
-        }
-    }
+    func avatarImageDidUpdate(_ image: UIImage?, avatarType: DomainProfileImageType) { }
     
     func updateAccessPreferences(attribute: ProfileUpdateRequest.Attribute, resultCallback: @escaping UpdateProfileAccessResultCallback) { }
     
@@ -167,7 +161,6 @@ private extension PurchaseDomainDomainProfileViewPresenter {
     
     func resolveChangesState() {
         let changes = calculateChanges()
-//        let isAnyFieldInvalid = sections.first(where: { !$0.areAllFieldsValid() }) != nil
         view?.setConfirmButtonHidden(false,
                                      style: .main(changes.count == 0 ? .skip : .confirm))
     }

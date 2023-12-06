@@ -145,6 +145,15 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
     func resetChanges() {
         editingTopInfoData = topInfoData
     }
+    
+    func injectChanges(in profilePendingChanges: inout DomainProfilePendingChanges) {
+        if case .image(let image, _) = editingTopInfoData.avatarImageState.source {
+            profilePendingChanges.avatarData = image.dataToUpload
+        }
+        if case .image(let image, _) = editingTopInfoData.bannerImageState.source {
+            profilePendingChanges.bannerData = image.dataToUpload
+        }
+    }
 }
 
 // MARK: - Private methods

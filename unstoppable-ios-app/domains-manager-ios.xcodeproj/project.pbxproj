@@ -196,6 +196,8 @@
 		C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */; };
 		C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */ = {isa = PBXBuildFile; productRef = C60CB2DF2A7CB62E00663989 /* web3swift */; };
 		C60CB2E12A7CD18500663989 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306B3D6B253DF88200102A76 /* Constants.swift */; };
+		C60CB4ED2B201791007FD3CF /* DomainProfilePendingChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */; };
+		C60CB4EE2B201791007FD3CF /* DomainProfilePendingChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */; };
 		C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
 		C60D2717295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2716295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift */; };
 		C60DCEE2282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60DCEE1282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift */; };
@@ -2086,6 +2088,7 @@
 		C60CA28B2832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeMonkeyServiceProvider.swift; sourceTree = "<group>"; };
 		C60CA28C2832501D00AB1B36 /* QRCodeServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeServiceProvider.swift; sourceTree = "<group>"; };
 		C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeServiceProtocol.swift; sourceTree = "<group>"; };
+		C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilePendingChanges.swift; sourceTree = "<group>"; };
 		C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionUICache.swift; sourceTree = "<group>"; };
 		C60D2716295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppsBackgroundColorCache.swift; sourceTree = "<group>"; };
 		C60DCEE1282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableRoundedWalletImageView.swift; sourceTree = "<group>"; };
@@ -4689,6 +4692,7 @@
 				C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */,
 				C63902C628E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift */,
 				C669C37429121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift */,
+				C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */,
 				C63A352528F017220057D34B /* DomainProfileSectionsFactory.swift */,
 				C63A352028F016780057D34B /* DomainProfileSectionType.swift */,
 				C671E3DD29027BE200A2B3A0 /* DomainProfileTopInfoData.swift */,
@@ -8321,6 +8325,7 @@
 				C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C63095D02B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift in Sources */,
+				C60CB4ED2B201791007FD3CF /* DomainProfilePendingChanges.swift in Sources */,
 				C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */,
 				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
@@ -9216,6 +9221,7 @@
 				C6D647022B1ED7C300D724AC /* MessagingChatConversationState.swift in Sources */,
 				C6D647542B1EDBAE00D724AC /* WalletInfoBadgeView.swift in Sources */,
 				C6D645F02B1DBEC200D724AC /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C60CB4EE2B201791007FD3CF /* DomainProfilePendingChanges.swift in Sources */,
 				C6D646C02B1ED1BE00D724AC /* SaveDomainImageDescription.swift in Sources */,
 				C6D6478C2B1EE5B600D724AC /* PreviewDomainProfile.swift in Sources */,
 				C6D647072B1ED7CA00D724AC /* MessagingNewsChannelFeed.swift in Sources */,

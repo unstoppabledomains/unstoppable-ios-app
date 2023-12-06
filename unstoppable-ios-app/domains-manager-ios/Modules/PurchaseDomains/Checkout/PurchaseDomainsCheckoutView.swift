@@ -16,7 +16,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletWithInfo
     @State var wallets: [WalletWithInfo]
-    
+    @State var profileChanges: DomainProfilePendingChanges
+
     @State private var domainAvatar: UIImage?
     @State private var scrollOffset: CGPoint = .zero
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
@@ -616,6 +617,7 @@ private extension PullUpErrorConfiguration {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: Array(WalletWithInfo.mock.prefix(4)),
+                                profileChanges: .init(),
                                 purchasedCallback: { })
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }

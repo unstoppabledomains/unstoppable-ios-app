@@ -13,6 +13,7 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
     private var domain: DomainToPurchase!
+    private var profileChanges: DomainProfilePendingChanges!
     private var selectedWallet: WalletWithInfo!
     private var wallets: [WalletWithInfo]!
     override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
@@ -21,10 +22,12 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     var progress: Double? { 5 / 6 }
     
     static func instantiate(domain: DomainToPurchase,
+                            profileChanges: DomainProfilePendingChanges,
                             selectedWallet: WalletWithInfo,
                             wallets: [WalletWithInfo]) -> PurchaseDomainsCheckoutViewController {
         let vc = PurchaseDomainsCheckoutViewController()
         vc.domain = domain
+        vc.profileChanges = profileChanges
         vc.selectedWallet = selectedWallet
         vc.wallets = wallets
         return vc
@@ -64,6 +67,7 @@ private extension PurchaseDomainsCheckoutViewController {
         let view = PurchaseDomainsCheckoutView(domain: domain,
                                                selectedWallet: selectedWallet,
                                                wallets: wallets,
+                                               profileChanges: profileChanges,
                                                purchasedCallback: { [weak self] in
             self?.didPurchaseDomains()
         },

@@ -110,6 +110,13 @@ extension DomainProfileGeneralInfoSection: DomainProfileSection {
     func resetChanges() {
         editingGeneralInfoData = generalInfoData
     }
+    
+    func injectChanges(in profilePendingChanges: inout DomainProfilePendingChanges) {
+        profilePendingChanges.name = valueOrNil(of: .name(""), in: editingGeneralInfoData)
+        profilePendingChanges.bio = valueOrNil(of: .bio(""), in: editingGeneralInfoData)
+        profilePendingChanges.location = valueOrNil(of: .location(""), in: editingGeneralInfoData)
+        profilePendingChanges.website = valueOrNil(of: .website(""), in: editingGeneralInfoData)
+    }
 }
 
 // MARK: - Private methods
@@ -330,6 +337,14 @@ private extension DomainProfileGeneralInfoSection {
         case .website:
             return sectionData.web2Url
         }
+    }
+    
+    func valueOrNil(of type: InfoType, in sectionData: SectionData) -> String? {
+        let value = value(of: type, in: sectionData).trimmedSpaces
+        if value.isEmpty {
+            return nil
+        }
+        return value
     }
     
     func isAccessPublic(for type: InfoType, in sectionData: SectionData) -> Bool {
