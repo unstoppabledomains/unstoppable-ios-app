@@ -112,6 +112,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         cartStatus = .ready(cart: .empty)
         updateCart()
     }
+    
+    func reset() async {
+        cartStatus = .ready(cart: .empty)
+        updateCart()
+    }
 }
 
 // MARK: - FirebaseDomainsServiceProtocol

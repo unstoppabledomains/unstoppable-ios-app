@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithDashesProgress {
+final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithDashesProgress, UDNavigationBackButtonHandler {
     
     override var scrollableContentYOffset: CGFloat? { 16 }
     
@@ -37,6 +37,11 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
         super.viewDidLoad()
         
         setup()
+    }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        Task { await appContext.purchaseDomainsService.reset() }
+        return true
     }
 }
 
