@@ -172,6 +172,8 @@ fileprivate extension ImageLoadingService {
                     return image
                 }
                 return nil
+            case .local(let image):
+                return image
             case .none:
                 return nil
             }

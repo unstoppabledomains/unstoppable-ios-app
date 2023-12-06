@@ -615,3 +615,8 @@ struct SocialAccount: Hashable, Encodable {
     let accountType: Kind
     let location: String
 }
+
+struct UpdateProfilePendingChangesRequest {
+    let pendingChanges: DomainProfilePendingChanges
+    let domain: DomainItem
+}

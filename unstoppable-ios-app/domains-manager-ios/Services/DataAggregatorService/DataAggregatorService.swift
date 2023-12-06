@@ -560,9 +560,16 @@ private extension DataAggregatorService {
         
         // Purchased domains
         let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
         for domain in pendingPurchasedDomains {
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            var pfpInfo: DomainPFPInfo?
+            if let profile = pendingProfiles.first(where: { $0.domainName == domain.name }),
+               let localImage = await profile.getAvatarImage() {
+                pfpInfo = .init(domainName: domain.name, localImage: localImage)
+            }
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      pfpInfo: pfpInfo,
                                                       state: .minting,
                                                       order: order,
                                                       isSetForRR: false)

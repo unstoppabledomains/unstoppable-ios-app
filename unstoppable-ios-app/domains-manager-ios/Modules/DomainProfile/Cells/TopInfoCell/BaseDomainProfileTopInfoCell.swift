@@ -87,8 +87,11 @@ class BaseDomainProfileTopInfoCell: UICollectionViewCell {
             case .removed:
                 imageView.image = placeholder
             }
+            didSetImage(in: imageView)
         }
     }
+    
+    func didSetImage(in imageView: UIImageView) { }
     
 }
 

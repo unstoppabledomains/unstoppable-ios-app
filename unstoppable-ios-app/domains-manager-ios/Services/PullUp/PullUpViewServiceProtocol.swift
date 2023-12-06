@@ -105,6 +105,8 @@ protocol PullUpViewServiceProtocol {
     func showUserProfilePullUp(with email: String,
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction
+    func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges, 
+                                      in viewController: UIViewController) async
     
     // MARK: - Badges
     func showBadgeInfoPullUp(in viewController: UIViewController,

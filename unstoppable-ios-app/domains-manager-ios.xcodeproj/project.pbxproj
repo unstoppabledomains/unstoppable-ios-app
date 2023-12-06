@@ -6784,7 +6784,6 @@
 				C6E0413F295051CA0080F8E3 /* DomainsCollectionPageViewController.swift */,
 				C6D645F72B1DBF4800D724AC /* DomainsCollectionPresenterProtocol.swift */,
 				C6D6E55C28193A41008C66BB /* DomainsCollectionPresenter.swift */,
-				C6D6472F2B1ED9B900D724AC /* AddDomainPullUpAction.swift */,
 				C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */,
 				C6D6E55228193A35008C66BB /* DomainsCollectionViewController.swift */,
 				C6D6E55328193A35008C66BB /* DomainsCollectionViewController.xib */,
@@ -6887,6 +6886,7 @@
 		C6E04149295052120080F8E3 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				C6D6472F2B1ED9B900D724AC /* AddDomainPullUpAction.swift */,
 				C6E0414A295052180080F8E3 /* CarouselCellVisibilityLevel.swift */,
 				C6E041DC2955EC5B0080F8E3 /* CarouselCardState.swift */,
 				C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */,

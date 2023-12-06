@@ -352,6 +352,30 @@ extension PullUpViewService {
             showOrUpdate(in: viewController, pullUp: .loggedInUserProfile, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
+    
+    func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges,
+                                      in viewController: UIViewController) async {
+        let domainName = pendingProfile.domainName
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 390
+            let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: "Finish setting up your domain\n\(domainName)",
+                                                                                                       highlightedText: [.init(highlightedText: domainName, highlightedColor: .foregroundSecondary)],
+                                                                                                       analyticsActionName: nil,
+                                                                                                       action: nil)),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .infoIcon,
+                                                                                     size: .large),
+                                                                         subtitle: .label(.text("Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.")),
+                                                                         actionButton: .main(content: .init(title: "Sign transaction", icon: nil, analyticsName: .confirm, action: {
+                completion(Void())
+            }))),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcConnectionFailed, contentView: selectionView,
+                         isDismissAble: false,
+                         height: selectionViewHeight)
+        }
+    }
 }
 
 // MARK: - Private methods

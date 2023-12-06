@@ -636,7 +636,8 @@ private extension PullUpErrorConfiguration {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: Array(WalletWithInfo.mock.prefix(4)),
-                                profileChanges: .init(avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
+                                profileChanges: .init(domainName: "oleg.x",
+                                                      avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
                                 purchasedCallback: { })
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }

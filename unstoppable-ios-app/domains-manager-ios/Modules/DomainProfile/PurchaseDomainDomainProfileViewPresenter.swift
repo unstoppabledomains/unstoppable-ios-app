@@ -18,13 +18,14 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     private let domain: DomainToPurchase
     private let domainDisplayInfoHolder: DomainDisplayInfoHolder
     private var didDiscardChanges = false
-    private var domainProfileChanges = DomainProfilePendingChanges()
+    private var domainProfileChanges: DomainProfilePendingChanges
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
     init(view: any DomainProfileViewProtocol,
          domain: DomainToPurchase) {
         self.view = view
         self.domain = domain
+        self.domainProfileChanges = DomainProfilePendingChanges(domainName: domain.name)
         self.profile = SerializedUserDomainProfile(profile: .init(),
                                                    messaging: .init(),
                                                    socialAccounts: .init(),

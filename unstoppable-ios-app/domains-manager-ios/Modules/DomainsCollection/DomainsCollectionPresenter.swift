@@ -73,6 +73,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
             await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+            await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
         }
     }
     
@@ -512,6 +513,43 @@ private extension DomainsCollectionPresenter {
                 view.showAlertWith(error: error)
             }
             throw error 
+        }
+    }
+    
+    func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let profilesReadyToSubmit = pendingProfiles.filter { profile in
+            if let domain = domains.first(where: { $0.name == profile.domainName }),
+               domain.state == .default {
+                return true
+            }
+            return false
+        }
+        if !profilesReadyToSubmit.isEmpty {
+            let domainItems = await dataAggregatorService.getDomainItems()
+            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
+                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
+                }
+                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+                return nil
+            }
+            
+            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+                                                                            in: view)
+            await view.dismissPullUpMenu()
+            do {
+                try await NetworkService().updatePendingDomainProfiles(with: requests)
+                let pendingProfilesLeft = pendingProfiles.filter { profile in
+                    requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
+                }
+                PurchasedDomainsStorage.savePendingNonEmptyProfiles(pendingProfilesLeft)
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+            } catch {
+                await view.showAlertWith(error: error, handler: nil)
+            }
         }
     }
 

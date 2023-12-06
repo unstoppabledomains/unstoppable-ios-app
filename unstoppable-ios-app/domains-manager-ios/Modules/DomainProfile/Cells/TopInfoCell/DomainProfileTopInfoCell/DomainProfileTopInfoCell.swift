@@ -62,9 +62,6 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
         followersButton.setTitle(socialTitle, image: nil)
         followersButton.isEnabled = havingFollowersOrFollowings
         
-        avatarButton.alpha = domainAvatarImageView.image == nil ? 1 : 0.02
-        bannerButton.alpha = domainBannerImageView.image == nil ? 1 : 0.02
-        
         bannerButton.isUserInteractionEnabled = data.isEnabled
         avatarButton.isUserInteractionEnabled = data.isEnabled
         
@@ -85,6 +82,15 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
             self?.buttonPressedCallback?(.avatar)
             UDVibration.buttonTap.vibrate()
         }), for: .menuActionTriggered)
+    }
+    
+    override func didSetImage(in imageView: UIImageView) {
+        let alpha: CGFloat = imageView.image == nil ? 1 : 0.02
+        if imageView == domainAvatarImageView {
+            avatarButton.alpha = alpha
+        } else {
+            bannerButton.alpha = alpha
+        }
     }
 }
 

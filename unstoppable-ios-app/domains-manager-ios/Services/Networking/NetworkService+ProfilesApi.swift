@@ -132,6 +132,30 @@ extension NetworkService {
         return try await updateUserDomainProfile(for: domain, body: body)
     }
     
+    public func updatePendingDomainProfiles(with requests: [UpdateProfilePendingChangesRequest]) async throws {
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for request in requests {
+                group.addTask {
+                    try await self.updatePendingDomainProfile(pendingProfile: request.pendingChanges,
+                                                         domain: request.domain)
+                }
+            }
+            
+            for try await _ in group {
+                
+            }
+        }
+    }
+    
+    @discardableResult
+    private func updatePendingDomainProfile(pendingProfile: DomainProfilePendingChanges,
+                                           domain: DomainItem) async throws -> SerializedUserDomainProfile {
+        let request = ProfileUpdateRequest(attributes: pendingProfile.updateAttributes,
+                                           domainSocialAccounts: [])
+        let body = try prepareRequestBodyFrom(entity: request)
+        return try await updateUserDomainProfile(for: domain, body: body)
+    }
+    
     public func fetchUserDomainNotificationsPreferences(for domain: DomainItem) async throws -> UserDomainNotificationsPreferences {
         let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
