@@ -19,6 +19,13 @@ extension UDWallet {
         return walletName.contains("alpha")
     }
     
+    var shouldEncodeHexMessage: Bool {
+        guard let walletName = self.getExternalWalletName()?.lowercased() else {
+            return false
+        }
+        return walletName.contains("meta")
+    }
+    
     static func createSignaturesByPersonalSign(messages: [String],
                                                domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
@@ -32,6 +39,14 @@ extension UDWallet {
     }
     
     func getPersonalSignature(messageString: String, shouldTryToConverToReadable: Bool = true) async throws -> String {
+        func encodedMessage() throws -> String {
+            guard let data = messageString.data(using: .utf8) else {
+                throw UDWallet.Error.failedSignature
+            }
+            return data.hexString
+        }
+        
+        
         guard self.walletState == .verified else {
             if self.shouldParseMessage {
                 let message = messageString.convertedIntoReadableMessage
@@ -42,11 +57,11 @@ extension UDWallet {
                 return try await signViaWalletConnectPersonalSign(message: messageString)
             }
             
-            guard let data = messageString.data(using: .utf8) else {
-                throw UDWallet.Error.failedSignature
+            if self.shouldEncodeHexMessage {
+                return try await signViaWalletConnectPersonalSign(message: encodedMessage())
             }
-            let stringToSend = data.hexString
-            return try await signViaWalletConnectPersonalSign(message: stringToSend)
+            
+            return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
         let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
