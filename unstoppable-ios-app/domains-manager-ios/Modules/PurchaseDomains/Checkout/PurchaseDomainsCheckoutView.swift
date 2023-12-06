@@ -424,8 +424,17 @@ private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
+        setDomainAvatar()
+    }
+    
+    func setDomainAvatar() {
         Task {
-            domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
+            if let imageData = profileChanges.avatarData,
+               let avatarImage = UIImage(data: imageData) {
+                domainAvatar = avatarImage
+            } else {
+                domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
+            }
         }
     }
     
@@ -617,7 +626,7 @@ private extension PullUpErrorConfiguration {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: Array(WalletWithInfo.mock.prefix(4)),
-                                profileChanges: .init(),
+                                profileChanges: .init(avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
                                 purchasedCallback: { })
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }
