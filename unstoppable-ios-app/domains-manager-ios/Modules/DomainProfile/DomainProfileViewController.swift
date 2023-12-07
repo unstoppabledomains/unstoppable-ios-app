@@ -99,7 +99,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
-        collectionView.contentInset.bottom = keyboardHeight + defaultBottomOffset
+        setBottomContentInset()
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
@@ -236,10 +236,17 @@ private extension DomainProfileViewController {
 // MARK: - Private functions
 private extension DomainProfileViewController {
     func setBottomContentInset() {
+        var offset: CGFloat
         if confirmButtonGradientView.isHidden {
-            collectionView.contentInset.bottom = defaultBottomOffset
+            offset = defaultBottomOffset
         } else {
-            collectionView.contentInset.bottom = (view.frame.height - confirmButtonGradientView.frame.minY) + defaultBottomOffset
+            offset = (view.frame.height - confirmButtonGradientView.frame.minY) + defaultBottomOffset
+        }
+        if isKeyboardOpened {
+            offset += keyboardFrame.height
+        }
+        if collectionView.contentInset.bottom != offset {
+            collectionView.contentInset.bottom = offset
         }
     }
     
