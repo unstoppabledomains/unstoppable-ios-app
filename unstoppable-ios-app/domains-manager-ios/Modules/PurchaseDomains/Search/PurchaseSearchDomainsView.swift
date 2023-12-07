@@ -229,7 +229,7 @@ private extension PurchaseSearchDomainsView {
                     Debugger.printFailure("Did load 0 suggestions")
                     waitAndTryAgain()
                 }
-                self.suggestions = Array(suggestions.prefix(12))
+                self.suggestions = suggestions
             } catch {
                 Debugger.printFailure("Failed to load suggestions")
                 waitAndTryAgain()
