@@ -533,7 +533,8 @@ private extension DataAggregatorService {
                                          reverseResolutionMap: ReverseResolutionInfoMap) async {
         
         let rrDomainsList = Set(reverseResolutionMap.compactMap( { $0.value } ))
-        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+
         // Aggregate domain display info
         var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
         for domain in domains {
@@ -546,7 +547,7 @@ private extension DataAggregatorService {
                 domainState = .updatingRecords
             }
             
-            let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domain.name })
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles) // pfpInfo.first(where: { $0.domainName == domain.name })
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
                                                       pfpInfo: domainPFPInfo,
@@ -560,16 +561,11 @@ private extension DataAggregatorService {
         
         // Purchased domains
         let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
-        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
         for domain in pendingPurchasedDomains {
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
-            var pfpInfo: DomainPFPInfo?
-            if let profile = pendingProfiles.first(where: { $0.domainName == domain.name }),
-               let localImage = await profile.getAvatarImage() {
-                pfpInfo = .init(domainName: domain.name, localImage: localImage)
-            }
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
-                                                      pfpInfo: pfpInfo,
+                                                      pfpInfo: domainPFPInfo,
                                                       state: .minting,
                                                       order: order,
                                                       isSetForRR: false)
@@ -646,6 +642,16 @@ private extension DataAggregatorService {
         await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
         await dataHolder.sortDomainsToDisplay()
+    }
+    
+    func resolveDomainPFPInfo(for domainName: String,
+                              using pfpInfo: [DomainPFPInfo],
+                              pendingProfiles: [DomainProfilePendingChanges]) async -> DomainPFPInfo? {
+        if let profile = pendingProfiles.first(where: { $0.domainName == domainName }),
+           let localImage = await profile.getAvatarImage() {
+            return .init(domainName: domainName, localImage: localImage)
+        }
+        return pfpInfo.first(where: { $0.domainName == domainName })
     }
     
     func getPurchasedDomainsUnlessInList(_ domains: [DomainItem]) -> [DomainItem] {
