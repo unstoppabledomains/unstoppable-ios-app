@@ -408,17 +408,8 @@ extension ChatInputView {
 }
 
 
-struct ChatInputViewPreviews: PreviewProvider {
-    
-    static var previews: some View {
-        let height: CGFloat = 288
-        
-        return UIViewPreview {
-            let view = ChatInputView()
-            view.setCanSendAttachments(false)
-            return view
-        }
-        .frame(width: 390, height: height)
-    }
-    
+#Preview {
+    let view = ChatInputView(frame: CGRect(x: 0, y: 0, width: 390, height: 288))
+    view.setCanSendAttachments(false)
+    return view
 }

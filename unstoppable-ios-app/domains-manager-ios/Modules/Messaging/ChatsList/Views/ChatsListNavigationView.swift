@@ -227,34 +227,25 @@ extension ChatsListNavigationView {
     }
 }
 
-struct ChatsListNavigationView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        let height: CGFloat = 40
-        
-        return UIViewPreview {
-            let view =  ChatsListNavigationView()
-            let wallet = WalletDisplayInfo(name: "name.x",
-                                           address: "asdads",
-                                           domainsCount: 1,
-                                           udDomainsCount: 1,
-                                           source: .imported,
-                                           isBackedUp: false,
-                                           reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
-            let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
-                                            address: "asdads",
-                                            domainsCount: 1,
-                                            udDomainsCount: 1,
-                                            source: .imported,
-                                            isBackedUp: false,
-                                            reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
-            view.setWithConfiguration(.init(selectedWallet: wallet,
-                                            wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
-                                                      .init(wallet: wallet2, numberOfUnreadMessages: 0)],
-                                            isLoading: false))
-            return view
-        }
-        .frame(width: 390, height: height)
-    }
-    
+#Preview {
+    let view =  ChatsListNavigationView(frame: CGRect(x: 0, y: 0, width: 390, height: 40))
+    let wallet = WalletDisplayInfo(name: "name.x",
+                                   address: "asdads",
+                                   domainsCount: 1,
+                                   udDomainsCount: 1,
+                                   source: .imported,
+                                   isBackedUp: false,
+                                   reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
+    let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
+                                    address: "asdads",
+                                    domainsCount: 1,
+                                    udDomainsCount: 1,
+                                    source: .imported,
+                                    isBackedUp: false,
+                                    reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
+    view.setWithConfiguration(.init(selectedWallet: wallet,
+                                    wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
+                                              .init(wallet: wallet2, numberOfUnreadMessages: 0)],
+                                    isLoading: false))
+    return view 
 }
