@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "createMessagingProfileIllustration.pdf",
+      "filename" : "createMessagingProfileIllustration.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "createMessagingProfileIllustrationDark.pdf",
+      "filename" : "createMessagingProfileIllustrationDark.png",
       "idiom" : "universal"
     }
   ],

@@ -186,6 +186,7 @@ private extension PublicProfileView {
                 .clipForAvatarStyle(avatarStyle)
             if viewModel.isUDBlue {
                 Image.udBlueGrayIcon
+                    .resizable()
                     .squareFrame(24)
             }
         }
