@@ -61,6 +61,10 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
                                  selectedWallet: selectedWallet,
                                  wallets: wallets))
         case .didPurchaseDomains:
+            Task {
+                try? await Task.sleep(seconds: 0.5)
+                await appContext.purchaseDomainsService.reset()
+            }
             moveToStep(.purchased)
         case .goToDomains:
             didFinishPurchase()
