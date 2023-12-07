@@ -150,6 +150,7 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func reset() async {
         cartStatus = .ready(cart: .empty)
+        cachedPaymentDetails = nil
         self.domainsToPurchase = []
         await logout()
     }
