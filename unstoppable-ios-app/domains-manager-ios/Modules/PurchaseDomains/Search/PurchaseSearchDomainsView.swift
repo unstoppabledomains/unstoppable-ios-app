@@ -69,7 +69,7 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func searchResultView() -> some View {
-        if isLoading {
+        if isLoading && !searchingText.isEmpty {
             loadingView()
         } else if !searchResult.isEmpty {
             resultListView()
