@@ -18,7 +18,8 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     private var wallets: [WalletWithInfo]!
     private var isLoading = false
     override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle { .default }
+
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
     var progress: Double? { 5 / 6 }
     
