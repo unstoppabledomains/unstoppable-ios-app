@@ -7,14 +7,10 @@
 
 import UIKit
 
-protocol SceneDelegateProtocol {
-    var window: UIWindow? { get }
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
+ 
 
-}
-
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
-    var window: UIWindow?
+    var window: MainWindow?
     static let shared: SceneDelegateProtocol? = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegateProtocol
 
 
@@ -24,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let window = UIWindow(windowScene: windowScene)
+        let window = MainWindow(windowScene: windowScene)
         window.makeKeyAndVisible()
         self.window = window
         
@@ -61,6 +57,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    var interfaceOrientation: UIInterfaceOrientation = .portrait
+    
+    var sceneActivationState: UIScene.ActivationState = .foregroundActive
+    
+    func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle) {
+        
+    }
+    
+    func authorizeUserOnAppOpening() async {
+        
+    }
+    
+    func restartOnboarding() {
+        
+    }
+    
+    func addListener(_ listener: SceneActivationListener) {
+        
+    }
+    
+    func removeListener(_ listener: SceneActivationListener) {
+        
+    }
+    
 }
 

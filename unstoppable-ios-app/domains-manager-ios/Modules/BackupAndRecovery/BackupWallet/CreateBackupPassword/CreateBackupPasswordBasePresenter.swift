@@ -61,7 +61,7 @@ extension CreateBackupPasswordBasePresenter: CreateBackupPasswordPresenterProtoc
             let backedUpWallet = try udWalletsService.backUpWallet(wallet, withPassword: password)
             try SecureHashStorage.save(password: password)
             didSaveWallet(backedUpWallet, underBackUpPassword: password)
-        } catch UDWalletsService.BackUpError.alreadyBackedUp {
+        } catch UDWalletBackUpError.alreadyBackedUp {
             wallet.hasBeenBackedUp = true
             didSaveWallet(wallet, underBackUpPassword: password)
         } catch {

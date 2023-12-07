@@ -45,4 +45,6 @@ extension String {
         let end = index(start, offsetBy: length)
         return String(self[start..<end])
     }
+    
+    var hashSha3String: String? { self }
 }

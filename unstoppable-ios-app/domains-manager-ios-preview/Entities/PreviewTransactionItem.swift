@@ -12,11 +12,20 @@ struct TransactionItem: Codable {
     var id: UInt64?
     var transactionHash: HexAddress?
     var domainName: String?
-    
+    var isPending: Bool = false
+    var operation: TxOperation?
+
+    func isMintingTransaction() -> Bool {   
+        false
+    }
 }
 
 extension Array where Element == TransactionItem {
     func containPending(_ domain: DomainItem) -> Bool {
         false
+    }
+    
+    func filterPending(extraCondition: ( (TransactionItem) -> Bool) = { _ in true }) -> Self {
+        self.filter({ $0.isPending && extraCondition($0) })
     }
 }

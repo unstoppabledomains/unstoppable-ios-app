@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Boilertalk_Web3
 
 final class WalletConnectServiceListenerHolder: Equatable {
     

@@ -7,14 +7,14 @@
 
 import Foundation
 
-protocol WCRequestsHandlingServiceProtocol {
-    func addListener(_ listener: WalletConnectServiceConnectionListener)
-    func removeListener(_ listener: WalletConnectServiceConnectionListener)
-}
-
 final class WCRequestsHandlingService: WCRequestsHandlingServiceProtocol, WalletConnectExternalWalletHandlerProtocol {
+    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
+        
+    }
+    func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler) { }
     func addListener(_ listener: WalletConnectServiceConnectionListener) { }
     func removeListener(_ listener: WalletConnectServiceConnectionListener) { }
+    func expectConnection() { }
 }
 
 protocol WalletConnectExternalWalletHandlerProtocol {
@@ -35,7 +35,8 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     var description: String = ""
     var appInfo: WalletConnectServiceV2.WCServiceAppInfo = .init()
     var connectionStartDate: Date? = Date()
-    
+    var chainIds: [Int] = []
+
     init(name: String = "Uniswap",
               walletAddress: String = "",
               domainName: String = "oleg.x") {

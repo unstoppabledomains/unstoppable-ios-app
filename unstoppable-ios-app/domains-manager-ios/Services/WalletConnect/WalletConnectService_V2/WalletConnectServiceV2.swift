@@ -58,23 +58,9 @@ struct SocketFactory: WebSocketFactory {
 typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
 typealias WCAppDisconnectedCallback = ((UnifiedConnectAppInfo)->())
-
-protocol WalletConnectDelegate: AnyObject {
-    func failedToConnect()
-    func didConnect(to walletAddress: HexAddress?, with wcRegistryWallet: WCRegistryWalletProxy?, successfullyAddedCallback: (()->Void)?)
-    func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?)
-}
-
-enum WalletConnectUIError: Error {
-    case cancelled, noControllerToPresent
-}
-
-enum WCRequest {
-    case connectWallet(_ request: WalletConnectServiceV2.ConnectWalletRequest),
-         signMessage(_ request: SignMessageTransactionUIConfiguration),
-         payment(_ request: SignPaymentTransactionUIConfiguration)
-}
-
+typealias WalletConnectURI = WalletConnectUtils.WalletConnectURI
+typealias AnyCodable = Commons.AnyCodable
+typealias EthereumTransaction = Boilertalk_Web3.EthereumTransaction
 
 
 class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
@@ -106,38 +92,6 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDat
     }
 }
 
-protocol WalletConnectServiceV2Protocol: AnyObject {
-    var delegate: WalletConnectDelegate? { get set }
-    
-    func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
-    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler)
-    func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
-    func getConnectedApps() async -> [UnifiedConnectAppInfo]
-    func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
-    func disconnectAppsForAbsentDomains(from: [DomainItem])
-    
-    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
-    
-    // Client V2 part
-    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
-    func disconnect(from wcWallet: HexAddress) async
-    
-    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
-    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
-    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress,
-                     in wallet: UDWallet) async throws -> WalletConnectSign.Response
-    func handle(response: WalletConnectSign.Response) throws -> String
-    func signTxViaWalletConnect_V2(udWallet: UDWallet,
-                                   sessions: [SessionV2Proxy],
-                                   chainId: Int,
-                                   tx: EthereumTransaction) async throws -> String
-    
-    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
-                                      chainId: Int,
-                                      txParams: AnyCodable,
-                                      in wallet: UDWallet) async throws -> WalletConnectSign.Response
-}
-
 protocol WalletConnectV2RequestHandlingServiceProtocol: WalletConnectV2PublishersProvider {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
     var willHandleRequestCallback: EmptyCallback? { get set }
@@ -159,7 +113,7 @@ protocol WalletConnectV2RequestHandlingServiceProtocol: WalletConnectV2Publisher
 }
 
 protocol WalletConnectV2PublishersProvider {
-    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { get }
+    var sessionProposalPublisher: AnyPublisher<(proposal: SessionV2.Proposal, context: WalletConnectSign.VerifyContext?), Never> { get }
     var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { get }
 }
 
@@ -172,11 +126,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
     
-    struct ConnectWalletRequest: Equatable {
-        let uri: WalletConnectURI
-    }
-    
-    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionProposalPublisher }
+    var sessionProposalPublisher: AnyPublisher<(proposal: SessionV2.Proposal, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionProposalPublisher }
     var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionRequestPublisher }
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
@@ -1257,10 +1207,7 @@ extension Array where Element: DomainHolder {
 
 // Client V2 part
 extension WalletConnectServiceV2 {
-    enum Wc2ConnectionType {
-        case oldPairing
-        case newPairing (WalletConnectURI)
-    }
+  
     
     // namespaces required from wallets by UD app as Client
     var requiredNamespaces: [String: ProposalNamespace]  { [
@@ -1597,7 +1544,7 @@ extension EthereumTransaction {
     }
 }
 
-extension WalletConnectSign.Session: CustomStringConvertible {
+extension SessionV2: CustomStringConvertible {
     public var description: String {
         """
 <\(self.peer.name) |

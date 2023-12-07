@@ -479,25 +479,3 @@ extension UDWallet: Equatable {
         return resultEth || resultZil
     }
 }
-
-extension UDWallet {
-    var recoveryType: RecoveryType? {
-        .init(walletType: type)
-    }
-    
-    enum RecoveryType: Codable {
-        case recoveryPhrase
-        case privateKey
-        
-        init?(walletType: WalletType) {
-            switch walletType {
-            case .privateKeyEntered:
-                self = .privateKey
-            case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
-                self = .recoveryPhrase
-            case .importedUnverified:
-                return nil
-            }
-        }
-    }
-}

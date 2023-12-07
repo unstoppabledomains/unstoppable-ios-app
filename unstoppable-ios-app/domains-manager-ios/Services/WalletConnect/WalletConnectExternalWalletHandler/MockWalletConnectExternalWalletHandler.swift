@@ -13,7 +13,7 @@ import Boilertalk_Web3
 import WalletConnectSign
 
 final class MockWalletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol {
-    func sendWC2Request(method: WalletConnectRequestType, session: SessionV2Proxy, chainId: Int, requestParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+    func sendWC2Request(method: WalletConnectRequestType, session: SessionV2Proxy, chainId: Int, requestParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> ResponseV2 {
         throw WalletConnectRequestError.externalWalletFailedToSign
     }
     

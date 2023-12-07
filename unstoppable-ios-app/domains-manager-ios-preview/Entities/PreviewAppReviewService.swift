@@ -7,10 +7,14 @@
 
 import Foundation
 
-final class AppReviewService {
+final class AppReviewService: AppReviewServiceProtocol {
+    func requestToWriteReviewInAppStore() {
+        
+    }
     
-    static let shared = AppReviewService()
     
+    static let shared: AppReviewServiceProtocol = AppReviewService()
+
     private init() { }
     
     func appReviewEventDidOccurs(event: AppReviewActionEvent) { }

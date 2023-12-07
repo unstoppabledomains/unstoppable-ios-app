@@ -48,7 +48,7 @@ final class EnterBackupOnboardingPresenter: EnterBackupBasePresenter {
                     view.setContinueButtonEnabled(true)
                     didRestoreWallets(wallets)
                 }
-            } catch UDWalletsService.BackUpError.incorrectBackUpPassword {
+            } catch UDWalletBackUpError.incorrectBackUpPassword {
                 await MainActor.run {
                     view.setContinueButtonEnabled(true)
                     view.showError(String.Constants.incorrectPassword.localized())
