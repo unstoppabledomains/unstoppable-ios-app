@@ -32,12 +32,7 @@ class ViewController: UIViewController {
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
                                                profileChanges: .init(domainName: "oleg.x"),
-                                               purchasedCallback: { [weak self] in
-            
-        },
-                                               scrollOffsetCallback: { [weak self] offset in
-            
-        })
+                                               delegate: nil)
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
