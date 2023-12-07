@@ -16,8 +16,9 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     private var profileChanges: DomainProfilePendingChanges!
     private var selectedWallet: WalletWithInfo!
     private var wallets: [WalletWithInfo]!
+    private var isLoading = false
     override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
-
+    
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
     var progress: Double? { 5 / 6 }
     
@@ -40,21 +41,27 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     }
     
     override func shouldPopOnBackButton() -> Bool {
+        guard !isLoading else { return false }
+        
         Task { await appContext.purchaseDomainsService.reset() }
         return true
     }
 }
 
-// MARK: - Private methods
-private extension PurchaseDomainsCheckoutViewController {
-    func didScrollTo(offset: CGPoint) {
-        cNavigationController?.underlyingScrollViewDidScrollTo(offset: offset)
-    }
-    
-    func didPurchaseDomains() {
+// MARK: - PurchaseDomainsCheckoutViewDelegate
+extension PurchaseDomainsCheckoutViewController: PurchaseDomainsCheckoutViewDelegate {
+    func purchaseViewDidPurchaseDomains() {
         Task { @MainActor in
             try? await purchaseDomainsFlowManager?.handle(action: .didPurchaseDomains)
         }
+    }
+    
+    func purchaseViewDidUpdateScrollOffset(_ scrollOffset: CGPoint) {
+        cNavigationController?.underlyingScrollViewDidScrollTo(offset: scrollOffset)
+    }
+    
+    func purchaseViewDidUpdateLoadingState(_ isLoading: Bool) {
+        self.isLoading = isLoading
     }
 }
 
@@ -73,12 +80,7 @@ private extension PurchaseDomainsCheckoutViewController {
                                                selectedWallet: selectedWallet,
                                                wallets: wallets,
                                                profileChanges: profileChanges,
-                                               purchasedCallback: { [weak self] in
-            self?.didPurchaseDomains()
-        },
-                                               scrollOffsetCallback: { [weak self] offset in
-            self?.didScrollTo(offset: offset)
-        })
+                                               delegate: self)
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
