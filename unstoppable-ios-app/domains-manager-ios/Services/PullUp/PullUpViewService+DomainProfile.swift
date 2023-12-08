@@ -357,23 +357,53 @@ extension PullUpViewService {
                                       in viewController: UIViewController) async {
         let domainName = pendingProfile.domainName
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 390
-            let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: "Finish setting up your domain\n\(domainName)",
+            let selectionViewHeight: CGFloat = 410
+            let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: String.Constants.finishSetupProfilePullUpTitle.localized(String(domainName.prefix(40))),
                                                                                                        highlightedText: [.init(highlightedText: domainName, highlightedColor: .foregroundSecondary)],
                                                                                                        analyticsActionName: nil,
                                                                                                        action: nil)),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .infoIcon,
                                                                                      size: .large),
-                                                                         subtitle: .label(.text("Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.")),
-                                                                         actionButton: .main(content: .init(title: "Sign transaction", icon: nil, analyticsName: .confirm, action: {
+                                                                         subtitle: .label(.text(String.Constants.finishSetupProfilePullUpSubtitle.localized())),
+                                                                         actionButton: .main(content: .init(title: String.Constants.signTransaction.localized(), icon: nil, analyticsName: .confirm, action: {
                 completion(Void())
             }))),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            showOrUpdate(in: viewController, pullUp: .wcConnectionFailed, contentView: selectionView,
+            showIfNotPresent(in: viewController,
+                         pullUp: .finishProfileForPurchasedDomains,
+                         contentView: selectionView,
                          isDismissAble: false,
                          height: selectionViewHeight)
+        }
+    }
+    
+    func showFinishSetupProfileFailedPullUp(in viewController: UIViewController) async throws  {
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 308
+            let title = String.Constants.finishSetupProfileFailedPullUpTitle.localized()
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         actionButton: .main(content: .init(title: String.Constants.tryAgain.localized(),
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .tryAgain,
+                                                                                                            action: { completion(.success(Void())) })),
+                                                                         cancelButton: .secondary(content: .init(title: String.Constants.cancelSetup.localized(),
+                                                                                                                 icon: nil,
+                                                                                                                 analyticsName: .cancel,
+                                                                                                                 action: {
+                completion(.failure(PullUpError.dismissed))
+            }))),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showIfNotPresent(in: viewController,
+                              pullUp: .failedToFinishProfileForPurchasedDomains,
+                              contentView: selectionView,
+                              isDismissAble: false,
+                              height: selectionViewHeight)
         }
     }
 }

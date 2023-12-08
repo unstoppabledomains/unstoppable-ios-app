@@ -536,19 +536,33 @@ private extension DomainsCollectionPresenter {
                 Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
                 return nil
             }
-            
             await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
                                                                             in: view)
             await view.dismissPullUpMenu()
+            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+        }
+    }
+    
+    func finishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo],
+                                             requests: [UpdateProfilePendingChangesRequest]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let pendingProfilesLeft = pendingProfiles.filter { profile in
+            requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
+        }
+        
+        do {
+            try await NetworkService().updatePendingDomainProfiles(with: requests)
+            PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+        } catch {
             do {
-                try await NetworkService().updatePendingDomainProfiles(with: requests)
-                let pendingProfilesLeft = pendingProfiles.filter { profile in
-                    requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
-                }
-                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+                try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)
+                await view.dismissPullUpMenu()
+                await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
             } catch {
-                await view.showAlertWith(error: error, handler: nil)
+                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
             }
         }
     }

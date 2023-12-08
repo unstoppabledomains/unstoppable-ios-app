@@ -930,3 +930,8 @@
 "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE" = "Please check your internet connection and try again.";
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE" = "Signature required";
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE" = "You will be redirected to %@ to sign a message";
+"FINISH_SETUP_PROFILE_PULL_UP_TITLE" = "Finish setting up your domain\n%@";
+"FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE" = "Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.";
+"SIGN_TRANSACTION" = "Sign transaction";
+"FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE" = "Failed to update profile";
+"CANCEL_SETUP" = "Cancel setup";

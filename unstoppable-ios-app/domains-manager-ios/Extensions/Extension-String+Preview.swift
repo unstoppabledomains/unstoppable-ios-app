@@ -1021,6 +1021,11 @@ extension String {
         static let purchaseWalletPurchaseErrorSubtitle = "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE"
         static let purchaseWalletAuthSigRequiredTitle = "PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE"
         static let purchaseWalletAuthSigRequiredSubtitle = "PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE"
+        static let finishSetupProfilePullUpTitle = "FINISH_SETUP_PROFILE_PULL_UP_TITLE"
+        static let finishSetupProfilePullUpSubtitle = "FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE"
+        static let signTransaction = "SIGN_TRANSACTION"
+        static let finishSetupProfileFailedPullUpTitle = "FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE"
+        static let cancelSetup = "CANCEL_SETUP"
     }
     
     enum BlockChainIcons: String {

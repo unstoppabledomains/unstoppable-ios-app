@@ -363,6 +363,7 @@ extension Analytics {
         case walletsMaxNumberLimitReached, walletsMaxNumberLimitReachedAlready
         case purchaseDomainsAskToSign
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
+        case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
