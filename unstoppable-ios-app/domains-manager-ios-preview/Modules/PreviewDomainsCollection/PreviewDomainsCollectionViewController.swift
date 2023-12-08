@@ -48,6 +48,21 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
         view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
     }
     
+    func viewDidAppear() {
+        
+    }
+    
+    func testFinishSetupProfile() {
+        Task {
+            let view = self.view!
+            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: .init(domainName: "olegadalsdmalsdmalsdkmalksdmalsdasdlasdlaksjdlaksjdlkasjdlkasjdlajsdlkasldjasdkm.x"),
+                                                                            in: view)
+            await view.dismissPullUpMenu()
+            try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)
+            await view.dismissPullUpMenu()
+        }
+    }
+    
     var currentIndex: Int {
         0
     }
