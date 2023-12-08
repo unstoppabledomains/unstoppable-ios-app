@@ -11,14 +11,12 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Did load")
-//        showDomainsCollection()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("Did appear")
-//        showDomainProfile()
+        
     }
     
     @IBAction func runPurchaseButtonPressed() {
