@@ -42,7 +42,7 @@ private extension AppGroupsBridgeFromDataAggregatorService {
             switch domain.pfpSource {
             case .nft(let imagePath), .nonNFT(let imagePath):
                 return imagePath
-            case .none:
+            case .none, .local:
                 return nil
             }
         }

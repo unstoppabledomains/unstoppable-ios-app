@@ -133,7 +133,7 @@ extension WalletDetailsViewPresenter: DataAggregatorServiceListener {
 
 // MARK: - NetworkReachabilityServiceListener
 extension WalletDetailsViewPresenter: NetworkReachabilityServiceListener {
-    func networkStatusChanged(_ status: NetworkReachabilityService.Status) {
+    func networkStatusChanged(_ status: NetworkReachabilityStatus) {
         DispatchQueue.main.async { [weak self] in
             self?.showWalletDetails()
         }

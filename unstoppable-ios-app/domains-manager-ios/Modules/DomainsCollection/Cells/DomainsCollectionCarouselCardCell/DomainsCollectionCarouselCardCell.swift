@@ -418,9 +418,9 @@ private extension DomainsCollectionCarouselCardCell {
       
         var containerBackgroundColor: UIColor {
             switch self {
-            case .updatingRecords:
+            case .updatingRecords, .minting:
                 return .brandElectricYellow
-            case .minting, .transfer:
+            case .transfer:
                 return .brandElectricGreen
             case .deprecated, .parked:
                 return .brandOrange
@@ -444,7 +444,7 @@ private extension DomainsCollectionCarouselCardCell {
             case .updatingRecords:
                 return String.Constants.updatingRecords.localized()
             case .minting:
-                return String.Constants.mintingInProgressTitle.localized()
+                return String.Constants.claimingDomain.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .parked(let status):

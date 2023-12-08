@@ -384,26 +384,6 @@ extension UDWallet {
     }
 }
 
-enum WalletError: Error {
-    case NameTooShort
-    case WalletNameNotUnique
-    case EthWalletFailedInit
-    case EthWalletPrivateKeyNotFound
-    case EthWalletMnemonicsNotFound
-    case zilWalletFailedInit
-    case migrationError
-    case failedGetPrivateKeyFromNonHdWallet
-    case ethWalletAlreadyExists (HexAddress)
-    case invalidPrivateKey
-    case invalidSeedPhrase
-    case importedWalletWithoutUNS
-    case ethWalletNil
-    case unsupportedBlockchainType
-    
-    case failedToBackUp
-    case incorrectBackupPassword
-}
-
 extension Array where Element == UDWallet {
     func pickOwnedDomains(from domains: [DomainItem]) -> [DomainItem] {
         let ethWalletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
@@ -497,37 +477,5 @@ extension UDWallet: Equatable {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
         let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
         return resultEth || resultZil
-    }
-}
-
-protocol WalletConnectController: UIViewController {
-    func warnManualTransferToExternalWallet(title: String)
-}
-
-extension WalletConnectController {
-    func warnManualTransferToExternalWallet(title: String) {
-        self.showSimpleAlert(title: title, body: "Please switch to the external wallet app manually, confirm to sign the transaction and return back")
-    }
-}
-
-extension UDWallet {
-    var recoveryType: RecoveryType? {
-        .init(walletType: type)
-    }
-    
-    enum RecoveryType: Codable {
-        case recoveryPhrase
-        case privateKey
-        
-        init?(walletType: WalletType) {
-            switch walletType {
-            case .privateKeyEntered:
-                self = .privateKey
-            case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
-                self = .recoveryPhrase
-            case .importedUnverified:
-                return nil
-            }
-        }
     }
 }

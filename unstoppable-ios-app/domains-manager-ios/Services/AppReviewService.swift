@@ -9,11 +9,6 @@ import Foundation
 import UIKit
 import StoreKit
 
-protocol AppReviewServiceProtocol {
-    func appReviewEventDidOccurs(event: AppReviewActionEvent)
-    func requestToWriteReviewInAppStore()
-}
-
 final class AppReviewService {
     
     static let shared: AppReviewServiceProtocol = AppReviewService()

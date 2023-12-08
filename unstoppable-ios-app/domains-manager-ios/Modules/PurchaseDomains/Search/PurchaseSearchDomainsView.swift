@@ -69,7 +69,7 @@ private extension PurchaseSearchDomainsView {
     
     @ViewBuilder
     func searchResultView() -> some View {
-        if isLoading {
+        if isLoading && !searchingText.isEmpty {
             loadingView()
         } else if !searchResult.isEmpty {
             resultListView()
@@ -229,7 +229,7 @@ private extension PurchaseSearchDomainsView {
                     Debugger.printFailure("Did load 0 suggestions")
                     waitAndTryAgain()
                 }
-                self.suggestions = Array(suggestions.prefix(12))
+                self.suggestions = suggestions
             } catch {
                 Debugger.printFailure("Failed to load suggestions")
                 waitAndTryAgain()

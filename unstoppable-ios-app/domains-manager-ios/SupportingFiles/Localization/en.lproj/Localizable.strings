@@ -458,6 +458,7 @@
 "MOVE_TO_TOP" = "Move to top";
 
 // Minting in progress
+"CLAIMING_DOMAIN" = "Claiming domain";
 "MINTING_IN_PROGRESS_TITLE" = "Transfer in progress";
 "MINTING_IN_PROGRESS_SUBTITLE" = "Once finished, you’ll be able to manage your Web3 ID and profile on the go.";
 "GO_TO_HOME_SCREEN" = "Go to home screen";
@@ -929,3 +930,8 @@
 "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE" = "Please check your internet connection and try again.";
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE" = "Signature required";
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE" = "You will be redirected to %@ to sign a message";
+"FINISH_SETUP_PROFILE_PULL_UP_TITLE" = "Finish setting up your domain\n%@";
+"FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE" = "Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.";
+"SIGN_TRANSACTION" = "Sign transaction";
+"FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE" = "Failed to update profile";
+"CANCEL_SETUP" = "Cancel setup";

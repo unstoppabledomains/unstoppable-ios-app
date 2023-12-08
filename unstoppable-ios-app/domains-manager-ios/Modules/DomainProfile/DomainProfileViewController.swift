@@ -9,8 +9,8 @@ import UIKit
 import SwiftUI
 
 @MainActor
-protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
-    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int)
+protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol & ViewWithDashesProgress where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
+    func setConfirmButtonHidden(_ isHidden: Bool, style: DomainProfileViewController.ActionButtonStyle)
     func set(title: String?)
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup])
     func setBackgroundImage(_ image: UIImage?)
@@ -33,7 +33,10 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     @IBOutlet private weak var backgroundImageView: UIImageView!
     @IBOutlet private weak var backgroundImageBlurView: UIVisualEffectView!
     @IBOutlet private weak var confirmUpdateButton: FABCounterButton!
+    @IBOutlet private weak var confirmUpdateMainButton: RaisedWhiteButton!
     @IBOutlet private weak var confirmButtonGradientView: GradientView!
+    @IBOutlet private weak var confirmButtonsContainerStack: UIStackView!
+    @IBOutlet private weak var confirmButtonsContainerStackTopConstraint: NSLayoutConstraint!
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainProfileTopInfoCell.self,
                                                         DomainProfileGeneralInfoCell.self,
@@ -46,9 +49,11 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
                                                         DomainProfileNoSocialsCell.self,
                                                         DomainProfileWeb3WebsiteCell.self,
                                                         DomainProfileWeb3WebsiteLoadingCell.self,
-                                                        DomainProfileUpdatingRecordsCell.self] }
+                                                        DomainProfileUpdatingRecordsCell.self,
+                                                        PurchaseDomainProfileTopInfoCell.self] }
     var presenter: DomainProfileViewPresenterProtocol!
-    
+    var progress: Double? { presenter.progress }
+
     override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { 8 }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
@@ -66,6 +71,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     private(set) var dataSource: DataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private let minScrollYOffset: CGFloat = -40
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .white(numberOfDashes: 3) }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +99,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
-        collectionView.contentInset.bottom = keyboardHeight + defaultBottomOffset
+        setBottomContentInset()
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
@@ -113,10 +119,23 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
 
 // MARK: - DomainProfileViewProtocol
 extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileSectionViewProtocol {
-    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int) {
-        confirmUpdateButton.isHidden = isHidden
+    func setConfirmButtonHidden(_ isHidden: Bool, style: DomainProfileViewController.ActionButtonStyle) {
+        confirmButtonsContainerStack.isHidden = isHidden
         confirmButtonGradientView.isHidden = isHidden
-        confirmUpdateButton.setCounter(counter)
+        switch style {
+        case .counter(let counter):
+            confirmUpdateButton.isHidden = false
+            confirmUpdateButton.setCounter(counter)
+            confirmUpdateMainButton.isHidden = true
+            confirmButtonsContainerStack.alignment = .center
+            confirmButtonsContainerStackTopConstraint.constant = 0
+        case .main(let type):
+            confirmUpdateMainButton.isHidden = false
+            confirmUpdateMainButton.setTitle(type.title, image: nil)
+            confirmUpdateButton.isHidden = true
+            confirmButtonsContainerStack.alignment = .fill
+            confirmButtonsContainerStackTopConstraint.constant = 16
+        }
         setBottomContentInset()
     }
     
@@ -217,10 +236,17 @@ private extension DomainProfileViewController {
 // MARK: - Private functions
 private extension DomainProfileViewController {
     func setBottomContentInset() {
-        if confirmUpdateButton.isHidden {
-            collectionView.contentInset.bottom = defaultBottomOffset
+        var offset: CGFloat
+        if confirmButtonGradientView.isHidden {
+            offset = defaultBottomOffset
         } else {
-            collectionView.contentInset.bottom = (view.frame.height - confirmUpdateButton.frame.minY) + defaultBottomOffset
+            offset = (view.frame.height - confirmButtonGradientView.frame.minY) + defaultBottomOffset
+        }
+        if isKeyboardOpened {
+            offset += keyboardFrame.height
+        }
+        if collectionView.contentInset.bottom != offset {
+            collectionView.contentInset.bottom = offset
         }
     }
     
@@ -233,14 +259,22 @@ private extension DomainProfileViewController {
 private extension DomainProfileViewController {
     func setup() {
         view.backgroundColor = .brandUnstoppableBlue
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         setupNavigation(actionGroups: [])
         setupCollectionView()
         setupConfirmButton()
         setupGradientView()
         addHideKeyboardTapGesture(cancelsTouchesInView: false, toView: nil)
+        DispatchQueue.main.async {
+            self.setDashesProgress(self.progress)
+        }
     }
     
     func setupNavigation(actionGroups: [DomainProfileActionsGroup]) {
+        if actionGroups.isEmpty {
+            navigationItem.rightBarButtonItems = nil
+            return
+        }
         // Share button
         let shareButton = UIButton()
         shareButton.tintColor = .foregroundOnEmphasis
@@ -343,6 +377,11 @@ private extension DomainProfileViewController {
             switch item {
             case .topInfo(let data):
                 let cell = collectionView.dequeueCellOfType(DomainProfileTopInfoCell.self, forIndexPath: indexPath)
+                cell.set(with: data)
+                
+                return cell
+            case .purchaseTopInfo(let data):
+                let cell = collectionView.dequeueCellOfType(PurchaseDomainProfileTopInfoCell.self, forIndexPath: indexPath)
                 cell.set(with: data)
                 
                 return cell
@@ -604,6 +643,7 @@ extension DomainProfileViewController {
     
     enum Item: Hashable {
         case topInfo(data: ItemTopInfoData)
+        case purchaseTopInfo(data: ItemTopInfoData)
         case updatingRecords(displayInfo: DomainProfileUpdatingRecordsDisplayInfo)
         case generalInfo(displayInfo: DomainProfileGeneralDisplayInfo)
         case loading(id: UUID = .init(),
@@ -620,6 +660,7 @@ extension DomainProfileViewController {
     
     enum State: Hashable {
         case loading, `default`, updatingRecords, loadingError, updatingProfile(dataType: UpdateProfileDataType)
+        case purchaseNew
         
         enum UpdateProfileDataType: Hashable {
             case onChain, offChain, mixed
@@ -632,5 +673,23 @@ extension DomainProfileViewController {
         case copyDomain, viewWallet(subtitle: String), viewInBrowser, setReverseResolution(isEnabled: Bool)
         case aboutProfiles, mintedOn(chain: BlockchainType)
         case transfer
+    }
+    
+    enum ActionButtonStyle {
+        case counter(Int)
+        case main(MainButtonType)
+        
+        enum MainButtonType {
+            case skip, confirm
+            
+            var title: String {
+                switch self {
+                case .skip:
+                    return String.Constants.skip.localized()
+                case .confirm:
+                    return String.Constants.confirm.localized()
+                }
+            }
+        }
     }
 }

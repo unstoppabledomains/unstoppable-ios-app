@@ -100,13 +100,14 @@ extension BaseSignTransactionView {
     func setWith(appInfo: WalletConnectServiceV2.WCServiceAppInfo) {
         self.appInfo = appInfo
         Task {
-            let icon = await appContext.imageLoadingService.loadImage(from: .wcApp(appInfo, size: .default), downsampleDescription: nil)
+            let icon: UIImage? = await appContext.imageLoadingService.loadImage(from: .wcApp(appInfo, size: .default),
+                                                                      downsampleDescription: nil)
             appImageView.image = icon
             if appInfo.getIconURL() == nil {
                 appImageBackgroundView.isHidden = true
             } else {
                 appImageBackgroundView.isHidden = false
-                let color = await icon?.getColors()?.background
+                let color: UIColor? = await icon?.getColors()?.background
                 appImageBackgroundView.backgroundColor = (color ?? .brandWhite)
             }
         }

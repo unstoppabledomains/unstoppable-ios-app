@@ -50,14 +50,21 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
     func handle(action: Action) async throws {
         switch action {
         case .didSelectDomain(let domain):
+            moveToStep(.fillProfile(domain: domain))
+        case .didFillProfileForDomain(let domain, let profileChanges):
             purchaseData.domain = domain
             let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             guard let selectedWallet = wallets.first else { return }
             
             moveToStep(.checkout(domain: domain,
+                                 profileChanges: profileChanges,
                                  selectedWallet: selectedWallet,
                                  wallets: wallets))
         case .didPurchaseDomains:
+            Task {
+                try? await Task.sleep(seconds: 0.5)
+                await appContext.purchaseDomainsService.reset()
+            }
             moveToStep(.purchased)
         case .goToDomains:
             didFinishPurchase()
@@ -143,8 +150,16 @@ private extension PurchaseDomainsNavigationController {
             let vc = PurchaseSearchDomainsViewController()
             vc.purchaseDomainsFlowManager = self
             return vc
-        case .checkout(let domain, let selectedWallet, let wallets):
+        case .fillProfile(let domain):
+            let vc = DomainProfileViewController.nibInstance()
+            let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
+                                                                     domain: domain)
+            presenter.purchaseDomainsFlowManager = self
+            vc.presenter = presenter
+            return vc
+        case .checkout(let domain, let profileChanges, let selectedWallet, let wallets):
             let vc = PurchaseDomainsCheckoutViewController.instantiate(domain: domain,
+                                                                       profileChanges: profileChanges,
                                                                        selectedWallet: selectedWallet,
                                                                        wallets: wallets)
             vc.purchaseDomainsFlowManager = self
@@ -174,12 +189,14 @@ extension PurchaseDomainsNavigationController {
     
     enum Step {
         case searchDomain
-        case checkout(domain: DomainToPurchase, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
+        case fillProfile(domain: DomainToPurchase)
+        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
         case purchased
     }
     
     enum Action {
         case didSelectDomain(_ domain: DomainToPurchase)
+        case didFillProfileForDomain(_ domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges)
         case didPurchaseDomains
         case goToDomains
     }

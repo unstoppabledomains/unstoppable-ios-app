@@ -184,7 +184,7 @@ private extension SettingsPresenter {
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
         firebaseAuthenticationService.logout()
-        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
+        appContext.messagingService.logout()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         notificationsService.updateTokenSubscriptions()

@@ -9,9 +9,12 @@ import Foundation
 
 protocol PersistedSignaturesStorageProtocol {
     
-    
+    func hasValidSignature(for domainName: String) -> Bool
+
 }
 
 final class PersistedSignaturesStorage: PersistedSignaturesStorageProtocol {
-    
+    func hasValidSignature(for domainName: String) -> Bool {
+        true
+    }
 }

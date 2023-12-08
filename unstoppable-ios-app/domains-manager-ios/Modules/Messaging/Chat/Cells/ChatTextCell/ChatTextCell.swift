@@ -48,32 +48,27 @@ extension ChatTextCell {
     }
 }
 
-struct ChatTextCell_Previews: PreviewProvider {
+#Preview {
+    let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message")
     
-    static var previews: some View {
-        let height: CGFloat = 76
-        
-        return UICollectionViewCellPreview(cellType: ChatTextCell.self, height: height) { cell in
-            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message")
-            
-            let message = MessagingChatMessageDisplayInfo(id: "1",
-                                                          chatId: "2",
-                                                          userId: "1",
-                                                          senderType: .thisUser(user),
-                                                          time: Date(),
-                                                          type: .text(textDetails),
-                                                          isRead: false,
-                                                          isFirstInChat: true,
-                                                          deliveryState: .delivered,
-                                                          isEncrypted: false)
-            cell.setWith(configuration: .init(message: message,
-                                              textMessageDisplayInfo: textDetails,
-                                              isGroupChatMessage: true,
-                                              actionCallback: { _ in },
-                                              externalLinkHandleCallback: { _ in }))
-        }
-        .frame(width: 390, height: height)
-    }
+    let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                  chatId: "2",
+                                                  userId: "1",
+                                                  senderType: .thisUser(user),
+                                                  time: Date(),
+                                                  type: .text(textDetails),
+                                                  isRead: false,
+                                                  isFirstInChat: true,
+                                                  deliveryState: .delivered,
+                                                  isEncrypted: false)
+    let cell = ChatTextCell()
+    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
+    cell.setWith(configuration: .init(message: message,
+                                      textMessageDisplayInfo: textDetails,
+                                      isGroupChatMessage: true,
+                                      actionCallback: { _ in },
+                                      externalLinkHandleCallback: { _ in }))
     
+    return cell
 }

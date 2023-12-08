@@ -8,45 +8,30 @@
 import Foundation
 
 struct PurchasedDomainsStorage {
-    private enum Key: String {
-        case purchasedDomainsKey = "PURCHASED_DOMAINS_ARRAY_KEY"
-    }
     
-    enum Error: Swift.Error {
-        case failedToEncode
-        case failedToDecode
-    }
-    
-    static func save(purchasedDomains: [PendingPurchasedDomain]) {
-        guard let data = purchasedDomains.jsonData() else {
-            Debugger.printFailure("Failed to encode purchased domains", critical: true)
-            return
-        }
-        save(data: data, key: .purchasedDomainsKey)
-    }
-    
-    static private func save(data: Data, key: Key) {
-        UserDefaults.standard.set(data, forKey: key.rawValue)
+    @UserDefaultsCodableValue(key: .purchasedDomains) private static var purchasedDomains: [PendingPurchasedDomain]?
+    @UserDefaultsCodableValue(key: .purchasedDomainsPendingProfiles) private static var purchasedDomainsPendingProfiles: [DomainProfilePendingChanges]?
+
+    static func setPurchasedDomains(_ purchasedDomains: [PendingPurchasedDomain]) {
+        PurchasedDomainsStorage.purchasedDomains = purchasedDomains
     }
     
     static func retrievePurchasedDomains() -> [PendingPurchasedDomain] {
-        guard let data = retrieve(key: .purchasedDomainsKey) else { return [] }
-        guard let object: [PendingPurchasedDomain] = [PendingPurchasedDomain].genericObjectFromData(data) else {
-            Debugger.printFailure("Failed to decode purchased domains", critical: true)
-            return []
-        }
-        return object
+        PurchasedDomainsStorage.purchasedDomains ?? []
+    }
+  
+    static func setPendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
+        PurchasedDomainsStorage.purchasedDomainsPendingProfiles = pendingProfiles.filter { !$0.isEmpty }
+    }
+   
+    static func addPendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
+        let currentProfiles = Set(retrievePendingProfiles())
+        let allProfiles = Array(currentProfiles.union(pendingProfiles))
+        setPendingNonEmptyProfiles(allProfiles)
     }
     
-    static private func retrieve(key: Key) -> Data? {
-        UserDefaults.standard.object(forKey: key.rawValue) as? Data
+    static func retrievePendingProfiles() -> [DomainProfilePendingChanges] {
+        PurchasedDomainsStorage.purchasedDomainsPendingProfiles ?? []
     }
     
-    static func clearPurchasedDomains() {
-        clean(key: .purchasedDomainsKey)
-    }
-    
-    static private func clean(key: Key)  {
-        UserDefaults.standard.set(nil, forKey: key.rawValue)
-    }
 }

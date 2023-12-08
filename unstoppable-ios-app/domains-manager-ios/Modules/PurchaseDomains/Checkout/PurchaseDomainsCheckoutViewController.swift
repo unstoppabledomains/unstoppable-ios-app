@@ -7,23 +7,29 @@
 
 import SwiftUI
 
-final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithDashesProgress {
+final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithDashesProgress, UDNavigationBackButtonHandler {
     
     override var scrollableContentYOffset: CGFloat? { 16 }
     
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
     private var domain: DomainToPurchase!
+    private var profileChanges: DomainProfilePendingChanges!
     private var selectedWallet: WalletWithInfo!
     private var wallets: [WalletWithInfo]!
+    private var isLoading = false
     override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
+    override var preferredStatusBarStyle: UIStatusBarStyle { .default }
 
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
     var progress: Double? { 5 / 6 }
     
     static func instantiate(domain: DomainToPurchase,
+                            profileChanges: DomainProfilePendingChanges,
                             selectedWallet: WalletWithInfo,
                             wallets: [WalletWithInfo]) -> PurchaseDomainsCheckoutViewController {
         let vc = PurchaseDomainsCheckoutViewController()
         vc.domain = domain
+        vc.profileChanges = profileChanges
         vc.selectedWallet = selectedWallet
         vc.wallets = wallets
         return vc
@@ -34,18 +40,29 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
         
         setup()
     }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        guard !isLoading else { return false }
+        
+        Task { await appContext.purchaseDomainsService.reset() }
+        return true
+    }
 }
 
-// MARK: - Private methods
-private extension PurchaseDomainsCheckoutViewController {
-    func didScrollTo(offset: CGPoint) {
-        cNavigationController?.underlyingScrollViewDidScrollTo(offset: offset)
-    }
-    
-    func didPurchaseDomains() {
+// MARK: - PurchaseDomainsCheckoutViewDelegate
+extension PurchaseDomainsCheckoutViewController: PurchaseDomainsCheckoutViewDelegate {
+    func purchaseViewDidPurchaseDomains() {
         Task { @MainActor in
             try? await purchaseDomainsFlowManager?.handle(action: .didPurchaseDomains)
         }
+    }
+    
+    func purchaseViewDidUpdateScrollOffset(_ scrollOffset: CGPoint) {
+        cNavigationController?.underlyingScrollViewDidScrollTo(offset: scrollOffset)
+    }
+    
+    func purchaseViewDidUpdateLoadingState(_ isLoading: Bool) {
+        self.isLoading = isLoading
     }
 }
 
@@ -63,12 +80,8 @@ private extension PurchaseDomainsCheckoutViewController {
         let view = PurchaseDomainsCheckoutView(domain: domain,
                                                selectedWallet: selectedWallet,
                                                wallets: wallets,
-                                               purchasedCallback: { [weak self] in
-            self?.didPurchaseDomains()
-        },
-                                               scrollOffsetCallback: { [weak self] offset in
-            self?.didScrollTo(offset: offset)
-        })
+                                               profileChanges: profileChanges,
+                                               delegate: self)
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)

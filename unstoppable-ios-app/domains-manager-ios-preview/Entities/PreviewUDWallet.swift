@@ -18,166 +18,6 @@ struct WalletWithInfo {
 }
 
 
-struct WalletDisplayInfo: Hashable, Equatable {
-    let name: String
-    let address: String
-    let domainsCount: Int
-    let udDomainsCount: Int
-    let source: Source
-    let isBackedUp: Bool
-    var isWithPrivateKey: Bool = false
-    var reverseResolutionDomain: DomainDisplayInfo? = nil
-    
-    var backupState: BackupState {
-        if isBackedUp {
-            return .backedUp
-        } else {
-            switch source {
-            case .locallyGenerated:
-                return .locallyGeneratedNotBackedUp
-            case .imported, .external:
-                return .importedNotBackedUp
-            }
-        }
-    }
-    
-    var isNameSet: Bool { name != address }
-    var isConnected: Bool {
-        switch source {
-        case .locallyGenerated, .imported:
-            return false
-        case .external:
-            return true
-        }
-    }
-    
-    var displayName: String {
-        if isNameSet {
-            return name
-        } else {
-            switch source {
-            case .locallyGenerated, .imported:
-                return address.walletAddressTruncated
-            case .external(let name, _):
-                return name
-            }
-        }
-    }
-    
-    var walletSourceName: String {
-        switch source {
-        case .locallyGenerated:
-            return "Vault"
-        case .imported, .external:
-            return "Wallet"
-        }
-    }
-}
-
-extension WalletDisplayInfo {
-    init?(wallet: UDWallet,
-          domainsCount: Int,
-          udDomainsCount: Int,
-          reverseResolutionDomain: DomainDisplayInfo? = nil) {
-        if wallet.walletState == .externalLinked {
-            guard let walletMake = wallet.getExternalWallet() else { return nil }
-            
-            self.source = .external(walletMake.name, walletMake)
-            self.isBackedUp = false
-            self.isWithPrivateKey = false
-        } else {
-            self.isBackedUp = wallet.hasBeenBackedUp == true
-            switch wallet.type {
-            case .generatedLocally, .defaultGeneratedLocally:
-                self.source = .locallyGenerated
-                self.isWithPrivateKey = false
-            case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
-                self.source = .imported
-                self.isWithPrivateKey = wallet.type == .privateKeyEntered
-            }
-        }
-        self.name = wallet.aliasName
-        self.address = wallet.address
-        self.reverseResolutionDomain = reverseResolutionDomain
-        self.domainsCount = domainsCount
-        self.udDomainsCount = udDomainsCount
-    }
-}
-
-// MARK: - BackupState
-extension WalletDisplayInfo {
-    enum BackupState {
-        case backedUp, locallyGeneratedNotBackedUp, importedNotBackedUp
-        
-        var icon: UIImage {
-            switch self {
-            case .backedUp, .importedNotBackedUp:
-                return .checkCircle
-            case .locallyGeneratedNotBackedUp:
-                return .warningIconLarge
-            }
-        }
-        
-        var tintColor: UIColor {
-            switch self {
-            case .backedUp:
-                return .foregroundSuccess
-            case .locallyGeneratedNotBackedUp:
-                return .foregroundWarning
-            case .importedNotBackedUp:
-                return .foregroundSecondary
-            }
-        }
-    }
-}
-
-// MARK: - Source
-extension WalletDisplayInfo {
-    enum Source: Hashable {
-        case locallyGenerated, imported, external(_ name: String, _ walletMake: ExternalWalletMake)
-        
-        var displayIcon: UIImage {
-            switch self {
-            case .locallyGenerated:
-                return .udWalletListIcon
-            case .external(_, let walletMake):
-                return walletMake.icon
-            case .imported:
-                return .walletIcon
-            }
-        }
-    }
-}
-
-extension Array where Element == WalletDisplayInfo {
-    func managedWalletsSorted() -> [Element] {
-        self.sorted { lhs, rhs in
-            switch (lhs.source, rhs.source) {
-            case (.locallyGenerated, .imported):
-                return true
-            default:
-                return false
-            }
-        }
-    }
-}
-
-enum ExternalWalletMake: String, Codable, Hashable {
-    case Rainbow = "1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369"
-    var icon: UIImage {
-        switch self {
-        case .Rainbow: return UIImage(named: "walletRainbow")!
-        default: return .init()
-        }
-    }
-    var name: String {
-        switch self {
-        case .Rainbow: return "Rainbow"
-        default: return .init()
-        }
-    }
-}
-
 enum WalletState: String, Codable {
     case verified // private key, seed phrase
     case externalLinked // external wallet. Read only
@@ -213,10 +53,15 @@ enum WalletType: String, Codable {
 
 struct UDWallet: Codable, Hashable {
     
-    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", address: "0xc4a748796805dfa42cafe0901ec182936584cc6e", type: .importedUnverified,
-                                         mockingExternalWalletType: .Rainbow),
-                                   .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", address: "0xcA429897570aa7083a7D296CD0009FA286731ED2", type: .generatedLocally),
-                                   .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", type: .generatedLocally)]
+    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", 
+                                         address: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+                                         type: .importedUnverified),
+                                   .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", 
+                                         address: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                         type: .generatedLocally),
+                                   .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", 
+                                         type: .generatedLocally,
+                                         mockingExternalWalletType: .Rainbow)]
     
     var aliasName: String = ""
     var address: String = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
@@ -245,8 +90,21 @@ struct UDWallet: Codable, Hashable {
         mockingExternalWalletType != nil
     }
     
-    func getExternalWallet() -> ExternalWalletMake? {
-        mockingExternalWalletType
+    func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
+        if let mockingExternalWalletType {
+            return .init(id: mockingExternalWalletType.rawValue, 
+                         name: "Rainbow",
+                         homepage: nil,
+                         appStoreLink: nil,
+                         mobile: .init(native: "", universal: ""),
+                         isV2Compatible: true)
+            
+        }
+        return nil
+    }
+    
+    func getMnemonics() -> String? {
+        nil
     }
 }
 
@@ -298,19 +156,7 @@ struct UDWalletWithPrivateSeed {
     let privateSeed: String
     
 }
-struct WCWalletsProvider {
-    
-    struct WalletRecord: Codable, Hashable {
-        let id: String
-        let name: String
-    }
-}
 
-struct BackedUpWallet {
-    let dateTime: Date
-    let passwordHash: String
-
-}
 struct LegacyUnitaryWallet: Codable {
     
 }
@@ -320,5 +166,12 @@ extension UDWallet {
     func owns(domain: any DomainEntity) -> Bool {
         guard let domainWalletAddress = domain.ownerWallet?.normalized else { return false }
         return self.address.normalized == domainWalletAddress || self.address.normalized == domainWalletAddress
+    }
+}
+
+extension String {
+    static let blank: Character = " "
+    var mnemonicsArray: [String] {
+        self.split(separator: Self.blank).map(String.init)
     }
 }

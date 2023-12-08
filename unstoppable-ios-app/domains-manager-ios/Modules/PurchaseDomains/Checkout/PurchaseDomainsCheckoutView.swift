@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+protocol PurchaseDomainsCheckoutViewDelegate: AnyObject {
+    func purchaseViewDidPurchaseDomains()
+    func purchaseViewDidUpdateScrollOffset(_ scrollOffset: CGPoint)
+    func purchaseViewDidUpdateLoadingState(_ isLoading: Bool)
+}
+
 struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
@@ -16,7 +22,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletWithInfo
     @State var wallets: [WalletWithInfo]
-    
+    @State var profileChanges: DomainProfilePendingChanges
+
     @State private var domainAvatar: UIImage?
     @State private var scrollOffset: CGPoint = .zero
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
@@ -30,8 +37,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var isSelectDiscountsPresented = false
     @State private var isEnterDiscountCodePresented = false
     
-    var purchasedCallback: EmptyCallback
-    var scrollOffsetCallback: ((CGPoint)->())? = nil
+    weak var delegate: PurchaseDomainsCheckoutViewDelegate?
+    
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
 
     var body: some View {
@@ -66,7 +73,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
             self.checkoutData = checkoutData
         })
         .onChange(of: scrollOffset) { newValue in
-            scrollOffsetCallback?(newValue)
+            delegate?.purchaseViewDidUpdateScrollOffset(newValue)
         }
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
                                       selectedWallet: selectedWallet,
@@ -423,8 +430,17 @@ private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
+        setDomainAvatar()
+    }
+    
+    func setDomainAvatar() {
         Task {
-            domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
+            if let imageData = profileChanges.avatarData,
+               let avatarImage = UIImage(data: imageData) {
+                domainAvatar = avatarImage
+            } else {
+                domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
+            }
         }
     }
     
@@ -446,20 +462,20 @@ private extension PurchaseDomainsCheckoutView {
         error = nil
         Task {
             selectedWallet = wallet
-            isLoading = true
+            setLoading(true)
             do {
                 try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
                                                                      toPurchaseDomains: [domain])
             } catch {
                 Debugger.printFailure("Did fail to authorise wallet \(wallet.address) with error \(error)")
             }
-            isLoading = false
+            setLoading(false)
         }
     }
     
     func startPurchaseDomains() {
         Task {
-            isLoading = true
+            setLoading(true)
             do {
                 let walletsToMint = try await purchaseDomainsService.getSupportedWalletsToMint()
                 guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.address }) else {
@@ -472,15 +488,21 @@ private extension PurchaseDomainsCheckoutView {
                                                                      .count: String(1)])
                 let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
                                                                     walletAddress: walletToMint.address)
-                PurchasedDomainsStorage.save(purchasedDomains: [pendingPurchasedDomain])
+                PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
+                PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
                 await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
-                purchasedCallback()
+                delegate?.purchaseViewDidPurchaseDomains()
             } catch {
                 Debugger.printFailure("Did fail to purchase domains with error \(error)")
                 self.error = .purchaseError(tryAgainCallback: startPurchaseDomains)
             }
-            isLoading = false
+            setLoading(false)
         }
+    }
+    
+    func setLoading(_ isLoading: Bool) {
+        self.isLoading = isLoading
+        delegate?.purchaseViewDidUpdateLoadingState(isLoading)
     }
     
     func checkUpdatedCartStatus() {
@@ -625,6 +647,8 @@ private extension PullUpErrorConfiguration {
     PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: Array(WalletWithInfo.mock.prefix(4)),
-                                purchasedCallback: { })
+                                profileChanges: .init(domainName: "oleg.x",
+                                                      avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
+                                delegate: nil)
     .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }

@@ -167,12 +167,12 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
-        let domains = await getDomainsDisplayInfo()
+        let domains = await getDomainsDisplayInfo().filter { $0.isOwned(by: [wallet]) }
         let domainNames = domains.map({ $0.name })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
         
         /// Restrict to change RR if any domain within wallet already changing RR.
-        if !transactions.filterPending(extraCondition: {$0.operation == .setReverseResolution || $0.operation == .removeReverseResolution})
+        if !transactions.filterPending(extraCondition: { $0.operation == .setReverseResolution || $0.operation == .removeReverseResolution })
                         .isEmpty { return false }
         
         let rrDomain = await reverseResolutionDomain(for: wallet)
@@ -533,7 +533,8 @@ private extension DataAggregatorService {
                                          reverseResolutionMap: ReverseResolutionInfoMap) async {
         
         let rrDomainsList = Set(reverseResolutionMap.compactMap( { $0.value } ))
-        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+
         // Aggregate domain display info
         var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
         for domain in domains {
@@ -546,7 +547,7 @@ private extension DataAggregatorService {
                 domainState = .updatingRecords
             }
             
-            let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domain.name })
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles) // pfpInfo.first(where: { $0.domainName == domain.name })
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
                                                       pfpInfo: domainPFPInfo,
@@ -562,7 +563,9 @@ private extension DataAggregatorService {
         let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
         for domain in pendingPurchasedDomains {
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      pfpInfo: domainPFPInfo,
                                                       state: .minting,
                                                       order: order,
                                                       isSetForRR: false)
@@ -641,6 +644,16 @@ private extension DataAggregatorService {
         await dataHolder.sortDomainsToDisplay()
     }
     
+    func resolveDomainPFPInfo(for domainName: String,
+                              using pfpInfo: [DomainPFPInfo],
+                              pendingProfiles: [DomainProfilePendingChanges]) async -> DomainPFPInfo? {
+        if let profile = pendingProfiles.first(where: { $0.domainName == domainName }),
+           let localImage = await profile.getAvatarImage() {
+            return .init(domainName: domainName, localImage: localImage)
+        }
+        return pfpInfo.first(where: { $0.domainName == domainName })
+    }
+    
     func getPurchasedDomainsUnlessInList(_ domains: [DomainItem]) -> [DomainItem] {
         let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
             domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
@@ -650,7 +663,7 @@ private extension DataAggregatorService {
                        ownerWallet: $0.walletAddress,
                        blockchain: .Matic)
         }
-        PurchasedDomainsStorage.save(purchasedDomains: pendingPurchasedDomains)
+        PurchasedDomainsStorage.setPurchasedDomains(pendingPurchasedDomains)
         return pendingDomains
     }
     

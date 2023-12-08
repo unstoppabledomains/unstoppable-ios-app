@@ -144,18 +144,8 @@ extension ChatEmptyView {
     }
 }
 
-struct ChatEmptyViewPreviews: PreviewProvider {
-    
-    static var previews: some View {
-        let height: CGFloat = 288
-        
-        return UIViewPreview {
-            let view = ChatEmptyView()
-            view.setState(.channel)
-            
-            return view
-        }
-        .frame(width: 390, height: height)
-    }
-    
+#Preview {
+    let view = ChatEmptyView(frame: CGRect(x: 0, y: 0, width: 390, height: 288))
+    view.setState(.channel) 
+    return view 
 }

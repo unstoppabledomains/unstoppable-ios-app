@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import UserNotifications
 
 final class NotificationsService: NotificationsServiceProtocol {
+    static let registerForNotificationsOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
+
     func checkNotificationsPermissions() {
         
     }

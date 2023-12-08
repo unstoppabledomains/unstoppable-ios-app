@@ -24,6 +24,3 @@ final class ExternalEventsService: ExternalEventsServiceProtocol {
         
     }
 }
-
-enum ExternalEventUIFlow {
-}

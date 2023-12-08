@@ -198,7 +198,7 @@ private extension WCRequestsHandlingServiceTests {
         WCRequest.connectWallet(WalletConnectServiceV2.ConnectWalletRequest(uri: getWCV2URI(topic: topic)))
     }
     
-    func getWC2SessionProposal(topic: String = "topic") -> WalletConnectSign.Session.Proposal {
+    func getWC2SessionProposal(topic: String = "topic") -> SessionV2.Proposal {
         // Workaround due to no public initializer for Proposal struct in WC SDK
         struct ProposalClone: Codable {
             var id: String
@@ -230,7 +230,7 @@ private extension WCRequestsHandlingServiceTests {
                                           proposal: sessionProposalClone)
         let data = proposalClone.jsonData()!
         
-        let proposal: WalletConnectSign.Session.Proposal = WalletConnectSign.Session.Proposal.genericObjectFromData(data)!
+        let proposal: SessionV2.Proposal = SessionV2.Proposal.genericObjectFromData(data)!
         return proposal
     }
     
@@ -250,8 +250,8 @@ private extension WCRequestsHandlingServiceTests {
 
 private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtocol, WalletConnectV2PublishersProvider {
     
-    private(set) var pSessionProposalPublisher = PassthroughSubject<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never>()
-    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { pSessionProposalPublisher.eraseToAnyPublisher() }
+    private(set) var pSessionProposalPublisher = PassthroughSubject<(proposal: SessionV2.Proposal, context: WalletConnectSign.VerifyContext?), Never>()
+    var sessionProposalPublisher: AnyPublisher<(proposal: SessionV2.Proposal, context: WalletConnectSign.VerifyContext?), Never> { pSessionProposalPublisher.eraseToAnyPublisher() }
     
     private(set) var pSessionRequestPublisher = PassthroughSubject<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never>()
     var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { pSessionRequestPublisher.eraseToAnyPublisher() }

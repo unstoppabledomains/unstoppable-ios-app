@@ -73,6 +73,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
             await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+            await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
         }
     }
     
@@ -514,6 +515,57 @@ private extension DomainsCollectionPresenter {
             throw error 
         }
     }
+    
+    func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let profilesReadyToSubmit = pendingProfiles.filter { profile in
+            if let domain = domains.first(where: { $0.name == profile.domainName }),
+               domain.state == .default {
+                return true
+            }
+            return false
+        }
+        if !profilesReadyToSubmit.isEmpty {
+            let domainItems = await dataAggregatorService.getDomainItems()
+            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
+                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
+                }
+                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+                return nil
+            }
+            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+                                                                            in: view)
+            await view.dismissPullUpMenu()
+            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+        }
+    }
+    
+    func finishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo],
+                                             requests: [UpdateProfilePendingChangesRequest]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let pendingProfilesLeft = pendingProfiles.filter { profile in
+            requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
+        }
+        
+        do {
+            try await NetworkService().updatePendingDomainProfiles(with: requests)
+            PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+        } catch {
+            do {
+                try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)
+                await view.dismissPullUpMenu()
+                await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+            } catch {
+                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            }
+        }
+    }
 
     @MainActor
     func buyDomainPressed() {
@@ -598,6 +650,7 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                     Task {
                         await resolvePrimaryDomain(domains: domains)
                         await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+                        await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
                     }
                 case .domainsPFPUpdated(let domains):
                     let isDomainsChanged = stateController.domains != domains
@@ -1010,72 +1063,4 @@ extension DomainsCollectionPresenter {
             }
         }
     }
-}
-
-enum AddDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
-    case connectWallet, importFromWebsite, importWallet
-    case findNew
-    
-    static let pullUpSections: [[AddDomainPullUpAction]] = [[.importWallet, .connectWallet, .importFromWebsite], [.findNew]]
-    
-    var title: String {
-        switch self {
-        case .importFromWebsite:
-            return String.Constants.claimDomainsToSelfCustodial.localized()
-        case .importWallet:
-            return String.Constants.connectWalletRecovery.localized()
-        case .connectWallet:
-            return String.Constants.connectWalletExternal.localized()
-        case .findNew:
-            return String.Constants.findANewDomain.localized()
-        }
-    }
-    
-    var subtitle: String? {
-        switch self {
-        case .importFromWebsite:
-            return nil
-        case .importWallet:
-            return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
-        case .connectWallet:
-            return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
-        case .findNew:
-            return nil
-        }
-    }
-    
-    var icon: UIImage {
-        switch self {
-        case .importFromWebsite:
-            return .sparklesIcon
-        case .importWallet:
-            return .recoveryPhraseIcon
-        case .connectWallet:
-            return .externalWalletIndicator
-        case .findNew:
-            return .searchIcon
-        }
-    }
-    var tintColor: UIColor {
-        switch self {
-        case .findNew:
-            return .foregroundOnEmphasis
-        case .connectWallet, .importFromWebsite, .importWallet:
-            return .foregroundDefault
-        }
-    }
-    var backgroundColor: UIColor {
-        switch self {
-        case .findNew:
-            return .backgroundAccentEmphasis
-        case .connectWallet, .importFromWebsite, .importWallet:
-            return .backgroundMuted2
-        }
-    }
-    var analyticsName: String { rawValue }
-    
-}
-
-enum DomainsCollectionMintingState {
-    case `default`, mintingPrimary, primaryDomainMinted
 }

@@ -136,10 +136,7 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     }
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
-        isAutoRefreshCartSuspended = true
-        cartStatus = .ready(cart: .empty)
-        self.domainsToPurchase = []
-        await logout()
+        await reset()
         do {
             try await firebaseAuthService.authorizeWith(wallet: wallet)
         } catch {
@@ -149,6 +146,13 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         self.domainsToPurchase = domains
         try await addDomainsToCart(domains)
         isAutoRefreshCartSuspended = false
+    }
+    
+    func reset() async {
+        cartStatus = .ready(cart: .empty)
+        cachedPaymentDetails = nil
+        self.domainsToPurchase = []
+        await logout()
     }
     
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {

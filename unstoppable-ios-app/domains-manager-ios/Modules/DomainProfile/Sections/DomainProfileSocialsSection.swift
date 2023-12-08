@@ -50,7 +50,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         snapshot.appendSections([.dashesSeparator()])
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile:
+        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
             let addedSocials = currentSocialDescriptions.filter({ $0.account.verified && !$0.value.trimmedSpaces.isEmpty })
             let addedSocialsCount = addedSocials.count
             let sectionHeaderDescription = sectionHeader(numberOfAddedSocials: addedSocialsCount,

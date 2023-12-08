@@ -176,7 +176,7 @@ extension Analytics {
         case publicDomainProfile
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
         case shakeToFind
-        case purchaseDomainsSearch, purchaseDomainsCheckout
+        case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
     }
 }
 
@@ -363,6 +363,7 @@ extension Analytics {
         case walletsMaxNumberLimitReached, walletsMaxNumberLimitReachedAlready
         case purchaseDomainsAskToSign
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
+        case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

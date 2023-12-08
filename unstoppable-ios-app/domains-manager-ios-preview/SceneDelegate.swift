@@ -7,14 +7,10 @@
 
 import UIKit
 
-protocol SceneDelegateProtocol {
-    var window: UIWindow? { get }
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
+ 
 
-}
-
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
-    var window: UIWindow?
+    var window: MainWindow?
     static let shared: SceneDelegateProtocol? = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegateProtocol
 
 
@@ -22,7 +18,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        let window = MainWindow(windowScene: windowScene)
+        window.makeKeyAndVisible()
+        self.window = window
+        
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
+        let nav = CNavigationController(rootViewController: vc)
+        window.rootViewController = nav
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -53,6 +57,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    var interfaceOrientation: UIInterfaceOrientation = .portrait
+    
+    var sceneActivationState: UIScene.ActivationState = .foregroundActive
+    
+    func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle) {
+        
+    }
+    
+    func authorizeUserOnAppOpening() async {
+        
+    }
+    
+    func restartOnboarding() {
+        
+    }
+    
+    func addListener(_ listener: SceneActivationListener) {
+        
+    }
+    
+    func removeListener(_ listener: SceneActivationListener) {
+        
+    }
+    
 }
 

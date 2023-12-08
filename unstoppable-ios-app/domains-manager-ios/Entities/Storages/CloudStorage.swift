@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CryptoSwift
 
 protocol CloudStorageProtocol {
     func getWallets() -> [BackedUpWallet]

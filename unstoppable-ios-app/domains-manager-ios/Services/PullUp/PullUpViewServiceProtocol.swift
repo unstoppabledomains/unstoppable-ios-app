@@ -17,9 +17,6 @@ protocol PullUpViewServiceProtocol {
     func showDeleteAllICloudBackupsPullUp(in viewController: UIViewController) async throws
     func showRestoreFromICloudBackupSelectionPullUp(in viewController: UIViewController,
                                                     backups: [ICloudBackupDisplayInfo]) async throws -> ICloudBackupDisplayInfo
-    func showCopyWalletAddressSelectionPullUp(in viewController: UIViewController,
-                                              wallet: UDWallet,
-                                              transactionSelectedCallback: @escaping (WalletCopyAddressAction)->())
     func showRemoveWalletPullUp(in viewController: UIViewController,
                                 walletInfo: WalletDisplayInfo) async throws
     func showAppearanceStyleSelectionPullUp(in viewController: UIViewController,
@@ -108,6 +105,9 @@ protocol PullUpViewServiceProtocol {
     func showUserProfilePullUp(with email: String,
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction
+    func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges, 
+                                      in viewController: UIViewController) async
+    func showFinishSetupProfileFailedPullUp(in viewController: UIViewController) async throws
     
     // MARK: - Badges
     func showBadgeInfoPullUp(in viewController: UIViewController,

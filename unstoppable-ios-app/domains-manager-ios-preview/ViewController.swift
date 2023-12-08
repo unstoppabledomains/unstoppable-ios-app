@@ -12,24 +12,25 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        showDomainsCollection()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        showDomainsCollection()
+        
+    }
+    
+    @IBAction func runPurchaseButtonPressed() {
+        UDRouter().showSearchDomainToPurchase(in: self) { result in
+            
+        }
     }
     
     func showPurchaseDomainsCheckout() {
         let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
-                                               purchasedCallback: { [weak self] in
-            
-        },
-                                               scrollOffsetCallback: { [weak self] offset in
-            
-        })
+                                               profileChanges: .init(domainName: "oleg.x"),
+                                               delegate: nil)
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
@@ -46,6 +47,14 @@ class ViewController: UIViewController {
         present(nav, animated: false)
     }
 
-
+    func showDomainProfile() {
+        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil)
+        let vc = DomainProfileViewController.nibInstance()
+        let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
+                                                                 domain: domain)
+        vc.presenter = presenter
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        present(nav, animated: false)
+    }
 }
 

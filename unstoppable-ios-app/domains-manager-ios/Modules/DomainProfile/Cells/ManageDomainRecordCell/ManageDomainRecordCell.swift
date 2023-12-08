@@ -268,28 +268,3 @@ extension ManageDomainRecordCell {
         }
     }
 }
-
-struct ManageDomainRecordCell_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        UICollectionViewCellPreview(cellType: ManageDomainRecordCell.self, height: 54) { cell in
-            cell.setWith(displayInfo: .init(coin: .init(ticker: "20SET",
-                                                        version: "ERC20",
-                                                        expandedTicker: "ERC20",
-                                                        regexPattern: nil,
-                                                        isDeprecated: false),
-                                            address: "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52",
-                                            multiChainAddressesCount: nil,
-                                            isEnabled: true,
-                                            error: nil,
-                                            mode: .editable,
-                                            availableActions: [.copy(title: "ETH", callback: { })],
-                                            editingActionCallback: { _ in },
-                                            dotsActionCallback: { },
-                                            removeCoinCallback: { }))
-            cell.backgroundColor = .blue
-        }
-        .frame(width: 390, height: 54)
-    }
-   
-}

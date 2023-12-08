@@ -81,9 +81,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
         try await Task.sleep(seconds: 0.4)
         
-        return [.init(name: "oleg"),
-                .init(name: "39993"),
-                .init(name: "explorevista")]
+        return ["greenfashion", "naturalstyle", "savvydressers", "ethicalclothes", "urbanfashions", "wearables", "consciouslook", "activegears", "minimalista", "outsizeoutfits", "styletone"].map { DomainToPurchaseSuggestion(name: $0) }
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
@@ -109,6 +107,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func refreshCart() async throws { }
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
+        cartStatus = .ready(cart: .empty)
+        updateCart()
+    }
+    
+    func reset() async {
         cartStatus = .ready(cart: .empty)
         updateCart()
     }
