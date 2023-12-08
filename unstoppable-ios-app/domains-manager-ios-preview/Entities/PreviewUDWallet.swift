@@ -92,7 +92,7 @@ struct UDWallet: Codable, Hashable {
     
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
         if let mockingExternalWalletType {
-            return .init(id: "", 
+            return .init(id: mockingExternalWalletType.rawValue, 
                          name: "Rainbow",
                          homepage: nil,
                          appStoreLink: nil,
