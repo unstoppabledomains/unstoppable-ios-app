@@ -29,6 +29,8 @@ enum TxOperation: String, Codable {
     case trackPolygonCheckpoint = "TrackPolygonCheckpoint"
     case withdrawToEthereum = "WithdrawToEthereum"
     case ensRenew = "EnsRenew"
+    case ensSetResolver = "ensSetResolver"
+    case ensResolverRecordsUpdate = "ensResolverRecordsUpdate"
     
     case bulkIssue = "BulkIssue"
     case approvalForAll = "ApprovalForAll"
