@@ -30,7 +30,7 @@ extension DeepLinksService: DeepLinksServiceProtocol {
         guard let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else { return }
         
         if let path = components.path,
-           path == deepLinkPath,
+           path == deepLinkPath + "/" + wcScheme || path == deepLinkPath,
            let params = components.queryItems {
             if !tryHandleUDDeepLink(incomingURL, params: params, receivedState: receivedState) {
                 tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
