@@ -407,7 +407,7 @@ extension ChatInputView {
     }
 }
 
-
+@available (iOS 17.0, *)
 #Preview {
     let view = ChatInputView(frame: CGRect(x: 0, y: 0, width: 390, height: 288))
     view.setCanSendAttachments(false)

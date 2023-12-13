@@ -99,6 +99,7 @@ extension ChatUnsupportedMessageCell {
     }
 }
 
+@available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
     let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",

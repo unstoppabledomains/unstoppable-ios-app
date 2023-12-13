@@ -227,6 +227,7 @@ extension ChatsListNavigationView {
     }
 }
 
+@available (iOS 17.0, *)
 #Preview {
     let view =  ChatsListNavigationView(frame: CGRect(x: 0, y: 0, width: 390, height: 40))
     let wallet = WalletDisplayInfo(name: "name.x",

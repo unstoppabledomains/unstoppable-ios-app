@@ -144,6 +144,7 @@ extension ChatEmptyView {
     }
 }
 
+@available (iOS 17.0, *)
 #Preview {
     let view = ChatEmptyView(frame: CGRect(x: 0, y: 0, width: 390, height: 288))
     view.setState(.channel) 
