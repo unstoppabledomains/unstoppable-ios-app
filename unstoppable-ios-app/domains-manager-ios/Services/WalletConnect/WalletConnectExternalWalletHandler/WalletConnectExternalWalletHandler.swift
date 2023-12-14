@@ -55,7 +55,7 @@ extension WalletConnectExternalWalletHandler {
                         session: SessionV2Proxy,
                         chainId: Int,
                         requestParams: AnyCodable,
-                        in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+                        in wallet: UDWallet) async throws -> ResponseV2 {
         // TODO: - Check for there's already callback set?
         guard let chain = Blockchain(chainId: chainId) else {
             throw WalletConnectRequestError.failedToDetermineChainId
@@ -63,7 +63,7 @@ extension WalletConnectExternalWalletHandler {
         let request = WalletConnectSign.Request(topic: session.topic, method: method.string, params: requestParams, chainId: chain)
         try await Sign.instance.request(params: request)
         try await launchExternalWalletAndNotifyListeners(wallet)
-        return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
+        return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<ResponseV2, Swift.Error>) in
             externalWalletWC2ResponseCallback = { result in
                 switch result {
                 case .success(let response):

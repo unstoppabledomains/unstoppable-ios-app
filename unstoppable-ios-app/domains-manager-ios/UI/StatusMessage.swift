@@ -131,7 +131,7 @@ extension StatusMessage {
             case .deprecated(let tld), .orangeDeprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .electricMinting:
-                return String.Constants.mintingInProgressTitle.localized()
+                return String.Constants.claimingDomain.localized()
             case .parked(let status):
                 return status.title ?? String.Constants.parkedDomain.localized()
             case .transfer:
@@ -145,9 +145,9 @@ extension StatusMessage {
                 return .gray
             case .bridgeDomainToPolygon, .deprecated:
                 return .warning
-            case .electricUpdatingRecords:
+            case .electricUpdatingRecords, .electricMinting:
                 return .electricYellow
-            case .electricMinting, .transfer:
+            case .transfer:
                 return .electricGreen
             case .orangeDeprecated:
                 return .orange

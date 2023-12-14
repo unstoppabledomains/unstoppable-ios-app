@@ -8,25 +8,6 @@
 import Foundation
 import UIKit
 
-@MainActor
-protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
-    var analyticsName: Analytics.ViewName { get }
-    var navBackStyle: BaseViewController.NavBackIconStyle { get }
-    var currentIndex: Int { get }
-    
-    func canMove(to index: Int) -> Bool
-    func domain(at index: Int) -> DomainDisplayInfo?
-    func didMove(to index: Int)
-    func didOccureUIAction(_ action: DomainsCollectionViewController.Action)
-    func didTapSettingsButton()
-    func importDomainsFromWebPressed()
-    func didPressScanButton()
-    func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult)
-    func didRecognizeQRCode()
-    func didTapAddButton()
-    func didTapMessagingButton()
-}
-
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
     
     private weak var view: DomainsCollectionViewProtocol?
@@ -75,7 +56,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             await loadInitialData()
             let domains = stateController.domains
             if let domain = domains.first {
-                view?.setSelectedDomain(domain, at: 0, animated: false)
+                view?.setSelectedDisplayMode(.domain(domain), at: 0, animated: false)
+            } else {
+                view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
             }
             updateUI()
             await resolvePrimaryDomain(domains: domains)
@@ -90,6 +73,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
             await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+            await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
         }
     }
     
@@ -97,10 +81,18 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         isIndexSupported(index)
     }
     
-    func domain(at index: Int) -> DomainDisplayInfo? {
-        guard isIndexSupported(index) else { return nil }
-        
-        return stateController.domains[index]
+    func displayMode(at index: Int) -> DomainsCollectionCarouselItemDisplayMode? {
+        if stateController.domains.isEmpty {
+            if index == 0 {
+                return .empty
+            }
+            return nil
+        } else {
+            guard isIndexSupported(index) else { return nil }
+            
+            let domain = stateController.domains[index]
+            return .domain(domain)
+        }
     }
    
     func didMove(to index: Int) {
@@ -141,6 +133,12 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         case .searchPressed:
             logButtonPressedAnalyticEvents(button: .searchDomains)
             showDomainsSearch()
+        case .purchaseDomains:
+            logButtonPressedAnalyticEvents(button: .getNewDomain)
+            runPurchaseDomainsFlow()
+        case .recentActivityGetDomain:
+            logButtonPressedAnalyticEvents(button: .getNewDomainLearnMore)
+            showRecentActivitiesGetDomainPullUp()
         }
     }
 
@@ -161,8 +159,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         logButtonPressedAnalyticEvents(button: .scan, parameters: [.domainName: getCurrentDomainName()])
         showQRScanner()
     }
-   
-    func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult) {
+    
+    func didMintDomains(result: MintDomainsResult) {
         switch result {
         case .noDomainsToMint:
             handleNoDomainsToMint()
@@ -191,6 +189,20 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         }
     }
     
+    @MainActor
+    func didPurchaseDomains(result: PurchaseDomainsNavigationController.PurchaseDomainsResult) {
+        switch result {
+        case .cancel:
+            return
+        case .purchased(let domainName):
+            let domains = stateController.domains
+            guard let mintingDomainIndex = domains.firstIndex(where: { $0.name == domainName }) else { return }
+            
+            setNewIndex(mintingDomainIndex, animated: true)
+            updateUI()
+        }
+    }
+    
     func didRecognizeQRCode() {
         guard let view = self.view else { return }
         
@@ -205,7 +217,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                   await router.isMintingAvailable(in: view) else { return }
             
             do {
-                let action = try await appContext.pullUpViewService.showMintDomainConfirmationPullUp(in: view)
+                let action = try await appContext.pullUpViewService.showAddDomainSelectionPullUp(in: view)
                 await view.dismissPullUpMenu()
 
                 switch action {
@@ -215,11 +227,13 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                     importWalletPressed()
                 case .connectWallet:
                     connectWalletPressed()
+                case .findNew:
+                    runPurchaseDomainsFlow()
                 }
             }
         }
     }
-    
+   
     func didTapMessagingButton() {
         router.showChatsListScreen()
     }
@@ -404,7 +418,7 @@ private extension DomainsCollectionPresenter {
             return }
         let domains = stateController.domains
         currentIndex = newIndex
-        view?.setSelectedDomain(domains[newIndex], at: newIndex, animated: animated)
+        view?.setSelectedDisplayMode(.domain(domains[newIndex]), at: newIndex, animated: animated)
     }
     
     @MainActor
@@ -476,7 +490,7 @@ private extension DomainsCollectionPresenter {
             return
         }
         
-        await view?.setSelectedDomain(preferableDomainForRR, at: index, animated: true)
+        await view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
         try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
         UserDefaults.preferableDomainNameForRR = nil
     }
@@ -499,6 +513,57 @@ private extension DomainsCollectionPresenter {
                 view.showAlertWith(error: error)
             }
             throw error 
+        }
+    }
+    
+    func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let profilesReadyToSubmit = pendingProfiles.filter { profile in
+            if let domain = domains.first(where: { $0.name == profile.domainName }),
+               domain.state == .default {
+                return true
+            }
+            return false
+        }
+        if !profilesReadyToSubmit.isEmpty {
+            let domainItems = await dataAggregatorService.getDomainItems()
+            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
+                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
+                }
+                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+                return nil
+            }
+            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+                                                                            in: view)
+            await view.dismissPullUpMenu()
+            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+        }
+    }
+    
+    func finishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo],
+                                             requests: [UpdateProfilePendingChangesRequest]) async {
+        guard let view else { return }
+        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let pendingProfilesLeft = pendingProfiles.filter { profile in
+            requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
+        }
+        
+        do {
+            try await NetworkService().updatePendingDomainProfiles(with: requests)
+            PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+        } catch {
+            do {
+                try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)
+                await view.dismissPullUpMenu()
+                await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+            } catch {
+                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            }
         }
     }
 
@@ -565,6 +630,11 @@ private extension DomainsCollectionPresenter {
             }
         }
     }
+    
+    @MainActor
+    func runPurchaseDomainsFlow() {
+        router.runPurchaseDomainsFlow()
+    }
 }
  
 // MARK: - DataAggregatorServiceListener
@@ -580,6 +650,7 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                     Task {
                         await resolvePrimaryDomain(domains: domains)
                         await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
+                        await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
                     }
                 case .domainsPFPUpdated(let domains):
                     let isDomainsChanged = stateController.domains != domains
@@ -605,7 +676,7 @@ private extension DomainsCollectionPresenter {
         func updateSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, newCurrentIndex: Int) {
             self.currentIndex = newCurrentIndex
             stateController.set(domains: newDomains)
-            view?.setSelectedDomain(domain, at: index, animated: true)
+            view?.setSelectedDisplayMode(.domain(domain), at: index, animated: true)
         }
         
         guard isIndexSupported(currentIndex) else {
@@ -662,6 +733,9 @@ private extension DomainsCollectionPresenter {
             checkPresentedDomainsIndexChangedAndUpdateUI(newDomains: domains)
         }
         stateController.set(domains: domains)
+        if domains.isEmpty {
+            view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
+        }
         view?.setNumberOfSteps(domains.count)
         updateMintingDomainsUI()
     }
@@ -687,8 +761,8 @@ private extension DomainsCollectionPresenter {
             view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
         }
         let availableForMessagingDomains = domains.availableForMessagingItems()
-        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
-        view?.setEmptyState(hidden: !domains.isEmpty)
+        view?.setAddButtonHidden(false, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
+        view?.setEmptyState(hidden: true)
     }
     
     @MainActor
@@ -777,7 +851,7 @@ private extension DomainsCollectionPresenter {
                 showNoWalletsToClaimDomainPullUp()
                 return
             }
-            let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
+            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
             let email = userProfile?.email ?? User.instance.email
             await router.runMintDomainsFlow(with: .default(email: email))
         }
@@ -900,9 +974,22 @@ private extension DomainsCollectionPresenter {
             do {
                 guard let view = self.view else { return }
                 
-                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view)
+                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view, isGetNewDomain: false)
                 await view.dismissPullUpMenu()
                 showQRScanner()
+            }
+        }
+    }
+    
+    @MainActor
+    func showRecentActivitiesGetDomainPullUp() {
+        Task {
+            do {
+                guard let view = self.view else { return }
+                
+                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view, isGetNewDomain: true)
+                await view.dismissPullUpMenu()
+                runPurchaseDomainsFlow()
             }
         }
     }
@@ -976,48 +1063,4 @@ extension DomainsCollectionPresenter {
             }
         }
     }
-}
-
-enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
-    case connectWallet, importFromWebsite, importWallet
-    
-    var title: String {
-        switch self {
-        case .importFromWebsite:
-            return String.Constants.claimDomainsToSelfCustodial.localized()
-        case .importWallet:
-            return String.Constants.connectWalletRecovery.localized()
-        case .connectWallet:
-            return String.Constants.connectWalletExternal.localized()
-        }
-    }
-    
-    var subtitle: String? {
-        switch self {
-        case .importFromWebsite:
-            return nil
-        case .importWallet:
-            return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
-        case .connectWallet:
-            return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
-        }
-    }
-    
-    var icon: UIImage {
-        switch self {
-        case .importFromWebsite:
-            return .sparklesIcon
-        case .importWallet:
-            return .recoveryPhraseIcon
-        case .connectWallet:
-            return .externalWalletIndicator
-        }
-    }
-    
-    var analyticsName: String { rawValue }
-    
-}
-
-enum DomainsCollectionMintingState {
-    case `default`, mintingPrimary, primaryDomainMinted
 }

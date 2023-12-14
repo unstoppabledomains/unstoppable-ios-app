@@ -105,9 +105,3 @@ private extension DomainDetailsViewPresenter {
         Task { await view?.showQRSaved() }
     }
 }
-
-struct SaveDomainImageDescription {
-    let domain: DomainDisplayInfo
-    let originalDomainImage: UIImage
-    let qrImage: UIImage
-}

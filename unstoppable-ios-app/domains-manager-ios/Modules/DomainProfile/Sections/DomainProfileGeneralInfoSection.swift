@@ -34,7 +34,7 @@ extension DomainProfileGeneralInfoSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         snapshot.appendSections([.generalInfo])
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile:
+        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
             let items: [DomainProfileViewController.Item] = currentInfoTypes.map({ .generalInfo(displayInfo: displayInfo(for: $0)) })
             snapshot.appendItems(items)
         case .loading:
@@ -110,6 +110,13 @@ extension DomainProfileGeneralInfoSection: DomainProfileSection {
     func resetChanges() {
         editingGeneralInfoData = generalInfoData
     }
+    
+    func injectChanges(in profilePendingChanges: inout DomainProfilePendingChanges) {
+        profilePendingChanges.name = valueOrNil(of: .name(""), in: editingGeneralInfoData)
+        profilePendingChanges.bio = valueOrNil(of: .bio(""), in: editingGeneralInfoData)
+        profilePendingChanges.location = valueOrNil(of: .location(""), in: editingGeneralInfoData)
+        profilePendingChanges.website = valueOrNil(of: .website(""), in: editingGeneralInfoData)
+    }
 }
 
 // MARK: - Private methods
@@ -149,13 +156,15 @@ private extension DomainProfileGeneralInfoSection {
                 Void()
             }
             
-            actions.append(.setAccess(isPublic: !isPublic,
-                                      callback: { [weak self] in
-                self?.logProfileSectionButtonPressedAnalyticEvent(button: isPublic ? .setPrivate : .setPublic, parameters: [.fieldName : type.analyticsName])
-                self?.handleSetAccessOption(for: type,
-                                            isPublic: !isPublic)
-                
-            }))
+            if state != .purchaseNew {
+                actions.append(.setAccess(isPublic: !isPublic,
+                                          callback: { [weak self] in
+                    self?.logProfileSectionButtonPressedAnalyticEvent(button: isPublic ? .setPrivate : .setPublic, parameters: [.fieldName : type.analyticsName])
+                    self?.handleSetAccessOption(for: type,
+                                                isPublic: !isPublic)
+                    
+                }))
+            }
             
             actions.append(.clear(type: type,
                                   callback: { [weak self] in
@@ -163,7 +172,7 @@ private extension DomainProfileGeneralInfoSection {
                 self?.handleClearAction(for: type)
             }))
         }
-        let isEnabled = state == .default || state == .updatingRecords
+        let isEnabled: Bool = state == .default || state == .updatingRecords || state == .purchaseNew
         return .init(id: id,
                      type: type,
                      isEnabled: isEnabled,
@@ -328,6 +337,14 @@ private extension DomainProfileGeneralInfoSection {
         case .website:
             return sectionData.web2Url
         }
+    }
+    
+    func valueOrNil(of type: InfoType, in sectionData: SectionData) -> String? {
+        let value = value(of: type, in: sectionData).trimmedSpaces
+        if value.isEmpty {
+            return nil
+        }
+        return value
     }
     
     func isAccessPublic(for type: InfoType, in sectionData: SectionData) -> Bool {

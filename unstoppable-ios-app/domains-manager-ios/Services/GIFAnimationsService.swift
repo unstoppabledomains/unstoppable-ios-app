@@ -79,24 +79,6 @@ extension GIFAnimationsService {
     }
 }
 
-extension GIFAnimationsService {
-    enum GIF: Int {
-        case happyEnd
-        
-        fileprivate var name: String {
-            switch self {
-            case .happyEnd: return "allDoneConfettiAnimation"
-            }
-        }
-        
-        fileprivate var maskingType: GIFMaskingType? {
-            switch self {
-            case .happyEnd: return .maskWhite
-            }
-        }
-    }
-}
-
 // MARK: - GIF animations. Use GIFAnimationsService to work with GIF animations
 private extension GIFAnimationsService {
     func createGIFImageWithURL(_ gifUrl: String,
@@ -379,19 +361,6 @@ private extension GIFAnimationsService {
             cachedGifs[gif] = nil
             currentAsyncProcess[gif]?.cancel()
             currentAsyncProcess[gif] = nil
-        }
-    }
-}
-
-extension GIFAnimationsService {
-    enum GIFMaskingType {
-        case maskWhite
-        
-        var maskingColorComponents: [CGFloat] {
-            switch self {
-            case .maskWhite:
-                return [222, 255, 222, 255, 222, 255]
-            }
         }
     }
 }

@@ -26,6 +26,7 @@ protocol MessagingServiceProtocol {
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
     func isNewMessagesAvailable() async throws -> Bool
+    func logout() 
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]

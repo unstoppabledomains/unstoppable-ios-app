@@ -7,12 +7,10 @@
 
 import UIKit
 
-final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
+final class DomainsCollectionCarouselCardCell: BaseDomainsCollectionCardCell {
 
     typealias Action = DomainsCollectionCarouselItemViewController.DomainCardConfiguration.Action
 
-    @IBOutlet private weak var containerView: UIView!
-    @IBOutlet private weak var shadowView: UIView!
     @IBOutlet private weak var domainAvatarBackgroundImageView: UIImageView!
     @IBOutlet private weak var domainAvatarBackgroundBlurView: UIVisualEffectView!
     @IBOutlet private weak var domainAvatarImageView: UIImageView!
@@ -32,12 +30,7 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     /// Second is not visible and use auto-layout. Second button is on the top in views hierarchy and will handle menu action correctly
     @IBOutlet private weak var actionButtonLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var actionButtonTopConstraint: NSLayoutConstraint!
-    
-    static let minHeight: CGFloat = 80
-    
-    private var yOffset: CGFloat = 0
-    private var visibilityLevel: CarouselCellVisibilityLevel = .init(isVisible: true, isBehind: false)
-    private var animator: UIViewPropertyAnimator!
+  
     private var actionButtonPressedCallback: EmptyCallback?
     
     override func awakeFromNib() {
@@ -46,7 +39,6 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
         let imageViewCornerRadius: CGFloat = 8
         actionButton.setTitle("", for: .normal)
         actionButtonUIView.setTitle("", for: .normal)
-        containerView.layer.cornerRadius = 12
         domainAvatarBackgroundImageView.layer.cornerRadius = 12
         domainAvatarBackgroundBlurView.layer.cornerRadius = 12
         domainAvatarImageView.layer.cornerRadius = imageViewCornerRadius
@@ -58,40 +50,22 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
         carouselView.layer.cornerRadius = imageViewCornerRadius
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override func setFrame(for state: CardState) {
+        super.setFrame(for: state)
         
-        setFrame()
-    }
-    
-    deinit {
-        releaseAnimator()
-    }
-
-}
-
-// MARK: - ScrollViewOffsetListener
-extension DomainsCollectionCarouselCardCell: ScrollViewOffsetListener {
-    func didScrollTo(offset: CGPoint) {
-        if offset.y < 1 {
-            /// Due to ScrollView nature, it is sometimes 'stuck' with offset in range 0...0.9 (usually 0.33 or 0.66)
-            /// This leads to incorrect animation progress calculation and ugly UI bug.
-            /// Solution: round offset to 0 if it is < 1
-            self.yOffset = 0
-        } else {
-            self.yOffset = round(offset.y)
-        }
-        setFrame()
+        setFrameForBackgroundViews()
+        setAvatarImageViewFrame(for: state)
+        setUDLogoViewFrame(for: state)
+        setActionButtonFrame(for: state)
+        setDomainNameLabelFrame(for: state)
+        setDomainTLDLabelFrame(for: state)
+        setIndicatorsFrame(for: state)
+        setSideVisibilityFrame(for: state)
     }
 }
 
 // MARK: - Open methods
 extension DomainsCollectionCarouselCardCell {
-    func updateVisibility(level: CarouselCellVisibilityLevel) {
-        self.visibilityLevel = level
-        setFrame()
-    }
-     
     func setWith(configuration: DomainsCollectionCarouselItemViewController.DomainCardConfiguration) {
         self.actionButtonPressedCallback = configuration.actionButtonPressedCallback
 
@@ -255,106 +229,15 @@ private extension DomainsCollectionCarouselCardCell {
             statusMessage.setComponent(component)
         }
     }
-    
-    func setFrame() {
-        let collapsedProgress = calculateCollapsedProgress()
-        if collapsedProgress == 0  {
-            releaseAnimator()
-            setFrameForExpandedState()
-        } else if collapsedProgress == 1 {
-            releaseAnimator()
-            setFrameForCollapsedState()
-        } else {
-            setupAnimatorIfNeeded()
-            animator?.fractionComplete = collapsedProgress
-        }
-    }
-    
-    func calculateCollapsedProgress() -> CGFloat {
-        guard yOffset > 0 else { return 0 }
-        
-        let collapsableHeight = bounds.height - Self.minHeight
-        
-        if yOffset > collapsableHeight {
-            return 1
-        }
-        
-        let progress = yOffset / collapsableHeight
-        
-        return min(progress, 1)
-    }
-    
-    func setFrame(for state: CardState) {
-        setContainerViewFrame(for: state)
-        setFrameForBackgroundViews()
-        setAvatarImageViewFrame(for: state)
-        setUDLogoViewFrame(for: state)
-        setActionButtonFrame(for: state)
-        setDomainNameLabelFrame(for: state)
-        setDomainTLDLabelFrame(for: state)
-        setIndicatorsFrame(for: state)
-        setSideVisibilityFrame(for: state)
-    }
-    
-    func setFrameForExpandedState() {
-        setFrame(for: .expanded)
-    }
-    
-    func setFrameForCollapsedState() {
-        setFrame(for: .collapsed)
-    }
-    
-    func setupAnimatorIfNeeded() {
-        if animator == nil {
-            setupCollapseAnimator()
-        }
-    }
-    
-    func releaseAnimator() {
-        animator?.stopAnimation(true)
-        animator = nil
-    }
-    
-    func setupCollapseAnimator() {
-        releaseAnimator()
-        setFrameForExpandedState()
-        animator = UIViewPropertyAnimator(duration: 10, curve: .linear)
-        animator.addAnimations {
-            self.setFrameForCollapsedState()
-        }
-    }
 }
 
 // MARK: - UI Frame related methods
 private extension DomainsCollectionCarouselCardCell {
-    func setContainerViewFrame(for state: CardState) {
-        containerView.bounds.origin = .zero
-        let visibilityLevelValue = abs(visibilityLevel.value)
-        switch state {
-        case .expanded:
-            let size = bounds.size
-            let containerSize = CGSize(width: size.width * visibilityLevelValue,
-                                       height: size.height * visibilityLevelValue)
-            containerView.frame.size = containerSize
-            containerView.frame.origin = CGPoint(x: (size.width - containerSize.width) / 2,
-                                                 y: (size.height - containerSize.height) / 2)
-        case .collapsed:
-            let containerHeight = Self.minHeight
-            
-            containerView.frame.size = CGSize(width: bounds.width,
-                                              height: containerHeight)
-            containerView.frame.origin = CGPoint(x: 0,
-                                                 y: bounds.height - containerHeight)
-        }
-    }
-    
     func setFrameForBackgroundViews() {
         domainAvatarBackgroundBlurView.frame = containerView.bounds
         domainAvatarBackgroundImageView.frame = containerView.bounds
         domainAvatarBackgroundImageView.frame.size.width -= 1
         domainAvatarBackgroundImageView.frame.size.height -= 1
-        shadowView.frame = containerView.frame
-        shadowView.applyFigmaShadow(style: .large)
     }
     
     func setAvatarImageViewFrame(for state: CardState) {
@@ -530,21 +413,14 @@ private extension DomainsCollectionCarouselCardCell {
 
 // MARK: - Private methods
 private extension DomainsCollectionCarouselCardCell {
-    enum CardState {
-        case expanded, collapsed
-    }
-}
-
-// MARK: - Private methods
-private extension DomainsCollectionCarouselCardCell {
     enum DomainIndicatorStyle: CarouselViewItem {
         case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
       
         var containerBackgroundColor: UIColor {
             switch self {
-            case .updatingRecords:
+            case .updatingRecords, .minting:
                 return .brandElectricYellow
-            case .minting, .transfer:
+            case .transfer:
                 return .brandElectricGreen
             case .deprecated, .parked:
                 return .brandOrange
@@ -568,7 +444,7 @@ private extension DomainsCollectionCarouselCardCell {
             case .updatingRecords:
                 return String.Constants.updatingRecords.localized()
             case .minting:
-                return String.Constants.mintingInProgressTitle.localized()
+                return String.Constants.claimingDomain.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .parked(let status):

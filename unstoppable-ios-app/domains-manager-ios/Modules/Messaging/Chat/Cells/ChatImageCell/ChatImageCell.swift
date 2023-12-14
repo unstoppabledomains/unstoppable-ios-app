@@ -97,31 +97,28 @@ private extension ChatImageCell {
     }
 }
 
-struct ChatImageCell_Previews: PreviewProvider {
+@available (iOS 17.0, *)
+#Preview {
     
-    static var previews: some View {
-        let height: CGFloat = 76
-        
-        return UICollectionViewCellPreview(cellType: ChatImageCell.self, height: height) { cell in
-            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
-//            imageDetails.image = .appleIcon
-            let message = MessagingChatMessageDisplayInfo(id: "1",
-                                                          chatId: "2",
-                                                          userId: "1",
-                                                          senderType: .otherUser(user),
-                                                          time: Date(),
-                                                          type: .imageBase64(imageDetails),
-                                                          isRead: false,
-                                                          isFirstInChat: true,
-                                                          deliveryState: .delivered,
-                                                          isEncrypted: false)
-            cell.setWith(configuration: .init(message: message,
-                                              imageMessageDisplayInfo: imageDetails,
-                                              isGroupChatMessage: true,
-                                              actionCallback: { _ in }))
-        }
-        .frame(width: 390, height: 390)
-    }
+    let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+    var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
+    //            imageDetails.image = .appleIcon
+    let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                  chatId: "2",
+                                                  userId: "1",
+                                                  senderType: .otherUser(user),
+                                                  time: Date(),
+                                                  type: .imageBase64(imageDetails),
+                                                  isRead: false,
+                                                  isFirstInChat: true,
+                                                  deliveryState: .delivered,
+                                                  isEncrypted: false)
+    let cell = ChatImageCell()
+    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
+    cell.setWith(configuration: .init(message: message,
+                                      imageMessageDisplayInfo: imageDetails,
+                                      isGroupChatMessage: true,
+                                      actionCallback: { _ in }))
+    return cell
     
 }

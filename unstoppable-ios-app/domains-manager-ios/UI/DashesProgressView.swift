@@ -45,7 +45,9 @@ final class DashesProgressView: UIView {
 extension DashesProgressView {
     func setWith(configuration: Configuration) {
         self.configuration = configuration
-        drawDashes()
+        UIView.performWithoutAnimation {
+            drawDashes()
+        }
         setProgress(progress)
     }
     
@@ -110,10 +112,16 @@ private extension DashesProgressView {
 // MARK: - Open methods
 extension DashesProgressView {
     struct Configuration {
-        let notFilledColor = UIColor.foregroundSubtle
-        let filledColor = UIColor.foregroundAccent
-        let numberOfDashes = 2
-        let dashHeight: CGFloat = 4
-        let dashesSpacing: CGFloat = 8
+        var notFilledColor = UIColor.foregroundSubtle
+        var filledColor = UIColor.foregroundAccent
+        var numberOfDashes = 2
+        var dashHeight: CGFloat = 4
+        var dashesSpacing: CGFloat = 8
+        
+        static func white(numberOfDashes: Int) -> Configuration {
+            Configuration(notFilledColor: .foregroundOnEmphasis.withAlphaComponent(0.32),
+                          filledColor: .foregroundOnEmphasis,
+                          numberOfDashes: numberOfDashes)
+        }
     }
 }

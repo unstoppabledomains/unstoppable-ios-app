@@ -458,6 +458,7 @@
 "MOVE_TO_TOP" = "Move to top";
 
 // Minting in progress
+"CLAIMING_DOMAIN" = "Claiming domain";
 "MINTING_IN_PROGRESS_TITLE" = "Transfer in progress";
 "MINTING_IN_PROGRESS_SUBTITLE" = "Once finished, you’ll be able to manage your Web3 ID and profile on the go.";
 "GO_TO_HOME_SCREEN" = "Go to home screen";
@@ -887,3 +888,50 @@
 "SHAKE_TO_FIND_FAILED_TITLE" = "Failed to run\nBluetooth services";
 "SHAKE_TO_FIND_FAILED_SUBTITLE" = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine.";
 "OPEN_SETTINGS" = "Open settings";
+
+// Purchase domain
+"GET_DOMAIN_CARD_TITLE" = "Get your domain";
+"GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
+"FIND_A_NEW_DOMAIN" = "Find a new domain";
+"FIND_YOUR_DOMAIN" = "Find your domain";
+"TRENDING" = "Trending";
+"NO_AVAILABLE_DOMAINS" = "No available domains";
+"TRY_ENTER_DIFF_NAME" = "Try entering a different name.";
+"ENTER_DISCOUNT_CODE" = "Enter discount code";
+"DISCOUNT_CODE" = "Discount code";
+"MINT_TO" = "Mint to";
+"APPLY_DISCOUNTS" = "Apply discounts";
+"ADD_DISCOUNT_CODE" = "Add discount code";
+"PROMO_CREDITS" = "Promo credits";
+"STORE_CREDITS" = "Store credits";
+"US_ZIP_CODE" = "US ZIP code";
+"ENTER_US_ZIP_CODE" = "Enter US ZIP code";
+"ZIP_CODE" = "ZIP code";
+"CHECKOUT" = "Checkout";
+"TO_CALCULATE_TAXES" = "For sales tax";
+"US_RESIDENTS" = "US Residents";
+"TAXES" = "Taxes";
+"CREDITS_AND_DISCOUNTS" = "Credits & discounts";
+"DISCOUNTS" = "Discounts";
+"DISCOUNT_APPLIED_TOAST_MESSAGE" = "%@ off applied with your discount code";
+"APPLY" = "Apply";
+"ORDER_SUMMARY" = "Order summary";
+"TOTAL_DUE" = "Total due";
+"DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
+"GO_TO_DOMAINS" = "Go to domains";
+"PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE" = "You have 1 or more unpaid vaults for your domain, please go to the website";
+"PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED" = "go to the website";
+"PURCHASE_WALLET_AUTH_ERROR_TITLE" = "Vault (%@) is not authorized for minting";
+"PURCHASE_WALLET_AUTH_ERROR_SUBTITLE" = "Select another wallet or try again.";
+"SELECT_ANOTHER_WALLET" = "Select another wallet";
+"PURCHASE_WALLET_CALCULATIONS_ERROR_TITLE" = "There seems to be an issue with calculating your order's total";
+"PURCHASE_WALLET_CALCULATIONS_ERROR_SUBTITLE" = "No worries, just give it another moment and try again.";
+"PURCHASE_WALLET_PURCHASE_ERROR_TITLE" = "Purchase couldn’t be completed";
+"PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE" = "Please check your internet connection and try again.";
+"PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE" = "Signature required";
+"PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE" = "You will be redirected to %@ to sign a message";
+"FINISH_SETUP_PROFILE_PULL_UP_TITLE" = "Finish setting up your domain\n%@";
+"FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE" = "Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.";
+"SIGN_TRANSACTION" = "Sign transaction";
+"FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE" = "Failed to update profile";
+"CANCEL_SETUP" = "Cancel setup";

@@ -38,11 +38,11 @@ final class EnterBackupCreateLocalWalletPresenter: EnterBackupBasePresenter {
             let wallet = try udWalletsService.backUpWalletToCurrentCluster(wallet,
                                                                            withPassword: password)
             finishWith(wallet: wallet, password: password)
-        } catch UDWalletsService.BackUpError.alreadyBackedUp {
+        } catch UDWalletBackUpError.alreadyBackedUp {
             var wallet = self.wallet
             wallet.hasBeenBackedUp = true
             finishWith(wallet: wallet, password: password)
-        } catch UDWalletsService.BackUpError.incorrectBackUpPassword {
+        } catch UDWalletBackUpError.incorrectBackUpPassword {
             view.showError(String.Constants.incorrectPassword.localized())
         } catch {
             view.showSimpleAlert(title: String.Constants.saveToICloudFailedTitle.localized(),

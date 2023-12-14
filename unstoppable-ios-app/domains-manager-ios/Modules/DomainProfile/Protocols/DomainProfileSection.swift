@@ -32,6 +32,7 @@ protocol DomainProfileSection: AnyObject, ViewAnalyticsLogger {
     /// This will allow to not show this change in the list of changes to update and not take into account when show number of changes. 
     func apply(changes: [DomainProfileSectionChangeDescription])
     func resetChanges()
+    func injectChanges(in profilePendingChanges: inout DomainProfilePendingChanges)
     nonisolated func hideKeyboard()
 }
 
@@ -46,7 +47,7 @@ extension DomainProfileSection {
         self.state = state
     }
     func apply(changes: [DomainProfileSectionChangeDescription]) { }
-
+    func injectChanges(in profilePendingChanges: inout DomainProfilePendingChanges) { }
     nonisolated func logProfileSectionAnalytic(event: Analytics.Event,
                                                parameters: Analytics.EventParameters = [:]) {
         Task { @MainActor in

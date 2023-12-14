@@ -10,14 +10,17 @@ import UIKit
 final class DashesProgressNavBarPushAnimation: CBaseTransitioningAnimation {
     
     private let toProgress: CGFloat?
+    private let toConfiguration: DashesProgressView.Configuration?
     
     init(animationDuration: TimeInterval,
-         toProgress: Double?) {
+         toProgress: Double?,
+         toConfiguration: DashesProgressView.Configuration?) {
         if let toProgress {
             self.toProgress = CGFloat(toProgress)
         } else {
             self.toProgress = nil
         }
+        self.toConfiguration = toConfiguration
         super.init(animationDuration: animationDuration)
     }
     
@@ -49,6 +52,7 @@ final class DashesProgressNavBarPushAnimation: CBaseTransitioningAnimation {
         fromViewController.view.addSubview(fromLargeTitleCopy)
         
         let toProgress: CGFloat? = self.toProgress
+        let toConfiguration = self.toConfiguration
         let duration = transitionDuration(using: transitionContext)
         let start = Date()
         let animator = createAnimatorIn(transitionContext: transitionContext) {
@@ -57,6 +61,9 @@ final class DashesProgressNavBarPushAnimation: CBaseTransitioningAnimation {
                 dashesView.alpha = 1
             } else {
                 dashesView.alpha = 0
+            }
+            if let toConfiguration {
+                dashesView.setWith(configuration: toConfiguration)
             }
         }
         
