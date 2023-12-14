@@ -66,7 +66,7 @@ extension DomainProfileBadgesSection: DomainProfileSection {
         snapshot.appendSections([.dashesSeparator()])
         let maxItems = Self.numberOfBadgesInTheRow() * 3
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile:
+        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
             let isRefreshBadgesButtonEnabled = state == .default || state == .updatingRecords
             let sectionHeaderDescription = sectionHeader(isLoading: false,
                                                          isButtonEnabled: isRefreshBadgesButtonEnabled)
@@ -161,7 +161,7 @@ private extension DomainProfileBadgesSection {
     
     @MainActor
     func sectionFooter() -> String {
-        String.Constants.profileBadgesFooter.localized(controller?.generalData.walletInfo.address.walletAddressTruncated ?? "")
+        String.Constants.profileBadgesFooter.localized(controller?.generalData.domain.ownerWallet?.walletAddressTruncated ?? "")
     }
     
     func setSectionIfCurrent(_ section: DomainProfileViewController.Section,

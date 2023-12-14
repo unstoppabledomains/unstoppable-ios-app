@@ -11,57 +11,6 @@ import CryptoSwift
 import Boilertalk_Web3
 import UIKit
 
-enum BlockchainType: String, CaseIterable, Codable, Hashable {
-    case Ethereum = "ETH"
-    case Zilliqa = "ZIL"
-    case Matic = "MATIC"
-    
-    static let cases = Self.allCases
-    static func getType(abbreviation: String?) throws -> Self {
-        guard let abbreviation = abbreviation else { throw NetworkLayerError.invalidBlockchainAbbreviation }
-        let sample = abbreviation.lowercased().trimmed
-        guard let result = Self.cases.first(where: {$0.rawValue.lowercased() == sample} ) else {
-            throw NetworkLayerError.invalidBlockchainAbbreviation
-        }
-        return result
-    }
-    
-    static let supportedCases: [BlockchainType] = [.Ethereum, .Matic]
-    
-    var icon: UIImage {
-        switch self {
-        case .Ethereum:
-            return UIImage(named: String.BlockChainIcons.ethereum.rawValue)!
-        case .Zilliqa:
-            return UIImage(named: String.BlockChainIcons.zilliqa.rawValue)!
-        case .Matic:
-            return UIImage(named: String.BlockChainIcons.matic.rawValue)!
-        }
-    }
-    
-    var fullName: String {
-        switch self {
-        case .Ethereum:
-            return "Ethereum"
-        case .Zilliqa:
-            return "Zilliqa"
-        case .Matic:
-            return "Polygon"
-        }
-    }
-    
-    func supportedChainId(isTestNet: Bool) -> Int? {
-        switch self {
-        case .Ethereum:
-            return isTestNet ? 5 : 1 // Goerly or Mainnet
-        case .Matic:
-            return isTestNet ? 80001 : 137 // Mumbai or
-        case .Zilliqa:
-            return nil 
-        }
-    }
-}
-
 struct WalletIconSpec {
     let imageName: String
     var hue: Float? = nil
@@ -106,29 +55,6 @@ protocol AddressContainer {
     var address: String { get }
 }
 
-typealias WalletBalance = WalletBalanceDisplayInfo
-
-struct WalletBalanceDisplayInfo: Hashable {
-    
-    let address: String
-    let exchangeRate: Double
-    let blockchain: BlockchainType
-    let coinBalance: Double
-    let formattedCoinBalance: String
-    let usdBalance: Double
-    let formattedValue: String
-    
-    internal init(address: String, quantity: NetworkService.SplitQuantity, exchangeRate: Double, blockchain: BlockchainType) {
-        self.address = address
-        self.exchangeRate = exchangeRate
-        self.blockchain = blockchain
-        self.coinBalance = quantity.doubleEth
-        self.usdBalance = coinBalance * exchangeRate
-        self.formattedCoinBalance = currencyNumberFormatter.string(from: coinBalance as NSNumber) ?? "N/A"
-        self.formattedValue = "\(formattedCoinBalance) \(blockchain.rawValue)"
-    }
-    
-}
 
 
 struct UDWallet: Codable {
@@ -458,26 +384,6 @@ extension UDWallet {
     }
 }
 
-enum WalletError: Error {
-    case NameTooShort
-    case WalletNameNotUnique
-    case EthWalletFailedInit
-    case EthWalletPrivateKeyNotFound
-    case EthWalletMnemonicsNotFound
-    case zilWalletFailedInit
-    case migrationError
-    case failedGetPrivateKeyFromNonHdWallet
-    case ethWalletAlreadyExists (HexAddress)
-    case invalidPrivateKey
-    case invalidSeedPhrase
-    case importedWalletWithoutUNS
-    case ethWalletNil
-    case unsupportedBlockchainType
-    
-    case failedToBackUp
-    case incorrectBackupPassword
-}
-
 extension Array where Element == UDWallet {
     func pickOwnedDomains(from domains: [DomainItem]) -> [DomainItem] {
         let ethWalletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
@@ -510,7 +416,7 @@ extension Array where Element == UDWallet {
 extension UDWallet {
     func owns(domain: any DomainEntity) -> Bool {
         guard let domainWalletAddress = domain.ownerWallet?.normalized else { return false }
-        return self.extractEthWallet()?.address.normalized == domainWalletAddress || self.extractZilWallet()?.address.normalized == domainWalletAddress
+        return self.address.normalized == domainWalletAddress || self.address.normalized == domainWalletAddress
     }
     
     var activeZilAddress: String? {
@@ -571,37 +477,5 @@ extension UDWallet: Equatable {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
         let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
         return resultEth || resultZil
-    }
-}
-
-protocol WalletConnectController: UIViewController {
-    func warnManualTransferToExternalWallet(title: String)
-}
-
-extension WalletConnectController {
-    func warnManualTransferToExternalWallet(title: String) {
-        self.showSimpleAlert(title: title, body: "Please switch to the external wallet app manually, confirm to sign the transaction and return back")
-    }
-}
-
-extension UDWallet {
-    var recoveryType: RecoveryType? {
-        .init(walletType: type)
-    }
-    
-    enum RecoveryType: Codable {
-        case recoveryPhrase
-        case privateKey
-        
-        init?(walletType: WalletType) {
-            switch walletType {
-            case .privateKeyEntered:
-                self = .privateKey
-            case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
-                self = .recoveryPhrase
-            case .importedUnverified:
-                return nil
-            }
-        }
     }
 }

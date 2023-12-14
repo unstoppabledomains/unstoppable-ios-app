@@ -67,7 +67,7 @@ extension DomainProfileCryptoSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         snapshot.appendSections([.dashesSeparator()])
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile:
+        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
             let records = editingGroupedRecords
             
             var missingRecords = [String]()

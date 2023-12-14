@@ -17,7 +17,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     
     private let notificationsService: NotificationsServiceProtocol
     private let dataAggregatorService: DataAggregatorServiceProtocol
-    private let firebaseInteractionService: FirebaseInteractionServiceProtocol
+    private let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private var firebaseUser: FirebaseUser?
     private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
@@ -26,14 +26,14 @@ final class SettingsPresenter: ViewAnalyticsLogger {
          loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
-         firebaseInteractionService: FirebaseInteractionServiceProtocol) {
+         firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol) {
         self.view = view
         self.loginCallback = loginCallback
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
-        self.firebaseInteractionService = firebaseInteractionService
+        self.firebaseAuthenticationService = firebaseAuthenticationService
         dataAggregatorService.addListener(self)
-        firebaseInteractionService.addListener(self)
+        firebaseAuthenticationService.addListener(self)
     }
     
 }
@@ -42,7 +42,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
 extension SettingsPresenter: SettingsPresenterProtocol {
     func viewDidLoad() {
         Task {
-            firebaseUser = try? await firebaseInteractionService.getUserProfile()
+            firebaseUser = try? await firebaseAuthenticationService.getUserProfile()
             showSettingsAsync()
         }        
     }
@@ -107,7 +107,7 @@ extension SettingsPresenter: DataAggregatorServiceListener {
 }
 
 // MARK: - FirebaseInteractionServiceListener
-extension SettingsPresenter: FirebaseInteractionServiceListener {
+extension SettingsPresenter: FirebaseAuthenticationServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         self.firebaseUser = firebaseUser
         showSettingsAsync()
@@ -183,9 +183,8 @@ private extension SettingsPresenter {
         }
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
-        StripeService.shared.setup()
-        firebaseInteractionService.logout()
-        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
+        firebaseAuthenticationService.logout()
+        appContext.messagingService.logout()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         notificationsService.updateTokenSubscriptions()
@@ -237,16 +236,16 @@ private extension SettingsPresenter {
     func showLoginScreen() {
         guard let view else { return }
         
-        if appContext.firebaseAuthService.isAuthorised {
+        if firebaseAuthenticationService.isAuthorized {
             Task {
                 do {
                     guard let firebaseUser else {
-                        appContext.firebaseInteractionService.logout()
+                        firebaseAuthenticationService.logout()
                         showLoginScreen()
                         Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
                         return
                     }
-                    let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
+                    let domainsCount = appContext.firebaseParkedDomainsService.getCachedDomains().count
                     let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
                                                                                                      domainsCount: domainsCount,
                                                                                                      in: view)
@@ -255,7 +254,7 @@ private extension SettingsPresenter {
                         try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
                         await view.dismissPullUpMenu()
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                        firebaseInteractionService.logout()
+                        firebaseAuthenticationService.logout()
                         appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
                         await dataAggregatorService.aggregateData(shouldRefreshPFP: true) 
                     }

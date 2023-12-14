@@ -20,12 +20,12 @@ final class UDGoogleSigner: NSObject, FirebaseAuthUtilitiesProtocol {
     private var redirectUri: String { "\(redirectScheme):/oauth2callback" }
     
     private var authenticationVC: ASWebAuthenticationSession?
-    private var presentingViewController: UIViewController?
+    private var presentingWindow: UIWindow?
     
     /// Return: ID Token
-    func signIn(in viewController: UIViewController) async throws -> String {
+    func signIn(in window: UIWindow) async throws -> String {
         do {
-            self.presentingViewController = viewController
+            self.presentingWindow = window
             let (requestURL, codeVerifier) = try buildRequestURLAndCodeVerifier()
             let callbackURL = try await authenticateWithRequestURLAndGetCallbackURL(requestURL: requestURL)
             let googleSignInIdToken = try await getGoogleSignInTokenWith(callbackURL: callbackURL, requestURL: requestURL, codeVerifier: codeVerifier)
@@ -43,7 +43,7 @@ final class UDGoogleSigner: NSObject, FirebaseAuthUtilitiesProtocol {
 // MARK: - ASWebAuthenticationPresentationContextProviding
 extension UDGoogleSigner: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        presentingViewController!.view.window!
+        presentingWindow!
     }
 }
 
@@ -130,6 +130,6 @@ private extension UDGoogleSigner {
     
     func clear() {
         authenticationVC = nil
-        presentingViewController = nil
+        presentingWindow = nil
     }
 }

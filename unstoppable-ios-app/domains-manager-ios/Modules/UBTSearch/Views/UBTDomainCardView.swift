@@ -126,13 +126,13 @@ private extension UBTDomainCardView {
                 .frame(height: domainNameHeight, alignment: .leading)
                 .font(.helveticaNeueCustom(size: 21))
             
-            AttributedText(text: ".\(device.domainName.getTldName() ?? "")".uppercased(),
+            AttributedText(attributesList: .init(text: ".\(device.domainName.getTldName() ?? "")".uppercased(),
                            font: .helveticaNeueCustom(size: 18),
                            letterSpacing: 0,
                            textColor: .clear,
                            lineBreakMode: .byTruncatingTail,
                            strokeColor: .white,
-                           strokeWidth: 3)
+                           strokeWidth: 3))
             .frame(height: domainTLDHeight, alignment: .leading)
             .offset(x: -4)
         }

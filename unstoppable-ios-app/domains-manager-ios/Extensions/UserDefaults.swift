@@ -25,6 +25,10 @@ public enum UserDefaultsKey: String {
     case didShowSwipeDomainCardTutorial
     case isFirstLaunchAfterGIFSupportReleased
     case currentMessagingOwnerWallet
+    
+    // Purchase domains
+    case purchasedDomains
+    case purchasedDomainsPendingProfiles
 }
 
 extension UserDefaults {

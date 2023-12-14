@@ -9,6 +9,7 @@ import Foundation
 
 final class UDFirebaseSigner: FirebaseAuthUtilitiesProtocol {
     
+    static let shared = UDFirebaseSigner()
     private var googleAPIKey: String { FirebaseNetworkConfig.APIKey }
     
 }
@@ -38,7 +39,7 @@ extension UDFirebaseSigner {
         return try await authorizeWith(requestBody: requestBody, accountType: .idp)
     }
     
-    func authorizeWithTwitterCustomToken(_ customToken: String) async throws -> FirebaseTokenData {
+    func authorizeWithCustomToken(_ customToken: String) async throws -> FirebaseTokenData {
         struct RequestBody: Encodable {
             var token: String
             var returnSecureToken: Bool = true

@@ -82,7 +82,7 @@ private extension RearrangeDomainCell {
     
     func setIsSearching(_ isSearching: Bool) {
         isSelectable = isSearching
-        rearrangeIcon.image = isSearching ? .chevronRight : .dragIcon24
+        rearrangeIcon.image = isSearching ? .systemChevronRight : .dragIcon24
         rearrangeIconWidthConstraint.constant = isSearching ? 20 : 24
     }
 }

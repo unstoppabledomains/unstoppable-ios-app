@@ -26,11 +26,11 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
     private let titleTag = 1
     private let extraTitleTag = 2
     private let subtitleTag = 3
-    var items = [Item]()
+    var items = [[Item]]()
     var itemSelectedCallback: ItemCallback?
     
     init(configuration: PullUpSelectionViewConfiguration,
-         items: [Item],
+         items: [[Item]],
          itemSelectedCallback: ItemCallback? = nil) {
         super.init(frame: .zero)
         
@@ -38,6 +38,13 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
         self.items = items
         self.itemSelectedCallback = itemSelectedCallback
         setup()
+    }
+    
+    convenience init(configuration: PullUpSelectionViewConfiguration,
+                         items: [Item],
+                         itemSelectedCallback: ItemCallback? = nil) {
+        self.init(configuration: configuration,
+                  items: [items], itemSelectedCallback: itemSelectedCallback)
     }
     
     override init(frame: CGRect) {
@@ -53,14 +60,18 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
     }
     
     // MARK: - UICollectionViewDelegate
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         items.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        items[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueCellOfType(PullUpCollectionViewCell.self, forIndexPath: indexPath)
         
-        let legalType = items[indexPath.row]
+        let legalType = items[indexPath.section][indexPath.row]
         cell.setWith(pullUpItem: legalType)
         
         return cell
@@ -69,7 +80,7 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
     // MARK: - UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         UDVibration.buttonTap.vibrate()
-        let item = items[indexPath.row]
+        let item = items[indexPath.section][indexPath.row]
         logButtonPressed(item.analyticsName)
         itemSelectedCallback?(item)
     }
@@ -266,7 +277,12 @@ private extension PullUpSelectionView {
         collectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         
         if !configuration.isScrollingEnabled {
-            let height = items.reduce(0, { $0 + $1.height })
+            var height: CGFloat = 0
+            for sectionItems in items {
+                let sectionHeight = sectionItems.reduce(0, { $0 + $1.height })
+                height += sectionHeight
+            }
+            height += CGFloat(items.count - 1) * UICollectionView.SideOffset // Sections spacing
             collectionView.heightAnchor.constraint(equalToConstant: height).isActive = true
         } else {
             bottomAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 60).isActive = true
@@ -489,6 +505,7 @@ struct PullUpSelectionViewConfiguration {
     var extraButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
     var isScrollingEnabled: Bool = false
+    var dismissAble: Bool = true
 
     // Title
     enum LabelType {

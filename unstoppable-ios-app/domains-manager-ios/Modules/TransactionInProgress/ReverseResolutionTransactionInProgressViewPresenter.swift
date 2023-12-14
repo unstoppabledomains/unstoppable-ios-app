@@ -52,7 +52,7 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
             let transactions = try await transactionsService.updateTransactionsListFor(domains: [domain.name])
 
             if let domainReverseResolutionTransaction = transactions
-                                                            .filterPending(extraCondition: {$0.operation == .setReverseResolution})
+                                                            .filterPending(extraCondition: { $0.operation == .setReverseResolution})
                                                             .first {
                 domainTransaction = domainReverseResolutionTransaction
             } else {

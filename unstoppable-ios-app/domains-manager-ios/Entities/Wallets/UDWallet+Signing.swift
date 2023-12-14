@@ -19,6 +19,14 @@ extension UDWallet {
         return walletName.contains("alpha")
     }
     
+    static var walletNameBitsShouldEncodeHexMessage: [String] = ["meta", "rain", "okx", "spot", "crypto.com", "zerion"]
+    var shouldEncodeHexMessage: Bool {
+        guard let walletName = self.getExternalWalletName()?.lowercased() else {
+            return false
+        }
+        return !Self.walletNameBitsShouldEncodeHexMessage.allSatisfy { !walletName.contains($0)}
+    }
+    
     static func createSignaturesByPersonalSign(messages: [String],
                                                domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
@@ -32,11 +40,28 @@ extension UDWallet {
     }
     
     func getPersonalSignature(messageString: String, shouldTryToConverToReadable: Bool = true) async throws -> String {
+        func encodedMessage() throws -> String {
+            guard let data = messageString.data(using: .utf8) else {
+                throw UDWallet.Error.failedSignature
+            }
+            return data.hexString
+        }
+        
+        
         guard self.walletState == .verified else {
             if self.shouldParseMessage {
                 let message = messageString.convertedIntoReadableMessage
                 return try await signViaWalletConnectPersonalSign(message: message)
             }
+            
+            if messageString.hasHexPrefix {
+                return try await signViaWalletConnectPersonalSign(message: messageString)
+            }
+            
+            if self.shouldEncodeHexMessage {
+                return try await signViaWalletConnectPersonalSign(message: encodedMessage())
+            }
+            
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
@@ -65,14 +90,6 @@ extension UDWallet {
             return nil
         }
         return signPersonalAsHexString(messageString: messageString)
-    }
-    
-    private func signPersonalAsHexString(messageString: String) -> String? {
-        let data = Data(messageString.droppedHexPrefix.hexToBytes())
-        guard let signature = try? self.signPersonalMessage(data) else {
-            return nil
-        }
-        return HexAddress.hexPrefix + signature.dataToHexString()
     }
     
     static func hashed(messageString: String) -> String? {
@@ -200,15 +217,21 @@ extension UDWallet {
         return HexAddress.hexPrefix + signature.dataToHexString()
     }
     
+    private func signPersonalAsHexString(messageString: String) -> String? {
+        let data = Data(messageString.droppedHexPrefix.hexToBytes())
+        guard let signature = try? self.signPersonalMessage(data) else {
+            return nil
+        }
+        return HexAddress.hexPrefix + signature.dataToHexString()
+    }
+    
     private func signPersonalMessage(_ personalMessageData: Data) throws -> Data? {
         guard let privateKeyString = self.getPrivateKey() else { return nil }
         return try UDWallet.signPersonalMessage(personalMessageData, with: privateKeyString)
     }
     
-    
-    
     static public func signPersonalMessage(_ personalMessageData: Data,
-                                       with privateKeyString: String) throws -> Data? {
+                                           with privateKeyString: String) throws -> Data? {
         guard let hash = Web3.Utils.hashPersonalMessage(personalMessageData) else { return nil }
         return try signMessageHash(messageHash: hash, with: privateKeyString)
     }

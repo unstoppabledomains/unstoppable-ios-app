@@ -173,7 +173,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         
         func makeSureNotDuplicated() throws {
             guard let backUpPassword = WalletBackUpPassword(password) else {
-                throw BackUpError.failedToMakePasswordHash
+                throw UDWalletBackUpError.failedToMakePasswordHash
             }
             
             let clusters = fetchCloudWalletClusters()
@@ -181,7 +181,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                currentCluster.wallets.contains(where: { $0.encryptedPrivateSeed == backedUpWallet.encryptedPrivateSeed }) {
                 updateWalletInStorage(wallet, backedUpState: true)
                 notifyListeners(.walletsUpdated(getUserWallets()))
-                throw BackUpError.alreadyBackedUp
+                throw UDWalletBackUpError.alreadyBackedUp
             }
         }
 
@@ -198,7 +198,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             throw SecureHashStorage.Error.currentPasswordNotSet
         }
         guard let currentCluster = self.currentWalletCluster else {
-            throw BackUpError.currentClusterNotSet
+            throw UDWalletBackUpError.currentClusterNotSet
         }
         
         return try backUpWallet(wallet, withPassword: password, to: currentCluster)
@@ -436,10 +436,10 @@ private extension UDWalletsService {
     
     func backUpWallet(_ wallet: UDWallet, withPassword password: String, to cluster: WalletCluster) throws -> UDWallet {
         guard let backUpPassword = WalletBackUpPassword(password) else {
-            throw BackUpError.failedToMakePasswordHash
+            throw UDWalletBackUpError.failedToMakePasswordHash
         }
         guard backUpPassword.value == cluster.passwordHash else {
-            throw BackUpError.incorrectBackUpPassword
+            throw UDWalletBackUpError.incorrectBackUpPassword
         }
         
         return try backUpWallet(wallet, withPassword: password)
@@ -453,7 +453,7 @@ private extension UDWalletsService {
         let iCloudStorage = iCloudWalletStorage.create()
         let backedUpWallets = iCloudStorage.findWallets(password: password)
         if backedUpWallets.isEmpty {
-            throw BackUpError.incorrectBackUpPassword
+            throw UDWalletBackUpError.incorrectBackUpPassword
         }
         var udWallets = [UDWalletWithPrivateSeed]()
         
@@ -476,18 +476,5 @@ private extension UDWalletsService {
         Debugger.printInfo(topic: .Wallet, "Restored \(udWallets.count) wallets")
         
         return udWallets
-    }
-}
-
-extension UDWalletsService {
-    enum BackUpError: String, LocalizedError {
-        case incorrectBackUpPassword
-        case currentClusterNotSet
-        case failedToMakePasswordHash
-        case alreadyBackedUp
-        
-        public var errorDescription: String? {
-            return rawValue
-        }
     }
 }

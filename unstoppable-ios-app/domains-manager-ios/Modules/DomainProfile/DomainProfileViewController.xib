@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,7 +16,10 @@
                 <outlet property="backgroundImageView" destination="Nek-R5-bwt" id="LjI-GQ-T5P"/>
                 <outlet property="collectionView" destination="Hjl-bm-SXL" id="anq-Hv-TeL"/>
                 <outlet property="confirmButtonGradientView" destination="CKh-vB-K4d" id="OtT-Hp-Rjg"/>
+                <outlet property="confirmButtonsContainerStack" destination="rMl-TB-CR3" id="DPB-O2-zij"/>
+                <outlet property="confirmButtonsContainerStackTopConstraint" destination="Jco-ps-ALA" id="16V-Ke-LJd"/>
                 <outlet property="confirmUpdateButton" destination="aYl-6Z-efQ" id="fge-Ee-JJu"/>
+                <outlet property="confirmUpdateMainButton" destination="ksi-Ep-t8X" id="S88-hp-gPj"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -51,28 +54,45 @@
                     </collectionViewFlowLayout>
                 </collectionView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CKh-vB-K4d" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="665.66666666666663" width="414" height="70.333333333333371"/>
+                    <rect key="frame" x="0.0" y="617.66666666666663" width="414" height="118.33333333333337"/>
                     <color key="backgroundColor" systemColor="tertiarySystemFillColor"/>
                 </view>
-                <view contentMode="scaleToFill" placeholderIntrinsicWidth="147.5" placeholderIntrinsicHeight="44.5" translatesAutoresizingMaskIntoConstraints="NO" id="aYl-6Z-efQ" customClass="FABCounterButton" customModule="domains_manager_ios" customModuleProvider="target">
-                    <rect key="frame" x="133.33333333333331" y="665.66666666666663" width="147.33333333333331" height="44.333333333333371"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                            <real key="value" value="24"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="confirmChangesButtonPressed" destination="-1" eventType="touchUpInside" id="iOQ-Mv-Kyc"/>
-                    </connections>
-                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="rMl-TB-CR3">
+                    <rect key="frame" x="16" y="617.66666666666663" width="382" height="92.333333333333371"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="147.5" placeholderIntrinsicHeight="44.5" translatesAutoresizingMaskIntoConstraints="NO" id="aYl-6Z-efQ" customClass="FABCounterButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="117.33333333333333" y="0.0" width="147.33333333333337" height="44.333333333333336"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                    <real key="value" value="24"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="confirmChangesButtonPressed" destination="-1" eventType="touchUpInside" id="iOQ-Mv-Kyc"/>
+                            </connections>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ksi-Ep-t8X" customClass="RaisedWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="148.66666666666666" y="44.333333333333371" width="85" height="48"/>
+                            <accessibility key="accessibilityConfiguration">
+                                <bool key="isElement" value="NO"/>
+                            </accessibility>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="eGF-T1-ZVF"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
+                            <connections>
+                                <action selector="confirmChangesButtonPressed" destination="-1" eventType="touchUpInside" id="V9n-GK-zao"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" name="brandUnstoppableBlue"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="Hjl-bm-SXL" secondAttribute="bottom" id="10O-uw-fc1"/>
-                <constraint firstItem="aYl-6Z-efQ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="54R-qv-kLD"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="aYl-6Z-efQ" secondAttribute="bottom" constant="26" id="5a9-cu-cRb"/>
                 <constraint firstItem="Nek-R5-bwt" firstAttribute="leading" secondItem="ltf-oF-plW" secondAttribute="leading" id="7O4-sh-wmv"/>
                 <constraint firstItem="Hjl-bm-SXL" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="7RR-Qy-cih"/>
                 <constraint firstItem="ltf-oF-plW" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="9QL-nf-a5G"/>
@@ -80,17 +100,20 @@
                 <constraint firstItem="Hjl-bm-SXL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="FUB-5R-gsJ"/>
                 <constraint firstAttribute="trailing" secondItem="Hjl-bm-SXL" secondAttribute="trailing" id="FXf-SL-Z4C"/>
                 <constraint firstItem="Nek-R5-bwt" firstAttribute="bottom" secondItem="ltf-oF-plW" secondAttribute="bottom" id="G47-Ss-BKN"/>
-                <constraint firstItem="CKh-vB-K4d" firstAttribute="top" secondItem="aYl-6Z-efQ" secondAttribute="top" id="K46-tT-iNa"/>
+                <constraint firstItem="rMl-TB-CR3" firstAttribute="top" secondItem="CKh-vB-K4d" secondAttribute="top" id="Jco-ps-ALA"/>
                 <constraint firstItem="CKh-vB-K4d" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RdW-wv-EtU"/>
                 <constraint firstItem="y5u-T5-FyZ" firstAttribute="top" secondItem="Nek-R5-bwt" secondAttribute="top" id="UKn-d0-gRi"/>
                 <constraint firstAttribute="trailing" secondItem="CKh-vB-K4d" secondAttribute="trailing" id="VrS-sE-fxt"/>
                 <constraint firstItem="ltf-oF-plW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Wuh-mX-jaG"/>
+                <constraint firstItem="rMl-TB-CR3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Xuf-m6-E7h"/>
                 <constraint firstAttribute="bottom" secondItem="CKh-vB-K4d" secondAttribute="bottom" id="Yib-fB-Uie"/>
                 <constraint firstItem="y5u-T5-FyZ" firstAttribute="trailing" secondItem="Nek-R5-bwt" secondAttribute="trailing" id="aRO-eU-XfQ"/>
                 <constraint firstItem="Nek-R5-bwt" firstAttribute="top" secondItem="ltf-oF-plW" secondAttribute="top" id="dt3-Xb-Q2c"/>
                 <constraint firstItem="Nek-R5-bwt" firstAttribute="trailing" secondItem="ltf-oF-plW" secondAttribute="trailing" id="gPu-Xa-nHw"/>
                 <constraint firstAttribute="bottom" secondItem="ltf-oF-plW" secondAttribute="bottom" id="k8t-ah-dUZ"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="rMl-TB-CR3" secondAttribute="bottom" constant="26" id="nUS-J6-7Kw"/>
                 <constraint firstItem="ltf-oF-plW" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="sHG-r0-SnK"/>
+                <constraint firstItem="rMl-TB-CR3" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="xZE-k6-V9m"/>
                 <constraint firstItem="y5u-T5-FyZ" firstAttribute="bottom" secondItem="Nek-R5-bwt" secondAttribute="bottom" id="y9F-NM-ugC"/>
             </constraints>
             <point key="canvasLocation" x="39.130434782608695" y="39.945652173913047"/>
@@ -104,7 +127,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="tertiarySystemFillColor">
-            <color red="0.46274509803921571" green="0.46274509803921571" blue="0.50196078431372548" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.46274509800000002" green="0.46274509800000002" blue="0.50196078430000002" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

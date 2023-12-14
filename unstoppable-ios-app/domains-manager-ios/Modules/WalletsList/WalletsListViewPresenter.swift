@@ -126,7 +126,7 @@ extension WalletsListViewPresenter: DataAggregatorServiceListener {
 
 // MARK: - NetworkReachabilityServiceListener
 extension WalletsListViewPresenter: NetworkReachabilityServiceListener {
-    func networkStatusChanged(_ status: NetworkReachabilityService.Status) {
+    func networkStatusChanged(_ status: NetworkReachabilityStatus) {
         Task { await showWallets() }
     }
 }

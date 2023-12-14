@@ -28,30 +28,26 @@ extension ChatRemoteContentCell {
     }
 }
 
-struct ChatRemoteContentCell_Previews: PreviewProvider {
+@available (iOS 17.0, *)
+#Preview {
+    let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+    var typeDetails = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: Data())
     
-    static var previews: some View {
-        let height: CGFloat = 76
-        
-        return UICollectionViewCellPreview(cellType: ChatRemoteContentCell.self, height: height) { cell in
-            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            var typeDetails = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: Data())
-            
-            let message = MessagingChatMessageDisplayInfo(id: "1",
-                                                          chatId: "2",
-                                                          userId: "1",
-                                                          senderType: .otherUser(user),
-                                                          time: Date(),
-                                                          type: .remoteContent(typeDetails),
-                                                          isRead: false,
-                                                          isFirstInChat: true,
-                                                          deliveryState: .delivered,
-                                                          isEncrypted: false)
-            cell.setWith(configuration: .init(message: message,
-                                              isGroupChatMessage: false,
-                                              pressedCallback: { }))
-        }
-        .frame(width: 390, height: 390)
-    }
+    let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                  chatId: "2",
+                                                  userId: "1",
+                                                  senderType: .otherUser(user),
+                                                  time: Date(),
+                                                  type: .remoteContent(typeDetails),
+                                                  isRead: false,
+                                                  isFirstInChat: true,
+                                                  deliveryState: .delivered,
+                                                  isEncrypted: false)
+    let cell = ChatRemoteContentCell()
+    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
+    cell.setWith(configuration: .init(message: message,
+                                      isGroupChatMessage: false,
+                                      pressedCallback: { }))
     
+    return cell
 }

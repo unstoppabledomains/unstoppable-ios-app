@@ -39,7 +39,7 @@ class BaseBackupWalletPresenter {
 
 // MARK: - NetworkReachabilityServiceListener
 extension BaseBackupWalletPresenter: NetworkReachabilityServiceListener {
-    func networkStatusChanged(_ status: NetworkReachabilityService.Status) {
+    func networkStatusChanged(_ status: NetworkReachabilityStatus) {
         DispatchQueue.main.async { [weak self] in
             self?.networkStatusChanged()
         }

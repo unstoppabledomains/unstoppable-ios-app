@@ -129,13 +129,6 @@ extension DomainItem {
     }
 }
 
-enum NamingService: String, Codable, CaseIterable {
-    case UNS
-    case ZNS = "zil"
-    
-    static let cases = NamingService.allCases
-}
-
 struct CryptoTxPayload {
     let resolverAddress: HexAddress?
     var txCosts: [NetworkService.TxCost] = []
@@ -165,39 +158,6 @@ extension Array where Element == DomainItem {
     }
 }
 
-typealias DomainName = String
-
-extension DomainName {
-    private func domainComponents() -> [String]? {
-        let components = self.components(separatedBy: String.dotSeparator)
-        guard components.count >= 2 else {
-            Debugger.printFailure("Domain name with no deterctable NS: \(self)", critical: false)
-            return nil
-        }
-        return components
-    }
-    
-    func getTldName() -> String? {
-        guard let tldName = domainComponents()?.last else {
-            Debugger.printFailure("Couldn't get domain TLD name", critical: false)
-            return nil
-        }
-        return tldName.lowercased()
-    }
-    
-    func getBelowTld() -> String? {
-        guard let domainName = domainComponents()?.dropLast(1).joined(separator: String.dotSeparator) else {
-            Debugger.printFailure("Couldn't get domain name", critical: false)
-            return nil
-        }
-        return domainName
-    }
-    
-    static func isZilByExtension(ext: String) -> Bool {
-        ext.lowercased() == NamingService.ZNS.rawValue.lowercased()
-    }
-}
-
 extension DomainItem {
     static func getViewingDomainFor(messagingProfile: MessagingChatUserProfileDisplayInfo) async -> DomainItem? {
         let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
@@ -206,5 +166,17 @@ extension DomainItem {
               let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return nil }
         
         return viewingDomain
+    }
+}
+
+extension DomainItem {
+    /// This method puts a rule whether or not the domains requires payment for a critical trnasaction.
+    /// True means that the app will launch Apple Pay flow and will depend on the backend
+    /// - Returns: Bool
+    func doesRequirePayment() -> Bool {
+        switch self.getBlockchainType() {
+        case .Ethereum: return true
+        case .Zilliqa, .Matic: return false
+        }
     }
 }

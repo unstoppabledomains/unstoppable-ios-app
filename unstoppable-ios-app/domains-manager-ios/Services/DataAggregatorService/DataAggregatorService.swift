@@ -167,12 +167,12 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
-        let domains = await getDomainsDisplayInfo()
+        let domains = await getDomainsDisplayInfo().filter { $0.isOwned(by: [wallet]) }
         let domainNames = domains.map({ $0.name })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
         
         /// Restrict to change RR if any domain within wallet already changing RR.
-        if !transactions.filterPending(extraCondition: {$0.operation == .setReverseResolution || $0.operation == .removeReverseResolution})
+        if !transactions.filterPending(extraCondition: { $0.operation == .setReverseResolution || $0.operation == .removeReverseResolution })
                         .isEmpty { return false }
         
         let rrDomain = await reverseResolutionDomain(for: wallet)
@@ -293,8 +293,8 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
-// MARK: - FirebaseInteractionServiceListener
-extension DataAggregatorService: FirebaseInteractionServiceListener {
+// MARK: - FirebaseAuthenticationServiceListener
+extension DataAggregatorService: FirebaseAuthenticationServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         Task {
             if firebaseUser != nil {
@@ -320,7 +320,7 @@ private extension DataAggregatorService {
             return
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
             SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseInteractionService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logout()
             Task { await aggregateData(shouldRefreshPFP: false) }
         }
     }
@@ -336,7 +336,7 @@ private extension DataAggregatorService {
     }
     
     func fillDomainsDataFromCache() async {
-        let cachedParkedDomains = appContext.firebaseDomainsService.getCachedDomains()
+        let cachedParkedDomains = appContext.firebaseParkedDomainsService.getCachedDomains()
         await fillDomainsDataFromCache(parkedDomains: cachedParkedDomains)
     }
     
@@ -372,8 +372,9 @@ private extension DataAggregatorService {
             
             let (domains, reverseResolutionMap, parkedDomains) = try await (domainsTask, reverseResolutionTask, parkedDomainsTask)
             let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
-
-            guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty else {
+            let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
+            
+            guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty || !pendingPurchasedDomains.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 let wallets = await getWalletsWithInfo()
@@ -427,7 +428,7 @@ private extension DataAggregatorService {
     }
     
     func loadParkedDomains() async -> [FirebaseDomain] {
-        let domains = try? await appContext.firebaseDomainsService.loadParkedDomains()
+        let domains = try? await appContext.firebaseParkedDomainsService.getParkedDomains()
         
         return domains ?? []
     }
@@ -532,18 +533,21 @@ private extension DataAggregatorService {
                                          reverseResolutionMap: ReverseResolutionInfoMap) async {
         
         let rrDomainsList = Set(reverseResolutionMap.compactMap( { $0.value } ))
-        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+
         // Aggregate domain display info
         var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
         for domain in domains {
             var domainState: DomainDisplayInfo.State = .default
             if transactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
+            } else if transactions.containMintingInProgress(domain) {
+                domainState = .minting
             } else if transactions.containPending(domain) {
                 domainState = .updatingRecords
             }
             
-            let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domain.name })
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles) // pfpInfo.first(where: { $0.domainName == domain.name })
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
                                                       pfpInfo: domainPFPInfo,
@@ -555,6 +559,22 @@ private extension DataAggregatorService {
                                                 displayInfo: domainDisplayInfo))
         }
         
+        // Purchased domains
+        let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
+        for domain in pendingPurchasedDomains {
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      pfpInfo: domainPFPInfo,
+                                                      state: .minting,
+                                                      order: order,
+                                                      isSetForRR: false)
+            
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        
+        // Parked domains
         for parkedDomain in parkedDomains {
             let parkedDomainDisplayInfo = FirebaseDomainDisplayInfo(firebaseDomain: parkedDomain)
             let domain = DomainItem(name: parkedDomain.name, ownerWallet: parkedDomain.ownerAddress, status: .unclaimed)
@@ -622,6 +642,29 @@ private extension DataAggregatorService {
         await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
         await dataHolder.sortDomainsToDisplay()
+    }
+    
+    func resolveDomainPFPInfo(for domainName: String,
+                              using pfpInfo: [DomainPFPInfo],
+                              pendingProfiles: [DomainProfilePendingChanges]) async -> DomainPFPInfo? {
+        if let profile = pendingProfiles.first(where: { $0.domainName == domainName }),
+           let localImage = await profile.getAvatarImage() {
+            return .init(domainName: domainName, localImage: localImage)
+        }
+        return pfpInfo.first(where: { $0.domainName == domainName })
+    }
+    
+    func getPurchasedDomainsUnlessInList(_ domains: [DomainItem]) -> [DomainItem] {
+        let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
+            domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
+        })
+        let pendingDomains = pendingPurchasedDomains.map {
+            DomainItem(name: $0.name,
+                       ownerWallet: $0.walletAddress,
+                       blockchain: .Matic)
+        }
+        PurchasedDomainsStorage.setPurchasedDomains(pendingPurchasedDomains)
+        return pendingDomains
     }
     
     func getWallets() async -> [UDWallet] {

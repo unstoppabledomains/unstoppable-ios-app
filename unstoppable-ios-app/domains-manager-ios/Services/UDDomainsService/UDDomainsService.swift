@@ -208,7 +208,3 @@ enum UDDomainsError: Error {
         }
     }
 }
-
-enum MintingError: String, RawValueLocalizable, Error {
-    case noDomainsToMint = "NO_DOMAINS_TO_MINT"
-}

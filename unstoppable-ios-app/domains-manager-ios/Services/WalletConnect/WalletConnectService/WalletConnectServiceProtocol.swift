@@ -6,19 +6,6 @@
 //
 
 import Foundation
-import Boilertalk_Web3
-
-typealias WCExternalRequestResult = Result<Void, Error>
-protocol WalletConnectServiceConnectionListener: AnyObject {
-    func didConnect(to app: UnifiedConnectAppInfo)
-    func didDisconnect(from app: UnifiedConnectAppInfo)
-    func didCompleteConnectionAttempt()
-    func didHandleExternalWCRequestWith(result: WCExternalRequestResult)
-}
-
-extension WalletConnectServiceConnectionListener {
-    func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
-}
 
 final class WalletConnectServiceListenerHolder: Equatable {
     
