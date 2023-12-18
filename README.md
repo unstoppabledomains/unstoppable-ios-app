@@ -34,6 +34,6 @@ Enjoy a powerful tool for integrating NFT domain handling directly into your mob
 
 4. Enter all the real IDs.
 
-5. Use scheme `TESTFLIGHT DEV` to run the app in debug mode.
+5. Use scheme `domains-manager-ios  Debug` to run the app in debug mode.
 
 6. Build and Run the project.
