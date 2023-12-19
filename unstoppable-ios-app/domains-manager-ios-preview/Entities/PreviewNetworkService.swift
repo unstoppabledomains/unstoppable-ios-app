@@ -217,6 +217,11 @@ extension NetworkService {
               storage: nil,
               social: nil)
     }
+    
+    public func createNFTGallery(for domain: DomainItem) async throws  {
+      
+    }
+
 }
 
 extension NetworkService {

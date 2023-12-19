@@ -70,6 +70,8 @@ struct AppContext: AppContextProtocol {
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
     
+    var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
+
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
     }
