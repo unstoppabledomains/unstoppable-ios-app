@@ -354,6 +354,8 @@ private extension OnboardingNavigationController {
             return vc
         case .allDone:
             let vc = HappyEndViewController.instance()
+            let presenter = OnboardingHappyEndViewPresenter(view: vc)
+            vc.presenter = presenter 
             return vc
         case .loginWithWebsite:
             let vc = LoginViewController.nibInstance()

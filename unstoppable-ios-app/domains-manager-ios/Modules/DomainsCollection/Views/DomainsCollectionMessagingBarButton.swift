@@ -68,18 +68,3 @@ private extension DomainsCollectionMessagingBarButton {
         addSubview(badgeView)
     }
 }
-
-struct DomainsCollectionMessagingBarButton_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        let height: CGFloat = 44
-        
-        return UIViewPreview {
-            let view =  DomainsCollectionMessagingBarButton()
-            view.setUnreadMessagesCount(10)
-            return view
-        }
-        .frame(width: 390, height: height)
-    }
-    
-}

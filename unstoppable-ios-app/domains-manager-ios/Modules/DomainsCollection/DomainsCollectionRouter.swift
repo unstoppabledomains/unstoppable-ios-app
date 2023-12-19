@@ -28,6 +28,7 @@ protocol DomainsCollectionRouterProtocol {
     func showChatsListScreen()
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  viewingDomain: DomainItem)
+    func runPurchaseDomainsFlow()
 }
 
 @MainActor
@@ -195,6 +196,14 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
                                 viewingDomain: viewingDomain,
                                 preRequestedAction: nil,
                                 in: viewController)
+    }
+    
+    func runPurchaseDomainsFlow() {
+        guard let viewController else { return }
+        
+        UDRouter().showSearchDomainToPurchase(in: viewController, domainsPurchasedCallback: { [weak self] result in
+            self?.presenter?.didPurchaseDomains(result: result)
+        })
     }
 }
 

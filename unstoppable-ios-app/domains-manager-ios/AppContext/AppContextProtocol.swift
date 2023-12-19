@@ -34,12 +34,14 @@ protocol AppContextProtocol {
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
     var walletNFTsService: WalletNFTsServiceProtocol { get }
-    var firebaseInteractionService: FirebaseInteractionServiceProtocol { get }
-    var firebaseAuthService: FirebaseAuthServiceProtocol { get }
-    var firebaseDomainsService: FirebaseDomainsServiceProtocol { get }
+    var firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol { get }
+    var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol { get }
+    var purchaseDomainsService: PurchaseDomainsServiceProtocol { get }
     var domainTransferService: DomainTransferServiceProtocol { get }
     var messagingService: MessagingServiceProtocol { get }
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
+    
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol
 }

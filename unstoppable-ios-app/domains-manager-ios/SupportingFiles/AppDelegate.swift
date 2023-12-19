@@ -97,7 +97,6 @@ private extension AppDelegate {
         configureNavBar()
         setupAppearance()
         setupBugsnag()
-        setupStripe()
         setupFeatureFlags()
     }
     
@@ -129,10 +128,6 @@ private extension AppDelegate {
 
     func setupBugsnag() {
         Bugsnag.start()
-    }
-    
-    func setupStripe() {
-        StripeService.shared.setup()
     }
     
     func setupFeatureFlags() {

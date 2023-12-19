@@ -13,15 +13,7 @@ import WalletConnectSign
 
 private typealias WCRPCRequestV2 = WalletConnectSign.Request
 private typealias WCRPCResponseV2 = WalletConnectSign.RPCResult
-typealias WC2ConnectionProposal = WalletConnectSign.Session.Proposal
-
-protocol WCRequestsHandlingServiceProtocol {
-    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws
-    func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler)
-    func addListener(_ listener: WalletConnectServiceConnectionListener)
-    func removeListener(_ listener: WalletConnectServiceConnectionListener)
-    func expectConnection()
-}
+typealias WC2ConnectionProposal = SessionV2.Proposal
 
 final class WCRequestsHandlingService {
     

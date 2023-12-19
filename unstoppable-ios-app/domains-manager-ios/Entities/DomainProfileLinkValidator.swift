@@ -47,7 +47,7 @@ struct DomainProfileLinkValidator {
         
         var preRequestedAction: PreRequestedProfileAction?
         if let params,
-           let badgeCode = params.findValue(forDeepLinkKey: DeepLinksService.ParameterKey.openBadgeCode) {
+           let badgeCode = params.findValue(forDeepLinkKey: DeepLinksParameterKey.openBadgeCode) {
             preRequestedAction = .showBadge(code: badgeCode)
         }
         
@@ -77,5 +77,15 @@ struct DomainProfileLinkValidator {
         case none
         case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, action: PreRequestedProfileAction?)
         case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)
+    }
+}
+
+extension Array where Element == URLQueryItem {
+    func findValue(for key: String) -> String? {
+        first(where: { $0.name == key })?.value
+    }
+    
+    func findValue<Key: RawRepresentable>(forDeepLinkKey key: Key) -> String? where Key.RawValue == String {
+        first(where: { $0.name == key.rawValue })?.value
     }
 }

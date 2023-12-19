@@ -49,7 +49,3 @@ private extension DomainTransferService {
         return request
     }
 }
-
-struct TransferDomainConfiguration {
-    let resetRecords: Bool
-}

@@ -192,6 +192,10 @@ extension CNavigationController {
 
 // MARK: - Open methods
 extension CNavigationController {
+    func underlyingScrollViewDidScrollTo(offset: CGPoint) {
+        navigationBarScrollingController.setYOffset(offset.y, in: navigationBar)
+    }
+    
     func underlyingScrollViewDidScroll(_ scrollView: UIScrollView) {
         guard !isTransitioning,
               let topViewController,

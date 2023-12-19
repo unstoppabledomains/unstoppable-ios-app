@@ -30,7 +30,7 @@ class BaseExternalWalletConnectedPresenter: WalletConnectedPresenterProtocol {
             return
         }
         
-        let walletAddress = (wallet.getActiveAddress(for: .UNS) ?? "").walletAddressTruncated
+        let walletAddress = wallet.address.walletAddressTruncated
         view?.setWalletAddress(walletAddress)
         if let make = record.make {
             view?.setWalletIcon(make.icon)

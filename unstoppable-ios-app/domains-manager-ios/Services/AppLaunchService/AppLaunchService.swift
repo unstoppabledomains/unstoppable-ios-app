@@ -69,7 +69,7 @@ private extension AppLaunchService {
                 switch sessionState {
                 case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
                     shouldRunOnboarding = true
-                    appContext.firebaseInteractionService.logout()
+                    appContext.firebaseParkedDomainsAuthenticationService.logout()
                 case .walletAdded, .webAccountWithParkedDomains:
                     shouldRunOnboarding = false
                 }
@@ -237,7 +237,7 @@ private extension AppLaunchService {
     /// Solution: Prepare popular placeholders in advance while we show 1 sec of launch screen
     func preparePopularPlaceholders() {
         Task.detached(priority: .background) {
-            let toPrepare = appContext.coinRecordsService.popularCoinsTickers.map({ String($0.first ?? "a") }).joined() + "0ab"
+            let toPrepare = Constants.popularCoinsTickers.map({ String($0.first ?? "a") }).joined() + "0ab"
             for char in toPrepare {
                 _ = await appContext.imageLoadingService.loadImage(from: .initials(String(char),
                                                                                    size: .default,

@@ -80,6 +80,10 @@ struct NetworkConfig {
             return [:]
         }
     }
+    
+    static var disableFastlyCacheHeader: [String : String] {
+        ["X-Fastly-Force-Refresh" : "true"]
+    }
 
     static var currentEnvironment: UnsConfigManager.BlockchainEnvironment {
         if User.instance.getSettings().isTestnetUsed {

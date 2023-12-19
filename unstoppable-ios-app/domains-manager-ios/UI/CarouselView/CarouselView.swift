@@ -164,16 +164,3 @@ private extension CarouselView {
         }
     }
 }
-
-struct CarouselView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        UIViewPreview {
-            let carouselView = CarouselView(frame: CGRect(x: 0, y: 0, width: 390, height: 32))
-            
-            return carouselView
-        }
-        .frame(width: 390, height: 32)
-    }
-    
-}

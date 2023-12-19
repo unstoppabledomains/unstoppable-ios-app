@@ -29,7 +29,9 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
                                                         DomainsCollectionRecentActivityCell.self,
                                                         DomainsCollectionNoRecentActivitiesCell.self,
                                                         DomainsCollectionDataTypeSelectionCell.self,
-                                                        DomainsCollectionNFTCell.self] }
+                                                        DomainsCollectionNFTCell.self,
+                                                        DomainsCollectionGetDomainCardCell.self] }
+    
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -37,14 +39,14 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var presenter: DomainsCollectionCarouselItemViewPresenterProtocol!
     private var cardState: CarouselCardState = .expanded
     
-    static func instantiate(domain: DomainDisplayInfo,
+    static func instantiate(mode: DomainsCollectionCarouselItemDisplayMode,
                             cardState: CarouselCardState,
                             containerViewController: BaseViewController,
                             actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) -> DomainsCollectionCarouselItemViewController {
         let vc = DomainsCollectionCarouselItemViewController()
         vc.containerViewController = containerViewController
         let presenter = DomainsCollectionCarouselItemViewPresenter(view: vc,
-                                                                   domain: domain,
+                                                                   mode: mode,
                                                                    cardState: cardState,
                                                                    actionsDelegate: actionsDelegate)
         vc.presenter = presenter
@@ -262,6 +264,15 @@ private extension DomainsCollectionCarouselItemViewController {
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionNFTCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 return cell
+            case .getDomainCard:
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionGetDomainCardCell.self, forIndexPath: indexPath)
+                cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
+                
+                DispatchQueue.main.async {
+                    self?.delegate?.updatePagesVisibility()
+                }
+                
+                return cell
             }
         })
         
@@ -468,6 +479,7 @@ extension DomainsCollectionCarouselItemViewController {
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
         case dataTypeSelector(configuration: DataTypeSelectionConfiguration)
         case nft(configuration: NFTConfiguration)
+        case getDomainCard
     }
     
     struct DomainCardConfiguration: Hashable {
@@ -654,11 +666,13 @@ extension DomainsCollectionCarouselItemViewController {
     
     enum Action {
         case recentActivityLearnMore
+        case recentActivityGetDomain
         case domainSelected(_ domain: DomainDisplayInfo)
         case nftSelected(_ nft: NFTModel)
         case domainNameCopied
         case rearrangeDomains
         case parkedDomainLearnMore
+        case purchaseDomains
     }
     
     struct DataTypeSelectionConfiguration: Hashable {
@@ -675,7 +689,7 @@ extension DomainsCollectionCarouselItemViewController {
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {
-        case NFT, activity, parkedDomain
+        case NFT, activity, parkedDomain, getDomain
         
         var title: String {
             switch self {
@@ -683,6 +697,8 @@ extension DomainsCollectionCarouselItemViewController {
                 return "NFTs"
             case .activity, .parkedDomain:
                 return String.Constants.activity.localized()
+            case .getDomain:
+                return ""
             }
         }
         
@@ -690,7 +706,7 @@ extension DomainsCollectionCarouselItemViewController {
             switch self {
             case .NFT:
                 return .hexagonIcon24
-            case .activity, .parkedDomain:
+            case .activity, .parkedDomain, .getDomain:
                 return .timeIcon24
             }
         }
@@ -701,6 +717,8 @@ extension DomainsCollectionCarouselItemViewController {
                 return "NFTs"
             case .activity, .parkedDomain:
                 return "Activity"
+            case .getDomain:
+                return "getDomain"
             }
         }
     }
@@ -710,3 +728,4 @@ extension DomainsCollectionCarouselItemViewController {
     }
     
 }
+

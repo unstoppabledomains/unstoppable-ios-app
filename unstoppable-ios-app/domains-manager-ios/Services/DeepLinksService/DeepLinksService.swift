@@ -30,7 +30,7 @@ extension DeepLinksService: DeepLinksServiceProtocol {
         guard let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else { return }
         
         if let path = components.path,
-           path == deepLinkPath,
+           path == deepLinkPath + "/" + wcScheme || path == deepLinkPath,
            let params = components.queryItems {
             if !tryHandleUDDeepLink(incomingURL, params: params, receivedState: receivedState) {
                 tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
@@ -122,7 +122,7 @@ private extension DeepLinksService {
     func tryHandleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) -> Bool {
         Debugger.printInfo(topic: .UniversalLink, "Handling Universal Link \(incomingURL.absoluteURL)")
         
-        guard let operationString = params.findValue(forDeepLinkKey: ParameterKey.operation),
+        guard let operationString = params.findValue(forDeepLinkKey: DeepLinksParameterKey.operation),
               let operation = DeepLinkOperation (operationString) else { return false }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
@@ -166,7 +166,7 @@ private extension DeepLinksService {
             return url
         } else if isWCDeepLinkUrl(from: components),
                   let params = components.queryItems,
-                  let uri = params.findValue(forDeepLinkKey: ParameterKey.uri),
+                  let uri = params.findValue(forDeepLinkKey: DeepLinksParameterKey.uri),
                   let wcURL = URL(string: uri) {
             return wcURL
         }
@@ -178,8 +178,8 @@ private extension DeepLinksService {
     }
     
     func handleMintDomainsLink(with parameters: [URLQueryItem], receivedState: ExternalEventReceivedState) {
-        guard let email = parameters.findValue(forDeepLinkKey: ParameterKey.email),
-              let code = parameters.findValue(forDeepLinkKey: ParameterKey.code) else {
+        guard let email = parameters.findValue(forDeepLinkKey: DeepLinksParameterKey.email),
+              let code = parameters.findValue(forDeepLinkKey: DeepLinksParameterKey.code) else {
             Debugger.printInfo(topic: .UniversalLink, "Failed to get email or code from Mint domains Universal Link")
             return }
         
@@ -192,25 +192,5 @@ private extension DeepLinksService {
         listeners.forEach { holder in
             holder.listener?.didReceiveDeepLinkEvent(event, receivedState: receivedState)
         }
-    }
-}
-
-// MARK: - Private methods
-extension DeepLinksService {
-    enum ParameterKey: String {
-        case operation
-        case email, code
-        case uri
-        case openBadgeCode
-    }
-}
-
-extension Array where Element == URLQueryItem {
-    func findValue(for key: String) -> String? {
-        first(where: { $0.name == key })?.value
-    }
-    
-    func findValue<Key: RawRepresentable>(forDeepLinkKey key: Key) -> String? where Key.RawValue == String {
-        first(where: { $0.name == key.rawValue })?.value
     }
 }

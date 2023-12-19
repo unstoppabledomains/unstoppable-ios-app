@@ -14,13 +14,18 @@ protocol DomainsCollectionCarouselItemViewPresenterProtocol: BasePresenterProtoc
     func didPullToRefresh()
 }
 
+enum DomainsCollectionCarouselItemDisplayMode {
+    case domain(DomainDisplayInfo)
+    case empty
+}
+
 final class DomainsCollectionCarouselItemViewPresenter {
     
     typealias CardAction = DomainsCollectionCarouselItemViewController.DomainCardConfiguration.Action
     
     private weak var view: DomainsCollectionCarouselItemViewProtocol?
     
-    private var domain: DomainDisplayInfo
+    private var mode: DomainsCollectionCarouselItemDisplayMode
     private var walletWithInfo: WalletWithInfo?
     private var cardState: CarouselCardState = .expanded
     static let dashesSeparatorSectionHeight: CGFloat = 16
@@ -33,11 +38,11 @@ final class DomainsCollectionCarouselItemViewPresenter {
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
-         domain: DomainDisplayInfo,
+         mode: DomainsCollectionCarouselItemDisplayMode,
          cardState: CarouselCardState,
          actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) {
         self.view = view
-        self.domain = domain
+        self.mode = mode
         self.cardState = cardState
         self.actionsDelegate = actionsDelegate
     }
@@ -67,6 +72,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
             actionsDelegate?.didOccurUIAction(.nftSelected(configuration.nft))
         case .noRecentActivities, .recentActivity, .dataTypeSelector:
             return
+        case .getDomainCard:
+            UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.purchaseDomains)
         }
     }
     
@@ -78,8 +86,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         }
         
         self.cardState = state
-        if !connectedApps.isEmpty || isSwipeTutorialValueChanged() {
-            self.didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
+        if !connectedApps.isEmpty || isSwipeTutorialValueChanged() || !didShowSwipeDomainCardTutorial {
+            self.didShowSwipeDomainCardTutorial = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.07) {
                 Task {
                     await self.showDomainDataWithActions(animated: true)
@@ -90,6 +98,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     
     @MainActor
     func didPullToRefresh() {
+        guard case .domain(let domain) = mode else { return }
+        
         Task {
             do {
                 try await appContext.walletNFTsService.refreshNFTsFor(domainName: domain.name)
@@ -104,19 +114,21 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
 extension DomainsCollectionCarouselItemViewPresenter: DataAggregatorServiceListener {
     func dataAggregatedWith(result: DataAggregationResult) {
         Task {
-            switch result {
-            case .success(let resultType):
-                switch resultType {
-                case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    if let currentDomain = domains.first(where: { $0.isSameEntity(self.domain )}),
-                       currentDomain != self.domain {
-                        self.domain = currentDomain
-                        await showDomainDataWithActions(animated: false)
+            if case .domain(let domain) = mode {
+                switch result {
+                case .success(let resultType):
+                    switch resultType {
+                    case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
+                        if let currentDomain = domains.first(where: { $0.isSameEntity(domain )}),
+                           currentDomain != domain {
+                            self.mode = .domain(currentDomain)
+                            await showDomainDataWithActions(animated: false)
+                        }
+                    case .primaryDomainChanged, .walletsListUpdated: return
                     }
-                case .primaryDomainChanged, .walletsListUpdated: return
+                case .failure:
+                    return
                 }
-            case .failure:
-                return
             }
         }
     }
@@ -148,7 +160,8 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 // MARK: - WalletConnectServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
     func didConnect(to app: UnifiedConnectAppInfo) {
-        guard app.domain.isSameEntity(self.domain) else { return }
+        guard case .domain(let domain) = mode,
+              app.domain.isSameEntity(domain) else { return }
         
         Task {
             await showDomainDataWithActions(animated: true)
@@ -156,7 +169,8 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
     }
     
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        guard app.domain.isSameEntity(self.domain) else { return }
+        guard case .domain(let domain) = mode,
+              app.domain.isSameEntity(domain) else { return }
 
         Task {
             await showDomainDataWithActions(animated: true)
@@ -169,7 +183,8 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
 // MARK: - WalletNFTsServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener {
     func didRefreshNFTs(_ nfts: [NFTModel], for domainName: DomainName) {
-        if domain.name == domainName {
+        if case .domain(let domain) = self.mode,
+           domain.name == domainName {
             setNFTs(nfts)
             Task {
                 await showDomainDataWithActions(animated: true)
@@ -183,11 +198,14 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener 
 private extension DomainsCollectionCarouselItemViewPresenter {
     func showDomainDataWithActions(animated: Bool) async {
         let actions = await actionsForDomain()
-        let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
-        self.connectedApps = connectedApps
-        if self.nfts == nil {
-            let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(domainName: domain.name)) ?? []
-            setNFTs(nfts)
+        if case .domain(let domain) = mode {
+            let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
+            self.connectedApps = connectedApps
+            
+            if self.nfts == nil {
+                let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(domainName: domain.name)) ?? []
+                setNFTs(nfts)
+            }
         }
         await showDomainData(animated: animated, actions: actions)
     }
@@ -198,44 +216,63 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     @MainActor
     func showDomainData(animated: Bool, actions: [CardAction]) {
-        let domain = self.domain
+        switch mode {
+        case .domain(let domain):
+            showDataForDomain(domain, animated: animated, actions: actions)
+        case .empty:
+            showDataForDomain(nil, animated: animated, actions: actions)
+        }
+    }
+    
+    @MainActor
+    func showDataForDomain(_ domain: DomainDisplayInfo?, animated: Bool, actions: [CardAction]) {
         var snapshot = DomainsCollectionCarouselItemSnapshot()
         
         snapshot.appendSections([.domainsCarousel])
-        snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
-                                                               domain: domain,
-                                                               availableActions: actions,
-                                                               actionButtonPressedCallback: { [weak self] in
-            self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
-                                                 parameters: [.domainName : domain.name])
-        }))])
-        
-        if domain.isInteractable {
-            snapshot.appendSections([.dataTypeSelector])
-            snapshot.appendItems([.dataTypeSelector(configuration: .init(selectedDataType: visibleDataType,
-                                                                         dataTypeChangedCallback: { [weak self] dataType in
-                self?.visibleDataTypeChanged(dataType)
+        if let domain {
+            snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
+                                                                   domain: domain,
+                                                                   availableActions: actions,
+                                                                   actionButtonPressedCallback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
+                                                     parameters: [.domainName : domain.name])
             }))])
+        } else {
+            snapshot.appendItems([.getDomainCard])
         }
-         
-        addActivitiesSection(in: &snapshot, domain: domain)
+        
+        var isTutorialOn = false
+        if !didShowSwipeDomainCardTutorial,
+           cardState == .expanded {
+            isTutorialOn = true
+        }
+        
+        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+        if isTutorialOn {
+            snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+        } else {
+            snapshot.appendSections([.dashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+        }
+        
+        if let domain {
+            if domain.isInteractable {
+                snapshot.appendSections([.dataTypeSelector])
+                snapshot.appendItems([.dataTypeSelector(configuration: .init(selectedDataType: visibleDataType,
+                                                                             dataTypeChangedCallback: { [weak self] dataType in
+                    self?.visibleDataTypeChanged(dataType)
+                }))])
+            }
+            
+            addActivitiesSection(in: &snapshot, domain: domain, isTutorialOn: isTutorialOn)
+        } else {
+            
+        }
         
         view?.applySnapshot(snapshot, animated: animated)
     }
     
     func emptySeparatorHeightForExpandedState() -> CGFloat {
-        switch deviceSize {
-        case .i4Inch:
-            return 14
-        case .i5_4Inch:
-            return 26
-        case .i5_5Inch:
-            return 50
-        case .i5_8Inch:
-            return 30
-        default:
-            return 40
-        }
+        20
     }
     
     func visibleDataTypeChanged(_ newVisibleDataType: DomainsCollectionVisibleDataType) {
@@ -264,11 +301,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                                  domain: DomainDisplayInfo,
                                  isTutorialOn: Bool) {
         if connectedApps.isEmpty {
-            if isTutorialOn {
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
-                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
-            }
-            
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()
@@ -299,18 +331,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
 
 // MARK: - Activities Section
 private extension DomainsCollectionCarouselItemViewPresenter {
-    func addActivitiesSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot, domain: DomainDisplayInfo) {
-        var isTutorialOn = false
-        if !didShowSwipeDomainCardTutorial,
-           cardState == .expanded {
-            isTutorialOn = true
-        }
-        
+    func addActivitiesSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot, domain: DomainDisplayInfo, isTutorialOn: Bool) {
         if case .parking = domain.state {
-            if isTutorialOn {
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
-                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
-            }
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()
@@ -351,7 +373,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
 // MARK: - Actions
 private extension DomainsCollectionCarouselItemViewPresenter {
     func actionsForDomain() async -> [CardAction] {
-        let domain = self.domain
+        guard case .domain(let domain) = mode else { return [] }
+        
         var vaultName: String?
         if let walletWithInfo = self.walletWithInfo,
            walletWithInfo.displayInfo?.address == domain.ownerWallet {
@@ -393,6 +416,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func handleOpenAppAction(_ app: any UnifiedConnectAppInfoProtocol) {
+        guard case .domain(let domain) = mode else { return }
+        
         logButtonPressedAnalyticEvents(button: .open,
                                        parameters: [.wcAppName: app.appName,
                                                     .domainName: domain.name])
@@ -402,6 +427,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func handleDisconnectAppAction(_ app: any UnifiedConnectAppInfoProtocol) {
+        guard case .domain(let domain) = mode else { return }
+
         logButtonPressedAnalyticEvents(button: .disconnectApp,
                                        parameters: [.wcAppName: app.appName,
                                                     .domainName: domain.name])
@@ -411,26 +438,32 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func recentActivitiesLearnMoreButtonPressed() {
-        if case .parking = domain.state {
-            actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
-            return
-        }
-        
-        switch visibleDataType {
-        case .NFT:
-            Task {
-                do {
-                    let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-                    try await NetworkService().createNFTGallery(for: domain)
-                    await didPullToRefresh()
-                } catch {
-                    await view?.showAlertWith(error: error, handler: nil)
+        switch mode {
+        case .domain(let domain):
+            if case .parking = domain.state {
+                actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
+            } else {
+                switch visibleDataType {
+                case .NFT:
+                    Task {
+                        do {
+                            let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+                            try await NetworkService().createNFTGallery(for: domain)
+                            await didPullToRefresh()
+                        } catch {
+                            await view?.showAlertWith(error: error, handler: nil)
+                        }
+                    }
+                case .activity:
+                    actionsDelegate?.didOccurUIAction(.recentActivityLearnMore)
+                case .parkedDomain:
+                    actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
+                case .getDomain:
+                    return 
                 }
             }
-        case .activity:
-            actionsDelegate?.didOccurUIAction(.recentActivityLearnMore)
-        case .parkedDomain:
-            actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
+        case .empty:
+            actionsDelegate?.didOccurUIAction(.recentActivityGetDomain)
         }
     }
 }
@@ -445,6 +478,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func showSetupReverseResolutionModule() {
+        guard case .domain(let domain) = mode else { return }
+
         Task { @MainActor in
             guard let navigation = view?.containerViewController?.cNavigationController,
                   let walletWithInfo,

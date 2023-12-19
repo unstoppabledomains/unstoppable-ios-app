@@ -91,6 +91,7 @@ extension UIImage {
     static let infoIcon = UIImage(named: "settingsIconPrivacy")!
     static let arrowTopRight = UIImage(named: "arrowTopRight")!
     static let framesIcon = UIImage(named: "framesIcon")!
+    static let framesIcon16 = UIImage(named: "framesIcon16")!
     static let framesIcon20 = UIImage(named: "framesIcon20")!
     static let scanQRIcon = UIImage(named: "scanQRIcon")!
     static let scanQRIcon16 = UIImage(named: "scanQRIcon16")!
@@ -101,6 +102,7 @@ extension UIImage {
     static let profileAccessIllustration = UIImage(named: "profileAccessIllustration")!
     static let profileAccessIllustrationLarge = UIImage(named: "profileAccessIllustrationLarge")!
     static let profileAccessIllustrationLargeiPhoneSE = UIImage(named: "profileAccessIllustrationLargeiPhoneSE")!
+    static let avatarsIcon16 = UIImage(named: "avatarsIcon16")!
     static let avatarsIcon20 = UIImage(named: "avatarsIcon20")!
     static let avatarsIcon24 = UIImage(named: "avatarsIcon24")!
     static let avatarsIcon32 = UIImage(named: "avatarsIcon32")!
@@ -150,6 +152,13 @@ extension UIImage {
     static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
     static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
     static let udBlueGrayIcon = UIImage(named: "udBlueGrayIcon")!
+    static let check = UIImage(named: "check")!
+    static let statsIcon = UIImage(named: "statsIcon")!
+    static let sparkleIcon = UIImage(named: "sparkleIcon")!
+    static let chevronRight = UIImage(named: "chevronRight")!
+    static let tagsCashIcon = UIImage(named: "tagsCashIcon")!
+    static let usaFlagIcon = UIImage(named: "usaFlagIcon")!
+    static let tagIcon = UIImage(named: "tagIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -174,7 +183,7 @@ extension UIImage {
     static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")!
     static let safari = UIImage(systemName: "safari")!
     static let chevronLeft = UIImage(systemName: "chevron.left")
-    static let chevronRight = UIImage(systemName: "chevron.right")
+    static let systemChevronRight = UIImage(systemName: "chevron.right")
     static let systemMinusCircle = UIImage(systemName: "minus.circle")!
     static let systemMultiplyCircle = UIImage(systemName: "multiply.circle")!
     static let arrowRightArrowLeft = UIImage(systemName: "arrow.right.arrow.left")!

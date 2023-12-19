@@ -12,6 +12,7 @@ protocol PublicProfileViewDelegate: AnyObject {
     func publicProfileDidSelectShareProfile(_ profile: DomainName)
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem)
     func publicProfileDidSelectOpenLeaderboard()
+    func publicProfileDidSelectViewInBrowser(domainName: String)
 }
 
 // MARK: - Open methods
@@ -62,6 +63,10 @@ extension UIViewController: PublicProfileViewDelegate {
     
     func publicProfileDidSelectOpenLeaderboard() {
         getViewControllerToPresent().openLink(.badgesLeaderboard)
+    }
+    
+    func publicProfileDidSelectViewInBrowser(domainName: String) {
+        getViewControllerToPresent().openLink(.domainProfilePage(domainName: domainName))
     }
     
     private func getViewControllerToPresent() -> UIViewController {

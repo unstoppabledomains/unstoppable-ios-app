@@ -194,7 +194,7 @@ private extension WebViewController {
         let safariItem = UIBarButtonItem(image: .safari, style: .plain, target: self, action: #selector(browserButtonPressed))
         let shareItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonPressed))
         moveBackItem = UIBarButtonItem(image: .chevronLeft, style: .plain, target: self, action: #selector(moveBackButtonPressed))
-        moveForwardItem = UIBarButtonItem(image: .chevronRight, style: .plain, target: self, action: #selector(moveForwardButtonPressed))
+        moveForwardItem = UIBarButtonItem(image: .systemChevronRight, style: .plain, target: self, action: #selector(moveForwardButtonPressed))
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
         toolbarItems = [moveBackItem, spacer, moveForwardItem, spacer, spacer, shareItem, spacer, safariItem]

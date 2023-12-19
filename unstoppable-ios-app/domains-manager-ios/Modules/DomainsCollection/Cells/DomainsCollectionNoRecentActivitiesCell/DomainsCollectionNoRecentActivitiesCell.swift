@@ -51,22 +51,9 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let dif = contentTopExpandedValue() - contentTopCollapsedValue
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
-        
-        switch dataType {
-        case .parkedDomain:
-            learnMoreButton.alpha = 1
-        case .activity, .NFT:
-            learnMoreButton.alpha = isLearnMoreButtonHidden ? 0.0 : expandProgress
-        }
-        
-        switch deviceSize {
-        case .i4_7Inch, .i4Inch:
-            iconImageView.alpha = expandProgress
-        case .i5_5Inch:
-            iconImageView.alpha = isTutorialOn ? expandProgress : 1
-        default:
-            iconImageView.alpha = 1
-        }
+        contentTopConstraint.constant += additionalTopOffset()
+        learnMoreButton.alpha = 1
+        iconImageView.alpha = 1
     }
 }
 
@@ -82,7 +69,7 @@ private extension DomainsCollectionNoRecentActivitiesCell {
         let isButtonHidden: Bool
         
         switch dataType {
-        case .activity:
+        case .activity, .getDomain:
             title = String.Constants.noConnectedApps.localized()
             icon = .widgetIcon
             isButtonHidden = false
@@ -118,21 +105,15 @@ private extension DomainsCollectionNoRecentActivitiesCell {
             return isTutorialOn ? 0 : -24
         case .i4_7Inch:
             return isTutorialOn ? 0 : -4
-        case .i5_4Inch:
-            return isTutorialOn ? 20 : 24
-        case .i5_5Inch:
-            return isTutorialOn ? 10 : 40
-        case .i5_8Inch:
-            return isTutorialOn ? 24 : 30
-        case .i6_1Inch:
-            // IP 13Pro
-            if UIScreen.main.bounds.width == 390 {
-                return isTutorialOn ? 10 : 38
-            }
-            // IP 11
-            return isTutorialOn ? 34 : 50
-        case .i6_5Inch, .i6_7Inch:
-            return isTutorialOn ? 38 : 40
+        default:
+            return 20
+        }
+    }
+    
+    func additionalTopOffset() -> CGFloat {
+        switch deviceSize {
+        case .i4Inch, .i4_7Inch:
+            return 10
         default:
             return 0
         }

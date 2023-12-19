@@ -62,6 +62,9 @@ extension Analytics {
         
         // Shake to find
         case didDiscoverBTDomain
+        
+        // Purchase domain
+        case didPurchaseDomains, accountHasUnpaidDomains
     }
 }
 
@@ -175,6 +178,7 @@ extension Analytics {
         case publicDomainProfile
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
         case shakeToFind
+        case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
     }
 }
 
@@ -222,7 +226,7 @@ extension Analytics {
         case biometric, passcode
         
         // Manage domain
-        case setPrimaryDomain, showWalletDetails, addCurrency, domainRecord, routeCryptoInfo, copyCoinAddress, editCoinAddress, editCoinMultiChainAddresses, removeCoin, primaryDomainInfo, manageOnTheWebsite
+        case setPrimaryDomain, showWalletDetails, addCurrency, domainRecord, routeCryptoInfo, copyCoinAddress, editCoinAddress, editCoinMultiChainAddresses, removeCoin, primaryDomainInfo, manageOnTheWebsite, viewInBrowser
         
         // Verification code
         case openEmailApp, resendCode
@@ -304,6 +308,14 @@ extension Analytics {
         
         // Shake and find
         case btDomain
+        
+        // Purchase domain
+        case getNewDomain, getNewDomainLearnMore
+        case suggestedName
+        case purchaseDomainTargetWalletSelected
+        case enterUSZIPCode, confirmUSZIPCode
+        case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
+        case applyPromoCredits, applyStoreCredits
     }
 }
 
@@ -351,6 +363,9 @@ extension Analytics {
         case messagingChannelInfo, messagingBlockConfirmation, messagingOpenExternalLink, messagingGroupChatInfo, messagingCommunityChatInfo
         case unencryptedMessageInfo
         case walletsMaxNumberLimitReached, walletsMaxNumberLimitReachedAlready
+        case purchaseDomainsAskToSign
+        case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
+        case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

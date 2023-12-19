@@ -175,6 +175,17 @@ extension MessagingService: MessagingServiceProtocol {
         return totalNumberOfUnreadMessages > 0 
     }
     
+    func logout() {
+        Task {
+            do {
+                let profiles = try storageService.getAllUserProfiles()
+                for profile in profiles {
+                    await storageService.clearAllDataOf(profile: profile, filesService: filesService)
+                }
+            }
+        }
+    }
+    
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         let chats = try await getCachedChatsInAllServicesFor(profile: profile)

@@ -40,6 +40,24 @@ struct APIRequest {
         self.body = body
         self.method = method
     }
+    
+    init(urlString: String,
+         body: Encodable? = nil,
+         method: NetworkService.HttpRequestMethod,
+         headers: [String : String] = [:]) throws {
+        guard let url = URL(string: urlString) else { throw NetworkLayerError.creatingURLFailed }
+        
+        var bodyString: String = ""
+        if let body {
+            guard let bodyStringEncoded = body.jsonString() else { throw NetworkLayerError.responseFailedToParse }
+            bodyString = bodyStringEncoded
+        }
+        
+        self.url = url
+        self.headers = headers
+        self.body = bodyString
+        self.method = method
+    }
 }
 
 enum MetaTxMethod: String {

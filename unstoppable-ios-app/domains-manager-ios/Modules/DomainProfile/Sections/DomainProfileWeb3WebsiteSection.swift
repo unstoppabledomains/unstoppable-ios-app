@@ -32,7 +32,7 @@ final class DomainProfileWeb3WebsiteSection {
 extension DomainProfileWeb3WebsiteSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         switch state {
-        case .default, .updatingRecords, .loadingError, .updatingProfile:
+        case .default, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
             guard let website = editingWebsiteData.web3Url else { return }
             
             snapshot.appendSections([.dashesSeparator()])

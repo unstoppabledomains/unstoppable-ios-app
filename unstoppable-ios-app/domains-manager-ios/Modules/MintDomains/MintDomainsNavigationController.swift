@@ -15,8 +15,7 @@ protocol MintDomainsFlowManager: AnyObject {
 @MainActor
 final class MintDomainsNavigationController: CNavigationController {
     
-    typealias DomainsMintedCallback = ((Result)->())
-    typealias MintDomainsResult = Result
+    typealias DomainsMintedCallback = ((MintDomainsResult)->())
 
     private var mintedDomains: [DomainDisplayInfo] = []
     private var mode: Mode = .default(email: User.instance.email)
@@ -155,7 +154,7 @@ private extension MintDomainsNavigationController {
         viewController is TransactionInProgressViewController
     }
     
-    func dismiss(result: Result) {
+    func dismiss(result: MintDomainsResult) {
         if let vc = presentedViewController {
             vc.dismiss(animated: true)
         }
@@ -362,15 +361,6 @@ extension MintDomainsNavigationController {
         case didConfirmDomainsToMint(_ domains: [String], domainsOrderInfoMap: SortDomainsOrderInfoMap)
         case mintingCompleted
         case skipMinting
-    }
-    
-    enum Result {
-        case cancel
-        case noDomainsToMint
-        case importWallet
-        case minted
-        case skipped
-        case domainsPurchased(details: DomainsPurchasedDetails)
     }
 }
 

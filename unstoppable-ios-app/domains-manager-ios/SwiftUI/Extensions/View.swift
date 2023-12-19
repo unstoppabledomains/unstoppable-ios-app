@@ -29,4 +29,19 @@ extension View {
         }
     }
     
+    @discardableResult
+    func openURLExternally(_ url: URL) -> Bool {
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+            return true
+        }
+        return false
+    }
+    
+    func openLinkExternally(_ link: String.Links) {
+        guard let url = link.url else { return }
+        
+        openURLExternally(url)
+    }
+    
 }

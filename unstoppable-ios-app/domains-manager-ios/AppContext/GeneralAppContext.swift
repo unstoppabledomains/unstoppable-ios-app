@@ -25,9 +25,9 @@ final class GeneralAppContext: AppContextProtocol {
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
-    let firebaseInteractionService: FirebaseInteractionServiceProtocol
-    let firebaseAuthService: FirebaseAuthServiceProtocol
-    let firebaseDomainsService: FirebaseDomainsServiceProtocol
+    let firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol
+    let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
+    let purchaseDomainsService: PurchaseDomainsServiceProtocol
     let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
@@ -134,21 +134,35 @@ final class GeneralAppContext: AppContextProtocol {
                                                                        storageFileKey: "ud.profile.signatures.file")
         
         // Firebase
+        // Parked domains
         let firebaseSigner = UDFirebaseSigner()
-        let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
-        self.firebaseAuthService = firebaseAuthService
-        let firebaseInteractionService = FirebaseInteractionService(firebaseAuthService: firebaseAuthService,
-                                                                    firebaseSigner: firebaseSigner)
-        self.firebaseInteractionService = firebaseInteractionService
-        firebaseDomainsService = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService)
+        let firebaseParkedDomainsRefreshTokenStorage = ParkedDomainsFirebaseAuthTokenStorage()
+        let firebaseParkedDomainsAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                   refreshTokenStorage: firebaseParkedDomainsRefreshTokenStorage)
+        let firebaseParkedDomainsAuthenticationService = FirebaseAuthenticationService(firebaseAuthService: firebaseParkedDomainsAuthService,
+                                                                                       firebaseSigner: firebaseSigner)
+        self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
+        firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
+                                                        firebaseSigner: firebaseSigner)
         
-        firebaseInteractionService.addListener(dataAggregatorService)
+        firebaseParkedDomainsAuthenticationService.addListener(dataAggregatorService)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
+        
+        // Purchase domains
+        let firebasePurchaseDomainsRefreshTokenStorage = PurchaseDomainsFirebaseAuthTokenStorage()
+        let firebasePurchaseDomainsAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                     refreshTokenStorage: firebasePurchaseDomainsRefreshTokenStorage)
+        purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebasePurchaseDomainsAuthService,
+                                                                firebaseSigner: firebaseSigner,
+                                                                preferencesService: .shared)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }
     }
     
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
+        StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
+    }
 }
 

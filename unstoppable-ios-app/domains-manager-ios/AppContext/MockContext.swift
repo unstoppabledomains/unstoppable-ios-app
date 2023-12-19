@@ -49,15 +49,19 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
     private(set) lazy var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol = MockWalletConnectExternalWalletHandler()
     private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
-    private(set) lazy var firebaseInteractionService: FirebaseInteractionServiceProtocol = FirebaseInteractionService(firebaseAuthService: firebaseAuthService as! FirebaseAuthService,
-                                                                                                                      firebaseSigner: UDFirebaseSigner())
-    private(set) lazy var firebaseAuthService: FirebaseAuthServiceProtocol = FirebaseAuthService(firebaseSigner: UDFirebaseSigner())
-    private(set) lazy var firebaseDomainsService: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService as! FirebaseDomainsLoaderProtocol)
+    private(set) lazy var firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol = MockFirebaseInteractionsService()
+    private(set) lazy var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol = MockFirebaseInteractionsService()
+    private(set) lazy var purchaseDomainsService: PurchaseDomainsServiceProtocol = MockFirebaseInteractionsService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
     private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = MockUDFeatureFlagsService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
+    
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
+        MockStripeService(amount: amount)
+    }
+
 }
 
 #endif
