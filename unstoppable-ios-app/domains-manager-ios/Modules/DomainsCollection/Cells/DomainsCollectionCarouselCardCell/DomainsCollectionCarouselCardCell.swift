@@ -444,7 +444,7 @@ private extension DomainsCollectionCarouselCardCell {
             case .updatingRecords:
                 return String.Constants.updatingRecords.localized()
             case .minting:
-                return String.Constants.claimingDomain.localized()
+                return String.Constants.mintingDomain.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .parked(let status):

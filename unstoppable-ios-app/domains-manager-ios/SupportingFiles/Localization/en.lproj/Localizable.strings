@@ -111,6 +111,7 @@
 "INSTALLED" = "Installed";
 "NOT_INSTALLED" = "Not installed";
 "MINTING" = "Minting";
+"MINTING_DOMAIN" = "Minting domain";
 "MOVING" = "Moving";
 "SCANNING" = "Scanning";
 "ADD" = "Add";
