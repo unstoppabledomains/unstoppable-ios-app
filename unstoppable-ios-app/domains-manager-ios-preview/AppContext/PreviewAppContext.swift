@@ -7,6 +7,8 @@
 
 import Foundation
 
+let previewContext = AppContext()
+
 struct AppContext: AppContextProtocol {
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     

@@ -54,6 +54,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
+        appContext.hotFeatureSuggestionsService.addListener(self)
         showDomainData(animated: false, actions: [])
         Task.detached(priority: .low) { [weak self] in
             await self?.showDomainDataWithActions(animated: false)
