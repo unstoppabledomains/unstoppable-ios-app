@@ -29,6 +29,7 @@ extension String {
         case referralLink(code: String)
         case udBlue
         case communitiesInfo
+        case setupApplePayInstruction
         
         var urlString: String {
             switch self {
@@ -93,6 +94,8 @@ extension String {
                 return "https://unstoppabledomains.com/products/blue"
             case .communitiesInfo:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
+            case .setupApplePayInstruction:
+                return "https://support.apple.com/en-us/108398"
             }
         }
         
@@ -1026,6 +1029,8 @@ extension String {
         static let signTransaction = "SIGN_TRANSACTION"
         static let finishSetupProfileFailedPullUpTitle = "FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE"
         static let cancelSetup = "CANCEL_SETUP"
+        static let purchaseApplePayNotSupportedErrorMessage = "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE"
+        static let purchaseApplePayNotSupportedErrorMessageHighlighted = "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE_HIGHLIGHTED"
     }
     
     enum BlockChainIcons: String {

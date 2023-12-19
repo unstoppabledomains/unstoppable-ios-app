@@ -7,10 +7,6 @@
 
 import Foundation
 
-protocol StripeServiceProtocol {
-    func payWithStripe() async throws
-}
-
 final class StripeService: NSObject {
     typealias PurchaseResult = Result<Void, PurchaseError>
     typealias PurchaseResultCallback = (PurchaseResult)->()
