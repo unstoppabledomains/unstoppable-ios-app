@@ -163,6 +163,7 @@ extension String {
         static let installed = "INSTALLED"
         static let notInstalled = "NOT_INSTALLED"
         static let minting = "MINTING"
+        static let mintingDomain = "MINTING_DOMAIN"
         static let moving = "MOVING"
         static let scanning = "SCANNING"
         static let add = "ADD"
