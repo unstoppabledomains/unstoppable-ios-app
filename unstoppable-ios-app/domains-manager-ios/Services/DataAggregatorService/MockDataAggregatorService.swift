@@ -151,7 +151,10 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
                                                                    transactionHash: transactions.first(where: { $0.domainName == domain })?.transactionHash) })
         return mintingDomains
     }
-    
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+                            pendingProfiles: [DomainProfilePendingChanges]) async {
+        
+    }
     func addListener(_ listener: DataAggregatorServiceListener) {
         if !listeners.contains(where: { $0.listener === listener }) {
             listeners.append(.init(listener: listener))

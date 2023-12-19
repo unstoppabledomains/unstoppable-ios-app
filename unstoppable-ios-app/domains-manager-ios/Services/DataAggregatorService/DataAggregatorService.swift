@@ -242,6 +242,18 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         }
     }
     
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+                            pendingProfiles: [DomainProfilePendingChanges]) async {
+        var domainsWithDisplayInfo = await dataHolder.domainsWithDisplayInfo
+        let purchasedDomainsWithDisplayInfo = await transformPendingPurchasedDomainToDomainsWithInfo(purchasedDomains,
+        pendingProfiles: pendingProfiles)
+        domainsWithDisplayInfo.append(contentsOf: purchasedDomainsWithDisplayInfo)
+        let reverseResolutionMap = await dataHolder.reverseResolutionMap
+        await dataHolder.setDataWith(domainsWithDisplayInfo: domainsWithDisplayInfo,
+                                     reverseResolutionMap: reverseResolutionMap)
+        notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: domainsWithDisplayInfo))))
+    }
+    
     func addListener(_ listener: DataAggregatorServiceListener) {
         if !listeners.contains(where: { $0.listener === listener }) {
             listeners.append(.init(listener: listener))
@@ -561,18 +573,10 @@ private extension DataAggregatorService {
         
         // Purchased domains
         let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
-        for domain in pendingPurchasedDomains {
-            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
-            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name, using: pfpInfo, pendingProfiles: pendingProfiles)
-            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
-                                                      pfpInfo: domainPFPInfo,
-                                                      state: .minting,
-                                                      order: order,
-                                                      isSetForRR: false)
-            
-            domainsWithDisplayInfo.append(.init(domain: domain,
-                                                displayInfo: domainDisplayInfo))
-        }
+        let purchasedDomainsWithDisplayInfo = await transformPendingDomainItemsToDomainsWithInfo(pendingPurchasedDomains,
+                                                                                                 using: pfpInfo,
+                                                                                                 pendingProfiles: pendingProfiles)
+        domainsWithDisplayInfo.append(contentsOf: purchasedDomainsWithDisplayInfo)
         
         // Parked domains
         for parkedDomain in parkedDomains {
@@ -642,6 +646,39 @@ private extension DataAggregatorService {
         await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
         await dataHolder.sortDomainsToDisplay()
+    }
+    
+    func transformPendingPurchasedDomainToDomainsWithInfo(_ purchasedDomains: [PendingPurchasedDomain],
+                                                          pendingProfiles: [DomainProfilePendingChanges]) async -> [DomainWithDisplayInfo] {
+        let pendingPurchasedDomains = purchasedDomains.map {
+            DomainItem(name: $0.name,
+                       ownerWallet: $0.walletAddress,
+                       blockchain: .Matic)
+        }
+        return await transformPendingDomainItemsToDomainsWithInfo(pendingPurchasedDomains,
+                                                                  using: [],
+                                                                  pendingProfiles: pendingProfiles)
+    }
+    
+    func transformPendingDomainItemsToDomainsWithInfo(_ pendingPurchasedDomains: [DomainItem],
+                                                      using pfpInfo: [DomainPFPInfo],
+                                                          pendingProfiles: [DomainProfilePendingChanges]) async -> [DomainWithDisplayInfo] {
+        var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
+        for domain in pendingPurchasedDomains {
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainPFPInfo = await resolveDomainPFPInfo(for: domain.name,
+                                                           using: pfpInfo,
+                                                           pendingProfiles: pendingProfiles)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      pfpInfo: domainPFPInfo,
+                                                      state: .minting,
+                                                      order: order,
+                                                      isSetForRR: false)
+            
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        return domainsWithDisplayInfo
     }
     
     func resolveDomainPFPInfo(for domainName: String,
