@@ -53,6 +53,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
     private var cachedPaymentDetails: StripePaymentDetails? = nil
     private var isAutoRefreshCartSuspended = false
     private var domainsToPurchase: [DomainToPurchase] = []
+    var isApplePaySupported: Bool { StripeService.isApplePaySupported }
 
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,

@@ -64,7 +64,7 @@ extension Analytics {
         case didDiscoverBTDomain
         
         // Purchase domain
-        case didPurchaseDomains, accountHasUnpaidDomains
+        case didPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
     }
 }
 
@@ -314,6 +314,7 @@ extension Analytics {
         case enterUSZIPCode, confirmUSZIPCode
         case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
         case applyPromoCredits, applyStoreCredits
+        case openUnpaidDomainsInfo, openSetupApplePayInfo
     }
 }
 

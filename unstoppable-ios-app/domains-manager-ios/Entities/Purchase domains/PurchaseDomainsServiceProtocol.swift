@@ -9,6 +9,7 @@ import Foundation
 
 protocol PurchaseDomainsServiceProtocol {
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher  { get }
+    var isApplePaySupported: Bool { get }
     
     func searchForDomains(key: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion]
