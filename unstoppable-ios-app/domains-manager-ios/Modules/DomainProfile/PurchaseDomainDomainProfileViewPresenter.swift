@@ -26,7 +26,13 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
         self.view = view
         self.domain = domain
         self.domainProfileChanges = DomainProfilePendingChanges(domainName: domain.name)
-        self.profile = SerializedUserDomainProfile(profile: .init(),
+        let profileAttributes = UserDomainProfileAttributes(displayNamePublic: true,
+                                                            descriptionPublic: true,
+                                                            locationPublic: true,
+                                                            imagePathPublic: true,
+                                                            coverPathPublic: true,
+                                                            web2UrlPublic: true)
+        self.profile = SerializedUserDomainProfile(profile: profileAttributes,
                                                    messaging: .init(),
                                                    socialAccounts: .init(),
                                                    humanityCheck: .init(verified: false),
