@@ -9,6 +9,8 @@ import SwiftUI
 
 @available(iOS 17, *)
 #Preview {
+    HotFeatureSuggestionsStorage.setDismissedHotFeatureSuggestions([])
+    
     let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
     let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
     domainsCollectionVC.presenter = presenter
@@ -37,7 +39,7 @@ final class PreviewDomainsCollectionViewPresenter {
 // MARK: - DomainsCollectionPresenterProtocol
 extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProtocol {
     func viewDidLoad() {
-        UserDefaults.didShowSwipeDomainCardTutorial = false
+//        UserDefaults.didShowSwipeDomainCardTutorial = false
         view?.setGoToSettingsTutorialHidden(true) // Always hide for now (MOB-394)
         view?.setScanButtonHidden(true)
         view?.setAddButtonHidden(false, isMessagingAvailable: false)

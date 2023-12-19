@@ -66,7 +66,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         case .domainCard(let configuration):
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
         case .suggestion(let configuration):
-            return
+            UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.suggestionSelected(configuration.suggestion))
         case .getDomainCard:
             UDVibration.buttonTap.vibrate()
             actionsDelegate?.didOccurUIAction(.purchaseDomains)

@@ -612,6 +612,7 @@ extension DomainsCollectionCarouselItemViewController {
         case rearrangeDomains
         case parkedDomainLearnMore
         case purchaseDomains
+        case suggestionSelected(HotFeatureSuggestion)
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {

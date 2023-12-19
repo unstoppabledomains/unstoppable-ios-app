@@ -1012,7 +1012,7 @@ private extension UDRouter {
         return vc
     }
     
-    func buildDomainProfileParkedModule(domain: DomainDisplayInfo,
+    func buildDomainProfileParkedModule(doHmain: DomainDisplayInfo,
                                         imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo,
                                         refreshActionCallback: @escaping DomainProfileParkedActionCallback) -> UIViewController {
         let vc = DomainProfileActionCoverViewController.nibInstance()

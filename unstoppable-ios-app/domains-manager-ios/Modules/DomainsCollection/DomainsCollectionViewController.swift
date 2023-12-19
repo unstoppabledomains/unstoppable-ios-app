@@ -305,6 +305,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.purchaseDomains)
         case .recentActivityGetDomain:
             presenter.didOccureUIAction(.recentActivityGetDomain)
+        case .suggestionSelected(let suggestion):
+            presenter.didOccureUIAction(.suggestionSelected(suggestion))
         }
     }
 }
@@ -791,5 +793,6 @@ extension DomainsCollectionViewController {
         case parkedDomainLearnMore
         case purchaseDomains
         case recentActivityGetDomain
+        case suggestionSelected(HotFeatureSuggestion)
     }
 }
