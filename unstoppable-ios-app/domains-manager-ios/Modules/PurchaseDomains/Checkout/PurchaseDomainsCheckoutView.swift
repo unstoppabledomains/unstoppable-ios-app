@@ -318,11 +318,11 @@ private extension PurchaseDomainsCheckoutView {
     func additionalCheckoutDetailsView() -> some View {
         if hasAdditionalCheckoutData {
             VStack(spacing: 8) {
-                if cartStatus.taxes > 0 {
-                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
-                }
                 if appliedDiscountsSum != nil {
                     additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
+                }
+                if cartStatus.taxes > 0 {
+                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
                 }
             }
         }
