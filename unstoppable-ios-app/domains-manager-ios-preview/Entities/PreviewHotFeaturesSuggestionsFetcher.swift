@@ -21,7 +21,7 @@ private extension PreviewHotFeaturesSuggestionsFetcher {
               isEnabled: true,
               banner: .init(title: "Title", subtitle: "Subtitle"),
               details: .steps(.init(title: "Feature details", steps: ["Step one"], image: URL(fileURLWithPath: ""))),
-              minAppVersion: "1",
+              minAppVersion: "0.0.1",
               navigation: nil)
     }
 }
