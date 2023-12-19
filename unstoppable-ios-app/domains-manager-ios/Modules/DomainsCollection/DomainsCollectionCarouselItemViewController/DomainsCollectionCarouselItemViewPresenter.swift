@@ -33,8 +33,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
     var analyticsName: Analytics.ViewName { .unspecified }
-    var didDismissSuggestion = false
-
+    
     init(view: DomainsCollectionCarouselItemViewProtocol,
          mode: DomainsCollectionCarouselItemDisplayMode,
          cardState: CarouselCardState,
@@ -168,6 +167,15 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
     func didCompleteConnectionAttempt() { }
 }
 
+// MARK: - HotFeatureSuggestionsServiceListener
+extension DomainsCollectionCarouselItemViewPresenter: HotFeatureSuggestionsServiceListener {
+    func didUpdateCurrentSuggestion(_ suggestion: HotFeatureSuggestion?) {
+        Task {
+            await showDomainDataWithActions(animated: true)
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DomainsCollectionCarouselItemViewPresenter {
     func showDomainDataWithActions(animated: Bool) async {
@@ -256,7 +264,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func getHotFeatureSuggestion() -> HotFeatureSuggestion? {
-        didDismissSuggestion ? nil : .init()
+        appContext.hotFeatureSuggestionsService.getSuggestionToShow()
     }
     
     @discardableResult
@@ -273,10 +281,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func didDismissSuggestion(_ suggestion: HotFeatureSuggestion) {
-        didDismissSuggestion = true
-        Task {
-            await showDomainDataWithActions(animated: true)
-        }
+        appContext.hotFeatureSuggestionsService.dismissHotFeatureSuggestion(suggestion)
     }
     
     func emptySeparatorHeightForExpandedState() -> CGFloat {
@@ -413,8 +418,4 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             self?.actionsDelegate?.didOccurUIAction(.rearrangeDomains)
         }
     }
-}
-
-struct HotFeatureSuggestion: Hashable {
-    
 }

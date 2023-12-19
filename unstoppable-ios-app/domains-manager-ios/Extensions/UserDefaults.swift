@@ -25,6 +25,7 @@ public enum UserDefaultsKey: String {
     case didShowSwipeDomainCardTutorial
     case isFirstLaunchAfterGIFSupportReleased
     case currentMessagingOwnerWallet
+    case dismissedHotFeatureSuggestions
     
     // Purchase domains
     case purchasedDomains
