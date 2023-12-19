@@ -155,18 +155,18 @@ private extension MockFirebaseInteractionsService {
         cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
                                             promoCredits: promoCredits,
                                             others: otherDiscounts)
+        cart.totalPrice -= (storeCredits + promoCredits + otherDiscounts)
         if !checkoutData.usaZipCode.isEmpty {
             let taxes = 200
             cart.taxes = taxes
             cart.totalPrice += taxes
         }
-        self.cart = cart 
-        print(cart)
+        self.cart = cart
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
-        .init(domains: [.init(name: "oleg.x", price: 100, metadata: nil)],
-              totalPrice: 100,
+        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil)],
+              totalPrice: 10000,
               taxes: 0,
               storeCreditsAvailable: 100,
               promoCreditsAvailable: 2000,

@@ -245,7 +245,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var appliedDiscountsSum: Int? {
-        let sum = cartStatus.otherDiscountsApplied
+        let sum = cartStatus.discountsAppliedSum
         
         if sum == 0 {
             return nil

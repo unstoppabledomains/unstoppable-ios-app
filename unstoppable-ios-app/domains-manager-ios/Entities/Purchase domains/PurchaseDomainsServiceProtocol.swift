@@ -54,6 +54,14 @@ enum PurchaseDomainCartStatus {
             return 0
         }
     }
+    var discountsAppliedSum: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.appliedDiscountDetails.totalSum
+        default:
+            return 0
+        }
+    }
     var taxes: Int {
         switch self {
         case .ready(let cart):
