@@ -81,4 +81,7 @@ struct DataAggregatorService: DataAggregatorServiceProtocol {
     func getDomainWith(name: String) async throws -> DomainItem {
         .init(name: name)
     }
+    
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+                            pendingProfiles: [DomainProfilePendingChanges]) async { }
 }

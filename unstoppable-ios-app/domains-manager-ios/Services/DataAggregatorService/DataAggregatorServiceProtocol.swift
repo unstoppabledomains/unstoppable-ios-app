@@ -28,6 +28,8 @@ protocol DataAggregatorServiceProtocol {
                      to wallet: UDWallet,
                      userEmail: String,
                      securityCode: String) async throws -> [MintingDomain]
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+                            pendingProfiles: [DomainProfilePendingChanges]) async
     
     func addListener(_ listener: DataAggregatorServiceListener)
     func removeListener(_ listener: DataAggregatorServiceListener)

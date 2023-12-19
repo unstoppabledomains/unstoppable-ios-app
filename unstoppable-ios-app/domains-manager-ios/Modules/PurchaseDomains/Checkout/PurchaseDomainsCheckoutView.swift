@@ -490,7 +490,12 @@ private extension PurchaseDomainsCheckoutView {
                                                                     walletAddress: walletToMint.address)
                 PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
                 PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                
+                await dataAggregatorService.didPurchaseDomains([pendingPurchasedDomain],
+                                                               pendingProfiles: [profileChanges])
+                Task.detached { // Run in background
+                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {
                 Debugger.printFailure("Did fail to purchase domains with error \(error)")
