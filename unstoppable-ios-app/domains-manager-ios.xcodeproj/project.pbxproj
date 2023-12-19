@@ -1086,6 +1086,13 @@
 		C6A89C4C2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */; };
 		C6A89C4D2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */; };
 		C6A89C4F2B315B8D008AB043 /* HotFeatureSuggestionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C4E2B315B8D008AB043 /* HotFeatureSuggestionsService.swift */; };
+		C6A89C542B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C532B31632E008AB043 /* HotFeatureSuggestionsStorage.swift */; };
+		C6A89C552B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C532B31632E008AB043 /* HotFeatureSuggestionsStorage.swift */; };
+		C6A89C572B31645D008AB043 /* DefaultHotFeaturesSuggestionsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C562B31645D008AB043 /* DefaultHotFeaturesSuggestionsFetcher.swift */; };
+		C6A89C5D2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C5C2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift */; };
+		C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C5C2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift */; };
+		C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C4E2B315B8D008AB043 /* HotFeatureSuggestionsService.swift */; };
+		C6A89C612B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C602B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift */; };
 		C6A931042B17796B0078CB9E /* WalletWithInfo+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A931032B17796B0078CB9E /* WalletWithInfo+Mock.swift */; };
 		C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */; };
 		C6AD180F28D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD180D28D319BF0008A479 /* CollectionViewShowHideCell.swift */; };
@@ -3187,6 +3194,10 @@
 		C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestion.swift; sourceTree = "<group>"; };
 		C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestionsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6A89C4E2B315B8D008AB043 /* HotFeatureSuggestionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestionsService.swift; sourceTree = "<group>"; };
+		C6A89C532B31632E008AB043 /* HotFeatureSuggestionsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestionsStorage.swift; sourceTree = "<group>"; };
+		C6A89C562B31645D008AB043 /* DefaultHotFeaturesSuggestionsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHotFeaturesSuggestionsFetcher.swift; sourceTree = "<group>"; };
+		C6A89C5C2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeaturesSuggestionsFetcher.swift; sourceTree = "<group>"; };
+		C6A89C602B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHotFeaturesSuggestionsFetcher.swift; sourceTree = "<group>"; };
 		C6A931032B17796B0078CB9E /* WalletWithInfo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletWithInfo+Mock.swift"; sourceTree = "<group>"; };
 		C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C6AD180D28D319BF0008A479 /* CollectionViewShowHideCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewShowHideCell.swift; sourceTree = "<group>"; };
@@ -3831,6 +3842,7 @@
 				3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */,
 				29AEA04F292F941F003BB5B4 /* PersistedSignaturesStorage.swift */,
 				29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */,
+				C6A89C532B31632E008AB043 /* HotFeatureSuggestionsStorage.swift */,
 				C6538DB02A32161400B63E84 /* Keychain */,
 			);
 			path = Storages;
@@ -4584,6 +4596,7 @@
 				C6C8F9692B2187E000A9834D /* PreviewStorage.swift */,
 				C6C8F98A2B21895A00A9834D /* PreviewWCConnectedAppsStorageV2.swift */,
 				C6C8F9932B218BA600A9834D /* PreviewAnyCodable.swift */,
+				C6A89C602B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -6667,6 +6680,8 @@
 		C6A89C4A2B315B6B008AB043 /* HotFeatureSuggestionsService */ = {
 			isa = PBXGroup;
 			children = (
+				C6A89C5C2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift */,
+				C6A89C562B31645D008AB043 /* DefaultHotFeaturesSuggestionsFetcher.swift */,
 				C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */,
 				C6A89C4E2B315B8D008AB043 /* HotFeatureSuggestionsService.swift */,
 			);
@@ -8823,6 +8838,7 @@
 				306486812527253700388026 /* AppDelegate.swift in Sources */,
 				C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DADF28374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
+				C6A89C5D2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */,
 				C66435C1288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C63095CE2B0DA5DE00205054 /* PurchaseDomainsCart.swift in Sources */,
@@ -8917,6 +8933,7 @@
 				C6A2D5C228508DA800327C47 /* PaymentTransactionCostView.swift in Sources */,
 				C63538EB2949C4F100ECABA6 /* DomainPFPInfo.swift in Sources */,
 				C6109E4528E5ABFE0027D5D8 /* TestsEnum.swift in Sources */,
+				C6A89C572B31645D008AB043 /* DefaultHotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6A2D55C284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C66804AD280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
 				C6D3B9BF2A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */,
@@ -9052,6 +9069,7 @@
 				C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6EECE9D2833A42600978ED5 /* CoinRecordsService.swift in Sources */,
 				C6D5DAEF2837682300379C38 /* RecordChangeType.swift in Sources */,
+				C6A89C542B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */,
 				C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
 				C692C336282E4C9000C31393 /* SecuritySettingsActionCell.swift in Sources */,
 				C61B3E76283E43D000500B6D /* EnterEmailViewController.swift in Sources */,
@@ -9394,6 +9412,7 @@
 				C6D6474B2B1EDB6D00D724AC /* ReviewAndConfirmTransferViewPresenter.swift in Sources */,
 				C6D646862B1ED12D00D724AC /* DomainProfileUpdatingRecordsSection.swift in Sources */,
 				C6D645C22B1DBD3900D724AC /* CNavigationController.swift in Sources */,
+				C6A89C552B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */,
 				C6D647232B1ED91F00D724AC /* PullUpViewService+Badges.swift in Sources */,
 				C6C8F9902B2189CB00A9834D /* TxOperation.swift in Sources */,
 				C6D646132B1DC0F000D724AC /* Equatable.swift in Sources */,
@@ -9488,12 +9507,14 @@
 				C6D6470F2B1ED7D000D724AC /* MessagingChatMessageTextTypeDisplayInfo.swift in Sources */,
 				C6C8F8912B21829000A9834D /* SecuritySettingsViewPresenter.swift in Sources */,
 				C6C8F92A2B2183C700A9834D /* DomainsListPresenter.swift in Sources */,
+				C6A89C612B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6C8F96B2B2187E000A9834D /* PreviewStorage.swift in Sources */,
 				C6D645C92B1DBD3C00D724AC /* CInteractiveTransitioningController.swift in Sources */,
 				C6D6473B2B1ED9EF00D724AC /* ConnectServerRequestConfirmationView.swift in Sources */,
 				C6C8F88A2B21829000A9834D /* SettingsViewController.swift in Sources */,
 				C6D6477D2B1EE0F200D724AC /* RaisedWhiteButton.swift in Sources */,
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
+				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				C6C8F97D2B2188FA00A9834D /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
@@ -10039,6 +10060,7 @@
 				C6C8F8FC2B21837E00A9834D /* ChatImageCell.swift in Sources */,
 				C6D645822B1DBA7100D724AC /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
 				C6D645B22B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift in Sources */,
+				C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
 				C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C6D646552B1ED10100D724AC /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C6D6462E2B1DC31700D724AC /* CollectionDashesHeaderReusableView.swift in Sources */,

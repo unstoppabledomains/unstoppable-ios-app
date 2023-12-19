@@ -9,12 +9,13 @@ import Foundation
 
 final class HotFeatureSuggestionsService {
     
+    private let fetcher: HotFeaturesSuggestionsFetcher
     private var cachedFeatures: [HotFeatureSuggestion] = []
     private var listenerHolders: [HotFeatureSuggestionsServiceHolder] = []
     private var didDismissSuggestion = false
-    @UserDefaultsCodableValue(key: .dismissedHotFeatureSuggestions) var dismissedHotFeatureSuggestions: [HotFeatureSuggestion]?
     
-    init() {
+    init(fetcher: HotFeaturesSuggestionsFetcher) {
+        self.fetcher = fetcher
         loadSuggestions()
     }
     
@@ -30,10 +31,10 @@ extension HotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol {
     }
     
     func dismissHotFeatureSuggestion(_ suggestion: HotFeatureSuggestion) {
-        var dismissedSuggestions = dismissedHotFeatureSuggestions ?? []
+        var dismissedSuggestions = HotFeatureSuggestionsStorage.getDismissedHotFeatureSuggestions()
         dismissedSuggestions.append(suggestion)
-        dismissedHotFeatureSuggestions = dismissedSuggestions
-        didDismissSuggestion = true 
+        HotFeatureSuggestionsStorage.setDismissedHotFeatureSuggestions(dismissedSuggestions)
+        didDismissSuggestion = true
         notifyCurrentSuggestionUpdated()
     }
     
@@ -49,17 +50,11 @@ extension HotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol {
 }
 
 // MARK: - Private methods
-private extension HotFeatureSuggestionsService {
-    struct SuggestionsResponse: Codable {
-        @DecodeIgnoringFailed
-        var suggestions: [HotFeatureSuggestion]
-    }
-    
+private extension HotFeatureSuggestionsService { 
     func loadSuggestions() {
         Task {
             do {
-//                let response: SuggestionsResponse = try await NetworkService().loadSuggestions()
-//                cachedFeatures = response.suggestions
+                cachedFeatures = try await fetcher.loadHotFeatureSuggestions()
                 filterAvailableSuggestions()
                 notifyCurrentSuggestionUpdated()
             } catch {
@@ -71,7 +66,7 @@ private extension HotFeatureSuggestionsService {
     }
     
     func filterAvailableSuggestions() {
-        let dismissedSuggestions = dismissedHotFeatureSuggestions ?? []
+        let dismissedSuggestions = HotFeatureSuggestionsStorage.getDismissedHotFeatureSuggestions()
         cachedFeatures = cachedFeatures.filter { suggestion in
             guard isSuggestionAvailable(suggestion) else { return false }
             

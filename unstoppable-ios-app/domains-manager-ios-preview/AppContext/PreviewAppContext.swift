@@ -69,7 +69,8 @@ struct AppContext: AppContextProtocol {
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
-    
+    var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
+
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
     }
