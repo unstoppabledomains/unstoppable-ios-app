@@ -212,13 +212,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             isTutorialOn = true
         }
         
-        let needToShowSuggestion = addSuggestionSectionIfNeeded(in: &snapshot)
-        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(), placement: .footer)])
+        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(), placement: .header)])
+        addSuggestionSectionIfNeeded(in: &snapshot)
         if isTutorialOn {
-            if !needToShowSuggestion && (connectedApps.isEmpty || cardState == .expanded) {
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(),
-                                                         placement: .footer)])
-            }
             snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
         } else {
             snapshot.appendSections([.dashesSeparator(height: Self.dashesSeparatorSectionHeight)])
@@ -263,10 +259,11 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         didDismissSuggestion ? nil : .init()
     }
     
+    @discardableResult
     func addSuggestionSectionIfNeeded(in snapshot: inout DomainsCollectionCarouselItemSnapshot) -> Bool {
         guard let suggestion = getHotFeatureSuggestion() else { return false }
         
-        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState() + 16,
+        snapshot.appendSections([.emptySeparator(height: 16,
                                                  placement: .header)])
         snapshot.appendItems([.suggestion(configuration: .init(closeCallback: { [weak self] in
             self?.didDismissSuggestion(suggestion)

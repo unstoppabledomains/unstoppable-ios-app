@@ -278,6 +278,8 @@
 		C61308922A7A22AD00E7CE21 /* SwiftUIZoomableContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308912A7A22AD00E7CE21 /* SwiftUIZoomableContainer.swift */; };
 		C61308972A7A22D500E7CE21 /* MessagingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308962A7A22D500E7CE21 /* MessagingImageView.swift */; };
 		C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C6C02B31282800CE4256 /* DomainsCollectionSuggestionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */; };
+		C613C6C12B31282800CE4256 /* DomainsCollectionSuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */; };
 		C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
 		C6157B052A7113C900081574 /* ChatRemoteContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */; };
 		C6157B092A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
@@ -8011,6 +8013,7 @@
 				C6C8F8902B21829000A9834D /* AppearanceSettingsViewController.xib in Resources */,
 				C6D646D52B1ED2E700D724AC /* SocialsVerificationViewController.xib in Resources */,
 				C6D647A82B1F18B000D724AC /* HappyEnd.storyboard in Resources */,
+				C613C6C02B31282800CE4256 /* DomainsCollectionSuggestionCell.xib in Resources */,
 				C6D646282B1DC2A700D724AC /* PullUpView.xib in Resources */,
 				C6C8F97F2B2188FA00A9834D /* SignTransactionDomainSelectionViewController.xib in Resources */,
 				C6C8F8B22B2182CF00A9834D /* MintDomainsConfigurationSelectionCell.xib in Resources */,
@@ -9750,6 +9753,7 @@
 				C6D6468F2B1ED13C00D724AC /* AddCurrencyCell.swift in Sources */,
 				C618084A2B19B9930032E543 /* PreviewDomainRecordsService.swift in Sources */,
 				C6D645B92B1DBC5000D724AC /* UIAction.swift in Sources */,
+				C613C6C12B31282800CE4256 /* DomainsCollectionSuggestionCell.swift in Sources */,
 				C618085F2B19BBFE0032E543 /* FlowLayoutView.swift in Sources */,
 				C6C8F99F2B218E9400A9834D /* ListItemView.swift in Sources */,
 				C6C8F8F02B21837000A9834D /* ChatSectionHeaderView.swift in Sources */,
