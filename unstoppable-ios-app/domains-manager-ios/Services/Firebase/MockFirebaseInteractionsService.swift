@@ -18,7 +18,7 @@ final class MockFirebaseInteractionsService {
             cartStatus = .ready(cart: cart)
         }
     }
-    @Published var cartStatus: PurchaseDomainCartStatus = .ready(cart: MockFirebaseInteractionsService.createMockCart())
+    @Published var cartStatus: PurchaseDomainCartStatus
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
     
     private var cancellables: Set<AnyCancellable> = []
@@ -27,6 +27,7 @@ final class MockFirebaseInteractionsService {
     init() {
         let preferencesService = PurchaseDomainsPreferencesStorage.shared
         checkoutData = preferencesService.checkoutData
+        cartStatus = .ready(cart: cart)
         preferencesService.$checkoutData.publisher
             .sink { val in
                 self.checkoutData = val
@@ -107,7 +108,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func refreshCart() async throws { }
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
-        cartStatus = .ready(cart: .empty)
+        cart = MockFirebaseInteractionsService.createMockCart()
         updateCart()
     }
     
@@ -145,6 +146,7 @@ private extension MockFirebaseInteractionsService {
     }
     
     func updateCart() {
+        var cart = self.cart
         cart.totalPrice = cart.domains.reduce(0, { $0 + $1.price })
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
@@ -157,6 +159,8 @@ private extension MockFirebaseInteractionsService {
             cart.taxes = taxes
             cart.totalPrice += taxes
         }
+        self.cart = cart 
+        print(cart)
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
