@@ -13,3 +13,7 @@ protocol DomainTransferServiceProtocol {
                         configuration: TransferDomainConfiguration,
                         paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
 }
+
+struct TransferDomainConfiguration {
+    let resetRecords: Bool
+}

@@ -9,11 +9,6 @@ import Foundation
 import UIKit
 import StoreKit
 
-protocol AppReviewServiceProtocol {
-    func appReviewEventDidOccurs(event: AppReviewActionEvent)
-    func requestToWriteReviewInAppStore()
-}
-
 final class AppReviewService {
     
     static let shared: AppReviewServiceProtocol = AppReviewService()
@@ -111,28 +106,6 @@ private extension AppReviewService {
             lastVersionPromptedForReview = try Version.getCurrentAppVersionStringThrowing()
         } catch {
             Debugger.printFailure("Failed to update last version prompted for review with error: \(error.localizedDescription)", critical: true)
-        }
-    }
-}
-
-enum AppReviewActionEvent {
-    case walletAdded
-    case walletBackedUp
-    case didSetRR
-    case didRevealPK
-    case didShareProfile
-    case didSaveProfileImage
-    case didUpdateProfile
-    case didMintDomains
-    case didHandleWCRequest
-    case didRestoreWalletsFromBackUp
-    
-    var shouldFireRequestDirectly: Bool {
-        switch self {
-        case .didRestoreWalletsFromBackUp:
-            return true
-        default:
-            return false
         }
     }
 }

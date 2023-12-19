@@ -36,7 +36,7 @@ extension DomainProfileSignatureValidator {
         switch domain.pfpSource {
         case .nft:
             isOnChainAvatar = true
-        case .nonNFT, .none:
+        case .nonNFT, .none, .local:
             isOnChainAvatar = false
         }
         let avatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain),

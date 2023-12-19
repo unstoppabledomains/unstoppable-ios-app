@@ -86,15 +86,6 @@ extension BaseCollectionViewControllerProtocol {
             guard Bundle.main.path(forResource: cell.cellIdentifier, ofType: "nib") != nil else { continue }
             collectionView.registerCellNibOfType(cell.self)
         }
-        
-        if isRefreshControlEnabled {
-            let refreshControl = UIRefreshControl()
-            refreshControl.attributedTitle = NSAttributedString(string: "")
-            refreshControl.addTarget(self, action: #selector(refreshAction(_:)), for: .valueChanged)
-            refreshControl.tintColor = refreshControlColor
-            collectionView.refreshControl = refreshControl
-            collectionView.addSubview(refreshControl)
-        }
     }
 }
 

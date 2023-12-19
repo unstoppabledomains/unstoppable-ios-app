@@ -9,6 +9,7 @@ import UIKit
 
 protocol ViewWithDashesProgress: UIViewController & CNavigationControllerChildTransitioning {
     var progress: Double? { get }
+    var dashesProgressConfiguration: DashesProgressView.Configuration { get }
     var dashesProgressView: DashesProgressView! { get }
     func setDashesProgress(_ progress: Double?)
 }
@@ -17,6 +18,7 @@ extension ViewWithDashesProgress {
     var dashesProgressView: DashesProgressView! {
         get { navigationItem.titleView as? DashesProgressView }
     }
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init() }
 
     
     func setDashesProgress(_ progress: Double?) {
@@ -27,11 +29,12 @@ extension ViewWithDashesProgress {
         cNavigationBar?.navBarContentView.setTitleView(hidden: progress == nil, animated: false)
     }
 
-    func addProgressDashesView() {
+    func addProgressDashesView(configuration: DashesProgressView.Configuration = .init()) {
         if let dashesProgressView = cNavigationController?.navigationBar.navBarContentView.titleView as? DashesProgressView {
             navigationItem.titleView = dashesProgressView
         } else {
             let dashesProgressView = DashesProgressView(frame: CGRect(x: 0, y: 0, width: 160, height: 4))
+            dashesProgressView.setWith(configuration: configuration)
             navigationItem.titleView = dashesProgressView
             dashesProgressView.setProgress(0.0)            
         }
@@ -41,7 +44,8 @@ extension ViewWithDashesProgress {
         if let viewWithDashesProgress = viewController as? ViewWithDashesProgress {
             
             return DashesProgressNavBarPushAnimation(animationDuration: CNavigationHelper.DefaultNavAnimationDuration,
-                                                     toProgress: viewWithDashesProgress.progress)
+                                                     toProgress: viewWithDashesProgress.progress, 
+                                                     toConfiguration: viewWithDashesProgress.dashesProgressConfiguration)
         }
         return nil
     }
@@ -50,7 +54,8 @@ extension ViewWithDashesProgress {
         if let viewWithDashesProgress = viewController as? ViewWithDashesProgress,
            let progress = viewWithDashesProgress.progress {
             
-            return DashesProgressNavBarPopAnimation(animationDuration: CNavigationHelper.DefaultNavAnimationDuration, toProgress: progress)
+            return DashesProgressNavBarPopAnimation(animationDuration: CNavigationHelper.DefaultNavAnimationDuration, toProgress: progress,
+                                                    toConfiguration: viewWithDashesProgress.dashesProgressConfiguration)
         }
         return nil
     }

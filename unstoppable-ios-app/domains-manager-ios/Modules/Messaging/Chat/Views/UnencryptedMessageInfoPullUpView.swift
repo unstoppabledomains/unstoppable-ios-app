@@ -106,16 +106,3 @@ private extension UnencryptedMessageInfoPullUpView {
         dismissCallback?()
     }
 }
-
-struct UnencryptedMessageInfoPullUpView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        let height: CGFloat = 288
-        
-        return UIViewPreview {
-            return UnencryptedMessageInfoPullUpView()
-        }
-        .frame(width: 390, height: height)
-    }
-    
-}

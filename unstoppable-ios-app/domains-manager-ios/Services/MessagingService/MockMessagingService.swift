@@ -56,7 +56,9 @@ extension MockMessagingService: MessagingServiceProtocol {
                             before message: MessagingChatMessageDisplayInfo?,
                             cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
-  
+    func logout() {
+        
+    }
     
     private func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {

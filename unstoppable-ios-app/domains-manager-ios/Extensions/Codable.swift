@@ -167,4 +167,41 @@ struct DecodeIgnoringFailed<Value: Codable>: Codable {
             }
         }
     }
+    
+    init(value: [Value]) {
+        self.wrappedValue = value
+    }
+}
+
+@propertyWrapper
+struct DecodeHashableIgnoringFailed<Value: Codable & Hashable>: Codable, Hashable {
+    var wrappedValue: [Value] = []
+    
+    private struct _None: Decodable {}
+    
+    init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        while !container.isAtEnd {
+            if let decoded = try? container.decode(Value.self) {
+                wrappedValue.append(decoded)
+            }
+            else {
+                // item is silently ignored.
+                _ = try? container.decode(_None.self)
+            }
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        try container.encode(wrappedValue)
+    }
+    
+    init(value: [Value]) {
+        self.wrappedValue = value
+    }
+    
+    mutating func add(values: [Value]) {
+        wrappedValue.append(contentsOf: values)
+    }
 }

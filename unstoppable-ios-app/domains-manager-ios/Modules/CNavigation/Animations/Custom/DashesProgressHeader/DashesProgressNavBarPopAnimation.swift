@@ -10,10 +10,13 @@ import UIKit
 final class DashesProgressNavBarPopAnimation: CBaseTransitioningAnimation {
     
     private let toProgress: CGFloat
-    
+    private let toConfiguration: DashesProgressView.Configuration
+
     init(animationDuration: TimeInterval,
-         toProgress: Double) {
+         toProgress: Double,
+         toConfiguration: DashesProgressView.Configuration) {
         self.toProgress = CGFloat(toProgress)
+        self.toConfiguration = toConfiguration
         super.init(animationDuration: animationDuration)
     }
     
@@ -47,9 +50,11 @@ final class DashesProgressNavBarPopAnimation: CBaseTransitioningAnimation {
         let largeTitleView = navBar.largeTitleView!
         let fromProgress: CGFloat = dashesView.progress
         let toProgress: CGFloat = self.toProgress
+        let toConfiguration = self.toConfiguration
         let duration = transitionDuration(using: transitionContext)
         let animator = createAnimatorIn(transitionContext: transitionContext) {
             dashesView.setProgress(toProgress)
+            dashesView.setWith(configuration: toConfiguration)
             largeTitleView.frame.origin.x += navBar.bounds.width
         }
         

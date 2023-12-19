@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "upgradeToPolygonIllustration3.pdf",
+      "filename" : "upgradeToPolygonIllustration3.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "upgradeToPolygonIllustration3Dark.pdf",
+      "filename" : "upgradeToPolygonIllustration3Dark.png",
       "idiom" : "universal"
     }
   ],

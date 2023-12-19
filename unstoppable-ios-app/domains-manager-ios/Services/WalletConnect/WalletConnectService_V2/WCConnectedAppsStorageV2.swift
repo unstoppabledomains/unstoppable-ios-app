@@ -37,7 +37,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         public let namespaces: [String: SessionNamespace]
         public let expiryDate: Date
         
-        init(_ session: WalletConnectSign.Session) {
+        init(_ session: SessionV2) {
             self.topic = session.topic
             self.pairingTopic = session.pairingTopic
             self.peer = session.peer
@@ -134,18 +134,6 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
     var connectionStartDate: Date? { get }
         
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp)
-}
-
-struct UnifiedConnectedAppInfoHolder: Hashable {
-    let app: any UnifiedConnectAppInfoProtocol
-    
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.app.isEqual(rhs.app)
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(app)
-    }
 }
 
 extension UnifiedConnectAppInfoProtocol {

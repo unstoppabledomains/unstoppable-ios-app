@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "createNewVaultIllustration.pdf",
+      "filename" : "createNewVaultIllustration.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "createNewVaultIllustrationDark.pdf",
+      "filename" : "createNewVaultIllustrationDark.png",
       "idiom" : "universal"
     }
   ],

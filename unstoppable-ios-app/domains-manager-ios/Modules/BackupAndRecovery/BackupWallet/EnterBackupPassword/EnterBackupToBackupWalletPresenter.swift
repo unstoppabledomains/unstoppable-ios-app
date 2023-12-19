@@ -40,11 +40,11 @@ final class EnterBackupToBackupWalletPresenter: EnterBackupBasePresenter {
             let password = view.password
             let backedUpWallet = try udWalletsService.backUpWalletToCurrentCluster(wallet, withPassword: password)
             finishWith(backedUpWallet: backedUpWallet)
-        } catch UDWalletsService.BackUpError.alreadyBackedUp {
+        } catch UDWalletBackUpError.alreadyBackedUp {
             var backedUpWallet = self.wallet
             backedUpWallet.hasBeenBackedUp = true
             finishWith(backedUpWallet: backedUpWallet)
-        } catch UDWalletsService.BackUpError.incorrectBackUpPassword {
+        } catch UDWalletBackUpError.incorrectBackUpPassword {
             view.showError(String.Constants.incorrectPassword.localized())
         } catch {
             view.showSimpleAlert(title: String.Constants.saveToICloudFailedTitle.localized(),

@@ -99,32 +99,30 @@ extension ChatUnsupportedMessageCell {
     }
 }
 
-struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
+@available (iOS 17.0, *)
+#Preview {
+    let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+    let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
+                                                                        type: "file",
+                                                                        name: "sjlhfksdjfhskdjhfskdhjfksdjfhsdfsdf",
+                                                                        size: 99900)
+    let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                  chatId: "2",
+                                                  userId: "1",
+                                                  senderType: .otherUser(user),
+                                                  time: Date(),
+                                                  type: .unknown(unknownMessageInfo),
+                                                  isRead: false,
+                                                  isFirstInChat: true,
+                                                  deliveryState: .delivered,
+                                                  isEncrypted: false)
+    let cell = ChatUnsupportedMessageCell()
+    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
+
+    cell.setWith(configuration: .init(message: message,
+                                      isGroupChatMessage: false,
+                                      pressedCallback: { }))
     
-    static var previews: some View {
-        let height: CGFloat = 76
-        
-        return UICollectionViewCellPreview(cellType: ChatUnsupportedMessageCell.self, height: height) { cell in
-            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
-                                                                                type: "file",
-                                                                                name: "sjlhfksdjfhskdjhfskdhjfksdjfhsdfsdf",
-                                                                                size: 99900)
-            let message = MessagingChatMessageDisplayInfo(id: "1",
-                                                          chatId: "2",
-                                                          userId: "1",
-                                                          senderType: .otherUser(user),
-                                                          time: Date(),
-                                                          type: .unknown(unknownMessageInfo),
-                                                          isRead: false,
-                                                          isFirstInChat: true,
-                                                          deliveryState: .delivered,
-                                                          isEncrypted: false)
-            cell.setWith(configuration: .init(message: message,
-                                              isGroupChatMessage: false,
-                                              pressedCallback: { }))
-        }
-        .frame(width: 390, height: height)
-    }
+    return cell
     
 }

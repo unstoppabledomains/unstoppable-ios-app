@@ -26,7 +26,9 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
                                                         DomainsCollectionRecentActivityCell.self,
                                                         DomainsCollectionNoRecentActivitiesCell.self,
-                                                        DomainsCollectionSuggestionCell.self] }
+                                                        DomainsCollectionSuggestionCell.self,
+                                                        DomainsCollectionGetDomainCardCell.self] }
+    
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -34,14 +36,14 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var presenter: DomainsCollectionCarouselItemViewPresenterProtocol!
     private var cardState: CarouselCardState = .expanded
     
-    static func instantiate(domain: DomainDisplayInfo,
+    static func instantiate(mode: DomainsCollectionCarouselItemDisplayMode,
                             cardState: CarouselCardState,
                             containerViewController: BaseViewController,
                             actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) -> DomainsCollectionCarouselItemViewController {
         let vc = DomainsCollectionCarouselItemViewController()
         vc.containerViewController = containerViewController
         let presenter = DomainsCollectionCarouselItemViewPresenter(view: vc,
-                                                                   domain: domain,
+                                                                   mode: mode,
                                                                    cardState: cardState,
                                                                    actionsDelegate: actionsDelegate)
         vc.presenter = presenter
@@ -219,6 +221,15 @@ private extension DomainsCollectionCarouselItemViewController {
             case .suggestion(let configuration):
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionSuggestionCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
+
+                return cell
+            case .getDomainCard:
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionGetDomainCardCell.self, forIndexPath: indexPath)
+                cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
+                
+                DispatchQueue.main.async {
+                    self?.delegate?.updatePagesVisibility()
+                }
                 
                 return cell
             }
@@ -408,6 +419,7 @@ extension DomainsCollectionCarouselItemViewController {
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
         case suggestion(configuration: SuggestionConfiguration)
+        case getDomainCard
     }
     
     struct DomainCardConfiguration: Hashable {
@@ -594,14 +606,16 @@ extension DomainsCollectionCarouselItemViewController {
     
     enum Action {
         case recentActivityLearnMore
+        case recentActivityGetDomain
         case domainSelected(_ domain: DomainDisplayInfo)
         case domainNameCopied
         case rearrangeDomains
         case parkedDomainLearnMore
+        case purchaseDomains
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {
-        case parkedDomain, activity
+        case parkedDomain, activity, getDomain
     }
     
     struct SuggestionConfiguration: Hashable {
@@ -620,3 +634,4 @@ extension DomainsCollectionCarouselItemViewController {
         }
     }
 }
+

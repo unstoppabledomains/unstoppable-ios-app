@@ -53,22 +53,10 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let dif = contentTopExpandedValue() - contentTopCollapsedValue
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
+        contentTopConstraint.constant += additionalTopOffset()
         
-        switch dataType {
-        case .parkedDomain:
-            learnMoreButton.alpha = 1
-        case .activity:
-            learnMoreButton.alpha = expandProgress
-        }
-        
-        switch deviceSize {
-        case .i4_7Inch, .i4Inch:
-            iconImageView.alpha = expandProgress
-        case .i5_5Inch:
-            iconImageView.alpha = isTutorialOn ? expandProgress : 1
-        default:
-            iconImageView.alpha = 1
-        }
+        learnMoreButton.alpha = 1
+        iconImageView.alpha = 1
     }
 }
 
@@ -83,7 +71,7 @@ private extension DomainsCollectionNoRecentActivitiesCell {
         let icon: UIImage
         
         switch dataType {
-        case .activity:
+        case .activity, .getDomain:
             title = String.Constants.noConnectedApps.localized()
             icon = .widgetIcon
         case .parkedDomain:
@@ -103,21 +91,15 @@ private extension DomainsCollectionNoRecentActivitiesCell {
             return isTutorialOn ? 0 : -24
         case .i4_7Inch:
             return isTutorialOn ? 0 : -4
-        case .i5_4Inch:
-            return isTutorialOn ? 20 : 66
-        case .i5_5Inch:
-            return isTutorialOn ? 10 : 40
-        case .i5_8Inch:
-            return isTutorialOn ? 24 : 68
-        case .i6_1Inch:
-            // IP 13Pro
-            if UIScreen.main.bounds.width == 390 {
-                return isTutorialOn ? 10 : 74
-            }
-            // IP 11
-            return isTutorialOn ? 34 : 90
-        case .i6_5Inch, .i6_7Inch:
-            return isTutorialOn ? 38 : 90
+        default:
+            return 20
+        }
+    }
+    
+    func additionalTopOffset() -> CGFloat {
+        switch deviceSize {
+        case .i4Inch, .i4_7Inch:
+            return 10
         default:
             return 0
         }

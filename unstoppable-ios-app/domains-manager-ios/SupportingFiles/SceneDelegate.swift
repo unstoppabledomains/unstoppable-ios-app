@@ -8,19 +8,6 @@
 import UIKit
 
 @MainActor
-protocol SceneDelegateProtocol {
-    var interfaceOrientation: UIInterfaceOrientation { get }
-    var window: MainWindow? { get }
-    var sceneActivationState: UIScene.ActivationState { get }
-    func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle)
-    func authorizeUserOnAppOpening() async
-    func restartOnboarding()
-    
-    func addListener(_ listener: SceneActivationListener)
-    func removeListener(_ listener: SceneActivationListener)
-}
-
-@MainActor
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     static let shared: SceneDelegateProtocol? = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegateProtocol
@@ -188,7 +175,7 @@ extension SceneDelegate: SceneDelegateProtocol {
 
 // MARK: - NetworkReachabilityServiceListener
 extension SceneDelegate: NetworkReachabilityServiceListener {
-    func networkStatusChanged(_ status: NetworkReachabilityService.Status) {
+    func networkStatusChanged(_ status: NetworkReachabilityStatus) {
         DispatchQueue.main.async {
             if appContext.networkReachabilityService?.isReachable == false {
                 appContext.toastMessageService.showToast(.noInternetConnection, isSticky: true)
@@ -350,25 +337,3 @@ extension SceneDelegate {
     }
 }
 
-typealias SceneActivationState = UIScene.ActivationState
-
-protocol SceneActivationListener: AnyObject {
-    func didChangeSceneActivationState(to state: SceneActivationState)
-}
-
-final class SceneActivationListenerHolder: Equatable {
-    
-    weak var listener: SceneActivationListener?
-    
-    init(listener: SceneActivationListener) {
-        self.listener = listener
-    }
-    
-    static func == (lhs: SceneActivationListenerHolder, rhs: SceneActivationListenerHolder) -> Bool {
-        guard let lhsListener = lhs.listener,
-              let rhsListener = rhs.listener else { return false }
-        
-        return lhsListener === rhsListener
-    }
-    
-}
