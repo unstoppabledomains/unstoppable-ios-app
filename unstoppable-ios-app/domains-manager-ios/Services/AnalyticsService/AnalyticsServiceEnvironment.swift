@@ -66,6 +66,7 @@ extension Analytics {
         
         // Purchase domain
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
+        case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
     }
 }
 
