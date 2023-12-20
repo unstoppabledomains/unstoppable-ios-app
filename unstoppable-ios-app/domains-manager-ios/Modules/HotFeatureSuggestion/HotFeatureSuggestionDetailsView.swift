@@ -9,30 +9,54 @@ import SwiftUI
 
 struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
     
+    @Environment(\.presentationMode) private var presentationMode
+
     let suggestion: HotFeatureSuggestion
     @State private var illustration: UIImage?
+    @State private var scrollOffset: CGPoint = .zero
     var analyticsName: Analytics.ViewName { .hotFeatureDetails }
-    // TODO: - Add additional analytic parameter for feature id 
+    // TODO: - Add additional analytic parameter for feature id
+    var isTitleVisible: Bool { scrollOffset.y > 76 }
+    
     
     var body: some View {
-        ScrollView {
-            headerView()
-            contentView()
-                .sideInsets(16)
-            UDButtonView(text: String.Constants.gotIt.localized(),
-                         style: .large(.raisedTertiary)) {
-                logButtonPressedAnalyticEvents(button: .gotIt)
-                closeSuggestion()
+        NavigationView {
+            OffsetObservingScrollView(offset: $scrollOffset) {
+                contentView()
+                    .sideInsets(16)
+                UDButtonView(text: String.Constants.gotIt.localized(),
+                             style: .large(.raisedTertiary)) {
+                    logButtonPressedAnalyticEvents(button: .gotIt)
+                    closeSuggestion()
+                }
+                             .padding()
             }
-            .padding()
+            .navigationBarTitle(Text(isTitleVisible ? title : ""), displayMode: .inline)
+           
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
+                        closeSuggestion()
+                    }
+                }
+            }
         }
     }
 }
 
 // MARK: - Private methods
 private extension HotFeatureSuggestionDetailsView {
+    var title: String {
+        switch suggestion.details {
+        case .steps(let stepDetailsContent):
+            return stepDetailsContent.title
+        }
+    }
+    
     func closeSuggestion() {
         appContext.hotFeatureSuggestionsService.didViewHotFeatureSuggestion(suggestion)
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

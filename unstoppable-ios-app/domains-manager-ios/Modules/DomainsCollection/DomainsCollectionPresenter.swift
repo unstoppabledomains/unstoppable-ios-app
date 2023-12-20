@@ -139,6 +139,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         case .recentActivityGetDomain:
             logButtonPressedAnalyticEvents(button: .getNewDomainLearnMore)
             showRecentActivitiesGetDomainPullUp()
+        case .suggestionSelected(let suggestion):
+            logButtonPressedAnalyticEvents(button: .suggestionBanner)
+            router.showHotFeatureSuggestionDetails(suggestion: suggestion)
         }
     }
 

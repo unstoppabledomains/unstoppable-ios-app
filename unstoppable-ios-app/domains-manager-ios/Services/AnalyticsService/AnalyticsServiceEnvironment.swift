@@ -316,6 +316,8 @@ extension Analytics {
         case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
         case applyPromoCredits, applyStoreCredits
         case openUnpaidDomainsInfo, openSetupApplePayInfo
+        
+        case suggestionBanner
     }
 }
 

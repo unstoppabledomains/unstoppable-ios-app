@@ -90,7 +90,12 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     }
     
     func didOccureUIAction(_ action: DomainsCollectionViewController.Action) {
-        
+        switch action {
+        case .suggestionSelected(let suggestion):
+            UDRouter().showHotFeatureSuggestionDetails(suggestion: suggestion, in: view!)
+        default:
+            return
+        }
     }
     
     func didTapSettingsButton() {
