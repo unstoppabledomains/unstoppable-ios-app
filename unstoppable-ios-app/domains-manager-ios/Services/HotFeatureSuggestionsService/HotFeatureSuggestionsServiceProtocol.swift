@@ -9,6 +9,7 @@ import Foundation
 
 protocol HotFeatureSuggestionsServiceProtocol {
     func getSuggestionToShow() -> HotFeatureSuggestion?
+    func didViewHotFeatureSuggestion(_ suggestion: HotFeatureSuggestion)
     func dismissHotFeatureSuggestion(_ suggestion: HotFeatureSuggestion)
     
     // Listeners

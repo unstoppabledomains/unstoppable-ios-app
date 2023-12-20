@@ -40,3 +40,16 @@ struct HotFeatureSuggestion: Codable, Hashable {
     }
     
 }
+
+// MARK: - Mock
+extension HotFeatureSuggestion {
+    static func mock() -> HotFeatureSuggestion {
+        HotFeatureSuggestion(id: 0,
+                             isEnabled: true,
+                             banner: .init(title: "Title", subtitle: "Subtitle"),
+                             details: .steps(.init(title: "Get notifications from dApps", steps: ["Tap on the 💬 message icon in the top right corner on the home screen.",
+                                                                                    "Go to the 'Apps Inbox' tab."], image: URL(fileURLWithPath: ""))),
+                             minAppVersion: "0.0.1",
+                             navigation: nil)
+    }
+}

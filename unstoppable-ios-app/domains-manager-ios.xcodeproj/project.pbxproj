@@ -137,6 +137,10 @@
 		C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B740286474E000DC562B /* WalletWithInfo.swift */; };
+		C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */; };
+		C607A5D52B32A02A0088ECF3 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */; };
+		C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
+		C607A5D82B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
 		C608C82C2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */; };
 		C608C8312877F9D300EDEC6E /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C8302877F9D300EDEC6E /* Double.swift */; };
 		C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */; };
@@ -2416,6 +2420,8 @@
 		C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingNewsChannel.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
+		C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
+		C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationContentView.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
 		C608C8302877F9D300EDEC6E /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsViewPresenter.swift; sourceTree = "<group>"; };
@@ -6376,6 +6382,7 @@
 			isa = PBXGroup;
 			children = (
 				C69F99122A9F1264004B1958 /* CircleIconButton.swift */,
+				C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */,
 				C6568EF82B204E4C0022B598 /* AnimateAbleImage.swift */,
 				C6289A4A2AAB095D002C2DEC /* DomainSelectionListView.swift */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
@@ -6386,6 +6393,7 @@
 				C6DDF24C2B147F1A006D1F0B /* UDTextFieldView.swift */,
 				C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */,
 				C655CA9B2B16E5BE00FDA063 /* UDToggleStyle.swift */,
+				C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */,
 				C6DDF2432B147F1A006D1F0B /* Buttons */,
 				C69F990F2A9F1264004B1958 /* Shapes */,
 				C655CA902B16E51B00FDA063 /* Skeleton */,
@@ -7190,7 +7198,6 @@
 				C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */,
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
-				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C60982A7282A724400546392 /* AddWallet */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
 				C60982F8282A7F7000546392 /* BackupAndRecovery */,
@@ -7203,6 +7210,7 @@
 				C63A350828F006FB0057D34B /* DomainProfile */,
 				C669C3642912196300837F21 /* EnterValue */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
+				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
 				C673D5A829FB723E001CC77C /* InviteFriends */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
@@ -8629,6 +8637,7 @@
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
+				C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
 				C672FD7A2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
 				C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
@@ -8647,6 +8656,7 @@
 				C6ED3203295D451700BC6919 /* DomainsCollectionTitleSwipeTutorialView.swift in Sources */,
 				C6D3B9D92A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */,
 				C66107942A3180DA0076782F /* MessagingNewsChannelFeed.swift in Sources */,
+				C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */,
 				C6D5DAB32835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6E041B929548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift in Sources */,
 				C6098292282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
@@ -9572,6 +9582,7 @@
 				C6D645BF2B1DBD1E00D724AC /* ViewAnalyticsLogger.swift in Sources */,
 				C6C8F8BB2B2182E400A9834D /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C6D646FE2B1ED7BE00D724AC /* MessagingChatType.swift in Sources */,
+				C607A5D82B32A1030088ECF3 /* NavigationContentView.swift in Sources */,
 				C6C8F90D2B21839100A9834D /* CommunityListCell.swift in Sources */,
 				C6960C642B199B4000B79E28 /* PreviewNetworkService.swift in Sources */,
 				C6D646792B1ED12100D724AC /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
@@ -10091,6 +10102,7 @@
 				C6960C612B199AD400B79E28 /* Helpers.swift in Sources */,
 				C6D645F22B1DBEC600D724AC /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */,
+				C607A5D52B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
 				C61808522B19BA750032E543 /* Task.swift in Sources */,
 				C6C8F87F2B21827700A9834D /* LoginFlowNavigationController.swift in Sources */,
 				C6D647502B1EDB6D00D724AC /* TransferDomainNavigationManager.swift in Sources */,

@@ -17,11 +17,6 @@ struct PreviewHotFeaturesSuggestionsFetcher: HotFeaturesSuggestionsFetcher {
 // MARK: - Private methods
 private extension PreviewHotFeaturesSuggestionsFetcher {
     func createMockStepsSuggestion() -> HotFeatureSuggestion {
-        .init(id: 0,
-              isEnabled: true,
-              banner: .init(title: "Title", subtitle: "Subtitle"),
-              details: .steps(.init(title: "Feature details", steps: ["Step one"], image: URL(fileURLWithPath: ""))),
-              minAppVersion: "0.0.1",
-              navigation: nil)
+        .mock()
     }
 }

@@ -13,6 +13,7 @@ final class HotFeatureSuggestionsService {
     private var cachedFeatures: [HotFeatureSuggestion] = []
     private var listenerHolders: [HotFeatureSuggestionsServiceHolder] = []
     private var didDismissSuggestion = false
+    private var didViewSuggestion = false
     
     init(fetcher: HotFeaturesSuggestionsFetcher) {
         self.fetcher = fetcher
@@ -24,10 +25,18 @@ final class HotFeatureSuggestionsService {
 // MARK: - HotFeatureSuggestionsServiceProtocol
 extension HotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol {
     func getSuggestionToShow() -> HotFeatureSuggestion? {
-        if didDismissSuggestion {
+        if didDismissSuggestion || didViewSuggestion {
             return nil
         }
         return cachedFeatures.first
+    }
+    
+    func didViewHotFeatureSuggestion(_ suggestion: HotFeatureSuggestion) {
+        var viewedSuggestions = HotFeatureSuggestionsStorage.getViewedHotFeatureSuggestions()
+        viewedSuggestions.append(suggestion)
+        HotFeatureSuggestionsStorage.setViewedHotFeatureSuggestions(viewedSuggestions)
+        didViewSuggestion = true
+        notifyCurrentSuggestionUpdated()
     }
     
     func dismissHotFeatureSuggestion(_ suggestion: HotFeatureSuggestion) {

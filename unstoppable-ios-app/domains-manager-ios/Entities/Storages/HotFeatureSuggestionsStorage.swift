@@ -8,8 +8,16 @@
 import Foundation
 
 struct HotFeatureSuggestionsStorage {
-    @UserDefaultsCodableValue(key: .dismissedHotFeatureSuggestions) private static var dismissedHotFeatureSuggestions: [HotFeatureSuggestion]?
+    @UserDefaultsCodableValue(key: .viewedHotFeatureSuggestions) private static var viewedHotFeatureSuggestions: [HotFeatureSuggestion]?
+    static func getViewedHotFeatureSuggestions() -> [HotFeatureSuggestion] {
+        viewedHotFeatureSuggestions ?? []
+    }
     
+    static func setViewedHotFeatureSuggestions(_ suggestions: [HotFeatureSuggestion]) {
+        viewedHotFeatureSuggestions = suggestions
+    }
+    
+    @UserDefaultsCodableValue(key: .dismissedHotFeatureSuggestions) private static var dismissedHotFeatureSuggestions: [HotFeatureSuggestion]?
     static func getDismissedHotFeatureSuggestions() -> [HotFeatureSuggestion] {
         dismissedHotFeatureSuggestions ?? []
     }
