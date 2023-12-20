@@ -918,7 +918,7 @@
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";
 "TOTAL_DUE" = "Total due";
-"DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
+"DOMAINS_PURCHASED_SUBTITLE" = "Minting process started, it can take up to 5 minutes.";
 "GO_TO_DOMAINS" = "Go to domains";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE" = "You have 1 or more unpaid vaults for your domain, please go to the website";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED" = "go to the website";
