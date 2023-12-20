@@ -41,15 +41,19 @@ struct DomainProfilePendingChanges: Codable, Hashable {
         
         if let name {
             attributes.insert(.name(name))
+            attributes.insert(.displayNamePublic(true))
         }
         if let bio {
             attributes.insert(.bio(bio))
+            attributes.insert(.descriptionPublic(true))
         }
         if let location {
             attributes.insert(.location(location))
+            attributes.insert(.locationPublic(true))
         }
         if let website {
             attributes.insert(.website(website))
+            attributes.insert(.web2UrlPublic(true))
         }
         
         return attributes

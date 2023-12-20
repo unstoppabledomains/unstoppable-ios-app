@@ -45,7 +45,7 @@ extension DomainsCollectionTitleMintingProgressView {
     func setMintingDomains(_ mintingDomains: [DomainDisplayInfo]) {
         self.mintingDomains = mintingDomains
         
-        let mintingWord = String.Constants.moving.localized()
+        let mintingWord = String.Constants.minting.localized()
         let title = "\(mintingWord) · \(mintingDomains.count)"
         statusButton.setTitle(title, image: nil)
         setActionsForMintingButton()

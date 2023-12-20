@@ -9,10 +9,6 @@ import Foundation
 import Stripe
 import PassKit
 
-protocol StripeServiceProtocol {
-    func payWithStripe() async throws
-}
-
 final class StripeService: NSObject {
     
     typealias PurchaseResult = Result<Void, PurchaseError>
@@ -37,6 +33,10 @@ extension StripeService: StripeServiceProtocol {
             key = PaymentConfiguration.Stripe.developmentKey
         }
         StripeAPI.defaultPublishableKey = key
+    }
+    
+    static var isApplePaySupported: Bool {
+        StripeAPI.deviceSupportsApplePay()
     }
     
     func payWithStripe() async throws {

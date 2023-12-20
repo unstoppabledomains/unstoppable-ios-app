@@ -103,28 +103,41 @@ private extension PurchaseDomainsCheckoutView {
             Text(String.Constants.checkout.localized())
                 .titleText()
             if case .hasUnpaidDomains = cartStatus {
-                Button {
+                topWarningViewWith(message: .hasUnpaidDomains) {
+                    logButtonPressedAnalyticEvents(button: .openUnpaidDomainsInfo)
                     openLinkExternally(.mainLanding)
-                } label: {
-                    HStack(spacing: 8) {
-                        Image.infoIcon
-                            .resizable()
-                            .squareFrame(20)
-                            .foregroundStyle(Color.foregroundDanger)
-                        AttributedText(attributesList: .init(text: String.Constants.purchaseHasUnpaidVaultDomainsErrorMessage.localized(),
-                                       font: .currentFont(withSize: 16, weight: .medium),
-                                       textColor: .foregroundDanger,
-                                       alignment: .left),
-                                       updatedAttributesList: [.init(text: String.Constants.purchaseHasUnpaidVaultDomainsErrorMessageHighlighted.localized(),
-                                                                     textColor: .foregroundAccent)])
-                    }
-                    .frame(height: 48)
+                }
+            } else if !purchaseDomainsService.isApplePaySupported {
+                topWarningViewWith(message: .applePayNotSupported) {
+                    logButtonPressedAnalyticEvents(button: .openSetupApplePayInfo)
+                    openLinkExternally(.setupApplePayInstruction)
                 }
             }
         }
         .padding(EdgeInsets(top: 56, leading: 16, bottom: 0, trailing: 16))
     }
     
+    @ViewBuilder
+    func topWarningViewWith(message: TopMessageDescription, callback: @escaping EmptyCallback) -> some View {
+        Button {
+            callback()
+        } label: {
+            HStack(spacing: 8) {
+                Image.infoIcon
+                    .resizable()
+                    .squareFrame(20)
+                    .foregroundStyle(Color.foregroundDanger)
+                AttributedText(attributesList: .init(text: message.message,
+                                                     font: .currentFont(withSize: 16, weight: .medium),
+                                                     textColor: .foregroundDanger,
+                                                     alignment: .left),
+                               updatedAttributesList: [.init(text: message.highlightedMessage,
+                                                             textColor: .foregroundAccent)])
+            }
+            .frame(height: 48)
+        }
+    }
+   
     @ViewBuilder
     func detailsSection() -> some View {
         UDCollectionSectionBackgroundView {
@@ -232,7 +245,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var appliedDiscountsSum: Int? {
-        let sum = cartStatus.otherDiscountsApplied
+        let sum = cartStatus.discountsAppliedSum
         
         if sum == 0 {
             return nil
@@ -305,11 +318,11 @@ private extension PurchaseDomainsCheckoutView {
     func additionalCheckoutDetailsView() -> some View {
         if hasAdditionalCheckoutData {
             VStack(spacing: 8) {
-                if cartStatus.taxes > 0 {
-                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
-                }
                 if appliedDiscountsSum != nil {
                     additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
+                }
+                if cartStatus.taxes > 0 {
+                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
                 }
             }
         }
@@ -419,7 +432,7 @@ private extension PurchaseDomainsCheckoutView {
     
     var isPayButtonDisabled: Bool {
         if case .ready = cartStatus {
-            return false
+            return !purchaseDomainsService.isApplePaySupported
         }
         return true
     }
@@ -431,6 +444,9 @@ private extension PurchaseDomainsCheckoutView {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
         setDomainAvatar()
+        if !purchaseDomainsService.isApplePaySupported {
+            logAnalytic(event: .applePayNotSupported)
+        }
     }
     
     func setDomainAvatar() {
@@ -490,7 +506,12 @@ private extension PurchaseDomainsCheckoutView {
                                                                     walletAddress: walletToMint.address)
                 PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
                 PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                
+                await dataAggregatorService.didPurchaseDomains([pendingPurchasedDomain],
+                                                               pendingProfiles: [profileChanges])
+                Task.detached { // Run in background
+                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {
                 Debugger.printFailure("Did fail to purchase domains with error \(error)")
@@ -541,6 +562,28 @@ private extension PurchaseDomainsCheckoutView {
     struct ExternalWalletInfo {
         let name: String
         let icon: UIImage
+    }
+    
+    enum TopMessageDescription {
+        case hasUnpaidDomains, applePayNotSupported
+        
+        var message: String {
+            switch self {
+            case .hasUnpaidDomains:
+                return String.Constants.purchaseHasUnpaidVaultDomainsErrorMessage.localized()
+            case .applePayNotSupported:
+                return String.Constants.purchaseApplePayNotSupportedErrorMessage.localized()
+            }
+        }
+        
+        var highlightedMessage: String {
+            switch self {
+            case .hasUnpaidDomains:
+                return String.Constants.purchaseHasUnpaidVaultDomainsErrorMessageHighlighted.localized()
+            case .applePayNotSupported:
+                return String.Constants.purchaseApplePayNotSupportedErrorMessageHighlighted.localized()
+            }
+        }
     }
 }
 
