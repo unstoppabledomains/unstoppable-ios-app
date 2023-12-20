@@ -8,6 +8,7 @@
 import Foundation
 
 enum Analytics {
+    typealias CustomEventParameters = [String : String]
     typealias EventParameters = [Parameters : String]
     typealias UserProperties = [UserProperty : String]
 }
@@ -375,5 +376,13 @@ extension Analytics {
 extension Analytics.EventParameters {
     func adding(_ otherProperties: Analytics.EventParameters) -> Analytics.EventParameters {
         self.merging(otherProperties, uniquingKeysWith: { $1 })
+    }
+    
+    func toCustomParameters() -> Analytics.CustomEventParameters {
+        var dict = Analytics.CustomEventParameters()
+        for (key, value) in self {
+            dict[key.rawValue] = value
+        }
+        return dict
     }
 }
