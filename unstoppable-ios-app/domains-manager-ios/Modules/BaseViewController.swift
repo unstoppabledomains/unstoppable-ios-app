@@ -66,7 +66,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         if analyticsName == .unspecified {
             Debugger.printFailure("Did not specify screen name for \(String(describing: self))", critical: false)
         }
-        logAnalytic(event: .viewDidAppear, parameters: additionalAppearAnalyticParameters)
+        logAnalytic(event: .viewDidAppear)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

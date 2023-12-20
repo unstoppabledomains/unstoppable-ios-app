@@ -40,6 +40,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     weak var delegate: PurchaseDomainsCheckoutViewDelegate?
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
+                                                                         .price: String(domain.price)] }
 
     var body: some View {
         ZStack {

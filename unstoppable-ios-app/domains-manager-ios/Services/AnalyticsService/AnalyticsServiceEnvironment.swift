@@ -107,6 +107,7 @@ extension Analytics {
         case feedName
         case isUserDomain
         case communityName
+        case price
     }
 }
 
