@@ -126,7 +126,8 @@ private extension AnalyticsService {
         
         init() async {
             let userID = await resolveUserID()
-            services = [HeapAnalyticService(userID: userID)]
+            services = [HeapAnalyticService(userID: userID),
+                        AmplitudeAnalyticsService()]
         }
         
         private func resolveUserID() async -> String {

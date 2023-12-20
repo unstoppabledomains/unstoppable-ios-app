@@ -9,7 +9,7 @@ import Foundation
 
 final class PurchaseDomainsHappyEndViewPresenter: BaseHappyEndViewPresenter {
     
-    override var analyticsName: Analytics.ViewName { .onboardingHappyEnd }
+    override var analyticsName: Analytics.ViewName { .domainsPurchasedHappyEnd }
     
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
