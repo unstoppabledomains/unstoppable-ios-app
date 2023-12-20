@@ -137,6 +137,7 @@
 		C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B740286474E000DC562B /* WalletWithInfo.swift */; };
+		C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */; };
 		C608C82C2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */; };
 		C608C8312877F9D300EDEC6E /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C8302877F9D300EDEC6E /* Double.swift */; };
 		C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */; };
@@ -2398,6 +2399,7 @@
 		C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingNewsChannel.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
+		C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHappyEndViewController.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
 		C608C8302877F9D300EDEC6E /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsViewPresenter.swift; sourceTree = "<group>"; };
@@ -3965,6 +3967,14 @@
 				C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */,
 			);
 			path = WalletConnect;
+			sourceTree = "<group>";
+		};
+		C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */,
+			);
+			path = PreviewHappyEndViewController;
 			sourceTree = "<group>";
 		};
 		C60981D22822563E00546392 /* WalletDetails */ = {
@@ -7060,6 +7070,7 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */,
 				C6D647892B1EE59500D724AC /* PreviewDomainProfile */,
 				C6D6463E2B1DC64700D724AC /* PreviewDomainsCollection */,
 			);
@@ -9757,6 +9768,7 @@
 				C61807F62B19A7BC0032E543 /* CryptoRecord.swift in Sources */,
 				C6C8F9302B2183C700A9834D /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6C8F8782B21827700A9834D /* LoginWithEmailInAppViewPresenter.swift in Sources */,
+				C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */,
 				C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */,
 				C6D6460C2B1DC07200D724AC /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C61808102B19AA4C0032E543 /* LinkPresentationService.swift in Sources */,
