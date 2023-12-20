@@ -557,7 +557,6 @@ extension String {
         static let moveToTop = "MOVE_TO_TOP"
         
         // Minting in progress
-        static let claimingDomain = "CLAIMING_DOMAIN"
         static let mintingInProgressTitle = "MINTING_IN_PROGRESS_TITLE"
         static let mintingInProgressSubtitle = "MINTING_IN_PROGRESS_SUBTITLE"
         static let goToHomeScreen = "GO_TO_HOME_SCREEN"

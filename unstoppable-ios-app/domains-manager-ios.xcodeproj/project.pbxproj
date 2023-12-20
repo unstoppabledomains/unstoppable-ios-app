@@ -2139,6 +2139,7 @@
 		C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189328F80CD400C6AD4D /* DomainProfileSectionHeader.swift */; };
 		C6E1189928F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189828F8391700C6AD4D /* DomainProfileViewControllerItemsEntities.swift */; };
 		C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */; };
+		C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */; };
 		C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E385FC2849D66E00C91293 /* DomainsListPresenter.swift */; };
 		C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */; };
 		C6E459072925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */; };
@@ -3452,6 +3453,7 @@
 		C6E1189328F80CD400C6AD4D /* DomainProfileSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSectionHeader.swift; sourceTree = "<group>"; };
 		C6E1189828F8391700C6AD4D /* DomainProfileViewControllerItemsEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileViewControllerItemsEntities.swift; sourceTree = "<group>"; };
 		C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryWhiteButton.swift; sourceTree = "<group>"; };
+		C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainProfileActionCover.swift; sourceTree = "<group>"; };
 		C6E385FC2849D66E00C91293 /* DomainsListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListPresenter.swift; sourceTree = "<group>"; };
 		C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyTopInfoCell.swift; sourceTree = "<group>"; };
 		C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionEmptyTopInfoCell.xib; sourceTree = "<group>"; };
@@ -7070,6 +7072,7 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */,
 				C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */,
 				C6D647892B1EE59500D724AC /* PreviewDomainProfile */,
 				C6D6463E2B1DC64700D724AC /* PreviewDomainsCollection */,
@@ -7434,6 +7437,14 @@
 				C6E1189328F80CD400C6AD4D /* DomainProfileSectionHeader.swift */,
 			);
 			path = CollectionReusableViews;
+			sourceTree = "<group>";
+		};
+		C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */ = {
+			isa = PBXGroup;
+			children = (
+				C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */,
+			);
+			path = PreviewDomainProfileActionCover;
 			sourceTree = "<group>";
 		};
 		C6E459002925F06E00751742 /* DomainsCollectionEmptyTopInfoCell */ = {
@@ -9471,6 +9482,7 @@
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
+				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,
 				C6C8F97D2B2188FA00A9834D /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				C6C8F9782B2188FA00A9834D /* QRScannerViewController.swift in Sources */,
 				C61808632B19BBFE0032E543 /* UDCollectionListRowButton.swift in Sources */,
