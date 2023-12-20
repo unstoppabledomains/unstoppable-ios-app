@@ -802,6 +802,7 @@ extension String {
         
         // Minting-Claiming
         static let claimDomainsToSelfCustodial = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL"
+        static let claimDomainsToSelfCustodialSubtitle = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL_SUBTITLE"
         
         // Legacy tokens
         static let legacy = "LEGACY"
