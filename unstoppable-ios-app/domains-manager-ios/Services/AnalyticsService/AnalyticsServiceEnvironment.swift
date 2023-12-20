@@ -64,7 +64,7 @@ extension Analytics {
         case didDiscoverBTDomain
         
         // Purchase domain
-        case didPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
+        case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
     }
 }
 
@@ -108,6 +108,7 @@ extension Analytics {
         case isUserDomain
         case communityName
         case price
+        case error
     }
 }
 
