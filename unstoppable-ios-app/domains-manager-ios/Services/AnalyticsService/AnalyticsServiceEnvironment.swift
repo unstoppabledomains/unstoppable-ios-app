@@ -65,7 +65,7 @@ extension Analytics {
         case didDiscoverBTDomain
         
         // Purchase domain
-        case didPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
+        case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
     }
 }
 
@@ -109,6 +109,7 @@ extension Analytics {
         case isUserDomain
         case communityName
         case price
+        case error
     }
 }
 
@@ -131,7 +132,7 @@ extension Analytics {
         case onboardingEnterBackupPassword, enterBackupPasswordToBackupNewWallet, enterBackupPasswordToBackupWallet, enterBackupPasswordToRestoreWallets
         case createBackupPasswordToBackupWallet, createBackupPasswordForNewWallet, onboardingCreateBackupPassword
         case onboardingProtectOptions
-        case onboardingHappyEnd
+        case onboardingHappyEnd, domainsPurchasedHappyEnd
         case createPasscode, createPasscodeConfirm, onboardingCreatePasscode, onboardingCreatePasscodeConfirm
         case enterPasscodeVerification
         case revealRecoveryPhrase, onboardingRecoveryPhrase, newWalletRecoveryPhrase

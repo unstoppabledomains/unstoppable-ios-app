@@ -516,7 +516,11 @@ private extension PurchaseDomainsCheckoutView {
                 }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {
-                Debugger.printFailure("Did fail to purchase domains with error \(error)")
+                logAnalytic(event: .didFailToPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
+                                                                           .count: String(1),
+                                                                           .error: error.localizedDescription])
+                
+                Debugger.printFailure("Did fail to purchase domains with error \(error.localizedDescription)")
                 self.error = .purchaseError(tryAgainCallback: startPurchaseDomains)
             }
             setLoading(false)
