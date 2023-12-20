@@ -46,6 +46,7 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
         WalletConnectServiceV2.connectedAppsToUse = [.init()]
 //        view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
         view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
+//        view?.showMintingDomains([.init(name: "oleg.x", ownerWallet: "", state: .minting, isSetForRR: false)])
     }
     
     func viewDidAppear() {

@@ -111,6 +111,7 @@
 "INSTALLED" = "Installed";
 "NOT_INSTALLED" = "Not installed";
 "MINTING" = "Minting";
+"MINTING_DOMAIN" = "Minting domain";
 "MOVING" = "Moving";
 "SCANNING" = "Scanning";
 "ADD" = "Add";
@@ -937,3 +938,5 @@
 "SIGN_TRANSACTION" = "Sign transaction";
 "FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE" = "Failed to update profile";
 "CANCEL_SETUP" = "Cancel setup";
+"PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE" = "Apple Pay is required to purchase domains. Add Apple Pay";
+"PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE_HIGHLIGHTED" = "Add Apple Pay";

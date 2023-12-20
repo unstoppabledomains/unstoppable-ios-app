@@ -18,15 +18,17 @@ final class MockFirebaseInteractionsService {
             cartStatus = .ready(cart: cart)
         }
     }
-    @Published var cartStatus: PurchaseDomainCartStatus = .ready(cart: MockFirebaseInteractionsService.createMockCart())
+    @Published var cartStatus: PurchaseDomainCartStatus
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
-    
+    var isApplePaySupported: Bool { true }
+
     private var cancellables: Set<AnyCancellable> = []
     private var checkoutData: PurchaseDomainsCheckoutData
     
     init() {
         let preferencesService = PurchaseDomainsPreferencesStorage.shared
         checkoutData = preferencesService.checkoutData
+        cartStatus = .ready(cart: cart)
         preferencesService.$checkoutData.publisher
             .sink { val in
                 self.checkoutData = val
@@ -107,7 +109,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func refreshCart() async throws { }
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
-        cartStatus = .ready(cart: .empty)
+        cart = MockFirebaseInteractionsService.createMockCart()
         updateCart()
     }
     
@@ -145,6 +147,7 @@ private extension MockFirebaseInteractionsService {
     }
     
     func updateCart() {
+        var cart = self.cart
         cart.totalPrice = cart.domains.reduce(0, { $0 + $1.price })
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
@@ -152,16 +155,18 @@ private extension MockFirebaseInteractionsService {
         cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
                                             promoCredits: promoCredits,
                                             others: otherDiscounts)
+        cart.totalPrice -= (storeCredits + promoCredits + otherDiscounts)
         if !checkoutData.usaZipCode.isEmpty {
             let taxes = 200
             cart.taxes = taxes
             cart.totalPrice += taxes
         }
+        self.cart = cart
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
-        .init(domains: [.init(name: "oleg.x", price: 100, metadata: nil)],
-              totalPrice: 100,
+        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil)],
+              totalPrice: 10000,
               taxes: 0,
               storeCreditsAvailable: 100,
               promoCreditsAvailable: 2000,
