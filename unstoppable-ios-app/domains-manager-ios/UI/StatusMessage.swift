@@ -131,7 +131,7 @@ extension StatusMessage {
             case .deprecated(let tld), .orangeDeprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .electricMinting:
-                return String.Constants.claimingDomain.localized()
+                return String.Constants.mintingDomain.localized()
             case .parked(let status):
                 return status.title ?? String.Constants.parkedDomain.localized()
             case .transfer:

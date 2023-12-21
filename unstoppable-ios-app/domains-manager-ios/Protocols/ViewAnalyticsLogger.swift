@@ -9,18 +9,29 @@ import Foundation
 
 protocol ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { get }
+    
 }
 
 extension ViewAnalyticsLogger {
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
+    
     func logAnalytic(event: Analytics.Event,
                      parameters: Analytics.EventParameters = [:]) {
+        let eventParameters: Analytics.EventParameters = [.viewName: analyticsName.rawValue]
+            .adding(parameters)
+            .adding(additionalAppearAnalyticParameters)
         appContext.analyticsService.log(event: event,
-                                    withParameters: [.viewName: analyticsName.rawValue].adding(parameters))
+                                        withParameters: eventParameters)
     }
     
     func logButtonPressedAnalyticEvents(button: Analytics.Button, parameters: Analytics.EventParameters = [:]) {
+        let eventParameters: Analytics.EventParameters = [.button : button.rawValue,
+                                                          .viewName: analyticsName.rawValue]
+            .adding(parameters)
+            .adding(additionalAppearAnalyticParameters)
+        
         appContext.analyticsService.log(event: .buttonPressed,
-                                    withParameters: [.button : button.rawValue,
-                                                     .viewName: analyticsName.rawValue].adding(parameters))
+                                        withParameters: eventParameters)
     }
 }

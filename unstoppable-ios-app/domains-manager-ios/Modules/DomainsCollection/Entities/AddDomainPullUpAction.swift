@@ -29,7 +29,7 @@ enum AddDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
     var subtitle: String? {
         switch self {
         case .importFromWebsite:
-            return nil
+            return String.Constants.claimDomainsToSelfCustodialSubtitle.localized()
         case .importWallet:
             return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
         case .connectWallet:

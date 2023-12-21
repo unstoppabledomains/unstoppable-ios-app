@@ -22,6 +22,8 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
 
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
     var progress: Double? { 5 / 6 }
+    override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
+                                                                                  .price: String(domain.price)] }
     
     static func instantiate(domain: DomainToPurchase,
                             profileChanges: DomainProfilePendingChanges,

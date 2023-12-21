@@ -9,6 +9,7 @@ import Foundation
 
 protocol PurchaseDomainsServiceProtocol {
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher  { get }
+    var isApplePaySupported: Bool { get }
     
     func searchForDomains(key: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion]
@@ -49,6 +50,14 @@ enum PurchaseDomainCartStatus {
         switch self {
         case .ready(let cart):
             return cart.appliedDiscountDetails.others
+        default:
+            return 0
+        }
+    }
+    var discountsAppliedSum: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.appliedDiscountDetails.totalSum
         default:
             return 0
         }

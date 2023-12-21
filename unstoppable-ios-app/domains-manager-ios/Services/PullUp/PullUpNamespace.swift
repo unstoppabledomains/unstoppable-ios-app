@@ -10,7 +10,7 @@ import Foundation
 enum PullUpNamespace {
     
     enum AddWalletPullUpPresentationOptions {
-        case `default`, claimWithoutWallets
+        case `default`, claimWithoutWallets, addToPurchase
         
         var title: String? {
             switch self {
@@ -18,6 +18,8 @@ enum PullUpNamespace {
                 return nil
             case .claimWithoutWallets:
                 return String.Constants.noWalletsToClaimAlertTitle.localized()
+            case .addToPurchase:
+                return String.Constants.noWalletsToPurchaseAlertTitle.localized()
             }
         }
         
@@ -27,6 +29,8 @@ enum PullUpNamespace {
                 return nil
             case .claimWithoutWallets:
                 return String.Constants.noWalletsToClaimAlertSubtitle.localized()
+            case .addToPurchase:
+                return String.Constants.noWalletsToPurchaseAlertSubtitle.localized()
             }
         }
     }

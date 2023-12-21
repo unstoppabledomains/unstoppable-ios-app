@@ -53,6 +53,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
     private var cachedPaymentDetails: StripePaymentDetails? = nil
     private var isAutoRefreshCartSuspended = false
     private var domainsToPurchase: [DomainToPurchase] = []
+    var isApplePaySupported: Bool { StripeService.isApplePaySupported }
 
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
@@ -78,6 +79,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
         do {
             return try await super.makeFirebaseAPIDataRequest(apiRequest)
         } catch {
+            appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
+                                            withParameters: [.error: error.localizedDescription,
+                                                             .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
             }
@@ -94,6 +98,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                                                        using: keyDecodingStrategy,
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
+            appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
+                                            withParameters: [.error: error.localizedDescription,
+                                                             .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
             }
@@ -166,7 +173,6 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
         isAutoRefreshCartSuspended = true
-        try await refreshUserCart()
         let userWallet = try UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseDomainsInTheCart(to: userWallet)
         isAutoRefreshCartSuspended = false
@@ -376,7 +382,10 @@ private extension FirebasePurchaseDomainsService {
             cachedPaymentDetails = details
             return details
         } catch {
+            appContext.analyticsService.log(event: .purchaseGetPaymentDetailsError,
+                                            withParameters: [.error: error.localizedDescription])
             if let cachedPaymentDetails {
+                appContext.analyticsService.log(event: .purchaseWillUseCachedPaymentDetails, withParameters: nil)
                 return cachedPaymentDetails
             }
             throw error

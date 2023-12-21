@@ -8,6 +8,7 @@
 import Foundation
 
 enum Analytics {
+    typealias CustomEventParameters = [String : String]
     typealias EventParameters = [Parameters : String]
     typealias UserProperties = [UserProperty : String]
 }
@@ -64,7 +65,8 @@ extension Analytics {
         case didDiscoverBTDomain
         
         // Purchase domain
-        case didPurchaseDomains, accountHasUnpaidDomains
+        case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
+        case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
     }
 }
 
@@ -107,6 +109,8 @@ extension Analytics {
         case feedName
         case isUserDomain
         case communityName
+        case price
+        case error
     }
 }
 
@@ -129,7 +133,7 @@ extension Analytics {
         case onboardingEnterBackupPassword, enterBackupPasswordToBackupNewWallet, enterBackupPasswordToBackupWallet, enterBackupPasswordToRestoreWallets
         case createBackupPasswordToBackupWallet, createBackupPasswordForNewWallet, onboardingCreateBackupPassword
         case onboardingProtectOptions
-        case onboardingHappyEnd
+        case onboardingHappyEnd, domainsPurchasedHappyEnd
         case createPasscode, createPasscodeConfirm, onboardingCreatePasscode, onboardingCreatePasscodeConfirm
         case enterPasscodeVerification
         case revealRecoveryPhrase, onboardingRecoveryPhrase, newWalletRecoveryPhrase
@@ -314,6 +318,7 @@ extension Analytics {
         case enterUSZIPCode, confirmUSZIPCode
         case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
         case applyPromoCredits, applyStoreCredits
+        case openUnpaidDomainsInfo, openSetupApplePayInfo
     }
 }
 
@@ -373,5 +378,13 @@ extension Analytics {
 extension Analytics.EventParameters {
     func adding(_ otherProperties: Analytics.EventParameters) -> Analytics.EventParameters {
         self.merging(otherProperties, uniquingKeysWith: { $1 })
+    }
+    
+    func toCustomParameters() -> Analytics.CustomEventParameters {
+        var dict = Analytics.CustomEventParameters()
+        for (key, value) in self {
+            dict[key.rawValue] = value
+        }
+        return dict
     }
 }
