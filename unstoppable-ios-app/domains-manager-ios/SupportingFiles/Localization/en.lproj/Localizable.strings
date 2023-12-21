@@ -882,7 +882,7 @@
 "NO_WALLETS_TO_CLAIM_ALERT_TITLE" = "You haven't added a wallet yet";
 "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE" = "You need to add a wallet first in order to manage your domains";
 "NO_WALLETS_TO_PURCHASE_ALERT_TITLE" = "You haven't added a wallet yet";
-"NO_WALLETS_TO_PURCHASE_ALERT_SUBTITLE" = "You need to add a wallet first in order to buy new domain";
+"NO_WALLETS_TO_PURCHASE_ALERT_SUBTITLE" = "You need to add a wallet before buying a domain";
 
 // Shake to find
 "SHAKE_TO_FIND_SEARCH_TITLE" = "Searching...";
