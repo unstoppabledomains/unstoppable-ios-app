@@ -975,6 +975,8 @@ extension String {
         // No wallets to claim
         static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
         static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
+        static let noWalletsToPurchaseAlertTitle = "NO_WALLETS_TO_PURCHASE_ALERT_TITLE"
+        static let noWalletsToPurchaseAlertSubtitle = "NO_WALLETS_TO_PURCHASE_ALERT_SUBTITLE"
         
         // Shake to find
         static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"

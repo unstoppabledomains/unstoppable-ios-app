@@ -52,14 +52,8 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
         case .didSelectDomain(let domain):
             moveToStep(.fillProfile(domain: domain))
         case .didFillProfileForDomain(let domain, let profileChanges):
-            purchaseData.domain = domain
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            guard let selectedWallet = wallets.first else { return }
-            
-            moveToStep(.checkout(domain: domain,
-                                 profileChanges: profileChanges,
-                                 selectedWallet: selectedWallet,
-                                 wallets: wallets))
+            moveToCheckoutWith(domain: domain,
+                               profileChanges: profileChanges)
         case .didPurchaseDomains:
             Task {
                 try? await Task.sleep(seconds: 0.5)
@@ -121,6 +115,48 @@ private extension PurchaseDomainsNavigationController {
             map[domain] = i
         }
         return map
+    }
+    
+    func moveToCheckoutWith(domain: DomainToPurchase,
+                            profileChanges: DomainProfilePendingChanges) {
+        Task { @MainActor in
+            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            guard let selectedWallet = wallets.first else {
+                askUserToAddWalletToPurchase(domain: domain,
+                                             profileChanges: profileChanges)
+                return
+            }
+            
+            purchaseData.domain = domain
+            moveToStep(.checkout(domain: domain,
+                                 profileChanges: profileChanges,
+                                 selectedWallet: selectedWallet,
+                                 wallets: wallets))
+        }
+    }
+    
+    func askUserToAddWalletToPurchase(domain: DomainToPurchase,
+                                      profileChanges: DomainProfilePendingChanges) {
+        Task {
+            do {
+                let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: self,
+                                                                                                 presentationOptions: .addToPurchase,
+                                                                                                 actions: WalletDetailsAddWalletAction.allCases)
+                await dismissPullUpMenu()
+                
+                UDRouter().showAddWalletScreenForAction(action,
+                                                        in: self,
+                                                        addedCallback: { [weak self] result in
+                    switch result {
+                    case .created, .createdAndBackedUp:
+                        self?.moveToCheckoutWith(domain: domain,
+                                                 profileChanges: profileChanges)
+                    case .cancelled:
+                        return
+                    }
+                })
+            }
+        }
     }
 }
 
