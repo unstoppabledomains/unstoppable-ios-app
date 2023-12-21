@@ -338,7 +338,7 @@ extension PullUpViewService {
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
-            let selectionViewHeight: CGFloat = 288
+            let selectionViewHeight: CGFloat = 298
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(email),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .domainsProfileIcon,
