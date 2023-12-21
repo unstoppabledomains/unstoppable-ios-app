@@ -232,7 +232,7 @@
 "I_VE_SAVED_THIS_WORDS" = "I’ve saved these words";
 "BACKED_UP_TO_ICLOUD" = "Backed up to iCloud";
 "RECOVERY_PHRASE_HELP_TITLE" = "What is a recovery phrase?";
-"RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your vault or wallet private key — the unique, secret passcode used to authenticate and encrypt your vault or wallet access. This phrase allows you to sign transactions, claim ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
+"RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your vault or wallet private key — the unique, secret passcode used to authenticate and encrypt your vault or wallet access. This phrase allows you to sign transactions, confirm ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_BULLETS" = "•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.";
 
@@ -459,7 +459,6 @@
 "MOVE_TO_TOP" = "Move to top";
 
 // Minting in progress
-"CLAIMING_DOMAIN" = "Claiming domain";
 "MINTING_IN_PROGRESS_TITLE" = "Transfer in progress";
 "MINTING_IN_PROGRESS_SUBTITLE" = "Once finished, you’ll be able to manage your Web3 ID and profile on the go.";
 "GO_TO_HOME_SCREEN" = "Go to home screen";
@@ -707,7 +706,8 @@
 "DOMAIN_CARD_SWIPE_TO_CARD" = "Swipe to the card";
 
 // Minting-Claiming
-"CLAIM_DOMAINS_TO_SELF_CUSTODIAL" = "Claim domains to my wallet";
+"CLAIM_DOMAINS_TO_SELF_CUSTODIAL" = "Transfer domains to my wallet";
+"CLAIM_DOMAINS_TO_SELF_CUSTODIAL_SUBTITLE" = "From the Unstoppable vault";
 
 // Legacy tokens
 "LEGACY" = "Legacy";
@@ -733,7 +733,7 @@
 
 // Login with Email+Password
 "LOGIN_WITH_EMAIL_TITLE" = "Enter your credentials";
-"LOGIN_WITH_EMAIL_SUBTITLE" = "Enter your UD email and password to obtain all of your purchased & unclaimed domains.";
+"LOGIN_WITH_EMAIL_SUBTITLE" = "Enter your UD email and password to obtain all of your purchased domains that are kept in the Vault";
 "PASSWORD" = "Password";
 "PARKED" = "In Unstoppable Vault";
 "PARKED_DOMAIN" = "Domain in Unstoppable Vault";
@@ -747,7 +747,7 @@
 "PARKED_DOMAIN_INFO_PULL_UP_TITLE" = "Domain in Unstoppable Vault";
 "PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE" = "Domain stored in a special custodial wallet designed to protect against theft.";
 "PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_TITLE" = "Trial storage in Unstoppable Vault expires on %@";
-"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_SUBTITLE" = "Trial storage in Unstoppable Vault expires soon. To prevent any potential conflicts, we strongly recommend that you claim or store your domain in Unstoppable Vault as soon as possible.";
+"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_SUBTITLE" = "Trial storage in Unstoppable Vault expires soon. To prevent any potential conflicts, we strongly recommend that you transfer your domain to your self-custody wallet  as soon as possible";
 "PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_TITLE" = "Storage in Unstoppable Vault expires on %@";
 "PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_SUBTITLE" = "Storage in Unstoppable Vault expires soon. To prevent any potential conflicts, we strongly recommend to extend subscription for storage in Unstoppable Vault";
 "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE" = "Storage in Unstoppable Vault expired";
@@ -755,16 +755,16 @@
 "USER_LOGGED_OUT_TOAST_MESSAGE" = "You have logged out of the account";
 "PARKED_DOMAIN_ACTION_COVER_TITLE" = "Your domain is stored in Unstoppable Vault";
 "PARKED_DOMAIN_ACTION_COVER_SUBTITLE" = "Once a domain is stored in Unstoppable Vault, you are not able to manage it, as it is securely held in storage to protect against theft.";
-"CLAIM_DOMAIN" = "Claim domain";
+"CLAIM_DOMAIN" = "Transfer domain";
 "PARKED_DOMAIN_CANT_CONNECT_TO_APPS" = "Domain stored in Unstoppable Vault can't connect to apps or other activities";
 
 // Parked domains notifications
 "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRED_TITLE" = "%@ Storage in Unstoppable Vault has expired";
 "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE" = "Your %i domains in Unstoppable Vault have expired";
-"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend Storage in Unstoppable Vault or Claim";
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend Storage in Unstoppable Vault or transfer to your wallet";
 "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE" = "%@ Storage in Unstoppable Vault expires soon";
 "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "Storage in Unstoppable Vault for %i domains expire soon";
-"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ %@ %@. Please visit our website to extend Storage in Unstoppable Vault or Claim"; // Your domain/domains expires/expire in {period}...
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ %@ %@. Please visit our website to extend Storage in Unstoppable Vault or transfer to your wallet"; // Your domain/domains expires/expire in {period}...
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH" = "in 1 month";
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK" = "in 1 week";
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS" = "in 3 days";
@@ -880,7 +880,7 @@
 
 // No wallets to claim
 "NO_WALLETS_TO_CLAIM_ALERT_TITLE" = "You haven't added a wallet yet";
-"NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE" = "You need to add a wallet first in order to claim domains";
+"NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE" = "You need to add a wallet first in order to manage your domains";
 
 // Shake to find
 "SHAKE_TO_FIND_SEARCH_TITLE" = "Searching...";
@@ -918,7 +918,7 @@
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";
 "TOTAL_DUE" = "Total due";
-"DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
+"DOMAINS_PURCHASED_SUBTITLE" = "Minting process started, it can take up to 5 minutes.";
 "GO_TO_DOMAINS" = "Go to domains";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE" = "You have 1 or more unpaid vaults for your domain, please go to the website";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED" = "go to the website";

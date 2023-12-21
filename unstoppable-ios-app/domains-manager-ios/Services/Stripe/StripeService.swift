@@ -69,7 +69,7 @@ extension StripeService: STPApplePayContextDelegate {
         switch status {
         case .success:
             // Payment succeeded
-            Debugger.printInfo(topic: .Transactions, "Update Records payment is successful")
+            Debugger.printInfo(topic: .Payments, "Payment is successful")
             finishWithResult(.success(Void()))
         case .error:
             // Payment failed, show the error

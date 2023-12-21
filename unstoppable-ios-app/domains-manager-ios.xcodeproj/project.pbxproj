@@ -141,6 +141,9 @@
 		C607A5D52B32A02A0088ECF3 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */; };
 		C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
 		C607A5D82B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
+		C607A5CD2B3288900088ECF3 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = C607A5CC2B3288900088ECF3 /* Amplitude */; };
+		C607A5CF2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */; };
+		C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */; };
 		C608C82C2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */; };
 		C608C8312877F9D300EDEC6E /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C8302877F9D300EDEC6E /* Double.swift */; };
 		C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */; };
@@ -2160,6 +2163,7 @@
 		C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189328F80CD400C6AD4D /* DomainProfileSectionHeader.swift */; };
 		C6E1189928F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189828F8391700C6AD4D /* DomainProfileViewControllerItemsEntities.swift */; };
 		C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */; };
+		C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */; };
 		C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E385FC2849D66E00C91293 /* DomainsListPresenter.swift */; };
 		C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */; };
 		C6E459072925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */; };
@@ -2422,6 +2426,8 @@
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
 		C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationContentView.swift; sourceTree = "<group>"; };
+		C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplitudeAnalyticsService.swift; sourceTree = "<group>"; };
+		C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHappyEndViewController.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
 		C608C8302877F9D300EDEC6E /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsViewPresenter.swift; sourceTree = "<group>"; };
@@ -3484,6 +3490,7 @@
 		C6E1189328F80CD400C6AD4D /* DomainProfileSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSectionHeader.swift; sourceTree = "<group>"; };
 		C6E1189828F8391700C6AD4D /* DomainProfileViewControllerItemsEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileViewControllerItemsEntities.swift; sourceTree = "<group>"; };
 		C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryWhiteButton.swift; sourceTree = "<group>"; };
+		C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainProfileActionCover.swift; sourceTree = "<group>"; };
 		C6E385FC2849D66E00C91293 /* DomainsListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListPresenter.swift; sourceTree = "<group>"; };
 		C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyTopInfoCell.swift; sourceTree = "<group>"; };
 		C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionEmptyTopInfoCell.xib; sourceTree = "<group>"; };
@@ -3581,6 +3588,7 @@
 				290A60542950AA1600882109 /* WalletConnectVerify in Frameworks */,
 				C63812242993E009002590E7 /* Valet in Frameworks */,
 				2917EDDF2A6F25AB004EAB31 /* Web3PromiseKit in Frameworks */,
+				C607A5CD2B3288900088ECF3 /* Amplitude in Frameworks */,
 				290A604A2950AA1600882109 /* WalletConnectAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4000,6 +4008,14 @@
 				C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */,
 			);
 			path = WalletConnect;
+			sourceTree = "<group>";
+		};
+		C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */,
+			);
+			path = PreviewHappyEndViewController;
 			sourceTree = "<group>";
 		};
 		C60981D22822563E00546392 /* WalletDetails */ = {
@@ -5168,6 +5184,7 @@
 			isa = PBXGroup;
 			children = (
 				C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */,
+				C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -7128,6 +7145,8 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */,
+				C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */,
 				C6D647892B1EE59500D724AC /* PreviewDomainProfile */,
 				C6D6463E2B1DC64700D724AC /* PreviewDomainsCollection */,
 			);
@@ -7495,6 +7514,14 @@
 			path = CollectionReusableViews;
 			sourceTree = "<group>";
 		};
+		C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */ = {
+			isa = PBXGroup;
+			children = (
+				C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */,
+			);
+			path = PreviewDomainProfileActionCover;
+			sourceTree = "<group>";
+		};
 		C6E459002925F06E00751742 /* DomainsCollectionEmptyTopInfoCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -7706,6 +7733,7 @@
 				2917EDE02A6F25AB004EAB31 /* XMTP */,
 				C689C1722ADE484300AA0186 /* LaunchDarkly */,
 				C65244692AF8A7A400673CC0 /* WalletConnectNotify */,
+				C607A5CC2B3288900088ECF3 /* Amplitude */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -7843,6 +7871,7 @@
 				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */,
 				C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */,
+				C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -8861,6 +8890,7 @@
 				C6B6B02D296D309C00D4E30F /* CGSize.swift in Sources */,
 				C6DDF2522B147F1A006D1F0B /* UDIconButtonView.swift in Sources */,
 				C655CAAD2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift in Sources */,
+				C607A5CF2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift in Sources */,
 				C6A2D54A284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C6A2D5CD2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */,
 				306486812527253700388026 /* AppDelegate.swift in Sources */,
@@ -9545,6 +9575,7 @@
 				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
+				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,
 				C6C8F97D2B2188FA00A9834D /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				C6C8F9782B2188FA00A9834D /* QRScannerViewController.swift in Sources */,
 				C61808632B19BBFE0032E543 /* UDCollectionListRowButton.swift in Sources */,
@@ -9846,6 +9877,7 @@
 				C61807F62B19A7BC0032E543 /* CryptoRecord.swift in Sources */,
 				C6C8F9302B2183C700A9834D /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6C8F8782B21827700A9834D /* LoginWithEmailInAppViewPresenter.swift in Sources */,
+				C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */,
 				C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */,
 				C6D6460C2B1DC07200D724AC /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C61808102B19AA4C0032E543 /* LinkPresentationService.swift in Sources */,
@@ -10976,6 +11008,14 @@
 				version = 6.25.2;
 			};
 		};
+		C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/Amplitude-iOS";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
@@ -11106,6 +11146,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
 			productName = Bugsnag;
+		};
+		C607A5CC2B3288900088ECF3 /* Amplitude */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */;
+			productName = Amplitude;
 		};
 		C60CB2DF2A7CB62E00663989 /* web3swift */ = {
 			isa = XCSwiftPackageProductDependency;
