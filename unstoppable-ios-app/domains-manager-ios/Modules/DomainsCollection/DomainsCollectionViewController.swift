@@ -796,3 +796,15 @@ extension DomainsCollectionViewController {
         case suggestionSelected(HotFeatureSuggestion)
     }
 }
+
+import SwiftUI
+
+@available(iOS 17, *)
+#Preview {
+    HotFeatureSuggestionsStorage.clearAll()
+
+    let router = DomainsCollectionRouter()
+    let vc = router.configureViewController(mintingState: .default)
+    
+    return vc
+}

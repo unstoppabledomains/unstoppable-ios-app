@@ -913,6 +913,10 @@
 		C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092528042AF0002D780E /* OnboardingNavigationController.swift */; };
 		C68580362B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
+		C68580382B356D1400907568 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
+		C68580392B356D1C00907568 /* DomainsCollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E55C28193A41008C66BB /* DomainsCollectionPresenter.swift */; };
+		C685803B2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */; };
+		C685803C2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */; };
 		C685A94928408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */; };
 		C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94E284097E200E54044 /* UDDomainCardView.swift */; };
 		C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A953284097E600E54044 /* UDDomainCardView.xib */; };
@@ -3064,6 +3068,7 @@
 		C681092028041325002D780E /* GIFAnimationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFAnimationsService.swift; sourceTree = "<group>"; };
 		C681092528042AF0002D780E /* OnboardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationController.swift; sourceTree = "<group>"; };
 		C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
+		C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarVisibleModifier.swift; sourceTree = "<group>"; };
 		C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletListSelectionToMintDomainsPresenter.swift; sourceTree = "<group>"; };
 		C685A94E284097E200E54044 /* UDDomainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainCardView.swift; sourceTree = "<group>"; };
 		C685A953284097E600E54044 /* UDDomainCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainCardView.xib; sourceTree = "<group>"; };
@@ -6460,6 +6465,7 @@
 				C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */,
 				C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */,
 				C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */,
+				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -8928,6 +8934,7 @@
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
 				C63095ED2B0DA66400205054 /* BaseFirebaseInteractionService.swift in Sources */,
 				C666895528117C66002062B4 /* BaseViewController.swift in Sources */,
+				C685803B2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */,
 				C6DF46272AA18F8900D124E7 /* DisplayError.swift in Sources */,
 				C6D6E4E32817C0F4008C66BB /* OnboardingProtectWalletViewPresenter.swift in Sources */,
 				C673D57629FA3645001CC77C /* ReviewAndConfirmTransferViewController.swift in Sources */,
@@ -9342,6 +9349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6D646602B1ED10D00D724AC /* DomainProfileGeneralInfoCell.swift in Sources */,
+				C685803C2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */,
 				C6D6475C2B1EDD6200D724AC /* AppGroupsBridgeService.swift in Sources */,
 				C6C8F87A2B21827700A9834D /* LoginOnboardingViewPresenter.swift in Sources */,
 				C61808442B19B8E20032E543 /* PreviewImageLoadingService.swift in Sources */,
@@ -9629,6 +9637,7 @@
 				C607A5D82B32A1030088ECF3 /* NavigationContentView.swift in Sources */,
 				C6C8F90D2B21839100A9834D /* CommunityListCell.swift in Sources */,
 				C6960C642B199B4000B79E28 /* PreviewNetworkService.swift in Sources */,
+				C68580382B356D1400907568 /* DomainsCollectionRouter.swift in Sources */,
 				C6D646792B1ED12100D724AC /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
 				C618086E2B19BC100032E543 /* Color+Skeleton.swift in Sources */,
 				C6C8F90F2B21839100A9834D /* ChatListRequestsCell.swift in Sources */,
@@ -9723,6 +9732,7 @@
 				C6C8F95F2B21871800A9834D /* EmptyCollectionReusableView.swift in Sources */,
 				C6C8F9472B2184EA00A9834D /* ResendCodeButton.swift in Sources */,
 				C6C8F9A02B218F4D00A9834D /* UINavigationController.swift in Sources */,
+				C68580392B356D1C00907568 /* DomainsCollectionPresenter.swift in Sources */,
 				C6D645A92B1DBB2700D724AC /* UICollectionView.swift in Sources */,
 				C61808282B19AB550032E543 /* PreviewMessagingService.swift in Sources */,
 				C6D6479B2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */,

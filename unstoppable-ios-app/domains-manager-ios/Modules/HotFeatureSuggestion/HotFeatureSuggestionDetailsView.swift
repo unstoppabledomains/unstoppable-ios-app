@@ -31,7 +31,6 @@ struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
                              .padding()
             }
             .navigationBarTitle(Text(isTitleVisible ? title : ""), displayMode: .inline)
-           
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
@@ -40,6 +39,7 @@ struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
                     }
                 }
             }
+            .navBarVisible(scrollOffset.y > 0)
         }
     }
 }
@@ -87,8 +87,7 @@ private extension HotFeatureSuggestionDetailsView {
         HStack {
             VStack(spacing: 32) {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(details.title)
-                        .titleText()
+                    titleView(details.title)
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(details.steps, id: \.self) { step in
                             Text("\u{2022} " + step)
@@ -117,12 +116,15 @@ private extension HotFeatureSuggestionDetailsView {
         }
     }
     
+    @ViewBuilder
+    func titleView(_ title: String) -> some View {
+        Text(title)
+            .titleText()
+    }
+    
     func loadIllustration(url: URL) {
         Task {
             illustration = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: nil), downsampleDescription: nil)
-            #if DEBUG
-            illustration = UIImage.Preview.previewPortrait
-            #endif
         }
     }
 }

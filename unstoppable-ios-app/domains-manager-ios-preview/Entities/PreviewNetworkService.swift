@@ -217,6 +217,10 @@ extension NetworkService {
               storage: nil,
               social: nil)
     }
+    
+    public func updatePendingDomainProfiles(with requests: [UpdateProfilePendingChangesRequest]) async throws {
+        
+    }
 }
 
 extension NetworkService {

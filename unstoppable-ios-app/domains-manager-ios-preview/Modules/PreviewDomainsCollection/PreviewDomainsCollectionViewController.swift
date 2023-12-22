@@ -11,6 +11,13 @@ import SwiftUI
 #Preview {
     HotFeatureSuggestionsStorage.clearAll()
     
+    
+//    let router = DomainsCollectionRouter()
+//    let vc = router.configureViewController(mintingState: .default)
+//    
+//    return vc
+    
+    
     let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
     let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
     domainsCollectionVC.presenter = presenter
