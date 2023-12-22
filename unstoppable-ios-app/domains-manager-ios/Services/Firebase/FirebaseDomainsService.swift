@@ -31,7 +31,8 @@ extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
             page += 1
             isThereDomainsToLoad = domains.count >= perPage
         }
-        
+        storage.saveFirebaseDomains(result)
+
         return result
     }
     
