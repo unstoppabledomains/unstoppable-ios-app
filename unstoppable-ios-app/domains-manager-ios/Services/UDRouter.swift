@@ -66,6 +66,19 @@ class UDRouter: DomainProfileSignatureValidator {
             presentInEmptyCRootNavigation(walletDetailsVC, in: viewController)
         }
     }
+    
+    func showAddWalletScreenForAction(_ action: WalletDetailsAddWalletAction,
+                                      in viewController: UIViewController,
+                                      addedCallback: @escaping AddWalletNavigationController.WalletAddedCallback) {
+        switch action {
+        case .create:
+            showCreateLocalWalletScreen(createdCallback: addedCallback, in: viewController)
+        case .recoveryOrKey:
+            showImportVerifiedWalletScreen(walletImportedCallback: addedCallback, in: viewController)
+        case .connect:
+            showConnectExternalWalletScreen(walletConnectedCallback: addedCallback, in: viewController)
+        }
+    }
  
     func showCreateLocalWalletScreen(createdCallback: @escaping AddWalletNavigationController.WalletAddedCallback,
                                      in viewController: UIViewController) {

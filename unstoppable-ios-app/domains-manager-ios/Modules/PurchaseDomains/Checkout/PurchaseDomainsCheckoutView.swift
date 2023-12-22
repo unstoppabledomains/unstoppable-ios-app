@@ -40,6 +40,8 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     weak var delegate: PurchaseDomainsCheckoutViewDelegate?
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domain.name,
+                                                                         .price: String(domain.price)] }
 
     var body: some View {
         ZStack {
@@ -514,7 +516,11 @@ private extension PurchaseDomainsCheckoutView {
                 }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {
-                Debugger.printFailure("Did fail to purchase domains with error \(error)")
+                logAnalytic(event: .didFailToPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
+                                                                           .count: String(1),
+                                                                           .error: error.localizedDescription])
+                
+                Debugger.printFailure("Did fail to purchase domains with error \(error.localizedDescription)")
                 self.error = .purchaseError(tryAgainCallback: startPurchaseDomains)
             }
             setLoading(false)

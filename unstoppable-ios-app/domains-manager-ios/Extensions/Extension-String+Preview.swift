@@ -557,7 +557,6 @@ extension String {
         static let moveToTop = "MOVE_TO_TOP"
         
         // Minting in progress
-        static let claimingDomain = "CLAIMING_DOMAIN"
         static let mintingInProgressTitle = "MINTING_IN_PROGRESS_TITLE"
         static let mintingInProgressSubtitle = "MINTING_IN_PROGRESS_SUBTITLE"
         static let goToHomeScreen = "GO_TO_HOME_SCREEN"
@@ -803,6 +802,7 @@ extension String {
         
         // Minting-Claiming
         static let claimDomainsToSelfCustodial = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL"
+        static let claimDomainsToSelfCustodialSubtitle = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL_SUBTITLE"
         
         // Legacy tokens
         static let legacy = "LEGACY"
@@ -976,6 +976,8 @@ extension String {
         // No wallets to claim
         static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
         static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
+        static let noWalletsToPurchaseAlertTitle = "NO_WALLETS_TO_PURCHASE_ALERT_TITLE"
+        static let noWalletsToPurchaseAlertSubtitle = "NO_WALLETS_TO_PURCHASE_ALERT_SUBTITLE"
         
         // Shake to find
         static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"

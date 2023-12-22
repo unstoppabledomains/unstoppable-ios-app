@@ -41,7 +41,7 @@ class BaseFirebaseInteractionService {
             let response = try await NetworkService().makeAPIRequest(firebaseAPIRequest)
             return response
         } catch {
-            Debugger.printInfo("Failed to make firebase api request: \(error.localizedDescription) for \(apiRequest.url)")
+            Debugger.printFailure("Failed to make firebase api request: \(error.localizedDescription) for \(apiRequest.url)")
             throw error
         }
     }
