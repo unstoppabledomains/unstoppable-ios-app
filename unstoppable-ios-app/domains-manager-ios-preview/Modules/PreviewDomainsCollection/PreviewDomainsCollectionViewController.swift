@@ -10,6 +10,7 @@ import SwiftUI
 @available(iOS 17, *)
 #Preview {
     HotFeatureSuggestionsStorage.setDismissedHotFeatureSuggestions([])
+    HotFeatureSuggestionsStorage.setViewedHotFeatureSuggestions([])
     
     let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
     let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)

@@ -76,20 +76,25 @@ private extension HotFeatureSuggestionsService {
     
     func filterAvailableSuggestions() {
         let dismissedSuggestions = HotFeatureSuggestionsStorage.getDismissedHotFeatureSuggestions()
+        var viewedSuggestions = HotFeatureSuggestionsStorage.getViewedHotFeatureSuggestions()
+
         cachedFeatures = cachedFeatures.filter { suggestion in
             guard isSuggestionAvailable(suggestion) else { return false }
             
-            return dismissedSuggestions.first(where: { $0.id == suggestion.id }) == nil
+            let isDismissed = dismissedSuggestions.first(where: { $0.id == suggestion.id }) != nil
+            let isViewed = viewedSuggestions.first(where: { $0.id == suggestion.id }) != nil
+
+            return !isDismissed && !isViewed
         }
     }
     
     func isSuggestionAvailable(_ suggestion: HotFeatureSuggestion) -> Bool {
-        suggestion.isEnabled && isSuggestionAppVersionSupported(suggestion)
+        suggestion.ios.isEnabled && isSuggestionAppVersionSupported(suggestion)
     }
     
     func isSuggestionAppVersionSupported(_ suggestion: HotFeatureSuggestion) -> Bool {
         guard let appVersion = try? Version.getCurrent(),
-              let suggestionVersion = try? Version.parse(versionString: suggestion.minAppVersion) else { return false }
+              let suggestionVersion = try? Version.parse(versionString: suggestion.ios.minSupportedVersion) else { return false }
         
         return appVersion >= suggestionVersion
     }

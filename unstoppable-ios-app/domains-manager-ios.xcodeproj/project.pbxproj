@@ -137,13 +137,13 @@
 		C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B740286474E000DC562B /* WalletWithInfo.swift */; };
+		C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */; };
+		C607A5CD2B3288900088ECF3 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = C607A5CC2B3288900088ECF3 /* Amplitude */; };
+		C607A5CF2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */; };
 		C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */; };
 		C607A5D52B32A02A0088ECF3 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */; };
 		C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
 		C607A5D82B32A1030088ECF3 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */; };
-		C607A5CD2B3288900088ECF3 /* Amplitude in Frameworks */ = {isa = PBXBuildFile; productRef = C607A5CC2B3288900088ECF3 /* Amplitude */; };
-		C607A5CF2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */; };
-		C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */; };
 		C608C82C2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */; };
 		C608C8312877F9D300EDEC6E /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = C608C8302877F9D300EDEC6E /* Double.swift */; };
 		C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */; };
@@ -911,6 +911,8 @@
 		C680178E2886E96400524712 /* XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680178D2886E96400524712 /* XCTest.swift */; };
 		C681092128041325002D780E /* GIFAnimationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092028041325002D780E /* GIFAnimationsService.swift */; };
 		C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092528042AF0002D780E /* OnboardingNavigationController.swift */; };
+		C68580362B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
+		C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C685A94928408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */; };
 		C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A94E284097E200E54044 /* UDDomainCardView.swift */; };
 		C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A953284097E600E54044 /* UDDomainCardView.xib */; };
@@ -2424,10 +2426,10 @@
 		C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingNewsChannel.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
+		C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHappyEndViewController.swift; sourceTree = "<group>"; };
+		C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplitudeAnalyticsService.swift; sourceTree = "<group>"; };
 		C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
 		C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationContentView.swift; sourceTree = "<group>"; };
-		C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplitudeAnalyticsService.swift; sourceTree = "<group>"; };
-		C607A5C92B327A600088ECF3 /* PreviewHappyEndViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHappyEndViewController.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
 		C608C8302877F9D300EDEC6E /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsViewPresenter.swift; sourceTree = "<group>"; };
@@ -3061,6 +3063,7 @@
 		C680178D2886E96400524712 /* XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTest.swift; sourceTree = "<group>"; };
 		C681092028041325002D780E /* GIFAnimationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFAnimationsService.swift; sourceTree = "<group>"; };
 		C681092528042AF0002D780E /* OnboardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationController.swift; sourceTree = "<group>"; };
+		C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletListSelectionToMintDomainsPresenter.swift; sourceTree = "<group>"; };
 		C685A94E284097E200E54044 /* UDDomainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainCardView.swift; sourceTree = "<group>"; };
 		C685A953284097E600E54044 /* UDDomainCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainCardView.xib; sourceTree = "<group>"; };
@@ -6175,6 +6178,14 @@
 			path = HappyEnd;
 			sourceTree = "<group>";
 		};
+		C68580342B3545B200907568 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
 		C685A94D284097D700E54044 /* UDDomainCardView */ = {
 			isa = PBXGroup;
 			children = (
@@ -7477,6 +7488,7 @@
 		C6E1186D28F52C4D00C6AD4D /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				C68580342B3545B200907568 /* Preview */,
 				C6DF462A2AA196B500D124E7 /* Protocols */,
 				C69F990E2A9F1264004B1958 /* CommonViews */,
 				C69F991B2A9F1264004B1958 /* Extensions */,
@@ -8390,6 +8402,7 @@
 				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6D6E4FC2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
+				C68580362B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */,
 				C62396902A288AC400363F60 /* MessagingGroupChatDetails.swift in Sources */,
 				C6D646202B1DC25900D724AC /* NamingService.swift in Sources */,
 				C65271F02A148FA4001A084C /* ChatListCell.swift in Sources */,
@@ -10144,6 +10157,7 @@
 				C6D646292B1DC2AB00D724AC /* PullUpCollectionViewCell.swift in Sources */,
 				C6D646D22B1ED2B900D724AC /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6C8F80E2B217C8F00A9834D /* NSLayoutHelper.swift in Sources */,
+				C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */,
 				C6D646D92B1ED31100D724AC /* DomainProfileBadgeDisplayInfo.swift in Sources */,
 				C6C8F8482B217E9600A9834D /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6D6476F2B1EE06B00D724AC /* MintingDomainListCell.swift in Sources */,
@@ -10723,7 +10737,7 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 4.8.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager.preview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -10766,7 +10780,7 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 4.8.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager.preview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -10808,7 +10822,7 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 4.8.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager.preview;
 				PRODUCT_NAME = "$(TARGET_NAME)";

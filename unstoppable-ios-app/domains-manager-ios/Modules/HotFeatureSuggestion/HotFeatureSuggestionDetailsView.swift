@@ -114,7 +114,7 @@ private extension HotFeatureSuggestionDetailsView {
             Spacer()
         }
         .onAppear {
-            loadIllustration(url: details.image)
+            loadIllustration(url: details.imageURL)
         }
     }
     

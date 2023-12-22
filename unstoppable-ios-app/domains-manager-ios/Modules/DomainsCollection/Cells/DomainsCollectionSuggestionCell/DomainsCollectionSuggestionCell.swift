@@ -9,9 +9,10 @@ import UIKit
 
 final class DomainsCollectionSuggestionCell: UICollectionViewCell {
 
-    @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet private weak var containerView: UIView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var subtitleLabel: UILabel!
+    @IBOutlet private weak var iconImageView: UIImageView!
     
     private var closeButtonPressedCallback: EmptyCallback?
     
@@ -25,12 +26,17 @@ final class DomainsCollectionSuggestionCell: UICollectionViewCell {
 extension DomainsCollectionSuggestionCell {
     func setWith(configuration: DomainsCollectionCarouselItemViewController.SuggestionConfiguration) {
         closeButtonPressedCallback = configuration.closeCallback
-        titleLabel.setAttributedTextWith(text: "Get notifications from dApps",
+        let suggestion = configuration.suggestion
+        titleLabel.setAttributedTextWith(text: suggestion.banner.title,
                                          font: .currentFont(withSize: 16, weight: .regular),
                                          textColor: .foregroundDefault)
-        subtitleLabel.setAttributedTextWith(text: "Receive the latest updates and news.",
-                                         font: .currentFont(withSize: 14, weight: .regular),
-                                         textColor: .foregroundSecondary)
+        subtitleLabel.setAttributedTextWith(text: suggestion.banner.subtitle,
+                                            font: .currentFont(withSize: 14, weight: .regular),
+                                            textColor: .foregroundSecondary)
+        Task {
+            iconImageView.image = await appContext.imageLoadingService.loadImage(from: .url(suggestion.banner.iconURL, maxSize: nil),
+                                                                                 downsampleDescription: nil) ?? .sparkleIcon
+        }
     }
 }
 
@@ -40,4 +46,14 @@ private extension DomainsCollectionSuggestionCell {
         UDVibration.buttonTap.vibrate()
         closeButtonPressedCallback?()
     }
+}
+
+@available(iOS 17, *)
+#Preview {
+    let collectionView = PreviewCollectionViewCell<DomainsCollectionSuggestionCell>(cellSize: CGSize(width: 390, height: 68),
+                                                                                    configureCellCallback: { cell in
+        cell.setWith(configuration: .init(closeCallback: { }, suggestion: .mock()))
+    })
+    
+    return collectionView
 }
