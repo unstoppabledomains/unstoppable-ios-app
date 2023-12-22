@@ -111,6 +111,7 @@ extension Analytics {
         case communityName
         case price
         case error
+        case id
     }
 }
 

@@ -25,4 +25,11 @@ struct HotFeatureSuggestionsStorage {
     static func setDismissedHotFeatureSuggestions(_ suggestions: [HotFeatureSuggestion]) {
         dismissedHotFeatureSuggestions = suggestions
     }
+    
+    #if DEBUG
+    static func clearAll() {
+        setDismissedHotFeatureSuggestions([])
+        setViewedHotFeatureSuggestions([])
+    }
+    #endif
 }

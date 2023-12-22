@@ -15,9 +15,8 @@ struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
     @State private var illustration: UIImage?
     @State private var scrollOffset: CGPoint = .zero
     var analyticsName: Analytics.ViewName { .hotFeatureDetails }
-    // TODO: - Add additional analytic parameter for feature id
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.id : String(suggestion.id)]}
     var isTitleVisible: Bool { scrollOffset.y > 76 }
-    
     
     var body: some View {
         NavigationView {
