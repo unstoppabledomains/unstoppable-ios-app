@@ -911,6 +911,8 @@
 		C680178E2886E96400524712 /* XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680178D2886E96400524712 /* XCTest.swift */; };
 		C681092128041325002D780E /* GIFAnimationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092028041325002D780E /* GIFAnimationsService.swift */; };
 		C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092528042AF0002D780E /* OnboardingNavigationController.swift */; };
+		C683EB552B3B0BFE0026CA41 /* hot-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */; };
+		C683EB562B3B0BFE0026CA41 /* hot-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */; };
 		C68580362B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C68580382B356D1400907568 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
@@ -3067,6 +3069,7 @@
 		C680178D2886E96400524712 /* XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTest.swift; sourceTree = "<group>"; };
 		C681092028041325002D780E /* GIFAnimationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFAnimationsService.swift; sourceTree = "<group>"; };
 		C681092528042AF0002D780E /* OnboardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationController.swift; sourceTree = "<group>"; };
+		C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "hot-suggestions.json"; sourceTree = "<group>"; };
 		C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarVisibleModifier.swift; sourceTree = "<group>"; };
 		C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletListSelectionToMintDomainsPresenter.swift; sourceTree = "<group>"; };
@@ -4387,6 +4390,7 @@
 			isa = PBXGroup;
 			children = (
 				306DB218268B2BFE009D95DE /* uns-config.json */,
+				C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */,
 				303CB4B5273A894F0064495D /* resolver-keys.json */,
 				30A280362714217100FD3759 /* wallets-registry.json */,
 			);
@@ -8028,6 +8032,7 @@
 				C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */,
 				C6D0F43C283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
 				C6C57C582869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
+				C683EB552B3B0BFE0026CA41 /* hot-suggestions.json in Resources */,
 				C665B9C528335812005E535C /* ListItemView.xib in Resources */,
 				C65272552A15D938001A084C /* ChatViewController.xib in Resources */,
 				C664B6642914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
@@ -8137,6 +8142,7 @@
 				C6C8F8DD2B21836400A9834D /* ParkedDomainCell.xib in Resources */,
 				C6D646492B1ED0D900D724AC /* DomainProfileViewController.xib in Resources */,
 				C6C8F8862B21829000A9834D /* AppearanceSettingsCell.xib in Resources */,
+				C683EB562B3B0BFE0026CA41 /* hot-suggestions.json in Resources */,
 				C6D646992B1ED14E00D724AC /* ManageDomainTopInfoCell.xib in Resources */,
 				C6D646B62B1ED18F00D724AC /* WallpaperDomainImagePreviewView.xib in Resources */,
 				C6C8F89B2B2182A200A9834D /* WalletsEmptyStateCell.xib in Resources */,
