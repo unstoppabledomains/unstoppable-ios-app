@@ -12,6 +12,7 @@ protocol PurchaseDomainsServiceProtocol {
     var isApplePaySupported: Bool { get }
     
     func searchForDomains(key: String) async throws -> [DomainToPurchase]
+    func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion]
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws
