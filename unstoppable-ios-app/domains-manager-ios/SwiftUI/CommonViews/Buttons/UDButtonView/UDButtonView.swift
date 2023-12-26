@@ -60,9 +60,6 @@ struct UDButtonView: View {
             .foregroundColor(textColorForCurrentState(buttonStateFor(state: state)))
             .background(backgroundColorForCurrentState(buttonStateFor(state: state)))
             .cornerRadius(style.cornerRadius)
-            .task {
-                print("Is loading \(state.isLoading)")
-            }
         }))
     }
 }

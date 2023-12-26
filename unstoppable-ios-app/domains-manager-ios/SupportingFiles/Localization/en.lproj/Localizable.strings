@@ -942,3 +942,8 @@
 "CANCEL_SETUP" = "Cancel setup";
 "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE" = "Apple Pay is required to purchase domains. Add Apple Pay";
 "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE_HIGHLIGHTED" = "Add Apple Pay";
+"INSPIRE" = "Inspire";
+"AI_SEARCH" = "AI Search";
+"AI_SEARCH_HINT_1" = "For example, \"Company that makes shoes\"";
+"AI_SEARCH_HINT_2" = "Single word or names will likely return irrelevant results.";
+"AI_SEARCH_HINT_3" = "Limited to 30 searches.";
