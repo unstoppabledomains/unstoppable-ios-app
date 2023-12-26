@@ -266,7 +266,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func getHotFeatureSuggestion() -> HotFeatureSuggestion? {
-        appContext.hotFeatureSuggestionsService.getSuggestionToShow()
+        guard walletWithInfo != nil else { return nil } // Don't show suggestions for domains without wallet (vaulted domains)
+        
+        return appContext.hotFeatureSuggestionsService.getSuggestionToShow()
     }
     
     @discardableResult

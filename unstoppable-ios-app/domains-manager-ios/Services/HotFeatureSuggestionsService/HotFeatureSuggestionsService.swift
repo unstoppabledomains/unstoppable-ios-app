@@ -63,7 +63,8 @@ private extension HotFeatureSuggestionsService {
     func loadSuggestions() {
         Task {
             do {
-                cachedFeatures = try await fetcher.loadHotFeatureSuggestions()
+                let hotFeatures = try await fetcher.loadHotFeatureSuggestions()
+                self.cachedFeatures = hotFeatures
                 filterAvailableSuggestions()
                 notifyCurrentSuggestionUpdated()
             } catch {
@@ -76,7 +77,7 @@ private extension HotFeatureSuggestionsService {
     
     func filterAvailableSuggestions() {
         let dismissedSuggestions = HotFeatureSuggestionsStorage.getDismissedHotFeatureSuggestions()
-        var viewedSuggestions = HotFeatureSuggestionsStorage.getViewedHotFeatureSuggestions()
+        let viewedSuggestions = HotFeatureSuggestionsStorage.getViewedHotFeatureSuggestions()
 
         cachedFeatures = cachedFeatures.filter { suggestion in
             guard isSuggestionAvailable(suggestion) else { return false }
