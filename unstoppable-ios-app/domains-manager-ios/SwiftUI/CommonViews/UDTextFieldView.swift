@@ -18,6 +18,7 @@ struct UDTextFieldView: View {
     var focusBehaviour: FocusBehaviour = .default
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
+    var autocorrectionDisabled: Bool = false
     @State private var state: TextFieldState = .rest
     @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
@@ -124,6 +125,7 @@ private extension UDTextFieldView {
                 .focused($isTextFieldFocused)
                 .keyboardType(keyboardType)
                 .textInputAutocapitalization(autocapitalization)
+                .autocorrectionDisabled(autocorrectionDisabled)
                 .onChange(of: isTextFieldFocused) { isFocused in
                     if isFocused {
                         // began editing...
