@@ -19,6 +19,7 @@ struct UDTextFieldView: View {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     @State private var state: TextFieldState = .rest
+    @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
     @Environment(\.isEnabled) var isEnabled
     
@@ -52,9 +53,35 @@ private extension UDTextFieldView {
         RoundedRectangle(cornerRadius: 12)
             .fill(state.backgroundColor)
             .overlay {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(state.borderColor, lineWidth: 1)
+                currentTextFieldOverlay
             }
+    }
+    
+    var inspiringGradientColors: [Color] {
+        [Color(hex: "#FE0DFE"), 
+         Color(hex: "#0D67FE")]
+    }
+    
+    @ViewBuilder
+    var currentTextFieldOverlay: some View {
+        if isInspiring {
+            baseTextFieldOverlay
+                .stroke(LinearGradient(colors: inspiringGradientColors,
+                                       startPoint: .leading,
+                                       endPoint: .trailing),
+                        lineWidth: 2)
+                .shadow(color: Color(hex: "#FA0FFF").opacity(0.24),
+                        radius: 8, x: 0,
+                        y: 4)
+        } else {
+            baseTextFieldOverlay
+                .stroke(state.borderColor, lineWidth: 1)
+        }
+    }
+    
+    @ViewBuilder
+    var baseTextFieldOverlay: some Shape {
+        RoundedRectangle(cornerRadius: 12)
     }
     
     @ViewBuilder
@@ -74,7 +101,19 @@ private extension UDTextFieldView {
                     .foregroundStyle(state.hintColor)
                     .font(.currentFont(size: 12))
                     .frame(height: isTextFieldVisible ? 16 : 24)
+            } else if isInspiring {
+                let hint = String.Constants.aiSearch.localized()
+                let fontSize: CGFloat = 12
+                let width = hint.width(withConstrainedHeight: .infinity, font: .currentFont(withSize: fontSize))
+                LinearGradient(colors: inspiringGradientColors, startPoint: .leading, endPoint: .trailing)
+                    .mask {
+                        Text(hint)
+                            .font(.currentFont(size: fontSize))
+                    }
+                    .frame(width: width,
+                           height: isTextFieldVisible ? 16 : 24)
             }
+            
             TextField("", text: $text)
                 .foregroundStyle(state.textColor)
                 .placeholder(when: text.isEmpty) {
@@ -108,8 +147,18 @@ private extension UDTextFieldView {
                 switch rightViewType {
                 case .clear:
                     text = ""
-                case .inspire(let callback):
+                case .cancel(let callback):
+                    if isInspiring {
+                        isInspiring.toggle()
+                        return
+                    }
                     callback()
+                case .inspire(let callback):
+                    text = ""
+                    if state != .focused {
+                        isInspiring.toggle()
+                        callback(isInspiring)
+                    }
                 }
             } label: {
                 buildRightView()
@@ -137,8 +186,18 @@ private extension UDTextFieldView {
         switch rightViewType {
         case .clear:
             buildClearRightView()
+        case .cancel:
+            buildCancelRightView()
         case .inspire:
-            buildInspireRightView()
+            if state == .focused {
+                buildClearRightView()
+            } else {
+                if isInspiring {
+                    buildCancelRightView()
+                } else {
+                    buildInspireRightView()
+                }
+            }
         }
     }
     
@@ -150,11 +209,17 @@ private extension UDTextFieldView {
             .foregroundStyle(Color.foregroundMuted)
     }
     
+    @ViewBuilder
+    func buildCancelRightView() -> some View {
+        Text(String.Constants.cancel.localized())
+            .font(.currentFont(size: 16, weight: .medium))
+            .foregroundStyle(Color.foregroundAccent)
+    }
     
     @ViewBuilder
     func buildInspireRightView() -> some View {
         HStack(spacing: 8) {
-            Text("Inspire")
+            Text(String.Constants.inspire.localized())
                 .font(.currentFont(size: 16, weight: .medium))
             Image.sparkleIcon
                 .resizable()
@@ -253,10 +318,11 @@ private extension UDTextFieldView {
 extension UDTextFieldView {
     enum RightViewType {
         case clear
+        case cancel(EmptyCallback)
         //        case paste
         //        case loading
         //        case success
-        case inspire(EmptyCallback)
+        case inspire((Bool)->())
     }
     
     enum LeftViewType {
@@ -279,7 +345,7 @@ extension UDTextFieldView {
             UDTextFieldView(text: $text,
                             placeholder: "domain.x",
                             hint: nil,
-                            rightViewType: .inspire({ }),
+                            rightViewType: .inspire({ _ in }),
                             rightViewMode: .always,
                             leftViewType: .search)
             .disabled(textFieldDisabled)

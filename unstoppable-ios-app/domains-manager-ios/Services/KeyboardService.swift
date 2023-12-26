@@ -130,6 +130,7 @@ private extension KeyboardService {
                     guard keyboardFrame.cgRectValue != self.keyboardFrame else { return }
                     
                     self.keyboardFrame = keyboardFrame.cgRectValue
+                    print(self.keyboardFrame)
                     self.keyboardDidAdjustFrameAction(keyboardHeight: self.keyboardFrame.height)
                     if isKeyboardOpened {
                         return

@@ -224,7 +224,7 @@ extension UIFont {
     static let fontName = "SFPro-Regular"
     static let fontBoldName = "SFPro-Bold"
 
-    static func currentFont(withSize size: CGFloat, weight: UIFont.Weight) -> UIFont {
+    static func currentFont(withSize size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
         interFont(ofSize: size, weight: weight)
     }
     

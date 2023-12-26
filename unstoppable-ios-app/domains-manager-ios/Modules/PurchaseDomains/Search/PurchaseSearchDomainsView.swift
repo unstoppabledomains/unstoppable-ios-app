@@ -15,6 +15,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
+    @State private var isInspiring = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var scrollOffset: CGPoint = .zero
@@ -25,11 +26,17 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
     var body: some View {
-        OffsetObservingScrollView(offset: $scrollOffset) {
-            VStack {
-                headerView()
-                searchView()
-                searchResultView()
+        GeometryReader { geom in
+            ZStack {
+                OffsetObservingScrollView(offset: $scrollOffset) {
+                    VStack {
+                        headerView()
+                        searchView()
+                        searchResultView()
+                    }
+                }
+                searchInspirationButton()
+                    .offset(y: (geom.size.height / 2) - searchInspirationButtonOffsetToKeyboard)
             }
         }
         .animation(.default, value: UUID())
@@ -57,15 +64,22 @@ private extension PurchaseSearchDomainsView {
         UDTextFieldView(text: $debounceObject.text,
                         placeholder: "domain.x",
                         hint: nil,
-                        rightViewType: .clear,
-                        rightViewMode: .whileEditing,
+                        rightViewType: currentSearchFieldRightViewType,
+                        rightViewMode: .always,
                         leftViewType: .search,
                         autocapitalization: .never)
         .onChange(of: debounceObject.debouncedText) { text in
             logAnalytic(event: .didSearch, parameters: [.value: text])
             search(text: text)
         }
-        .padding()
+        .padding(EdgeInsets(top: 16, leading: 16,
+                            bottom: 0, trailing: 16))
+    }
+    
+    var currentSearchFieldRightViewType: UDTextFieldView.RightViewType {
+        .inspire { isInspiring in
+            self.isInspiring = isInspiring
+        }
     }
     
     @ViewBuilder
@@ -194,6 +208,26 @@ private extension PurchaseSearchDomainsView {
         }
         .padding()
     }
+    
+    @ViewBuilder
+    func searchInspirationButton() -> some View {
+        if isInspiring,
+           KeyboardService.shared.isKeyboardOpened {
+            ZStack {
+                Rectangle()
+                    .foregroundStyle(Color.backgroundDefault)
+                    .frame(height: searchInspirationButtonStyle.height + searchInspirationButtonOffset * 2)
+                UDButtonView(text: String.Constants.search.localized(), style: searchInspirationButtonStyle) {
+                    
+                }
+                .padding()
+            }
+        }
+    }
+    
+    var searchInspirationButtonStyle: UDButtonStyle { .large(.raisedPrimary) }
+    var searchInspirationButtonOffset: CGFloat { 16 }
+    var searchInspirationButtonOffsetToKeyboard: CGFloat { (searchInspirationButtonStyle.height + searchInspirationButtonOffset) / 2 }
 }
 
 // MARK: - Private methods

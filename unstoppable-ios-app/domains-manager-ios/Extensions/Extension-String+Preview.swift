@@ -1034,6 +1034,11 @@ extension String {
         static let cancelSetup = "CANCEL_SETUP"
         static let purchaseApplePayNotSupportedErrorMessage = "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE"
         static let purchaseApplePayNotSupportedErrorMessageHighlighted = "PURCHASE_APPLE_PAY_NOT_SUPPORTED_ERROR_MESSAGE_HIGHLIGHTED"
+        static let inspire = "INSPIRE"
+        static let aiSearch = "AI_SEARCH"
+        static let aiSearchHint1 = "AI_SEARCH_HINT_1"
+        static let aiSearchHint2 = "AI_SEARCH_HINT_2"
+        static let aiSearchHint3 = "AI_SEARCH_HINT_3"
     }
     
     enum BlockChainIcons: String {
