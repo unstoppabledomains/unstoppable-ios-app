@@ -59,7 +59,8 @@ private extension PurchaseSearchDomainsView {
                         hint: nil,
                         rightViewType: .clear,
                         rightViewMode: .whileEditing,
-                        leftViewType: .search)
+                        leftViewType: .search,
+                        autocapitalization: .never)
         .onChange(of: debounceObject.debouncedText) { text in
             logAnalytic(event: .didSearch, parameters: [.value: text])
             search(text: text)
