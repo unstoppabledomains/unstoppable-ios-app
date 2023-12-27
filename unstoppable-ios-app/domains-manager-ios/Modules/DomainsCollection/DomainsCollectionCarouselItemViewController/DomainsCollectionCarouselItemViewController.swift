@@ -26,7 +26,9 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
                                                         DomainsCollectionRecentActivityCell.self,
                                                         DomainsCollectionNoRecentActivitiesCell.self,
+                                                        DomainsCollectionSuggestionCell.self,
                                                         DomainsCollectionGetDomainCardCell.self] }
+    
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -176,6 +178,9 @@ private extension DomainsCollectionCarouselItemViewController {
         collectionView.register(EmptyCollectionSectionFooter.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier)
+        collectionView.register(EmptyCollectionSectionFooter.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier)
         
         collectionView.contentInset.top = Self.scrollViewTopInset
         collectionView.clipsToBounds = false
@@ -213,6 +218,11 @@ private extension DomainsCollectionCarouselItemViewController {
                 cell.learnMoreButtonPressedCallback = configuration.learnMoreButtonPressedCallback
              
                 return cell
+            case .suggestion(let configuration):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionSuggestionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+
+                return cell
             case .getDomainCard:
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionGetDomainCardCell.self, forIndexPath: indexPath)
                 cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
@@ -226,6 +236,14 @@ private extension DomainsCollectionCarouselItemViewController {
         })
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            
+            func createEmptySectionView() -> UICollectionReusableView {
+                collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier,
+                                                                for: indexPath) as! EmptyCollectionSectionFooter
+            }
+            
+            
             if elementKind == UICollectionView.elementKindSectionHeader {
                 let section = self?.section(at: indexPath) ?? .noRecentActivities
                 
@@ -243,6 +261,8 @@ private extension DomainsCollectionCarouselItemViewController {
                                                                                for: indexPath) as! DomainsCollectionDashesSwipeTutorialHeader
                     
                     return view
+                case .emptySeparator:
+                    return createEmptySectionView()
                 default:
                     let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
                                                                                withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier,
@@ -253,11 +273,7 @@ private extension DomainsCollectionCarouselItemViewController {
                     return view
                 }
             } else {
-                let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
-                                                                                               withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier,
-                                                                                               for: indexPath) as! EmptyCollectionSectionFooter
-                
-                return footerView
+                return createEmptySectionView()
             }
         }
     }
@@ -335,8 +351,13 @@ private extension DomainsCollectionCarouselItemViewController {
                 addHeader()
                 setSectionContentInset()
                 section.contentInsets.top = -14
-            case .emptySeparator(_, let height):
-                addFooter(size: height)
+            case .emptySeparator(_, let height, let placement):
+                switch placement {
+                case .header:
+                    addHeader()
+                case .footer:
+                    addFooter(size: height)
+                }
             case .noRecentActivities:
                 let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                                      heightDimension: .estimated(60)))
@@ -366,7 +387,7 @@ extension DomainsCollectionCarouselItemViewController {
         case noRecentActivities
         case dashesSeparator(id: UUID = .init(), height: CGFloat)
         case tutorialDashesSeparator(id: UUID = .init(), height: CGFloat)
-        case emptySeparator(id: UUID = .init(), height: CGFloat)
+        case emptySeparator(id: UUID = .init(), height: CGFloat, placement: EmptySeparatorPlacement)
 
         var title: String {
             switch self {
@@ -381,11 +402,15 @@ extension DomainsCollectionCarouselItemViewController {
             switch self {
             case .recentActivity:
                 return DomainsCollectionSectionHeader.height
-            case .dashesSeparator(_, let height), .tutorialDashesSeparator(_, let height), .emptySeparator(_, let height):
+            case .dashesSeparator(_, let height), .tutorialDashesSeparator(_, let height), .emptySeparator(_, let height, _):
                 return height
             case .domainsCarousel, .noRecentActivities:
                 return 0
             }
+        }
+        
+        enum EmptySeparatorPlacement {
+            case header, footer
         }
     }
     
@@ -393,6 +418,7 @@ extension DomainsCollectionCarouselItemViewController {
         case domainCard(configuration: DomainCardConfiguration)
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
+        case suggestion(configuration: SuggestionConfiguration)
         case getDomainCard
     }
     
@@ -586,11 +612,27 @@ extension DomainsCollectionCarouselItemViewController {
         case rearrangeDomains
         case parkedDomainLearnMore
         case purchaseDomains
+        case suggestionSelected(HotFeatureSuggestion)
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {
         case parkedDomain, activity, getDomain
     }
     
+    struct SuggestionConfiguration: Hashable {
+        let id = UUID()
+        var closeCallback: EmptyCallback
+        var suggestion: HotFeatureSuggestion
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.id == rhs.id &&
+            lhs.suggestion == rhs.suggestion
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+            hasher.combine(suggestion)
+        }
+    }
 }
 

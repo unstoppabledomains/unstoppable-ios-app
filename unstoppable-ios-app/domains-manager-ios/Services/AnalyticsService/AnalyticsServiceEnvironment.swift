@@ -111,6 +111,7 @@ extension Analytics {
         case communityName
         case price
         case error
+        case id
     }
 }
 
@@ -181,6 +182,7 @@ extension Analytics {
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
         case shakeToFind
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
+        case hotFeatureDetails
     }
 }
 
@@ -319,6 +321,8 @@ extension Analytics {
         case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
         case applyPromoCredits, applyStoreCredits
         case openUnpaidDomainsInfo, openSetupApplePayInfo
+        
+        case suggestionBanner
     }
 }
 

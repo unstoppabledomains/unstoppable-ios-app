@@ -33,7 +33,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
     var analyticsName: Analytics.ViewName { .unspecified }
-
+    
     init(view: DomainsCollectionCarouselItemViewProtocol,
          mode: DomainsCollectionCarouselItemDisplayMode,
          cardState: CarouselCardState,
@@ -54,6 +54,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
+        appContext.hotFeatureSuggestionsService.addListener(self)
         showDomainData(animated: false, actions: [])
         Task.detached(priority: .low) { [weak self] in
             await self?.showDomainDataWithActions(animated: false)
@@ -64,6 +65,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
+        case .suggestion(let configuration):
+            UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.suggestionSelected(configuration.suggestion))
         case .getDomainCard:
             UDVibration.buttonTap.vibrate()
             actionsDelegate?.didOccurUIAction(.purchaseDomains)
@@ -74,6 +78,10 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     
     func setCarouselCardState(_ state: CarouselCardState) {
         guard self.cardState != state else { return }
+        
+        if state != .expanded {
+            didShowSwipeDomainCardTutorial = true
+        }
         
         func isSwipeTutorialValueChanged() -> Bool {
             UserDefaults.didShowSwipeDomainCardTutorial != didShowSwipeDomainCardTutorial
@@ -161,6 +169,15 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
     func didCompleteConnectionAttempt() { }
 }
 
+// MARK: - HotFeatureSuggestionsServiceListener
+extension DomainsCollectionCarouselItemViewPresenter: HotFeatureSuggestionsServiceListener {
+    func didUpdateCurrentSuggestion(_ suggestion: HotFeatureSuggestion?) {
+        Task {
+            await showDomainDataWithActions(animated: true)
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DomainsCollectionCarouselItemViewPresenter {
     func showDomainDataWithActions(animated: Bool) async {
@@ -205,7 +222,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             isTutorialOn = true
         }
         
-        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(), placement: .header)])
+        addSuggestionSectionIfNeeded(in: &snapshot)
         if isTutorialOn {
             snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
         } else {
@@ -219,8 +237,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             }, isTutorialOn: isTutorialOn, dataType: .parkedDomain))])
         } else {
             if connectedApps.isEmpty {
-               
-                
                 snapshot.appendSections([.noRecentActivities])
                 snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                     self?.recentActivitiesLearnMoreButtonPressed()
@@ -247,6 +263,29 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: animated)
+    }
+    
+    func getHotFeatureSuggestion() -> HotFeatureSuggestion? {
+        guard walletWithInfo != nil else { return nil } // Don't show suggestions for domains without wallet (vaulted domains)
+        
+        return appContext.hotFeatureSuggestionsService.getSuggestionToShow()
+    }
+    
+    @discardableResult
+    func addSuggestionSectionIfNeeded(in snapshot: inout DomainsCollectionCarouselItemSnapshot) -> Bool {
+        guard let suggestion = getHotFeatureSuggestion() else { return false }
+        
+        snapshot.appendSections([.emptySeparator(height: 16,
+                                                 placement: .header)])
+        snapshot.appendItems([.suggestion(configuration: .init(closeCallback: { [weak self] in
+            self?.didDismissSuggestion(suggestion)
+        }, suggestion: suggestion))])
+        
+        return true
+    }
+    
+    func didDismissSuggestion(_ suggestion: HotFeatureSuggestion) {
+        appContext.hotFeatureSuggestionsService.dismissHotFeatureSuggestion(suggestion)
     }
     
     func emptySeparatorHeightForExpandedState() -> CGFloat {

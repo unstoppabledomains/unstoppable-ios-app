@@ -28,6 +28,7 @@ protocol DomainsCollectionRouterProtocol {
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  viewingDomain: DomainItem)
     func runPurchaseDomainsFlow()
+    func showHotFeatureSuggestionDetails(suggestion: HotFeatureSuggestion)
 }
 
 @MainActor
@@ -194,9 +195,15 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     func runPurchaseDomainsFlow() {
         guard let viewController else { return }
         
-        UDRouter().showSearchDomainToPurchase(in: viewController, domainsPurchasedCallback: { [weak self] result in
+        showSearchDomainToPurchase(in: viewController, domainsPurchasedCallback: { [weak self] result in
             self?.presenter?.didPurchaseDomains(result: result)
         })
+    }
+    
+    func showHotFeatureSuggestionDetails(suggestion: HotFeatureSuggestion) {
+        guard let navigationController  else { return }
+        
+        showHotFeatureSuggestionDetails(suggestion: suggestion, in: navigationController)
     }
 }
 

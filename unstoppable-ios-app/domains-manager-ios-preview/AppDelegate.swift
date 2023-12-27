@@ -9,7 +9,7 @@ import UIKit
 
 
 var appContext: AppContextProtocol {
-    return AppContext()
+    previewContext
 }
 
 
