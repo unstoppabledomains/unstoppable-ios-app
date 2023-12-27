@@ -9,8 +9,8 @@ import Foundation
 
 struct DefaultHotFeaturesSuggestionsFetcher: HotFeaturesSuggestionsFetcher {
     func loadHotFeatureSuggestions() async throws -> [HotFeatureSuggestion] {
-        let request = try APIRequest(urlString: "https://pr-8599.api.ud-staging.com/api/v1/resellers/mobile-app-v1/mobile-hot-suggestions",
-                                 method: .get)
+        let request = try APIRequest(urlString: NetworkConfig.hotFeatureSuggestionsURL(),
+                                     method: .get)
         
         let response: SuggestionsResponse = try await NetworkService().makeDecodableAPIRequest(request)
         
