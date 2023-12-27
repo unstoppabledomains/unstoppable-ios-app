@@ -40,6 +40,9 @@ struct HotFeatureSuggestionDetailsView: View, ViewAnalyticsLogger {
                 }
             }
             .navBarVisible(scrollOffset.y > 0)
+            .onAppear {
+                logAnalytic(event: .viewDidAppear)
+            }
         }
     }
 }
