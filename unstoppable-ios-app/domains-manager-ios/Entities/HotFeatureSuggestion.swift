@@ -10,7 +10,8 @@ import Foundation
 struct HotFeatureSuggestion: Codable, Hashable {
     
     let id: Int
-    let ios: IOS
+    let minSupportedVersion: String
+    let isEnabled: Bool
     let banner: BannerContent
     let details: DetailsItem
     let navigation: NavigationItem?
@@ -38,20 +39,15 @@ struct HotFeatureSuggestion: Codable, Hashable {
             case appInbox(channelId: String?)
         }
     }
-    
-    struct IOS: Codable, Hashable {
-        let minSupportedVersion: String
-        let isEnabled: Bool
-    }
 }
 
 // MARK: - Mock
 extension HotFeatureSuggestion {
     static func mock() -> HotFeatureSuggestion {
         HotFeatureSuggestion(id: 0,
-                             ios: .init(minSupportedVersion: "4.8.0",
-                                        isEnabled: true),
-                             banner: .init(title: "Title", 
+                             minSupportedVersion: "4.8.0",
+                             isEnabled: true,
+                             banner: .init(title: "Title",
                                            subtitle: "Subtitle",
                                            iconURL: URL(fileURLWithPath: "")),
                              details: .steps(.init(title: "Get notifications from dApps", 
