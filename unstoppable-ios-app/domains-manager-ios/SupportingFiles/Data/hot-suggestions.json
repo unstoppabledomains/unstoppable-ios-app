@@ -2,14 +2,8 @@
   "suggestions": [
     {
       "id": 1,
-      "android": {
-        "minSupportedVersion": "36",
-        "isEnabled": true
-      },
-      "ios": {
-        "minSupportedVersion": "4.8.0",
-        "isEnabled": true
-      },
+      "minSupportedVersion": "4.8.0",
+      "isEnabled": true,
       "banner": {
         "title": "Get notifications from dApps",
         "subtitle": "Receive the latest updates and news.",
