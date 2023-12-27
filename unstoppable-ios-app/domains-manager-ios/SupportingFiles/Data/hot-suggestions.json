@@ -1,31 +1,39 @@
 {
-    "suggestions":
-    [
-        {
-            "id":1,
-            "banner": {
-                "title":"Get notifications from dApps",
-                "subtitle":"Receive the latest updates and news."
-            },
-            "details": {
-                "steps": {
-                    "_0": {
-                        "title": "Get notifications from dApps",
-                        "steps":["Tap on the 💬 message icon in the top right corner on the home screen.",
-                        "Go to the 'Apps Inbox' tab."],
-                        "image":"https://storage.googleapis.com/unstoppable-client-assets/images/mobile-app/hot-suggestions/image.png"
-                    }
-                }
-            },
-            "navigation" : {
-                "destination": {
-                    "appInbox": {
-                        "channelId":null
-                    }
-                }
-            },
-            "isEnabled":true,
-            "minAppVersion":"1.0.0"
+  "suggestions": [
+    {
+      "id": 1,
+      "android": {
+        "minSupportedVersion": "36",
+        "isEnabled": true
+      },
+      "ios": {
+        "minSupportedVersion": "4.8.0",
+        "isEnabled": true
+      },
+      "banner": {
+        "title": "Get notifications from dApps",
+        "subtitle": "Receive the latest updates and news.",
+        "iconURL": "https://storage.googleapis.com/unstoppable-client-assets/images/mobile-app/hot-suggestions/alert-bell-notification.png"
+      },
+      "details": {
+        "steps": {
+          "_0": {
+            "title": "Get notifications from dApps",
+            "steps": [
+              "Tap on the 💬 message icon in the top right corner on the home screen.",
+              "Go to the 'Apps Inbox' tab."
+            ],
+            "imageURL": "https://storage.googleapis.com/unstoppable-client-assets/images/mobile-app/hot-suggestions/notificationFromDAppsIllustration.png"
+          }
         }
-    ]
+      },
+      "navigation": {
+        "destination": {
+          "appInbox": {
+            "channelId": null
+          }
+        }
+      }
+    }
+  ]
 }
