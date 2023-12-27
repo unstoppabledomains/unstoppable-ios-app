@@ -90,12 +90,12 @@ private extension HotFeatureSuggestionsService {
     }
     
     func isSuggestionAvailable(_ suggestion: HotFeatureSuggestion) -> Bool {
-        suggestion.ios.isEnabled && isSuggestionAppVersionSupported(suggestion)
+        suggestion.isEnabled && isSuggestionAppVersionSupported(suggestion)
     }
     
     func isSuggestionAppVersionSupported(_ suggestion: HotFeatureSuggestion) -> Bool {
         guard let appVersion = try? Version.getCurrent(),
-              let suggestionVersion = try? Version.parse(versionString: suggestion.ios.minSupportedVersion) else { return false }
+              let suggestionVersion = try? Version.parse(versionString: suggestion.minSupportedVersion) else { return false }
         
         return appVersion >= suggestionVersion
     }
