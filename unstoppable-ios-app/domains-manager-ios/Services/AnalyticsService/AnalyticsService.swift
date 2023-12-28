@@ -101,7 +101,11 @@ private extension AnalyticsService {
     }
     
     var carrierName: String {
+        #if targetEnvironment(simulator)
+        "Simulator"
+        #else
         CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.values.compactMap({ $0.carrierName }).joined(separator: ", ") ?? ""
+        #endif
     }
     
     func publicIP() -> String? {

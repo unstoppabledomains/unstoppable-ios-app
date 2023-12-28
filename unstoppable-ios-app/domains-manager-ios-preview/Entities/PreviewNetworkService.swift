@@ -222,6 +222,9 @@ extension NetworkService {
       
     }
 
+    public func updatePendingDomainProfiles(with requests: [UpdateProfilePendingChangesRequest]) async throws {
+        
+    }
 }
 
 extension NetworkService {

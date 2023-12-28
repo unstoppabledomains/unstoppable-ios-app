@@ -656,6 +656,13 @@ class UDRouter: DomainProfileSignatureValidator {
                                                         followerSelectionCallback: followerSelectionCallback)
         viewController.present(vc, animated: true)
     }
+    
+    func showHotFeatureSuggestionDetails(suggestion: HotFeatureSuggestion,
+                                         in viewController: UIViewController) {
+        let view = HotFeatureSuggestionDetailsView(suggestion: suggestion)
+        let vc = UIHostingController(rootView: view)
+        viewController.present(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods

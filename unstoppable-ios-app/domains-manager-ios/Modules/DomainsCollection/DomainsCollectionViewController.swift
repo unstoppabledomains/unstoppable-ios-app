@@ -308,6 +308,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.purchaseDomains)
         case .recentActivityGetDomain:
             presenter.didOccureUIAction(.recentActivityGetDomain)
+        case .suggestionSelected(let suggestion):
+            presenter.didOccureUIAction(.suggestionSelected(suggestion))
         }
     }
 }
@@ -796,5 +798,18 @@ extension DomainsCollectionViewController {
         case parkedDomainLearnMore
         case purchaseDomains
         case recentActivityGetDomain
+        case suggestionSelected(HotFeatureSuggestion)
     }
+}
+
+import SwiftUI
+
+@available(iOS 17, *)
+#Preview {
+    HotFeatureSuggestionsStorage.clearAll()
+
+    let router = DomainsCollectionRouter()
+    let vc = router.configureViewController(mintingState: .default)
+    
+    return vc
 }
