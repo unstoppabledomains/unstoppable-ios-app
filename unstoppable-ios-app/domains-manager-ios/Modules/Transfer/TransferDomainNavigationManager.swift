@@ -68,6 +68,9 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
                                                                       to: recipient.ownerAddress,
                                                                       configuration: configuration,
                                                                       paymentConfirmationDelegate: topViewController)
+            appContext.analyticsService.log(event: .didTransferDomain, withParameters: [.domainName: domain.name,
+                                                                                        .fromWallet: domain.ownerWallet ?? "",
+                                                                                        .toWallet: recipient.ownerAddress])
             Task.detached {
                 await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
             }

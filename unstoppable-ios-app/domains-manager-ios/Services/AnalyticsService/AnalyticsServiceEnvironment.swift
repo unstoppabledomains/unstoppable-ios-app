@@ -42,6 +42,7 @@ extension Analytics {
         case websiteLoginOptionSelected
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
+        case didTransferDomain
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -114,6 +115,7 @@ extension Analytics {
         case price
         case error
         case id
+        case fromWallet, toWallet
     }
 }
 
