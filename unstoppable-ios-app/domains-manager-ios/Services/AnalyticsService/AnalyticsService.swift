@@ -49,12 +49,40 @@ extension AnalyticsService: DataAggregatorServiceListener {
             switch dataAggregatedResult {
             case .walletsListUpdated(let walletsWithInfo):
                 let addresses = walletsWithInfo.map({ $0.wallet.address }).joined(separator: ",")
-                set(userProperties: [.walletsAddresses: addresses])
                 let rrDomains = walletsWithInfo.compactMap({ $0.displayInfo?.reverseResolutionDomain?.name }).joined(separator: ",")
-                set(userProperties: [.reverseResolutionDomains: rrDomains])
+                let numberOfBackups = appContext.udWalletsService.fetchCloudWalletClusters()
+                set(userProperties: [.walletsAddresses: addresses,
+                                     .reverseResolutionDomains: rrDomains,
+                                     .numberOfWallets: String(walletsWithInfo.count),
+                                     .numberOfBackups: String(numberOfBackups.count)])
             case .primaryDomainChanged(let primaryDomainName):
                 set(userProperties: [.primaryDomain: primaryDomainName])
-            case .domainsUpdated, .domainsPFPUpdated:
+            case .domainsUpdated(let domains):
+                var numberOfUDDomains = 0
+                var numberOfParkedDomains = 0
+                var numberOfENSDomains = 0
+                var numberOfCOMDomains = 0
+                
+                for domain in domains {
+                    if case .parking = domain.state {
+                        numberOfParkedDomains += 1
+                    }
+                    let tld = domain.name.getTldName()
+                    if tld == Constants.ensDomainTLD {
+                        numberOfENSDomains += 1
+                    } else if tld == Constants.comDomainTLD {
+                        numberOfCOMDomains += 1
+                    } else {
+                        numberOfUDDomains += 1
+                    }
+                }
+                
+                set(userProperties: [.numberOfTotalDomains: String(domains.count),
+                                     .numberOfUDDomains: String(numberOfUDDomains),
+                                     .numberOfParkedDomains: String(numberOfParkedDomains),
+                                     .numberOfENSDomains: String(numberOfENSDomains),
+                                     .numberOfCOMDomains: String(numberOfCOMDomains)])
+            case .domainsPFPUpdated:
                 return
             }
         case .failure:

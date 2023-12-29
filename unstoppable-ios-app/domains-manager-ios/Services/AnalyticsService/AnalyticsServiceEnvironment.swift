@@ -122,6 +122,14 @@ extension Analytics {
         case walletsAddresses
         case primaryDomain
         case reverseResolutionDomains
+        case numberOfWallets
+        case numberOfTotalDomains
+        case numberOfUDDomains
+        case numberOfParkedDomains
+        case numberOfENSDomains
+        case numberOfCOMDomains
+        case numberOfBackups
+        case numberOfConnectedDApps
     }
 }
 
