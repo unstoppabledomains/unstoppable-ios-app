@@ -12,8 +12,10 @@ final class AnalyticsService {
     private var services: [AnalyticsServiceChildProtocol] = [HeapAnalyticService(),
                                                              AmplitudeAnalyticsService()]
     
-    init(dataAggregatorService: DataAggregatorServiceProtocol) {
+    init(dataAggregatorService: DataAggregatorServiceProtocol,
+         wcRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         dataAggregatorService.addListener(self)
+        wcRequestsHandlingService.addListener(self)
         setAnalyticsUserID()
     }
     
@@ -87,6 +89,33 @@ extension AnalyticsService: DataAggregatorServiceListener {
             }
         case .failure:
             return
+        }
+    }
+}
+
+// MARK: - WalletConnectServiceConnectionListener
+extension AnalyticsService: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
+        log(event: .didConnectDApp, withParameters: getAnalyticParametersFrom(app: app))
+        setNumberOfConnectedApps()
+    }
+    
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        log(event: .didDisconnectDApp, withParameters: getAnalyticParametersFrom(app: app))
+        setNumberOfConnectedApps()
+    }
+    
+    private func getAnalyticParametersFrom(app: UnifiedConnectAppInfo) -> Analytics.EventParameters {
+        [.appName : app.appName,
+         .wallet: app.walletAddress,
+         .domainName: app.domain.name,
+         .hostURL: app.appUrlString]
+    }
+    
+    private func setNumberOfConnectedApps() {
+        Task {
+            let appsConnected = await appContext.walletConnectServiceV2.getConnectedApps()
+            set(userProperties: [.numberOfConnectedDApps: String(appsConnected.count)])
         }
     }
 }

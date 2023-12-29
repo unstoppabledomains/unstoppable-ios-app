@@ -24,7 +24,8 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
-        AnalyticsService(dataAggregatorService: dataAggregatorService)
+        AnalyticsService(dataAggregatorService: dataAggregatorService,
+                         wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = MockAppLaunchService(coreAppCoordinator: coreAppCoordinator,
                                                                                             udWalletsService: udWalletsService)

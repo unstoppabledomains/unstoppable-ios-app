@@ -41,6 +41,7 @@ extension Analytics {
         case showRateAppRequest
         case websiteLoginOptionSelected
         case makeScreenshot, screenRecording
+        case didConnectDApp, didDisconnectDApp
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
