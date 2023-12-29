@@ -40,6 +40,7 @@ extension Analytics {
         case didSelectPhoto
         case showRateAppRequest
         case websiteLoginOptionSelected
+        case makeScreenshot, screenRecording
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
