@@ -12,11 +12,11 @@ final class MintDomainsConfigurationListHeaderView: CollectionGenericContentView
     class var reuseIdentifier: String { "MintDomainsConfigurationListHeaderView" }
     static let Height: CGFloat = 52
 
-    private var selectAllButtonCallback: EmptyCallback?
+    private var selectAllButtonCallback: MainActorAsyncCallback?
     
     func setHeader(for domainsCount: Int,
                    isAllSelected: Bool,
-                   selectAllButtonCallback: @escaping EmptyCallback) {
+                   selectAllButtonCallback: @escaping MainActorAsyncCallback) {
         
         contentView.removeArrangedSubviews()
         

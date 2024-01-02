@@ -59,7 +59,7 @@ struct PullUpErrorConfiguration {
     
     struct ActionConfiguration {
         let title: String
-        let callback: EmptyCallback
+        let callback: MainActorAsyncCallback
         let analyticsName: Analytics.Button
     }
 }

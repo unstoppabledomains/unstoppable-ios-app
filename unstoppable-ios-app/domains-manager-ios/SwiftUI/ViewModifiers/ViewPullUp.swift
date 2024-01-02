@@ -35,7 +35,7 @@ struct ViewPullUp: ViewModifier {
             })
     }
     
-    private func closeAndPassCallback(_ callback: EmptyCallback?) {
+    private func closeAndPassCallback(_ callback: MainActorAsyncCallback?) {
         configuration = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             callback?()
@@ -350,7 +350,7 @@ struct ViewPullUpConfiguration {
         var isSuccessState: Bool = false
         var isLoading: Bool = false
         var isUserInteractionEnabled: Bool = true
-        let action: EmptyCallback?
+        let action: MainActorAsyncCallback?
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.title == rhs.title
@@ -367,7 +367,7 @@ struct ViewPullUpConfiguration {
                                                                        icon: nil,
                                                                        analyticsName: .later,
                                                                        action: nil))
-        static func gotItButton(action: EmptyCallback? = nil) -> ButtonType {
+        static func gotItButton(action: MainActorAsyncCallback? = nil) -> ButtonType {
             .secondary(content: .init(title: String.Constants.gotIt.localized(),
                                       icon: nil,
                                       analyticsName: .gotIt,
@@ -391,6 +391,7 @@ struct ViewPullUpConfiguration {
             }
         }
         
+        @MainActor
         func callAction() {
             switch self {
             case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content):

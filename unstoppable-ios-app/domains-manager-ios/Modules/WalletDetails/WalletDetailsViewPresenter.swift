@@ -218,11 +218,10 @@ private extension WalletDetailsViewPresenter {
             snapshot.appendItems([.listItem(.removeWallet(isConnected: walletInfo.isConnected,
                                                           walletName: walletInfo.walletSourceName))])
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
     
-    @MainActor
     func revealRecoveryPhrase(recoveryType: UDWallet.RecoveryType) {
         guard let view = self.view else { return }
         
@@ -240,7 +239,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func askToRemoveWallet() {
         guard let view = self.view else { return }
         Task {
@@ -254,7 +252,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func indicateWalletRemoved() {
         if wallet.walletState == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
@@ -269,7 +266,7 @@ private extension WalletDetailsViewPresenter {
         await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }
-        await indicateWalletRemoved()
+        indicateWalletRemoved()
     }
     
     func copyAddressButtonPressed() {
@@ -281,12 +278,9 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
 
         logButtonPressedAnalyticEvents(button: .showConnectedWalletInfo)
-        Task {
-            await appContext.pullUpViewService.showConnectedWalletInfoPullUp(in: view)
-        }
+        appContext.pullUpViewService.showConnectedWalletInfoPullUp(in: view)
     }
     
-    @MainActor
     func showRenameWalletScreen() {
         guard let view = self.view else { return }
 
@@ -298,7 +292,6 @@ private extension WalletDetailsViewPresenter {
                                           in: view)
     }
     
-    @MainActor
     func showBackupWalletScreenIfAvailable() {
         guard let view = self.view else { return }
 
@@ -346,7 +339,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func importExternalWallet() {
         guard let view = self.view else { return }
         
@@ -365,7 +357,6 @@ private extension WalletDetailsViewPresenter {
         showWalletDetails()
     }
     
-    @MainActor
     func showReverseResolutionInProgress(for domainDisplayInfo: DomainDisplayInfo) {
         Task {
             guard let view = self.view else { return }

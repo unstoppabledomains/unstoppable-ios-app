@@ -31,7 +31,7 @@ class EnterEmailViewPresenter {
     
     func viewDidLoad() {
         if let preFilledEmail = preFilledEmail {
-            Task { await view?.setEmail(preFilledEmail) }
+            view?.setEmail(preFilledEmail)
         }
     }
     func viewWillAppear() { }

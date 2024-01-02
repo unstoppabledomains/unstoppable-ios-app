@@ -25,12 +25,9 @@ class LoginViewPresenter: ViewAnalyticsLogger {
         showData()
         view?.setDashesProgress(0.25)
     }
-    @MainActor
     func loginWithEmailAction() { }
-    @MainActor
     func userDidAuthorize() { }
     
-    @MainActor
     func authFailedWith(error: Error) {
         if let firebaseError = error as? FirebaseAuthError,
            case .userCancelled = firebaseError {
@@ -65,27 +62,25 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
 // MARK: - Private functions
 private extension LoginViewPresenter {
     func showData() {
-        Task {
-            var snapshot = LoginSnapshot()
-           
-            snapshot.appendSections([.main])
-            snapshot.appendItems([.loginWith(provider: .email),
-                                  .loginWith(provider: .google),
-                                  .loginWith(provider: .twitter)])
-            
-            await view?.applySnapshot(snapshot, animated: true)
-        }
+        var snapshot = LoginSnapshot()
+        
+        snapshot.appendSections([.main])
+        snapshot.appendItems([.loginWith(provider: .email),
+                              .loginWith(provider: .google),
+                              .loginWith(provider: .twitter)])
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func loginWithGoogle()  {
         Task {
-            guard let window = await SceneDelegate.shared?.window else { return }
+            guard let window = SceneDelegate.shared?.window else { return }
     
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithGoogle(in: window)
-                await userDidAuthorize()
+                userDidAuthorize()
             } catch {
-                await authFailedWith(error: error)
+                authFailedWith(error: error)
             }
         }
     }
@@ -96,9 +91,9 @@ private extension LoginViewPresenter {
             
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithTwitter(in: view)
-                await userDidAuthorize()
+                userDidAuthorize()
             } catch {
-                await authFailedWith(error: error)
+                authFailedWith(error: error)
             }
         }
     }

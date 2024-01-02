@@ -49,28 +49,24 @@ final class MintingNotPrimaryDomainsInProgressViewPresenter: BaseMintingTransact
     override func didRefreshPendingDomains() {
         
         if pendingDomains.isEmpty {
-            Task {
-                if Constants.isTestingMinting {
-                    return // Don't close screen due to BE issues that prevent from regular testing
-                }
-                await dismiss()
+            if Constants.isTestingMinting {
+                return // Don't close screen due to BE issues that prevent from regular testing
             }
+            dismiss()
         }
     }
     
     override func didSelectItem(_ item: TransactionInProgressViewController.Item) {
-        Task { @MainActor in
-            UDVibration.buttonTap.vibrate()
-            switch item {
-            case .mintingList(let domain, _):
-                if isSelectable {
-                    logAnalytic(event: .mintingDomainPressed, parameters: [.domainName: domain.name])
-                    dismiss()
-                    mintingDomainSelectedCallback?(domain)
-                }
-            default:
-                return
+        UDVibration.buttonTap.vibrate()
+        switch item {
+        case .mintingList(let domain, _):
+            if isSelectable {
+                logAnalytic(event: .mintingDomainPressed, parameters: [.domainName: domain.name])
+                dismiss()
+                mintingDomainSelectedCallback?(domain)
             }
+        default:
+            return
         }
     }
 }

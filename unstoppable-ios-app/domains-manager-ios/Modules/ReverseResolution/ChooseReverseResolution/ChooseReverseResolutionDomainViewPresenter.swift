@@ -45,7 +45,7 @@ class ChooseReverseResolutionDomainViewPresenter {
         logButtonPressedAnalyticEvents(button: .confirm, parameters: [.wallet: wallet.address,
                                                                       .domainName: selectedDomain.name])
     }
-    func showDomainsList() async { }
+    func showDomainsList() { }
 }
 
 // MARK: - ChooseReverseResolutionViewPresenterProtocol
@@ -53,7 +53,7 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
     func viewDidLoad() {
         Task {
             await loadDomains()
-            await showDomainsList()
+            showDomainsList()
         }
     }
     
@@ -63,9 +63,7 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
             logAnalytic(event: .domainPressed, parameters: [.wallet: wallet.address,
                                                             .domainName: details.domain.name])
             self.selectedDomain = details.domain
-            Task {
-                await showDomainsList()
-            }
+            showDomainsList()
         case .header:
             return
         }

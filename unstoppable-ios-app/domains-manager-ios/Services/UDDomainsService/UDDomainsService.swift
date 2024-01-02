@@ -128,7 +128,7 @@ private extension UDDomainsService {
                                securityCode: String) async throws -> [TransactionItem] {
         
         let domainItems = createDomainItems(from: domains, for: wallet)
-        let paidDomainItems = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
+        let _ = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
         
         do {
             let txs = try await NetworkService().mint(domains: domainItems,

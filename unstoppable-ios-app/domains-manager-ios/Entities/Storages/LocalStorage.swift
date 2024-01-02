@@ -73,16 +73,16 @@ public class LocalStorage<T: Codable> {
     ///   - object: the encodable struct to store
     ///   - directory: where to store the struct
     ///   - fileName: what to name the file where the struct data will be stored
-    func store<T: Encodable>(_ object: T,
-                                    to directory: Directory,
-                                    subdirectory: String? = nil,
-                                    to fileName: String) -> LSError? {
+    func store(_ object: T,
+               to directory: Directory,
+               subdirectory: String? = nil,
+               to fileName: String) -> LSError? {
         let fullDirPathResult = getFullDir(directory: directory, subdirectory: subdirectory, to: fileName)
         var fullDirPath: URL
         switch fullDirPathResult {
-            case .failure(let error):
-                return error
-            case .success(let url): fullDirPath = url
+        case .failure(let error):
+            return error
+        case .success(let url): fullDirPath = url
         }
         
         let encoder = JSONEncoder()
@@ -108,10 +108,10 @@ public class LocalStorage<T: Codable> {
     ///   - directory: directory where struct data is stored
     ///   - type: struct type (i.e. Message.self)
     /// - Returns: decoded struct model(s) of data
-    func retrieve<T: Decodable>(_ fileName: String,
-                                       from directory: Directory,
-                                       subdirectory: String? = nil,
-                                       as type: T.Type) -> Result<T, LSError> {
+    func retrieve(_ fileName: String,
+                  from directory: Directory,
+                  subdirectory: String? = nil,
+                  as type: T.Type) -> Result<T, LSError> {
         guard let url = getURL(for: directory)?.appendingPathComponent(fileName, isDirectory: false) else {
             return Result.failure (.NoDirectory)
         }

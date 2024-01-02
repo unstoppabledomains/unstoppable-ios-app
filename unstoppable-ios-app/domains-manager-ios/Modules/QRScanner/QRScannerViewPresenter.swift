@@ -17,6 +17,7 @@ protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
     func didSelectBlockchainType(_ blockchainType: BlockchainType)
 }
 
+@MainActor
 final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
@@ -48,7 +49,6 @@ typealias QRCode = String
 
 // MARK: - QRScannerViewPresenterProtocol
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
-    @MainActor
     func viewDidLoad() {
         guard let view = self.view else { return }
         dataAggregatorService.addListener(self)
@@ -69,7 +69,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             await self?.showInfoFor(domain: selectedDomain, balance: nil)
         }
     }
-    @MainActor
+    
     func viewDidAppear() {
         Task {
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
@@ -213,7 +213,7 @@ extension QRScannerViewPresenter: DataAggregatorServiceListener {
                         self.selectedDomain = domain
                         await showInfoFor(domain: domain, balance: nil)
                     } else if domains.isEmpty {
-                        await view?.cNavigationController?.popViewController(animated: true)
+                        view?.cNavigationController?.popViewController(animated: true)
                     } else {
                         await setPrimaryDomainInfo()
                     }

@@ -41,7 +41,7 @@ struct StripePaymentHelper {
         ]
         
         if let appC = STPApplePayContext(paymentRequest: paymentRequest,
-                                         delegate: (hostVc as! STPApplePayContextDelegate)) {
+                                         delegate: (hostVc!)) {
             appC.presentApplePay()
         }
     }

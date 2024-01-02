@@ -30,12 +30,6 @@ class BaseDomainsCollectionCardCell: UICollectionViewCell {
         setFrame()
     }
     
-    deinit {
-        Task { @MainActor in
-            releaseAnimator()
-        }
-    }
-    
     func setFrame(for state: CardState) {
         setContainerViewFrame(for: state)
         setFrameForShadowView()

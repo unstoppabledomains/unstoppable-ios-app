@@ -88,9 +88,7 @@ extension EnterEmailVerificationCodeToMintDomainsPresenter: DeepLinkServiceListe
         case .mintDomainsVerificationCode(let email, let code):
             guard email == self.email else { return }
             
-            Task {
-                await view?.setCode(code)
-            }
+            view?.setCode(code)
         default:
             return 
         }

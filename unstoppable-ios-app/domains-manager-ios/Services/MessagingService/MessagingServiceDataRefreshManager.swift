@@ -28,13 +28,13 @@ final class MessagingServiceDataRefreshManager {
     
     func startUpdatingChats(for userProfile: MessagingChatUserProfileDisplayInfo) {
         notifyIfNeededUpdateStartedForProfile(userProfile)
-        serialQueue.sync {
+        _ = serialQueue.sync {
             updatingChatUsersIds.insert(userProfile.id)
         }
     }
     
     func stopUpdatingChats(for userProfile: MessagingChatUserProfileDisplayInfo) {
-        serialQueue.sync {
+        _ = serialQueue.sync {
             updatingChatUsersIds.remove(userProfile.id)
         }
         notifyIfNeededUpdateFinishedForProfile(userProfile)
@@ -42,13 +42,13 @@ final class MessagingServiceDataRefreshManager {
     
     func startUpdatingChannels(for userProfile: MessagingChatUserProfileDisplayInfo) {
         notifyIfNeededUpdateStartedForProfile(userProfile)
-        serialQueue.sync {
+        _ = serialQueue.sync {
             updatingChannelsUsersIds.insert(userProfile.id)
         }
     }
     
     func stopUpdatingChannels(for userProfile: MessagingChatUserProfileDisplayInfo) {
-        serialQueue.sync {
+        _ = serialQueue.sync {
             updatingChannelsUsersIds.remove(userProfile.id)
         }
         notifyIfNeededUpdateFinishedForProfile(userProfile)

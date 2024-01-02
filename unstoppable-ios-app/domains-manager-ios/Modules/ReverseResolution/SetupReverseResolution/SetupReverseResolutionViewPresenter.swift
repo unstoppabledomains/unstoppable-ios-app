@@ -40,9 +40,7 @@ class SetupReverseResolutionViewPresenter {
     }
     
     func viewDidLoad() {
-        Task {
-            await view?.setWith(walletInfo: walletInfo, domain: domain)
-        }
+        view?.setWith(walletInfo: walletInfo, domain: domain)
     }
     func confirmButtonPressed() {
         logButtonPressedAnalyticEvents(button: .confirm, parameters: [.domainName: domainName ?? "N/A"])

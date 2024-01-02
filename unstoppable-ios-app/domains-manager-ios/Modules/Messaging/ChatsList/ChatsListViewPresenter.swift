@@ -852,7 +852,6 @@ private extension ChatsListViewPresenter {
             let members = details.allMembers
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         case .community(let details):
-            let members = details.members
             return details.displayName.lowercased().contains(searchKey)
         }
     }

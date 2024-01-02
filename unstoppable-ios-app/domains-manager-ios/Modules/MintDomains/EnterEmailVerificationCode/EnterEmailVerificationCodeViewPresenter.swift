@@ -16,6 +16,7 @@ protocol EnterEmailVerificationCodeViewPresenterProtocol: BasePresenterProtocol 
     func didEnterVerificationCode(_ code: String)
 }
 
+@MainActor
 class EnterEmailVerificationCodeViewPresenter {
     
     private(set) weak var view: EnterEmailVerificationCodeViewProtocol?
@@ -65,20 +66,18 @@ extension EnterEmailVerificationCodeViewPresenter: EnterEmailVerificationCodeVie
     }
     
     func resendCodeButtonPressed() {
-        Task {
-            resendCodeAction()
-            await startResendTimer()
-        }
+        resendCodeAction()
+        startResendTimer()
     }
     
     func didEnterVerificationCode(_ code: String) {
         Task {
             do {
-                await view?.setLoading(true)
+                view?.setLoading(true)
                 try await validateCode(code)
             } catch {
-                await view?.setLoading(false)
-                await view?.setInvalidCode()
+                view?.setLoading(false)
+                view?.setInvalidCode()
             }
         }
     }
@@ -100,15 +99,11 @@ private extension EnterEmailVerificationCodeViewPresenter {
     }
     
     func checkResendStatus() {
-        Task {
-            await MainActor.run {
-                if secondsLeftToResend < 0 {
-                    view?.setResendCodeButton(enabled: true, secondsLeft: nil)
-                    stopResendTimer()
-                } else {
-                    view?.setResendCodeButton(enabled: false, secondsLeft: secondsLeftToResend)
-                }
-            }
+        if secondsLeftToResend < 0 {
+            view?.setResendCodeButton(enabled: true, secondsLeft: nil)
+            stopResendTimer()
+        } else {
+            view?.setResendCodeButton(enabled: false, secondsLeft: secondsLeftToResend)
         }
     }
     

@@ -31,42 +31,35 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
         super.init(view: view)
     }
     
-    @MainActor
     override func viewDidLoad() {
-        Task {
-            setupView()
-            setConfirmButton()
-            await showData()
-        }
+        setupView()
+        setConfirmButton()
+        showData()
     }
     
     override func didSelectItem(_ item: ChoosePrimaryDomainViewController.Item) {
-        Task {
-            switch item {
-            case .domain(let domain, _, _):
-                logAnalytic(event: .domainPressed, parameters: [.domainName: domain.name])
-                UDVibration.buttonTap.vibrate()
-            case .domainName(let domainName):
-                logAnalytic(event: .domainPressed, parameters: [.domainName: domainName])
-                UDVibration.buttonTap.vibrate()
-            case .header, .searchEmptyState:
-                return
-            }
-            await showData()
+        switch item {
+        case .domain(let domain, _, _):
+            logAnalytic(event: .domainPressed, parameters: [.domainName: domain.name])
+            UDVibration.buttonTap.vibrate()
+        case .domainName(let domainName):
+            logAnalytic(event: .domainPressed, parameters: [.domainName: domainName])
+            UDVibration.buttonTap.vibrate()
+        case .header, .searchEmptyState:
+            return
         }
+        showData()
     }
     
     override func confirmButtonPressed() {
         Task {
-            await view?.setLoadingIndicator(active: true)
+            view?.setLoadingIndicator(active: true)
             do {
                 let domainsOrderInfoMap = createDomainsOrderInfoMap()
                 try await mintDomainsFlowManager?.handle(action: .didConfirmDomainsToMint(domainsToMint, domainsOrderInfoMap: domainsOrderInfoMap))
             } catch {
-                await MainActor.run {
-                    view?.setLoadingIndicator(active: false)
-                    view?.showAlertWith(error: error, handler: nil)
-                }
+                view?.setLoadingIndicator(active: false)
+                view?.showAlertWith(error: error, handler: nil)
             }
         }
     }
@@ -76,11 +69,11 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
         orderedWrappers.remove(at: fromIndex)
         orderedWrappers.insert(movedDomain, at: toIndex)
         logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.domainName])
-        showDataAsync()
+        showData()
     }
     
     override func moveItemsFailed() {
-        showDataAsync()
+        showData()
     }
     
 }
@@ -89,11 +82,7 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
 private extension ChoosePrimaryDomainDuringMintingPresenter {
     var selectedDomain: String? { domainsToMint.first }
    
-    func showDataAsync() {
-        Task { await showData() }
-    }
-    
-    func showData() async {
+    func showData() {
         var snapshot = ChoosePrimaryDomainSnapshot()
         
         snapshot.appendSections([.header])
@@ -102,7 +91,7 @@ private extension ChoosePrimaryDomainDuringMintingPresenter {
         snapshot.appendSections([.allDomains])
         snapshot.appendItems(orderedWrappers.map({ $0.createRowItem() }))
         
-        await view?.applySnapshot(snapshot, animated: true)
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     @MainActor

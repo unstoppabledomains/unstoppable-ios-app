@@ -155,7 +155,7 @@ struct UnsConfigManager {
         case main.l1.id, test.l1.id: return .Ethereum
         case main.l2.id, test.l2.id: return .Matic
         default:
-            Debugger.printFailure("Invalid chain id for UnsConfig: \(chainId)", critical: false)
+            Debugger.printFailure("Invalid chain id for UnsConfig: \(String(describing: chainId))", critical: false)
             throw Error.invalidChainId
         }
     }

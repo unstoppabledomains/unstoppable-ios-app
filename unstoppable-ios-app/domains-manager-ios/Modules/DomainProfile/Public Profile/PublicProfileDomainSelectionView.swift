@@ -23,12 +23,12 @@ struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
         ZStack {
             VStack(spacing: 0) {
                 PublicProfilePullUpHeaderView(domainName: profileDomain,
-                                              closeCallback: dismiss)
+                                              closeCallback: { dismiss() })
                 
                 if let domainsToSelectFrom {
                     let selectedDomain = domainsToSelectFrom.first(where: { $0.name == currentDomainName } )
                     DomainSelectionListView(mode: .singleSelection(selectedDomain: selectedDomain,
-                                                                   selectionCallback: domainSelected),
+                                                                   selectionCallback: { domain in domainSelected(domain) }),
                                             domainsToSelectFrom: domainsToSelectFrom)
                     .ignoresSafeArea()
                 }

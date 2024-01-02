@@ -106,7 +106,6 @@ struct WCWalletsProvider {
     @MainActor
     static func getDiscoverable(registry: [WalletRecord]) -> [WalletRecord] {
         return registry.filter({
-            let universal = $0.getUniversalAppLink()
             guard let nativeLink = $0.getNativeAppLink() else {
                 return false
             }

@@ -122,9 +122,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func topWarningViewWith(message: TopMessageDescription, callback: @escaping MainActorCallback) -> some View {
         Button {
-            Task {
-                await callback()
-            }
+            callback()
         } label: {
             HStack(spacing: 8) {
                 Image.infoIcon
@@ -523,7 +521,7 @@ private extension PurchaseDomainsCheckoutView {
                                                                            .error: error.localizedDescription])
                 
                 Debugger.printFailure("Did fail to purchase domains with error \(error.localizedDescription)")
-                self.error = .purchaseError(tryAgainCallback: startPurchaseDomains)
+                self.error = .purchaseError(tryAgainCallback: { startPurchaseDomains() })
             }
             setLoading(false)
         }
@@ -651,8 +649,8 @@ private extension PurchaseDomainsCheckoutView {
 private extension PullUpErrorConfiguration {
     static func selectWalletError(wallet: UDWallet,
                                   canSelectWallet: Bool,
-                                  selectAnotherCallback: @escaping EmptyCallback,
-                                  tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+                                  selectAnotherCallback: @escaping MainActorAsyncCallback,
+                                  tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
         let primaryAction: PullUpErrorConfiguration.ActionConfiguration
         var secondaryAction: PullUpErrorConfiguration.ActionConfiguration?
         if canSelectWallet {
@@ -675,7 +673,7 @@ private extension PullUpErrorConfiguration {
                      analyticsName: .purchaseDomainsAuthWalletError)
     }
     
-    static func loadCalculationsError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+    static func loadCalculationsError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),
@@ -684,7 +682,7 @@ private extension PullUpErrorConfiguration {
               analyticsName: .purchaseDomainsCalculationsError)
     }
     
-    static func purchaseError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+    static func purchaseError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletPurchaseErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletPurchaseErrorSubtitle.localized(),
               primaryAction: .init(title: String.Constants.tryAgain.localized(),

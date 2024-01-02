@@ -270,12 +270,12 @@ private extension WalletsListViewPresenter {
                 if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
                     walletName = displayInfo.walletSourceName
                 }
-                await appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+                appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
                 await fetchWallets()
                 await showWallets()
                 if case .createdAndBackedUp(let wallet) = result,
                    let walletInfo = walletsWithInfo.first(where: { $0.wallet.address == wallet.address })?.displayInfo {
-                    await showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+                    showDetailsOf(wallet: wallet, walletInfo: walletInfo)
                 }
                 AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
             }

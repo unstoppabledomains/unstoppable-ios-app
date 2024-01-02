@@ -44,9 +44,7 @@ extension ManageMultiChainDomainAddressesViewPresenter: ManageMultiChainDomainAd
     
     func viewDidLoad() {
         showData()
-        Task {
-            await view?.setConfirmButtonEnabled(false)
-        }
+        view?.setConfirmButtonEnabled(false)
     }
     
     func didSelectItem(_ item: ManageMultiChainDomainAddressesViewController.Item) {
@@ -79,7 +77,7 @@ extension ManageMultiChainDomainAddressesViewPresenter: ManageMultiChainDomainAd
                         try await appContext.pullUpViewService.showDiscardRecordChangesConfirmationPullUp(in: view)
                         await view.dismissPullUpMenu()
                         self.isChangesDiscarded = true
-                        await view.navigationController?.popViewController(animated: true)
+                        view.navigationController?.popViewController(animated: true)
                     }
                 }
                 return false                
@@ -93,30 +91,28 @@ extension ManageMultiChainDomainAddressesViewPresenter: ManageMultiChainDomainAd
 // MARK: - Private functions
 private extension ManageMultiChainDomainAddressesViewPresenter {
     func showData() {
-        Task {
-            let records = editingRecordModel.records
-            guard !records.isEmpty else {
-                Debugger.printFailure("Manage multi chain screen doesn't have any record", critical: true)
-                return
-            }
-            
-            var snapshot = ManageMultiChainDomainAddressesSnapshot()
-           
-            snapshot.appendSections([.topInfo])
-            snapshot.appendItems([.topInfo(records[0].coin)])
-            
-            if let primaryRecord = editingRecordModel.primaryRecord {
-                snapshot.appendSections([.primaryChain])
-                snapshot.appendItems([item(from: primaryRecord)])
-            }
-            
-            snapshot.appendSections([.records])
-            snapshot.appendItems(records.map({ record in
-               item(from: record)
-            }))
-            
-            await view?.applySnapshot(snapshot, animated: true)
+        let records = editingRecordModel.records
+        guard !records.isEmpty else {
+            Debugger.printFailure("Manage multi chain screen doesn't have any record", critical: true)
+            return
         }
+        
+        var snapshot = ManageMultiChainDomainAddressesSnapshot()
+        
+        snapshot.appendSections([.topInfo])
+        snapshot.appendItems([.topInfo(records[0].coin)])
+        
+        if let primaryRecord = editingRecordModel.primaryRecord {
+            snapshot.appendSections([.primaryChain])
+            snapshot.appendItems([item(from: primaryRecord)])
+        }
+        
+        snapshot.appendSections([.records])
+        snapshot.appendItems(records.map({ record in
+            item(from: record)
+        }))
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func item(from record: CryptoRecord) -> ManageMultiChainDomainAddressesViewController.Item {
@@ -156,13 +152,11 @@ private extension ManageMultiChainDomainAddressesViewPresenter {
     }
     
     func updateConfirmButton() {
-        Task {
-            if editingRecordModel != originalRecordModel,
-               editingRecordModel.validate() == nil {
-                await view?.setConfirmButtonEnabled(true)
-            } else {
-                await view?.setConfirmButtonEnabled(false)
-            }
+        if editingRecordModel != originalRecordModel,
+           editingRecordModel.validate() == nil {
+            view?.setConfirmButtonEnabled(true)
+        } else {
+            view?.setConfirmButtonEnabled(false)
         }
     }
 }

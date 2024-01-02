@@ -10,7 +10,7 @@ import Foundation
 protocol AppLaunchServiceProtocol {
     func startWith(sceneDelegate: SceneDelegateProtocol,
                    walletConnectServiceV2: WalletConnectServiceV2Protocol,
-                   completion: @escaping EmptyCallback)
+                   completion: @escaping EmptyAsyncCallback)
     func addListener(_ listener: AppLaunchServiceListener)
     func removeListener(_ listener: AppLaunchServiceListener)
 }

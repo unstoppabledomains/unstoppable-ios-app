@@ -51,7 +51,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
-        if let wallet = connectedWallets.first(where: { $0.address == walletAddress }) {
+        if let _ = connectedWallets.first(where: { $0.address == walletAddress }) {
             return  [.makeMock()]
         }
         return []

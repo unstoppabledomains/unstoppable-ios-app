@@ -97,13 +97,6 @@ final class ChatsListViewController: BaseViewController {
     override func shouldPopOnBackButton() -> Bool {
         !searchBar.isEditing && mode == .default
     }
-    
-    deinit {
-        Task { @MainActor in
-            presenter.viewDeinit()
-        }
-    }
-
 }
 
 // MARK: - ChatsListViewProtocol
