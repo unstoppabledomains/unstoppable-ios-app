@@ -62,7 +62,9 @@ private extension PublicProfileSocialsListView {
         guard let social else { return }
         logButtonPressedAnalyticEvents(button: .social, parameters: [.value: social.analyticsName])
 
-        social.openSocialAccount()
+        Task {
+            await social.openSocialAccount()            
+        }
     }
     
     @ViewBuilder

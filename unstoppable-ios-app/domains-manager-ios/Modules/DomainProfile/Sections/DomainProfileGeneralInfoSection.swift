@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileGeneralInfoSection: WebsiteURLValidator, DomainProfileDataToClipboardCopier {
     
     typealias SectionData = DomainProfileGeneralInfoData

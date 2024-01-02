@@ -188,6 +188,7 @@ extension View {
 }
 
 fileprivate extension ViewPullUpConfiguration {
+    @MainActor
     func calculateHeight() -> CGFloat {
         let contentWidth = UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2)
         var height = ViewPullUp.headerSpacing

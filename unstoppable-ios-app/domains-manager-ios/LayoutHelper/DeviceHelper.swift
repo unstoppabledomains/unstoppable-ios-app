@@ -25,6 +25,7 @@ enum UIDeviceSize  {
     case unknown
 }
 
+@MainActor
 let deviceSize : UIDeviceSize = {
     let w: Double = Double(UIScreen.main.bounds.width)
     let h: Double = Double(UIScreen.main.bounds.height)
@@ -179,6 +180,7 @@ public enum Model : String {
          
          unrecognized       = "?unrecognized?"
     
+    @MainActor
     var isNFCSupported: Bool {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
         

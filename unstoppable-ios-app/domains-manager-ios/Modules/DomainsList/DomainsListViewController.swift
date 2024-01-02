@@ -266,7 +266,7 @@ private extension DomainsListViewController {
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
-            
+            @MainActor
             func addBackground(inset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 if let inset {
@@ -274,7 +274,7 @@ private extension DomainsListViewController {
                 }
                 layoutSection.decorationItems = [background]
             }
-            
+            @MainActor
             func addHeader() {
                 let headerHeight = section?.headerHeight ?? 0
                 let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ChoosePrimaryDomainViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var progress: Double? { get }
     var title: String { get }
@@ -24,6 +25,7 @@ protocol ChoosePrimaryDomainViewPresenterProtocol: BasePresenterProtocol, ViewAn
     func reverseResolutionInfoHeaderPressed()
 }
 
+@MainActor
 class ChoosePrimaryDomainViewPresenter {
     
     private(set) weak var view: ChoosePrimaryDomainViewProtocol?

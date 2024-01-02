@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol PassthroughAfterLimitNavBarScrollingBehaviour: CNavigationControllerChild {
     func updatePassthroughState(for yOffset: CGFloat, in navBar: CNavigationBar, limit: CGFloat)
 }

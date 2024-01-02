@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol TitleVisibilityAfterLimitNavBarScrollingBehaviour {
     func updateTitleVisibility(for yOffset: CGFloat, in navBar: CNavigationBar, limit: CGFloat)
     func setNavBarTitleHidden(_ hidden: Bool, in navBar: CNavigationBar, animated: Bool)

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol TransactionInProgressViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var isNavBarHidden: Bool { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
@@ -16,6 +17,7 @@ protocol TransactionInProgressViewPresenterProtocol: BasePresenterProtocol, View
     func viewTransactionButtonPressed()
 }
 
+@MainActor
 class BaseTransactionInProgressViewPresenter {
     
     private(set) weak var view: TransactionInProgressViewProtocol?

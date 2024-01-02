@@ -13,6 +13,7 @@ protocol WalletDetailsViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: WalletDetailsViewController.Item)
 }
 
+@MainActor
 final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: WalletDetailsViewProtocol?
@@ -56,7 +57,6 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
         updateTitle()
     }
     
-    @MainActor
     func didSelectItem(_ item: WalletDetailsViewController.Item) {
         Task {
             guard let view = self.view else { return }
@@ -328,15 +328,13 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
         
         let domains = await dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isOwned(by: wallet) })
-        await UDRouter().showWalletDomains(domains,
+        UDRouter().showWalletDomains(domains,
                                            walletWithInfo: WalletWithInfo(wallet: wallet, displayInfo: walletInfo),
                                            in: view)
     }
     
     func updateTitle() {
-        Task {
-            await view?.set(title: walletInfo.displayName)
-        }
+        view?.set(title: walletInfo.displayName)
     }
     
     func handleSetupReverseResolution(result: SetupWalletsReverseResolutionNavigationManager.Result) {

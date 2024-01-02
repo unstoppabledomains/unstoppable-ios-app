@@ -117,7 +117,7 @@ extension SettingsPresenter: FirebaseAuthenticationServiceListener {
 // MARK: - Private methods
 private extension SettingsPresenter {
     func showSettingsAsync() {
-        Task {
+        Task { @MainActor in
             let wallets = await dataAggregatorService.getWalletsWithInfo()
             var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
             
@@ -146,7 +146,7 @@ private extension SettingsPresenter {
             
             snapshot.appendSections([.main(3)])
             
-            await view?.applySnapshot(snapshot, animated: false)            
+            view?.applySnapshot(snapshot, animated: false)
         }
     }
     

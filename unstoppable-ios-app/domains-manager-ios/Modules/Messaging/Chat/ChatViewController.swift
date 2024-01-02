@@ -867,6 +867,7 @@ extension ChatViewController {
 }
 
 private extension ChatViewController {
+    @MainActor
     struct ScrollingInfo {
         let prevContentHeight: CGFloat
         let contentOffsetBeforeUpdate: CGPoint

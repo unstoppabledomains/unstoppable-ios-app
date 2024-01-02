@@ -103,6 +103,7 @@ struct WCWalletsProvider {
         }
     }
     
+    @MainActor
     static func getDiscoverable(registry: [WalletRecord]) -> [WalletRecord] {
         return registry.filter({
             let universal = $0.getUniversalAppLink()
@@ -160,6 +161,7 @@ struct WCWalletsProvider {
                                experimental: exp.sorted(by: {$0 < $1}))
     }
     
+    @MainActor
     static func getGroupedWcWallets(for walletsGroup: WalletsGroup) -> TwoWalletGroups {
         guard let allWcWallets = WCWalletsProvider.fetchRegistry() else {
             Debugger.printFailure("Failed to fetch a WC registry", critical: true)
@@ -171,6 +173,7 @@ struct WCWalletsProvider {
         return groupedWallets
     }
     
+    @MainActor
     static func getGroupedInstalledAndNotWcWallets(for walletsGroup: WalletsGroup) -> InstalledAndNotGroups {
         guard let allWcWallets = WCWalletsProvider.fetchRegistry() else {
             Debugger.printFailure("Failed to fetch a WC registry", critical: true)
@@ -195,6 +198,7 @@ struct WCWalletsProvider {
         return groupedWallets
     }
     
+    @MainActor
     static func findBy(walletProxy: WCRegistryWalletProxy) -> WalletRecord? {
         
         guard let allWcWallets = WCWalletsProvider.fetchRegistry() else {

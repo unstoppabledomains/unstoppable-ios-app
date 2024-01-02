@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileSocialsSection: WebsiteURLValidator, DomainProfileDataToClipboardCopier {
     
     typealias SectionData = SocialAccounts

@@ -30,6 +30,7 @@ protocol DomainsCollectionCarouselViewController: UIViewController {
 }
 
 extension DomainsCollectionCarouselViewController {
+    @MainActor
     var page: Int {
         get { view.tag }
         set { view.tag = newValue }

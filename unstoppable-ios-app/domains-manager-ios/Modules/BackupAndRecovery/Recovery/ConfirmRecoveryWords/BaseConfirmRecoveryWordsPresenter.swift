@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ConfirmWordsPresenterProtocol: BasePresenterProtocol {
     var indices: [Int] { get }
     var progress: Double? { get }
@@ -15,6 +16,7 @@ protocol ConfirmWordsPresenterProtocol: BasePresenterProtocol {
     func didConfirmWords()
 }
 
+@MainActor
 class BaseConfirmRecoveryWordsPresenter {
     private var mnems: [String] = []
     weak var view: ConfirmWordsViewControllerProtocol?

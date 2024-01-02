@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol SecuritySettingsViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: SecuritySettingsViewController.Item)
 }
 
+@MainActor
 final class SecuritySettingsViewPresenter: ViewAnalyticsLogger {
     private weak var view: SecuritySettingsViewProtocol?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }

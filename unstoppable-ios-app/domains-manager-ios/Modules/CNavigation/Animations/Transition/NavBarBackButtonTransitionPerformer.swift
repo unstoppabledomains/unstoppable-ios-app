@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class NavBarBackButtonTransitionPerformer {
   
     let navOperation: NavigationOperation

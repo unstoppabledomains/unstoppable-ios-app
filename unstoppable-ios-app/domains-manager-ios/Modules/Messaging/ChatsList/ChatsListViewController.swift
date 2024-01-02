@@ -98,7 +98,11 @@ final class ChatsListViewController: BaseViewController {
         !searchBar.isEditing && mode == .default
     }
     
-    deinit { presenter.viewDeinit() }
+    deinit {
+        Task { @MainActor in
+            presenter.viewDeinit()
+        }
+    }
 
 }
 

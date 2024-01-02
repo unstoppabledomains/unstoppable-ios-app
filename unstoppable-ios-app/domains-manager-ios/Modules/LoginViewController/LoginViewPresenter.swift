@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol LoginViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: LoginViewController.Item)
 }
 
+@MainActor
 class LoginViewPresenter: ViewAnalyticsLogger {
     private(set) weak var view: LoginViewProtocol?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }

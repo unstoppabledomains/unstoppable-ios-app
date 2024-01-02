@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol BackupWalletPresenterProtocol: BasePresenterProtocol {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var progress: Double?  { get }
@@ -16,6 +17,7 @@ protocol BackupWalletPresenterProtocol: BasePresenterProtocol {
     func skipButtonDidPress()
 }
 
+@MainActor
 class BaseBackupWalletPresenter {
     weak var view: BackupWalletViewControllerProtocol?
     

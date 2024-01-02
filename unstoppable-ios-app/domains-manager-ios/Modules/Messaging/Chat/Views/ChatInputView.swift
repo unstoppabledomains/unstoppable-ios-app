@@ -396,6 +396,7 @@ extension ChatInputView {
             }
         }
         
+        @MainActor
         var isAvailable: Bool {
             switch self {
             case .choosePhoto:

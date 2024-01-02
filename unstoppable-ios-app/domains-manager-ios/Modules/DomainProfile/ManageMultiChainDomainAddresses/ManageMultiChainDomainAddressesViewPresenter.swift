@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ManageMultiChainDomainAddressesViewPresenterProtocol: BasePresenterProtocol {
     var record: String { get }
     func didSelectItem(_ item: ManageMultiChainDomainAddressesViewController.Item)
@@ -16,6 +17,7 @@ protocol ManageMultiChainDomainAddressesViewPresenterProtocol: BasePresenterProt
 
 typealias ManageMultiChainDomainAddressesCallback = ([CryptoRecord])->()
 
+@MainActor
 final class ManageMultiChainDomainAddressesViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: ManageMultiChainDomainAddressesViewProtocol?

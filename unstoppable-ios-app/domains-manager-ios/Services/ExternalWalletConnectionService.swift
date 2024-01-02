@@ -59,28 +59,30 @@ extension ExternalWalletConnectionService: WalletConnectDelegate {
             return
         }
         
-        guard let proxy = wcRegistryWallet, let wcWallet = WCWalletsProvider.findBy(walletProxy: proxy)  else {
-            Debugger.printFailure("Failed to find an installed wallet that connected", critical: true)
-            finishWith(result: .failure(.failedToFindInstalledWallet))
-            return
-        }
-        
-        do {
-            let wallet = try appContext.udWalletsService.addExternalWalletWith(address: walletAddress,
-                                                                               walletRecord: wcWallet)
-            successfullyAddedCallback?()
-            finishWith(result: .success(wallet))
-        } catch WalletError.ethWalletAlreadyExists {
-            guard let wallet = appContext.udWalletsService.find(by: walletAddress) else {
-                Debugger.printFailure("Failed to find existing wallet", critical: true)
-                finishWith(result: .failure(.failedToAddWallet))
+        Task { @MainActor in
+            guard let proxy = wcRegistryWallet, let wcWallet = WCWalletsProvider.findBy(walletProxy: proxy)  else {
+                Debugger.printFailure("Failed to find an installed wallet that connected", critical: true)
+                finishWith(result: .failure(.failedToFindInstalledWallet))
                 return
             }
-            successfullyAddedCallback?()
-            finishWith(result: .success(wallet))
-        } catch {
-            Debugger.printFailure("Error adding a new wallet: \(error.localizedDescription)", critical: true)
-            finishWith(result: .failure(.failedToAddWallet))
+            
+            do {
+                let wallet = try appContext.udWalletsService.addExternalWalletWith(address: walletAddress,
+                                                                                   walletRecord: wcWallet)
+                successfullyAddedCallback?()
+                finishWith(result: .success(wallet))
+            } catch WalletError.ethWalletAlreadyExists {
+                guard let wallet = appContext.udWalletsService.find(by: walletAddress) else {
+                    Debugger.printFailure("Failed to find existing wallet", critical: true)
+                    finishWith(result: .failure(.failedToAddWallet))
+                    return
+                }
+                successfullyAddedCallback?()
+                finishWith(result: .success(wallet))
+            } catch {
+                Debugger.printFailure("Error adding a new wallet: \(error.localizedDescription)", critical: true)
+                finishWith(result: .failure(.failedToAddWallet))
+            }
         }
     }
     

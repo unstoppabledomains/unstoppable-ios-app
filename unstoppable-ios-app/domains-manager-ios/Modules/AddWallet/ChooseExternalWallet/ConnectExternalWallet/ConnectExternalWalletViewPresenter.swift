@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var analyticsName: Analytics.ViewName { get }
@@ -15,6 +16,7 @@ protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, View
     func applicationWillEnterForeground()
 }
 
+@MainActor
 class ConnectExternalWalletViewPresenter {
     
     private(set) weak var view: ConnectExternalWalletViewProtocol?

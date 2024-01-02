@@ -515,7 +515,7 @@ private extension DomainProfileViewController {
                                                              leading: spacing + 1,
                                                              bottom: 1,
                                                              trailing: spacing + 1)
-
+            @MainActor
             func addBackgroundWithTopInset(_ topInset: CGFloat, bottomInset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackgroundWhiteWithAlpha.reuseIdentifier)
                 background.contentInsets.top = topInset
@@ -524,7 +524,7 @@ private extension DomainProfileViewController {
                 }
                 layoutSection.decorationItems = [background]
             }
-            
+            @MainActor
             func addHeader() {
                 let headerHeight = section?.headerHeight ?? 0
                 let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -534,11 +534,11 @@ private extension DomainProfileViewController {
                                                                          alignment: .top)
                 layoutSection.boundarySupplementaryItems.append(header)
             }
-            
+            @MainActor
             func setSectionContentInset() {
                 layoutSection.contentInsets = layoutSectionInset
             }
-            
+            @MainActor
             func addFooter(_ footer: String) {
                 let footerHeight: CGFloat = footer.height(withConstrainedWidth: UIScreen.main.bounds.width - (spacing * 2),
                                                           font: CollectionTextFooterReusableView.font,

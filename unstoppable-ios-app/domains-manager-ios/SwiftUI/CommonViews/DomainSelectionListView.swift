@@ -39,6 +39,7 @@ struct DomainSelectionListView: View {
 
 // MARK: - Private methods
 private extension DomainSelectionListView {
+    @MainActor
     func prepare() {
         UITableView.appearance().backgroundColor = .clear
         domainsWithIcons = domainsToSelectFrom.map { DomainDisplayInfoWithIcon(domain: $0) }

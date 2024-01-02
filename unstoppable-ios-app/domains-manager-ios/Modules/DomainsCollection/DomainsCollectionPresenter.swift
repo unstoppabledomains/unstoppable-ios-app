@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
     
     private weak var view: DomainsCollectionViewProtocol?
@@ -431,7 +432,7 @@ private extension DomainsCollectionPresenter {
             
             let domains = stateController.domains
             func updateDomains(_ updatedDomains: [DomainDisplayInfo]) async {
-                let currentDomain = domains[self.currentIndex]
+                let currentDomain = await domains[self.currentIndex]
                 let newIndex = updatedDomains.firstIndex(where: { $0.isSameEntity(currentDomain) })
                 await updateDomainsListOrder(with: updatedDomains, newIndex: newIndex)
             }

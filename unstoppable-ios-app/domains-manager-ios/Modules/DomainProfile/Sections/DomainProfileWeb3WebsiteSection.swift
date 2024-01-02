@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileWeb3WebsiteSection {
     
     typealias SectionData = DomainProfileWeb3WebsiteData

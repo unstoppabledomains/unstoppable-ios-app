@@ -419,8 +419,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
             await walletStorageV2.remove(byTopic: topic)
             disconnectAppsConnected(to: session.getWalletAddresses())
         }
-        
-        guard let reconnectWalletsData = reconnectWalletsData ?? findDisconnectedWalletWithProviderBy(session: session) else {
+        let disconnectedWallet = await findDisconnectedWalletWithProviderBy(session: session)
+        guard let reconnectWalletsData = reconnectWalletsData ?? disconnectedWallet else {
             await cleanWCCacheData()
             return false
         }
@@ -436,6 +436,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         return didReconnect
     }
     
+    @MainActor
     private func findDisconnectedWalletWithProviderBy(session: WCConnectedAppsStorageV2.SessionProxy) -> ReconnectWalletsData? {
         if let host = URL(string: session.peer.url)?.host,
            let externalWallet = WCWalletsProvider

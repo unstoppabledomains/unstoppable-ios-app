@@ -154,6 +154,7 @@ private extension ConnectExternalWalletViewController {
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
+            @MainActor
             func addBackground() {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 background.contentInsets.top = sectionHeaderHeight

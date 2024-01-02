@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol SetupReverseResolutionViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var domainName: String? { get }
@@ -15,6 +16,7 @@ protocol SetupReverseResolutionViewPresenterProtocol: BasePresenterProtocol, Vie
     func skipButtonPressed()
 }
 
+@MainActor
 class SetupReverseResolutionViewPresenter {
     private(set) weak var view: SetupReverseResolutionViewProtocol?
     private let udWalletsService: UDWalletsServiceProtocol

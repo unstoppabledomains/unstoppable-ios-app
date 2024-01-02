@@ -237,6 +237,7 @@ private extension DomainsCollectionCarouselItemViewController {
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
             
+            @MainActor
             func createEmptySectionView() -> UICollectionReusableView {
                 collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
                                                                 withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier,
@@ -298,6 +299,7 @@ private extension DomainsCollectionCarouselItemViewController {
             var section: NSCollectionLayoutSection = .flexibleListItemSection()
             let sectionHeaderHeight = sectionKind.headerHeight
             
+            @MainActor
             func setSectionContentInset() {
                 section.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                 leading: spacing + 1,
@@ -305,6 +307,7 @@ private extension DomainsCollectionCarouselItemViewController {
                                                                 trailing: spacing + 1)
             }
             
+            @MainActor
             func addHeader(offset: CGPoint = .zero) {
                 let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                         heightDimension: .absolute(sectionHeaderHeight))
@@ -315,6 +318,7 @@ private extension DomainsCollectionCarouselItemViewController {
                 section.boundarySupplementaryItems.append(header)
             }
             
+            @MainActor
             func addFooter(size: CGFloat) {
                 let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                         heightDimension: .absolute(size))

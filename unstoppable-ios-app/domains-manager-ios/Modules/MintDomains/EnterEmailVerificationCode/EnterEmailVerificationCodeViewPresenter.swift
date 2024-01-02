@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol EnterEmailVerificationCodeViewPresenterProtocol: BasePresenterProtocol {
     var numberOfCharactersToVerify: Int { get }
     var progress: Double? { get }

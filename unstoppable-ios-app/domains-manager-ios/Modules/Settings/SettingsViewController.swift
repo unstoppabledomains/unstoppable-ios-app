@@ -186,6 +186,7 @@ extension SettingsViewController {
     }
     
     enum SettingsMenuItem: Hashable {
+        @MainActor
         static var supplementaryItems: [SettingsMenuItem] {
             var items: [SettingsMenuItem] = [.rateUs, .learn, .twitter]
             

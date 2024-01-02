@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol WalletsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var title: String { get }
@@ -16,6 +17,7 @@ protocol WalletsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsL
     func didSelectItem(_ item: WalletsListViewController.Item)
 }
 
+@MainActor
 class WalletsListViewPresenter {
     
     private(set) weak var view: WalletsListViewProtocol?

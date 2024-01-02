@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileUpdatingRecordsSection {
     typealias SectionData = DomainProfileUpdatingRecordsData
     

@@ -115,9 +115,9 @@ extension DomainProfileTopInfoCell: UIDropInteractionDelegate {
                 if let url = url,
                    let data = try? Data(contentsOf: url),
                    let image = (await UIImage.createWith(anyData: data)) {
-                    self?.didDropImage(image, isAvatar: isAvatar)
+                    await self?.didDropImage(image, isAvatar: isAvatar)
                 } else {
-                    session.loadObjects(ofClass: UIImage.self) { [weak self] imageItems in
+                    await session.loadObjects(ofClass: UIImage.self) { [weak self] imageItems in
                         guard let images = imageItems as? [UIImage],
                               let image = images.first else { return }
                         self?.didDropImage(image, isAvatar: isAvatar)

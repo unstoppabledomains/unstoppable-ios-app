@@ -18,6 +18,7 @@ enum DomainsCollectionCarouselItemDisplayMode {
     case empty
 }
 
+@MainActor
 final class DomainsCollectionCarouselItemViewPresenter {
     
     typealias CardAction = DomainsCollectionCarouselItemViewController.DomainCardConfiguration.Action
@@ -382,20 +383,20 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     func showSetupReverseResolutionModule() {
         guard case .domain(let domain) = mode else { return }
-
-        Task { @MainActor in
-            guard let navigation = view?.containerViewController?.cNavigationController,
-                  let walletWithInfo,
-                  let walletInfo = walletWithInfo.displayInfo else { return }
-            
-            UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                              wallet: walletWithInfo.wallet,
-                                                              walletInfo: walletInfo,
-                                                              domain: domain,
-                                                              resultCallback: { [weak self] in
-                self?.didSetDomainForReverseResolution()
-            })
-        }
+        
+        guard let navigation = view?.containerViewController?.cNavigationController,
+              let walletWithInfo,
+              let walletInfo = walletWithInfo.displayInfo else { return }
+        
+        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+                                                          wallet: walletWithInfo.wallet,
+                                                          walletInfo: walletInfo,
+                                                          domain: domain,
+                                                          resultCallback: {
+            Task { @MainActor in
+                self.didSetDomainForReverseResolution()
+            }
+        })
     }
     
     func didSetDomainForReverseResolution() {

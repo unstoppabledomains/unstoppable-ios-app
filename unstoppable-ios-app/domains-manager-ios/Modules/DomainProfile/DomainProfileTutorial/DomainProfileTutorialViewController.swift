@@ -242,6 +242,7 @@ extension DomainProfileTutorialViewController {
             }
         }
         
+        @MainActor
         var actionButtonTopSpace: CGFloat {
             switch self {
             case .largeTutorial:

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 final class DomainProfileTopInfoSection {
     typealias SectionData = DomainProfileTopInfoData
     

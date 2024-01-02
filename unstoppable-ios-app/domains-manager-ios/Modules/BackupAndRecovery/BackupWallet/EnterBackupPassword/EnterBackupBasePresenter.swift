@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol EnterBackupPresenterProtocol: BasePresenterProtocol {
     var isShowingHelp: Bool { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
@@ -17,6 +18,7 @@ protocol EnterBackupPresenterProtocol: BasePresenterProtocol {
     func didTapLearnMore()
 }
 
+@MainActor
 class EnterBackupBasePresenter {
     private(set) var isShowingHelp = false
     weak var view: EnterBackupViewControllerProtocol?
@@ -29,6 +31,7 @@ class EnterBackupBasePresenter {
     }
     
     func viewDidLoad() { }
+    @MainActor
     func didTapContinueButton() { }
     
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol UDSearchBarDelegate: AnyObject {
     func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar)
     func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String)

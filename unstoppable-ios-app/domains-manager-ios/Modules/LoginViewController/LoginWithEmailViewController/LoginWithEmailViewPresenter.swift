@@ -7,12 +7,14 @@
 
 import Foundation
 
+@MainActor
 protocol LoginWithEmailViewPresenterProtocol: BasePresenterProtocol {
     var progress: Double? { get }
     
     func confirmButtonPressed(email: String, password: String)
 }
 
+@MainActor
 class LoginWithEmailViewPresenter {
     private(set) weak var view: LoginWithEmailViewProtocol?
     var progress: Double? { nil }

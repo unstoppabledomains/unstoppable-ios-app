@@ -22,6 +22,7 @@ final class NFCService: NSObject {
 
 // MARK: - Open methods
 extension NFCService {
+    @MainActor
     var isNFCSupported: Bool { NFCNDEFReaderSession.readingAvailable && UIDevice.current.type.isNFCSupported }
     
     func beginScanning() async throws -> [NFCNDEFMessage] {

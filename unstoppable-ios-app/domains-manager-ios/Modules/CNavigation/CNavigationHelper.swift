@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 struct CNavigationHelper {
     
     static let AnimationCurveControlPoint1 = CGPoint(x: 0.1, y: 1)

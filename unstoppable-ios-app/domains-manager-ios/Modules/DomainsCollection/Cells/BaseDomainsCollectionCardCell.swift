@@ -31,7 +31,9 @@ class BaseDomainsCollectionCardCell: UICollectionViewCell {
     }
     
     deinit {
-        releaseAnimator()
+        Task { @MainActor in
+            releaseAnimator()
+        }
     }
     
     func setFrame(for state: CardState) {

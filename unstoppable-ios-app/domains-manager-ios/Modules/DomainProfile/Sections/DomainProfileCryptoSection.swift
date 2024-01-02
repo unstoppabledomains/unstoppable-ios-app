@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class DomainProfileCryptoSection {
     typealias SectionData = DomainProfileCryptoSectionData
     
@@ -211,6 +212,7 @@ private extension DomainProfileCryptoSection {
                      id: id)
     }
     
+    @MainActor
     func setSectionIfCurrent(_ section: DomainProfileViewController.Section,
                              isExpanded: Bool) {
         switch section {

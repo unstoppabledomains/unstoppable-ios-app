@@ -29,7 +29,7 @@ class BaseCreateWalletPresenter {
         self.udWalletsService = udWalletsService
     }
     
-    func walletCreated(_ wallet: UDWallet) {  }
+    @MainActor func walletCreated(_ wallet: UDWallet) {  }
     @MainActor func viewDidLoad() { }
     @MainActor func viewDidAppear() { }
 }
