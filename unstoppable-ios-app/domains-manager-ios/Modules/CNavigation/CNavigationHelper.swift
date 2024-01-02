@@ -151,6 +151,7 @@ extension CNavigationHelper {
     }
 }
 
+@MainActor
 protocol CNavigationCopiableView {
     func makeCopy() -> Self
 }

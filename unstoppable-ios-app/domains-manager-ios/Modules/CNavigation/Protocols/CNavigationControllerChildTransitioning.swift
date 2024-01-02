@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol CNavigationControllerChildTransitioning: AnyObject {
     func nextViewControllerTransitioning() -> CNavigationControllerNextChildTransitioning?
     func previousInteractiveTransitionStartThreshold() -> CGFloat?

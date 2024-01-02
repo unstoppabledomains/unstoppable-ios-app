@@ -96,7 +96,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
         Task {
             let currencies = await coinRecordsService.getCurrencies()
             dataHolder.set(currencies: currencies)
-            loadCachedProfile()
+            await loadCachedProfile()
             start()
         }
     }
@@ -518,7 +518,7 @@ private extension DomainProfileViewPresenter {
                                        requiredPullUp: ( ()async throws->())) async throws {
             let paymentsError = errors.compactMap({ $0.error as? PaymentError })
             if let _ = paymentsError.first(where: { $0 == .applePayNotSupported }) {
-                await appContext.pullUpViewService.showApplePayRequiredPullUp(in: view)
+                appContext.pullUpViewService.showApplePayRequiredPullUp(in: view)
             } else {
                 try await requiredPullUp()
             }
@@ -527,10 +527,8 @@ private extension DomainProfileViewPresenter {
         do {
             if updateErrors.isEmpty {
                 // All requests were successful
-                await MainActor.run {
-                    applyUpdatedChanges(updatedChanges)
-                    dataHolder.didUpdateProfile()
-                }
+                applyUpdatedChanges(updatedChanges)
+                dataHolder.didUpdateProfile()
                 Task.detached { [weak self] in
                     await self?.fetchProfileData()
                     await self?.updateProfileFinished()
@@ -542,14 +540,14 @@ private extension DomainProfileViewPresenter {
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 
                 let changes = Set(requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes }).map { $0.uiChange })
-                saveChangesToAppGroup(Array(changes), domain: await dataHolder.domain)
+                saveChangesToAppGroup(Array(changes), domain: dataHolder.domain)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 dataHolder.didFailToUpdateProfile()
                 updateProfileFinished()
                 await view.dismissPullUpMenu()
                 
-                let numberOfFailedAttempts = await dataHolder.numberOfFailedToUpdateProfileAttempts
+                let numberOfFailedAttempts = dataHolder.numberOfFailedToUpdateProfileAttempts
                 try await checkForApplePayErrorAndShowUpdateFailedPullUpFor(errors: updateErrors, requiredPullUp: {
                     if numberOfFailedAttempts >= 3 {
                         try await appContext.pullUpViewService.showTryUpdateDomainProfileLaterPullUp(in: view)
@@ -914,7 +912,7 @@ private extension DomainProfileViewPresenter {
                                                         recordsData: dataHolder.recordsData,
                                                         badgesInfo: dataHolder.badgesInfo,
                                                         profile: dataHolder.profile)
-            DomainProfileInfoStorage.instance.saveCachedDomainProfile(cachedProfile)
+            await DomainProfileInfoStorage.instance.saveCachedDomainProfile(cachedProfile)
         } catch WalletConnectRequestError.failedToSignMessage {
             Task.detached {
                 await self.asyncCheckForExternalWalletAndFetchProfile()
@@ -931,7 +929,7 @@ private extension DomainProfileViewPresenter {
             stateController.set(isFailedToDownloadProfile: true)
             Vibration.error.vibrate()
         }
-        let cachedProfile = DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name)
+        let cachedProfile = await DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name)
         
         do {
             if let cachedProfile {
@@ -1105,9 +1103,8 @@ private extension DomainProfileViewPresenter {
         }
     }
     
-    @MainActor
-    func loadCachedProfile() {
-        guard let cachedProfile = DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name) else { return }
+    func loadCachedProfile() async {
+        guard let cachedProfile = await DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name) else { return }
 
         dataHolder.mergeWith(cachedProfile: cachedProfile)
         loadBackgroundImage()

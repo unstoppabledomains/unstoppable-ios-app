@@ -167,7 +167,7 @@ extension ManageMultiChainDomainAddressesViewController {
         case topInfo, primaryChain, records
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case topInfo(_ coin: CoinRecord)
         case record(_ coin: CoinRecord,
                     address: String,

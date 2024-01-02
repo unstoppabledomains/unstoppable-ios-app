@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol ConnectedAppsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ConnectedAppsListViewController.Item)
 }
 
+@MainActor
 final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: ConnectedAppsListViewProtocol?
@@ -42,19 +44,19 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
 
 // MARK: - WalletConnectServiceListener
 extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener {
+    nonisolated
     func didConnect(to app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }
     }
     
+    nonisolated
     func didDisconnect(from app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }
     }
-    
-    func didCompleteConnectionAttempt() { }
 }
 
 // MARK: - Private functions
@@ -63,7 +65,7 @@ private extension ConnectedAppsListViewPresenter {
         let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = await walletConnectServiceV2.getConnectedApps()
         
         guard !connectedAppsUnified.isEmpty else {
-            await view?.navigationController?.popViewController(animated: true)
+            view?.navigationController?.popViewController(animated: true)
             return
         }
         
@@ -120,7 +122,7 @@ private extension ConnectedAppsListViewPresenter {
             }
         }
         
-        await view?.applySnapshot(snapshot, animated: true)
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func handleAction(_ action: ConnectedAppsListViewController.ItemAction,
@@ -135,7 +137,7 @@ private extension ConnectedAppsListViewPresenter {
                                                                                     connectedApp: app,
                                                                                     in: view)
             case .networksInfo:
-                await appContext.pullUpViewService.showConnectedAppNetworksInfoPullUp(in: view)
+                appContext.pullUpViewService.showConnectedAppNetworksInfoPullUp(in: view)
             case .disconnect:
                 try await walletConnectServiceV2.disconnect(app: app)
             }

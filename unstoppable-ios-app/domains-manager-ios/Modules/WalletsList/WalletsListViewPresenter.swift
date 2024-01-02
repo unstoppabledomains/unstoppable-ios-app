@@ -47,7 +47,7 @@ class WalletsListViewPresenter {
     }
     
     func didSelectWallet(_ wallet: UDWallet, walletInfo: WalletDisplayInfo) async {
-        await showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+        showDetailsOf(wallet: wallet, walletInfo: walletInfo)
     }
     
     func visibleItem(from walletInfo: WalletDisplayInfo) -> WalletsListViewController.Item {
@@ -71,11 +71,11 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             case .showImportWalletOptionsPullUp:
                 showAddWalletPullUp(isImportOnly: true)
             case .importWallet:
-                await importNewWallet()
+                importNewWallet()
             case .connectWallet:
-                await connectNewWallet()
+                connectNewWallet()
             case .createNewWallet:
-                await createNewWallet()
+                createNewWallet()
             }
             initialAction = .none
         }
@@ -87,7 +87,6 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             showWalletsNumberLimitReachedPullUp(walletsLimit: walletsLimit)
             return
         }
-        showAddWalletPullUp(isImportOnly: false)
     }
     
     func didSelectItem(_ item: WalletsListViewController.Item) {
@@ -112,15 +111,18 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
 
 // MARK: - DataResolutionServiceListener
 extension WalletsListViewPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
-        if case .success(let resultType) = result {
-            switch resultType {
-            case .walletsListUpdated(let wallets):
-                walletsWithInfo = wallets
-                removeWalletsDuplicates()
-                Task { await showWallets() }
-            case .domainsUpdated, .primaryDomainChanged, .domainsPFPUpdated:
-                return
+        Task { @MainActor in
+            if case .success(let resultType) = result {
+                switch resultType {
+                case .walletsListUpdated(let wallets):
+                    walletsWithInfo = wallets
+                    removeWalletsDuplicates()
+                    await showWallets()
+                case .domainsUpdated, .primaryDomainChanged, .domainsPFPUpdated:
+                    return
+                }
             }
         }
     }
@@ -128,6 +130,7 @@ extension WalletsListViewPresenter: DataAggregatorServiceListener {
 
 // MARK: - NetworkReachabilityServiceListener
 extension WalletsListViewPresenter: NetworkReachabilityServiceListener {
+    nonisolated
     func networkStatusChanged(_ status: NetworkReachabilityStatus) {
         Task { await showWallets() }
     }
@@ -158,7 +161,7 @@ private extension WalletsListViewPresenter {
         guard let view = self.view else { return }
         
         guard iCloudWalletStorage.isICloudAvailable() else {
-            await view.showICloudDisabledAlert()
+            view.showICloudDisabledAlert()
             return
         }
         
@@ -176,13 +179,13 @@ private extension WalletsListViewPresenter {
                 
                 if backups.count == 1 {
                     await view.dismissPullUpMenu()
-                    await restoreWalletFrom(backup: backups[0])
+                    restoreWalletFrom(backup: backups[0])
                 } else {
                     let displayBackups = backups.map({ ICloudBackupDisplayInfo(date: $0.date, backedUpWallets: $0.wallets, isCurrent: $0.isCurrent) })
                     let selectedBackup = try await appContext.pullUpViewService.showRestoreFromICloudBackupSelectionPullUp(in: view, backups: displayBackups)
                     if let index = displayBackups.firstIndex(where: { $0 == selectedBackup }) {
                         await view.dismissPullUpMenu()
-                        await restoreWalletFrom(backup: backups[index])
+                        restoreWalletFrom(backup: backups[index])
                     }
                 }
             case .delete:
@@ -195,7 +198,6 @@ private extension WalletsListViewPresenter {
         } catch { }
     }
     
-    @MainActor
     func restoreWalletFrom(backup: UDWalletsService.WalletCluster) {
         guard let view = self.view else { return }
         
@@ -215,7 +217,6 @@ private extension WalletsListViewPresenter {
         }
     }
     
-    @MainActor
     func showDetailsOf(wallet: UDWallet, walletInfo: WalletDisplayInfo) {
         guard let nav = view?.cNavigationController else { return }
         
@@ -241,21 +242,18 @@ private extension WalletsListViewPresenter {
         }
     }
     
-    @MainActor
     func createNewWallet() {
         guard let view = self.view else { return }
         
         UDRouter().showCreateLocalWalletScreen(createdCallback: handleWalletAddedResult, in: view)
     }
     
-    @MainActor
     func importNewWallet() {
         guard let view = self.view else { return }
         
         UDRouter().showImportVerifiedWalletScreen(walletImportedCallback: handleWalletAddedResult, in: view)
     }
     
-    @MainActor
     func connectNewWallet() {
         guard let view = self.view else { return }
         
@@ -358,7 +356,7 @@ private extension WalletsListViewPresenter {
             }
         }
         
-        await view?.applySnapshot(snapshot, animated: false)
+        view?.applySnapshot(snapshot, animated: false)
     }
     
     func removeWalletsDuplicates() {

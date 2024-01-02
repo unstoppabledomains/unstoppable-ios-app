@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NonEmptyArray<T: Hashable>: Hashable {
+struct NonEmptyArray<T: Hashable & Sendable>: Hashable, Sendable {
      
     let items: [T]
     

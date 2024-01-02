@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol AddCurrencyViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: AddCurrencyViewController.Item)
     func didSearchWith(key: String)
@@ -14,6 +15,7 @@ protocol AddCurrencyViewPresenterProtocol: BasePresenterProtocol {
 
 typealias AddCurrencyCallback = ([GroupedCoinRecord])->()
 
+@MainActor
 final class AddCurrencyViewPresenter {
     
     private let currencies: [CoinRecord]
@@ -48,7 +50,6 @@ extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
         }
     }
     
-    @MainActor
     func didSelectItem(_ item: AddCurrencyViewController.Item) {
         switch item {
         case .currency(let currency):
@@ -81,43 +82,41 @@ extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
 // MARK: - Private functions
 private extension AddCurrencyViewPresenter {
     func showCurrencies() {
-        Task {
-            var snapshot = AddCurrencySnapshot()
+        var snapshot = AddCurrencySnapshot()
+        
+        let currencies = self.filteredGroupedRecords
+        
+        if currencies.isEmpty {
+            snapshot.appendSections([.empty])
+            snapshot.appendItems([.emptyState])
+        } else if searchKey.isEmpty {
+            let popularTickers = Constants.popularCoinsTickers
+            var popularCurrencies = [GroupedCoinRecord]()
+            var allCurrencies = [GroupedCoinRecord]()
             
-            let currencies = self.filteredGroupedRecords
-            
-            if currencies.isEmpty {
-                snapshot.appendSections([.empty])
-                snapshot.appendItems([.emptyState])
-            } else if searchKey.isEmpty {
-                let popularTickers = Constants.popularCoinsTickers
-                var popularCurrencies = [GroupedCoinRecord]()
-                var allCurrencies = [GroupedCoinRecord]()
-                
-                currencies.forEach { currency in
-                    if popularTickers.contains(currency.coin.ticker) {
-                        popularCurrencies.append(currency)
-                    } else {
-                        allCurrencies.append(currency)
-                    }
+            currencies.forEach { currency in
+                if popularTickers.contains(currency.coin.ticker) {
+                    popularCurrencies.append(currency)
+                } else {
+                    allCurrencies.append(currency)
                 }
-                
-                if !popularCurrencies.isEmpty {
-                    snapshot.appendSections([.popular])
-                    snapshot.appendItems(popularCurrencies.map({ AddCurrencyViewController.Item.currency($0) }))
-                }
-                
-                if !allCurrencies.isEmpty {
-                    snapshot.appendSections([.all])
-                    snapshot.appendItems(allCurrencies.map({ AddCurrencyViewController.Item.currency($0) }))
-                }
-            } else {
-                snapshot.appendSections([.search])
-                snapshot.appendItems(currencies.map({ AddCurrencyViewController.Item.currency($0) }))
             }
             
-            await view?.applySnapshot(snapshot, animated: true)
+            if !popularCurrencies.isEmpty {
+                snapshot.appendSections([.popular])
+                snapshot.appendItems(popularCurrencies.map({ AddCurrencyViewController.Item.currency($0) }))
+            }
+            
+            if !allCurrencies.isEmpty {
+                snapshot.appendSections([.all])
+                snapshot.appendItems(allCurrencies.map({ AddCurrencyViewController.Item.currency($0) }))
+            }
+        } else {
+            snapshot.appendSections([.search])
+            snapshot.appendItems(currencies.map({ AddCurrencyViewController.Item.currency($0) }))
         }
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func prepareCurrencies() async {
@@ -153,11 +152,11 @@ private extension AddCurrencyViewPresenter {
                 
                 switch selectionResult {
                 case .both:
-                    await finishWith(coinRecords: [coinRecord, deprecatedRecord])
+                    finishWith(coinRecords: [coinRecord, deprecatedRecord])
                 case .multichain:
-                    await finishWith(coinRecords: [coinRecord])
+                    finishWith(coinRecords: [coinRecord])
                 case .legacy:
-                    await finishWith(coinRecords: [deprecatedRecord])
+                    finishWith(coinRecords: [deprecatedRecord])
                 }
             }
         }

@@ -7,12 +7,12 @@
 
 import Foundation
 
-final class DomainProfileInfoStorage {
+actor DomainProfileInfoStorage {
     
     static let domainProfilesStorageFileName = "domain-profiles.data"
     
     private init() {}
-    static var instance = DomainProfileInfoStorage()
+    static let instance = DomainProfileInfoStorage()
     
     
     func getCachedDomainProfiles() -> [CachedDomainProfileInfo] {

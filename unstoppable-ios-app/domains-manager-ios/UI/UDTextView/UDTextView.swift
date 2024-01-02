@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol UDTextViewDelegate: AnyObject {
     func udTextViewShouldEndEditing(_ udTextView: UDTextView) -> Bool
     func didChange(_ udTextView: UDTextView)

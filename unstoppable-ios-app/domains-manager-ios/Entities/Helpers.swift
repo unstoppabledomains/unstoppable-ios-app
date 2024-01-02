@@ -15,6 +15,7 @@ extension SelfNameable {
 }
 
 // Helps to instantiate Nibs
+@MainActor
 protocol NibInstantiateable where Self: UIView {
     var containerView: UIView! { get }
 }
