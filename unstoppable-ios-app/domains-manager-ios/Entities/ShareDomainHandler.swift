@@ -50,10 +50,10 @@ final class ShareDomainHandler: NSObject {
             UDVibration.buttonTap.vibrate()
             switch shareSelectionResult {
             case .cancel:
-                logButtonPressedAnalyticEvent(button: .cancel, in: analyticsLogger)
+                await logButtonPressedAnalyticEvent(button: .cancel, in: analyticsLogger)
                 return
             case .shareLink:
-                logButtonPressedAnalyticEvent(button: .shareLink, in: analyticsLogger)
+                await logButtonPressedAnalyticEvent(button: .shareLink, in: analyticsLogger)
                 
                 await view.dismissPullUpMenu()
                 let domainPreviewView = await SocialsDomainImagePreviewView()
@@ -76,7 +76,7 @@ final class ShareDomainHandler: NSObject {
                 
                 await shareLink(image: shareImage, in: view)
             case .saveAsImage:
-                logButtonPressedAnalyticEvent(button: .saveAsImage, in: analyticsLogger)
+                await logButtonPressedAnalyticEvent(button: .saveAsImage, in: analyticsLogger)
                 let originalImage = (await appContext.imageLoadingService.loadImage(from: .domain(domain),
                                                                                     downsampleDescription: nil)) ?? .domainSharePlaceholder
                 
@@ -90,7 +90,7 @@ final class ShareDomainHandler: NSObject {
                     saveImage(result.image)
                 }
             case .shareViaNFC:
-                logButtonPressedAnalyticEvent(button: .createNFCTag, in: analyticsLogger)
+                await logButtonPressedAnalyticEvent(button: .createNFCTag, in: analyticsLogger)
 
                 await view.dismissPullUpMenu()
                 do {
@@ -147,6 +147,7 @@ private extension ShareDomainHandler {
         }
     }
     
+    @MainActor
     func logButtonPressedAnalyticEvent(button: Analytics.Button,
                                        in analyticsLogger: ViewAnalyticsLogger) {
         analyticsLogger.logButtonPressedAnalyticEvents(button: button,

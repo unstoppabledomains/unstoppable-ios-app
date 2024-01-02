@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainProfileSectionChangeDescription {
+struct DomainProfileSectionChangeDescription: Sendable {
     let uiChange: DomainProfileSectionUIChangeType
     let dataChanges: [DomainProfileSectionDataChangeType]
 }

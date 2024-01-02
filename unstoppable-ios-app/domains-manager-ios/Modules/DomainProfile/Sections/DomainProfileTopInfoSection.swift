@@ -205,17 +205,17 @@ private extension DomainProfileTopInfoSection {
             
             guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain),
                   let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: controller.generalData.domain.name) else {
-                await (viewController as BaseViewController).showAlertWith(error: PublicProfileView.PublicProfileError.failedToLoadFollowerInfo)
+                (viewController as BaseViewController).showAlertWith(error: PublicProfileView.PublicProfileError.failedToLoadFollowerInfo)
                 return
             }
             
             let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
                                                  name: follower.domain)
             try? await Task.sleep(seconds: 0.2)
-            await UDRouter().showPublicDomainProfile(of: domain,
-                                                     viewingDomain: viewingDomain, 
-                                                     preRequestedAction: nil,
-                                                     in: viewController)
+            UDRouter().showPublicDomainProfile(of: domain,
+                                               viewingDomain: viewingDomain,
+                                               preRequestedAction: nil,
+                                               in: viewController)
         }
     }
     
@@ -508,13 +508,13 @@ private extension DomainProfileTopInfoSection {
 
 // MARK: - ProfileImageAction
 extension DomainProfileTopInfoSection {
-    enum ProfileImageAction: Hashable {
-        case upload(callback: EmptyCallback)
-        case change(isReplacingNFT: Bool, isUpdatingRecords: Bool, callback: EmptyCallback)
-        case remove(isRemovingNFT: Bool, isUpdatingRecords: Bool, callback: EmptyCallback)
-        case view(isNFT: Bool, callback: EmptyCallback)
-        case changeNFT(callback: EmptyCallback)
-        case setAccess(isPublic: Bool, callback: EmptyCallback)
+    enum ProfileImageAction: Hashable, Sendable {
+        case upload(callback: MainActorAsyncCallback)
+        case change(isReplacingNFT: Bool, isUpdatingRecords: Bool, callback: MainActorAsyncCallback)
+        case remove(isRemovingNFT: Bool, isUpdatingRecords: Bool, callback: MainActorAsyncCallback)
+        case view(isNFT: Bool, callback: MainActorAsyncCallback)
+        case changeNFT(callback: MainActorAsyncCallback)
+        case setAccess(isPublic: Bool, callback: MainActorAsyncCallback)
 
         var title: String {
             switch self {

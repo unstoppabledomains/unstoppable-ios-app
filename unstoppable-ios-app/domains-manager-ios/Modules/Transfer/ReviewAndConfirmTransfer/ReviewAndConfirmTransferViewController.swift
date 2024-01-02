@@ -194,7 +194,7 @@ extension ReviewAndConfirmTransferViewController {
         case header, transferDetails, consentItems, clearRecords
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case header
         case transferDetails(configuration: TransferDetailsConfiguration)
         case switcher(configuration: TransferSwitcherConfiguration)
@@ -205,11 +205,11 @@ extension ReviewAndConfirmTransferViewController {
         let recipient: TransferDomainNavigationManager.RecipientType
     }
     
-    struct TransferSwitcherConfiguration: Hashable {
+    struct TransferSwitcherConfiguration: Hashable, Sendable {
     
         let isOn: Bool
         let type: TransferSwitcherCellType
-        var valueChangedCallback: ((Bool)->())
+        var valueChangedCallback: @Sendable @MainActor (Bool)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.isOn == rhs.isOn &&

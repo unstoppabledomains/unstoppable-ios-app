@@ -315,7 +315,7 @@ private extension DomainsListViewController {
 
 // MARK: - Collection elements
 extension DomainsListViewController {
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case other(title: String?), minting, searchEmptyState, dashesSeparator, globalSearchHint
         
         var headerHeight: CGFloat {
@@ -328,7 +328,7 @@ extension DomainsListViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case domainListItem(_ domainItem: DomainDisplayInfo, isSelectable: Bool)
         case domainSearchItem(_ domainItem: SearchDomainProfile, isSelectable: Bool)
         case domainsMintingInProgress(domainsCount: Int)

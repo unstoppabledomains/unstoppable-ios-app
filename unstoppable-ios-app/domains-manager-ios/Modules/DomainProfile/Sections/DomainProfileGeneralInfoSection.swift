@@ -481,12 +481,12 @@ extension DomainProfileGeneralInfoSection {
         }
     }
     
-    enum InfoAction: Hashable {
-        case edit(type: InfoType, callback: EmptyCallback)
-        case clear(type: InfoType, callback: EmptyCallback)
-        case open(type: InfoType, callback: EmptyCallback)
-        case setAccess(isPublic: Bool, callback: EmptyCallback)
-        case copy(type: InfoType, callback: EmptyCallback)
+    enum InfoAction: Hashable, Sendable {
+        case edit(type: InfoType, callback: MainActorAsyncCallback)
+        case clear(type: InfoType, callback: MainActorAsyncCallback)
+        case open(type: InfoType, callback: MainActorAsyncCallback)
+        case setAccess(isPublic: Bool, callback: MainActorAsyncCallback)
+        case copy(type: InfoType, callback: MainActorAsyncCallback)
 
         var title: String {
             switch self {

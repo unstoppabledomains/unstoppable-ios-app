@@ -9,7 +9,7 @@ import Foundation
 
 final class SetupChangeReverseResolutionDomainPresenter: SetupReverseResolutionViewPresenter {
     
-    var changedCallback: EmptyAsyncCallback?
+    var changedCallback: MainActorAsyncCallback?
     private let selectedDomain: DomainDisplayInfo
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var analyticsName: Analytics.ViewName { .setupChangeReverseResolution }
@@ -20,7 +20,7 @@ final class SetupChangeReverseResolutionDomainPresenter: SetupReverseResolutionV
          walletInfo: WalletDisplayInfo,
          domain: DomainDisplayInfo,
          udWalletsService: UDWalletsServiceProtocol,
-         resultCallback: @escaping EmptyAsyncCallback) {
+         resultCallback: @escaping MainActorAsyncCallback) {
         self.selectedDomain = domain
         super.init(view: view,
                    wallet: wallet,

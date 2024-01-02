@@ -663,7 +663,7 @@ extension ChatViewController {
         case loading
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         case imageDataMessage(configuration: ImageDataMessageUIConfiguration)
@@ -690,12 +690,14 @@ extension ChatViewController {
         }
     }
     
-    struct TextMessageUIConfiguration: Hashable {
+    typealias ChatMessageActionCallback = @Sendable @MainActor (ChatMessageAction)->()
+    
+    struct TextMessageUIConfiguration: Hashable, Sendable {
         
         let message: MessagingChatMessageDisplayInfo
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
         let isGroupChatMessage: Bool
-        var actionCallback: (ChatMessageAction)->()
+        var actionCallback: ChatMessageActionCallback
         var externalLinkHandleCallback: ChatMessageLinkPressedCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -709,12 +711,12 @@ extension ChatViewController {
         }
     }
 
-    struct ImageBase64MessageUIConfiguration: Hashable {
+    struct ImageBase64MessageUIConfiguration: Hashable, Sendable {
         
         let message: MessagingChatMessageDisplayInfo
         let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
         let isGroupChatMessage: Bool
-        var actionCallback: (ChatMessageAction)->()
+        var actionCallback: ChatMessageActionCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&
@@ -732,7 +734,7 @@ extension ChatViewController {
         let message: MessagingChatMessageDisplayInfo
         let imageMessageDisplayInfo: MessagingChatMessageImageDataTypeDisplayInfo
         let isGroupChatMessage: Bool
-        var actionCallback: (ChatMessageAction)->()
+        var actionCallback: ChatMessageActionCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&
@@ -748,7 +750,7 @@ extension ChatViewController {
     struct UnsupportedMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
         let isGroupChatMessage: Bool
-        let pressedCallback: EmptyCallback
+        let pressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id
@@ -762,7 +764,7 @@ extension ChatViewController {
     struct RemoteConfigMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
         let isGroupChatMessage: Bool
-        let pressedCallback: EmptyCallback
+        let pressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id
@@ -776,7 +778,7 @@ extension ChatViewController {
     struct ChannelFeedUIConfiguration: Hashable {
         
         let feed: MessagingNewsChannelFeed
-        var actionCallback: (ChatFeedAction)->()
+        var actionCallback: @Sendable @MainActor (ChatFeedAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.feed == rhs.feed

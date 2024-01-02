@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ChooseReverseResolutionDomainViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var title: String { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
@@ -15,6 +16,7 @@ protocol ChooseReverseResolutionDomainViewPresenterProtocol: BasePresenterProtoc
     func confirmButtonPressed()
 }
 
+@MainActor
 class ChooseReverseResolutionDomainViewPresenter {
     private(set) weak var view: ChooseReverseResolutionDomainViewProtocol?
     

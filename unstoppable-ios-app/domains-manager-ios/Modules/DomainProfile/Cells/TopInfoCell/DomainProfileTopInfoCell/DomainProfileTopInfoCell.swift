@@ -9,7 +9,7 @@ import UIKit
 import MobileCoreServices
 
 typealias DomainProfileTopInfoButton = DomainProfileViewController.ItemTopInfoData.Button
-typealias DomainProfileTopInfoButtonCallback = (DomainProfileTopInfoButton)->()
+typealias DomainProfileTopInfoButtonCallback = @Sendable @MainActor (DomainProfileTopInfoButton)->()
 typealias DomainProfileTopInfoPhotoAction = DomainProfileViewController.ItemTopInfoData.PhotoAction
 
 final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {

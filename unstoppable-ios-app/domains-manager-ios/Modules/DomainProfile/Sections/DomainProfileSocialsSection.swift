@@ -235,11 +235,11 @@ private extension DomainProfileSocialsSection {
 }
 
 extension DomainProfileSocialsSection {    
-    enum SocialsAction: Hashable {
-        case edit(description: SocialDescription, callback: EmptyCallback)
-        case open(description: SocialDescription, callback: EmptyCallback)
-        case remove(description: SocialDescription, callback: EmptyCallback)
-        case copy(description: SocialDescription, callback: EmptyCallback)
+    enum SocialsAction: Hashable, Sendable {
+        case edit(description: SocialDescription, callback: MainActorAsyncCallback)
+        case open(description: SocialDescription, callback: MainActorAsyncCallback)
+        case remove(description: SocialDescription, callback: MainActorAsyncCallback)
+        case copy(description: SocialDescription, callback: MainActorAsyncCallback)
 
         var title: String {
             switch self {

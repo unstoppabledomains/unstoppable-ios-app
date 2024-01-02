@@ -11,6 +11,7 @@ import UIKit
 typealias EmptyCallback = ()->()
 typealias EmptyAsyncCallback = @Sendable ()->()
 typealias MainActorCallback = @MainActor ()->()
+typealias MainActorAsyncCallback = @Sendable @MainActor ()->()
 typealias GlobalConstants = Constants
 
 struct Constants {

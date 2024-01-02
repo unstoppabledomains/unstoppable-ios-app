@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol DomainsCollectionCarouselViewControllerDelegate: AnyObject {
     func carouselViewController(_ viewController: DomainsCollectionCarouselViewController, didScrollIn scrollView: UIScrollView)
     func carouselViewController(_ viewController: DomainsCollectionCarouselViewController, didFinishScrollingAt offset: CGPoint)
@@ -14,10 +15,12 @@ protocol DomainsCollectionCarouselViewControllerDelegate: AnyObject {
     func updatePagesVisibility()
 }
 
+@MainActor
 protocol DomainsCollectionCarouselViewControllerActionsDelegate: AnyObject {
     func didOccurUIAction(_ action: DomainsCollectionCarouselItemViewController.Action)
 }
 
+@MainActor
 protocol DomainsCollectionCarouselViewController: UIViewController {
     var collectionView: UICollectionView! { get }
     var page: Int { get set }

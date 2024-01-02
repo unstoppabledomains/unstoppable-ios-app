@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol CNavigationControllerDelegate: AnyObject {
     func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool)
     func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool)

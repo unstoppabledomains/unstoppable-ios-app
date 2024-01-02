@@ -442,7 +442,7 @@ private extension DomainProfileCryptoSection {
     func handleEditForAllChainsAction(for record: CryptoEditingGroupedRecord) {
         Task {
             guard let view = self.controller?.viewController else { return }
-            await UDRouter().showManageMultiChainDomainAddresses(for: record.records, callback: { [weak self] updatedRecords in
+            UDRouter().showManageMultiChainDomainAddresses(for: record.records, callback: { [weak self] updatedRecords in
                 self?.handleRecordsUpdated(updatedRecords, in: record)
             }, in: view)
         }
@@ -480,7 +480,7 @@ private extension DomainProfileCryptoSection {
     
     func logEditingActionAnalytics(event: Analytics.Event, record: CryptoEditingGroupedRecord) {
         Task {
-            guard let domain = await controller?.generalData.domain else { return }
+            guard let domain = controller?.generalData.domain else { return }
             
             logAnalytic(event: event, parameters: [.domainName: domain.name,
                                                    .coin: record.primaryRecord.coin.ticker])

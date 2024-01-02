@@ -618,7 +618,7 @@ private extension DomainProfileViewController {
 
 // MARK: - Collection elements
 extension DomainProfileViewController {
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case topInfo
         case generalInfo
         case updatingRecords
@@ -641,7 +641,7 @@ extension DomainProfileViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case topInfo(data: ItemTopInfoData)
         case purchaseTopInfo(data: ItemTopInfoData)
         case updatingRecords(displayInfo: DomainProfileUpdatingRecordsDisplayInfo)

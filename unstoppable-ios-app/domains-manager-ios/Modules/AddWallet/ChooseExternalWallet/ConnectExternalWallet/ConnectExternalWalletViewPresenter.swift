@@ -107,7 +107,7 @@ private extension ConnectExternalWalletViewPresenter {
                                                                                                                                  isInstalled: false)) }))
             }
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
 }

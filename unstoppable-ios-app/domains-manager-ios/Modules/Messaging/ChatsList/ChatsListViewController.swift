@@ -600,7 +600,7 @@ extension ChatsListViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case chat(configuration: ChatUIConfiguration)
         case domainSelection(configuration: DomainSelectionUIConfiguration)
         case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
@@ -622,7 +622,7 @@ extension ChatsListViewController {
     struct CommunityUIConfiguration: Hashable {
         let community: MessagingChatDisplayInfo
         let communityDetails: MessagingCommunitiesChatDetails
-        let joinButtonPressedCallback: EmptyCallback
+        let joinButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.communityDetails == rhs.communityDetails
@@ -639,10 +639,10 @@ extension ChatsListViewController {
         let unreadMessagesCount: Int
     }
     
-    struct DataTypeSelectionUIConfiguration: Hashable {
+    struct DataTypeSelectionUIConfiguration: Hashable, Sendable {
         let dataTypesConfigurations: [DataTypeUIConfiguration]
         let selectedDataType: DataType
-        var dataTypeChangedCallback: (DataType)->()
+        var dataTypeChangedCallback: @Sendable @MainActor (DataType)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.dataTypesConfigurations == rhs.dataTypesConfigurations &&

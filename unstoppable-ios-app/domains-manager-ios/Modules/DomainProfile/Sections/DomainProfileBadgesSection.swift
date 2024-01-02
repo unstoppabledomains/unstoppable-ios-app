@@ -190,9 +190,9 @@ private extension DomainProfileBadgesSection {
     
     func refreshDomainBadges() {
         Task {
-            await stopRefreshBadgesTimer()
+            stopRefreshBadgesTimer()
             guard let controller,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: (await controller.generalData.domain).name) else { return }
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: controller.generalData.domain.name) else { return }
             
             updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
@@ -200,10 +200,10 @@ private extension DomainProfileBadgesSection {
                 setBadgesUpToDateFor(nextRefreshDate: refreshInfo.next)
                 updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: refreshInfo.refresh)
                 if refreshInfo.refresh {
-                    await startRefreshBadgesTimer()
+                    startRefreshBadgesTimer()
                 }
             } catch {
-                await appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
+                appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
                 updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: false)
             }
         }
