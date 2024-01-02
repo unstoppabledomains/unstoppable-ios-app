@@ -132,7 +132,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? {
         let domains = await getDomainsDisplayInfo()
         let walletDomains = domains.filter({ wallet.owns(domain: $0) })
-        let transactions = transactionsService.getCachedTransactionsFor(domainNames: walletDomains.map({ $0.name }))
+        let transactions = await dataHolder.getTransactions(by: walletDomains.map({ $0.name }))
         
         if let setRRTransaction = findFirstPendingRRTransaction(from: transactions),
            let domainName = setRRTransaction.domainName,
@@ -153,7 +153,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool {
-        let transactions = transactionsService.getCachedTransactionsFor(domainNames: [domainName])
+        let transactions = await dataHolder.getTransactions(by: [domainName])
         
         return findFirstPendingRRTransaction(from: transactions) != nil
     }
@@ -169,7 +169,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
         let domains = await getDomainsDisplayInfo().filter { $0.isOwned(by: [wallet]) }
         let domainNames = domains.map({ $0.name })
-        let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
+        let transactions = await dataHolder.getTransactions(by: domainNames)
         
         /// Restrict to change RR if any domain within wallet already changing RR.
         if !transactions.filterPending(extraCondition: { $0.operation == .setReverseResolution || $0.operation == .removeReverseResolution })
@@ -283,7 +283,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 }
                 await checkAppSessionAndLogOutIfNeeded()
             case .reverseResolutionDomainChanged(let domainName, let txIds):
-                var transactions = transactionsService.getCachedTransactionsFor(domainNames: [domainName])
+                var transactions = await dataHolder.getTransactions(by: [domainName])
                 let newTransactions = txIds.map({TransactionItem(id: $0,
                                                                  transactionHash: nil,
                                                                  domainName: domainName,
@@ -643,6 +643,7 @@ private extension DataAggregatorService {
         
         let finalDomainsWithDisplayInfo = domainsWithDisplayInfo + mintingDomainsWithDisplayInfoItems
         
+        await dataHolder.setTransactions(transactions)
         await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
         await dataHolder.sortDomainsToDisplay()
@@ -748,6 +749,7 @@ private extension DataAggregatorService {
         var domainsWithDisplayInfo: [DomainWithDisplayInfo] = []
         var wallets: [UDWallet]
         var reverseResolutionMap: ReverseResolutionInfoMap = [:]
+        var transactions: [TransactionItem] = []
 
         init(wallets: [UDWallet]) {
             self.wallets = wallets
@@ -755,6 +757,17 @@ private extension DataAggregatorService {
         
         func setWallets(_ wallets: [UDWallet]) {
             self.wallets = wallets
+        }
+        
+        func setTransactions(_ transactions: [TransactionItem]) {
+            self.transactions = transactions
+        }
+        
+        func getTransactions(by domainNames: [String]) -> [TransactionItem] {
+            transactions.filter({
+                guard let domainName = $0.domainName else { return false }
+                return domainNames.contains(domainName)
+            })
         }
         
         func setDataWith(domainsWithDisplayInfo: [DomainWithDisplayInfo],
