@@ -37,7 +37,7 @@ struct DownsampleDescription {
     static let icon: DownsampleDescription = .init(maxSize: Constants.downloadedIconMaxSize)
 }
 
-enum ImageSource {
+enum ImageSource: Sendable {
     case url(_ url: URL, maxSize: CGFloat? = nil)
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case domain(_ domainItem: DomainDisplayInfo)

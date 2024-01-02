@@ -1468,7 +1468,7 @@ extension WalletConnectServiceV2 {
         let proposalNamespace: [String: ProposalNamespace]
     }
     
-    struct WCServiceAppInfo {
+    struct WCServiceAppInfo: Sendable {
         
         let dAppInfoInternal: ClientDataV2
         let isTrusted: Bool

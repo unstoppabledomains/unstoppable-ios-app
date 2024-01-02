@@ -59,8 +59,9 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
 
 // MARK: - ExternalEventsServiceListener
 extension BaseMintingTransactionInProgressViewPresenter: ExternalEventsServiceListener {
+    nonisolated
     func didReceive(event: ExternalEvent) {
-        Task {
+        Task { @MainActor in 
             switch event {
             case .mintingFinished, .domainTransferred:
                 refreshMintingTransactions()

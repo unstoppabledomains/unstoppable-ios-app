@@ -30,6 +30,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func didTapTransferButton()
 }
 
+@MainActor
 final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
     
     var analyticsName: Analytics.ViewName { .domainProfile }
@@ -533,8 +534,8 @@ private extension DomainProfileViewPresenter {
                     await self?.fetchProfileData()
                     await self?.updateProfileFinished()
                 }
-                Task.detached { [weak self] in
-                    await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+                Task.detached {
+                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
@@ -810,7 +811,9 @@ private extension DomainProfileViewPresenter {
         stopRefreshTransactionsTimer()
         refreshTransactionsTimer = Timer.scheduledTimer(withTimeInterval: Constants.updateInterval,
                                                         repeats: true,
-                                                        block: { [weak self] _ in self?.refreshTransactionsAsync() })
+                                                        block: { @Sendable @MainActor [weak self] _ in
+            self?.refreshTransactionsAsync()
+        })
     }
     
     func refreshTransactionsAsync() {
