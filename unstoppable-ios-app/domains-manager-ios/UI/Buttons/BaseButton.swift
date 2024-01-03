@@ -163,11 +163,6 @@ private extension BaseButton {
         self.setImage(icon, for: state)
         self.setImage(icon, for: .highlighted)
 
-        let titleLeftPadding = imageLayout == .leading ? titleImagePadding / 2 : -titleImagePadding / 2
-        let titleRightPadding = -titleLeftPadding
-        let imageLeftPadding = imageLayout == .leading ? -titleImagePadding / 2 : titleImagePadding / 2
-        let imageRightPadding = -imageLeftPadding
-        
         let contentInsets = UIEdgeInsets(top: 0, left: leftPadding + titleImagePadding / 2,
                                          bottom: 0, right: rightPadding + titleImagePadding / 2)
         

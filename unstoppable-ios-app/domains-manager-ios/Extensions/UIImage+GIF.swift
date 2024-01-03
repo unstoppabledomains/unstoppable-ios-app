@@ -74,9 +74,7 @@ extension UIImage {
 // MARK: - Private methods
 private extension UIImage {
     func transformGifImages(_ transformBlock: (UIImage) ->(UIImage?)) -> UIImage? {
-        let images = self.images ?? [self]
-        let frameCount = images.count
-    
+        let images = self.images ?? [self]    
         var uiImages = [UIImage]()
         for image in images {
             if let transformedImage = transformBlock(image) {
