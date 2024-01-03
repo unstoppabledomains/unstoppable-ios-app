@@ -15,7 +15,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
     @IBOutlet private weak var contentHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var contentTopConstraint: NSLayoutConstraint!
 
-    var learnMoreButtonPressedCallback: EmptyCallback?
+    var learnMoreButtonPressedCallback: MainActorAsyncCallback?
     private let contentTopCollapsedValue: CGFloat = 64
     private var isTutorialOn: Bool = false
     private var isLearnMoreButtonHidden: Bool = false

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class DomainImageDetailsViewPresenter: ViewAnalyticsLogger {
     
     private var domain: DomainDisplayInfo
@@ -28,7 +29,6 @@ final class DomainImageDetailsViewPresenter: ViewAnalyticsLogger {
 extension DomainImageDetailsViewPresenter: DomainDetailsViewPresenterProtocol {
     var domainName: String { domain.name }
     
-    @MainActor
     func viewDidLoad() {
         view?.setWithDomain(domain)
         view?.setQRImage(nil)
@@ -40,7 +40,6 @@ extension DomainImageDetailsViewPresenter: DomainDetailsViewPresenterProtocol {
     
     func shareButtonPressed() { }
     
-    @MainActor
     func actionButtonPressed() {
         guard let openSeaLink else { return }
         
@@ -54,11 +53,10 @@ private extension DomainImageDetailsViewPresenter {
         Task {
             let image = await appContext.imageLoadingService.loadImage(from: .domain(domain),
                                                                        downsampleDescription: nil)
-            await view?.setQRImage(image)
+            view?.setQRImage(image)
         }
     }
     
-    @MainActor
     func setActionButton() {
         switch (domain.pfpSource, imageState) {
         case (.nft(let imageValue), .untouched):

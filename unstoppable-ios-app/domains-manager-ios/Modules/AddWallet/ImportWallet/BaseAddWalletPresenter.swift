@@ -18,6 +18,7 @@ protocol AddWalletPresenterProtocol: BasePresenterProtocol {
     func didTapPasteButton()
 }
 
+@MainActor
 class BaseAddWalletPresenter {
     
     let walletType: RestorationWalletType
@@ -85,11 +86,8 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
         Task {
             guard let view = self.view else { return }
             
-            let input = await MainActor.run { () -> String in
-                let input = view.input.trimmedSpaces
-                view.setContinueButtonEnabled(false)
-                return input
-            }
+            let input = view.input.trimmedSpaces
+            view.setContinueButtonEnabled(false)
             
             switch walletType {
             case .verified:
@@ -101,20 +99,14 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
                     } else {
                         wallet = try await udWalletsService.importWalletWith(mnemonics: input)
                     }
-                    await MainActor.run {
-                        view.setContinueButtonEnabled(true)
-                        didCreateWallet(wallet: wallet)
-                    }
+                    view.setContinueButtonEnabled(true)
+                    didCreateWallet(wallet: wallet)
                 } catch WalletError.ethWalletAlreadyExists {
-                    await MainActor.run {
-                        view.setContinueButtonEnabled(true)
-                        view.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                             body: String.Constants.walletAlreadyConnectedError.localized())
-                    }
+                    view.setContinueButtonEnabled(true)
+                    view.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                                         body: String.Constants.walletAlreadyConnectedError.localized())
                 } catch {
-                    await MainActor.run {
-                        view.setContinueButtonEnabled(true)
-                    }
+                    view.setContinueButtonEnabled(true)
                     Debugger.printFailure("Failed to create a wallet, error: \(error)", critical: true)
                 }
             case .readOnly:
@@ -138,7 +130,7 @@ private extension BaseAddWalletPresenter {
     
     func getWalletForCurrentInput() async -> UDWalletWithPrivateSeed? {
         guard let view = self.view else { return nil }
-        let input = await view.input
+        let input = view.input
 
         if input.isValidPrivateKey() {
             return await udWalletsService.createWalletFor(privateKey: input)
@@ -151,7 +143,7 @@ private extension BaseAddWalletPresenter {
     func isInputValid() async -> Bool {
         guard let view = self.view else { return false }
         
-        let input = await view.input
+        let input = view.input
         
         switch walletType {
         case .verified:

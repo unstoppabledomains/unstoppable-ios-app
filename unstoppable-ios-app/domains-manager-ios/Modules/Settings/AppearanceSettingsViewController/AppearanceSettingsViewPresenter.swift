@@ -8,10 +8,12 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol AppearanceSettingsViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: AppearanceSettingsViewController.Item)
 }
 
+@MainActor
 final class AppearanceSettingsViewPresenter {
     private weak var view: AppearanceSettingsViewProtocol?
     
@@ -27,11 +29,9 @@ extension AppearanceSettingsViewPresenter: AppearanceSettingsViewPresenterProtoc
     }
     
     func didSelectItem(_ item: AppearanceSettingsViewController.Item) {
-        Task {
-            switch item {
-            case .theme(let selectedStyle):
-                await showSelectAppearanceStyle(selectedStyle: selectedStyle)
-            }
+        switch item {
+        case .theme(let selectedStyle):
+            showSelectAppearanceStyle(selectedStyle: selectedStyle)
         }
     }
 }
@@ -39,17 +39,14 @@ extension AppearanceSettingsViewPresenter: AppearanceSettingsViewPresenterProtoc
 // MARK: - Private functions
 private extension AppearanceSettingsViewPresenter {
     func displayUI() {
-        Task {
-            var snapshot = AppearanceSettingsSnapshot()
-            
-            snapshot.appendSections([.theme])
-            snapshot.appendItems([.theme(UserDefaults.appearanceStyle)])
-            
-            await view?.applySnapshot(snapshot, animated: true)
-        }
+        var snapshot = AppearanceSettingsSnapshot()
+        
+        snapshot.appendSections([.theme])
+        snapshot.appendItems([.theme(UserDefaults.appearanceStyle)])
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
-    @MainActor
     func showSelectAppearanceStyle(selectedStyle: UIUserInterfaceStyle) {
         guard let view = self.view else { return }
         

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol TransactionInProgressViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var isNavBarHidden: Bool { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
@@ -16,6 +17,7 @@ protocol TransactionInProgressViewPresenterProtocol: BasePresenterProtocol, View
     func viewTransactionButtonPressed()
 }
 
+@MainActor
 class BaseTransactionInProgressViewPresenter {
     
     private(set) weak var view: TransactionInProgressViewProtocol?
@@ -25,7 +27,7 @@ class BaseTransactionInProgressViewPresenter {
     private var refreshTimer: Timer?
     private(set) var isNotificationPermissionsGranted = false
     var isNavBarHidden: Bool { false }
-    var analyticsName: Analytics.ViewName { .unspecified }
+    nonisolated var analyticsName: Analytics.ViewName { .unspecified }
     var content: TransactionInProgressViewController.HeaderDescription.Content { .minting }
     var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
 
@@ -79,7 +81,6 @@ extension BaseTransactionInProgressViewPresenter {
     
     @objc func refreshMintingTransactions() { }
     
-    @MainActor
     func showData() {
         var snapshot = TransactionInProgressSnapshot()
         
@@ -117,21 +118,21 @@ private extension BaseTransactionInProgressViewPresenter {
                                                                      shouldShowAlertIfNotGranted: true)) else { return }
             isNotificationPermissionsGranted = true
             notificationsService.registerRemoteNotifications()
-            await showData()
+            showData()
         }
     }
     
     func checkNotificationPermissions() async {
         self.isNotificationPermissionsGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .notifications(options: []))
         if !isNotificationPermissionsGranted {
-            await NotificationCenter.default.addObserver(self, selector: #selector(reCheckNotificationPermissions), name: UIApplication.didBecomeActiveNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(reCheckNotificationPermissions), name: UIApplication.didBecomeActiveNotification, object: nil)
         }
     }
     
     @objc func reCheckNotificationPermissions() {
         Task {
             await checkNotificationPermissions()
-            await showData()
+            showData()
         }
     }
 }

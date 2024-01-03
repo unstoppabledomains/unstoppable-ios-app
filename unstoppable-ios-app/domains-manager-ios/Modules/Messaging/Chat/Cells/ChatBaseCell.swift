@@ -7,7 +7,7 @@
 
 import UIKit
 
-typealias ChatMessageLinkPressedCallback = (URL)->()
+typealias ChatMessageLinkPressedCallback = @Sendable @MainActor (URL)->()
 
 class ChatBaseCell: UICollectionViewCell {
     

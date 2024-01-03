@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileWeb3WebsiteSection {
     
     typealias SectionData = DomainProfileWeb3WebsiteData
@@ -96,8 +97,8 @@ private extension DomainProfileWeb3WebsiteSection {
 }
 
 extension DomainProfileWeb3WebsiteSection {
-    enum WebsiteAction: Hashable {
-        case open(website: URL, callback: EmptyCallback)
+    enum WebsiteAction: Hashable, Sendable {
+        case open(website: URL, callback: MainActorAsyncCallback)
         
         var title: String {
             switch self {

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ScrollViewOffsetListener {
     func didScrollTo(offset: CGPoint)
 }

@@ -59,7 +59,7 @@ final class DataAggregatorListenerHolder: Equatable {
     
 }
 
-enum DataAggregationServiceResult {
+enum DataAggregationServiceResult: Sendable {
     case domainsUpdated(_ domains: [DomainDisplayInfo])
     case domainsPFPUpdated(_ allDomains: [DomainDisplayInfo])
     case walletsListUpdated(_ walletsWithInfo: [WalletWithInfo])

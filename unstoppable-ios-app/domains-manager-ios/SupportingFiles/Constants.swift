@@ -10,6 +10,8 @@ import UIKit
 
 typealias EmptyCallback = ()->()
 typealias EmptyAsyncCallback = @Sendable ()->()
+typealias MainActorCallback = @MainActor ()->()
+typealias MainActorAsyncCallback = @Sendable @MainActor ()->()
 typealias GlobalConstants = Constants
 
 struct Constants {
@@ -50,6 +52,7 @@ struct Constants {
     static let shouldHideBlockedUsersLocally = true
     static let isCommunitiesEnabled = false
     static let ensDomainTLD: String = "eth"
+    static let comDomainTLD: String = "com"
     static let lensDomainTLD: String = "lens"
     static let coinbaseDomainTLD: String = "id"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]

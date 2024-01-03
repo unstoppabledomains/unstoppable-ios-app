@@ -117,6 +117,7 @@ extension DomainProfileSectionHeader {
         let id: UUID
     }
     
+    @MainActor
     struct HeaderButton: Hashable {
       
         let title: String
@@ -144,10 +145,12 @@ extension DomainProfileSectionHeader {
             }
         }
         
+        nonisolated
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.title == rhs.title && lhs.icon == rhs.icon && lhs.isEnabled == rhs.isEnabled
         }
         
+        nonisolated
         func hash(into hasher: inout Hasher) {
             hasher.combine(title)
             hasher.combine(icon)

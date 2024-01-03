@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol BaseTableViewControllerProtocol: BaseViewControllerProtocol {
     var tableView: UITableView! { get }
     var cellIdentifiers: [UITableViewCell.Type] { get }

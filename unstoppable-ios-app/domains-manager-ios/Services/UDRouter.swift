@@ -338,7 +338,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                                 wallet: UDWallet,
                                                 walletInfo: WalletDisplayInfo,
                                                 domain: DomainDisplayInfo,
-                                                resultCallback: @escaping EmptyAsyncCallback) {
+                                                resultCallback: @escaping MainActorAsyncCallback) {
         let vc = buildSetupChangeReverseResolutionModule(wallet: wallet,
                                                          walletInfo: walletInfo,
                                                          domain: domain,
@@ -945,7 +945,7 @@ private extension UDRouter {
     func buildSetupChangeReverseResolutionModule(wallet: UDWallet,
                                                  walletInfo: WalletDisplayInfo,
                                                  domain: DomainDisplayInfo,
-                                                 resultCallback: @escaping EmptyAsyncCallback) -> UIViewController {
+                                                 resultCallback: @escaping MainActorAsyncCallback) -> UIViewController {
         let vc = SetupReverseResolutionViewController.nibInstance()
         let presenter = SetupChangeReverseResolutionDomainPresenter(view: vc,
                                                                     wallet: wallet,

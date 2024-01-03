@@ -216,7 +216,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
         let unifiedApp = app as! UnifiedConnectAppInfo // always safe
         guard unifiedApp.isV2dApp else {
-            let peerId = unifiedApp.appInfo.getPeerId()! // always safe with V1
+//            let peerId = unifiedApp.appInfo.getPeerId()! // always safe with V1
 //            appContext.walletConnectService.disconnect(peerId: peerId)
             return
         }
@@ -419,8 +419,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
             await walletStorageV2.remove(byTopic: topic)
             disconnectAppsConnected(to: session.getWalletAddresses())
         }
-        
-        guard let reconnectWalletsData = reconnectWalletsData ?? findDisconnectedWalletWithProviderBy(session: session) else {
+        let disconnectedWallet = await findDisconnectedWalletWithProviderBy(session: session)
+        guard let reconnectWalletsData = reconnectWalletsData ?? disconnectedWallet else {
             await cleanWCCacheData()
             return false
         }
@@ -436,6 +436,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         return didReconnect
     }
     
+    @MainActor
     private func findDisconnectedWalletWithProviderBy(session: WCConnectedAppsStorageV2.SessionProxy) -> ReconnectWalletsData? {
         if let host = URL(string: session.peer.url)?.host,
            let externalWallet = WCWalletsProvider
@@ -556,7 +557,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
             let proposalNamespace = $0.value
             guard let chains = proposalNamespace.chains else { return }
             
-            var methods = proposalNamespace.methods
+            let methods = proposalNamespace.methods
             let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
             
             let sessionNamespace = SessionNamespace(chains: chains,
@@ -1467,7 +1468,7 @@ extension WalletConnectServiceV2 {
         let proposalNamespace: [String: ProposalNamespace]
     }
     
-    struct WCServiceAppInfo {
+    struct WCServiceAppInfo: Sendable {
         
         let dAppInfoInternal: ClientDataV2
         let isTrusted: Bool

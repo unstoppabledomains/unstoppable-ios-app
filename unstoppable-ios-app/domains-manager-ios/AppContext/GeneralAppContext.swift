@@ -38,7 +38,8 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
-        AnalyticsService(dataAggregatorService: dataAggregatorService)
+        AnalyticsService(dataAggregatorService: dataAggregatorService,
+                         wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
         AppLaunchService(dataAggregatorService: dataAggregatorService,

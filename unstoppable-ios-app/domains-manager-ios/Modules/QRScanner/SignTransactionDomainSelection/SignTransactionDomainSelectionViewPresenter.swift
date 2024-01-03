@@ -49,9 +49,9 @@ extension SignTransactionDomainSelectionViewPresenter: SignTransactionDomainSele
     func viewDidLoad() {
         Task {
             await prepareData()
-            await showData(animated: false)
+            showData(animated: false)
             await loadData()
-            await showData(animated: false)
+            showData(animated: false)
         }
     }
     
@@ -79,41 +79,33 @@ extension SignTransactionDomainSelectionViewPresenter: SignTransactionDomainSele
     }
     
     func didSearchWith(key: String) {
-        Task {
-            let lowercasedKey = key.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-            if key.isEmpty {
-                filteredDomains = domains
-            } else {
-                filteredDomains = domains.filter({ domain in
-                    return domain.name.lowercased().contains(lowercasedKey)
-                })
-            }
-            self.searchKey = lowercasedKey
-            await showData(animated: true)
+        let lowercasedKey = key.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if key.isEmpty {
+            filteredDomains = domains
+        } else {
+            filteredDomains = domains.filter({ domain in
+                return domain.name.lowercased().contains(lowercasedKey)
+            })
         }
+        self.searchKey = lowercasedKey
+        showData(animated: true)
     }
     
     func didStartSearch() {
-        Task {
-            isSearchActive = true
-            await showData(animated: true)
-        }
+        isSearchActive = true
+        showData(animated: true)
     }
     
     func didStopSearch() {
-        Task {
-            isSearchActive = false
-            searchKey = ""
-            await showData(animated: true)
-        }
+        isSearchActive = false
+        searchKey = ""
+        showData(animated: true)
     }
     
     func subheadButtonPressed() {
-        Task {
-            guard let view = self.view else { return }
-            
-            await appContext.pullUpViewService.showWhatIsReverseResolutionInfoPullUp(in: view)
-        }
+        guard let view = self.view else { return }
+        
+        appContext.pullUpViewService.showWhatIsReverseResolutionInfoPullUp(in: view)
     }
 }
 
@@ -159,11 +151,11 @@ private extension SignTransactionDomainSelectionViewPresenter {
                                                                                           displayInfo: $0.displayInfo,
                                                                                           balance: $0.balance)})
         } catch {
-            await view?.showAlertWith(error: error)
+            view?.showAlertWith(error: error)
         }
     }
     
-    func showData(animated: Bool) async {
+    func showData(animated: Bool) {
         // Fill snapshot
         var snapshot = SignTransactionDomainSelectionSnapshot()
         
@@ -261,7 +253,7 @@ private extension SignTransactionDomainSelectionViewPresenter {
             }
         }
         
-        await view?.applySnapshot(snapshot, animated: animated)
+        view?.applySnapshot(snapshot, animated: animated)
     }
     
     func viewItem(for domain: DomainDisplayInfo) -> SignTransactionDomainSelectionViewController.Item {
@@ -287,14 +279,12 @@ private extension SignTransactionDomainSelectionViewPresenter {
     }
     
     func set(walletAddress: HexAddress, hidden: Bool) {
-        Task {
-            if hidden {
-                visibleWalletsAddresses.remove(walletAddress)
-            } else {
-                visibleWalletsAddresses.insert(walletAddress)
-            }
-            await showData(animated: true)
+        if hidden {
+            visibleWalletsAddresses.remove(walletAddress)
+        } else {
+            visibleWalletsAddresses.insert(walletAddress)
         }
+        showData(animated: true)
     }
 }
 

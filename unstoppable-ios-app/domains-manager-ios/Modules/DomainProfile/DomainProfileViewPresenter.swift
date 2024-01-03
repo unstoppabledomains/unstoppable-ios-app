@@ -7,6 +7,7 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 @MainActor
 protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
@@ -30,12 +31,13 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func didTapTransferButton()
 }
 
+@MainActor
 final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
     
     var analyticsName: Analytics.ViewName { .domainProfile }
 
     private weak var view: (any DomainProfileViewProtocol)?
-    private var refreshTransactionsTimer: Timer?
+    private var refreshTransactionsTimer: AnyCancellable?
     private var preRequestedAction: PreRequestedProfileAction?
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
@@ -96,7 +98,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
         Task {
             let currencies = await coinRecordsService.getCurrencies()
             dataHolder.set(currencies: currencies)
-            loadCachedProfile()
+            await loadCachedProfile()
             start()
         }
     }
@@ -273,6 +275,7 @@ extension DomainProfileViewPresenter {
 
 // MARK: - DataAggregatorServiceListener
 extension DomainProfileViewPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
         Task { @MainActor in
             switch result {
@@ -302,6 +305,7 @@ extension DomainProfileViewPresenter: DataAggregatorServiceListener {
 
 // MARK: - ExternalEventsServiceListener
 extension DomainProfileViewPresenter: ExternalEventsServiceListener {
+    nonisolated
     func didReceive(event: ExternalEvent) {
         Task { @MainActor in
             
@@ -392,6 +396,7 @@ extension DomainProfileViewPresenter: DomainProfileSectionsController {
 
 // MARK: - SFSafariViewControllerDelegate
 extension DomainProfileViewPresenter: SFSafariViewControllerDelegate {
+    nonisolated
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         Task {
             await fetchProfileData()
@@ -476,7 +481,7 @@ private extension DomainProfileViewPresenter {
         
         var results = [UpdateProfileResult]()
         
-        switch await dataHolder.walletInfo.source {
+        switch dataHolder.walletInfo.source {
         case .external:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for requestsWithChange in requestsWithChanges {
@@ -515,7 +520,7 @@ private extension DomainProfileViewPresenter {
                                        requiredPullUp: ( ()async throws->())) async throws {
             let paymentsError = errors.compactMap({ $0.error as? PaymentError })
             if let _ = paymentsError.first(where: { $0 == .applePayNotSupported }) {
-                await appContext.pullUpViewService.showApplePayRequiredPullUp(in: view)
+                appContext.pullUpViewService.showApplePayRequiredPullUp(in: view)
             } else {
                 try await requiredPullUp()
             }
@@ -524,29 +529,27 @@ private extension DomainProfileViewPresenter {
         do {
             if updateErrors.isEmpty {
                 // All requests were successful
-                await MainActor.run {
-                    applyUpdatedChanges(updatedChanges)
-                    dataHolder.didUpdateProfile()
-                }
+                applyUpdatedChanges(updatedChanges)
+                dataHolder.didUpdateProfile()
                 Task.detached { [weak self] in
                     await self?.fetchProfileData()
                     await self?.updateProfileFinished()
                 }
-                Task.detached { [weak self] in
-                    await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+                Task.detached {
+                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 
                 let changes = Set(requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes }).map { $0.uiChange })
-                saveChangesToAppGroup(Array(changes), domain: await dataHolder.domain)
+                saveChangesToAppGroup(Array(changes), domain: dataHolder.domain)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
-                await dataHolder.didFailToUpdateProfile()
-                await updateProfileFinished()
+                dataHolder.didFailToUpdateProfile()
+                updateProfileFinished()
                 await view.dismissPullUpMenu()
                 
-                let numberOfFailedAttempts = await dataHolder.numberOfFailedToUpdateProfileAttempts
+                let numberOfFailedAttempts = dataHolder.numberOfFailedToUpdateProfileAttempts
                 try await checkForApplePayErrorAndShowUpdateFailedPullUpFor(errors: updateErrors, requiredPullUp: {
                     if numberOfFailedAttempts >= 3 {
                         try await appContext.pullUpViewService.showTryUpdateDomainProfileLaterPullUp(in: view)
@@ -560,7 +563,7 @@ private extension DomainProfileViewPresenter {
                 await perform(requestsWithChanges: failedRequestsWithChanges)
             } else {
                 // Only some requests are failed
-                await dataHolder.didFailToUpdateProfile()
+                dataHolder.didFailToUpdateProfile()
                 let updateErrors = updateErrors
                 
                 await MainActor.run {
@@ -687,7 +690,7 @@ private extension DomainProfileViewPresenter {
         }
     }
     
-    struct RequestWithChanges {
+    struct RequestWithChanges: Sendable {
         let request: DomainProfileUpdateDataRequestType
         let changes: [DomainProfileSectionChangeDescription]
         
@@ -797,7 +800,7 @@ private extension DomainProfileViewPresenter {
     }
     
     func getCurrentDomain() async throws -> DomainItem {
-        let domainName = await generalData.domain.name
+        let domainName = generalData.domain.name
         return try await dataAggregatorService.getDomainWith(name: domainName)
     }
 }
@@ -807,9 +810,12 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func startRefreshTransactionsTimer() {
         stopRefreshTransactionsTimer()
-        refreshTransactionsTimer = Timer.scheduledTimer(withTimeInterval: Constants.updateInterval,
-                                                        repeats: true,
-                                                        block: { [weak self] _ in self?.refreshTransactionsAsync() })
+        refreshTransactionsTimer = Timer
+            .publish(every: Constants.updateInterval, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshTransactionsAsync()
+            }
     }
     
     func refreshTransactionsAsync() {
@@ -828,7 +834,7 @@ private extension DomainProfileViewPresenter {
     
     @MainActor
     func stopRefreshTransactionsTimer() {
-        refreshTransactionsTimer?.invalidate()
+        refreshTransactionsTimer?.cancel()
         refreshTransactionsTimer = nil
     }
 }
@@ -907,11 +913,11 @@ private extension DomainProfileViewPresenter {
                 profileFetchingFinished()
             }
             
-            let cachedProfile = CachedDomainProfileInfo(domainName: await dataHolder.domain.name,
-                                                        recordsData: await dataHolder.recordsData,
-                                                        badgesInfo: await dataHolder.badgesInfo,
-                                                        profile: await dataHolder.profile)
-            DomainProfileInfoStorage.instance.saveCachedDomainProfile(cachedProfile)
+            let cachedProfile = CachedDomainProfileInfo(domainName: dataHolder.domain.name,
+                                                        recordsData: dataHolder.recordsData,
+                                                        badgesInfo: dataHolder.badgesInfo,
+                                                        profile: dataHolder.profile)
+            await DomainProfileInfoStorage.instance.saveCachedDomainProfile(cachedProfile)
         } catch WalletConnectRequestError.failedToSignMessage {
             Task.detached {
                 await self.asyncCheckForExternalWalletAndFetchProfile()
@@ -928,7 +934,7 @@ private extension DomainProfileViewPresenter {
             stateController.set(isFailedToDownloadProfile: true)
             Vibration.error.vibrate()
         }
-        let cachedProfile = DomainProfileInfoStorage.instance.getCachedDomainProfile(for: await dataHolder.domain.name)
+        let cachedProfile = await DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name)
         
         do {
             if let cachedProfile {
@@ -948,7 +954,7 @@ private extension DomainProfileViewPresenter {
                 await fetchProfileData(of: types)
                 await view.dismissPullUpMenu()
             } else {
-                let imageInfo = await dataHolder.domainImagesInfo
+                let imageInfo = dataHolder.domainImagesInfo
                 
                 try await UDRouter().showDomainProfileFetchFailedModule(in: view,
                                                                         domain: dataHolder.domain,
@@ -958,7 +964,7 @@ private extension DomainProfileViewPresenter {
                 await fetchProfileData(of: types)
             }
         } catch {
-            await appContext.toastMessageService.showToast(.failedToFetchDomainProfileData,
+            appContext.toastMessageService.showToast(.failedToFetchDomainProfileData,
                                                            in: view.view,
                                                            at: nil,
                                                            isSticky: true,
@@ -973,7 +979,7 @@ private extension DomainProfileViewPresenter {
         Task {
             guard let view = self.view else { return }
             
-            await appContext.toastMessageService.removeToast(from: view.view)
+            appContext.toastMessageService.removeToast(from: view.view)
             await fetchProfileData(of: types)
         }
     }
@@ -1102,9 +1108,8 @@ private extension DomainProfileViewPresenter {
         }
     }
     
-    @MainActor
-    func loadCachedProfile() {
-        guard let cachedProfile = DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name) else { return }
+    func loadCachedProfile() async {
+        guard let cachedProfile = await DomainProfileInfoStorage.instance.getCachedDomainProfile(for: dataHolder.domain.name) else { return }
 
         dataHolder.mergeWith(cachedProfile: cachedProfile)
         loadBackgroundImage()
@@ -1117,10 +1122,10 @@ private extension DomainProfileViewPresenter {
                 if let view,
                    let badge = badgesInfo.badges.first(where: { $0.code == code }) {
                     let badgeDisplayInfo = DomainProfileBadgeDisplayInfo(badge: badge, isExploreWeb3Badge: false)
-                    let domainName = await dataHolder.domain.name
-                    await appContext.pullUpViewService.showBadgeInfoPullUp(in: view,
-                                                                           badgeDisplayInfo: badgeDisplayInfo,
-                                                                           domainName: domainName)
+                    let domainName = dataHolder.domain.name
+                    appContext.pullUpViewService.showBadgeInfoPullUp(in: view,
+                                                                     badgeDisplayInfo: badgeDisplayInfo,
+                                                                     domainName: domainName)
                 }
             case .none:
                 return
@@ -1274,7 +1279,7 @@ private extension DomainProfileViewPresenter {
         switch type {
         case .badges:
             let badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain)
-            await dataHolder.set(badgesInfo: badgesInfo)
+            dataHolder.set(badgesInfo: badgesInfo)
             openPreRequestedBadgeIfNeeded(using: badgesInfo)
         case .privateProfile:
             let profileFields: Set<GetDomainProfileField> = [.profile, .records, .socialAccounts, .humanityCheck]
@@ -1285,16 +1290,16 @@ private extension DomainProfileViewPresenter {
             AppGroupsBridgeService.shared.saveAvatarPath(pfpPath, for: domain.name)
             
             let records = profile.records
-            let coinRecords = await dataHolder.currencies
+            let coinRecords = dataHolder.currencies
             let recordsData = DomainRecordsData(from: records,
                                                 coinRecords: coinRecords,
                                                 resolver: nil)
             
-            await dataHolder.set(profile: profile)
-            await dataHolder.set(recordsData: recordsData)
+            dataHolder.set(profile: profile)
+            dataHolder.set(recordsData: recordsData)
         case .transactions:
             let transactions = try await domainTransactionsService.updateTransactionsListFor(domains: [domain.name])
-            await dataHolder.set(transactions: transactions)
+            dataHolder.set(transactions: transactions)
         }
     }
     

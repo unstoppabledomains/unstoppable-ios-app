@@ -25,6 +25,7 @@ enum UIDeviceSize  {
     case unknown
 }
 
+@MainActor
 let deviceSize : UIDeviceSize = {
     let w: Double = Double(UIScreen.main.bounds.width)
     let h: Double = Double(UIScreen.main.bounds.height)
@@ -179,6 +180,7 @@ public enum Model : String {
          
          unrecognized       = "?unrecognized?"
     
+    @MainActor
     var isNFCSupported: Bool {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
         
@@ -201,9 +203,7 @@ extension UIDevice {
             }
         }
         
-        guard let modelCode = modelCode else { return nil }
-        
-        return String.init(validatingUTF8: modelCode)
+        return modelCode
     }
 }
 
@@ -383,13 +383,13 @@ public extension UIDevice {
            let model = modelMap[modelCode] {
             if model == .simulator,
                let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-                if let simModel = modelMap[String.init(validatingUTF8: simModelCode)!] {
+                if let simModel = modelMap[simModelCode] {
                     return simModel
                 }
             }
             return model
         } else if let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"],
-                  let simModel = modelMap[String.init(validatingUTF8: simModelCode)!] {
+                  let simModel = modelMap[simModelCode] {
             return simModel
         }
         return Model.unrecognized

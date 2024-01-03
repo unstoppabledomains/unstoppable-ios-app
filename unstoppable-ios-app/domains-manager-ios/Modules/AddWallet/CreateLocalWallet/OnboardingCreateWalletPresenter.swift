@@ -20,7 +20,6 @@ final class OnboardingCreateWalletPresenter: BaseCreateWalletPresenter {
         self.wallet = onboardingFlowManager.onboardingData.wallets.first
     }
     
-    @MainActor
     override func viewDidLoad() {
         view?.setStyle(.fullUI)
         Task {

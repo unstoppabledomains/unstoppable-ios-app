@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol SecuritySettingsViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: SecuritySettingsViewController.Item)
 }
 
+@MainActor
 final class SecuritySettingsViewPresenter: ViewAnalyticsLogger {
     private weak var view: SecuritySettingsViewProtocol?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
@@ -43,31 +45,29 @@ extension SecuritySettingsViewPresenter: SecuritySettingsViewPresenterProtocol {
 // MARK: - Private functions
 private extension SecuritySettingsViewPresenter {
     func resolveAuthState() {
-        Task {
-            let authHelper = appContext.authentificationService
-            let settings = User.instance.getSettings()
-            let isBiometricOn = settings.touchIdActivated
-            var snapshot = SecuritySettingsSnapshot()
-            
-            snapshot.appendSections([.securityType])
-            if authHelper.biometryState() != .notAvailable {
-                snapshot.appendItems([.authentication(type: .biometric(isOn: isBiometricOn))])
-            }
-            snapshot.appendItems([.authentication(type: .passcode(isOn: !isBiometricOn))])
-            
-            if !isBiometricOn {
-                snapshot.appendSections([.changePasscode])
-                snapshot.appendItems([.action(.changePasscode)])
-            }
-            
-            snapshot.appendSections([.openingAppSettings])
-            snapshot.appendItems([.openingTheApp(configuration: .init(isOn: settings.shouldRequireSAOnAppOpening,
-                                                                      valueChangedCallback: { [weak self] isOn in
-                self?.setRequireSAOnAppOpening(isOn: isOn)
-            }))])
-            
-            await view?.applySnapshot(snapshot, animated: true)
+        let authHelper = appContext.authentificationService
+        let settings = User.instance.getSettings()
+        let isBiometricOn = settings.touchIdActivated
+        var snapshot = SecuritySettingsSnapshot()
+        
+        snapshot.appendSections([.securityType])
+        if authHelper.biometryState() != .notAvailable {
+            snapshot.appendItems([.authentication(type: .biometric(isOn: isBiometricOn))])
         }
+        snapshot.appendItems([.authentication(type: .passcode(isOn: !isBiometricOn))])
+        
+        if !isBiometricOn {
+            snapshot.appendSections([.changePasscode])
+            snapshot.appendItems([.action(.changePasscode)])
+        }
+        
+        snapshot.appendSections([.openingAppSettings])
+        snapshot.appendItems([.openingTheApp(configuration: .init(isOn: settings.shouldRequireSAOnAppOpening,
+                                                                  valueChangedCallback: { [weak self] isOn in
+            self?.setRequireSAOnAppOpening(isOn: isOn)
+        }))])
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func changeAuthType(_ type: SecuritySettingsViewController.AuthenticationType) {

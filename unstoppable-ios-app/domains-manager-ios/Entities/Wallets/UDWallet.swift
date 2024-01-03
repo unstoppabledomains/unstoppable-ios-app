@@ -57,7 +57,7 @@ protocol AddressContainer {
 
 
 
-struct UDWallet: Codable {
+struct UDWallet: Codable, @unchecked Sendable {
     enum Error: String, Swift.Error, RawValueLocalizable {
         case failedToSignMessage = "Failed to Sign Message"
         case noWalletOwner = "No Owner Wallet Specified"

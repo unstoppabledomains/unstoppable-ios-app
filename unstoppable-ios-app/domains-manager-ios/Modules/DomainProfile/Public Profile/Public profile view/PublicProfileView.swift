@@ -344,7 +344,7 @@ private extension PublicProfileView {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 if let social = profile.social {
-                    carouselFollowersItem(for: social, callback: showFollowersList)
+                    carouselFollowersItem(for: social, callback: { showFollowersList() })
                 }
                 if let social = profile.socialAccounts {
                     let accounts = SocialDescription.typesFrom(accounts: social)
@@ -352,7 +352,7 @@ private extension PublicProfileView {
                         carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
                                      icon: .twitterIcon24,
                                      button: .socialsList,
-                                     callback: showSocialsList)
+                                     callback: { showSocialsList() })
                     }
                 }
                 if let records = viewModel.records,
@@ -360,7 +360,7 @@ private extension PublicProfileView {
                     carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
                                  icon: .walletBTCIcon20,
                                  button: .cryptoList,
-                                 callback: showCryptoList)
+                                 callback: { showCryptoList() })
                 }
             }
             .sideInsets(sidePadding)
@@ -419,7 +419,7 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselItemWithContent(callback: @escaping EmptyCallback,
+    func carouselItemWithContent(callback: @escaping MainActorAsyncCallback,
                                  button: Analytics.Button,
                                  @ViewBuilder content: ()->(any View)) -> some View {
         Button {
@@ -441,7 +441,7 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func carouselFollowersItem(for social: DomainProfileSocialInfo,
-                               callback: @escaping EmptyCallback) -> some View {
+                               callback: @escaping MainActorAsyncCallback) -> some View {
         let havingFollowers = social.followerCount > 0
         let havingFollowings = social.followingCount > 0
         let havingFollowersOrFollowings = havingFollowers || havingFollowings
@@ -467,7 +467,7 @@ private extension PublicProfileView {
     func carouselItem(text: String,
                       icon: UIImage,
                       button: Analytics.Button,
-                      callback: @escaping EmptyCallback) -> some View {
+                      callback: @escaping MainActorAsyncCallback) -> some View {
         carouselItemWithContent(callback: callback,
                                 button: button) {
             HStack(spacing: 8) {

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileUpdatingRecordsSection {
     typealias SectionData = DomainProfileUpdatingRecordsData
     
@@ -102,8 +103,6 @@ private extension DomainProfileUpdatingRecordsSection {
     func showWeWillNotifyPullUp() {
         guard let view = self.controller?.viewController else { return }
 
-        Task {
-            await appContext.pullUpViewService.showWillNotifyWhenRecordsUpdatedPullUp(in: view)
-        }
+        appContext.pullUpViewService.showWillNotifyWhenRecordsUpdatedPullUp(in: view)
     }
 }

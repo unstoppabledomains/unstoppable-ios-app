@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 struct CNavigationHelper {
     
     static let AnimationCurveControlPoint1 = CGPoint(x: 0.1, y: 1)
@@ -31,9 +32,15 @@ extension CNavigationHelper {
         object.makeCopy()
     }
     
+    enum NavigationHelperError: Error {
+        case failedToMakeCopy
+    }
+    
     static func makeCopy<T>(of object: T) throws -> T {
         let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding:false)
-        let copy = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! T
+        guard let copy = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? T else {
+            throw NavigationHelperError.failedToMakeCopy
+        }
         return copy
     }
     
@@ -150,6 +157,7 @@ extension CNavigationHelper {
     }
 }
 
+@MainActor
 protocol CNavigationCopiableView {
     func makeCopy() -> Self
 }

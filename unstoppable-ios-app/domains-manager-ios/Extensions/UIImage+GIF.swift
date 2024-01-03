@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 extension UIImage {
     func gifDataRepresentation(gifDuration: TimeInterval = 0.0, loopCount: Int = 0, quality: Double? = nil) throws -> Data {
@@ -21,7 +21,7 @@ extension UIImage {
         ]
         
         guard let mutableData = CFDataCreateMutable(nil, 0),
-              let destination = CGImageDestinationCreateWithData(mutableData, kUTTypeGIF, frameCount, nil) else {
+              let destination = CGImageDestinationCreateWithData(mutableData, UTType.gif.identifier as CFString, frameCount, nil) else {
             throw NSError(domain: "AnimatedGIFSerializationErrorDomain",
                           code: -1,
                           userInfo: [NSLocalizedDescriptionKey: "Could not create destination with data."])
@@ -74,10 +74,7 @@ extension UIImage {
 // MARK: - Private methods
 private extension UIImage {
     func transformGifImages(_ transformBlock: (UIImage) ->(UIImage?)) -> UIImage? {
-        let images = self.images ?? [self]
-        let frameCount = images.count
-        let frameDuration: TimeInterval = duration / Double(frameCount)
-    
+        let images = self.images ?? [self]    
         var uiImages = [UIImage]()
         for image in images {
             if let transformedImage = transformBlock(image) {

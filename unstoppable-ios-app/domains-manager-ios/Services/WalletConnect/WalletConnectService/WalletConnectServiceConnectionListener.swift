@@ -16,5 +16,6 @@ protocol WalletConnectServiceConnectionListener: AnyObject {
 }
 
 extension WalletConnectServiceConnectionListener {
+    func didCompleteConnectionAttempt() { }
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
 }

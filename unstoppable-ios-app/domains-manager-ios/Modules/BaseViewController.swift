@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnalyticsLogger, KeyboardServiceListener {
        
     private(set) var isDisappearing = false

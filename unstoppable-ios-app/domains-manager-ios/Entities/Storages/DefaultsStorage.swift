@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DefaultsStorage<T: Equatable> where T: Codable {
+class DefaultsStorage<T: Equatable>: @unchecked Sendable where T: Codable {
     enum Error: Swift.Error {
         case failedToFindElement
     }

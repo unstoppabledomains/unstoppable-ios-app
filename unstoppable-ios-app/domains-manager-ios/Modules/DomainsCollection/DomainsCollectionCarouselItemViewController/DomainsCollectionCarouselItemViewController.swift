@@ -288,6 +288,7 @@ private extension DomainsCollectionCarouselItemViewController {
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
             
+            @MainActor
             func createEmptySectionView() -> UICollectionReusableView {
                 collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
                                                                 withReuseIdentifier: EmptyCollectionSectionFooter.reuseIdentifier,
@@ -349,6 +350,7 @@ private extension DomainsCollectionCarouselItemViewController {
             var section: NSCollectionLayoutSection = .flexibleListItemSection()
             let sectionHeaderHeight = sectionKind.headerHeight
             
+            @MainActor
             func setSectionContentInset() {
                 section.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                 leading: spacing + 1,
@@ -356,6 +358,7 @@ private extension DomainsCollectionCarouselItemViewController {
                                                                 trailing: spacing + 1)
             }
             
+            @MainActor
             func addHeader(offset: CGPoint = .zero) {
                 let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                         heightDimension: .absolute(sectionHeaderHeight))
@@ -366,6 +369,7 @@ private extension DomainsCollectionCarouselItemViewController {
                 section.boundarySupplementaryItems.append(header)
             }
             
+            @MainActor
             func addFooter(size: CGFloat) {
                 let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                         heightDimension: .absolute(size))
@@ -463,7 +467,7 @@ private extension DomainsCollectionCarouselItemViewController {
 }
 
 extension DomainsCollectionCarouselItemViewController {
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case domainsCarousel
         case recentActivity(numberOfActivities: Int)
         case noRecentActivities
@@ -498,7 +502,7 @@ extension DomainsCollectionCarouselItemViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case domainCard(configuration: DomainCardConfiguration)
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
@@ -508,11 +512,11 @@ extension DomainsCollectionCarouselItemViewController {
         case getDomainCard
     }
     
-    struct DomainCardConfiguration: Hashable {
+    struct DomainCardConfiguration: Hashable, Sendable {
         let id: UUID
         let domain: DomainDisplayInfo
         let availableActions: [Self.Action]
-        let actionButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
@@ -527,10 +531,10 @@ extension DomainsCollectionCarouselItemViewController {
         }
         
         enum Action: Hashable {
-            case copyDomain(callback: EmptyCallback)
-            case viewVault(vaultName: String, vaultAddress: String, callback: EmptyCallback)
-            case setUpRR(isEnabled: Bool, callback: EmptyCallback)
-            case rearrange(callback: EmptyCallback)
+            case copyDomain(callback: MainActorAsyncCallback)
+            case viewVault(vaultName: String, vaultAddress: String, callback: MainActorAsyncCallback)
+            case setUpRR(isEnabled: Bool, callback: MainActorAsyncCallback)
+            case rearrange(callback: MainActorAsyncCallback)
             
             var title: String {
                 switch self {
@@ -598,14 +602,14 @@ extension DomainsCollectionCarouselItemViewController {
         }
     }
     
-    struct RecentActivitiesConfiguration: Hashable {
+    struct RecentActivitiesConfiguration: Hashable, Sendable {
         private let appHolder: UnifiedConnectedAppInfoHolder
         let availableActions: [Self.Action]
-        let actionButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
         
         var connectedApp: any UnifiedConnectAppInfoProtocol { appHolder.app }
 
-        init(connectedApp: any UnifiedConnectAppInfoProtocol, availableActions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action], actionButtonPressedCallback: @escaping EmptyCallback) {
+        init(connectedApp: any UnifiedConnectAppInfoProtocol, availableActions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action], actionButtonPressedCallback: @escaping MainActorAsyncCallback) {
             self.appHolder = .init(app: connectedApp)
             self.availableActions = availableActions
             self.actionButtonPressedCallback = actionButtonPressedCallback
@@ -622,8 +626,8 @@ extension DomainsCollectionCarouselItemViewController {
         }
         
         enum Action: Hashable {
-            case openApp(callback: EmptyCallback)
-            case disconnect(callback: EmptyCallback)
+            case openApp(callback: MainActorAsyncCallback)
+            case disconnect(callback: MainActorAsyncCallback)
             var title: String {
                 switch self {
                 case .openApp:
@@ -673,7 +677,7 @@ extension DomainsCollectionCarouselItemViewController {
     
     struct NoRecentActivitiesConfiguration: Hashable {
         let id = UUID()
-        var learnMoreButtonPressedCallback: EmptyCallback
+        var learnMoreButtonPressedCallback: MainActorAsyncCallback
         var isTutorialOn: Bool
         var dataType: DomainsCollectionVisibleDataType
 
@@ -756,7 +760,7 @@ extension DomainsCollectionCarouselItemViewController {
     
     struct SuggestionConfiguration: Hashable {
         let id = UUID()
-        var closeCallback: EmptyCallback
+        var closeCallback: MainActorAsyncCallback
         var suggestion: HotFeatureSuggestion
         
         static func == (lhs: Self, rhs: Self) -> Bool {

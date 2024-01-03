@@ -17,8 +17,10 @@ protocol WalletConnectExternalWalletConnectionWaiter: AnyObject {
 
 extension WalletConnectExternalWalletConnectionWaiter {
     func registerForAppBecomeActiveNotification() {
-        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
-            self?.applicationDidBecomeActive()
+        Task { @MainActor in
+            NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
+                self?.applicationDidBecomeActive()
+            }
         }
     }
     

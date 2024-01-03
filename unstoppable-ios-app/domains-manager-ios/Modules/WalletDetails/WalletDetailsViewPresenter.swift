@@ -13,6 +13,7 @@ protocol WalletDetailsViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: WalletDetailsViewController.Item)
 }
 
+@MainActor
 final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: WalletDetailsViewProtocol?
@@ -56,7 +57,6 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
         updateTitle()
     }
     
-    @MainActor
     func didSelectItem(_ item: WalletDetailsViewController.Item) {
         Task {
             guard let view = self.view else { return }
@@ -218,11 +218,10 @@ private extension WalletDetailsViewPresenter {
             snapshot.appendItems([.listItem(.removeWallet(isConnected: walletInfo.isConnected,
                                                           walletName: walletInfo.walletSourceName))])
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
     
-    @MainActor
     func revealRecoveryPhrase(recoveryType: UDWallet.RecoveryType) {
         guard let view = self.view else { return }
         
@@ -240,7 +239,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func askToRemoveWallet() {
         guard let view = self.view else { return }
         Task {
@@ -254,7 +252,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func indicateWalletRemoved() {
         if wallet.walletState == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
@@ -269,7 +266,7 @@ private extension WalletDetailsViewPresenter {
         await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }
-        await indicateWalletRemoved()
+        indicateWalletRemoved()
     }
     
     func copyAddressButtonPressed() {
@@ -281,12 +278,9 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
 
         logButtonPressedAnalyticEvents(button: .showConnectedWalletInfo)
-        Task {
-            await appContext.pullUpViewService.showConnectedWalletInfoPullUp(in: view)
-        }
+        appContext.pullUpViewService.showConnectedWalletInfoPullUp(in: view)
     }
     
-    @MainActor
     func showRenameWalletScreen() {
         guard let view = self.view else { return }
 
@@ -298,7 +292,6 @@ private extension WalletDetailsViewPresenter {
                                           in: view)
     }
     
-    @MainActor
     func showBackupWalletScreenIfAvailable() {
         guard let view = self.view else { return }
 
@@ -328,15 +321,13 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
         
         let domains = await dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isOwned(by: wallet) })
-        await UDRouter().showWalletDomains(domains,
+        UDRouter().showWalletDomains(domains,
                                            walletWithInfo: WalletWithInfo(wallet: wallet, displayInfo: walletInfo),
                                            in: view)
     }
     
     func updateTitle() {
-        Task {
-            await view?.set(title: walletInfo.displayName)
-        }
+        view?.set(title: walletInfo.displayName)
     }
     
     func handleSetupReverseResolution(result: SetupWalletsReverseResolutionNavigationManager.Result) {
@@ -348,7 +339,6 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor
     func importExternalWallet() {
         guard let view = self.view else { return }
         
@@ -367,7 +357,6 @@ private extension WalletDetailsViewPresenter {
         showWalletDetails()
     }
     
-    @MainActor
     func showReverseResolutionInProgress(for domainDisplayInfo: DomainDisplayInfo) {
         Task {
             guard let view = self.view else { return }

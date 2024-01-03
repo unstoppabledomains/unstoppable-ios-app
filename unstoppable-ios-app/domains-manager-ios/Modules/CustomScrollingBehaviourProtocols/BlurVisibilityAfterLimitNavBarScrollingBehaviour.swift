@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol BlurVisibilityAfterLimitNavBarScrollingBehaviour: CNavigationControllerChild {
     func updateBlurVisibility(for yOffset: CGFloat, in navBar: CNavigationBar)
 }

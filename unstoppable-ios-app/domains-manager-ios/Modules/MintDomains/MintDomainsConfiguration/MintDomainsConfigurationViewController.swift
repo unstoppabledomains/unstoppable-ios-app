@@ -231,7 +231,7 @@ private extension MintDomainsConfigurationViewController {
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
-            
+            @MainActor
             func addBackground() {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 background.contentInsets.top = section?.headerHeight ?? 0
@@ -279,7 +279,7 @@ private extension MintDomainsConfigurationViewController {
 extension MintDomainsConfigurationViewController {
     enum Section: Hashable {
         case header
-        case domainsList(domainsCount: Int, isAllSelected: Bool, selectAllButtonCallback: EmptyCallback)
+        case domainsList(domainsCount: Int, isAllSelected: Bool, selectAllButtonCallback: MainActorAsyncCallback)
         case domainCard
         case setPrimary
        
@@ -322,7 +322,7 @@ extension MintDomainsConfigurationViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
 
         case domainListItem(configuration: ListItemConfiguration)
         case domainCard(_ domain: String)

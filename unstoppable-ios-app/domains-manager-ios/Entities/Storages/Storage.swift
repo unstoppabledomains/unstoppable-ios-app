@@ -200,8 +200,10 @@ extension Storage: TxsStorage {
         guard !domainNames.isEmpty else {  return [] }
         
         let transactionCache = getTxList()
-        return transactionCache.filter({    guard let domainName = $0.domainName else { return false }
-            return domainNames.contains(domainName) })
+        return transactionCache.filter({    
+            guard let domainName = $0.domainName else { return false }
+            return domainNames.contains(domainName)
+        })
     }
     
     func injectTxsUpdate_Blocking(_ newTxs: [TransactionItem]) {

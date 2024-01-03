@@ -28,7 +28,7 @@ protocol PurchaseDomainsServiceProtocol {
 enum PurchaseDomainCartStatus {
     case failedToAuthoriseWallet(UDWallet)
     case hasUnpaidDomains
-    case failedToLoadCalculations(EmptyCallback)
+    case failedToLoadCalculations(MainActorAsyncCallback)
     case ready(cart: PurchaseDomainsCart)
     
     var promoCreditsAvailable: Int {

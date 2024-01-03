@@ -14,7 +14,9 @@ actor ConnectedAppsImageCache {
     private var connectedAppToColorCache: [String : UIColor] = [:]
     
     private init() {
-        loadFromCache()
+        Task {
+            await loadFromCache()
+        }
     }
     
 }
@@ -72,11 +74,13 @@ private extension ConnectedAppsImageCache {
 
 private extension UIColor {
     static func color(data: Data) -> UIColor? {
-        return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? UIColor
+        guard let hex = String(data: data, encoding: .utf8) else { return nil }
+        
+        return UIColor(hex: hex)
     }
     
     func encode() -> Data? {
-        return try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+        self.toHex().data(using: .utf8)
     }
 }
 

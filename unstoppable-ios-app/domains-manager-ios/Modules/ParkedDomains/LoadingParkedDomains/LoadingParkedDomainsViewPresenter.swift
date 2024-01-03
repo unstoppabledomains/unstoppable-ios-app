@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol LoadingParkedDomainsViewPresenterProtocol: BasePresenterProtocol {
 
 }
 
+@MainActor
 class LoadingParkedDomainsViewPresenter {
     private(set) weak var view: LoadingParkedDomainsViewProtocol?
 

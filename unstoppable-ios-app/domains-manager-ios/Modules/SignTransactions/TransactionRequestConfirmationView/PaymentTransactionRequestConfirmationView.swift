@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol PaymentTransactionDisplayCostView: UIView {
     var height: CGFloat { get }
     

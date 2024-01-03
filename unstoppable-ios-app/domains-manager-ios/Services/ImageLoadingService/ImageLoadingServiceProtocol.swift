@@ -32,12 +32,13 @@ struct DownsampleDescription {
         self.init(size: .init(width: maxSize, height: maxSize), scale: scale)
     }
     
-    static let max: DownsampleDescription = .init(maxSize: Constants.downloadedImageMaxSize)
+    @MainActor
+    static let max: DownsampleDescription = .init(maxSize: Constants.downloadedImageMaxSize, scale: SceneDelegate.shared?.window?.screen.scale ?? 2)
     static let mid: DownsampleDescription = .init(maxSize: 256)
     static let icon: DownsampleDescription = .init(maxSize: Constants.downloadedIconMaxSize)
 }
 
-enum ImageSource {
+enum ImageSource: Sendable {
     case url(_ url: URL, maxSize: CGFloat? = nil)
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case domain(_ domainItem: DomainDisplayInfo)

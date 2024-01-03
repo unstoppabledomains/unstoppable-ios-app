@@ -21,8 +21,6 @@ final class FABRaisedTertiaryButton: FABButton {
     override func setTitle(_ title: String?, image: UIImage?, for state: UIControl.State = .normal) {
         super.setTitle(title, image: image, for: state)
         
-        self.titleEdgeInsets = .zero
-        self.imageEdgeInsets = .zero
-        self.contentEdgeInsets = .zero
+        configuration = .plain()
     }
 }

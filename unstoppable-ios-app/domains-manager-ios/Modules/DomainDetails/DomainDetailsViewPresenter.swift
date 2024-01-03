@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol DomainDetailsViewPresenterProtocol: BasePresenterProtocol {
     var domainName: String { get }
     var analyticsName: Analytics.ViewName { get }
@@ -20,6 +21,7 @@ extension DomainDetailsViewPresenterProtocol {
     func actionButtonPressed() { }
 }
 
+@MainActor
 final class DomainDetailsViewPresenter: NSObject, ViewAnalyticsLogger {
     
     private var domain: DomainDisplayInfo
@@ -63,8 +65,9 @@ extension DomainDetailsViewPresenter: DomainDetailsViewPresenterProtocol {
 
 // MARK: - DataAggregatorServiceListener
 extension DomainDetailsViewPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
+        Task { @MainActor in
             switch result {
             case .success(let result):
                 switch result {
@@ -102,6 +105,6 @@ private extension DomainDetailsViewPresenter {
     }
  
     func imageSaved() {
-        Task { await view?.showQRSaved() }
+        view?.showQRSaved()
     }
 }

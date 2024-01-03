@@ -38,7 +38,7 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                     }
                 }
             } catch {
-                await view?.showAlertWith(error: error, handler: { [weak self] _ in
+                view?.showAlertWith(error: error, handler: { [weak self] _ in
                     self?.failedToLoadParkedDomains()
                 })
             }

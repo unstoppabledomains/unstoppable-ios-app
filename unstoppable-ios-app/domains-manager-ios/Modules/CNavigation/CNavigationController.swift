@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol CNavigationControllerDelegate: AnyObject {
     func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool)
     func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool)
@@ -240,9 +241,8 @@ extension CNavigationController {
 // MARK: - Private methods
 private extension CNavigationController {
     func backButtonPressed() {
-        guard popViewController(animated: true) != nil else { return }
-        
         backButtonPressedCallback?()
+        popViewController(animated: true)
     }
     
     func setTransitioning(_ isTransitioning: Bool) {

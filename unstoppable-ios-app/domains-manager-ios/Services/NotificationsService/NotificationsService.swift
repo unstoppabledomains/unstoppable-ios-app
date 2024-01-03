@@ -155,7 +155,7 @@ fileprivate extension NotificationsService {
     func configure() { }
     
     func configureWC2PN() -> Bool {
-        guard let clientId = try? Networking.interactor.getClientId() else {
+        guard (try? Networking.interactor.getClientId()) != nil else {
             Debugger.printFailure("Did fail to get client id from WC2 and configure Echo.")
             return false
         }

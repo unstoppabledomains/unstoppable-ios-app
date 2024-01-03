@@ -7,10 +7,10 @@
 
 import Foundation
 
+@MainActor
 protocol ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { get }
-    
 }
 
 extension ViewAnalyticsLogger {
