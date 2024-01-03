@@ -12,17 +12,12 @@ final class AmplitudeAnalyticsService {
     
     private let instance = Amplitude.instance()
     
-    init(userID: String) {
-#if DEBUG
+    init() {
+        #if DEBUG
         Amplitude.instance().initializeApiKey(AmplitudeKeys.amplitudeStagingKey)
-#else
+        #else
         Amplitude.instance().initializeApiKey(AmplitudeKeys.amplitudeKey)
-#endif
-        if instance.userId == nil {
-            instance.setUserId(userID)
-        } else if instance.userId != userID {
-            Debugger.printWarning("Different user id in Amplitude SDK and keychain")
-        }
+        #endif
     }
 }
 
@@ -41,5 +36,13 @@ extension AmplitudeAnalyticsService: AnalyticsServiceChildProtocol {
         }
         
         instance.setUserProperties(properties)
+    }
+    
+    func set(userID: String) {
+        if instance.userId == nil {
+            instance.setUserId(userID)
+        } else if instance.userId != userID {
+            Debugger.printWarning("Different user id in Amplitude SDK and keychain")
+        }
     }
 }

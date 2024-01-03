@@ -5,7 +5,8 @@
 //  Created by Oleg Kuplin on 12.08.2022.
 //
 
-import Foundation
+import UIKit
+import CoreTelephony
 
 private protocol HeapRequest: Codable {
     var path: String { get }
@@ -17,10 +18,10 @@ final class HeapAnalyticService {
     private let appId: String = NetworkService.heapAppId
     private let storage = HeapAnalyticRequestsStorage()
     private var timer: Timer?
-    private let userID: String
+    private var userID: String?
+    private var defaultProperties: Analytics.EventParameters?
 
-    init(userID: String) {
-        self.userID = userID
+    init() {
         setupTimer()
     }
     
@@ -32,7 +33,7 @@ extension HeapAnalyticService: AnalyticsServiceChildProtocol {
         let bulkEvent = BulkTrackEvent(identity: identity(),
                                        event: event.rawValue,
                                        timestamp: timestamp,
-                                       properties: eventParameters)
+                                       properties: (eventParameters ?? [:]).adding(getDefaultProperties()))
         Task {
             await storage.storeRequest(.trackEvent(bulkEvent))
         }
@@ -45,10 +46,59 @@ extension HeapAnalyticService: AnalyticsServiceChildProtocol {
             await storage.storeRequest(.userProperties(event))
         }
     }
+    
+    func set(userID: String) {
+        
+    }
 }
 
 // MARK: - Private methods
 private extension HeapAnalyticService {
+    func getDefaultProperties() -> Analytics.EventParameters {
+        if let defaultProperties {
+            return defaultProperties
+        }
+        
+        let platform = "iOS " + UIDevice.current.systemVersion
+        let phoneModel = UIDevice.current.modelCode ?? "Unknown"
+        let iosVendorId = UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
+        let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Unknown"
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+        let ip = publicIP() ?? "Unknown"
+        
+        let defaultProperties: Analytics.EventParameters = [.carrier : carrierName,
+                                                            .platform: platform,
+                                                            .phoneModel: phoneModel,
+                                                            .iosVendorId: iosVendorId,
+                                                            .appName: appName,
+                                                            .appVersion: appVersion,
+                                                            .ip: ip]
+        self.defaultProperties = defaultProperties
+        return defaultProperties
+    }
+    
+    var carrierName: String {
+        #if targetEnvironment(simulator)
+        "Simulator"
+        #else
+        CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.values.compactMap({ $0.carrierName }).joined(separator: ", ") ?? ""
+        #endif
+    }
+    
+    func publicIP() -> String? {
+        do {
+            let url = URL(string: "https://icanhazip.com/")!
+            let publicIP = try String(contentsOf: url,
+                                      encoding: .utf8)
+                .trimmingCharacters(in: .whitespaces)
+            return publicIP
+        }
+        catch {
+            Debugger.printFailure("Failed to get public IP")
+            return nil
+        }
+    }
+    
     func send(request: HeapRequest) async throws {
         let url = heapApiURL.appendingPathComponent(request.path)
         guard let body = request.jsonString(using: .convertToSnakeCase) else {
@@ -61,7 +111,7 @@ private extension HeapAnalyticService {
                                                  method: .post)
     }
     
-    func identity() -> String {
+    func identity() -> String? {
         userID
     }
     
@@ -79,6 +129,8 @@ private extension HeapAnalyticService {
     
     func uploadEvents() {
         Task {
+            guard let identity = identity() else { return }
+            
             let requests = await storage.getRequests()
             guard !requests.isEmpty else { return }
             
@@ -87,9 +139,11 @@ private extension HeapAnalyticService {
             
             requests.forEach { request in
                 switch request {
-                case .trackEvent(let trackEvent):
+                case .trackEvent(var trackEvent):
+                    trackEvent.identity = identity
                     trackEvents.append(trackEvent)
-                case .userProperties(let setUserPropertyEvent):
+                case .userProperties(var setUserPropertyEvent):
+                    setUserPropertyEvent.identity = identity
                     setUserPropertyRequests.append(setUserPropertyEvent)
                 }
             }
@@ -162,12 +216,12 @@ private extension HeapAnalyticService {
             case properties = "properties"
         }
         
-        let identity: String
+        var identity: String?
         let event: String
         var timestamp: Date = Date()
         let properties: Analytics.EventParameters?
         
-        init(identity: String, event: String, timestamp: Date = Date(), properties: Analytics.EventParameters?) {
+        init(identity: String?, event: String, timestamp: Date = Date(), properties: Analytics.EventParameters?) {
             self.identity = identity
             self.event = event
             self.timestamp = timestamp
@@ -217,10 +271,10 @@ private extension HeapAnalyticService {
         var path: String { "add_user_properties" }
         
         let appId: String
-        let identity: String
+        var identity: String?
         let properties: Analytics.UserProperties
         
-        internal init(appId: String, identity: String, properties: Analytics.UserProperties) {
+        internal init(appId: String, identity: String?, properties: Analytics.UserProperties) {
             self.appId = appId
             self.identity = identity
             self.properties = properties

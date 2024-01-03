@@ -240,9 +240,8 @@ extension CNavigationController {
 // MARK: - Private methods
 private extension CNavigationController {
     func backButtonPressed() {
-        guard popViewController(animated: true) != nil else { return }
-        
         backButtonPressedCallback?()
+        popViewController(animated: true)
     }
     
     func setTransitioning(_ isTransitioning: Bool) {

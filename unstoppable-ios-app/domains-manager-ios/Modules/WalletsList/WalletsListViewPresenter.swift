@@ -95,7 +95,7 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
                 UDVibration.buttonTap.vibrate()
                 guard let wallet = walletsWithInfo.first(where: { $0.wallet.address == walletInfo.address }) else { return }
                 
-                logButtonPressedAnalyticEvents(button: .walletInList)
+                logButtonPressedAnalyticEvents(button: .walletInList, parameters: [.wallet : wallet.address])
                 await didSelectWallet(wallet.wallet, walletInfo: walletInfo)
             case .manageICloudBackups:
                 UDVibration.buttonTap.vibrate()
