@@ -87,6 +87,7 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             showWalletsNumberLimitReachedPullUp(walletsLimit: walletsLimit)
             return
         }
+        showAddWalletPullUp(isImportOnly: false)
     }
     
     func didSelectItem(_ item: WalletsListViewController.Item) {
