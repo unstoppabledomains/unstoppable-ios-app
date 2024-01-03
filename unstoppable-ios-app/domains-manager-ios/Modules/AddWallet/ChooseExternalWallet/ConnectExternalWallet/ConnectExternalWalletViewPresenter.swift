@@ -57,6 +57,9 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
                         didConnectWallet(wallet: wallet)
                     } catch ExternalWalletConnectionService.ConnectionError.noResponse {
                         // Ignore
+                    } catch ExternalWalletConnectionService.ConnectionError.ethWalletAlreadyExists {
+                        view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                                             body: String.Constants.walletAlreadyConnectedError.localized())
                     } catch {
                         view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                               body: String.Constants.failedToConnectExternalWallet.localized())
