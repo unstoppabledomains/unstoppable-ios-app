@@ -71,17 +71,16 @@ extension ExternalWalletConnectionService: WalletConnectDelegate {
                                                                                    walletRecord: wcWallet)
                 successfullyAddedCallback?()
                 finishWith(result: .success(wallet))
-            } catch WalletError.ethWalletAlreadyExists {
-                guard let wallet = appContext.udWalletsService.find(by: walletAddress) else {
-                    Debugger.printFailure("Failed to find existing wallet", critical: true)
-                    finishWith(result: .failure(.failedToAddWallet))
-                    return
-                }
-                successfullyAddedCallback?()
-                finishWith(result: .success(wallet))
             } catch {
-                Debugger.printFailure("Error adding a new wallet: \(error.localizedDescription)", critical: true)
-                finishWith(result: .failure(.failedToAddWallet))
+                var isCritical = true
+                if let walletError = error as? WalletError,
+                   case .ethWalletAlreadyExists = walletError {
+                    isCritical = false
+                    finishWith(result: .failure(.ethWalletAlreadyExists))
+                } else {
+                    finishWith(result: .failure(.failedToAddWallet))
+                }
+                Debugger.printFailure("Error adding a new wallet: \(error.localizedDescription)", critical: isCritical)
             }
         }
     }
@@ -193,6 +192,7 @@ extension ExternalWalletConnectionService {
         case walletAddressIsNil
         case failedToFindInstalledWallet
         case failedToAddWallet
+        case ethWalletAlreadyExists
         case noResponse
         
         public var errorDescription: String? {
