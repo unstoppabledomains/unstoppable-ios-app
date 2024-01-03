@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 @MainActor
 protocol EnterEmailVerificationCodeViewPresenterProtocol: BasePresenterProtocol {
@@ -23,7 +24,7 @@ class EnterEmailVerificationCodeViewPresenter {
     private(set) var email: String
     private var preFilledCode: String?
     private var secondsLeftToResend = 0
-    private var resendTimer: Timer?
+    private var resendTimer: AnyCancellable?
     var resendInterval: TimeInterval { 10 }
     var numberOfCharactersToVerify: Int { 6 }
     var progress: Double? { nil }
@@ -90,12 +91,15 @@ private extension EnterEmailVerificationCodeViewPresenter {
         stopResendTimer()
         secondsLeftToResend = Int(resendInterval)
         checkResendStatus()
-        resendTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] _ in
-            guard let self = self else { return }
-            
-            self.secondsLeftToResend -= 1
-            self.checkResendStatus()
-        })
+        resendTimer = Timer
+            .publish(every: 1, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                
+                self.secondsLeftToResend -= 1
+                self.checkResendStatus()
+            }
     }
     
     func checkResendStatus() {
@@ -108,7 +112,7 @@ private extension EnterEmailVerificationCodeViewPresenter {
     }
     
     func stopResendTimer() {
-        resendTimer?.invalidate()
+        resendTimer?.cancel()
         resendTimer = nil
     }
 }

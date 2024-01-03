@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 final class DomainProfileBadgesSection {
@@ -20,7 +21,7 @@ final class DomainProfileBadgesSection {
     private let sectionAnalyticName: String = "badges"
     private var isRefreshingBadges = false
     private var isBadgesUpToDate = false
-    private var refreshBadgesTimer: Timer?
+    private var refreshBadgesTimer: AnyCancellable?
 
     init(sectionData: SectionData,
          state: DomainProfileViewController.State,
@@ -219,16 +220,17 @@ private extension DomainProfileBadgesSection {
     
     @MainActor
     func startRefreshBadgesTimer() {
-        refreshBadgesTimer = Timer.scheduledTimer(withTimeInterval: Constants.refreshDomainBadgesInterval,
-                                                  repeats: true,
-                                                  block: { [weak self] _ in
-            self?.refreshDomainBadges()
-        })
+        refreshBadgesTimer = Timer
+            .publish(every: Constants.refreshDomainBadgesInterval, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshDomainBadges()
+            }
     }
     
     @MainActor
     func stopRefreshBadgesTimer() {
-        refreshBadgesTimer?.invalidate()
+        refreshBadgesTimer?.cancel()
         refreshBadgesTimer = nil
     }
     

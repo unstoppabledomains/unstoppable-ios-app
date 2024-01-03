@@ -7,6 +7,7 @@
 
 import UIKit
 import SafariServices
+import Combine
 
 @MainActor
 protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
@@ -36,7 +37,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     var analyticsName: Analytics.ViewName { .domainProfile }
 
     private weak var view: (any DomainProfileViewProtocol)?
-    private var refreshTransactionsTimer: Timer?
+    private var refreshTransactionsTimer: AnyCancellable?
     private var preRequestedAction: PreRequestedProfileAction?
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
@@ -809,11 +810,12 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func startRefreshTransactionsTimer() {
         stopRefreshTransactionsTimer()
-        refreshTransactionsTimer = Timer.scheduledTimer(withTimeInterval: Constants.updateInterval,
-                                                        repeats: true,
-                                                        block: { @Sendable @MainActor [weak self] _ in
-            self?.refreshTransactionsAsync()
-        })
+        refreshTransactionsTimer = Timer
+            .publish(every: Constants.updateInterval, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshTransactionsAsync()
+            }
     }
     
     func refreshTransactionsAsync() {
@@ -832,7 +834,7 @@ private extension DomainProfileViewPresenter {
     
     @MainActor
     func stopRefreshTransactionsTimer() {
-        refreshTransactionsTimer?.invalidate()
+        refreshTransactionsTimer?.cancel()
         refreshTransactionsTimer = nil
     }
 }

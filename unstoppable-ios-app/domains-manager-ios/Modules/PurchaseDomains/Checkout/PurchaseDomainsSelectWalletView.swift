@@ -46,32 +46,15 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
 private extension PurchaseDomainsSelectWalletView {
     @ViewBuilder
     func walletRowView(_ wallet: WalletDisplayInfo) -> some View {
-        var subtitle: String?
-        if wallet.isNameSet {
-            subtitle = "\(wallet.address.walletAddressTruncated)"
-        } 
-        if wallet.domainsCount > 0 {
-            let domainsCounterText = String.Constants.pluralNDomains.localized(wallet.domainsCount, wallet.domainsCount)
-            if wallet.isNameSet {
-                subtitle! += " · \(domainsCounterText)"
-            } else {
-                subtitle = domainsCounterText
-            }
-        }
-        let image = Image(uiImage: wallet.source.displayIcon)
-        let imageStyle: UDListItemView.ImageStyle
-        if wallet.source == .imported {
-            imageStyle = .centred()
-        } else {
-            imageStyle = .full
-        }
+        let walletDisplayInfo = WalletRowDisplayInfo(wallet: wallet,
+                                                     isSelected: wallet.address == selectedWallet.wallet.address)
         
-        return UDCollectionListRowButton(content: {
-            UDListItemView(title: wallet.displayName,
-                           subtitle: subtitle,
-                           image: image,
-                           imageStyle: imageStyle,
-                           rightViewStyle: wallet.address == selectedWallet.wallet.address ? .checkmark : nil)
+        UDCollectionListRowButton(content: {
+            UDListItemView(title: walletDisplayInfo.title,
+                           subtitle: walletDisplayInfo.subtitle,
+                           image: walletDisplayInfo.image,
+                           imageStyle: walletDisplayInfo.imageStyle,
+                           rightViewStyle: walletDisplayInfo.rightViewStyle)
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
 
@@ -80,6 +63,39 @@ private extension PurchaseDomainsSelectWalletView {
             selectedWalletCallback(selectedWallet)
             presentationMode.wrappedValue.dismiss()
         })
+    }
+    
+    struct WalletRowDisplayInfo {
+        let title: String
+        let subtitle: String?
+        let image: Image
+        let imageStyle: UDListItemView.ImageStyle
+        let rightViewStyle: UDListItemView.RightViewStyle?
+        
+        init(wallet: WalletDisplayInfo,
+             isSelected: Bool) {
+            title = wallet.displayName
+            var subtitle: String?
+            if wallet.isNameSet {
+                subtitle = "\(wallet.address.walletAddressTruncated)"
+            }
+            if wallet.domainsCount > 0 {
+                let domainsCounterText = String.Constants.pluralNDomains.localized(wallet.domainsCount, wallet.domainsCount)
+                if wallet.isNameSet {
+                    subtitle! += " · \(domainsCounterText)"
+                } else {
+                    subtitle = domainsCounterText
+                }
+            }
+            self.subtitle = subtitle
+            image = Image(uiImage: wallet.source.displayIcon)
+            if wallet.source == .imported {
+                imageStyle = .centred()
+            } else {
+                imageStyle = .full
+            }
+            rightViewStyle = isSelected ? .checkmark : nil
+        }
     }
 }
 

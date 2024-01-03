@@ -28,7 +28,7 @@ enum PullUpDisclosureIndicatorStyle {
     
 }
 
-protocol PullUpCollectionViewCellItem {
+protocol PullUpCollectionViewCellItem: Sendable {
     var imageSize: ResizableRoundedImageView.Size { get }
     var imageStyle: ResizableRoundedImageView.Style { get}
     var title: String { get }
