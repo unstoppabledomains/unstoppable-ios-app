@@ -154,7 +154,7 @@ extension EIP712TypedData {
                     let hex = Data(hexString: value) {
                     return try? ABIValue(hex, type: .bytes(length))
                 } else {
-                    return try? ABIValue(Data(bytes: Array(value.utf8)), type: .bytes(length))
+                    return try? ABIValue(Data(Array(value.utf8)), type: .bytes(length))
                 }
             }
         }
