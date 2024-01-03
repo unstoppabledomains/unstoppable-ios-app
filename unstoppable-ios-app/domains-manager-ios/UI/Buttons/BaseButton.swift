@@ -171,13 +171,11 @@ private extension BaseButton {
         let contentInsets = UIEdgeInsets(top: 0, left: leftPadding + titleImagePadding / 2,
                                          bottom: 0, right: rightPadding + titleImagePadding / 2)
         
-        self.configuration = nil
-        
-        self.titleEdgeInsets = UIEdgeInsets(top: 0, left: titleLeftPadding,
-                                            bottom: 0, right: titleRightPadding)
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: imageLeftPadding,
-                                            bottom: 0, right: imageRightPadding)
-        self.contentEdgeInsets = contentInsets
+        var buttonConfig = UIButton.Configuration.plain()
+        buttonConfig.titlePadding = titleImagePadding
+        buttonConfig.imagePadding = titleImagePadding
+        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: contentInsets.top, leading: contentInsets.left, bottom: contentInsets.bottom, trailing: contentInsets.right)
+        self.configuration = buttonConfig
     }
 }
 
@@ -187,8 +185,6 @@ private extension BaseButton {
         self.backgroundColor = backgroundColorForEnabledState
         self.tintColor = textColor
         layer.cornerRadius = cornerRadius
-        adjustsImageWhenHighlighted = false
-        adjustsImageWhenDisabled = false
         self.setValue(UIButton.ButtonType.custom.rawValue, forKey: "buttonType")
         additionalSetup()
         addTarget(self, action: #selector(vibrate), for: .touchUpInside)
