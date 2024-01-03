@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WalletWithInfo: Sendable {
+struct WalletWithInfo {
     var wallet: UDWallet
     var displayInfo: WalletDisplayInfo?
     
