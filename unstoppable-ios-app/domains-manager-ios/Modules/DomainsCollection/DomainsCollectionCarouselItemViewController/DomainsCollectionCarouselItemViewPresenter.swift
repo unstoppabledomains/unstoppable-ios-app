@@ -199,7 +199,7 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
 extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener {
     nonisolated
     func didRefreshNFTs(_ nfts: [NFTModel], for domainName: DomainName) {
-        Task {
+        Task { @MainActor in 
             if case .domain(let domain) = self.mode,
                domain.name == domainName {
                 setNFTs(nfts)
