@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 typealias DomainProfileTopInfoButton = DomainProfileViewController.ItemTopInfoData.Button
 typealias DomainProfileTopInfoButtonCallback = @Sendable @MainActor (DomainProfileTopInfoButton)->()
@@ -21,7 +21,7 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
     @IBOutlet private weak var followersButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var udBlueImageView: UIImageView!
     
-    private let dropItemIdentifier = kUTTypeImage as String
+    private let dropItemIdentifier = UTType.image.identifier
 
     override func awakeFromNib() {
         super.awakeFromNib()
