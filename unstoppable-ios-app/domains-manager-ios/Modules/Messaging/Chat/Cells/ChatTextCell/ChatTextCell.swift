@@ -61,10 +61,16 @@ extension ChatTextCell {
                                                   type: .text(textDetails),
                                                   isRead: false,
                                                   isFirstInChat: true,
-                                                  deliveryState: .delivered,
+                                                  deliveryState: .failedToSend,
                                                   isEncrypted: false)
-    let cell = ChatTextCell()
+    
+    let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
+    collection.registerCellNibOfType(ChatTextCell.self)
+    
+    let cell = collection.dequeueCellOfType(ChatTextCell.self, forIndexPath: IndexPath(row: 0, section: 0))
+    
     cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
+    cell.alpha = 1
     cell.setWith(configuration: .init(message: message,
                                       textMessageDisplayInfo: textDetails,
                                       isGroupChatMessage: true,

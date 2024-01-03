@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol CNavigationControllerChild: AnyObject {
     var navBarTitleAttributes: [NSAttributedString.Key : Any]? { get }
     

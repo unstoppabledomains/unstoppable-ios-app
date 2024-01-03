@@ -324,28 +324,32 @@ extension ChatsListViewPresenter: MessagingServiceListener {
 
 // MARK: - UDWalletsServiceListener
 extension ChatsListViewPresenter: UDWalletsServiceListener {
+    nonisolated
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
-        switch notification {
-        case .walletsUpdated(let wallets):
-            let addresses = wallets.map { $0.address }
-            if let selectedAddress = selectedProfileWalletPair?.wallet.address,
-               !addresses.contains(selectedAddress) {
-                loadAndShowData()
-            } else {
+        Task { @MainActor in
+            switch notification {
+            case .walletsUpdated(let wallets):
+                let addresses = wallets.map { $0.address }
+                if let selectedAddress = selectedProfileWalletPair?.wallet.address,
+                   !addresses.contains(selectedAddress) {
+                    loadAndShowData()
+                } else {
+                    refreshAvailableWalletsList()
+                }
+            case .reverseResolutionDomainChanged:
                 refreshAvailableWalletsList()
+            case .walletRemoved:
+                return
             }
-        case .reverseResolutionDomainChanged:
-            refreshAvailableWalletsList()
-        case .walletRemoved:
-            return
         }
     }
 }
 
 // MARK: - SceneActivationListener
 extension ChatsListViewPresenter: SceneActivationListener {
+    nonisolated
     func didChangeSceneActivationState(to state: SceneActivationState) {
-        Task {
+        Task { @MainActor in
             switch state {
             case .foregroundActive:
                 if let selectedProfileWalletPair,
@@ -848,7 +852,6 @@ private extension ChatsListViewPresenter {
             let members = details.allMembers
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         case .community(let details):
-            let members = details.members
             return details.displayName.lowercased().contains(searchKey)
         }
     }

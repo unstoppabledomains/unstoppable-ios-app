@@ -7,16 +7,17 @@
 
 import Foundation
 
+@MainActor
 protocol EnterValueViewPresenterProtocol: BasePresenterProtocol {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var progress: Double? { get }
     var analyticsName: Analytics.ViewName { get }
     
     func didTapContinueButton()
-    @MainActor
     func valueDidChange(_ value: String)
 }
 
+@MainActor
 class EnterValueViewPresenter {
     
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
@@ -31,7 +32,6 @@ class EnterValueViewPresenter {
     }
     
     func didTapContinueButton() { }
-    @MainActor
     func viewDidLoad() {
         view?.setDashesProgress(progress)
         view?.setContinueButtonEnabled(false)
@@ -43,7 +43,6 @@ class EnterValueViewPresenter {
     func valueValidationError() -> String? { nil }
     func isContinueButtonEnabled() -> Bool { !(value ?? "").isEmpty && valueValidationError() == nil }
     
-    @MainActor
     func valueDidChange(_ value: String) {
         self.value = value
         

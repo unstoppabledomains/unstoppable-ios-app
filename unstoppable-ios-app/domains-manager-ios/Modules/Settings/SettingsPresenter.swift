@@ -7,10 +7,12 @@
 
 import UIKit
 
+@MainActor
 protocol SettingsPresenterProtocol: BasePresenterProtocol {
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem)
 }
 
+@MainActor
 final class SettingsPresenter: ViewAnalyticsLogger {
     
     private weak var view: SettingsViewProtocol?
@@ -52,45 +54,42 @@ extension SettingsPresenter: SettingsPresenterProtocol {
     }
     
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem) {
-        Task {
-            logButtonPressedAnalyticEvents(button: menuItem.analyticsName)
-            await MainActor.run {
-                UDVibration.buttonTap.vibrate()
-                switch menuItem {
-                case .wallets:
-                    showWalletsList()
-                case .security:
-                    showSecuritySettings()
-                case .appearance(let selectedAppearance):
-                    showSelectAppearanceStyle(selectedStyle: selectedAppearance)
-                case .testnet(let isOn):
-                    setTestnet(on: isOn)
-                case .rateUs:
-                    AppReviewService.shared.requestToWriteReviewInAppStore()
-                case .learn:
-                    view?.openLink(.learn)
-                case .twitter:
-                    view?.openUDTwitter()
-                case .support:
-                    view?.openFeedbackMailForm()
-                case .legal:
-                    showLegalOptions()
-                case .homeScreen:
-                    showHomeScreenDomainSelection()
-                case .websiteAccount:
-                    showLoginScreen()
-                case .inviteFriends:
-                    showInviteFriendsScreen()
-                }
-            }
+        logButtonPressedAnalyticEvents(button: menuItem.analyticsName)
+        UDVibration.buttonTap.vibrate()
+        switch menuItem {
+        case .wallets:
+            showWalletsList()
+        case .security:
+            showSecuritySettings()
+        case .appearance(let selectedAppearance):
+            showSelectAppearanceStyle(selectedStyle: selectedAppearance)
+        case .testnet(let isOn):
+            setTestnet(on: isOn)
+        case .rateUs:
+            AppReviewService.shared.requestToWriteReviewInAppStore()
+        case .learn:
+            view?.openLink(.learn)
+        case .twitter:
+            view?.openUDTwitter()
+        case .support:
+            view?.openFeedbackMailForm()
+        case .legal:
+            showLegalOptions()
+        case .homeScreen:
+            showHomeScreenDomainSelection()
+        case .websiteAccount:
+            showLoginScreen()
+        case .inviteFriends:
+            showInviteFriendsScreen()
         }
     }
 }
 
 // MARK: - DataAggregatorServiceListener
 extension SettingsPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
+        Task { @MainActor in
             switch result {
             case .success(let result):
                 switch result {
@@ -108,16 +107,19 @@ extension SettingsPresenter: DataAggregatorServiceListener {
 
 // MARK: - FirebaseInteractionServiceListener
 extension SettingsPresenter: FirebaseAuthenticationServiceListener {
+    nonisolated
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        self.firebaseUser = firebaseUser
-        showSettingsAsync()
+        Task { @MainActor in
+            self.firebaseUser = firebaseUser
+            showSettingsAsync()
+        }
     }
 }
 
 // MARK: - Private methods
 private extension SettingsPresenter {
     func showSettingsAsync() {
-        Task {
+        Task { @MainActor in
             let wallets = await dataAggregatorService.getWalletsWithInfo()
             var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
             
@@ -146,18 +148,16 @@ private extension SettingsPresenter {
             
             snapshot.appendSections([.main(3)])
             
-            await view?.applySnapshot(snapshot, animated: false)            
+            view?.applySnapshot(snapshot, animated: false)
         }
     }
     
-    @MainActor
     func showWalletsList() {
         guard let nav = view?.cNavigationController else { return }
         
         UDRouter().showWalletsList(in: nav, initialAction: .none)
     }
     
-    @MainActor
     func showLegalOptions() {
         guard let view = self.view else { return }
         
@@ -194,14 +194,12 @@ private extension SettingsPresenter {
         Task { await appContext.userDataService.getLatestAppVersion() }
     }
     
-    @MainActor
     func showSecuritySettings() {
         guard let nav = view?.cNavigationController else { return }
         
         UDRouter().showSecuritySettingsScreen(in: nav)
     }
     
-    @MainActor
     func showSelectAppearanceStyle(selectedStyle: UIUserInterfaceStyle) {
         guard let view = self.view else { return }
         
@@ -227,12 +225,11 @@ private extension SettingsPresenter {
                 return
             case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
                 await dataAggregatorService.setDomainsOrder(using: domains)
-                await view.cNavigationController?.popToRootViewController(animated: true)
+                view.cNavigationController?.popToRootViewController(animated: true)
             }
         }
     }
     
-    @MainActor
     func showLoginScreen() {
         guard let view else { return }
         
@@ -269,7 +266,6 @@ private extension SettingsPresenter {
         }
     }
     
-    @MainActor
     func showInviteFriendsScreen() {
         Task {
             do {

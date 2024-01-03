@@ -170,10 +170,10 @@ extension MockDataAggregatorService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
             switch notification {
-            case .walletsUpdated(let wallets):
+            case .walletsUpdated:
                 let walletsInfo = await getWalletsWithInfo()
                 notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
-            case .reverseResolutionDomainChanged(let domainName):
+            case .reverseResolutionDomainChanged:
                 let walletsInfo = await getWalletsWithInfo()
                 notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
                 

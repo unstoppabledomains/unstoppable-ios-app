@@ -83,7 +83,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
-                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+                cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }
             throw error
         }
@@ -102,7 +102,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
-                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+                cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }
             throw error
         }

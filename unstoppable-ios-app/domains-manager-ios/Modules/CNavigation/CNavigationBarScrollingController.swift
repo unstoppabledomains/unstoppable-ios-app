@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class CNavigationBarScrollingController {
     
     func handleScrolling(of scrollView: UIScrollView, in navigationBar: CNavigationBar) {

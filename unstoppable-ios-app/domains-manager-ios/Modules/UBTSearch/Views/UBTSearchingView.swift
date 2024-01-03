@@ -116,7 +116,9 @@ private extension UBTSearchingView {
     @ViewBuilder
     func openSettingsButton() -> some View {
         Button {
-            openAppSettings()
+            Task { @MainActor in
+                openAppSettings()
+            }
         } label: {
             Text(String.Constants.openSettings.localized())
                 .foregroundColor(.white)

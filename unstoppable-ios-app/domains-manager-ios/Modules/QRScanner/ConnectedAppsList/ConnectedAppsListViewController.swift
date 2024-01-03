@@ -142,7 +142,7 @@ private extension ConnectedAppsListViewController {
     }
 }
 
-typealias ConnectedAppCellItemActionCallback = (ConnectedAppsListViewController.ItemAction)->()
+typealias ConnectedAppCellItemActionCallback = @Sendable @MainActor (ConnectedAppsListViewController.ItemAction)->()
 
 // MARK: - Collection elements
 extension ConnectedAppsListViewController {
@@ -150,7 +150,7 @@ extension ConnectedAppsListViewController {
         case walletApps(walletName: String)
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case app(_ displayInfo: AppItemDisplayInfo, actionCallback: ConnectedAppCellItemActionCallback)
         
         static func == (lhs: ConnectedAppsListViewController.Item, rhs: ConnectedAppsListViewController.Item) -> Bool {
@@ -175,7 +175,7 @@ extension ConnectedAppsListViewController {
         }
     }
     
-    struct AppItemDisplayInfo: Hashable {
+    struct AppItemDisplayInfo: Hashable, Sendable {
         private let appHolder: UnifiedConnectedAppInfoHolder
         let domain: DomainDisplayInfo
         let blockchainTypes: NonEmptyArray<BlockchainType>

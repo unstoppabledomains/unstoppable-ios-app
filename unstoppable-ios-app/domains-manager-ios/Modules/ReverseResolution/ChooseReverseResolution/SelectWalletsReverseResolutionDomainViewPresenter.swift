@@ -54,7 +54,7 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
         }
     }
         
-    override func showDomainsList() async {
+    override func showDomainsList() {
         var snapshot = ChooseReverseResolutionDomainSnapshot()
         
         snapshot.appendSections([.header])
@@ -77,8 +77,8 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
         snapshot.appendItems(walletDomains.map({ ChooseReverseResolutionDomainViewController.Item.domain(details: .init(domain: $0,
                                                                                                                         isSelected: $0 == selectedDomain)) }))
         
-        await view?.applySnapshot(snapshot, animated: true)
-        await view?.setConfirmButton(enabled: selectedDomain != nil)
+        view?.applySnapshot(snapshot, animated: true)
+        view?.setConfirmButton(enabled: selectedDomain != nil)
     }
 }
 

@@ -17,6 +17,7 @@ protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
     func didSelectBlockchainType(_ blockchainType: BlockchainType)
 }
 
+@MainActor
 final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
@@ -48,7 +49,6 @@ typealias QRCode = String
 
 // MARK: - QRScannerViewPresenterProtocol
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
-    @MainActor
     func viewDidLoad() {
         guard let view = self.view else { return }
         dataAggregatorService.addListener(self)
@@ -69,7 +69,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             await self?.showInfoFor(domain: selectedDomain, balance: nil)
         }
     }
-    @MainActor
+    
     func viewDidAppear() {
         Task {
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
@@ -213,7 +213,7 @@ extension QRScannerViewPresenter: DataAggregatorServiceListener {
                         self.selectedDomain = domain
                         await showInfoFor(domain: domain, balance: nil)
                     } else if domains.isEmpty {
-                        await view?.cNavigationController?.popViewController(animated: true)
+                        view?.cNavigationController?.popViewController(animated: true)
                     } else {
                         await setPrimaryDomainInfo()
                     }
@@ -229,7 +229,6 @@ extension QRScannerViewPresenter: DataAggregatorServiceListener {
 
 // MARK: - Private functions
 private extension QRScannerViewPresenter {
-    @MainActor
     func setBlockchainTypePicker() {
         view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: UserDefaults.selectedBlockchainType)
     }
@@ -240,7 +239,7 @@ private extension QRScannerViewPresenter {
         let domains = await dataAggregatorService.getDomainsDisplayInfo()
         self.selectedDomain = domain
         
-        await view?.setWith(selectedDomain: domain,
+        view?.setWith(selectedDomain: domain,
                             wallet: displayInfo,
                             balance: balance,
                             isSelectable: domains.count > 1)
@@ -250,7 +249,7 @@ private extension QRScannerViewPresenter {
                 let walletBalance = try await udWalletsService.getBalanceFor(walletAddress: walletWithInfo.wallet.address,
                                                                              blockchainType: UserDefaults.selectedBlockchainType,
                                                                              forceRefresh: false)
-                await view?.setWith(selectedDomain: domain,
+                view?.setWith(selectedDomain: domain,
                                     wallet: displayInfo,
                                     balance: walletBalance,
                                     isSelectable: domains.count > 1)
@@ -267,7 +266,7 @@ private extension QRScannerViewPresenter {
 
     func showNumberOfAppsConnected() async {
         let appsConnected = await walletConnectServiceV2.getConnectedApps()
-        await view?.setWith(appsConnected: appsConnected.count)
+        view?.setWith(appsConnected: appsConnected.count)
     }
     
     func getWCConnectionRequest(for code: QRCode) async throws -> WCRequest {

@@ -39,12 +39,12 @@ struct SwiftUIZoomableContainer<Content: View>: View {
         }
     }
     
-    fileprivate struct ZoomableScrollView<Content: View>: UIViewRepresentable {
-        private var content: Content
+    private struct ZoomableScrollView<ScrollContent: View>: UIViewRepresentable {
+        private var content: ScrollContent
         @Binding private var currentScale: CGFloat
         @Binding private var tapLocation: CGPoint
         
-        init(scale: Binding<CGFloat>, tapLocation: Binding<CGPoint>, @ViewBuilder content: () -> Content) {
+        init(scale: Binding<CGFloat>, tapLocation: Binding<CGPoint>, @ViewBuilder content: () -> ScrollContent) {
             _currentScale = scale
             _tapLocation = tapLocation
             self.content = content()
@@ -93,7 +93,7 @@ struct SwiftUIZoomableContainer<Content: View>: View {
         }
         
         // MARK: - Utils
-        
+        @MainActor
         func zoomRect(for scrollView: UIScrollView, scale: CGFloat, center: CGPoint) -> CGRect {
             let scrollViewSize = scrollView.bounds.size
             
@@ -106,18 +106,17 @@ struct SwiftUIZoomableContainer<Content: View>: View {
         }
         
         // MARK: - Coordinator
-        
         class Coordinator: NSObject, UIScrollViewDelegate {
-            var hostingController: UIHostingController<Content>
+            var hostingController: UIHostingController<ScrollContent>
             @Binding var currentScale: CGFloat
             
-            init(hostingController: UIHostingController<Content>, scale: Binding<CGFloat>) {
+            init(hostingController: UIHostingController<ScrollContent>, scale: Binding<CGFloat>) {
                 self.hostingController = hostingController
                 _currentScale = scale
             }
             
             func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-                return hostingController.view
+                hostingController.view
             }
             
             func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {

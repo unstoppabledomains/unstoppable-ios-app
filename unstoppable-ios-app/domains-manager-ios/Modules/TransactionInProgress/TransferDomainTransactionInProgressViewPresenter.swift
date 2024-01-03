@@ -36,11 +36,9 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
     }
     
     override func viewTransactionButtonPressed() {
-        Task {
-            guard let transactionHash = self.domainTransaction?.transactionHash else { return }
-            
-            await view?.openLink(.polygonScanTransaction(transactionHash))
-        }
+        guard let transactionHash = self.domainTransaction?.transactionHash else { return }
+        
+        view?.openLink(.polygonScanTransaction(transactionHash))
     }
     
     override func refreshMintingTransactions() {
@@ -55,14 +53,14 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
                 domainTransaction = nil
             }
             
-            await view?.setActionButtonHidden(domainTransaction?.transactionHash == nil)
+            view?.setActionButtonHidden(domainTransaction?.transactionHash == nil)
             if domainTransaction == nil {
-                await dismiss()
+                dismiss()
                 if !isNotificationPermissionsGranted {
                     await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 }
             } else {
-                await showData()
+                showData()
             }
         }
     }

@@ -154,6 +154,7 @@ private extension CNavigationTransitionHandler {
     }
 }
 
+@MainActor
 final class TransitionHandler: NSObject, CInteractiveTransitioningController {
     
     private var context: UIViewControllerContextTransitioning?

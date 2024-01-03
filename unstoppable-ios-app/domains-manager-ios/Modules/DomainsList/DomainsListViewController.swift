@@ -266,7 +266,7 @@ private extension DomainsListViewController {
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
-            
+            @MainActor
             func addBackground(inset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 if let inset {
@@ -274,7 +274,7 @@ private extension DomainsListViewController {
                 }
                 layoutSection.decorationItems = [background]
             }
-            
+            @MainActor
             func addHeader() {
                 let headerHeight = section?.headerHeight ?? 0
                 let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -315,7 +315,7 @@ private extension DomainsListViewController {
 
 // MARK: - Collection elements
 extension DomainsListViewController {
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case other(title: String?), minting, searchEmptyState, dashesSeparator, globalSearchHint
         
         var headerHeight: CGFloat {
@@ -328,7 +328,7 @@ extension DomainsListViewController {
         }
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case domainListItem(_ domainItem: DomainDisplayInfo, isSelectable: Bool)
         case domainSearchItem(_ domainItem: SearchDomainProfile, isSelectable: Bool)
         case domainsMintingInProgress(domainsCount: Int)

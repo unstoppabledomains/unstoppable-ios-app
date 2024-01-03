@@ -45,7 +45,7 @@ final class SetupWalletsReverseResolutionNavigationManager: CNavigationControlle
     }
     
     override func popViewController(animated: Bool, completion: (()->())? = nil) -> UIViewController? {
-        guard let topViewController = self.topViewController else {
+        guard self.topViewController != nil else {
             return super.popViewController(animated: animated)
         }
         

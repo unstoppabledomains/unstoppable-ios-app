@@ -52,12 +52,10 @@ final class EnterBackupToRestoreWalletsPresenter: EnterBackupBasePresenter {
                 let _ = try await udWalletsService.restoreAndInjectWallets(using: password)
                 try SecureHashStorage.save(password: password)
 
-                await MainActor.run {
-                    Vibration.success.vibrate()
-                    view.dismiss(animated: true, completion: walletsRestoredCallback)
-                }
+                Vibration.success.vibrate()
+                view.dismiss(animated: true, completion: walletsRestoredCallback)
             } catch {
-                await view.showAlertWith(error: error)
+                view.showAlertWith(error: error)
             }
         }
     }

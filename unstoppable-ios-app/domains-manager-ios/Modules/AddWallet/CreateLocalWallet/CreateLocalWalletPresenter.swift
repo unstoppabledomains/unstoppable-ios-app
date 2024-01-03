@@ -21,7 +21,6 @@ final class CreateLocalWalletPresenter: BaseCreateWalletPresenter {
                    udWalletsService: udWalletsService)
     }
     
-    @MainActor
     override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -18,6 +18,7 @@ protocol AddWalletPresenterProtocol: BasePresenterProtocol {
     func didTapPasteButton()
 }
 
+@MainActor
 class BaseAddWalletPresenter {
     
     let walletType: RestorationWalletType
@@ -138,7 +139,7 @@ private extension BaseAddWalletPresenter {
     
     func getWalletForCurrentInput() async -> UDWalletWithPrivateSeed? {
         guard let view = self.view else { return nil }
-        let input = await view.input
+        let input = view.input
 
         if input.isValidPrivateKey() {
             return await udWalletsService.createWalletFor(privateKey: input)
@@ -151,7 +152,7 @@ private extension BaseAddWalletPresenter {
     func isInputValid() async -> Bool {
         guard let view = self.view else { return false }
         
-        let input = await view.input
+        let input = view.input
         
         switch walletType {
         case .verified:

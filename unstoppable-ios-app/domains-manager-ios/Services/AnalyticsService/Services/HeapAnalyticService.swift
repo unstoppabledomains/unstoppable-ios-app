@@ -30,11 +30,12 @@ final class HeapAnalyticService {
 // MARK: - AnalyticsServiceProtocol
 extension HeapAnalyticService: AnalyticsServiceChildProtocol {
     func log(event: Analytics.Event, timestamp: Date, withParameters eventParameters: Analytics.EventParameters?) {
-        let bulkEvent = BulkTrackEvent(identity: identity(),
-                                       event: event.rawValue,
-                                       timestamp: timestamp,
-                                       properties: (eventParameters ?? [:]).adding(getDefaultProperties()))
         Task {
+            let defaultProperties = await getDefaultProperties()
+            let bulkEvent = BulkTrackEvent(identity: identity(),
+                                           event: event.rawValue,
+                                           timestamp: timestamp,
+                                           properties: (eventParameters ?? [:]).adding(defaultProperties))
             await storage.storeRequest(.trackEvent(bulkEvent))
         }
     }
@@ -54,6 +55,7 @@ extension HeapAnalyticService: AnalyticsServiceChildProtocol {
 
 // MARK: - Private methods
 private extension HeapAnalyticService {
+    @MainActor
     func getDefaultProperties() -> Analytics.EventParameters {
         if let defaultProperties {
             return defaultProperties

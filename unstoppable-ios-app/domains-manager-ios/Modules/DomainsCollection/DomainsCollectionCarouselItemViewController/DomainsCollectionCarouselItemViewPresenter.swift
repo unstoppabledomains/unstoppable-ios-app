@@ -18,6 +18,7 @@ enum DomainsCollectionCarouselItemDisplayMode {
     case empty
 }
 
+@MainActor
 final class DomainsCollectionCarouselItemViewPresenter {
     
     typealias CardAction = DomainsCollectionCarouselItemViewController.DomainCardConfiguration.Action
@@ -101,8 +102,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
 
 // MARK: - DataAggregatorServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
+        Task { @MainActor in
             if case .domain(let domain) = mode {
                 switch result {
                 case .success(let resultType):
@@ -125,6 +127,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DataAggregatorServiceListe
 
 // MARK: - ExternalEventsServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListener {
+    nonisolated
     func didReceive(event: ExternalEvent) {
         Task {
             switch event {
@@ -139,6 +142,7 @@ extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListe
 
 // MARK: - AppLaunchServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
+    nonisolated
     func appLaunchServiceDidUpdateAppVersion() {
         Task {
             await showDomainDataWithActions(animated: false)
@@ -148,29 +152,33 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 
 // MARK: - WalletConnectServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
+    nonisolated
     func didConnect(to app: UnifiedConnectAppInfo) {
-        guard case .domain(let domain) = mode,
-              app.domain.isSameEntity(domain) else { return }
-        
-        Task {
+        Task { @MainActor in
+            guard case .domain(let domain) = mode,
+                  app.domain.isSameEntity(domain) else { return }
+            
             await showDomainDataWithActions(animated: true)
         }
     }
     
+    nonisolated
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        guard case .domain(let domain) = mode,
-              app.domain.isSameEntity(domain) else { return }
-
-        Task {
+        Task { @MainActor in
+            guard case .domain(let domain) = mode,
+                  app.domain.isSameEntity(domain) else { return }
+            
             await showDomainDataWithActions(animated: true)
         }
     }
     
+    nonisolated
     func didCompleteConnectionAttempt() { }
 }
 
 // MARK: - HotFeatureSuggestionsServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: HotFeatureSuggestionsServiceListener {
+    nonisolated
     func didUpdateCurrentSuggestion(_ suggestion: HotFeatureSuggestion?) {
         Task {
             await showDomainDataWithActions(animated: true)
@@ -186,10 +194,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
             self.connectedApps = connectedApps
         }
-        await showDomainData(animated: animated, actions: actions)
+        showDomainData(animated: animated, actions: actions)
     }
     
-    @MainActor
     func showDomainData(animated: Bool, actions: [CardAction]) {
         switch mode {
         case .domain(let domain):
@@ -199,7 +206,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
     }
     
-    @MainActor
     func showDataForDomain(_ domain: DomainDisplayInfo?, animated: Bool, actions: [CardAction]) {
         var snapshot = DomainsCollectionCarouselItemSnapshot()
         
@@ -382,20 +388,20 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     func showSetupReverseResolutionModule() {
         guard case .domain(let domain) = mode else { return }
-
-        Task { @MainActor in
-            guard let navigation = view?.containerViewController?.cNavigationController,
-                  let walletWithInfo,
-                  let walletInfo = walletWithInfo.displayInfo else { return }
-            
-            UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                              wallet: walletWithInfo.wallet,
-                                                              walletInfo: walletInfo,
-                                                              domain: domain,
-                                                              resultCallback: { [weak self] in
-                self?.didSetDomainForReverseResolution()
-            })
-        }
+        
+        guard let navigation = view?.containerViewController?.cNavigationController,
+              let walletWithInfo,
+              let walletInfo = walletWithInfo.displayInfo else { return }
+        
+        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+                                                          wallet: walletWithInfo.wallet,
+                                                          walletInfo: walletInfo,
+                                                          domain: domain,
+                                                          resultCallback: {
+            Task { @MainActor in
+                self.didSetDomainForReverseResolution()
+            }
+        })
     }
     
     func didSetDomainForReverseResolution() {

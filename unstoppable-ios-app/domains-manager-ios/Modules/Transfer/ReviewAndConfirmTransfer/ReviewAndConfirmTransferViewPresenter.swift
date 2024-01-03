@@ -53,17 +53,17 @@ extension ReviewAndConfirmTransferViewPresenter: ReviewAndConfirmTransferViewPre
     
     func transferButtonPressed() {
         Task {
-            await view?.setLoadingIndicator(active: true)
+            view?.setLoadingIndicator(active: true)
             
             do {
                 try await transferDomainFlowManager?.handle(action: .confirmedTransferOf(domain: domain,
                                                                                          recipient: recipient,
                                                                                          configuration: .init(resetRecords: confirmationData.resetRecords)))
             } catch {
-                await view?.showAlertWith(error: error, handler: nil)
+                view?.showAlertWith(error: error, handler: nil)
             }
             
-            await view?.setLoadingIndicator(active: false)
+            view?.setLoadingIndicator(active: false)
         }
     }
 }
@@ -71,46 +71,44 @@ extension ReviewAndConfirmTransferViewPresenter: ReviewAndConfirmTransferViewPre
 // MARK: - Private functions
 private extension ReviewAndConfirmTransferViewPresenter {
     func showData() {
-        Task {
-            var snapshot = ReviewAndConfirmTransferSnapshot()
-           
-            snapshot.appendSections([.header])
-            snapshot.appendItems([.header])
-            
-            snapshot.appendSections([.transferDetails])
-            snapshot.appendItems([.transferDetails(configuration: .init(domain: domain,
-                                                                        recipient: recipient))])
-            
-            snapshot.appendSections([.consentItems])
-            snapshot.appendItems([.switcher(configuration: .init(isOn: confirmationData.isConsentIrreversibleConfirmed,
-                                                                 type: .consentIrreversible,
-                                                                 valueChangedCallback: { [weak self] newValue in
-                self?.confirmationData.isConsentIrreversibleConfirmed = newValue
-                self?.updateConfirmButtonState()
-            })),
-                                  .switcher(configuration: .init(isOn: confirmationData.isConsentNotExchangeConfirmed,
-                                                                 type: .consentNotExchange,
-                                                                 valueChangedCallback: { [weak self] newValue in
-                self?.confirmationData.isConsentNotExchangeConfirmed = newValue
-                self?.updateConfirmButtonState()
-            })),
-                                  .switcher(configuration: .init(isOn: confirmationData.isConsentValidAddressConfirmed,
-                                                                 type: .consentValidAddress,
-                                                                 valueChangedCallback: { [weak self] newValue in
-                self?.confirmationData.isConsentValidAddressConfirmed = newValue
-                self?.updateConfirmButtonState()
-            }))])
-            
-            snapshot.appendSections([.clearRecords])
-            snapshot.appendItems([.switcher(configuration: .init(isOn: confirmationData.resetRecords,
-                                                                 type: .clearRecords,
-                                                                 valueChangedCallback: { [weak self] newValue in
-                self?.confirmationData.resetRecords = newValue
-                self?.logButtonPressedAnalyticEvents(button: .resetRecords, parameters: [.isOn: String(newValue)])
-            }))])
-            
-            await view?.applySnapshot(snapshot, animated: true)
-        }
+        var snapshot = ReviewAndConfirmTransferSnapshot()
+        
+        snapshot.appendSections([.header])
+        snapshot.appendItems([.header])
+        
+        snapshot.appendSections([.transferDetails])
+        snapshot.appendItems([.transferDetails(configuration: .init(domain: domain,
+                                                                    recipient: recipient))])
+        
+        snapshot.appendSections([.consentItems])
+        snapshot.appendItems([.switcher(configuration: .init(isOn: confirmationData.isConsentIrreversibleConfirmed,
+                                                             type: .consentIrreversible,
+                                                             valueChangedCallback: { [weak self] newValue in
+            self?.confirmationData.isConsentIrreversibleConfirmed = newValue
+            self?.updateConfirmButtonState()
+        })),
+                              .switcher(configuration: .init(isOn: confirmationData.isConsentNotExchangeConfirmed,
+                                                             type: .consentNotExchange,
+                                                             valueChangedCallback: { [weak self] newValue in
+            self?.confirmationData.isConsentNotExchangeConfirmed = newValue
+            self?.updateConfirmButtonState()
+        })),
+                              .switcher(configuration: .init(isOn: confirmationData.isConsentValidAddressConfirmed,
+                                                             type: .consentValidAddress,
+                                                             valueChangedCallback: { [weak self] newValue in
+            self?.confirmationData.isConsentValidAddressConfirmed = newValue
+            self?.updateConfirmButtonState()
+        }))])
+        
+        snapshot.appendSections([.clearRecords])
+        snapshot.appendItems([.switcher(configuration: .init(isOn: confirmationData.resetRecords,
+                                                             type: .clearRecords,
+                                                             valueChangedCallback: { [weak self] newValue in
+            self?.confirmationData.resetRecords = newValue
+            self?.logButtonPressedAnalyticEvents(button: .resetRecords, parameters: [.isOn: String(newValue)])
+        }))])
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func updateConfirmButtonState() {

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol EnterBackupViewControllerProtocol: BaseViewControllerProtocol & ViewWithDashesProgress {
     var password: String { get }
     func setTitle(_ title: String)
@@ -16,6 +17,7 @@ protocol EnterBackupViewControllerProtocol: BaseViewControllerProtocol & ViewWit
     func showError(_ error: String)
 }
 
+@MainActor
 final class EnterBackupViewController: BaseViewController, WalletDataValidator {
 
     @IBOutlet private weak var titleLabel: UDTitleLabel!

@@ -93,12 +93,6 @@ private extension SetupReverseResolutionViewController {
     func setup() {
         titleLabel.setTitle(String.Constants.setupReverseResolution.localized())
         skipButton.setTitle(String.Constants.later.localized(), image: nil)
-        
-        var icon: UIImage?
-        if User.instance.getSettings().touchIdActivated {
-            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
-        }
-        confirmButton.setTitle(String.Constants.confirm.localized(), image: icon)
     }
     
     func set(subtitle: String) {

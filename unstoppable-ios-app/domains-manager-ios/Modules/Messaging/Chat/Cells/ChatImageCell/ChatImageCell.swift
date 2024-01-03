@@ -101,7 +101,7 @@ private extension ChatImageCell {
 #Preview {
     
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
+    let imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
     //            imageDetails.image = .appleIcon
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",

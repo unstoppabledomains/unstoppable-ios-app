@@ -7,12 +7,14 @@
 
 import UIKit
 
+@MainActor
 protocol WalletConnectedPresenterProtocol: BasePresenterProtocol {
     var analyticsName: Analytics.ViewName { get }
     
     func didTapContinueButton()
 }
 
+@MainActor
 class BaseExternalWalletConnectedPresenter: WalletConnectedPresenterProtocol {
     
     var wallet: UDWallet? { nil }

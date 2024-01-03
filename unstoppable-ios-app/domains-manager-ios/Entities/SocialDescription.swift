@@ -72,6 +72,7 @@ struct SocialDescription: Hashable, WebsiteURLValidator {
         }
     }
     
+    @MainActor
     func openSocialAccount() {
         if let appURL,
            UIApplication.shared.canOpenURL(appURL) {

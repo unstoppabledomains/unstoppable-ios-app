@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainsCollectionItemScrollingCalculator {
     
     private var displayLink: CADisplayLink?

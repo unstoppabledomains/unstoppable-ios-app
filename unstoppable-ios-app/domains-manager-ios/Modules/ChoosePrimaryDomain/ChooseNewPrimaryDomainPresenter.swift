@@ -64,7 +64,7 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
     override func confirmButtonPressed() {
         Task {
             guard let primaryDomain = domains.first,
-                  let nav = await view?.cNavigationController else { return }
+                  let nav = view?.cNavigationController else { return }
             
             saveDomainsOrder()
             if primaryDomain.isSetForRR || !configuration.shouldAskToSetReverseResolutionIfNotSetYet {
@@ -91,12 +91,12 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
                 }
                 
                 saveDomainsOrder()
-                await UDRouter().showSetupNewReverseResolutionModule(in: nav,
-                                                                     wallet: walletWithInfo.wallet,
-                                                                     walletInfo: displayInfo,
-                                                                     domains: self.domains,
-                                                                     reverseResolutionDomain: primaryDomain,
-                                                                     resultCallback: resultCallback)
+                UDRouter().showSetupNewReverseResolutionModule(in: nav,
+                                                               wallet: walletWithInfo.wallet,
+                                                               walletInfo: displayInfo,
+                                                               domains: self.domains,
+                                                               reverseResolutionDomain: primaryDomain,
+                                                               resultCallback: resultCallback)
             }
         }
     }
@@ -212,16 +212,14 @@ private extension ChooseNewPrimaryDomainPresenter {
             addDomainsListToSnapshot()
         }
         
-        await view?.applySnapshot(snapshot, animated: true)
+        view?.applySnapshot(snapshot, animated: true)
     }
     
-    @MainActor
     func setConfirmButton() {
         view?.setConfirmButtonTitle(String.Constants.confirm.localized())
         view?.setConfirmButtonEnabled(true)
     }
     
-    @MainActor
     func setupView() {
         view?.setDashesProgress(nil)
     }
@@ -230,7 +228,7 @@ private extension ChooseNewPrimaryDomainPresenter {
         if configuration.shouldDismissWhenFinished {
             await view?.cNavigationController?.dismiss(animated: true)
         } else {
-            await view?.cNavigationController?.popViewController(animated: true)
+            view?.cNavigationController?.popViewController(animated: true)
         }
         resultCallback?(result)
     }

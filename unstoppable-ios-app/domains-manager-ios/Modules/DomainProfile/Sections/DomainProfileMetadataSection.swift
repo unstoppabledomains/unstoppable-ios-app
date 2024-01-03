@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class DomainProfileMetadataSection: WebsiteURLValidator, DomainProfileDataToClipboardCopier {
     
     typealias SectionData = DomainProfileMetadata
@@ -236,10 +237,10 @@ extension DomainProfileMetadataSection {
         }
     }
     
-    enum MetadataAction: Hashable {
-        case edit(metadata: MetadataType, callback: EmptyCallback)
-        case remove(metadata: MetadataType, callback: EmptyCallback)
-        case copy(metadata: MetadataType, callback: EmptyCallback)
+    enum MetadataAction: Hashable, Sendable {
+        case edit(metadata: MetadataType, callback: MainActorAsyncCallback)
+        case remove(metadata: MetadataType, callback: MainActorAsyncCallback)
+        case copy(metadata: MetadataType, callback: MainActorAsyncCallback)
 
         var title: String {
             switch self {

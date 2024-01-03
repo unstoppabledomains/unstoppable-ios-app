@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ViewWithDashesProgress: UIViewController & CNavigationControllerChildTransitioning {
     var progress: Double? { get }
     var dashesProgressConfiguration: DashesProgressView.Configuration { get }
