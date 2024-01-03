@@ -11056,8 +11056,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = 16.1.0;
 			};
 		};
 		C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */ = {
@@ -11089,7 +11089,7 @@
 			repositoryURL = "https://github.com/daltoniam/Starscream";
 			requirement = {
 				kind = exactVersion;
-				version = 4.0.4;
+				version = 4.0.6;
 			};
 		};
 		C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */ = {
