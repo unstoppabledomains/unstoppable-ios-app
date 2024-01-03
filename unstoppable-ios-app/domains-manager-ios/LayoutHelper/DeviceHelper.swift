@@ -203,9 +203,7 @@ extension UIDevice {
             }
         }
         
-        guard let modelCode = modelCode else { return nil }
-        
-        return String.init(validatingUTF8: modelCode)
+        return modelCode
     }
 }
 
@@ -385,13 +383,13 @@ public extension UIDevice {
            let model = modelMap[modelCode] {
             if model == .simulator,
                let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-                if let simModel = modelMap[String.init(validatingUTF8: simModelCode)!] {
+                if let simModel = modelMap[simModelCode] {
                     return simModel
                 }
             }
             return model
         } else if let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"],
-                  let simModel = modelMap[String.init(validatingUTF8: simModelCode)!] {
+                  let simModel = modelMap[simModelCode] {
             return simModel
         }
         return Model.unrecognized
