@@ -99,29 +99,31 @@ class BaseButton: UIButton {
     
     // MARK: - Open methods
     func setTitle(_ title: String?, image: UIImage?, for state: UIButton.State = .normal) {
-        if title == nil || title == "" {
-            setTitle("", for: .normal)
-        }
-        setAttributedTextWith(text: title ?? "",
-                              font: .currentFont(withSize: fontSize, weight: fontWeight),
-                              textColor: textColorForEnabledState,
-                              lineBreakMode: .byTruncatingTail)
-        
-        if let image = image {
-            if title == nil {
-                let iconPadding: CGFloat = customImageEdgePadding ?? 20
-                self.setIcon(image, leftPadding: iconPadding, rightPadding: iconPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
-            } else {
-                let leftPadding: CGFloat = imageLayout == .trailing ? titleEdgePadding : imageEdgePadding
-                let rightPadding: CGFloat = imageLayout == .trailing ? imageEdgePadding : titleEdgePadding
-                
-                self.setIcon(image, leftPadding: leftPadding, rightPadding: rightPadding, titleImagePadding: titleImagePadding, imageLayout: imageLayout, forState: .normal)
+        UIView.performWithoutAnimation {
+            if title == nil || title == "" {
+                setTitle("", for: .normal)
             }
-        } else {
-            self.setIcon(nil, leftPadding: titleLeftPadding, rightPadding: titleRightPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+            setAttributedTextWith(text: title ?? "",
+                                  font: .currentFont(withSize: fontSize, weight: fontWeight),
+                                  textColor: textColorForEnabledState,
+                                  lineBreakMode: .byTruncatingTail)
+            
+            if let image = image {
+                if title == nil {
+                    let iconPadding: CGFloat = customImageEdgePadding ?? 20
+                    self.setIcon(image, leftPadding: iconPadding, rightPadding: iconPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+                } else {
+                    let leftPadding: CGFloat = imageLayout == .trailing ? titleEdgePadding : imageEdgePadding
+                    let rightPadding: CGFloat = imageLayout == .trailing ? imageEdgePadding : titleEdgePadding
+                    
+                    self.setIcon(image, leftPadding: leftPadding, rightPadding: rightPadding, titleImagePadding: titleImagePadding, imageLayout: imageLayout, forState: .normal)
+                }
+            } else {
+                self.setIcon(nil, leftPadding: titleLeftPadding, rightPadding: titleRightPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+            }
+            self.tintColor = textColor
+            imageView?.tintColor = textColor
         }
-        self.tintColor = textColor
-        imageView?.tintColor = textColor
     }
     
     func showLoadingIndicator() {
