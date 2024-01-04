@@ -30,7 +30,6 @@ final class ImageLoadingService {
 
 // MARK: - ImageLoadingManagerProtocol
 extension ImageLoadingService: ImageLoadingServiceProtocol {
-    // Currently downsample description is ignored. We set maximum size of upcoming image to 512px.
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         let downsampledCacheKey = source.keyFor(downsampleDescription: downsampleDescription)
         let imageKey = source.key
@@ -255,7 +254,7 @@ fileprivate extension ImageLoadingService {
     }
     
     func downsampleAndCache(image: UIImage, downsampleDescription: DownsampleDescription, cacheKey: String) -> UIImage? {
-        guard let downsampledImage = self.downsample(image: image, downsampleDescription: downsampleDescription) else { return nil }
+        guard let downsampledImage = image.gifImageDownsampled(to: downsampleDescription.size, scale: downsampleDescription.scale) else { return nil }
         self.cacheStorage.cache(image: downsampledImage, forKey: cacheKey)
         return downsampledImage
     }
