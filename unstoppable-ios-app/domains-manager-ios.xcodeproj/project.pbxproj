@@ -193,6 +193,9 @@
 		C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */; };
 		C609831A282B707B00546392 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098319282B707B00546392 /* UINavigationController.swift */; };
 		C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */; };
+		C60A31622B464F4900C806A5 /* PreviewMessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31612B464F4900C806A5 /* PreviewMessagingChatUserProfileDisplayInfo.swift */; };
+		C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */; };
+		C60A31672B464F8700C806A5 /* PreviewChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
 		C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA2892832501D00AB1B36 /* QRCodeService.swift */; };
@@ -2510,6 +2513,9 @@
 		C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRootNavigationController.swift; sourceTree = "<group>"; };
 		C6098319282B707B00546392 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewTransactionsAction.swift; sourceTree = "<group>"; };
+		C60A31612B464F4900C806A5 /* PreviewMessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewMessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
+		C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewMessagingNewsChannel.swift; sourceTree = "<group>"; };
+		C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewChatViewController.swift; sourceTree = "<group>"; };
 		C60C298B2834E30000626851 /* GroupedCoinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCoinRecord.swift; sourceTree = "<group>"; };
 		C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableRoundedWalletBadgeImageView.swift; sourceTree = "<group>"; };
 		C60CA2892832501D00AB1B36 /* QRCodeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeService.swift; sourceTree = "<group>"; };
@@ -4326,6 +4332,14 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		C60A31652B464F7A00C806A5 /* PreviewChatViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */,
+			);
+			path = PreviewChatViewController;
+			sourceTree = "<group>";
+		};
 		C60CA26228324E7C00AB1B36 /* DomainDetails */ = {
 			isa = PBXGroup;
 			children = (
@@ -4652,33 +4666,35 @@
 		C61808592B19BBB90032E543 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				C6960C302B1994EC00B79E28 /* PreviewDebugger.swift */,
-				C6960C392B19976E00B79E28 /* PreviewUser.swift */,
-				C6960C512B19993700B79E28 /* PreviewString.swift */,
-				C6960C5D2B199A7900B79E28 /* PreviewTransactionItem.swift */,
-				C6960C632B199B4000B79E28 /* PreviewNetworkService.swift */,
-				C61808292B19ACF20032E543 /* PreviewAPIRequest.swift */,
-				C6960C652B199B6F00B79E28 /* PreviewDomainItem.swift */,
-				C61807B62B199E370032E543 /* PreviewUIImage.swift */,
-				C61807DC2B19A4D50032E543 /* PreviewUDWallet.swift */,
-				C61807EE2B19A70F0032E543 /* PreviewPaymentConfirmationDelegate.swift */,
-				C61807BA2B199FD10032E543 /* PreviewData.swift */,
-				C6D645B12B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift */,
-				C6D6461C2B1DC1F900D724AC /* PreviewStripePaymentHelper.swift */,
-				C6D646232B1DC28600D724AC /* PreviewAppReviewService.swift */,
-				C6D646DB2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift */,
-				C6D647462B1EDA6E00D724AC /* PreviewSignPaymentTransactionUIConfiguration.swift */,
-				C6D6475A2B1EDCED00D724AC /* PreviewDomainProfileInfoStorage.swift */,
-				C6C8F82B2B217D9600A9834D /* PreviewSessionV2.swift */,
-				C6C8F8572B217F8200A9834D /* PreviewiCloudPrivateKeyStorage.swift */,
-				C6C8F9512B21858200A9834D /* PreviewValet.swift */,
-				C6C8F94E2B21856200A9834D /* PreviewKeychainPrivateKeyStorage.swift */,
-				C6C8F95C2B21867E00A9834D /* PreviewEncrypting.swift */,
-				C6C8F9622B21874400A9834D /* PreviewUDWalletsStorage.swift */,
-				C6C8F9692B2187E000A9834D /* PreviewStorage.swift */,
-				C6C8F98A2B21895A00A9834D /* PreviewWCConnectedAppsStorageV2.swift */,
 				C6C8F9932B218BA600A9834D /* PreviewAnyCodable.swift */,
+				C61808292B19ACF20032E543 /* PreviewAPIRequest.swift */,
+				C6D646232B1DC28600D724AC /* PreviewAppReviewService.swift */,
+				C6D645B12B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift */,
+				C61807BA2B199FD10032E543 /* PreviewData.swift */,
+				C6960C302B1994EC00B79E28 /* PreviewDebugger.swift */,
+				C6960C652B199B6F00B79E28 /* PreviewDomainItem.swift */,
+				C6D6475A2B1EDCED00D724AC /* PreviewDomainProfileInfoStorage.swift */,
+				C6D646DB2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift */,
+				C6C8F95C2B21867E00A9834D /* PreviewEncrypting.swift */,
 				C6A89C602B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift */,
+				C6C8F8572B217F8200A9834D /* PreviewiCloudPrivateKeyStorage.swift */,
+				C6C8F94E2B21856200A9834D /* PreviewKeychainPrivateKeyStorage.swift */,
+				C60A31612B464F4900C806A5 /* PreviewMessagingChatUserProfileDisplayInfo.swift */,
+				C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */,
+				C6960C632B199B4000B79E28 /* PreviewNetworkService.swift */,
+				C61807EE2B19A70F0032E543 /* PreviewPaymentConfirmationDelegate.swift */,
+				C6C8F82B2B217D9600A9834D /* PreviewSessionV2.swift */,
+				C6D647462B1EDA6E00D724AC /* PreviewSignPaymentTransactionUIConfiguration.swift */,
+				C6C8F9692B2187E000A9834D /* PreviewStorage.swift */,
+				C6960C512B19993700B79E28 /* PreviewString.swift */,
+				C6D6461C2B1DC1F900D724AC /* PreviewStripePaymentHelper.swift */,
+				C6960C5D2B199A7900B79E28 /* PreviewTransactionItem.swift */,
+				C61807DC2B19A4D50032E543 /* PreviewUDWallet.swift */,
+				C6C8F9622B21874400A9834D /* PreviewUDWalletsStorage.swift */,
+				C61807B62B199E370032E543 /* PreviewUIImage.swift */,
+				C6960C392B19976E00B79E28 /* PreviewUser.swift */,
+				C6C8F9512B21858200A9834D /* PreviewValet.swift */,
+				C6C8F98A2B21895A00A9834D /* PreviewWCConnectedAppsStorageV2.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -7256,6 +7272,7 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C60A31652B464F7A00C806A5 /* PreviewChatViewController */,
 				C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */,
 				C607A5C82B327A4C0088ECF3 /* PreviewHappyEndViewController */,
 				C6D647892B1EE59500D724AC /* PreviewDomainProfile */,
@@ -9513,6 +9530,7 @@
 				C6C8F8A92B2182CF00A9834D /* MintDomainsConfigurationListHeaderView.swift in Sources */,
 				C6D645812B1DBA7100D724AC /* DomainsCollectionTitleSwipeTutorialView.swift in Sources */,
 				C6D6474F2B1EDB6D00D724AC /* ReviewTransferDetailsCell.swift in Sources */,
+				C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */,
 				C6C8F8172B217CC000A9834D /* ImportNewWalletPresenter.swift in Sources */,
 				C6C8F8712B21822700A9834D /* OnboardingNavigationController.swift in Sources */,
 				C61807FF2B19A8590032E543 /* QRCodeServiceProvider.swift in Sources */,
@@ -9738,6 +9756,7 @@
 				C6C8F8842B21829000A9834D /* SettingsPresenter.swift in Sources */,
 				C6A89C682B317266008AB043 /* HotFeatureSuggestionDetailsView.swift in Sources */,
 				C6D647512B1EDB6D00D724AC /* ReviewAndConfirmTransferViewController.swift in Sources */,
+				C60A31622B464F4900C806A5 /* PreviewMessagingChatUserProfileDisplayInfo.swift in Sources */,
 				C6C8F81A2B217CC000A9834D /* ConnectExternalWalletCell.swift in Sources */,
 				C61808762B19BC290032E543 /* DisplayError.swift in Sources */,
 				C6D646D02B1ED28800D724AC /* RaisedTertiaryWhiteButton.swift in Sources */,
@@ -9761,6 +9780,7 @@
 				C6C8F90F2B21839100A9834D /* ChatListRequestsCell.swift in Sources */,
 				C6C8F90B2B21838400A9834D /* ChatsListSectionHeaderView.swift in Sources */,
 				C6C8F8EB2B21836400A9834D /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
+				C60A31672B464F8700C806A5 /* PreviewChatViewController.swift in Sources */,
 				C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */,
 				C6A89C372B3137DE008AB043 /* NFTModel.swift in Sources */,
 				C6C8F8382B217E9600A9834D /* EnterBackupOnboardingPresenter.swift in Sources */,
@@ -11174,8 +11194,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = 16.1.0;
 			};
 		};
 		C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */ = {
@@ -11207,7 +11227,7 @@
 			repositoryURL = "https://github.com/daltoniam/Starscream";
 			requirement = {
 				kind = exactVersion;
-				version = 4.0.4;
+				version = 4.0.6;
 			};
 		};
 		C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */ = {
