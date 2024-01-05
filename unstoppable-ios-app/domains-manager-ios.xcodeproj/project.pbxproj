@@ -19,7 +19,6 @@
 		2917EDDB2A6F25AB004EAB31 /* Boilertalk-Web3 in Frameworks */ = {isa = PBXBuildFile; productRef = 2917EDDA2A6F25AB004EAB31 /* Boilertalk-Web3 */; };
 		2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */ = {isa = PBXBuildFile; productRef = 2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */; };
 		2917EDDF2A6F25AB004EAB31 /* Web3PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */; };
-		2917EDE12A6F25AB004EAB31 /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = 2917EDE02A6F25AB004EAB31 /* XMTP */; };
 		291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */; };
 		295506F02954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		2959AC4729A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
@@ -739,7 +738,6 @@
 		C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
 		C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
 		C65DD4B92A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */; };
-		C65DD4BE2A7CAB1500CAB10C /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C65DD4BD2A7CAB1500CAB10C /* XMTP */; };
 		C65DD4C42A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */; };
 		C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = C65DD4C52A7CABC700CAB10C /* Valet */; };
 		C65DD4C72A7CAC8000CAB10C /* KeychainLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */; };
@@ -824,6 +822,8 @@
 		C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804BE280D9EC7007E6390 /* EnterPasscodeViewController.swift */; };
 		C66804D9280D9EC8007E6390 /* SetupPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804BF280D9EC7007E6390 /* SetupPasscodeViewController.swift */; };
 		C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804C0280D9EC7007E6390 /* VerifyPasscodeViewController.swift */; };
+		C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C66811F42B47B1C600BDABB0 /* XMTP */; };
+		C66811F72B47B1F000BDABB0 /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C66811F62B47B1F000BDABB0 /* XMTP */; };
 		C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C354291168C000837F21 /* DomainProfileSocialsSection.swift */; };
 		C669C35C29117B1100837F21 /* DomainProfileSocialCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C35A29117B1100837F21 /* DomainProfileSocialCell.swift */; };
 		C669C36029117B1100837F21 /* DomainProfileSocialCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C35B29117B1100837F21 /* DomainProfileSocialCell.xib */; };
@@ -3590,6 +3590,7 @@
 				C623966C2A273D3B00363F60 /* Push in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
+				C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
 				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
 				290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */,
@@ -3599,7 +3600,6 @@
 				30D89F5B26A9EB5500251C2D /* Bugsnag in Frameworks */,
 				290A60522950AA1600882109 /* WalletConnectRouter in Frameworks */,
 				30B6583926A9E75E004F707F /* Stripe in Frameworks */,
-				2917EDE12A6F25AB004EAB31 /* XMTP in Frameworks */,
 				2917EDDB2A6F25AB004EAB31 /* Boilertalk-Web3 in Frameworks */,
 				C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */,
 				290A60542950AA1600882109 /* WalletConnectVerify in Frameworks */,
@@ -3635,7 +3635,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C65DD4BE2A7CAB1500CAB10C /* XMTP in Frameworks */,
+				C66811F72B47B1F000BDABB0 /* XMTP in Frameworks */,
 				C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */,
 				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
@@ -7769,10 +7769,10 @@
 				2917EDDA2A6F25AB004EAB31 /* Boilertalk-Web3 */,
 				2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */,
 				2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */,
-				2917EDE02A6F25AB004EAB31 /* XMTP */,
 				C689C1722ADE484300AA0186 /* LaunchDarkly */,
 				C65244692AF8A7A400673CC0 /* WalletConnectNotify */,
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
+				C66811F42B47B1C600BDABB0 /* XMTP */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -7847,9 +7847,9 @@
 			packageProductDependencies = (
 				C6E69F98288AB6DC000A8346 /* Bugsnag */,
 				C6E69FA2288AB821000A8346 /* SVGKit */,
-				C65DD4BD2A7CAB1500CAB10C /* XMTP */,
 				C65DD4C52A7CABC700CAB10C /* Valet */,
 				C60CB2DF2A7CB62E00663989 /* web3swift */,
+				C66811F62B47B1F000BDABB0 /* XMTP */,
 			);
 			productName = NotificationServiceExtension;
 			productReference = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */;
@@ -7907,10 +7907,10 @@
 				C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */,
 				C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
-				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */,
 				C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */,
 				C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
+				C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -11016,14 +11016,6 @@
 				kind = branch;
 			};
 		};
-		29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/xmtp/xmtp-ios.git";
-			requirement = {
-				kind = revision;
-				revision = 50181dc4c4bbd02d412a827e1c377716f8ddadc7;
-			};
-		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt";
@@ -11094,6 +11086,14 @@
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/xmtp/xmtp-ios";
+			requirement = {
+				kind = revision;
+				revision = af277a00fb254a1916da8db12caf480655d4894d;
 			};
 		};
 		C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */ = {
@@ -11173,11 +11173,6 @@
 			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
 			productName = Web3PromiseKit;
 		};
-		2917EDE02A6F25AB004EAB31 /* XMTP */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */;
-			productName = XMTP;
-		};
 		307B1D592603C8E0007B14C3 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */;
@@ -11238,15 +11233,20 @@
 			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
 			productName = WalletConnectNotify;
 		};
-		C65DD4BD2A7CAB1500CAB10C /* XMTP */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */;
-			productName = XMTP;
-		};
 		C65DD4C52A7CABC700CAB10C /* Valet */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
+		};
+		C66811F42B47B1C600BDABB0 /* XMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
+			productName = XMTP;
+		};
+		C66811F62B47B1F000BDABB0 /* XMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
+			productName = XMTP;
 		};
 		C689C1722ADE484300AA0186 /* LaunchDarkly */ = {
 			isa = XCSwiftPackageProductDependency;
