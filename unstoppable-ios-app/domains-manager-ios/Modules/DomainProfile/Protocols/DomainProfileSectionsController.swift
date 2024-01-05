@@ -9,6 +9,7 @@ import UIKit
 
 typealias UpdateProfileAccessResultCallback = (Result<Void, Error>)->()
 
+@MainActor
 protocol DomainProfileSectionsController: AnyObject, ViewAnalyticsLogger {
     
     var viewController: DomainProfileSectionViewProtocol? { get }

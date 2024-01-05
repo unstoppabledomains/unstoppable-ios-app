@@ -97,7 +97,7 @@ extension CollectionViewHeaderCell {
         let title: String?
         let image: UIImage?
         let type: ActionButtonType
-        var action: EmptyCallback?
+        var action: MainActorAsyncCallback?
         var isEnabled: Bool
     }
     

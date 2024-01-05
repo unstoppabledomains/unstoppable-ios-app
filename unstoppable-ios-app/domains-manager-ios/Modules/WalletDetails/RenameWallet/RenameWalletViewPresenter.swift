@@ -14,6 +14,7 @@ protocol RenameWalletViewPresenterProtocol: BasePresenterProtocol {
     func doneButtonPressed()
 }
 
+@MainActor
 final class RenameWalletViewPresenter: WalletDataValidator {
     typealias WalletNameUpdatedCallback = (UDWallet) -> ()
  

@@ -80,6 +80,10 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         return tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil)}
     }
     
+    func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
+        try await searchForDomains(key: "ai_" + hint)
+    }
+    
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
         try await Task.sleep(seconds: 0.4)
         

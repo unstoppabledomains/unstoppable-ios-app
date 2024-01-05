@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        showDomainsCollection()
     }
     
     @IBAction func runPurchaseButtonPressed() {

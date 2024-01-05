@@ -29,6 +29,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         securityWindow = SecurityWindow(windowScene: windowScene)
         setupSecurityWindow()
+        setupObservers()
         
         #if DEBUG
         if TestsEnvironment.isTestModeOn {
@@ -272,6 +273,21 @@ private extension SceneDelegate {
     func setupSecurityWindow() {
         let vc = UIViewController()
         securityWindow?.rootViewController = vc
+    }
+    
+    func setupObservers() {
+        NotificationCenter.default.addObserver(forName: UIApplication.userDidTakeScreenshotNotification,
+                                               object: nil,
+                                               queue: .main) { _ in
+            appContext.analyticsService.log(event: .makeScreenshot,
+                                            withParameters: nil)
+        }
+        NotificationCenter.default.addObserver(forName: UIScreen.capturedDidChangeNotification,
+                                               object: nil,
+                                               queue: .main) { _ in
+            appContext.analyticsService.log(event: .screenRecording,
+                                            withParameters: [.value : String(UIScreen.main.isCaptured)])
+        }
     }
 }
 

@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bufbuild/connect-swift",
       "state" : {
-        "revision" : "6d6df4fb7c93804b726dac2faa6de31a55a68f7e",
-        "version" : "0.6.0"
+        "revision" : "6f5afc57f44a3ed15b9a01381ce73f84d15e43db",
+        "version" : "0.3.0"
       }
     },
     {
@@ -167,8 +167,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/socketio/socket.io-client-swift",
       "state" : {
-        "branch" : "master",
-        "revision" : "a1ed825835a2d8c2555938e96557ccc05e4bebf3"
+        "revision" : "175da8b5156f6b132436f0676cc84c2f6a766b6e",
+        "version" : "16.1.0"
       }
     },
     {
@@ -176,8 +176,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/daltoniam/Starscream",
       "state" : {
-        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
-        "version" : "4.0.4"
+        "revision" : "ac6c0fc9da221873e01bd1a0d4818498a71eef33",
+        "version" : "4.0.6"
       }
     },
     {
@@ -250,15 +250,6 @@
       "state" : {
         "revision" : "0e0d0aab665ff1a0659ce75ac003081f2b1c8997",
         "version" : "1.19.0"
-      }
-    },
-    {
-      "identity" : "swift-nio-http2",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-nio-http2.git",
-      "state" : {
-        "revision" : "a8ccf13fa62775277a5d56844878c828bbb3be1a",
-        "version" : "1.27.0"
       }
     },
     {
@@ -354,9 +345,9 @@
     {
       "identity" : "xmtp-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/xmtp/xmtp-ios.git",
+      "location" : "https://github.com/xmtp/xmtp-ios",
       "state" : {
-        "revision" : "50181dc4c4bbd02d412a827e1c377716f8ddadc7"
+        "revision" : "af277a00fb254a1916da8db12caf480655d4894d"
       }
     },
     {
@@ -364,8 +355,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/xmtp/xmtp-rust-swift",
       "state" : {
-        "revision" : "4a76e5401fa780c40610e2f0d248f695261d08dd",
-        "version" : "0.3.1-beta0"
+        "branch" : "main",
+        "revision" : "e08af6942841054ae02a6fe01d90d18e76d5f248"
       }
     },
     {

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundViewPresenter {
 
     private weak var onboardingFlowManager: OnboardingFlowManager?

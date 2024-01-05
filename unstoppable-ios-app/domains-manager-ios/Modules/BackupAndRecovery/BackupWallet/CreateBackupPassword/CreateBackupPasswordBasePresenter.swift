@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol CreateBackupPasswordPresenterProtocol: BasePresenterProtocol {
     var isShowingHelp: Bool { get }
     var progress: Double? { get }
@@ -16,10 +17,12 @@ protocol CreateBackupPasswordPresenterProtocol: BasePresenterProtocol {
     func didTapLearnMore()
 }
 
+@MainActor
 class CreateBackupPasswordBasePresenter {
     private(set) var isShowingHelp = false
     weak var view: CreatePasswordViewControllerProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
+    @MainActor
     var walletToBackUp: UDWallet? { nil } // Should be overridden
     var progress: Double? { nil }
     var analyticsName: Analytics.ViewName { .unspecified }
@@ -31,9 +34,11 @@ class CreateBackupPasswordBasePresenter {
     }
     
     func viewDidLoad() { }
+    @MainActor
     func didSaveWallet(_ wallet: UDWallet, underBackUpPassword password: String) {
         Vibration.success.vibrate()
     }
+    @MainActor
     func failedToBackUpWallet(error: Error) {
         view?.showSimpleAlert(title: String.Constants.saveToICloudFailedTitle.localized(),
                              body: String.Constants.backupToICloudFailedMessage.localized())

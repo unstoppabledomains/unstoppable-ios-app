@@ -24,7 +24,8 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
-        AnalyticsService(dataAggregatorService: dataAggregatorService)
+        AnalyticsService(dataAggregatorService: dataAggregatorService,
+                         wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = MockAppLaunchService(coreAppCoordinator: coreAppCoordinator,
                                                                                             udWalletsService: udWalletsService)
@@ -51,10 +52,11 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol = MockFirebaseInteractionsService()
     private(set) lazy var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol = MockFirebaseInteractionsService()
     private(set) lazy var purchaseDomainsService: PurchaseDomainsServiceProtocol = MockFirebaseInteractionsService()
-    
+
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
     private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = MockUDFeatureFlagsService()
+    private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     

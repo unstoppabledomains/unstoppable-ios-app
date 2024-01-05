@@ -39,6 +39,7 @@ protocol AppContextProtocol {
     var domainTransferService: DomainTransferServiceProtocol { get }
     var messagingService: MessagingServiceProtocol { get }
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
+    var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     

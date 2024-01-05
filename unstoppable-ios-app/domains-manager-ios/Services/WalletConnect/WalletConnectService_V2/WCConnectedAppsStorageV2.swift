@@ -121,7 +121,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     }
 }
 
-protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
+protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable, Sendable {
     var walletAddress: HexAddress { get }
     var domain: DomainItem { get }
     var appIconUrls: [String] { get }

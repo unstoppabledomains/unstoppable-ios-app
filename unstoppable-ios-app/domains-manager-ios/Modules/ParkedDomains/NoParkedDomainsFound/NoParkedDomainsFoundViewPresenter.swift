@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol NoParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     func confirmButtonPressed()
 }
 
+@MainActor
 class NoParkedDomainsFoundViewPresenter {
     private(set) weak var view: NoParkedDomainsFoundViewProtocol?
 

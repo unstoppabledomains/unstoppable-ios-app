@@ -31,7 +31,7 @@ extension ChatRemoteContentCell {
 @available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    var typeDetails = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: Data())
+    let typeDetails = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: Data())
     
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",

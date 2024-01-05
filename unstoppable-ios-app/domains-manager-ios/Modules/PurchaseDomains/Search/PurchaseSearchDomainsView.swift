@@ -15,6 +15,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
+    @State private var isInspiring = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var scrollOffset: CGPoint = .zero
@@ -25,11 +26,17 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
     var body: some View {
-        OffsetObservingScrollView(offset: $scrollOffset) {
-            VStack {
-                headerView()
-                searchView()
-                searchResultView()
+        GeometryReader { geom in
+            ZStack {
+                OffsetObservingScrollView(offset: $scrollOffset) {
+                    VStack {
+                        headerView()
+                        searchView()
+                        searchResultView()
+                    }
+                }
+                searchInspirationButton()
+                    .offset(y: (geom.size.height / 2) - searchInspirationButtonOffsetToKeyboard)
             }
         }
         .animation(.default, value: UUID())
@@ -57,14 +64,25 @@ private extension PurchaseSearchDomainsView {
         UDTextFieldView(text: $debounceObject.text,
                         placeholder: "domain.x",
                         hint: nil,
-                        rightViewType: .clear,
-                        rightViewMode: .whileEditing,
-                        leftViewType: .search)
+                        rightViewType: currentSearchFieldRightViewType,
+                        rightViewMode: .always,
+                        leftViewType: .search,
+                        keyboardType: .alphabet,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true)
         .onChange(of: debounceObject.debouncedText) { text in
             logAnalytic(event: .didSearch, parameters: [.value: text])
             search(text: text)
         }
-        .padding()
+        .padding(EdgeInsets(top: 16, leading: 16,
+                            bottom: 0, trailing: 16))
+    }
+    
+    var currentSearchFieldRightViewType: UDTextFieldView.RightViewType {
+        .inspire { isInspiring in
+            self.isInspiring = isInspiring
+            searchResult = []
+        }
     }
     
     @ViewBuilder
@@ -75,6 +93,8 @@ private extension PurchaseSearchDomainsView {
             resultListView()
         } else if loadingError != nil {
             errorView()
+        } else if isInspiring {
+            inspiringHintsView()
         } else if !searchingText.isEmpty {
             noResultsView()
         } else if !suggestions.isEmpty {
@@ -193,6 +213,55 @@ private extension PurchaseSearchDomainsView {
         }
         .padding()
     }
+    
+    @ViewBuilder
+    func inspiringHintsView() -> some View {
+        UDCollectionSectionBackgroundView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(AIInspireHints.allCases, id: \.self) { hint in
+                    HStack(spacing: 8) {
+                        hint.icon
+                            .resizable()
+                            .squareFrame(16)
+                        Text(hint.title)
+                            .font(.currentFont(size: 14))
+                    }
+                    .foregroundStyle(Color.foregroundSecondary)
+                    if hint != .hint3 {
+                        Line()
+                            .stroke(style: StrokeStyle(lineWidth: 1, dash: [3]))
+                            .foregroundColor(.black)
+                            .opacity(0.06)
+                            .frame(height: 1)
+                            .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                    }
+                }
+            }
+            .padding()
+        }
+        .padding()
+    }
+  
+    @ViewBuilder
+    func searchInspirationButton() -> some View {
+        if isInspiring,
+           KeyboardService.shared.isKeyboardOpened,
+           !searchingText.isEmpty {
+            ZStack {
+                Rectangle()
+                    .foregroundStyle(Color.backgroundDefault)
+                    .frame(height: searchInspirationButtonStyle.height + searchInspirationButtonOffset * 2)
+                UDButtonView(text: String.Constants.search.localized(), style: searchInspirationButtonStyle) {
+                    aiSearch(hint: searchingText)
+                }
+                .padding()
+            }
+        }
+    }
+    
+    var searchInspirationButtonStyle: UDButtonStyle { .large(.raisedPrimary) }
+    var searchInspirationButtonOffset: CGFloat { 16 }
+    var searchInspirationButtonOffsetToKeyboard: CGFloat { (searchInspirationButtonStyle.height + searchInspirationButtonOffset) / 2 }
 }
 
 // MARK: - Private methods
@@ -241,18 +310,33 @@ private extension PurchaseSearchDomainsView {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
-        searchResult = []
         loadingError = nil
+        
+        guard !isInspiring else { return }
+        searchResult = []
         
         guard !searchingText.isEmpty else { return }
         
+        performSearchOperation(searchingText: text) {
+            try await purchaseDomainsService.searchForDomains(key: text)
+        }
+    }
+    
+    func aiSearch(hint: String) {
+        searchResult = []
+        performSearchOperation(searchingText: hint) {
+            try await purchaseDomainsService.aiSearchForDomains(hint: hint)
+        }
+    }
+    
+    func performSearchOperation(searchingText: String, _ block: @escaping () async throws -> ([DomainToPurchase])) {
         Task {
             isLoading = true
             do {
-                let searchResult = try await purchaseDomainsService.searchForDomains(key: text)
-                guard text == self.searchingText else { return } // Result is irrelevant, search query has changed
+                let searchResult = try await block()
+                guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
                 
-                self.searchResult = sortSearchResult(searchResult, searchText: text)
+                self.searchResult = sortSearchResult(searchResult, searchText: searchingText)
             } catch {
                 loadingError = error
             }
@@ -325,6 +409,36 @@ private extension PurchaseSearchDomainsView {
         }
         .frame(height: UDListItemView.height)
     }
+}
+
+// MARK: - Private methods
+private extension PurchaseSearchDomainsView {
+    enum AIInspireHints: Hashable, CaseIterable {
+        case hint1, hint2, hint3
+        
+        var title: String {
+            switch self {
+            case .hint1:
+                return String.Constants.aiSearchHint1.localized()
+            case .hint2:
+                return String.Constants.aiSearchHint2.localized()
+            case .hint3:
+                return String.Constants.aiSearchHint3.localized()
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+            case .hint1:
+                return .magicWandIcon
+            case .hint2:
+                return .tapSingleIcon
+            case .hint3:
+                return .warningIcon
+            }
+        }
+    }
+    
 }
 
 #Preview {

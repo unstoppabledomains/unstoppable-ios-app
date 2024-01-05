@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum DomainProfileSectionUIChangeType: Hashable {
+enum DomainProfileSectionUIChangeType: Hashable, Sendable {
  
     case added(_ item: any DomainProfileSectionChangeUIDescription), removed(_ item: any DomainProfileSectionChangeUIDescription), updated(_ item: any DomainProfileSectionChangeUIDescription)
     case moreChanges(_ num: Int)

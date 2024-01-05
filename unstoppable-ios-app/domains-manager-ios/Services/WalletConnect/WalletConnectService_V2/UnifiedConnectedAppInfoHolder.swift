@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UnifiedConnectedAppInfoHolder: Hashable {
+struct UnifiedConnectedAppInfoHolder: Hashable, Sendable {
     let app: any UnifiedConnectAppInfoProtocol
     
     static func == (lhs: Self, rhs: Self) -> Bool {

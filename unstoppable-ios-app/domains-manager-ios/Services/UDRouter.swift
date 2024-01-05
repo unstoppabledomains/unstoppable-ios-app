@@ -338,7 +338,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                                 wallet: UDWallet,
                                                 walletInfo: WalletDisplayInfo,
                                                 domain: DomainDisplayInfo,
-                                                resultCallback: @escaping EmptyAsyncCallback) {
+                                                resultCallback: @escaping MainActorAsyncCallback) {
         let vc = buildSetupChangeReverseResolutionModule(wallet: wallet,
                                                          walletInfo: walletInfo,
                                                          domain: domain,
@@ -646,6 +646,13 @@ class UDRouter: DomainProfileSignatureValidator {
                                                         followerSelectionCallback: followerSelectionCallback)
         viewController.present(vc, animated: true)
     }
+    
+    func showHotFeatureSuggestionDetails(suggestion: HotFeatureSuggestion,
+                                         in viewController: UIViewController) {
+        let view = HotFeatureSuggestionDetailsView(suggestion: suggestion)
+        let vc = UIHostingController(rootView: view)
+        viewController.present(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -928,7 +935,7 @@ private extension UDRouter {
     func buildSetupChangeReverseResolutionModule(wallet: UDWallet,
                                                  walletInfo: WalletDisplayInfo,
                                                  domain: DomainDisplayInfo,
-                                                 resultCallback: @escaping EmptyAsyncCallback) -> UIViewController {
+                                                 resultCallback: @escaping MainActorAsyncCallback) -> UIViewController {
         let vc = SetupReverseResolutionViewController.nibInstance()
         let presenter = SetupChangeReverseResolutionDomainPresenter(view: vc,
                                                                     wallet: wallet,

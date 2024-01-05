@@ -47,7 +47,7 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
         }
     }
     
-    override func showDomainsList() async {
+    override func showDomainsList() {
         guard let selectedDomain = self.selectedDomain else {
             Debugger.printFailure("Change domain can't be opened without existing RR domain", critical: true)
             return
@@ -79,7 +79,7 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
         snapshot.appendItems(domains.map({ ChooseReverseResolutionDomainViewController.Item.domain(details: .init(domain: $0,
                                                                                                                   isSelected: $0 == selectedDomain)) }))
         
-        await view?.applySnapshot(snapshot, animated: true)
-        await view?.setConfirmButton(enabled: selectedDomain != currentDomain)
+        view?.applySnapshot(snapshot, animated: true)
+        view?.setConfirmButton(enabled: selectedDomain != currentDomain)
     }
 }

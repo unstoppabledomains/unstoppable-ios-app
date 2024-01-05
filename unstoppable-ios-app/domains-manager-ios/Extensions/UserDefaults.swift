@@ -25,6 +25,9 @@ public enum UserDefaultsKey: String {
     case didShowSwipeDomainCardTutorial
     case isFirstLaunchAfterGIFSupportReleased
     case currentMessagingOwnerWallet
+    case viewedHotFeatureSuggestions
+    case dismissedHotFeatureSuggestions
+    case didMigrateXMTPConsentsListFromUD
     
     // Purchase domains
     case purchasedDomains
@@ -36,6 +39,7 @@ extension UserDefaults {
     @UserDefaultsCodableValue(key: .onboardingNavigationInfo) static var onboardingNavigationInfo: OnboardingNavigationController.OnboardingNavigationInfo?
     @UserDefaultsCodableValue(key: .onboardingDomainsPurchasedDetails) static var onboardingDomainsPurchasedDetails: DomainsPurchasedDetails?
     @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didMigrateXMTPConsentsListFromUD, defaultValue: false) static var didMigrateXMTPConsentsListFromUD: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType

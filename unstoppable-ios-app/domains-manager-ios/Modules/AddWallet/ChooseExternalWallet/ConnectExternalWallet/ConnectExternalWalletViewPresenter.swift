@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var analyticsName: Analytics.ViewName { get }
@@ -15,6 +16,7 @@ protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, View
     func applicationWillEnterForeground()
 }
 
+@MainActor
 class ConnectExternalWalletViewPresenter {
     
     private(set) weak var view: ConnectExternalWalletViewProtocol?
@@ -55,6 +57,9 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
                         didConnectWallet(wallet: wallet)
                     } catch ExternalWalletConnectionService.ConnectionError.noResponse {
                         // Ignore
+                    } catch ExternalWalletConnectionService.ConnectionError.ethWalletAlreadyExists {
+                        view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                                             body: String.Constants.walletAlreadyConnectedError.localized())
                     } catch {
                         view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                               body: String.Constants.failedToConnectExternalWallet.localized())
@@ -105,7 +110,7 @@ private extension ConnectExternalWalletViewPresenter {
                                                                                                                                  isInstalled: false)) }))
             }
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
 }

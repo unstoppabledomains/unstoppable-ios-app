@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol CInteractiveTransitioningController: UIViewControllerInteractiveTransitioning {
     var percentComplete: CGFloat { get }
     var animationDuration: TimeInterval { get }

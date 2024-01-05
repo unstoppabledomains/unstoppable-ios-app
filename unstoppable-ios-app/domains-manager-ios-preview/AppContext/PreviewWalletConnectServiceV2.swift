@@ -97,7 +97,7 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
 }
 
-protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
+protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable, Sendable {
     var walletAddress: HexAddress { get }
     var domain: DomainItem { get }
     var appIconUrls: [String] { get }

@@ -7,15 +7,18 @@
 
 import Foundation
 
+@MainActor
 protocol LoginViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: LoginViewController.Item)
 }
 
-class LoginViewPresenter: ViewAnalyticsLogger {
+@MainActor
+class LoginViewPresenter: NSObject, ViewAnalyticsLogger {
     private(set) weak var view: LoginViewProtocol?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: LoginViewProtocol) {
+        super.init()
         self.view = view
     }
     
@@ -23,12 +26,9 @@ class LoginViewPresenter: ViewAnalyticsLogger {
         showData()
         view?.setDashesProgress(0.25)
     }
-    @MainActor
     func loginWithEmailAction() { }
-    @MainActor
-    func userDidAuthorize() { }
+    func userDidAuthorize(provider: LoginProvider) { }
     
-    @MainActor
     func authFailedWith(error: Error) {
         if let firebaseError = error as? FirebaseAuthError,
            case .userCancelled = firebaseError {
@@ -55,6 +55,8 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
                 loginWithGoogle()
             case .twitter:
                 loginWithTwitter()
+            case .apple:
+                loginWithApple()
             }
         }
     }
@@ -63,27 +65,26 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
 // MARK: - Private functions
 private extension LoginViewPresenter {
     func showData() {
-        Task {
-            var snapshot = LoginSnapshot()
-           
-            snapshot.appendSections([.main])
-            snapshot.appendItems([.loginWith(provider: .email),
-                                  .loginWith(provider: .google),
-                                  .loginWith(provider: .twitter)])
-            
-            await view?.applySnapshot(snapshot, animated: true)
-        }
+        var snapshot = LoginSnapshot()
+        
+        snapshot.appendSections([.main])
+        snapshot.appendItems([.loginWith(provider: .email),
+                              .loginWith(provider: .google),
+                              .loginWith(provider: .twitter),
+                              .loginWith(provider: .apple)])
+        
+        view?.applySnapshot(snapshot, animated: true)
     }
     
     func loginWithGoogle()  {
         Task {
-            guard let window = await SceneDelegate.shared?.window else { return }
+            guard let window = SceneDelegate.shared?.window else { return }
     
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithGoogle(in: window)
-                await userDidAuthorize()
+                userDidAuthorize(provider: .google)
             } catch {
-                await authFailedWith(error: error)
+                authFailedWith(error: error)
             }
         }
     }
@@ -94,8 +95,49 @@ private extension LoginViewPresenter {
             
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithTwitter(in: view)
-                await userDidAuthorize()
+                userDidAuthorize(provider: .twitter)
             } catch {
+                authFailedWith(error: error)
+            }
+        }
+    }
+    
+    func loginWithApple() {
+        Task {            
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            request.requestedScopes = [.email]
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            controller.performRequests()
+        }
+    }
+}
+
+import AuthenticationServices
+
+// MARK: - Open methods
+extension LoginViewPresenter: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        SceneDelegate.shared!.window!
+    }
+    nonisolated
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        Task {
+            await userDidAuthorize(provider: .apple)
+        }
+    }
+    nonisolated
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        Task {
+            if let error = error as? ASAuthorizationError {
+                switch error.code {
+                case .canceled:
+                    return
+                default:
+                    await authFailedWith(error: error)
+                }
+            } else {
                 await authFailedWith(error: error)
             }
         }

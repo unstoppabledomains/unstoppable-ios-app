@@ -25,7 +25,8 @@ struct PurchaseDomainsEnterDiscountCodeView: View, ViewAnalyticsLogger {
                 .multilineTextAlignment(.center)
             UDTextFieldView(text: $value,
                             placeholder: String.Constants.discountCode.localized(),
-                            focusBehaviour: .activateOnAppear)
+                            focusBehaviour: .activateOnAppear,
+                            autocapitalization: .characters)
             UDButtonView(text: String.Constants.confirm.localized(), style: .large(.raisedPrimary)) {
                 logButtonPressedAnalyticEvents(button: .confirmDiscountCode, parameters: [.value: value.trimmedSpaces])
                 UDVibration.buttonTap.vibrate()

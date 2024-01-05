@@ -163,6 +163,7 @@ extension StatusMessage {
             }
         }
         
+        @MainActor
         func applyAdditionalBehaviour(on imageView: UIImageView) {
             switch self {
             case .updatingRecords, .electricUpdatingRecords, .electricMinting, .transfer:

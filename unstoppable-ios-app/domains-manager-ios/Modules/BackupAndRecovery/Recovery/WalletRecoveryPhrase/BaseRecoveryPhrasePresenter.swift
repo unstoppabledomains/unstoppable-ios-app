@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RecoveryPhrasePresenterProtocol: BasePresenterProtocol {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
     var progress: Double? { get }
@@ -17,6 +18,7 @@ protocol RecoveryPhrasePresenterProtocol: BasePresenterProtocol {
     func learMoreButtonPressed()
 }
 
+@MainActor
 class BaseRecoveryPhrasePresenter {
     private(set) var isShowingHelp = false
     private var mnems: [String] = []

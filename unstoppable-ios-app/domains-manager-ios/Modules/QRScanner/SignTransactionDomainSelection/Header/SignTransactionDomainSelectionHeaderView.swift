@@ -14,8 +14,8 @@ final class SignTransactionDomainSelectionHeaderView: UIView {
     private let subheadButtonsSpace: CGFloat = 4
     
     private var titleLabel: UILabel!
-    private var subheadWhatIsButton: UDButton!
-    private var subheadMeanButton: UDButton!
+    private var subheadWhatIsButton: UDConfigurableButton!
+    private var subheadMeanButton: UDConfigurableButton!
     var subheadPressedCallback: EmptyCallback?
     
     override init(frame: CGRect) {
@@ -81,17 +81,27 @@ private extension SignTransactionDomainSelectionHeaderView {
     
     func setupSubheadButtons() {
         subheadWhatIsButton = buildSubheadButton()
-        subheadWhatIsButton.setTitle(String.Constants.whatDoesResolutionMeanWhat.localized(), image: nil)
-        subheadWhatIsButton.layoutIfNeeded()
+        let font = subheadWhatIsButton.udConfiguration.font
+        let whatIsTitle = String.Constants.whatDoesResolutionMeanWhat.localized()
+        let height = whatIsTitle.height(withConstrainedWidth: .infinity, font: font)
+        subheadWhatIsButton.setTitle(whatIsTitle, image: nil)
+        subheadWhatIsButton.frame.size = CGSize(width: whatIsTitle.width(withConstrainedHeight: .infinity, font: font) ,
+                                                height: height)
 
         subheadMeanButton = buildSubheadButton()
-        subheadMeanButton.setTitle(String.Constants.whatDoesResolutionMeanMean.localized(), image: .reverseResolutionArrows12)
-        subheadMeanButton.layoutIfNeeded()
+        let meanTitle = String.Constants.whatDoesResolutionMeanMean.localized()
+        subheadMeanButton.setTitle(meanTitle, image: .reverseResolutionArrows12)
+        subheadMeanButton.frame.size = CGSize(width: meanTitle.width(withConstrainedHeight: .infinity, font: font) + 20,
+                                                height: height)
     }
     
-    func buildSubheadButton() -> UDButton {
-        let button = UDButton()
+    func buildSubheadButton() -> UDConfigurableButton {
+        let button = UDConfigurableButton()
         button.setConfiguration(.verySmallGhostTertiaryButtonConfiguration)
+        button.customImageEdgePadding = 0
+        button.customTitleEdgePadding = 0
+        button.titleLeftPadding = 0
+        button.titleRightPadding = 0
         button.addTarget(self, action: #selector(subheadButtonPressed), for: .touchUpInside)
         addSubview(button)
         

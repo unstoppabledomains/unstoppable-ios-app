@@ -24,28 +24,28 @@ struct XMTPBlockedUsersStorage {
     
     func isOtherUserBlockedInChat(_ chat: MessagingChatDisplayInfo) -> Bool {
         switch chat.type {
-        case .private:
+        case .private(let otherUser):
             let userId = chat.thisUserDetails.wallet
-            let chatTopic = chat.id
+            let otherUserAddress = otherUser.otherUser.wallet
             let isOtherUserBlocked = isUser(userId,
-                                            blockingChatTopic: chatTopic)
+                                            blockingAddress: otherUserAddress)
             return isOtherUserBlocked
         case .group, .community:
             return false
         }
     }
     
-    func isUser(_ userId: String, blockingChatTopic topic: String) -> Bool {
+    func isUser(_ userId: String, blockingAddress address: String) -> Bool {
         let blockedUsersList = getBlockedUsersList()
-        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedTopic == topic }) != nil
+        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedAddress == address }) != nil
     }
     
     func updatedBlockedUsersListFor(userId: String, blockedTopics: [String]) {
         var blockedUsersList = getBlockedUsersList()
         blockedUsersList.removeAll(where: { $0.userId == userId }) /// Remove all blocked topics list related to user
         
-        let blockedUserTopics = blockedTopics.map { XMTPBlockedUserDescription(userId: userId, blockedTopic: $0) } /// Replace it with new data
-        blockedUsersList.append(contentsOf: blockedUserTopics)
+        let blockedUserAdresses = blockedTopics.map { XMTPBlockedUserDescription(userId: userId, blockedAddress: $0) } /// Replace it with new data
+        blockedUsersList.append(contentsOf: blockedUserAdresses)
         
         set(newList: blockedUsersList)
     }

@@ -99,29 +99,31 @@ class BaseButton: UIButton {
     
     // MARK: - Open methods
     func setTitle(_ title: String?, image: UIImage?, for state: UIButton.State = .normal) {
-        if title == nil || title == "" {
-            setTitle("", for: .normal)
-        }
-        setAttributedTextWith(text: title ?? "",
-                              font: .currentFont(withSize: fontSize, weight: fontWeight),
-                              textColor: textColorForEnabledState,
-                              lineBreakMode: .byTruncatingTail)
-        
-        if let image = image {
-            if title == nil {
-                let iconPadding: CGFloat = customImageEdgePadding ?? 20
-                self.setIcon(image, leftPadding: iconPadding, rightPadding: iconPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
-            } else {
-                let leftPadding: CGFloat = imageLayout == .trailing ? titleEdgePadding : imageEdgePadding
-                let rightPadding: CGFloat = imageLayout == .trailing ? imageEdgePadding : titleEdgePadding
-                
-                self.setIcon(image, leftPadding: leftPadding, rightPadding: rightPadding, titleImagePadding: titleImagePadding, imageLayout: imageLayout, forState: .normal)
+        UIView.performWithoutAnimation {
+            if title == nil || title == "" {
+                setTitle("", for: .normal)
             }
-        } else {
-            self.setIcon(nil, leftPadding: titleLeftPadding, rightPadding: titleRightPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+            setAttributedTextWith(text: title ?? "",
+                                  font: .currentFont(withSize: fontSize, weight: fontWeight),
+                                  textColor: textColorForEnabledState,
+                                  lineBreakMode: .byTruncatingTail)
+            
+            if let image = image {
+                if title == nil {
+                    let iconPadding: CGFloat = customImageEdgePadding ?? 20
+                    self.setIcon(image, leftPadding: iconPadding, rightPadding: iconPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+                } else {
+                    let leftPadding: CGFloat = imageLayout == .trailing ? titleEdgePadding : imageEdgePadding
+                    let rightPadding: CGFloat = imageLayout == .trailing ? imageEdgePadding : titleEdgePadding
+                    
+                    self.setIcon(image, leftPadding: leftPadding, rightPadding: rightPadding, titleImagePadding: titleImagePadding, imageLayout: imageLayout, forState: .normal)
+                }
+            } else {
+                self.setIcon(nil, leftPadding: titleLeftPadding, rightPadding: titleRightPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
+            }
+            self.tintColor = textColor
+            imageView?.tintColor = textColor
         }
-        self.tintColor = textColor
-        imageView?.tintColor = textColor
     }
     
     func showLoadingIndicator() {
@@ -163,21 +165,14 @@ private extension BaseButton {
         self.setImage(icon, for: state)
         self.setImage(icon, for: .highlighted)
 
-        let titleLeftPadding = imageLayout == .leading ? titleImagePadding / 2 : -titleImagePadding / 2
-        let titleRightPadding = -titleLeftPadding
-        let imageLeftPadding = imageLayout == .leading ? -titleImagePadding / 2 : titleImagePadding / 2
-        let imageRightPadding = -imageLeftPadding
-        
         let contentInsets = UIEdgeInsets(top: 0, left: leftPadding + titleImagePadding / 2,
                                          bottom: 0, right: rightPadding + titleImagePadding / 2)
         
-        self.configuration = nil
-        
-        self.titleEdgeInsets = UIEdgeInsets(top: 0, left: titleLeftPadding,
-                                            bottom: 0, right: titleRightPadding)
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: imageLeftPadding,
-                                            bottom: 0, right: imageRightPadding)
-        self.contentEdgeInsets = contentInsets
+        var buttonConfig = UIButton.Configuration.plain()
+        buttonConfig.titlePadding = titleImagePadding
+        buttonConfig.imagePadding = titleImagePadding
+        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: contentInsets.top, leading: contentInsets.left, bottom: contentInsets.bottom, trailing: contentInsets.right)
+        self.configuration = buttonConfig
     }
 }
 
@@ -187,8 +182,6 @@ private extension BaseButton {
         self.backgroundColor = backgroundColorForEnabledState
         self.tintColor = textColor
         layer.cornerRadius = cornerRadius
-        adjustsImageWhenHighlighted = false
-        adjustsImageWhenDisabled = false
         self.setValue(UIButton.ButtonType.custom.rawValue, forKey: "buttonType")
         additionalSetup()
         addTarget(self, action: #selector(vibrate), for: .touchUpInside)

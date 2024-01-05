@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol DigitalKeyboardDelegate: AnyObject {
     func didEnter(passcode: [Character])
     func getWarningType() -> DigitalKeyboardViewController.WarningType

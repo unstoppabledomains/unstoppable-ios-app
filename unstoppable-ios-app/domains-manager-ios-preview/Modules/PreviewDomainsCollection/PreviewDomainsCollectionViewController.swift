@@ -9,6 +9,15 @@ import SwiftUI
 
 @available(iOS 17, *)
 #Preview {
+    HotFeatureSuggestionsStorage.clearAll()
+    
+    
+//    let router = DomainsCollectionRouter()
+//    let vc = router.configureViewController(mintingState: .default)
+//    
+//    return vc
+    
+    
     let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
     let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
     domainsCollectionVC.presenter = presenter
@@ -20,6 +29,7 @@ import SwiftUI
 @MainActor
 final class PreviewDomainsCollectionViewPresenter {
     private weak var view: DomainsCollectionViewProtocol?
+    private let numberOfDomains = 10
     var analyticsName: Analytics.ViewName {
         .home
     }
@@ -36,17 +46,24 @@ final class PreviewDomainsCollectionViewPresenter {
 // MARK: - DomainsCollectionPresenterProtocol
 extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProtocol {
     func viewDidLoad() {
-        UserDefaults.didShowSwipeDomainCardTutorial = false
+//        UserDefaults.didShowSwipeDomainCardTutorial = false
         view?.setGoToSettingsTutorialHidden(true) // Always hide for now (MOB-394)
         view?.setScanButtonHidden(true)
         view?.setAddButtonHidden(false, isMessagingAvailable: false)
         view?.setEmptyState(hidden: true)
+        view?.setNumberOfSteps(numberOfDomains)
         
         
         WalletConnectServiceV2.connectedAppsToUse = [.init()]
-//        view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
-        view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
-//        view?.showMintingDomains([.init(name: "oleg.x", ownerWallet: "", state: .minting, isSetForRR: false)])
+        if numberOfDomains > 0 {
+            view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
+            view?.showMintingDomains([.init(name: "oleg.x", ownerWallet: "", state: .minting, isSetForRR: false),
+                                      .init(name: "oleg2.x", ownerWallet: "", state: .minting, isSetForRR: false)])
+        } else {
+            view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
+        }
+        
+        
     }
     
     func viewDidAppear() {
@@ -69,11 +86,13 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     }
     
     func canMove(to index: Int) -> Bool {
-        false
+        (0..<numberOfDomains).contains(index)
     }
     
     func displayMode(at index: Int) -> DomainsCollectionCarouselItemDisplayMode? {
-        .empty
+        guard canMove(to: index) else { return nil }
+
+        return .domain(.init(name: "oleg_\(index).x", ownerWallet: "", isSetForRR: false))
     }
     
     func didMove(to index: Int) {
@@ -81,7 +100,12 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     }
     
     func didOccureUIAction(_ action: DomainsCollectionViewController.Action) {
-        
+        switch action {
+        case .suggestionSelected(let suggestion):
+            UDRouter().showHotFeatureSuggestionDetails(suggestion: suggestion, in: view!)
+        default:
+            return
+        }
     }
     
     func didTapSettingsButton() {
@@ -105,7 +129,14 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     }
     
     func didTapAddButton() {
-        
+        Task {
+            do {
+                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: .init(name: "oleg.x", ownerWallet: "", isSetForRR: false),
+                                                                                           swipeToDismissEnabled: true,
+                                                                                           in: view!)
+                
+            } catch { }
+        }
     }
     
     func didTapMessagingButton() {

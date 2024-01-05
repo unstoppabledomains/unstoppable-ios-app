@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol UDTextFieldV2Delegate: AnyObject {
     func udTextFieldShouldEndEditing(_ udTextField: UDTextField) -> Bool
     func didChangeText(_ udTextField: UDTextField)

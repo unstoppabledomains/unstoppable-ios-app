@@ -8,7 +8,6 @@
 import Foundation
 
 protocol DomainRecordsServiceProtocol {
-    @discardableResult
     func saveRecords(records: [RecordToUpdate],
                              in domain: DomainItem,
                              paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws

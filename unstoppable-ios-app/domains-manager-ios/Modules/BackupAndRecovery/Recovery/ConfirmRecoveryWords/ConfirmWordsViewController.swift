@@ -7,10 +7,12 @@
 
 import UIKit
 
+@MainActor
 protocol ConfirmWordsViewControllerProtocol: BaseViewControllerProtocol & ViewWithDashesProgress {
     func setMnems(original mnemonicsOriginal: [String], sorted mnemonicsSorted: [String], confirmation mnemonicsConfirmation: [String])
 }
 
+@MainActor
 final class ConfirmWordsViewController: BaseViewController {
 
     @IBOutlet private weak var titleLabel: UDTitleLabel!

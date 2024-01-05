@@ -29,7 +29,7 @@ class BaseFirebaseInteractionService {
     }
     
     func logout() async {
-        try? await makeFirebaseAPIDataRequest(.init(urlString: URLSList.logoutURL,
+        _ = try? await makeFirebaseAPIDataRequest(.init(urlString: URLSList.logoutURL,
                                                     method: .post))
         firebaseAuthService.logout()
     }

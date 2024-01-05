@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -62,17 +62,18 @@
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="QBs-Cp-Wiu">
-                                                                <rect key="frame" x="0.0" y="24" width="273.33333333333331" height="20"/>
+                                                                <rect key="frame" x="0.0" y="24" width="120.33333333333333" height="20"/>
                                                                 <subviews>
-                                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GaL-yl-6hd" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="1.3333333333333357" width="228" height="17"/>
-                                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r0d-Ca-O8T" customClass="UDConfigurableButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                                        <rect key="frame" x="0.0" y="1.3333333333333357" width="75" height="17"/>
                                                                         <constraints>
-                                                                            <constraint firstAttribute="height" constant="17" id="qKy-W3-1oV"/>
+                                                                            <constraint firstAttribute="height" constant="17" id="zaU-3s-O3j"/>
                                                                         </constraints>
-                                                                    </view>
+                                                                        <state key="normal" title="Button"/>
+                                                                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                                    </button>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avE-5e-FQy">
-                                                                        <rect key="frame" x="232" y="0.0" width="41.333333333333314" height="20"/>
+                                                                        <rect key="frame" x="79" y="0.0" width="41.333333333333343" height="20"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="20" id="ilr-iV-OCH"/>
                                                                         </constraints>
@@ -131,7 +132,7 @@
                 <outlet property="bubbleContainerView" destination="hl3-ed-zSa" id="smy-Uw-KwG"/>
                 <outlet property="containerView" destination="3zL-iG-Xlk" id="HvP-fi-NSf"/>
                 <outlet property="contentHStackView" destination="Hc7-gx-ibY" id="v2w-4z-JDL"/>
-                <outlet property="downloadButton" destination="GaL-yl-6hd" id="6gl-jN-ZI4"/>
+                <outlet property="downloadButton" destination="r0d-Ca-O8T" id="IM8-B3-SWu"/>
                 <outlet property="iconContainerView" destination="Pj0-t7-wVi" id="pF1-13-UvZ"/>
                 <outlet property="iconImageView" destination="KNM-O0-GQ6" id="NOv-k4-E1e"/>
                 <outlet property="primaryLabel" destination="YnQ-TL-Hsi" id="GJj-6j-lKJ"/>

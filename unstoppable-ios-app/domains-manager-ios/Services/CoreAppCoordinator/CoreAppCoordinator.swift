@@ -239,7 +239,7 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
                         topInfoWindow.makeKeyAndVisible()
                     }
                     
-                    await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
+                    _ = await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
                     
                     await MainActor.run {
                         self.window?.makeKeyAndVisible()

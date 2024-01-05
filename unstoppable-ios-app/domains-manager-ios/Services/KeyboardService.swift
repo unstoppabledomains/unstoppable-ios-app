@@ -7,6 +7,7 @@
 
 import UIKit
 import GameController
+import Combine
 
 @MainActor
 protocol KeyboardServiceListener: AnyObject {
@@ -37,17 +38,12 @@ final class KeyboardServiceListenerHolder: Equatable {
 final class KeyboardService {
     
     static let shared = KeyboardService()
-    
-    private let notificationCenter = NotificationCenter.default
-    private var keyboardWillShowObserver: NSObjectProtocol?
-    private var keyboardDidShowObserver: NSObjectProtocol?
-    private var keyboardWillHideObserver: NSObjectProtocol?
-    
+        
     private(set) var keyboardFrame: CGRect = .zero
     private(set) var keyboardAnimationDuration: TimeInterval = 0.25
     private(set) var keyboardAppeared = false
     private(set) var isKeyboardOpened = false
-    
+    private var cancellables: Set<AnyCancellable> = []
     private var listeners: [KeyboardServiceListenerHolder] = []
     
     private init() {
@@ -117,55 +113,63 @@ private extension KeyboardService {
     }
     
     func addKeyboardObservers() {
-        if keyboardDidShowObserver == nil {
-            keyboardDidShowObserver = notificationCenter.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { @MainActor [weak self] (notification) in
-                self?.keyboardDidShowAction()
-            })
+        guard cancellables.isEmpty else { return }
+        
+        observeKeyboardNotification(UIResponder.keyboardDidShowNotification) { [weak self] _ in
+            self?.keyboardDidShowAction()
         }
-        if keyboardWillShowObserver == nil {
-            keyboardWillShowObserver = notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main, using: { @MainActor [weak self] (notification) in
-                guard let self = self else { return }
-                
-                if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                    guard keyboardFrame.cgRectValue != self.keyboardFrame else { return }
-                    
-                    self.keyboardFrame = keyboardFrame.cgRectValue
-                    self.keyboardDidAdjustFrameAction(keyboardHeight: self.keyboardFrame.height)
-                    if isKeyboardOpened {
-                        return
-                    }
-                }
-                var animationDuration: Double = 0
-                if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
-                    animationDuration = keyboardAnimationDuration
-                }
-                var curve: Int = 0
-                if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
-                    curve = keyboardCurve
-                }
-                
-                self.isKeyboardOpened = true
-                self.keyboardWillShowAction(duration: animationDuration, curve: curve, keyboardHeight: self.keyboardFrame.height)
-            })
+        observeKeyboardNotification(UIResponder.keyboardWillShowNotification) { [weak self] notification in
+            self?.keyboardWillShow(notification: notification)
         }
-        if keyboardWillHideObserver == nil {
-            keyboardWillHideObserver = notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main, using: { @MainActor [weak self] (notification) in
-                guard let self = self else { return }
-                guard self.isKeyboardOpened else { return }
-                
-                self.isKeyboardOpened = false
-                self.keyboardFrame = .zero
-                
-                var animationDuration: Double = 0
-                if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
-                    animationDuration = keyboardAnimationDuration
-                }
-                var curve: Int = 0
-                if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
-                    curve = keyboardCurve
-                }
-                self.keyboardWillHideAction(duration: animationDuration, curve: curve)
-            })
+        observeKeyboardNotification(UIResponder.keyboardWillHideNotification) { [weak self] notification in
+            self?.keyboardWillHide(notification: notification)
         }
+    }
+    
+    func observeKeyboardNotification(_ name: Notification.Name, action: @escaping (Notification) -> Void) {
+        NotificationCenter.Publisher(center: NotificationCenter.default, name: name, object: nil)
+            .receive(on: DispatchQueue.main)
+            .sink { notification in action(notification) }
+            .store(in: &cancellables)
+    }
+    
+    func keyboardWillShow(notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            guard keyboardFrame.cgRectValue != self.keyboardFrame else { return }
+            
+            self.keyboardFrame = keyboardFrame.cgRectValue
+            self.keyboardDidAdjustFrameAction(keyboardHeight: self.keyboardFrame.height)
+            if isKeyboardOpened {
+                return
+            }
+        }
+        var animationDuration: Double = 0
+        if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
+            animationDuration = keyboardAnimationDuration
+        }
+        var curve: Int = 0
+        if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
+            curve = keyboardCurve
+        }
+        
+        self.isKeyboardOpened = true
+        self.keyboardWillShowAction(duration: animationDuration, curve: curve, keyboardHeight: self.keyboardFrame.height)
+    }
+    
+    func keyboardWillHide(notification: Notification) {
+        guard self.isKeyboardOpened else { return }
+        
+        self.isKeyboardOpened = false
+        self.keyboardFrame = .zero
+        
+        var animationDuration: Double = 0
+        if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
+            animationDuration = keyboardAnimationDuration
+        }
+        var curve: Int = 0
+        if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
+            curve = keyboardCurve
+        }
+        self.keyboardWillHideAction(duration: animationDuration, curve: curve)
     }
 }

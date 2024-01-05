@@ -18,6 +18,7 @@ enum DomainsCollectionCarouselItemDisplayMode {
     case empty
 }
 
+@MainActor
 final class DomainsCollectionCarouselItemViewPresenter {
     
     typealias CardAction = DomainsCollectionCarouselItemViewController.DomainCardConfiguration.Action
@@ -33,7 +34,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
     var analyticsName: Analytics.ViewName { .unspecified }
-
+    
     init(view: DomainsCollectionCarouselItemViewProtocol,
          mode: DomainsCollectionCarouselItemDisplayMode,
          cardState: CarouselCardState,
@@ -54,6 +55,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
+        appContext.hotFeatureSuggestionsService.addListener(self)
         showDomainData(animated: false, actions: [])
         Task.detached(priority: .low) { [weak self] in
             await self?.showDomainDataWithActions(animated: false)
@@ -64,6 +66,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
+        case .suggestion(let configuration):
+            UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.suggestionSelected(configuration.suggestion))
         case .getDomainCard:
             UDVibration.buttonTap.vibrate()
             actionsDelegate?.didOccurUIAction(.purchaseDomains)
@@ -74,6 +79,10 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     
     func setCarouselCardState(_ state: CarouselCardState) {
         guard self.cardState != state else { return }
+        
+        if state != .expanded {
+            didShowSwipeDomainCardTutorial = true
+        }
         
         func isSwipeTutorialValueChanged() -> Bool {
             UserDefaults.didShowSwipeDomainCardTutorial != didShowSwipeDomainCardTutorial
@@ -93,8 +102,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
 
 // MARK: - DataAggregatorServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: DataAggregatorServiceListener {
+    nonisolated
     func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
+        Task { @MainActor in
             if case .domain(let domain) = mode {
                 switch result {
                 case .success(let resultType):
@@ -117,6 +127,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DataAggregatorServiceListe
 
 // MARK: - ExternalEventsServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListener {
+    nonisolated
     func didReceive(event: ExternalEvent) {
         Task {
             switch event {
@@ -131,6 +142,7 @@ extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListe
 
 // MARK: - AppLaunchServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
+    nonisolated
     func appLaunchServiceDidUpdateAppVersion() {
         Task {
             await showDomainDataWithActions(animated: false)
@@ -140,25 +152,38 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 
 // MARK: - WalletConnectServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
+    nonisolated
     func didConnect(to app: UnifiedConnectAppInfo) {
-        guard case .domain(let domain) = mode,
-              app.domain.isSameEntity(domain) else { return }
-        
-        Task {
+        Task { @MainActor in
+            guard case .domain(let domain) = mode,
+                  app.domain.isSameEntity(domain) else { return }
+            
             await showDomainDataWithActions(animated: true)
         }
     }
     
+    nonisolated
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        guard case .domain(let domain) = mode,
-              app.domain.isSameEntity(domain) else { return }
-
-        Task {
+        Task { @MainActor in
+            guard case .domain(let domain) = mode,
+                  app.domain.isSameEntity(domain) else { return }
+            
             await showDomainDataWithActions(animated: true)
         }
     }
     
+    nonisolated
     func didCompleteConnectionAttempt() { }
+}
+
+// MARK: - HotFeatureSuggestionsServiceListener
+extension DomainsCollectionCarouselItemViewPresenter: HotFeatureSuggestionsServiceListener {
+    nonisolated
+    func didUpdateCurrentSuggestion(_ suggestion: HotFeatureSuggestion?) {
+        Task {
+            await showDomainDataWithActions(animated: true)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -169,10 +194,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
             self.connectedApps = connectedApps
         }
-        await showDomainData(animated: animated, actions: actions)
+        showDomainData(animated: animated, actions: actions)
     }
     
-    @MainActor
     func showDomainData(animated: Bool, actions: [CardAction]) {
         switch mode {
         case .domain(let domain):
@@ -182,7 +206,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
     }
     
-    @MainActor
     func showDataForDomain(_ domain: DomainDisplayInfo?, animated: Bool, actions: [CardAction]) {
         var snapshot = DomainsCollectionCarouselItemSnapshot()
         
@@ -205,7 +228,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             isTutorialOn = true
         }
         
-        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(), placement: .header)])
+        addSuggestionSectionIfNeeded(in: &snapshot)
         if isTutorialOn {
             snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
         } else {
@@ -219,8 +243,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             }, isTutorialOn: isTutorialOn, dataType: .parkedDomain))])
         } else {
             if connectedApps.isEmpty {
-               
-                
                 snapshot.appendSections([.noRecentActivities])
                 snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                     self?.recentActivitiesLearnMoreButtonPressed()
@@ -247,6 +269,29 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: animated)
+    }
+    
+    func getHotFeatureSuggestion() -> HotFeatureSuggestion? {
+        guard walletWithInfo != nil else { return nil } // Don't show suggestions for domains without wallet (vaulted domains)
+        
+        return appContext.hotFeatureSuggestionsService.getSuggestionToShow()
+    }
+    
+    @discardableResult
+    func addSuggestionSectionIfNeeded(in snapshot: inout DomainsCollectionCarouselItemSnapshot) -> Bool {
+        guard let suggestion = getHotFeatureSuggestion() else { return false }
+        
+        snapshot.appendSections([.emptySeparator(height: 16,
+                                                 placement: .header)])
+        snapshot.appendItems([.suggestion(configuration: .init(closeCallback: { [weak self] in
+            self?.didDismissSuggestion(suggestion)
+        }, suggestion: suggestion))])
+        
+        return true
+    }
+    
+    func didDismissSuggestion(_ suggestion: HotFeatureSuggestion) {
+        appContext.hotFeatureSuggestionsService.dismissHotFeatureSuggestion(suggestion)
     }
     
     func emptySeparatorHeightForExpandedState() -> CGFloat {
@@ -343,20 +388,20 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     func showSetupReverseResolutionModule() {
         guard case .domain(let domain) = mode else { return }
-
-        Task { @MainActor in
-            guard let navigation = view?.containerViewController?.cNavigationController,
-                  let walletWithInfo,
-                  let walletInfo = walletWithInfo.displayInfo else { return }
-            
-            UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                              wallet: walletWithInfo.wallet,
-                                                              walletInfo: walletInfo,
-                                                              domain: domain,
-                                                              resultCallback: { [weak self] in
-                self?.didSetDomainForReverseResolution()
-            })
-        }
+        
+        guard let navigation = view?.containerViewController?.cNavigationController,
+              let walletWithInfo,
+              let walletInfo = walletWithInfo.displayInfo else { return }
+        
+        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+                                                          wallet: walletWithInfo.wallet,
+                                                          walletInfo: walletInfo,
+                                                          domain: domain,
+                                                          resultCallback: {
+            Task { @MainActor in
+                self.didSetDomainForReverseResolution()
+            }
+        })
     }
     
     func didSetDomainForReverseResolution() {

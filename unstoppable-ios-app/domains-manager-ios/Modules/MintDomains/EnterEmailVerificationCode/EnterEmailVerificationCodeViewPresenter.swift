@@ -6,7 +6,9 @@
 //
 
 import UIKit
+import Combine
 
+@MainActor
 protocol EnterEmailVerificationCodeViewPresenterProtocol: BasePresenterProtocol {
     var numberOfCharactersToVerify: Int { get }
     var progress: Double? { get }
@@ -15,13 +17,14 @@ protocol EnterEmailVerificationCodeViewPresenterProtocol: BasePresenterProtocol 
     func didEnterVerificationCode(_ code: String)
 }
 
+@MainActor
 class EnterEmailVerificationCodeViewPresenter {
     
     private(set) weak var view: EnterEmailVerificationCodeViewProtocol?
     private(set) var email: String
     private var preFilledCode: String?
     private var secondsLeftToResend = 0
-    private var resendTimer: Timer?
+    private var resendTimer: AnyCancellable?
     var resendInterval: TimeInterval { 10 }
     var numberOfCharactersToVerify: Int { 6 }
     var progress: Double? { nil }
@@ -64,20 +67,18 @@ extension EnterEmailVerificationCodeViewPresenter: EnterEmailVerificationCodeVie
     }
     
     func resendCodeButtonPressed() {
-        Task {
-            resendCodeAction()
-            await startResendTimer()
-        }
+        resendCodeAction()
+        startResendTimer()
     }
     
     func didEnterVerificationCode(_ code: String) {
         Task {
             do {
-                await view?.setLoading(true)
+                view?.setLoading(true)
                 try await validateCode(code)
             } catch {
-                await view?.setLoading(false)
-                await view?.setInvalidCode()
+                view?.setLoading(false)
+                view?.setInvalidCode()
             }
         }
     }
@@ -90,29 +91,28 @@ private extension EnterEmailVerificationCodeViewPresenter {
         stopResendTimer()
         secondsLeftToResend = Int(resendInterval)
         checkResendStatus()
-        resendTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] _ in
-            guard let self = self else { return }
-            
-            self.secondsLeftToResend -= 1
-            self.checkResendStatus()
-        })
+        resendTimer = Timer
+            .publish(every: 1, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                
+                self.secondsLeftToResend -= 1
+                self.checkResendStatus()
+            }
     }
     
     func checkResendStatus() {
-        Task {
-            await MainActor.run {
-                if secondsLeftToResend < 0 {
-                    view?.setResendCodeButton(enabled: true, secondsLeft: nil)
-                    stopResendTimer()
-                } else {
-                    view?.setResendCodeButton(enabled: false, secondsLeft: secondsLeftToResend)
-                }
-            }
+        if secondsLeftToResend < 0 {
+            view?.setResendCodeButton(enabled: true, secondsLeft: nil)
+            stopResendTimer()
+        } else {
+            view?.setResendCodeButton(enabled: false, secondsLeft: secondsLeftToResend)
         }
     }
     
     func stopResendTimer() {
-        resendTimer?.invalidate()
+        resendTimer?.cancel()
         resendTimer = nil
     }
 }

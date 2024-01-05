@@ -11,6 +11,7 @@ final class UDFirebaseSigner: FirebaseAuthUtilitiesProtocol {
     
     static let shared = UDFirebaseSigner()
     private var googleAPIKey: String { FirebaseNetworkConfig.APIKey }
+    private let firebaseAuthHost = "firebase.unstoppabledomains.com"
     
 }
 
@@ -60,7 +61,7 @@ extension UDFirebaseSigner {
 // MARK: - Private methods
 private extension UDFirebaseSigner {
     func authorizeWith(requestBody: any Encodable, accountType: GoogleSignInAccountType) async throws -> FirebaseTokenData {
-        let urlString = "https://identitytoolkit.googleapis.com/v1/accounts:\(accountType.rawValue)?key=\(googleAPIKey)"
+        let urlString = "https://\(firebaseAuthHost)/v1/accounts:\(accountType.rawValue)?key=\(googleAPIKey)"
         
         let requestURL = URL(string: urlString)!
         var request = URLRequest(url: requestURL)
@@ -81,7 +82,7 @@ private extension UDFirebaseSigner {
         let queryString = buildURLQueryString(from: query)
         guard let httpData = queryString.data(using: .utf8) else { throw FirebaseAuthError.failedToBuildURL }
         
-        let urlString = "https://securetoken.googleapis.com/v1/token?key=\(googleAPIKey)"
+        let urlString = "https://\(firebaseAuthHost)/v1/token?key=\(googleAPIKey)"
         
         let requestURL = URL(string: urlString)!
         var request = URLRequest(url: requestURL)
@@ -110,7 +111,7 @@ private extension UDFirebaseSigner {
         }
         
         let requestBody = RequestBody(idToken: idToken)
-        let urlString = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=\(googleAPIKey)"
+        let urlString = "https://\(firebaseAuthHost)/v1/accounts:lookup?key=\(googleAPIKey)"
         
         let requestURL = URL(string: urlString)!
         var request = URLRequest(url: requestURL)

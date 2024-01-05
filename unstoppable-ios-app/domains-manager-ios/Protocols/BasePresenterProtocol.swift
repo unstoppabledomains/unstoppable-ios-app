@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol BasePresenterProtocol: AnyObject {
     // System actions
     func viewDidLoad()

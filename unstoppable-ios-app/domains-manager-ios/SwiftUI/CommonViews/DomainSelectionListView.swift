@@ -32,13 +32,14 @@ struct DomainSelectionListView: View {
     }
     
     enum SelectionMode {
-        case singleSelection(selectedDomain: DomainDisplayInfo?, selectionCallback: (DomainDisplayInfo?)->())
+        case singleSelection(selectedDomain: DomainDisplayInfo?, selectionCallback: @Sendable @MainActor (DomainDisplayInfo?)->())
         case multipleSelection(selectedDomains: Set<DomainDisplayInfo>, selectionCallback: (Set<DomainDisplayInfo>)->())
     }
 }
 
 // MARK: - Private methods
 private extension DomainSelectionListView {
+    @MainActor
     func prepare() {
         UITableView.appearance().backgroundColor = .clear
         domainsWithIcons = domainsToSelectFrom.map { DomainDisplayInfoWithIcon(domain: $0) }
@@ -53,6 +54,7 @@ private extension DomainSelectionListView {
         }
     }
     
+    @MainActor 
     func domainSelected(_ domainWithIcon: DomainDisplayInfoWithIcon?) {
         UDVibration.buttonTap.vibrate()
         guard let domain = domainWithIcon?.domain else { return }

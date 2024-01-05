@@ -27,7 +27,8 @@ final class LoginOnboardingViewPresenter: LoginViewPresenter {
         onboardingFlowManager?.moveToStep(.loginWithEmailAndPassword)
     }
     
-    override func userDidAuthorize() {
+    override func userDidAuthorize(provider: LoginProvider) {
+        onboardingFlowManager?.onboardingData.loginProvider = provider
         onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }

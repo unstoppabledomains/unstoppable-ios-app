@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 final class NavBarItemsTransitionPerformer {
     
     private var fromBarViews = [UIView]()

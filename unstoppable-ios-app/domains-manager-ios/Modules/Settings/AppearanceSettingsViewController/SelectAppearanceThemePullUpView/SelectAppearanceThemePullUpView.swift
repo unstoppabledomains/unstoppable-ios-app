@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-typealias AppearanceStyleChangedCallback = (UIUserInterfaceStyle)->()
+typealias AppearanceStyleChangedCallback = @Sendable @MainActor (UIUserInterfaceStyle)->()
 
 final class SelectAppearanceThemePullUpView: UIView {
     

@@ -5,22 +5,18 @@
 //  Created by Oleg Kuplin on 12.08.2022.
 //
 
-import UIKit
-import CoreTelephony
+import Foundation
 
 final class AnalyticsService {
        
-    private var servicesHolder: ServicesHolder!
-    private var services: [AnalyticsServiceChildProtocol] {
-        get async {
-            let holder = await getServicesHolder()
-            return await holder.services
-        }
-    }
-    private var createServiceHolderTask: Task<ServicesHolder, Never>?
+    private var services: [AnalyticsServiceChildProtocol] = [HeapAnalyticService(),
+                                                             AmplitudeAnalyticsService()]
     
-    init(dataAggregatorService: DataAggregatorServiceProtocol) {
+    init(dataAggregatorService: DataAggregatorServiceProtocol,
+         wcRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         dataAggregatorService.addListener(self)
+        wcRequestsHandlingService.addListener(self)
+        setAnalyticsUserID()
     }
     
 }
@@ -29,22 +25,20 @@ final class AnalyticsService {
 extension AnalyticsService: AnalyticsServiceProtocol {
     func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?) {
         let timestamp = Date()
-        Task  {
-            let parametersDebugString = (eventParameters ?? [:]).map({ "\($0.key.rawValue) : \($0.value)" })
-            Debugger.printInfo(topic: .Analytics, "Will log event: \(event.rawValue) with parameters: \(parametersDebugString)")
-            
-            let defaultProperties = self.defaultProperties
-            await services.forEach { (service) in
-                service.log(event: event, timestamp: timestamp, withParameters: (eventParameters ?? [:]).adding(defaultProperties))
-            }
+        let parametersDebugString = (eventParameters ?? [:]).map({ "\($0.key.rawValue) : \($0.value)" })
+        Debugger.printInfo(topic: .Analytics, "Will log event: \(event.rawValue) with parameters: \(parametersDebugString)")
+        
+        services.forEach { (service) in
+            service.log(event: event, timestamp: timestamp, withParameters: eventParameters)
         }
     }
     
     func set(userProperties: Analytics.UserProperties) {
-        Task  {
-            await services.forEach { (service) in
-                service.set(userProperties: userProperties)
-            }
+        let parametersDebugString = userProperties.map({ "\($0.key.rawValue) : \($0.value)" })
+        Debugger.printInfo(topic: .Analytics, "Will set user properties: \(parametersDebugString)")
+
+        services.forEach { (service) in
+            service.set(userProperties: userProperties)
         }
     }
 }
@@ -57,12 +51,40 @@ extension AnalyticsService: DataAggregatorServiceListener {
             switch dataAggregatedResult {
             case .walletsListUpdated(let walletsWithInfo):
                 let addresses = walletsWithInfo.map({ $0.wallet.address }).joined(separator: ",")
-                set(userProperties: [.walletsAddresses: addresses])
                 let rrDomains = walletsWithInfo.compactMap({ $0.displayInfo?.reverseResolutionDomain?.name }).joined(separator: ",")
-                set(userProperties: [.reverseResolutionDomains: rrDomains])
+                let numberOfBackups = appContext.udWalletsService.fetchCloudWalletClusters()
+                set(userProperties: [.walletsAddresses: addresses,
+                                     .reverseResolutionDomains: rrDomains,
+                                     .numberOfWallets: String(walletsWithInfo.count),
+                                     .numberOfBackups: String(numberOfBackups.count)])
             case .primaryDomainChanged(let primaryDomainName):
                 set(userProperties: [.primaryDomain: primaryDomainName])
-            case .domainsUpdated, .domainsPFPUpdated:
+            case .domainsUpdated(let domains):
+                var numberOfUDDomains = 0
+                var numberOfParkedDomains = 0
+                var numberOfENSDomains = 0
+                var numberOfCOMDomains = 0
+                
+                for domain in domains {
+                    if case .parking = domain.state {
+                        numberOfParkedDomains += 1
+                    }
+                    let tld = domain.name.getTldName()
+                    if tld == Constants.ensDomainTLD {
+                        numberOfENSDomains += 1
+                    } else if tld == Constants.comDomainTLD {
+                        numberOfCOMDomains += 1
+                    } else {
+                        numberOfUDDomains += 1
+                    }
+                }
+                
+                set(userProperties: [.numberOfTotalDomains: String(domains.count),
+                                     .numberOfUDDomains: String(numberOfUDDomains),
+                                     .numberOfParkedDomains: String(numberOfParkedDomains),
+                                     .numberOfENSDomains: String(numberOfENSDomains),
+                                     .numberOfCOMDomains: String(numberOfCOMDomains)])
+            case .domainsPFPUpdated:
                 return
             }
         case .failure:
@@ -71,81 +93,59 @@ extension AnalyticsService: DataAggregatorServiceListener {
     }
 }
 
-// MARK: - Private methods
-private extension AnalyticsService {
-    func getServicesHolder() async -> ServicesHolder {
-        if let servicesHolder {
-            return servicesHolder
-        } else if let task = createServiceHolderTask {
-            return await task.value
-        }
-        
-        let createServiceHolderTask: Task<ServicesHolder, Never> = Task {
-            await ServicesHolder()
-        }
-        self.createServiceHolderTask = createServiceHolderTask
-        let servicesHolder = await createServiceHolderTask.value
-        self.servicesHolder = servicesHolder
-        self.createServiceHolderTask = nil
-        return servicesHolder
+// MARK: - WalletConnectServiceConnectionListener
+extension AnalyticsService: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
+        log(event: .didConnectDApp, withParameters: getAnalyticParametersFrom(app: app))
+        setNumberOfConnectedApps()
     }
     
-    var defaultProperties: Analytics.EventParameters {
-        [.carrier : carrierName,
-         .platform: "iOS " + UIDevice.current.systemVersion,
-         .phoneModel: UIDevice.current.modelCode ?? "Unknown",
-         .iosVendorId: UIDevice.current.identifierForVendor?.uuidString ?? "Unknown",
-         .appName: Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Unknown",
-         .appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown",
-         .ip: publicIP() ?? "Unknown"]
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        log(event: .didDisconnectDApp, withParameters: getAnalyticParametersFrom(app: app))
+        setNumberOfConnectedApps()
     }
     
-    var carrierName: String {
-        CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.values.compactMap({ $0.carrierName }).joined(separator: ", ") ?? ""
+    private func getAnalyticParametersFrom(app: UnifiedConnectAppInfo) -> Analytics.EventParameters {
+        [.appName : app.appName,
+         .wallet: app.walletAddress,
+         .domainName: app.domain.name,
+         .hostURL: app.appUrlString]
     }
     
-    func publicIP() -> String? {
-        do {
-            let url = URL(string: "https://icanhazip.com/")!
-            let publicIP = try String(contentsOf: url,
-                                      encoding: .utf8)
-                .trimmingCharacters(in: .whitespaces)
-            return publicIP
-        }
-        catch {
-            Debugger.printFailure("Failed to get public IP")
-            return nil
+    private func setNumberOfConnectedApps() {
+        Task {
+            let appsConnected = await appContext.walletConnectServiceV2.getConnectedApps()
+            set(userProperties: [.numberOfConnectedDApps: String(appsConnected.count)])
         }
     }
 }
 
 // MARK: - Private methods
 private extension AnalyticsService {
-    actor ServicesHolder {
-        private(set) var services: [AnalyticsServiceChildProtocol] = []
-        
-        init() async {
+    func setAnalyticsUserID() {
+        Task {
             let userID = await resolveUserID()
-            services = [HeapAnalyticService(userID: userID),
-                        AmplitudeAnalyticsService(userID: userID)]
+            services.forEach { service in
+                service.set(userID: userID)
+            }
+        }
+    }
+    
+    func resolveUserID() async -> String {
+        try? await Task.sleep(seconds: 0.5) // Wait for 0.5 sec before accessing keychain to avoid error -25308. MOB-1078.
+        
+        let key = KeychainKey.analyticsId
+        let storage = iCloudPrivateKeyStorage()
+        
+        // Check for existingId
+        let id = storage.retrieveValue(for: key, isCritical: false)
+        if let id = id {
+            return id
         }
         
-        private func resolveUserID() async -> String {
-            try? await Task.sleep(seconds: 0.5) // Wait for 0.5 sec before accessing keychain to avoid error -25308. MOB-1078.
-            
-            let key = KeychainKey.analyticsId
-            let storage = iCloudPrivateKeyStorage()
-            
-            // Check for existingId
-            let id = storage.retrieveValue(for: key, isCritical: false)
-            if let id = id {
-                return id
-            }
-            
-            let newId = UUID().uuidString
-            storage.store(newId, for: key)
-            
-            return newId
-        }
+        let newId = UUID().uuidString
+        storage.store(newId, for: key)
+        
+        return newId
     }
 }

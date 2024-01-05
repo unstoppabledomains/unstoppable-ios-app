@@ -83,7 +83,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
-                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+                cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }
             throw error
         }
@@ -102,7 +102,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
             if shouldCheckForRequestError {
-                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+                cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }
             throw error
         }
@@ -113,21 +113,19 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
 extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String) async throws -> [DomainToPurchase] {
         let searchResult = try await self.searchForFBDomains(key: key)
-        let domains = searchResult.exact
-            .filter({ $0.availability })
-            .map { DomainToPurchase(domainProduct: $0) }
+        let domains = transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
+        return domains
+    }
+    
+    func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
+        let domainProducts = try await aiSearchForFBDomains(hint: hint)
+        let domains = transformDomainProductItemsToDomainsToPurchase(domainProducts)
         return domains
     }
     
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        let hint = hint ?? "Anything you think is trending now"
-        let queryComponents = ["phrase" : hint,
-                               "extension" : "All"]
-        let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
-        let request = try APIRequest(urlString: urlString,
-                                     method: .get)
-        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
-        return response.suggestions.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
+        let domainProducts = try await aiSearchForFBDomains(hint: hint ?? "Anything you think is trending now")
+        return domainProducts.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
@@ -187,6 +185,16 @@ private extension FirebasePurchaseDomainsService {
         return searchResponse
     }
     
+    func aiSearchForFBDomains(hint: String) async throws -> [DomainProductItem] {
+        let queryComponents = ["phrase" : hint,
+                               "extension" : "All"]
+        let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
+        return response.suggestions
+    }
+    
     func addProductsToCart(_ products: [UDProduct],
                            shouldRefreshCart: Bool) async throws {
         try await makeCartOperationAPIRequestWith(urlString: URLSList.CART_ADD_URL,
@@ -231,6 +239,12 @@ private extension FirebasePurchaseDomainsService {
         let response: UDUserAccountCryptWalletsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         
         return response.wallets
+    }
+    
+    func transformDomainProductItemsToDomainsToPurchase(_ productItems: [DomainProductItem]) -> [DomainToPurchase] {
+        productItems
+            .filter({ $0.availability })
+            .map { DomainToPurchase(domainProduct: $0) }
     }
 }
 

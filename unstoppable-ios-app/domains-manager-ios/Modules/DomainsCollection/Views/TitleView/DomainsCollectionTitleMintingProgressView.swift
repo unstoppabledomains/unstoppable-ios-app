@@ -11,7 +11,7 @@ final class DomainsCollectionTitleMintingProgressView: UIView {
     
     typealias MintingDomainSelectionCallback = (DomainDisplayInfo)->()
     
-    private var statusButton: UDButton!
+    private var statusButton: UDConfigurableButton!
     private let height: CGFloat = 24
     private let buttonFont: UIFont = .currentFont(withSize: 16, weight: .semibold)
     private let maxVisibleMintingDomains = 3
@@ -125,7 +125,7 @@ private extension DomainsCollectionTitleMintingProgressView {
     }
     
     func setupStatusButton() {
-        statusButton = UDButton(frame: .init(origin: .zero,
+        statusButton = UDConfigurableButton(frame: .init(origin: .zero,
                                              size: .init(width: height,
                                                          height: height)))
         

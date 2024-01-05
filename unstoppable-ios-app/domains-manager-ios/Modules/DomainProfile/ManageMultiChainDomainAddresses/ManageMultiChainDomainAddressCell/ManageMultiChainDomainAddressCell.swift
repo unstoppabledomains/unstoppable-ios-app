@@ -7,7 +7,7 @@
 
 import UIKit
 
-typealias MultichainDomainRecordActionCallback = (ManageMultiChainDomainAddressesViewController.RecordEditingAction)->()
+typealias MultichainDomainRecordActionCallback = @Sendable @MainActor (ManageMultiChainDomainAddressesViewController.RecordEditingAction)->()
 
 final class ManageMultiChainDomainAddressCell: WalletAddressFieldCollectionCell {
 

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 extension View {
     @inlinable
     public func reverseMask<Mask: View>(

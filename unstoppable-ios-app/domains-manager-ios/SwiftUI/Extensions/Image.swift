@@ -38,5 +38,8 @@ extension Image {
     static let systemGlobe = Image(uiImage: .systemGlobe)
     static let infoIcon = Image(uiImage: .infoIcon)
     static let refreshIcon = Image(uiImage: .refreshIcon)
+    static let magicWandIcon = Image(uiImage: .magicWandIcon)
+    static let warningIcon = Image(uiImage: .warningIcon)
+    static let tapSingleIcon = Image(uiImage: .tapSingleIcon)
     
 }

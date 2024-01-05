@@ -20,10 +20,18 @@ class UDConfigurableButton: BaseButton {
     override var textDisabledColor: UIColor { udConfiguration.textDisabledColor }
     override var fontWeight: UIFont.Weight { customFontWeight ?? udConfiguration.fontWeight }
     var customFontWeight: UIFont.Weight?
+    
+    
+    override var fontSize: CGFloat { udConfiguration.fontSize }
+    
+    
+    override var titleImagePadding: CGFloat { udConfiguration.titleImagePadding }
 
     func setConfiguration(_ configuration: UDButtonConfiguration) {
         self.pUdConfiguration = configuration
         isEnabled.toggle()
         isEnabled.toggle()
+        let config = UIImage.SymbolConfiguration(pointSize: configuration.iconSize)
+        setPreferredSymbolConfiguration(config, forImageIn: .normal)
     }
 }

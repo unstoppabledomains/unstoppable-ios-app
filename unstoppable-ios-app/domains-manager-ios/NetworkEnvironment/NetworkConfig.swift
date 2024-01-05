@@ -112,6 +112,10 @@ struct NetworkConfig {
     static func coinsResolverURL(version: String) -> String {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
+    
+    static func hotFeatureSuggestionsURL() -> String {
+        "https://raw.githubusercontent.com/unstoppabledomains/unstoppable-ios-app/main/unstoppable-ios-app/domains-manager-ios/SupportingFiles/Data/hot-suggestions.json"
+    }
 }
 
 

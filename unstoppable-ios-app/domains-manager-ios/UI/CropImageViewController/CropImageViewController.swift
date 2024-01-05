@@ -26,6 +26,7 @@ final class CropImageViewController: BaseViewController {
     fileprivate var image: UIImage!
     fileprivate var croppingStyle: CroppingStyle = .avatar
     override var analyticsName: Analytics.ViewName { .cropPhoto }
+    private var currentFrame: CGRect = .zero
     
     override var prefersStatusBarHidden : Bool {
         return true
@@ -40,9 +41,12 @@ final class CropImageViewController: BaseViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        DispatchQueue.main.async { [weak self] in
-            self?.setupOverlayView()
-            self?.setupDefaultScrollViewValues()
+        if currentFrame != view.frame {
+            currentFrame = view.frame
+            DispatchQueue.main.async { [weak self] in
+                self?.setupOverlayView()
+                self?.setupDefaultScrollViewValues()
+            }
         }
     }
     

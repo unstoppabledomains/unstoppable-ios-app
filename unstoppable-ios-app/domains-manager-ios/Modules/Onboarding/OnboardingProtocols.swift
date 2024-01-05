@@ -19,11 +19,13 @@ protocol OnboardingFlowManager: AnyObject {
     func modifyOnboardingData(modifyingBlock: (inout OnboardingData) -> Void)
 }
 
+@MainActor
 protocol OnboardingNavigationHandler {
     var onboardingStep: OnboardingNavigationController.OnboardingStep { get }
     var viewController: UIViewController? { get }
 }
 
+@MainActor
 protocol OnboardingDataHandling: AnyObject {
     func willNavigateBack()
 }

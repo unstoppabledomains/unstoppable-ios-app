@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol ChoosePrimaryDomainViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var progress: Double? { get }
     var title: String { get }
@@ -24,6 +25,7 @@ protocol ChoosePrimaryDomainViewPresenterProtocol: BasePresenterProtocol, ViewAn
     func reverseResolutionInfoHeaderPressed()
 }
 
+@MainActor
 class ChoosePrimaryDomainViewPresenter {
     
     private(set) weak var view: ChoosePrimaryDomainViewProtocol?
@@ -44,25 +46,20 @@ class ChoosePrimaryDomainViewPresenter {
     func moveItemsFailed() { }
     
     // MARK: - ChoosePrimaryDomainViewPresenterProtocol
-    @MainActor func viewDidLoad() { }
-    @MainActor func didSelectItem(_ item: ChoosePrimaryDomainViewController.Item) { }
+    func viewDidLoad() { }
+    func didSelectItem(_ item: ChoosePrimaryDomainViewController.Item) { }
     func confirmButtonPressed() { }
     func reverseResolutionInfoHeaderPressed() {
-        Task {
-            guard let view = self.view else { return }
-            
-            await appContext.pullUpViewService.showWhatIsReverseResolutionInfoPullUp(in: view)
-        }
+        guard let view = self.view else { return }
+        
+        appContext.pullUpViewService.showWhatIsReverseResolutionInfoPullUp(in: view)
     }
-    @MainActor
     func didSearchWith(key: String) {
         self.searchKey = key.trimmedSpaces
     }
-    @MainActor
     func didStartSearch() {
         self.isSearchActive = true
     }
-    @MainActor
     func didStopSearch() {
         self.isSearchActive = false
         didSearchWith(key: "")

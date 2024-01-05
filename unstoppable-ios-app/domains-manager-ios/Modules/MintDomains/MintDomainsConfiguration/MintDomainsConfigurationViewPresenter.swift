@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol MintDomainsConfigurationViewPresenterProtocol: BasePresenterProtocol {
     var domainsCount: Int { get }
     var progress: Double? { get }
@@ -16,6 +17,7 @@ protocol MintDomainsConfigurationViewPresenterProtocol: BasePresenterProtocol {
     func mintDomainsButtonPressed()
 }
 
+@MainActor
 final class MintDomainsConfigurationViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: MintDomainsConfigurationViewProtocol?
@@ -56,8 +58,8 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
             await MainActor.run {
                 view?.setDashesProgress(0.75)
             }
-            await checkLimitReached()
-            await updateMintButton()
+            checkLimitReached()
+            updateMintButton()
             await loadData()
             await showDomainsToSelect()
         }
@@ -81,8 +83,8 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
                     logAnalytic(event: .didSelectDomain, parameters: [.domains : String(selectedDomains.count)])
                 }
                 await showDomainsToSelect()
-                await updateMintButton()
-                await checkLimitReached()
+                updateMintButton()
+                checkLimitReached()
             case .domainCard, .header:
                 return
             }
@@ -95,7 +97,7 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
                     
             do {
                 self.selectedWallet = try await UDRouter().showWalletSelectionToMintDomainsScreen(selectedWallet: selectedWallet, in: view)
-                await updateUIForSelectedWallet()
+                updateUIForSelectedWallet()
             }
         }
     }
@@ -108,19 +110,17 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
                 Debugger.printFailure("Couldn't get wallet", critical: true)
                 return
             }
-            await view?.setLoadingIndicator(active: true)
+            view?.setLoadingIndicator(active: true)
             do {
                 if unMintedDomains.count > 1 {
                     try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint(Array(selectedDomains), wallet: wallet))
                 } else if let domain = unMintedAvailableDomains.first {
                     try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint([domain], wallet: wallet))
                 }
-                await view?.setLoadingIndicator(active: false)
+                view?.setLoadingIndicator(active: false)
             } catch {
-                await MainActor.run {
-                    view?.setLoadingIndicator(active: false)
-                    view?.showAlertWith(error: error, handler: nil)
-                }
+                view?.setLoadingIndicator(active: false)
+                view?.showAlertWith(error: error, handler: nil)
             }
         }
     }
@@ -162,9 +162,9 @@ private extension MintDomainsConfigurationViewPresenter {
             snapshot.appendItems([.domainCard(unMintedDomains[0])])
         }
         
-        await view?.applySnapshot(snapshot, animated: animated)
+        view?.applySnapshot(snapshot, animated: animated)
         if unMintedDomains.count == 1 {
-            await view?.setScrollEnabled(false)
+            view?.setScrollEnabled(false)
         }
     }
     
@@ -176,7 +176,7 @@ private extension MintDomainsConfigurationViewPresenter {
     func loadData() async {
         wallets = walletsService.getUserWallets()
         selectedWallet = wallets.first
-        await updateUIForSelectedWallet()
+        updateUIForSelectedWallet()
     }
     
     @MainActor
@@ -216,8 +216,8 @@ private extension MintDomainsConfigurationViewPresenter {
                 }
             }
             await showDomainsToSelect()
-            await updateMintButton()
-            await checkLimitReached()
+            updateMintButton()
+            checkLimitReached()
         }
     }
     

@@ -217,6 +217,10 @@ extension NetworkService {
               storage: nil,
               social: nil)
     }
+    
+    public func updatePendingDomainProfiles(with requests: [UpdateProfilePendingChangesRequest]) async throws {
+        
+    }
 }
 
 extension NetworkService {
@@ -304,7 +308,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     var rawValue: String {
         switch self {
         case .creatingURLFailed: return "creatingURLFailed"
-        case .badResponseOrStatusCode(let code): return "BadResponseOrStatusCode: \(code)"
+        case .badResponseOrStatusCode(let code, let message): return "BadResponseOrStatusCode: \(code). \(message ?? "")"
         case .parsingTxsError: return "parsingTxsError"
         case .responseFailedToParse: return "responseFailedToParse"
         case .parsingDomainsError: return "Failed to get domains from server"

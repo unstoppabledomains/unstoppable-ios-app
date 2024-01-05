@@ -15,11 +15,13 @@ extension SelfNameable {
 }
 
 // Helps to instantiate Nibs
+@MainActor
 protocol NibInstantiateable where Self: UIView {
     var containerView: UIView! { get }
 }
 
 extension NibInstantiateable{
+    @MainActor
     func commonViewInit(nibName: String? = nil) {
         let name = nibName ?? String(describing: type(of: self))
         let nib = UINib(nibName: name, bundle: .main)
@@ -35,7 +37,7 @@ extension NibInstantiateable{
     }
 }
 
-
+@MainActor
 struct KeyboardSizeManager {
     let notification: NSNotification
     let kbdSize: CGSize

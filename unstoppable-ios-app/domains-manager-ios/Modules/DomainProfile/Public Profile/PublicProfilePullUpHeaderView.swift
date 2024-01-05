@@ -10,7 +10,7 @@ import SwiftUI
 struct PublicProfilePullUpHeaderView: View, ProfileImageLoader {
     
     let domainName: DomainName
-    let closeCallback: EmptyCallback
+    let closeCallback: MainActorAsyncCallback
     
     @State private var domainIcon: UIImage? = nil
     

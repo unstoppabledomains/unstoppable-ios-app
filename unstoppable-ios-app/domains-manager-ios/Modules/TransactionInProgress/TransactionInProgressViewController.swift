@@ -207,7 +207,7 @@ extension TransactionInProgressViewController {
         case card, list
     }
     
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case header(_ headerDescription: HeaderDescription)
         case nameCard(domain: String)
         case domainCard(domain: DomainDisplayInfo)
@@ -216,8 +216,8 @@ extension TransactionInProgressViewController {
         case mintingList(domain: DomainDisplayInfo, isSelectable: Bool)
     }
     
-    struct HeaderDescription: Hashable {
-        let action: EmptyCallback
+    struct HeaderDescription: Hashable, Sendable {
+        let action: MainActorAsyncCallback
         let isGranted: Bool
         let content: Content
         

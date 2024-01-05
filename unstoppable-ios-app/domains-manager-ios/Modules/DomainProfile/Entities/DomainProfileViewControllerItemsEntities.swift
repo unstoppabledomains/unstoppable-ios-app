@@ -7,7 +7,7 @@
 
 import UIKit
 
-typealias TextEditingActionCallback = (DomainProfileViewController.TextEditingAction)->()
+typealias TextEditingActionCallback = @Sendable @MainActor (DomainProfileViewController.TextEditingAction)->()
 
 // MARK: - Common
 extension DomainProfileViewController {
@@ -20,11 +20,11 @@ extension DomainProfileViewController {
     }
 }
 
-typealias ImageDropCallback = (UIImage) -> ()
+typealias ImageDropCallback = @Sendable @MainActor (UIImage) -> ()
 
 // MARK: - Top Info data
 extension DomainProfileViewController {
-    struct ItemTopInfoData: Hashable {
+    struct ItemTopInfoData: Hashable, Sendable {
         
         let id: UUID
         let domain: DomainDisplayInfo
@@ -90,7 +90,7 @@ extension DomainProfileViewController {
 
 // MARK: - Crypto data
 extension DomainProfileViewController {
-    struct ManageDomainRecordDisplayInfo: Hashable {
+    struct ManageDomainRecordDisplayInfo: Hashable, Sendable {
         let coin: CoinRecord
         let address: String
         let multiChainAddressesCount: Int?
@@ -99,8 +99,8 @@ extension DomainProfileViewController {
         let mode: RecordEditingMode
         let availableActions: [RecordAction]
         let editingActionCallback: TextEditingActionCallback
-        let dotsActionCallback: EmptyCallback
-        let removeCoinCallback: EmptyCallback
+        let dotsActionCallback: MainActorAsyncCallback
+        let removeCoinCallback: MainActorAsyncCallback
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.coin == rhs.coin &&
@@ -127,12 +127,12 @@ extension DomainProfileViewController {
         case viewOnly, editable, deprecated, deprecatedEditing
     }
  
-    enum RecordAction: Hashable {
-        case copy(title: String?, callback: EmptyCallback)
+    enum RecordAction: Hashable, Sendable {
+        case copy(title: String?, callback: MainActorAsyncCallback)
         indirect case copyMultiple(addresses: [RecordAction])
-        case edit(callback: EmptyCallback)
-        case editForAllChains(_ chains: [String], callback: EmptyCallback)
-        case remove(callback: EmptyCallback)
+        case edit(callback: MainActorAsyncCallback)
+        case editForAllChains(_ chains: [String], callback: MainActorAsyncCallback)
+        case remove(callback: MainActorAsyncCallback)
         
         var title: String {
             switch self {
@@ -198,7 +198,7 @@ extension DomainProfileViewController {
 
 // MARK: - General Info data
 extension DomainProfileViewController {
-    struct DomainProfileGeneralDisplayInfo: Hashable {
+    struct DomainProfileGeneralDisplayInfo: Hashable, Sendable {
         let id: UUID
         let type: DomainProfileGeneralInfoSection.InfoType
         let isEnabled: Bool
@@ -207,8 +207,8 @@ extension DomainProfileViewController {
         let mode: TextEditingMode
         let availableActions: [DomainProfileGeneralInfoSection.InfoAction]
         let textEditingActionCallback: TextEditingActionCallback
-        let actionButtonPressedCallback: EmptyCallback
-        let lockButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
+        let lockButtonPressedCallback: MainActorAsyncCallback
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
@@ -234,12 +234,12 @@ extension DomainProfileViewController {
 
 // MARK: - Socials Info data
 extension DomainProfileViewController {
-    struct DomainProfileSocialsDisplayInfo: Hashable {
+    struct DomainProfileSocialsDisplayInfo: Hashable, Sendable {
         let id: UUID
         let description: SocialDescription
         let isEnabled: Bool
         let availableActions: [DomainProfileSocialsSection.SocialsAction]
-        let actionButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
@@ -271,12 +271,12 @@ extension DomainProfileViewController {
 
 // MARK: - Profile metadata
 extension DomainProfileViewController {
-    struct DomainProfileMetadataDisplayInfo: Hashable {
+    struct DomainProfileMetadataDisplayInfo: Hashable, Sendable {
         let id: UUID
         let type: DomainProfileMetadataSection.MetadataType
         let isEnabled: Bool
         let availableActions: [DomainProfileMetadataSection.MetadataAction]
-        let actionButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
@@ -294,12 +294,12 @@ extension DomainProfileViewController {
 
 // MARK: - Web3 Website
 extension DomainProfileViewController {
-    struct DomainProfileWeb3WebsiteDisplayInfo: Hashable {
+    struct DomainProfileWeb3WebsiteDisplayInfo: Hashable, Sendable {
         let id: UUID
         let web3Url: URL
         let domainName: String
         let availableActions: [DomainProfileWeb3WebsiteSection.WebsiteAction]
-        let actionButtonPressedCallback: EmptyCallback
+        let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
@@ -317,7 +317,7 @@ extension DomainProfileViewController {
 
 // MARK: - Updating records
 extension DomainProfileViewController {
-    struct DomainProfileUpdatingRecordsDisplayInfo: Hashable {
+    struct DomainProfileUpdatingRecordsDisplayInfo: Hashable, Sendable {
         let id: UUID
         let isNotificationPermissionsGranted: Bool
         let dataType: DomainProfileViewController.State.UpdateProfileDataType

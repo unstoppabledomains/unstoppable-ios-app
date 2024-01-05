@@ -7,11 +7,13 @@
 
 import UIKit
 
+@MainActor
 protocol ProtectWalletViewPresenterProtocol: BasePresenterProtocol {
     var progress: Double? { get }
     func didSelectProtectionType(_ protectionType: ProtectWalletViewController.ProtectionType)
 }
 
+@MainActor
 final class OnboardingProtectWalletViewPresenter {
     private weak var onboardingFlowManager: OnboardingFlowManager?
     private let udWalletsService: UDWalletsServiceProtocol

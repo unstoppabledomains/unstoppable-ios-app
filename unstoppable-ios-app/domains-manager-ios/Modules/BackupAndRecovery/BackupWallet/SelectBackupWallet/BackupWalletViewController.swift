@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol BackupWalletViewControllerProtocol: BaseViewControllerProtocol, ViewWithDashesProgress {
     func setTitle(_ title: String)
     func setSubtitle(_ subtitle: String)
@@ -14,6 +15,7 @@ protocol BackupWalletViewControllerProtocol: BaseViewControllerProtocol, ViewWit
     func setBackupTypes(_ backupTypes: [BackupWalletViewController.BackupType])
 }
 
+@MainActor
 final class BackupWalletViewController: BaseViewController {
 
     @IBOutlet private weak var titleLabel: UDTitleLabel!

@@ -145,8 +145,9 @@ private extension PublicProfileCryptoListView {
     func loadIconIfNeededFor(record: RecordWithIcon) {
         guard record.icon == nil else { return }
         
-        Task {
+        Task { @MainActor in
             
+            @MainActor
             func setIcon(_ icon: UIImage?, to record: RecordWithIcon) {
                 if let i = recordsWithIcons.firstIndex(where: { $0.record.coin == record.record.coin }) {
                     recordsWithIcons[i].icon = icon

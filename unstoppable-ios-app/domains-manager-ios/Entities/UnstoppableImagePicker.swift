@@ -11,6 +11,7 @@ import PhotosUI
 
 typealias PhotoLibraryImagePickerCallback = (UIImage)->()
 
+@MainActor
 final class UnstoppableImagePicker: NSObject {
     
     static let shared = UnstoppableImagePicker()
@@ -101,16 +102,16 @@ private extension UnstoppableImagePicker {
             if let data {
                 guard let image = await UIImage.createWith(anyData: data) else {
                     Debugger.printFailure("Failed to create image from any data", critical: false)
-                    await didFailToPickImage(from: picker)
+                    didFailToPickImage(from: picker)
                     return
                 }
-                await didPick(image: image, from: picker)
+                didPick(image: image, from: picker)
             } else if let error {
                 Debugger.printFailure("Failed to get image from PHImagePicker with error \(error.localizedDescription)", critical: false)
-                await didFailToPickImage(from: picker)
+                didFailToPickImage(from: picker)
             } else {
                 Debugger.printFailure("Failed to get image from PHImagePicker without error and data 🤷‍♂️", critical: false)
-                await didFailToPickImage(from: picker)
+                didFailToPickImage(from: picker)
             }
         }
     }
