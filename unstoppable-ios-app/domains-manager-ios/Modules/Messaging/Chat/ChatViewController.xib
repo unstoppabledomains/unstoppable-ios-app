@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -19,7 +19,7 @@
                 <outlet property="chatInputView" destination="oHO-rt-44M" id="NEp-4O-1kK"/>
                 <outlet property="collectionView" destination="V89-nx-s8L" id="Op2-pK-KfR"/>
                 <outlet property="moveToTopButton" destination="w5B-KY-DQu" id="EZu-ec-3CG"/>
-                <outlet property="secondaryButton" destination="fD2-Hy-Jfw" id="9dF-ym-N3w"/>
+                <outlet property="secondaryButton" destination="PWN-5V-Lc6" id="S0W-xe-wrr"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -60,16 +60,17 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Lc2-Or-Tml">
                                     <rect key="frame" x="0.0" y="0.0" width="361" height="48"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fD2-Hy-Jfw" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PWN-5V-Lc6" customClass="UDConfigurableButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="172.66666666666666" height="48"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="48" id="aOG-bJ-JWK"/>
+                                                <constraint firstAttribute="height" constant="48" id="ZhO-50-oqh"/>
                                             </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                             <connections>
-                                                <action selector="secondaryButtonPressed" destination="-1" eventType="touchUpInside" id="ygi-D0-klA"/>
+                                                <action selector="secondaryButtonPressed" destination="-1" eventType="touchUpInside" id="q7d-zL-8bX"/>
                                             </connections>
-                                        </view>
+                                        </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SPH-Qe-OEy" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="188.66666666666663" y="0.0" width="172.33333333333337" height="48"/>
                                             <constraints>
