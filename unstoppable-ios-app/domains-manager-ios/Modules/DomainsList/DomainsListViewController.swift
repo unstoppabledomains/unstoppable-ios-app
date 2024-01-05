@@ -180,7 +180,7 @@ private extension DomainsListViewController {
     
     func addRearrangeButtonIfNeeded() {
         if presenter.isSearchable {
-            let rearrangeButton = UDButton()
+            let rearrangeButton = UDConfigurableButton()
             rearrangeButton.setTitle(String.Constants.rearrange.localized(), image: nil)
             rearrangeButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration(contentInset: .init(top: 0, left: 0, bottom: 0, right: 10)))
             rearrangeButton.addTarget(self, action: #selector(rearrangeButtonPressed), for: .touchUpInside)

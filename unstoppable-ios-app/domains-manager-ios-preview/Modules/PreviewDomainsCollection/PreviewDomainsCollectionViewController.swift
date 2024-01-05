@@ -57,10 +57,13 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
         WalletConnectServiceV2.connectedAppsToUse = [.init()]
         if numberOfDomains > 0 {
             view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
-            //        view?.showMintingDomains([.init(name: "oleg.x", ownerWallet: "", state: .minting, isSetForRR: false)])
+            view?.showMintingDomains([.init(name: "oleg.x", ownerWallet: "", state: .minting, isSetForRR: false),
+                                      .init(name: "oleg2.x", ownerWallet: "", state: .minting, isSetForRR: false)])
         } else {
             view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
         }
+        
+        
     }
     
     func viewDidAppear() {
@@ -126,7 +129,14 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     }
     
     func didTapAddButton() {
-        
+        Task {
+            do {
+                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: .init(name: "oleg.x", ownerWallet: "", isSetForRR: false),
+                                                                                           swipeToDismissEnabled: true,
+                                                                                           in: view!)
+                
+            } catch { }
+        }
     }
     
     func didTapMessagingButton() {

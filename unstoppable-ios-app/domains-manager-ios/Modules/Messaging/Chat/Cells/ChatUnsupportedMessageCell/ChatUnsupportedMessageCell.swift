@@ -14,7 +14,7 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var primaryLabel: UILabel!
     @IBOutlet private weak var secondaryLabel: UILabel!
-    @IBOutlet private weak var downloadButton: UDButton!
+    @IBOutlet private weak var downloadButton: UDConfigurableButton!
         
     override var isFlexibleWidth: Bool { false }
     private var pressedCallback: EmptyCallback?
@@ -26,11 +26,10 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
         iconContainerView.layer.borderWidth = 1
         iconContainerView.layer.borderColor = UIColor.borderMuted.cgColor
         downloadButton.isUserInteractionEnabled = false
+        downloadButton.titleLeftPadding = 0
         downloadButton.setConfiguration(.smallGhostPrimaryButtonConfiguration)
         let downloadTitle = String.Constants.download.localized()
         downloadButton.setTitle(downloadTitle, image: nil)
-        downloadButton.widthAnchor.constraint(equalToConstant: downloadTitle.width(withConstrainedHeight: .greatestFiniteMagnitude,
-                                                                                   font: downloadButton.font)).isActive = true
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
     }
     
@@ -116,9 +115,13 @@ extension ChatUnsupportedMessageCell {
                                                   isFirstInChat: true,
                                                   deliveryState: .delivered,
                                                   isEncrypted: false)
-    let cell = ChatUnsupportedMessageCell()
+    
+    let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
+    collection.registerCellNibOfType(ChatUnsupportedMessageCell.self)
+    let cell = collection.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: IndexPath(row: 0, section: 0))
+    
     cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
-
+    cell.alpha = 1
     cell.setWith(configuration: .init(message: message,
                                       isGroupChatMessage: false,
                                       pressedCallback: { }))

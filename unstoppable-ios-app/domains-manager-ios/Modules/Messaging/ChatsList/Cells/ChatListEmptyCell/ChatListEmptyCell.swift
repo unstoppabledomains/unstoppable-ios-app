@@ -12,7 +12,7 @@ final class ChatListEmptyCell: UICollectionViewCell {
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!
-    @IBOutlet private weak var actionButton: UDButton!
+    @IBOutlet private weak var actionButton: UDConfigurableButton!
     
     private var actionButtonCallback: EmptyCallback?
     
@@ -23,7 +23,7 @@ extension ChatListEmptyCell {
     func setWith(configuration: ChatsListViewController.EmptyStateUIConfiguration,
                  actionButtonCallback: @escaping EmptyCallback) {
         self.actionButtonCallback = actionButtonCallback
-        
+        actionButton.customCornerRadius = 20
         switch configuration {
         case .emptyData(let dataType, let isRequestsList):
             let title = titleFor(dataType: dataType, isRequestsList: isRequestsList)

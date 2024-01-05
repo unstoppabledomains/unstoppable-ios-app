@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -47,16 +46,17 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" placeholderIntrinsicWidth="240" placeholderIntrinsicHeight="40" translatesAutoresizingMaskIntoConstraints="NO" id="jad-pH-Wq9" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                <rect key="frame" x="69" y="112.66666666666666" width="240" height="40"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XY1-oo-vx3" customClass="UDConfigurableButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="151.66666666666666" y="112.66666666666666" width="75" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="atf-xw-9SS"/>
+                                    <constraint firstAttribute="height" constant="40" id="xCF-yB-i4G"/>
                                 </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                 <connections>
-                                    <action selector="actionButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="hRq-3P-Eea"/>
+                                    <action selector="actionButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="L7C-Ox-aY5"/>
                                 </connections>
-                            </view>
+                            </button>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -69,7 +69,7 @@
             </constraints>
             <size key="customSize" width="410" height="505"/>
             <connections>
-                <outlet property="actionButton" destination="jad-pH-Wq9" id="ZxU-fC-EAb"/>
+                <outlet property="actionButton" destination="XY1-oo-vx3" id="elu-IB-4Wg"/>
                 <outlet property="iconImageView" destination="ZwC-eQ-OBp" id="ErF-Ek-1qo"/>
                 <outlet property="subtitleLabel" destination="fow-xm-g6X" id="JhK-Mt-5U7"/>
                 <outlet property="titleLabel" destination="vtI-Pf-a9v" id="htu-We-30E"/>
@@ -82,8 +82,5 @@
         <namedColor name="foregroundSecondary">
             <color red="0.47843137254901963" green="0.47843137254901963" blue="0.52156862745098043" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>
