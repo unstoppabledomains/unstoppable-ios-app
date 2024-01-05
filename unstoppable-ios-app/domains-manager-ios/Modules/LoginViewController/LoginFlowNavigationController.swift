@@ -59,8 +59,13 @@ extension LoginFlowNavigationController: LoginFlowManager {
         switch action {
         case .loginWithEmailAndPassword:
             moveToStep(.loginWithEmailAndPassword)
-        case .authorized:
-            try await fetchParkedDomains()
+        case .authorized(let provider):
+            switch provider {
+            case .email, .google, .twitter:
+                try await fetchParkedDomains()
+            case .apple:
+                try await authorizedWithApple() 
+            }
         case .importCompleted(let parkedDomains):
             dismiss(result: .loggedIn(parkedDomains: parkedDomains))
         }
@@ -142,6 +147,12 @@ private extension LoginFlowNavigationController {
                 self?.dismiss(result: .failedToLoadParkedDomains)
             })
         }
+    }
+    
+    func authorizedWithApple() async throws {
+        moveToStep(.fetchingDomains)
+        try? await Task.sleep(seconds: 1.5)
+        moveToStep(.noParkedDomains)
     }
     
     func createDomainsOrderInfoMap(for domains: [String]) -> SortDomainsOrderInfoMap {
@@ -235,7 +246,7 @@ extension LoginFlowNavigationController {
     
     enum Action {
         case loginWithEmailAndPassword
-        case authorized
+        case authorized(LoginProvider)
         case importCompleted(parkedDomains: [FirebaseDomainDisplayInfo])
     }
     

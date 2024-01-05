@@ -125,31 +125,5 @@ extension LoginViewController {
     enum Item: Hashable {
         case loginWith(provider: LoginProvider)
     }
-    
-    enum LoginProvider: String, Hashable {
-        case email, google, twitter
-        
-        var title: String {
-            switch self {
-            case .email:
-                return "Email"
-            case .google:
-                return "Google"
-            case .twitter:
-                return "Twitter"
-            }
-        }
-        
-        var icon: UIImage {
-            switch self {
-            case .email:
-                return .mailIcon24
-            case .google:
-                return .googleIcon24
-            case .twitter:
-                return .twitterIcon24
-            }
-        }
-    }
-    
+  
 }

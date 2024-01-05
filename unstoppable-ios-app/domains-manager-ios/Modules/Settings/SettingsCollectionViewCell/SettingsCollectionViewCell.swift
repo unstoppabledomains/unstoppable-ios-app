@@ -51,7 +51,7 @@ extension SettingsCollectionViewCell {
         iconContainerView.backgroundColor = menuItem.backgroundColor
     }
     
-    func setWith(loginProvider: LoginViewController.LoginProvider) {
+    func setWith(loginProvider: LoginProvider) {
         setTitle(String.Constants.loginWithProviderN.localized(loginProvider.title))
         iconImageView.image = loginProvider.icon
         chevronContainerView.isHidden = false

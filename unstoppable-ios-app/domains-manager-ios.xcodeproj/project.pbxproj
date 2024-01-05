@@ -197,6 +197,9 @@
 		C60A31672B464F8700C806A5 /* PreviewChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
+		C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */; };
+		C60C59B52B47FC0900A2522C /* LoginProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B42B47FC0900A2522C /* LoginProvider.swift */; };
+		C60C59B62B47FC0900A2522C /* LoginProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B42B47FC0900A2522C /* LoginProvider.swift */; };
 		C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA2892832501D00AB1B36 /* QRCodeService.swift */; };
 		C60CA2922832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28B2832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift */; };
 		C60CA2962832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28C2832501D00AB1B36 /* QRCodeServiceProvider.swift */; };
@@ -2494,6 +2497,9 @@
 		C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewChatViewController.swift; sourceTree = "<group>"; };
 		C60C298B2834E30000626851 /* GroupedCoinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCoinRecord.swift; sourceTree = "<group>"; };
 		C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableRoundedWalletBadgeImageView.swift; sourceTree = "<group>"; };
+		C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewLoginViewController.swift; sourceTree = "<group>"; };
+		C60C59B32B47FACC00A2522C /* unstoppable-preview.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "unstoppable-preview.entitlements"; sourceTree = "<group>"; };
+		C60C59B42B47FC0900A2522C /* LoginProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProvider.swift; sourceTree = "<group>"; };
 		C60CA2892832501D00AB1B36 /* QRCodeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeService.swift; sourceTree = "<group>"; };
 		C60CA28B2832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeMonkeyServiceProvider.swift; sourceTree = "<group>"; };
 		C60CA28C2832501D00AB1B36 /* QRCodeServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeServiceProvider.swift; sourceTree = "<group>"; };
@@ -3741,6 +3747,7 @@
 		306486742527253700388026 = {
 			isa = PBXGroup;
 			children = (
+				C60C59B32B47FACC00A2522C /* unstoppable-preview.entitlements */,
 				304C928D25752625007A9F01 /* apple-app-site-association */,
 				3064867F2527253700388026 /* domains-manager-ios */,
 				306486962527253D00388026 /* domains-manager-iosTests */,
@@ -4299,6 +4306,14 @@
 				C60A31662B464F8700C806A5 /* PreviewChatViewController.swift */,
 			);
 			path = PreviewChatViewController;
+			sourceTree = "<group>";
+		};
+		C60C59B02B47F97100A2522C /* PreviewLoginViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */,
+			);
+			path = PreviewLoginViewController;
 			sourceTree = "<group>";
 		};
 		C60CA26228324E7C00AB1B36 /* DomainDetails */ = {
@@ -5193,6 +5208,7 @@
 				C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */,
 				C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */,
 				C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */,
+				C60C59B42B47FC0900A2522C /* LoginProvider.swift */,
 				C63DD36029C89FEC002D45B2 /* LoginViewController.xib */,
 				C666E06E29C9F1760003DECB /* LoginWithEmailViewController */,
 			);
@@ -7192,6 +7208,7 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C60C59B02B47F97100A2522C /* PreviewLoginViewController */,
 				C66812002B47E3BB00BDABB0 /* PreviewChatListViewController */,
 				C60A31652B464F7A00C806A5 /* PreviewChatViewController */,
 				C6E28F3C2B33484E00026E6C /* PreviewDomainProfileActionCover */,
@@ -8533,6 +8550,7 @@
 				C60982102823B6AC00546392 /* UDWalletsServiceProtocol.swift in Sources */,
 				C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
 				C60CA29A2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
+				C60C59B52B47FC0900A2522C /* LoginProvider.swift in Sources */,
 				C6E1188328F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C642A6BD28411ECE00299C6E /* MintDomainsNavigationController.swift in Sources */,
 				C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */,
@@ -9383,6 +9401,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6D646602B1ED10D00D724AC /* DomainProfileGeneralInfoCell.swift in Sources */,
+				C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */,
 				C685803C2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */,
 				C6D6475C2B1EDD6200D724AC /* AppGroupsBridgeService.swift in Sources */,
 				C6C8F87A2B21827700A9834D /* LoginOnboardingViewPresenter.swift in Sources */,
@@ -10071,6 +10090,7 @@
 				C6D645862B1DBAA700D724AC /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C618081F2B19AB160032E543 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C6C8F8AF2B2182CF00A9834D /* EnterEmailVerificationCodeViewController.swift in Sources */,
+				C60C59B62B47FC0900A2522C /* LoginProvider.swift in Sources */,
 				C6C8F9222B2183B700A9834D /* EnterPasscodeViewController.swift in Sources */,
 				C6C8F9392B2183DC00A9834D /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C6D646352B1DC44400D724AC /* PrimaryDangerButton.swift in Sources */,
@@ -10768,6 +10788,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "unstoppable-preview.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -10812,6 +10833,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "unstoppable-preview.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -10855,6 +10877,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "unstoppable-preview.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;

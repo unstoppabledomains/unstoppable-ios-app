@@ -1,385 +1,391 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Alamofire",
-        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
-        "state": {
-          "branch": null,
-          "revision": "3dc6a42c7727c49bf26508e29b0a0b35f9c7e1ad",
-          "version": "5.8.1"
-        }
-      },
-      {
-        "package": "Amplitude",
-        "repositoryURL": "https://github.com/amplitude/Amplitude-iOS",
-        "state": {
-          "branch": "main",
-          "revision": "dca2c744336e651ee285011282b86accc2ce3704",
-          "version": null
-        }
-      },
-      {
-        "package": "analytics-connector-ios",
-        "repositoryURL": "https://github.com/amplitude/analytics-connector-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "e2ca17ac735bcbc48b13062484541702ef45153d",
-          "version": "1.0.3"
-        }
-      },
-      {
-        "package": "BigInt",
-        "repositoryURL": "https://github.com/attaswift/BigInt",
-        "state": {
-          "branch": null,
-          "revision": "0ed110f7555c34ff468e72e1686e59721f2b0da6",
-          "version": "5.3.0"
-        }
-      },
-      {
-        "package": "Boilertalk-Web3",
-        "repositoryURL": "https://github.com/unstoppabledomains/Boilertalk-Web3.swift.git",
-        "state": {
-          "branch": "0-5-3-Version",
-          "revision": "a8994a08bc598187ed06cd97b20df9745d263df3",
-          "version": null
-        }
-      },
-      {
-        "package": "Bugsnag",
-        "repositoryURL": "https://github.com/bugsnag/bugsnag-cocoa",
-        "state": {
-          "branch": null,
-          "revision": "b260ddb5570883ee8fd35860d8d7ff381250d4a1",
-          "version": "6.25.2"
-        }
-      },
-      {
-        "package": "Connect",
-        "repositoryURL": "https://github.com/bufbuild/connect-swift",
-        "state": {
-          "branch": null,
-          "revision": "6f5afc57f44a3ed15b9a01381ce73f84d15e43db",
-          "version": "0.3.0"
-        }
-      },
-      {
-        "package": "CryptoSwift",
-        "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
-        "state": {
-          "branch": null,
-          "revision": "db51c407d3be4a051484a141bf0bff36c43d3b1e",
-          "version": "1.8.0"
-        }
-      },
-      {
-        "package": "EllipticCurveKit",
-        "repositoryURL": "https://github.com/Sajjon/EllipticCurveKit.git",
-        "state": {
-          "branch": null,
-          "revision": "9ebdfefe73f97cd9a2b95cd94a093d4aad61d12e",
-          "version": "1.0.2"
-        }
-      },
-      {
-        "package": "GenericJSON",
-        "repositoryURL": "https://github.com/iwill/generic-json-swift",
-        "state": {
-          "branch": null,
-          "revision": "0a06575f4038b504e78ac330913d920f1630f510",
-          "version": "2.0.2"
-        }
-      },
-      {
-        "package": "Gzip",
-        "repositoryURL": "https://github.com/1024jp/GzipSwift",
-        "state": {
-          "branch": null,
-          "revision": "7a7f17761c76a932662ab77028a4329f67d645a4",
-          "version": "5.2.0"
-        }
-      },
-      {
-        "package": "LaunchDarkly",
-        "repositoryURL": "https://github.com/launchdarkly/ios-client-sdk.git",
-        "state": {
-          "branch": null,
-          "revision": "ce4a8459fcff7d4c9770798d5a1e6049dcebc168",
-          "version": "9.1.1"
-        }
-      },
-      {
-        "package": "ObjectivePGP",
-        "repositoryURL": "https://github.com/krzyzanowskim/ObjectivePGP.git",
-        "state": {
-          "branch": null,
-          "revision": "5629d849ec6c8f8ec733dffa9949c507468ec0b4",
-          "version": "0.99.4"
-        }
-      },
-      {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
-        "state": {
-          "branch": null,
-          "revision": "8a98e31a47854d3180882c8068cc4d9381bf382d",
-          "version": "6.22.1"
-        }
-      },
-      {
-        "package": "Push",
-        "repositoryURL": "https://github.com/ethereum-push-notification-service/push-swift-sdk",
-        "state": {
-          "branch": null,
-          "revision": "c560b33e29e439444850a1f413503fe7ae07d54c",
-          "version": "0.6.3"
-        }
-      },
-      {
-        "package": "QRCode",
-        "repositoryURL": "https://github.com/WalletConnect/QRCode",
-        "state": {
-          "branch": null,
-          "revision": "263f280d2c8144adfb0b6676109846cfc8dd552b",
-          "version": "14.3.1"
-        }
-      },
-      {
-        "package": "RxSwift",
-        "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
-        "state": {
-          "branch": null,
-          "revision": "7e01c05f25c025143073eaa3be3532f9375c614b",
-          "version": "6.1.0"
-        }
-      },
-      {
-        "package": "secp256k1",
-        "repositoryURL": "https://github.com/GigaBitcoin/secp256k1.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "48fb20fce4ca3aad89180448a127d5bc16f0e44c",
-          "version": "0.10.0"
-        }
-      },
-      {
-        "package": "SocketIO",
-        "repositoryURL": "https://github.com/socketio/socket.io-client-swift",
-        "state": {
-          "branch": null,
-          "revision": "175da8b5156f6b132436f0676cc84c2f6a766b6e",
-          "version": "16.1.0"
-        }
-      },
-      {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/daltoniam/Starscream",
-        "state": {
-          "branch": null,
-          "revision": "ac6c0fc9da221873e01bd1a0d4818498a71eef33",
-          "version": "4.0.6"
-        }
-      },
-      {
-        "package": "Stripe",
-        "repositoryURL": "https://github.com/stripe/stripe-ios",
-        "state": {
-          "branch": null,
-          "revision": "e242f59ce90914e93c8308e0c3ceba7368575b77",
-          "version": "22.8.4"
-        }
-      },
-      {
-        "package": "SVGKit",
-        "repositoryURL": "https://github.com/unstoppabledomains/SVGKit-Light",
-        "state": {
-          "branch": "v3/removed_lumberjack",
-          "revision": "769f897e797adebfe429a5bdc777160c5e1762c9",
-          "version": null
-        }
-      },
-      {
-        "package": "swift-atomics",
-        "repositoryURL": "https://github.com/apple/swift-atomics.git",
-        "state": {
-          "branch": null,
-          "revision": "cd142fd2f64be2100422d658e7411e39489da985",
-          "version": "1.2.0"
-        }
-      },
-      {
-        "package": "swift-collections",
-        "repositoryURL": "https://github.com/apple/swift-collections.git",
-        "state": {
-          "branch": null,
-          "revision": "d029d9d39c87bed85b1c50adee7c41795261a192",
-          "version": "1.0.6"
-        }
-      },
-      {
-        "package": "LDSwiftEventSource",
-        "repositoryURL": "https://github.com/LaunchDarkly/swift-eventsource.git",
-        "state": {
-          "branch": null,
-          "revision": "3d45eacab476f9bb2c58662cfb2d35088140b25b",
-          "version": "3.1.1"
-        }
-      },
-      {
-        "package": "swift-http-types",
-        "repositoryURL": "https://github.com/apple/swift-http-types",
-        "state": {
-          "branch": null,
-          "revision": "1827dc94bdab2eb5f2fc804e9b0cb43574282566",
-          "version": "1.0.2"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "532d8b529501fb73a2455b179e0bbb6d49b652ed",
-          "version": "1.5.3"
-        }
-      },
-      {
-        "package": "swift-nio",
-        "repositoryURL": "https://github.com/apple/swift-nio.git",
-        "state": {
-          "branch": null,
-          "revision": "702cd7c56d5d44eeba73fdf83918339b26dc855c",
-          "version": "2.62.0"
-        }
-      },
-      {
-        "package": "swift-nio-extras",
-        "repositoryURL": "https://github.com/apple/swift-nio-extras.git",
-        "state": {
-          "branch": null,
-          "revision": "798c962495593a23fdea0c0c63fd55571d8dff51",
-          "version": "1.20.0"
-        }
-      },
-      {
-        "package": "swift-nio-http2",
-        "repositoryURL": "https://github.com/apple/swift-nio-http2.git",
-        "state": {
-          "branch": null,
-          "revision": "3bd9004b9d685ed6b629760fc84903e48efec806",
-          "version": "1.29.0"
-        }
-      },
-      {
-        "package": "swift-nio-ssl",
-        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
-        "state": {
-          "branch": null,
-          "revision": "320bd978cceb8e88c125dcbb774943a92f6286e9",
-          "version": "2.25.0"
-        }
-      },
-      {
-        "package": "swift-nio-transport-services",
-        "repositoryURL": "https://github.com/apple/swift-nio-transport-services.git",
-        "state": {
-          "branch": null,
-          "revision": "ebf8b9c365a6ce043bf6e6326a04b15589bd285e",
-          "version": "1.20.0"
-        }
-      },
-      {
-        "package": "SwiftProtobuf",
-        "repositoryURL": "https://github.com/apple/swift-protobuf.git",
-        "state": {
-          "branch": null,
-          "revision": "65e8f29b2d63c4e38e736b25c27b83e012159be8",
-          "version": "1.25.2"
-        }
-      },
-      {
-        "package": "swift-qrcode-generator",
-        "repositoryURL": "https://github.com/dagronf/swift-qrcode-generator",
-        "state": {
-          "branch": null,
-          "revision": "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
-          "version": "1.0.3"
-        }
-      },
-      {
-        "package": "SwiftImageReadWrite",
-        "repositoryURL": "https://github.com/dagronf/SwiftImageReadWrite",
-        "state": {
-          "branch": null,
-          "revision": "5596407d1cf61b953b8e658fa8636a471df3c509",
-          "version": "1.1.6"
-        }
-      },
-      {
-        "package": "Valet",
-        "repositoryURL": "https://github.com/unstoppabledomains/Valet-ios.git",
-        "state": {
-          "branch": "master",
-          "revision": "d680470731ada7ae48d9ca29756c9df792530e7f",
-          "version": null
-        }
-      },
-      {
-        "package": "WalletConnect",
-        "repositoryURL": "https://github.com/WalletConnect/WalletConnectSwiftV2",
-        "state": {
-          "branch": null,
-          "revision": "7cf45ea8f98097b5813cd3c99d08b87c1be28ebe",
-          "version": "1.9.5"
-        }
-      },
-      {
-        "package": "web3.swift",
-        "repositoryURL": "https://github.com/argentlabs/web3.swift",
-        "state": {
-          "branch": null,
-          "revision": "1e75f98a5738c470b23bbfffa9314e9f788df76b",
-          "version": "1.6.1"
-        }
-      },
-      {
-        "package": "Web3swift",
-        "repositoryURL": "https://github.com/unstoppabledomains/web3swift.git",
-        "state": {
-          "branch": "develop",
-          "revision": "e75faaf3e2889627aeca1090b07a30be5ff3388f",
-          "version": null
-        }
-      },
-      {
-        "package": "websocket-kit",
-        "repositoryURL": "https://github.com/vapor/websocket-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "53fe0639a98903858d0196b699720decb42aee7b",
-          "version": "2.14.0"
-        }
-      },
-      {
-        "package": "XMTP",
-        "repositoryURL": "https://github.com/xmtp/xmtp-ios",
-        "state": {
-          "branch": null,
-          "revision": "af277a00fb254a1916da8db12caf480655d4894d",
-          "version": null
-        }
-      },
-      {
-        "package": "Zesame",
-        "repositoryURL": "https://github.com/unstoppabledomains/Zesame",
-        "state": {
-          "branch": "master",
-          "revision": "5a3d17e30f7e480e8f3168a915ae3327643ee0d8",
-          "version": null
-        }
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "3dc6a42c7727c49bf26508e29b0a0b35f9c7e1ad",
+        "version" : "5.8.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "amplitude-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amplitude/Amplitude-iOS",
+      "state" : {
+        "branch" : "main",
+        "revision" : "dca2c744336e651ee285011282b86accc2ce3704"
+      }
+    },
+    {
+      "identity" : "analytics-connector-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amplitude/analytics-connector-ios.git",
+      "state" : {
+        "revision" : "e2ca17ac735bcbc48b13062484541702ef45153d",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "bigint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/attaswift/BigInt",
+      "state" : {
+        "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
+        "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "boilertalk-web3.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unstoppabledomains/Boilertalk-Web3.swift.git",
+      "state" : {
+        "branch" : "0-5-3-Version",
+        "revision" : "a8994a08bc598187ed06cd97b20df9745d263df3"
+      }
+    },
+    {
+      "identity" : "bugsnag-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bugsnag/bugsnag-cocoa",
+      "state" : {
+        "revision" : "b260ddb5570883ee8fd35860d8d7ff381250d4a1",
+        "version" : "6.25.2"
+      }
+    },
+    {
+      "identity" : "connect-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bufbuild/connect-swift",
+      "state" : {
+        "revision" : "6f5afc57f44a3ed15b9a01381ce73f84d15e43db",
+        "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "cryptoswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzyzanowskim/CryptoSwift.git",
+      "state" : {
+        "revision" : "db51c407d3be4a051484a141bf0bff36c43d3b1e",
+        "version" : "1.8.0"
+      }
+    },
+    {
+      "identity" : "ellipticcurvekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Sajjon/EllipticCurveKit.git",
+      "state" : {
+        "revision" : "9ebdfefe73f97cd9a2b95cd94a093d4aad61d12e",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "generic-json-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iwill/generic-json-swift",
+      "state" : {
+        "revision" : "0a06575f4038b504e78ac330913d920f1630f510",
+        "version" : "2.0.2"
+      }
+    },
+    {
+      "identity" : "gzipswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/1024jp/GzipSwift",
+      "state" : {
+        "revision" : "7a7f17761c76a932662ab77028a4329f67d645a4",
+        "version" : "5.2.0"
+      }
+    },
+    {
+      "identity" : "ios-client-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/launchdarkly/ios-client-sdk.git",
+      "state" : {
+        "revision" : "ce4a8459fcff7d4c9770798d5a1e6049dcebc168",
+        "version" : "9.1.1"
+      }
+    },
+    {
+      "identity" : "objectivepgp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzyzanowskim/ObjectivePGP.git",
+      "state" : {
+        "revision" : "5629d849ec6c8f8ec733dffa9949c507468ec0b4",
+        "version" : "0.99.4"
+      }
+    },
+    {
+      "identity" : "promisekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mxcl/PromiseKit.git",
+      "state" : {
+        "revision" : "8a98e31a47854d3180882c8068cc4d9381bf382d",
+        "version" : "6.22.1"
+      }
+    },
+    {
+      "identity" : "push-swift-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
+      "state" : {
+        "revision" : "c560b33e29e439444850a1f413503fe7ae07d54c",
+        "version" : "0.6.3"
+      }
+    },
+    {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "7e01c05f25c025143073eaa3be3532f9375c614b",
+        "version" : "6.1.0"
+      }
+    },
+    {
+      "identity" : "secp256k1.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/GigaBitcoin/secp256k1.swift.git",
+      "state" : {
+        "revision" : "48fb20fce4ca3aad89180448a127d5bc16f0e44c",
+        "version" : "0.10.0"
+      }
+    },
+    {
+      "identity" : "socket.io-client-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/socketio/socket.io-client-swift",
+      "state" : {
+        "revision" : "175da8b5156f6b132436f0676cc84c2f6a766b6e",
+        "version" : "16.1.0"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream",
+      "state" : {
+        "revision" : "ac6c0fc9da221873e01bd1a0d4818498a71eef33",
+        "version" : "4.0.6"
+      }
+    },
+    {
+      "identity" : "stripe-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stripe/stripe-ios",
+      "state" : {
+        "revision" : "e242f59ce90914e93c8308e0c3ceba7368575b77",
+        "version" : "22.8.4"
+      }
+    },
+    {
+      "identity" : "svgkit-light",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unstoppabledomains/SVGKit-Light",
+      "state" : {
+        "branch" : "v3/removed_lumberjack",
+        "revision" : "769f897e797adebfe429a5bdc777160c5e1762c9"
+      }
+    },
+    {
+      "identity" : "swift-atomics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-atomics.git",
+      "state" : {
+        "revision" : "cd142fd2f64be2100422d658e7411e39489da985",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "d029d9d39c87bed85b1c50adee7c41795261a192",
+        "version" : "1.0.6"
+      }
+    },
+    {
+      "identity" : "swift-eventsource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LaunchDarkly/swift-eventsource.git",
+      "state" : {
+        "revision" : "3d45eacab476f9bb2c58662cfb2d35088140b25b",
+        "version" : "3.1.1"
+      }
+    },
+    {
+      "identity" : "swift-http-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-http-types",
+      "state" : {
+        "revision" : "1827dc94bdab2eb5f2fc804e9b0cb43574282566",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "532d8b529501fb73a2455b179e0bbb6d49b652ed",
+        "version" : "1.5.3"
+      }
+    },
+    {
+      "identity" : "swift-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio.git",
+      "state" : {
+        "revision" : "702cd7c56d5d44eeba73fdf83918339b26dc855c",
+        "version" : "2.62.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-extras",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-extras.git",
+      "state" : {
+        "revision" : "798c962495593a23fdea0c0c63fd55571d8dff51",
+        "version" : "1.20.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-http2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-http2.git",
+      "state" : {
+        "revision" : "3bd9004b9d685ed6b629760fc84903e48efec806",
+        "version" : "1.29.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-ssl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-ssl.git",
+      "state" : {
+        "revision" : "320bd978cceb8e88c125dcbb774943a92f6286e9",
+        "version" : "2.25.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-transport-services",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-transport-services.git",
+      "state" : {
+        "revision" : "ebf8b9c365a6ce043bf6e6326a04b15589bd285e",
+        "version" : "1.20.0"
+      }
+    },
+    {
+      "identity" : "swift-protobuf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-protobuf.git",
+      "state" : {
+        "revision" : "65e8f29b2d63c4e38e736b25c27b83e012159be8",
+        "version" : "1.25.2"
+      }
+    },
+    {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
+      }
+    },
+    {
+      "identity" : "valet-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unstoppabledomains/Valet-ios.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "d680470731ada7ae48d9ca29756c9df792530e7f"
+      }
+    },
+    {
+      "identity" : "walletconnectswiftv2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
+      "state" : {
+        "revision" : "7cf45ea8f98097b5813cd3c99d08b87c1be28ebe",
+        "version" : "1.9.5"
+      }
+    },
+    {
+      "identity" : "web3.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/argentlabs/web3.swift",
+      "state" : {
+        "revision" : "1e75f98a5738c470b23bbfffa9314e9f788df76b",
+        "version" : "1.6.1"
+      }
+    },
+    {
+      "identity" : "web3swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unstoppabledomains/web3swift.git",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "e75faaf3e2889627aeca1090b07a30be5ff3388f"
+      }
+    },
+    {
+      "identity" : "websocket-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/websocket-kit.git",
+      "state" : {
+        "revision" : "53fe0639a98903858d0196b699720decb42aee7b",
+        "version" : "2.14.0"
+      }
+    },
+    {
+      "identity" : "xmtp-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xmtp/xmtp-ios",
+      "state" : {
+        "revision" : "af277a00fb254a1916da8db12caf480655d4894d"
+      }
+    },
+    {
+      "identity" : "xmtp-rust-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xmtp/xmtp-rust-swift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e08af6942841054ae02a6fe01d90d18e76d5f248"
+      }
+    },
+    {
+      "identity" : "zesame",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unstoppabledomains/Zesame",
+      "state" : {
+        "branch" : "master",
+        "revision" : "5a3d17e30f7e480e8f3168a915ae3327643ee0d8"
+      }
+    }
+  ],
+  "version" : 2
 }
