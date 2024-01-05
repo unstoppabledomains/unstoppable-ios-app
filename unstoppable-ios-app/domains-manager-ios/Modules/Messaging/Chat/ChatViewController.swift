@@ -33,7 +33,7 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var approveContentView: UIView!
     @IBOutlet private weak var acceptButton: MainButton!
-    @IBOutlet private weak var secondaryButton: UDButton!
+    @IBOutlet private weak var secondaryButton: UDConfigurableButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
     @IBOutlet private weak var chatEmptyView: ChatEmptyView!
     
@@ -156,14 +156,7 @@ extension ChatViewController: ChatViewProtocol {
     
     func setUIState(_ state: ChatViewController.State) {
         self.state = state
-        var animated = true
-        if case .loading = state {
-            animated = false
-        }
-        let animationDuration: TimeInterval = animated ? 0.25 : 0
-        UIView.animate(withDuration: animationDuration) {
-            self.updateUIForCurrentState()
-        }
+        self.updateUIForCurrentState()
     }
     
     func setupRightBarButton(with configuration: NavButtonConfiguration) {

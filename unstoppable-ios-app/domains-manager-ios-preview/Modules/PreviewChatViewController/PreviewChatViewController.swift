@@ -18,7 +18,8 @@ import SwiftUI
                                             channel: channel)
     vc.presenter = presenter
     
-    return vc
+    let nav = CNavigationController(rootViewController: vc)
+    return nav
 }
 
 private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
@@ -41,7 +42,11 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
         view?.setUIState(.loading)
         Task {
             try? await Task.sleep(seconds: 1)
-            view?.setUIState(.joinChannel)
+            view?.setUIState(.chat)
+//            view?.setUIState(.userIsBlocked)
+            try? await Task.sleep(seconds: 1)
+            view?.setUIState(.userIsBlocked)
+//            view?.setUIState(.cantContactUser(ableToInvite: true))
         }
     }
     

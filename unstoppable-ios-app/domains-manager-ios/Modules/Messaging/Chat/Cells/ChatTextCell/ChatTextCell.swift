@@ -66,7 +66,6 @@ extension ChatTextCell {
     
     let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
     collection.registerCellNibOfType(ChatTextCell.self)
-    
     let cell = collection.dequeueCellOfType(ChatTextCell.self, forIndexPath: IndexPath(row: 0, section: 0))
     
     cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
