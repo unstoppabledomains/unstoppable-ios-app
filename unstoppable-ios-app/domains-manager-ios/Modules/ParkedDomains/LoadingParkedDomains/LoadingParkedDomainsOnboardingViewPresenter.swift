@@ -10,9 +10,12 @@ import UIKit
 final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsViewPresenter {
 
     private weak var onboardingFlowManager: OnboardingFlowManager?
+    private let loginProvider: LoginProvider
 
     init(view: LoadingParkedDomainsViewProtocol,
+         loginProvider: LoginProvider,
          onboardingFlowManager: OnboardingFlowManager) {
+        self.loginProvider = loginProvider
         super.init(view: view)
         self.onboardingFlowManager = onboardingFlowManager
     }
@@ -24,18 +27,24 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
         
         Task {
             do {
-                let parkedDomains = try await appContext.firebaseParkedDomainsService.getParkedDomains()
-                let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-                
-                await MainActor.run {
-                    if parkedDomains.isEmpty {
-                        onboardingFlowManager?.moveToStep(.noParkedDomains)
-                    } else {
-                        onboardingFlowManager?.modifyOnboardingData { onboardingData in
-                            onboardingData.parkedDomains = displayInfo
+                switch loginProvider {
+                case .email, .google, .twitter:
+                    let parkedDomains = try await appContext.firebaseParkedDomainsService.getParkedDomains()
+                    let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+                    
+                    await MainActor.run {
+                        if parkedDomains.isEmpty {
+                            onboardingFlowManager?.moveToStep(.noParkedDomains)
+                        } else {
+                            onboardingFlowManager?.modifyOnboardingData { onboardingData in
+                                onboardingData.parkedDomains = displayInfo
+                            }
+                            onboardingFlowManager?.moveToStep(.parkedDomainsFound)
                         }
-                        onboardingFlowManager?.moveToStep(.parkedDomainsFound)
                     }
+                case .apple:
+                    try? await Task.sleep(seconds: 1.5)
+                    onboardingFlowManager?.moveToStep(.noParkedDomains)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: { [weak self] _ in
