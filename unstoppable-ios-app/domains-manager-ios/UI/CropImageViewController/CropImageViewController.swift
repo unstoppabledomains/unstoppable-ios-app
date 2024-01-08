@@ -16,10 +16,7 @@ final class CropImageViewController: BaseViewController {
     @IBOutlet fileprivate weak var scrollView: UIScrollView!
     @IBOutlet fileprivate weak var cancelButton: RaisedTertiaryWhiteButton!
     @IBOutlet fileprivate weak var saveButton: RaisedWhiteButton!
-    
-    @IBOutlet weak var cropZoneViewAspectRatioAvatarConstraint: NSLayoutConstraint!
-    @IBOutlet weak var cropZoneViewAspectRatioPostConstraint: NSLayoutConstraint!
-    
+
     private var imageCroppedCallback: CropImageCallback?
     
     fileprivate var imageView: UIImageView = UIImageView()
@@ -37,12 +34,12 @@ final class CropImageViewController: BaseViewController {
         
         setupUI()
     }
-   
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if currentFrame != view.frame {
-            currentFrame = view.frame
+        if currentFrame != cropZoneView.frame {
+            currentFrame = cropZoneView.frame
             DispatchQueue.main.async { [weak self] in
                 self?.setupOverlayView()
                 self?.setupDefaultScrollViewValues()
@@ -107,15 +104,12 @@ fileprivate extension CropImageViewController {
     }
     
     func setupCropZoneView() {
-        if croppingStyle == .avatar {
-            cropZoneViewAspectRatioAvatarConstraint.isActive = true
-            cropZoneViewAspectRatioPostConstraint.isActive = false
-        } else {
-            cropZoneViewAspectRatioAvatarConstraint.isActive = false
-            cropZoneViewAspectRatioPostConstraint.isActive = true
-        }
+        cropZoneView.widthAnchor.constraint(equalTo: cropZoneView.heightAnchor, multiplier: croppingStyle.croppingRatio).isActive = true
         view.setNeedsLayout()
         view.layoutIfNeeded()
+        currentFrame = cropZoneView.frame
+        setupOverlayView()
+        setupDefaultScrollViewValues()
     }
     
     func localizeElements() {
@@ -307,5 +301,19 @@ private extension UIImage {
 extension CropImageViewController {
     enum CroppingStyle {
         case avatar, banner
+        
+        fileprivate var croppingRatio: CGFloat {
+            switch self {
+            case .avatar:
+                return 1
+            case .banner:
+                return 358/140
+            }
+        }
     }
+}
+
+@available(iOS 17, *)
+#Preview {
+    CropImageViewController.instantiate(with: UIImage.Preview.previewSquare!, croppingStyle: .avatar)
 }

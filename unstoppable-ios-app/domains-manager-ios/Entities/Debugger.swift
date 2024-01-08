@@ -38,6 +38,7 @@ public struct Debugger {
         case CoreData = "CD"
         case WebSockets = "SOCKETS"
         case Messaging = "MS"
+        case Debug = "DEBUG"
     }
     
     enum DebugTopicsSet {
@@ -55,11 +56,11 @@ public struct Debugger {
             case .debugDefault:
                 return topicsExcluding([.Network, .PNs, .Analytics, .Images, .FileSystem, .Navigation, .WebSockets])
             case .debugWalletConnect:
-                return [.Wallet, .Domain, .Error, .FileSystem, .WalletConnect, .WalletConnectV2]
+                return [.Wallet, .Domain, .Error, .FileSystem, .WalletConnect, .WalletConnectV2, .Debug]
             case .debugUI:
-                return [.Error, .Navigation, .UI, .Images]
+                return [.Error, .Navigation, .UI, .Images, .Debug]
             case .debugNetwork:
-                return [.Network, .WebSockets, .Error]
+                return [.Network, .WebSockets, .Error, .Debug]
             case .custom(let topics):
                 return topics
             }

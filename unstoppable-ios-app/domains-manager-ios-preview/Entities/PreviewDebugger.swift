@@ -37,6 +37,7 @@ public struct Debugger {
         case CoreData = "CD"
         case WebSockets = "SOCKETS"
         case Messaging = "MS"
+        case Debug = "DEBUG"
     }
     
     enum DebugTopicsSet {
