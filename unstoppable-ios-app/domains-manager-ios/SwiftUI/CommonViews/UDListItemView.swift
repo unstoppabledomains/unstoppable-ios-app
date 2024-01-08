@@ -16,7 +16,7 @@ struct UDListItemView: View {
     let title: String
     var subtitle: String? = nil
     var value: String? = nil
-    var image: Image
+    var imageType: ImageType
     var imageStyle: ImageStyle = .centred()
     var rightViewStyle: RightViewStyle? = nil
     
@@ -45,10 +45,8 @@ private extension UDListItemView {
     func imageView() -> some View {
         switch imageStyle {
         case .centred(let offset):
-            image
-                .resizable()
-                .frame(width: iconSize - offset.leading - offset.trailing,
-                       height: iconSize - offset.top - offset.bottom)
+            imageForCurrentType(size: CGSize(width: iconSize - offset.leading - offset.trailing,
+                                             height: iconSize - offset.top - offset.bottom))
                 .foregroundStyle(Color.foregroundDefault)
                 .padding(offset)
                 .background(Color.backgroundMuted)
@@ -58,10 +56,25 @@ private extension UDListItemView {
                         .stroke(Color.borderSubtle, lineWidth: 1) // border subtle
                 }
         case .full:
+            imageForCurrentType(size: .square(size: iconSize))
+                .clipShape(Circle())
+        }
+    }
+    
+    @ViewBuilder
+    func imageForCurrentType(size: CGSize) -> some View {
+        switch imageType {
+        case .image(let image):
             image
                 .resizable()
-                .squareFrame(iconSize)
-                .clipShape(Circle())
+                .frame(width: size.width,
+                       height: size.height)
+        case .uiImage(let uiImage):
+            UIImageBridgeView(image: uiImage,
+                              width: size.width,
+                              height: size.height)
+            .frame(width: size.width,
+                   height: size.height)
         }
     }
     
@@ -105,6 +118,11 @@ private extension UDListItemView {
 
 // MARK: - Open methods
 extension UDListItemView {
+    enum ImageType {
+        case image(Image)
+        case uiImage(UIImage)
+    }
+    
     enum ImageStyle {
         case centred(offset: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         case full
@@ -141,7 +159,7 @@ extension UDListItemView {
     UDListItemView(title: "US ZIP code",
                    subtitle: "Taxes: $10.00",
                    value: "14736 (NY)",
-                   image: .udWalletListIcon,
+                   imageType: .uiImage(.udWalletListIcon),
                    imageStyle: .full,
                    rightViewStyle: .checkmark)
 }
