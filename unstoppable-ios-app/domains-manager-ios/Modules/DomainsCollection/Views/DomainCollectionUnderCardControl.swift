@@ -14,7 +14,7 @@ protocol DomainCollectionUnderCardControlDelegate: AnyObject {
 final class DomainCollectionUnderCardControl: UIView {
     
     private var backgroundView: UIView!
-    private var searchButton: UDButton!
+    private var searchButton: UDConfigurableButton!
     private var pageControl: UDPageControl!
 
     private let height: CGFloat = 28
@@ -116,10 +116,20 @@ private extension DomainCollectionUnderCardControl {
     
     func setupSearchButton() {
         let title = String.Constants.search.localized()
-        searchButton = UDButton()
+        let configuration = UDButtonConfiguration.verySmallGhostTertiaryButtonConfiguration
+        let font = UIFont.currentFont(withSize: configuration.fontSize,
+                                      weight: configuration.fontWeight)
+        let width = title.width(withConstrainedHeight: .infinity, font: font) + configuration.titleImagePadding + configuration.iconSize + 4
+        let height: CGFloat = title.height(withConstrainedWidth: .infinity, font: font)
+        let icon = UIImage.searchIcon.scalePreservingAspectRatio(targetSize: .square(size: configuration.iconSize))
+            .withRenderingMode(.alwaysTemplate)
+        
+        searchButton = UDConfigurableButton(frame: CGRect(origin: .zero,
+                                                          size: CGSize(width: width, height: height)))
+        searchButton.customTitleEdgePadding = 0
+        searchButton.customImageEdgePadding = 0
         searchButton.setConfiguration(.verySmallGhostTertiaryButtonConfiguration)
-        searchButton.setTitle(title, image: .searchIcon)
-        searchButton.layoutIfNeeded()
+        searchButton.setTitle(title, image: icon)
         searchButton.addTarget(self, action: #selector(searchButtonPressed), for: .touchUpInside)
         addSubview(searchButton)
     }

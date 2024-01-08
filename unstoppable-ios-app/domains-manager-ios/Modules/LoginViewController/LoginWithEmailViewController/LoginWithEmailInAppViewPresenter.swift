@@ -20,7 +20,7 @@ final class LoginWithEmailInAppViewPresenter: LoginWithEmailViewPresenter {
     
     override func didAuthorizeAction() {
         Task {
-            try? await loginFlowManager?.handle(action: .authorized)
+            try? await loginFlowManager?.handle(action: .authorized(.email))
         }
     }
 }

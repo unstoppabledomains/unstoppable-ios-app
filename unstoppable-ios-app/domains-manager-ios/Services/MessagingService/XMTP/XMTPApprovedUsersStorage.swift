@@ -19,12 +19,12 @@ struct XMTPApprovedTopicsStorage {
         return list.filter { $0.userId == userId }
     }
     
-    func updatedApprovedUsersListFor(userId: String, approvedTopics: [String]) {
+    func updatedApprovedUsersListFor(userId: String, approvedAddresses: [String]) {
         var approvedUsersList = getAllApprovedTopicsList()
         approvedUsersList.removeAll(where: { $0.userId == userId }) /// Remove all approved topics list related to user
         
-        let approvedUserTopics = approvedTopics.map { XMTPApprovedUserDescription(userId: userId, approvedTopic: $0) } /// Replace it with new data
-        approvedUsersList.append(contentsOf: approvedUserTopics)
+        let approvedUserAddresses = approvedAddresses.map { XMTPApprovedUserDescription(userId: userId, approvedAddress: $0) } /// Replace it with new data
+        approvedUsersList.append(contentsOf: approvedUserAddresses)
         
         set(newList: approvedUsersList)
     }

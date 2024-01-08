@@ -366,7 +366,8 @@ private extension OnboardingNavigationController {
             return vc
         case .loadingParkedDomains:
             let vc = LoadingParkedDomainsViewController.nibInstance()
-            let presenter = LoadingParkedDomainsOnboardingViewPresenter(view: vc,
+            let presenter = LoadingParkedDomainsOnboardingViewPresenter(view: vc, 
+                                                                        loginProvider: onboardingData.loginProvider ?? .apple,
                                                                         onboardingFlowManager: self)
             addStepHandler(presenter)
             vc.presenter = presenter

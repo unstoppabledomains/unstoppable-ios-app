@@ -13,11 +13,12 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
 }
 
 @MainActor
-class LoginViewPresenter: ViewAnalyticsLogger {
+class LoginViewPresenter: NSObject, ViewAnalyticsLogger {
     private(set) weak var view: LoginViewProtocol?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: LoginViewProtocol) {
+        super.init()
         self.view = view
     }
     
@@ -26,7 +27,7 @@ class LoginViewPresenter: ViewAnalyticsLogger {
         view?.setDashesProgress(0.25)
     }
     func loginWithEmailAction() { }
-    func userDidAuthorize() { }
+    func userDidAuthorize(provider: LoginProvider) { }
     
     func authFailedWith(error: Error) {
         if let firebaseError = error as? FirebaseAuthError,
@@ -54,6 +55,8 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
                 loginWithGoogle()
             case .twitter:
                 loginWithTwitter()
+            case .apple:
+                loginWithApple()
             }
         }
     }
@@ -67,7 +70,8 @@ private extension LoginViewPresenter {
         snapshot.appendSections([.main])
         snapshot.appendItems([.loginWith(provider: .email),
                               .loginWith(provider: .google),
-                              .loginWith(provider: .twitter)])
+                              .loginWith(provider: .twitter),
+                              .loginWith(provider: .apple)])
         
         view?.applySnapshot(snapshot, animated: true)
     }
@@ -78,7 +82,7 @@ private extension LoginViewPresenter {
     
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithGoogle(in: window)
-                userDidAuthorize()
+                userDidAuthorize(provider: .google)
             } catch {
                 authFailedWith(error: error)
             }
@@ -91,9 +95,50 @@ private extension LoginViewPresenter {
             
             do {
                 try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithTwitter(in: view)
-                userDidAuthorize()
+                userDidAuthorize(provider: .twitter)
             } catch {
                 authFailedWith(error: error)
+            }
+        }
+    }
+    
+    func loginWithApple() {
+        Task {            
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            request.requestedScopes = [.email]
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            controller.performRequests()
+        }
+    }
+}
+
+import AuthenticationServices
+
+// MARK: - Open methods
+extension LoginViewPresenter: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        SceneDelegate.shared!.window!
+    }
+    nonisolated
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        Task {
+            await userDidAuthorize(provider: .apple)
+        }
+    }
+    nonisolated
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        Task {
+            if let error = error as? ASAuthorizationError {
+                switch error.code {
+                case .canceled:
+                    return
+                default:
+                    await authFailedWith(error: error)
+                }
+            } else {
+                await authFailedWith(error: error)
             }
         }
     }

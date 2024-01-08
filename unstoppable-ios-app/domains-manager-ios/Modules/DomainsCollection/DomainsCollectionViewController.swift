@@ -806,8 +806,10 @@ import SwiftUI
 
 @available(iOS 17, *)
 #Preview {
+#if DEBUG
     HotFeatureSuggestionsStorage.clearAll()
-
+#endif
+    
     let router = DomainsCollectionRouter()
     let vc = router.configureViewController(mintingState: .default)
     

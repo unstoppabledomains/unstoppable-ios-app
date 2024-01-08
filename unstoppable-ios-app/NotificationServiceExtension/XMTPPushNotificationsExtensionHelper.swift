@@ -36,7 +36,7 @@ struct XMTPPushNotificationsExtensionHelper {
             let conversation = conversationContainer.decode(with: client)
             address = conversation.peerAddress
             
-            guard AppGroupsBridgeService.shared.getXMTPBlockedUsersList().first(where: { $0.userId == data.toAddress && $0.blockedTopic == conversation.topic }) == nil else { return nil } // Ignore notification from blocked user
+            guard AppGroupsBridgeService.shared.getXMTPBlockedUsersList().first(where: { $0.userId == data.toAddress && $0.blockedAddress == conversation.peerAddress }) == nil else { return nil } // Ignore notification from blocked user
             
             let envelope = XMTP.Envelope.with { envelope in
                 envelope.message = encryptedMessageData

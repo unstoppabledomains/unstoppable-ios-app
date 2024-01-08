@@ -14,17 +14,8 @@ struct XMTPPushNotificationsHelper {
         try await makeRequestFor(topics: topics, accepted: nil, blocked: nil, by: client)
     }
     
-    static func makeChatRequestFor(topic: String, accepted: Bool, by client: Client) async throws {
-        try await makeRequestFor(topics: [topic], accepted: accepted, blocked: nil, by: client)
-    }
-    
-    static func makeChatRequestFor(topics: [String], blocked: Bool, by client: Client) async throws {
-        try await makeRequestFor(topics: topics, accepted: nil, blocked: blocked, by: client)
-    }
-    
     static func unsubscribeFromTopics(_ topics: [String], by client: Client) async throws {
-        
-        
+        try await makeRequestFor(topics: topics, accepted: false, blocked: false, by: client)
     }
 }
 

@@ -22,10 +22,10 @@ final class LoginInAppViewPresenter: LoginViewPresenter {
         }
     }
     
-    override func userDidAuthorize() {
+    override func userDidAuthorize(provider: LoginProvider) {
         Task {
             do {
-                try await loginFlowManager?.handle(action: .authorized)
+                try await loginFlowManager?.handle(action: .authorized(provider))
             } catch {
                 authFailedWith(error: error)
             }

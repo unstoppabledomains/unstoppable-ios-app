@@ -238,12 +238,12 @@ struct XMTPEntitiesTransformer {
     private static func convertMessagingWebSocketChatEntityToChat(_ webSocketChat: MessagingWebSocketChatEntity,
                                                                   profile: MessagingChatUserProfile) -> MessagingChat? {
         guard let serviceContent = webSocketChat.serviceContent as? XMTPEnvironmentNamespace.XMTPSocketChatServiceContent else { return nil }
-        let approvedTopicsList = Set(XMTPApprovedTopicsStorage.shared.getApprovedTopicsListFor(userId: profile.id).map { $0.approvedTopic })
+        let approvedAddressesList = Set(XMTPApprovedTopicsStorage.shared.getApprovedTopicsListFor(userId: profile.id).map { $0.approvedAddress })
 
         return convertXMTPChatToChat(serviceContent.conversation,
                                      userId: profile.id,
                                      userWallet: profile.wallet,
-                                     isApproved: approvedTopicsList.contains(serviceContent.conversation.topic))
+                                     isApproved: approvedAddressesList.contains(serviceContent.conversation.peerAddress))
     }
     
     static func loadRemoteContentFrom(data: Data,
