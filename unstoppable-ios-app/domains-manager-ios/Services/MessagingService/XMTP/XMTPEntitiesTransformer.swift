@@ -238,7 +238,7 @@ struct XMTPEntitiesTransformer {
     private static func convertMessagingWebSocketChatEntityToChat(_ webSocketChat: MessagingWebSocketChatEntity,
                                                                   profile: MessagingChatUserProfile) -> MessagingChat? {
         guard let serviceContent = webSocketChat.serviceContent as? XMTPEnvironmentNamespace.XMTPSocketChatServiceContent else { return nil }
-        let approvedAddressesList = Set(XMTPApprovedTopicsStorage.shared.getApprovedTopicsListFor(userId: profile.id).map { $0.approvedAddress })
+        let approvedAddressesList = XMTPServiceHelper.getListOfApprovedAddressesForUser(profile)
 
         return convertXMTPChatToChat(serviceContent.conversation,
                                      userId: profile.id,
