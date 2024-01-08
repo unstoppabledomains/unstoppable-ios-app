@@ -45,7 +45,7 @@ struct XMTPServiceHelper {
         return client
     }
     
-    /// In XMTP user considered as not approved (pending request) if it is in neither approved or blocked list. 
+    /// In XMTP user considered as not approved (pending request) if it is in neither approved or blocked list.
     static func getListOfApprovedAddressesForUser(_ user: MessagingChatUserProfile) -> Set<String> {
         Set(
             XMTPApprovedTopicsStorage.shared.getApprovedTopicsListFor(userId: user.id).map { $0.approvedAddress } +
