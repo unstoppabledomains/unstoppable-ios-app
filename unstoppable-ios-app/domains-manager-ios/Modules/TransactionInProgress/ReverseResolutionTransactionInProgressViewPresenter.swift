@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
+final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
     
     override var analyticsName: Analytics.ViewName { .reverseResolutionTransactionInProgress }
     private let domain: DomainItem
