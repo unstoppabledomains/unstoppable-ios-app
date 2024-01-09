@@ -24,6 +24,7 @@ extension String {
         case showcaseDomainBadge(domainName: String, badgeCode: String)
         case badgesLeaderboard
         case generic(url: String)
+        case direct(url: URL)
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
@@ -96,6 +97,8 @@ extension String {
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:
                 return "https://support.apple.com/en-us/108398"
+            case .direct(let url):
+                return url.absoluteString
             }
         }
         
