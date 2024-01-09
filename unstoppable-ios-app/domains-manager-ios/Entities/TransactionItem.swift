@@ -1,5 +1,5 @@
 //
-//  TransactionProtocol.swift
+//  TransactionItem.swift
 //  domains-manager-ios
 //
 //  Created by Roman Medvid on 15.10.2020.
