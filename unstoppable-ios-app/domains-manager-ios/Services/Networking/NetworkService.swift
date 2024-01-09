@@ -408,6 +408,15 @@ extension EthereumTransaction {
     }
 }
 
+protocol ErrorResponseHolder {
+    var error: ErrorResponse { set get }
+}
+
+struct ErrorResponse: Codable {
+    var code: Int
+    var message: String
+}
+
 enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     
     case creatingURLFailed
