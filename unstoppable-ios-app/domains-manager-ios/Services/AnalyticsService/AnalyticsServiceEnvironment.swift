@@ -222,6 +222,7 @@ extension Analytics {
         case hide, showAll
         case dontAlreadyHaveDomain
         case createVault
+        case openDomainProfile
         
         // Backup type
         case iCloud, manually
