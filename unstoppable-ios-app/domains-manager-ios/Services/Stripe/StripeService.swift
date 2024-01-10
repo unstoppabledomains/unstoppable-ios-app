@@ -133,11 +133,15 @@ extension StripeService {
         var resultCallback: PurchaseResultCallback? = nil
     }
     
-    enum PurchaseError: Error {
+    enum PurchaseError: String, LocalizedError {
         case cancelled
         case cantInitStripe
         case paymentFailed
         case unknownStatus
         case applePayNotSupported
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }

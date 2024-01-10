@@ -158,7 +158,7 @@ private extension PurchaseDomainsCheckoutView {
         UDCollectionListRowButton(content: {
             UDListItemView(title: String.Constants.mintTo.localized(),
                            value: selectedWalletName,
-                           image: .vaultIcon,
+                           imageType: .image(.vaultIcon),
                            rightViewStyle: walletSelectionIndicatorStyle)
         }, callback: {
             if !canSelectWallet,
@@ -205,7 +205,7 @@ private extension PurchaseDomainsCheckoutView {
             UDListItemView(title: String.Constants.zipCode.localized(),
                            subtitle: String.Constants.toCalculateTaxes.localized(),
                            value: usaZipCodeValue,
-                           image: .usaFlagIcon,
+                           imageType: .image(.usaFlagIcon),
                            imageStyle: .centred(offset: EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8)),
                            rightViewStyle: .chevron)
         }, callback: {
@@ -227,7 +227,7 @@ private extension PurchaseDomainsCheckoutView {
         UDCollectionListRowButton(content: {
             UDListItemView(title: String.Constants.creditsAndDiscounts.localized(),
                            value: discountValueString,
-                           image: .tagsCashIcon,
+                           imageType: .image(.tagsCashIcon),
                            rightViewStyle: .chevron)
         }, callback: {
             if cartStatus.storeCreditsAvailable == 0 && cartStatus.promoCreditsAvailable == 0 {
@@ -296,11 +296,11 @@ private extension PurchaseDomainsCheckoutView {
         .padding()
     }
     
-    var avatarImage: Image {
+    var avatarImage: UDListItemView.ImageType {
         if let domainAvatar {
-            return Image(uiImage: domainAvatar)
+            return .uiImage(domainAvatar)
         }
-        return .domainSharePlaceholder
+        return .image(.domainSharePlaceholder)
     }
     
     @ViewBuilder
@@ -310,7 +310,7 @@ private extension PurchaseDomainsCheckoutView {
                 .fill(Color.backgroundOverlay)
             UDListItemView(title: domain.name,
                            value: formatCartPrice(domain.price),
-                           image: avatarImage,
+                           imageType: avatarImage,
                            imageStyle: .full)
             .padding(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
         }
@@ -454,7 +454,7 @@ private extension PurchaseDomainsCheckoutView {
     func setDomainAvatar() {
         Task {
             if let imageData = profileChanges.avatarData,
-               let avatarImage = UIImage(data: imageData) {
+               let avatarImage = await UIImage.createWith(anyData: imageData) {
                 domainAvatar = avatarImage
             } else {
                 domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)

@@ -96,8 +96,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard didResolveInitialViewController else { return }
         
         Task {
-            await authorizeUserOnAppOpening()
-            appContext.externalEventsService.checkPendingEvents()
+            do {
+                try await authorizeUserOnAppOpening()
+                appContext.externalEventsService.checkPendingEvents()
+            }
         }
     }
     
@@ -132,7 +134,7 @@ extension SceneDelegate: SceneDelegateProtocol {
         UserDefaults.appearanceStyle = appearanceStyle
     }
     
-    func authorizeUserOnAppOpening() async {
+    func authorizeUserOnAppOpening() async throws {
         guard let rootVC = securityWindow?.rootViewController else { return }
         guard User.instance.getSettings().shouldRequireSAOnAppOpening else {
             await unBlurAfterAuthorization()
@@ -148,7 +150,15 @@ extension SceneDelegate: SceneDelegateProtocol {
             appContext.coreAppCoordinator.setKeyWindow()
         } catch {
             logSAAnalyticsIfEnabled(event: .secureAuthFailed)
-            await authorizeUserOnAppOpening()
+            
+            switch sceneActivationState {
+            case .foregroundActive, .foregroundInactive:
+                try await authorizeUserOnAppOpening()
+            case .unattached, .background:
+                throw error
+            @unknown default:
+                try await authorizeUserOnAppOpening()
+            }
         }
     }
     
@@ -194,8 +204,10 @@ private extension SceneDelegate {
             let isAuthorizing = await authHandler.isAuthorizing
             
             if isAuthorizing {
-                await authorizeUserOnAppOpening()
-                appContext.deepLinksService.handleUniversalLink(incomingURL, receivedState: receivedState)
+                do {
+                    try await authorizeUserOnAppOpening()
+                    appContext.deepLinksService.handleUniversalLink(incomingURL, receivedState: receivedState)
+                }
             } else {
                 appContext.deepLinksService.handleUniversalLink(incomingURL, receivedState: receivedState)
             }

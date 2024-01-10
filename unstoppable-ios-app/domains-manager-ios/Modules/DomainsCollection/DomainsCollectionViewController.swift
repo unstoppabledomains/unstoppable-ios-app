@@ -195,7 +195,7 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
     }
     
     func setUnderCardControlVisibility() {
-        underCardControl.isHidden = underCardControl.numberOfPages <= 1
+        underCardControl.isHidden = underCardControl.numberOfPages <= 0
     }
     
     func showToast(_ toast: Toast) {
@@ -800,18 +800,4 @@ extension DomainsCollectionViewController {
         case recentActivityGetDomain
         case suggestionSelected(HotFeatureSuggestion)
     }
-}
-
-import SwiftUI
-
-@available(iOS 17, *)
-#Preview {
-#if DEBUG
-    HotFeatureSuggestionsStorage.clearAll()
-#endif
-    
-    let router = DomainsCollectionRouter()
-    let vc = router.configureViewController(mintingState: .default)
-    
-    return vc
 }

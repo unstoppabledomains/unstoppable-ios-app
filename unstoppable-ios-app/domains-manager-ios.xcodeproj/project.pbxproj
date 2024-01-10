@@ -747,8 +747,8 @@
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D024284630A700E80A65 /* DataAggregatorServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */; };
 		C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */; };
-		C6568EF92B204E4C0022B598 /* AnimateAbleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* AnimateAbleImage.swift */; };
-		C6568EFA2B204E4C0022B598 /* AnimateAbleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* AnimateAbleImage.swift */; };
+		C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
+		C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
 		C658D44E2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */; };
 		C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
 		C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
@@ -2950,7 +2950,7 @@
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
-		C6568EF82B204E4C0022B598 /* AnimateAbleImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateAbleImage.swift; sourceTree = "<group>"; };
+		C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageBridgeView.swift; sourceTree = "<group>"; };
 		C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthTokenStorage.swift; sourceTree = "<group>"; };
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
 		C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserPullUpSelectionItem.swift; sourceTree = "<group>"; };
@@ -6551,7 +6551,7 @@
 			children = (
 				C69F99122A9F1264004B1958 /* CircleIconButton.swift */,
 				C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */,
-				C6568EF82B204E4C0022B598 /* AnimateAbleImage.swift */,
+				C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */,
 				C6289A4A2AAB095D002C2DEC /* DomainSelectionListView.swift */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
 				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
@@ -9087,7 +9087,7 @@
 				C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C6F6AF6E28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C652BFD52A9DE39F00CC1089 /* WalletNFTsService.swift in Sources */,
-				C6568EF92B204E4C0022B598 /* AnimateAbleImage.swift in Sources */,
+				C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C6E041A92951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift in Sources */,
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
@@ -9885,7 +9885,7 @@
 				C6C8F9562B2185A900A9834D /* MintingError.swift in Sources */,
 				C6D645742B1D721D00D724AC /* PurchaseDomainsSelectWalletView.swift in Sources */,
 				C6D645A82B1DBB2300D724AC /* UICollectionViewCell.swift in Sources */,
-				C6568EFA2B204E4C0022B598 /* AnimateAbleImage.swift in Sources */,
+				C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6C8F8C82B2182E400A9834D /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
 				C6D645EC2B1DBEA000D724AC /* CarouselCollectionViewCell.swift in Sources */,
 				C6D647352B1ED9D600D724AC /* WCRequestUIConfiguration.swift in Sources */,
@@ -10593,7 +10593,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosDebug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "Dev-Env-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -10603,7 +10603,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.8.2;
+				MARKETING_VERSION = 4.9.1;
 				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -10627,7 +10627,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -10637,7 +10637,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.8.2;
+				MARKETING_VERSION = 4.9.1;
 				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -10801,7 +10801,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -10811,7 +10811,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.8.2;
+				MARKETING_VERSION = 4.9.1;
 				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
