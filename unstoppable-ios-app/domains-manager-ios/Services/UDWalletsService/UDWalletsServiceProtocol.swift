@@ -13,6 +13,9 @@ protocol UDWalletsServiceProtocol {
     func find(by address: HexAddress) -> UDWallet?
     
     // Add
+    var walletsNumberLimit: Int { get }
+    var canAddNewWallet: Bool { get }
+    
     func createNewUDWallet() async throws -> UDWallet
     
     func createWalletFor(privateKey: String) async -> UDWalletWithPrivateSeed?

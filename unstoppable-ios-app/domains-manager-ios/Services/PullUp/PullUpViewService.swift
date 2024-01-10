@@ -549,18 +549,20 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
-                                             maxNumberOfWallets: Int) {
-        let selectionViewHeight: CGFloat = 268
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedPullUpTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .warningIcon,
-                                                                                 size: .small,
-                                                                                 tintColor: .foregroundWarning),
-                                                                     subtitle: .label(.text(String.Constants.walletsLimitReachedPullUpSubtitle.localized(maxNumberOfWallets))),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReached, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+                                             maxNumberOfWallets: Int) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 288
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedPullUpTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .warningIcon,
+                                                                                     size: .small,
+                                                                                     tintColor: .foregroundWarning),
+                                                                         subtitle: .label(.text(String.Constants.walletsLimitReachedPullUpSubtitle.localized(maxNumberOfWallets))),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReached, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
     func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,

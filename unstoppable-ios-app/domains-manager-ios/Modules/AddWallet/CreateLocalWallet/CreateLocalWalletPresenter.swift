@@ -38,5 +38,9 @@ final class CreateLocalWalletPresenter: BaseCreateWalletPresenter {
         addWalletFlowManager?.wallet = wallet
         self.addWalletFlowManager?.moveToStep(.backupWallet)
     }
+    
+    override func didFailToCreateWallet() {
+        addWalletFlowManager?.didFailToAddWallet()
+    }
 }
 

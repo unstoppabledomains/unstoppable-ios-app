@@ -151,7 +151,7 @@ private extension PurchaseDomainsNavigationController {
                     case .created, .createdAndBackedUp:
                         self?.moveToCheckoutWith(domain: domain,
                                                  profileChanges: profileChanges)
-                    case .cancelled:
+                    case .cancelled, .failedToAdd:
                         return
                     }
                 })
