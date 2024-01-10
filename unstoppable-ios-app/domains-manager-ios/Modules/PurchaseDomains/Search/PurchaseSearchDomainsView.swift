@@ -375,7 +375,7 @@ private extension PurchaseSearchDomainsView {
                            actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
                                                               analyticsName: .goToWebsite,
                                                               action: {
-                openLinkExternally(.mainLanding)
+                openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
             })),
                            cancelButton: .gotItButton(),
                            analyticName: .searchPurchaseDomainNotSupported)
