@@ -35,7 +35,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
 final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
     
     var analyticsName: Analytics.ViewName { .domainProfile }
-
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domainName]}
     private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: AnyCancellable?
     private var preRequestedAction: PreRequestedProfileAction?
@@ -122,6 +122,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
     }
     
     func confirmChangesButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         askToSaveChanges()
     }
     

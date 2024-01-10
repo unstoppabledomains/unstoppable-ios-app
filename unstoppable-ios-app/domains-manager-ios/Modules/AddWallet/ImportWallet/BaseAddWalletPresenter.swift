@@ -99,6 +99,9 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
                     } else {
                         wallet = try await udWalletsService.importWalletWith(mnemonics: input)
                     }
+                    
+                    appContext.analyticsService.log(event: .didAddWallet, 
+                                                    withParameters: [.walletType : wallet.type.rawValue])
                     view.setContinueButtonEnabled(true)
                     didCreateWallet(wallet: wallet)
                 } catch WalletError.ethWalletAlreadyExists {
