@@ -20,7 +20,8 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var searchingText = ""
     @State private var scrollOffset: CGPoint = .zero
     @State private var skeletonItemsWidth: [CGFloat] = []
-    
+    @State private var pullUp: ViewPullUpConfiguration?
+
     var domainSelectedCallback: ((DomainToPurchase)->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
     var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
@@ -44,6 +45,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
         .onChange(of: scrollOffset) { newValue in
             scrollOffsetCallback?(newValue)
         }
+        .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
     }
 }
@@ -125,8 +127,9 @@ private extension PurchaseSearchDomainsView {
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
                     }, callback: {
-                        logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name])
-                        domainSelectedCallback(domainInfo)
+                        logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
+                                                                                            .price: String(domainInfo.price)])
+                        didSelectDomain(domainInfo)
                     })
                 }
             }
@@ -354,6 +357,29 @@ private extension PurchaseSearchDomainsView {
             searchResult.insert(matchingDomain, at: 0)
         }
         return searchResult
+    }
+    
+    func didSelectDomain(_ domain: DomainToPurchase) {
+        if domain.isAbleToPurchase {
+            domainSelectedCallback(domain)
+        } else {
+            logAnalytic(event: .didSelectNotSupportedDomainForPurchaseInSearch, parameters: [.domainName: domain.name,
+                                                                                             .price : String(domain.price)])
+            pullUp = .init(icon: .init(icon: .cartIcon, size: .large),
+                           title: .text(String.Constants.purchaseSearchCantButPullUpTitle.localized()),
+                           subtitle: .label(.highlightedText(.init(text: String.Constants.purchaseSearchCantButPullUpSubtitle.localized(domain.tld),
+                                                                   highlightedText: [.init(highlightedText: domain.tld,
+                                                                                           highlightedColor: .foregroundDefault)],
+                                                                   analyticsActionName: nil,
+                                                                   action: nil))),
+                           actionButton: .main(content: .init(title: String.Constants.goToWebsite.localized(),
+                                                              analyticsName: .goToWebsite,
+                                                              action: {
+                openLinkExternally(.mainLanding)
+            })),
+                           cancelButton: .gotItButton(),
+                           analyticName: .searchPurchaseDomainNotSupported)
+        }
     }
 }
 

@@ -62,13 +62,14 @@ private extension ViewPullUp {
                         labelViewFor(labelType: label,
                                      fontSize: 22,
                                      fontWeight: .bold,
-                                     textColor: .foregroundDefault)
+                                     textColor: .foregroundDefault,
+                                     lineHeight: 28)
                     }
                     if let subtitle = configuration.subtitle {
                         subtitleView(subtitle)
                     }
                 }
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(alignmentFrom(textAlignment: getCurrentContentAlignment()))
                 
                 if let actionButton = configuration.actionButton {
                     buttonViewFor(buttonType: actionButton)
@@ -77,6 +78,9 @@ private extension ViewPullUp {
                 
                 if let extraButton = configuration.extraButton {
                     buttonViewFor(buttonType: extraButton)
+                }
+                if let cancelButton = configuration.cancelButton {
+                    buttonViewFor(buttonType: cancelButton)
                 }
                 Spacer()
             }
@@ -100,7 +104,8 @@ private extension ViewPullUp {
     func labelViewFor(labelType: ViewPullUpConfiguration.LabelType,
                       fontSize: CGFloat,
                       fontWeight: UIFont.Weight,
-                      textColor: UIColor) -> some View {
+                      textColor: UIColor,
+                      lineHeight: CGFloat) -> some View {
         switch labelType {
         case .text(let text):
             Text(text)
@@ -108,9 +113,40 @@ private extension ViewPullUp {
                 .foregroundStyle(Color(uiColor: textColor))
         case .highlightedText(let description):
             AttributedText(attributesList: .init(text: description.text,
-                                                 font: .currentFont(withSize: fontSize, weight: fontWeight)),
+                                                 font: .currentFont(withSize: fontSize, weight: fontWeight),
+                                                 textColor: textColor,
+                                                 alignment: getCurrentContentAlignment(),
+                                                 lineHeight: lineHeight),
+                           width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2),
                            updatedAttributesList: description.highlightedText.map { AttributedText.AttributesList(text: $0.highlightedText,
                                                                                                                   textColor: $0.highlightedColor) })
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+    
+    func alignmentFrom(textAlignment: NSTextAlignment) -> TextAlignment {
+        switch textAlignment {
+        case .left:
+            return .leading
+        case .center:
+            return .center
+        case .right:
+            return .trailing
+        case .justified:
+            return .center
+        case .natural:
+            return .center
+        @unknown default:
+            return .center
+        }
+    }
+    
+    func getCurrentContentAlignment() -> NSTextAlignment {
+        switch configuration?.contentAlignment {
+        case .left:
+            return .left
+        case .center, nil:
+            return .center
         }
     }
     
@@ -121,7 +157,8 @@ private extension ViewPullUp {
             labelViewFor(labelType: label,
                          fontSize: 16,
                          fontWeight: .regular,
-                         textColor: .foregroundSecondary)
+                         textColor: .foregroundSecondary, 
+                         lineHeight: 24)
         case .button(let button):
             buttonViewFor(buttonType: button)
         }
@@ -174,9 +211,9 @@ private extension ViewPullUp {
     
     @ViewBuilder
     func viewForIconContent(_ iconContent: ViewPullUpConfiguration.IconContent) -> some View {
-        Image(uiImage: iconContent.icon)
+        Image(uiImage: iconContent.icon.templateImageOfSize(.square(size: iconContent.iconSize)))
             .resizable()
-            .squareFrame(iconContent.size.size)
+            .squareFrame(iconContent.iconSize)
             .foregroundStyle(Color(uiColor: iconContent.tintColor))
     }
 }
@@ -226,6 +263,11 @@ fileprivate extension ViewPullUpConfiguration {
                                           contentWidth: contentWidth)
             height += ViewPullUp.sideOffset
         }
+        if let cancelButton {
+            height += heightForButtonType(cancelButton,
+                                          contentWidth: contentWidth)
+            height += ViewPullUp.sideOffset
+        }
         
         
         
@@ -261,7 +303,7 @@ fileprivate extension ViewPullUpConfiguration {
     }
     
     func heightForIconContent(_ iconContent: IconContent) -> CGFloat {
-        iconContent.size.size
+        iconContent.iconSize
     }
 }
 
@@ -339,6 +381,8 @@ struct ViewPullUpConfiguration {
         var corners: IconCorners = .none
         var backgroundColor: UIColor = .clear
         var tintColor: UIColor = .foregroundMuted
+        
+        var iconSize: CGFloat { size.size }
     }
     
     // Button
