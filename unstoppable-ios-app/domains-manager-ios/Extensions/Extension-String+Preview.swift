@@ -31,6 +31,7 @@ extension String {
         case udBlue
         case communitiesInfo
         case setupApplePayInstruction
+        case unstoppableDomainSearch(searchKey: String)
         
         var urlString: String {
             switch self {
@@ -99,6 +100,8 @@ extension String {
                 return "https://support.apple.com/en-us/108398"
             case .direct(let url):
                 return url.absoluteString
+            case .unstoppableDomainSearch(let searchKey):
+                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             }
         }
         
