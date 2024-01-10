@@ -77,7 +77,12 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         let key = key.lowercased()
         let tlds = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
         let prices = [40000, 20000, 8000, 4000, 500]
-        return tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil)}
+        let notSupportedTLDs = ["eth", "com"]
+        
+        let domains = tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: true) }
+        let notSupportedDomains = notSupportedTLDs.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil, isAbleToPurchase: false) }
+        
+        return domains + notSupportedDomains
     }
     
     func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
@@ -169,7 +174,7 @@ private extension MockFirebaseInteractionsService {
     }
     
     static func createMockCart() -> PurchaseDomainsCart {
-        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil)],
+        .init(domains: [.init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)],
               totalPrice: 10000,
               taxes: 0,
               storeCreditsAvailable: 100,
