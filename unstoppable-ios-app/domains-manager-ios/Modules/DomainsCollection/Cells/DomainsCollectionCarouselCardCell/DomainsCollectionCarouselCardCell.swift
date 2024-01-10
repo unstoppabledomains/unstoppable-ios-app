@@ -110,9 +110,8 @@ extension DomainsCollectionCarouselCardCell {
 // MARK: - Actions
 private extension DomainsCollectionCarouselCardCell {
     func createMenuElement(for action: Action) -> UIMenuElement {
-        
         switch action {
-        case .copyDomain(let callback), .viewVault(_, _, let callback):
+        case .copyDomain(let callback), .viewVault(_, _, let callback), .openDomainProfile(let callback):
             let action = createMenuAction(title: action.title,
                                     subtitle: action.subtitle,
                                     icon: action.icon,
