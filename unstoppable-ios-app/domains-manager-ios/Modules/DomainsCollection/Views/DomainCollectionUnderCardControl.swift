@@ -121,8 +121,7 @@ private extension DomainCollectionUnderCardControl {
                                       weight: configuration.fontWeight)
         let width = title.width(withConstrainedHeight: .infinity, font: font) + configuration.titleImagePadding + configuration.iconSize + 4
         let height: CGFloat = title.height(withConstrainedWidth: .infinity, font: font)
-        let icon = UIImage.searchIcon.scalePreservingAspectRatio(targetSize: .square(size: configuration.iconSize))
-            .withRenderingMode(.alwaysTemplate)
+        let icon = UIImage.searchIcon.templateImageOfSize(.square(size: configuration.iconSize))
         
         searchButton = UDConfigurableButton(frame: CGRect(origin: .zero,
                                                           size: CGSize(width: width, height: height)))
