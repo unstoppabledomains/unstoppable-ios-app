@@ -25,6 +25,7 @@ extension Analytics {
         case didSwipeTutorialPage
         case iCloudDisabledAlertAppear, iCloudDisabledAlertShowTutorialPressed, iCloudDisabledAlertCancelPressed
         case didConnectToExternalWallet, failedToConnectExternalWallet
+        case didAddWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
         case domainPressed, domainMoved
@@ -117,6 +118,9 @@ extension Analytics {
         case error
         case id
         case fromWallet, toWallet
+        case isSkip
+        case searchType
+        case walletType
     }
 }
 
@@ -337,6 +341,7 @@ extension Analytics {
         case openUnpaidDomainsInfo, openSetupApplePayInfo
         
         case suggestionBanner
+        case inspire, cancelInspire
     }
 }
 

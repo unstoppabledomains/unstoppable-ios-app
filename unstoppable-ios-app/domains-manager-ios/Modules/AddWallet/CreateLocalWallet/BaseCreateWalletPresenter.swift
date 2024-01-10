@@ -54,6 +54,8 @@ extension BaseCreateWalletPresenter {
             isCreatingWallet = true
             do {
                 let wallet = try await udWalletsService.createNewUDWallet()
+                appContext.analyticsService.log(event: .didAddWallet,
+                                                withParameters: [.walletType : wallet.type.rawValue])
                 view?.setNavigationGestureEnabled(true)
                 Vibration.success.vibrate()
                 walletCreated(wallet)

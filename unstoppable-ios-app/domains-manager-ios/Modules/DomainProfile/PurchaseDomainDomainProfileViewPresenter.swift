@@ -11,6 +11,7 @@ import UIKit
 final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .purchaseDomainsProfile }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domainName]}
 
     private weak var view: (any DomainProfileViewProtocol)?
     private var sections = [any DomainProfileSection]()
@@ -59,6 +60,9 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
     }
     
     func confirmChangesButtonPressed() {
+        let changes = calculateChanges()
+
+        logButtonPressedAnalyticEvents(button: .confirm, parameters: [.isSkip : String(changes.isEmpty)])
         Task {
             sections.forEach { section in
                 section.injectChanges(in: &domainProfileChanges)
