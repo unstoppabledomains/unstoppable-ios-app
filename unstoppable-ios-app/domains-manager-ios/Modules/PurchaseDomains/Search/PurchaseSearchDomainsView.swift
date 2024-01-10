@@ -18,6 +18,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var isInspiring = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
+    @State private var searchResultType: SearchResultType = .userInput
     @State private var scrollOffset: CGPoint = .zero
     @State private var skeletonItemsWidth: [CGFloat] = []
     @State private var pullUp: ViewPullUpConfiguration?
@@ -73,8 +74,7 @@ private extension PurchaseSearchDomainsView {
                         autocapitalization: .never,
                         autocorrectionDisabled: true)
         .onChange(of: debounceObject.debouncedText) { text in
-            logAnalytic(event: .didSearch, parameters: [.value: text])
-            search(text: text)
+            search(text: text, searchType: .userInput)
         }
         .padding(EdgeInsets(top: 16, leading: 16,
                             bottom: 0, trailing: 16))
@@ -83,6 +83,11 @@ private extension PurchaseSearchDomainsView {
     var currentSearchFieldRightViewType: UDTextFieldView.RightViewType {
         .inspire { isInspiring in
             self.isInspiring = isInspiring
+            if isInspiring {
+                logButtonPressedAnalyticEvents(button: .inspire)
+            } else {
+                logButtonPressedAnalyticEvents(button: .cancelInspire)
+            }
             searchResult = []
         }
     }
@@ -128,7 +133,8 @@ private extension PurchaseSearchDomainsView {
                         domainSearchResultRow(domainInfo)
                     }, callback: {
                         logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
-                                                                                            .price: String(domainInfo.price)])
+                                                                                            .price: String(domainInfo.price),
+                                                                                            .searchType: searchResultType.rawValue])
                         didSelectDomain(domainInfo)
                     })
                 }
@@ -155,7 +161,7 @@ private extension PurchaseSearchDomainsView {
                     Button(action: {
                         UDVibration.buttonTap.vibrate()
                         logButtonPressedAnalyticEvents(button: .suggestedName, parameters: [.value: suggestion.name])
-                        search(text: suggestion.name)
+                        search(text: suggestion.name, searchType: .suggestion)
                         debounceObject.text = suggestion.name
                     }, label: {
                         Text(suggestion.name)
@@ -309,7 +315,7 @@ private extension PurchaseSearchDomainsView {
         }
     }
     
-    func search(text: String) {
+    func search(text: String, searchType: SearchResultType) {
         let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
@@ -320,26 +326,30 @@ private extension PurchaseSearchDomainsView {
         
         guard !searchingText.isEmpty else { return }
         
-        performSearchOperation(searchingText: text) {
+        performSearchOperation(searchingText: text, searchType: searchType) {
             try await purchaseDomainsService.searchForDomains(key: text)
         }
     }
     
     func aiSearch(hint: String) {
         searchResult = []
-        performSearchOperation(searchingText: hint) {
+        performSearchOperation(searchingText: hint, searchType: .aiSearch) {
             try await purchaseDomainsService.aiSearchForDomains(hint: hint)
         }
     }
     
-    func performSearchOperation(searchingText: String, _ block: @escaping () async throws -> ([DomainToPurchase])) {
+    func performSearchOperation(searchingText: String, searchType: SearchResultType, _ block: @escaping () async throws -> ([DomainToPurchase])) {
         Task {
+            logAnalytic(event: .didSearch, parameters: [.value: searchingText,
+                                                        .searchType: searchType.rawValue])
+            
             isLoading = true
             do {
                 let searchResult = try await block()
                 guard searchingText == self.searchingText else { return } // Result is irrelevant, search query has changed
                 
                 self.searchResult = sortSearchResult(searchResult, searchText: searchingText)
+                self.searchResultType = searchType
             } catch {
                 loadingError = error
             }
@@ -364,7 +374,8 @@ private extension PurchaseSearchDomainsView {
             domainSelectedCallback(domain)
         } else {
             logAnalytic(event: .didSelectNotSupportedDomainForPurchaseInSearch, parameters: [.domainName: domain.name,
-                                                                                             .price : String(domain.price)])
+                                                                                             .price : String(domain.price),
+                                                                                             .searchType: searchResultType.rawValue])
             pullUp = .init(icon: .init(icon: .cartIcon, size: .large),
                            title: .text(String.Constants.purchaseSearchCantButPullUpTitle.localized()),
                            subtitle: .label(.highlightedText(.init(text: String.Constants.purchaseSearchCantButPullUpSubtitle.localized(domain.tld),
@@ -465,6 +476,11 @@ private extension PurchaseSearchDomainsView {
         }
     }
     
+    enum SearchResultType: String {
+        case userInput
+        case suggestion
+        case aiSearch
+    }
 }
 
 #Preview {
