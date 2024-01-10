@@ -6551,7 +6551,6 @@
 			children = (
 				C69F99122A9F1264004B1958 /* CircleIconButton.swift */,
 				C607A5D32B32A02A0088ECF3 /* CloseButtonView.swift */,
-				C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */,
 				C6289A4A2AAB095D002C2DEC /* DomainSelectionListView.swift */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
 				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
@@ -6582,6 +6581,7 @@
 			isa = PBXGroup;
 			children = (
 				C69F99142A9F1264004B1958 /* AttributedText.swift */,
+				C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */,
 			);
 			path = UIViewRepresentable;
 			sourceTree = "<group>";

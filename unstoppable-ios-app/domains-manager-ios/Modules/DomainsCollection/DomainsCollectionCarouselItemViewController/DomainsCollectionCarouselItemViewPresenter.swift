@@ -465,7 +465,12 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             vaultName = walletWithInfo?.displayInfo?.walletSourceName
         }
         
-        var actions: [CardAction] = [.copyDomain(callback: { [weak self] in
+        var actions: [CardAction] = [
+            .openDomainProfile(callback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .openDomainProfile, parameters: [.domainName: domain.name])
+                self?.actionsDelegate?.didOccurUIAction(.domainSelected(domain))
+        }),
+            .copyDomain(callback: { [weak self] in
             self?.logButtonPressedAnalyticEvents(button: .copyDomain, parameters: [.domainName: domain.name])
             self?.copyDomainName(domain.name)
         }),

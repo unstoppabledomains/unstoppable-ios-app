@@ -10,13 +10,15 @@ import SwiftUI
 struct AttributedText: UIViewRepresentable {
     
     let attributesList: AttributesList
+    var width: CGFloat = UIScreen.main.bounds.width
     var updatedAttributesList: [AttributesList]? = nil
-    
-    
     
     func makeUIView(context: Context) -> UILabel {
         let label = UILabel()
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        label.preferredMaxLayoutWidth = width
+
         label.numberOfLines = 0
         
         return label

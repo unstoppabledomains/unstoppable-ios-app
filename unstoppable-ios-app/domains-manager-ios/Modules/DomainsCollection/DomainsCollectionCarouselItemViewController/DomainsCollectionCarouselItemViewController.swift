@@ -531,6 +531,7 @@ extension DomainsCollectionCarouselItemViewController {
         }
         
         enum Action: Hashable {
+            case openDomainProfile(callback: MainActorAsyncCallback)
             case copyDomain(callback: MainActorAsyncCallback)
             case viewVault(vaultName: String, vaultAddress: String, callback: MainActorAsyncCallback)
             case setUpRR(isEnabled: Bool, callback: MainActorAsyncCallback)
@@ -538,6 +539,8 @@ extension DomainsCollectionCarouselItemViewController {
             
             var title: String {
                 switch self {
+                case .openDomainProfile:
+                    return String.Constants.viewProfile.localized()
                 case .copyDomain:
                     return String.Constants.copyDomain.localized()
                 case .viewVault(let vaultName, _, _):
@@ -551,7 +554,7 @@ extension DomainsCollectionCarouselItemViewController {
             
             var subtitle: String? {
                 switch self {
-                case .copyDomain, .setUpRR, .rearrange:
+                case .openDomainProfile, .copyDomain, .setUpRR, .rearrange:
                     return nil
                 case .viewVault(_, let vaultAddress, _):
                     return vaultAddress.walletAddressTruncated
@@ -560,6 +563,8 @@ extension DomainsCollectionCarouselItemViewController {
             
             var icon: UIImage {
                 switch self {
+                case .openDomainProfile:
+                    return .personCropCircle!
                 case .copyDomain:
                     return .systemDocOnDoc
                 case .viewVault:
@@ -573,6 +578,8 @@ extension DomainsCollectionCarouselItemViewController {
             
             static func == (lhs: Self, rhs: Self) -> Bool {
                 switch (lhs, rhs) {
+                case (.openDomainProfile, .openDomainProfile):
+                    return true
                 case (.copyDomain, .copyDomain):
                     return true
                 case (.viewVault, .viewVault):
@@ -597,6 +604,8 @@ extension DomainsCollectionCarouselItemViewController {
                     hasher.combine(2)
                 case .rearrange:
                     hasher.combine(3)
+                case .openDomainProfile:
+                    hasher.combine(4)
                 }
             }
         }

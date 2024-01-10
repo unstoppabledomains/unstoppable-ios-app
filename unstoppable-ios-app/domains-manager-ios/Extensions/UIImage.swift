@@ -217,6 +217,11 @@ extension UIImage {
         return self
     }
     
+    func templateImageOfSize(_ size: CGSize) -> UIImage {
+        scalePreservingAspectRatio(targetSize: size)
+            .withRenderingMode(.alwaysTemplate)
+    }
+    
     class func getNetworkLargeIcon(by blockchainType: BlockchainType) -> UIImage? {
         switch blockchainType {
         case .Ethereum:

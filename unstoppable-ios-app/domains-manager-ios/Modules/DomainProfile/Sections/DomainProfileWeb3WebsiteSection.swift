@@ -92,7 +92,7 @@ private extension DomainProfileWeb3WebsiteSection {
     }
     
     func handleOpenAction(website: URL) {
-        UIApplication.shared.open(website)
+        controller?.viewController?.openLink(.direct(url: website))
     }
 }
 

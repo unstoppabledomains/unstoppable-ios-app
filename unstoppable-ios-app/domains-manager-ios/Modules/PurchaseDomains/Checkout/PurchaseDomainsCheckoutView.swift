@@ -693,7 +693,10 @@ private extension PullUpErrorConfiguration {
 }
 
 #Preview {
-    PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
+    PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", 
+                                              price: 10000,
+                                              metadata: nil,
+                                             isAbleToPurchase: true),
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: Array(WalletWithInfo.mock.prefix(4)),
                                 profileChanges: .init(domainName: "oleg.x",

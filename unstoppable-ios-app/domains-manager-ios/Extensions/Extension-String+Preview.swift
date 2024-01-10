@@ -24,6 +24,7 @@ extension String {
         case showcaseDomainBadge(domainName: String, badgeCode: String)
         case badgesLeaderboard
         case generic(url: String)
+        case direct(url: URL)
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
@@ -96,6 +97,8 @@ extension String {
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:
                 return "https://support.apple.com/en-us/108398"
+            case .direct(let url):
+                return url.absoluteString
             }
         }
         
@@ -1040,6 +1043,8 @@ extension String {
         static let aiSearchHint1 = "AI_SEARCH_HINT_1"
         static let aiSearchHint2 = "AI_SEARCH_HINT_2"
         static let aiSearchHint3 = "AI_SEARCH_HINT_3"
+        static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
+        static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
     }
     
     enum BlockChainIcons: String {
