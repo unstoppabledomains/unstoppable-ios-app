@@ -70,6 +70,7 @@ extension Analytics {
         // Purchase domain
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
+        case didSelectNotSupportedDomainForPurchaseInSearch
     }
 }
 
@@ -386,6 +387,7 @@ extension Analytics {
         case purchaseDomainsAskToSign
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
         case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
+        case searchPurchaseDomainNotSupported
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

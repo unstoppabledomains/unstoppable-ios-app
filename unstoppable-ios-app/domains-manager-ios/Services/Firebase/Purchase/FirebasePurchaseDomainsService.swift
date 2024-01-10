@@ -181,7 +181,7 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
 private extension FirebasePurchaseDomainsService {
     func searchForFBDomains(key: String) async throws -> SearchDomainsResponse {
         var searchResponse = try await makeSearchDomainsRequestWith(key: key)
-        searchResponse.exact = searchResponse.exact.filter({ !$0.isENSDomain })
+        searchResponse.exact = searchResponse.exact
         return searchResponse
     }
     
@@ -507,6 +507,7 @@ private extension DomainToPurchase {
         self.name = domainProduct.domain.name
         self.price = domainProduct.price
         self.metadata = domainProduct.jsonData()
+        self.isAbleToPurchase = domainProduct.isAbleToPurchase
     }
 }
 

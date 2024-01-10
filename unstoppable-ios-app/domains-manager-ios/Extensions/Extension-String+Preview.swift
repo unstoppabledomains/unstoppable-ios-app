@@ -1042,6 +1042,8 @@ extension String {
         static let aiSearchHint1 = "AI_SEARCH_HINT_1"
         static let aiSearchHint2 = "AI_SEARCH_HINT_2"
         static let aiSearchHint3 = "AI_SEARCH_HINT_3"
+        static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
+        static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
     }
     
     enum BlockChainIcons: String {

@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        showDomainsCollection()
+        showPurchaseDomainsSearch()
     }
     
     @IBAction func runPurchaseButtonPressed() {
@@ -26,8 +26,15 @@ class ViewController: UIViewController {
         }
     }
     
+    func showPurchaseDomainsSearch() {
+        let view = PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
+        
+        let vc = UIHostingController(rootView: view)
+        addChildViewController(vc, andEmbedToView: self.view)
+    }
+    
     func showPurchaseDomainsCheckout() {
-        let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
+        let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true),
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
                                                profileChanges: .init(domainName: "oleg.x"),
@@ -49,7 +56,7 @@ class ViewController: UIViewController {
     }
 
     func showDomainProfile() {
-        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil)
+        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)
         let vc = DomainProfileViewController.nibInstance()
         let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
                                                                  domain: domain)

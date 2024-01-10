@@ -200,6 +200,8 @@ extension FirebasePurchaseDomainsService {
             return price + productsPrice + (ensStatus?.registrationFees ?? 0)
         }
         var isENSDomain: Bool { domain.extension == Constants.ensDomainTLD }
+        var isCOMDomain: Bool { domain.extension == Constants.comDomainTLD }
+        var isAbleToPurchase: Bool { !isENSDomain && !isCOMDomain }
         
         var hasUDVEnabled: Bool {
             for product in hiddenProducts {
