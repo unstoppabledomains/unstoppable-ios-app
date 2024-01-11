@@ -49,7 +49,7 @@ protocol PullUpViewServiceProtocol {
     func showParkedDomainExpiredPullUp(in viewController: UIViewController)
     func showApplePayRequiredPullUp(in viewController: UIViewController)
     func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
-                                             maxNumberOfWallets: Int)
+                                             maxNumberOfWallets: Int) async
     func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,
                                                     maxNumberOfWallets: Int)
     

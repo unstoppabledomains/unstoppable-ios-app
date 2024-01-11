@@ -106,8 +106,11 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
                     didCreateWallet(wallet: wallet)
                 } catch WalletError.ethWalletAlreadyExists {
                     view.setContinueButtonEnabled(true)
-                    view.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                         body: String.Constants.walletAlreadyConnectedError.localized())
+                    view.showSimpleAlert(title: String.Constants.error.localized(),
+                                         body: String.Constants.walletAlreadyAddedError.localized())
+                } catch WalletError.walletsLimitExceeded(let limit) {
+                    await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                           maxNumberOfWallets: limit)
                 } catch {
                     view.setContinueButtonEnabled(true)
                     Debugger.printFailure("Failed to create a wallet, error: \(error)", critical: true)

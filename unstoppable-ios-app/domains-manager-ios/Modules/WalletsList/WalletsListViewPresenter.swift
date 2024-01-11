@@ -65,29 +65,13 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     func viewWillAppear() {
         Task {
             try? await Task.sleep(seconds: 0.3)
-            switch initialAction {
-            case .none:
-                return
-            case .showImportWalletOptionsPullUp:
-                showAddWalletPullUp(isImportOnly: true)
-            case .importWallet:
-                importNewWallet()
-            case .connectWallet:
-                connectNewWallet()
-            case .createNewWallet:
-                createNewWallet()
-            }
+            checkIfCanAddWalletAndPerform(action: initialAction, isImportOnly: true)
             initialAction = .none
         }
     }
     
     func didPressAddButton() {
-        let walletsLimit = User.instance.getWalletsNumberLimit()
-        guard walletsWithInfo.count < walletsLimit else {
-            showWalletsNumberLimitReachedPullUp(walletsLimit: walletsLimit)
-            return
-        }
-        showAddWalletPullUp(isImportOnly: false)
+        checkIfCanAddWalletAndPerform(action: .showImportWalletOptionsPullUp, isImportOnly: false)
     }
     
     func didSelectItem(_ item: WalletsListViewController.Item) {
@@ -264,7 +248,7 @@ private extension WalletsListViewPresenter {
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
         Task {
             switch result {
-            case .cancelled:
+            case .cancelled, .failedToAdd:
                 return
             case .created(let wallet), .createdAndBackedUp(let wallet):
                 var walletName = String.Constants.vault.localized()
@@ -280,6 +264,26 @@ private extension WalletsListViewPresenter {
                 }
                 AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
             }
+        }
+    }
+    
+    func checkIfCanAddWalletAndPerform(action: InitialAction, isImportOnly: Bool) {
+        guard udWalletsService.canAddNewWallet else {
+            showWalletsNumberLimitReachedPullUp()
+            return
+        }
+        
+        switch action {
+        case .none:
+            return
+        case .showImportWalletOptionsPullUp:
+            showAddWalletPullUp(isImportOnly: isImportOnly)
+        case .importWallet:
+            importNewWallet()
+        case .connectWallet:
+            connectNewWallet()
+        case .createNewWallet:
+            createNewWallet()
         }
     }
 }
@@ -382,12 +386,13 @@ private extension WalletsListViewPresenter {
         self.walletsWithInfo = walletsWithInfo
     }
     
-    func showWalletsNumberLimitReachedPullUp(walletsLimit: Int) {
-        Task { @MainActor in
+    func showWalletsNumberLimitReachedPullUp() {
+        Task {
             guard let view else { return }
             
-            appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
-                                                                             maxNumberOfWallets: walletsLimit)
+            let walletsLimit = appContext.udWalletsService.walletsNumberLimit
+            await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                   maxNumberOfWallets: walletsLimit)
         }
     }
 }

@@ -29,6 +29,7 @@
 "RENAME_ITEM" = "Rename Wallet";
 
 "WALLET_ALREADY_CONNECTED_ERROR" = "This wallet is already connected";
+"WALLET_ALREADY_ADDED_ERROR" = "This wallet is already added";
 
 /* PAYMENTS */
 "UD_FEE_LABEL" = "Unstoppable Domains Fee";

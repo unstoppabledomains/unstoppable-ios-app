@@ -13,6 +13,7 @@ protocol AddWalletFlowManager: AnyObject {
     
     func moveToStep(_ step: AddWalletNavigationController.Step)
     func didFinishAddWalletFlow()
+    func didFailToAddWallet()
 }
 
 final class AddWalletNavigationController: CNavigationController {
@@ -94,6 +95,10 @@ extension AddWalletNavigationController: AddWalletFlowManager {
         }
         
         dismiss(result: .createdAndBackedUp(wallet))
+    }
+    
+    func didFailToAddWallet() {
+        dismiss(result: .failedToAdd)
     }
 }
  
@@ -287,6 +292,7 @@ extension AddWalletNavigationController {
     
     enum Result {
         case cancelled
+        case failedToAdd
         case created(_ wallet: UDWallet)
         case createdAndBackedUp(_ wallet: UDWallet)
     }
