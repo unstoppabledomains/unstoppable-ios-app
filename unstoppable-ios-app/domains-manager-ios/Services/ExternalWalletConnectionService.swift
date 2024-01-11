@@ -73,10 +73,16 @@ extension ExternalWalletConnectionService: WalletConnectDelegate {
                 finishWith(result: .success(wallet))
             } catch {
                 var isCritical = true
-                if let walletError = error as? WalletError,
-                   case .ethWalletAlreadyExists = walletError {
-                    isCritical = false
-                    finishWith(result: .failure(.ethWalletAlreadyExists))
+                if let walletError = error as? WalletError {
+                    if case .ethWalletAlreadyExists = walletError {
+                        isCritical = false
+                        finishWith(result: .failure(.ethWalletAlreadyExists))
+                    } else if case .walletsLimitExceeded(let limit) = walletError {
+                        isCritical = false
+                        finishWith(result: .failure(.walletsLimitExceeded(limit)))
+                    } else {
+                        finishWith(result: .failure(.failedToAddWallet))
+                    }
                 } else {
                     finishWith(result: .failure(.failedToAddWallet))
                 }
@@ -187,16 +193,13 @@ private extension ExternalWalletConnectionService {
 
 // MARK: - ReconnectError
 extension ExternalWalletConnectionService {
-    enum ConnectionError: String, LocalizedError {
+    enum ConnectionError: Error {
         case failedToConnect
         case walletAddressIsNil
         case failedToFindInstalledWallet
         case failedToAddWallet
         case ethWalletAlreadyExists
+        case walletsLimitExceeded(Int)
         case noResponse
-        
-        public var errorDescription: String? {
-            return rawValue
-        }
     }
 }

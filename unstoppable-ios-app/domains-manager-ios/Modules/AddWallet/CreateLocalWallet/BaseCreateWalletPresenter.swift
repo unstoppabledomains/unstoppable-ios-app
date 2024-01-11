@@ -32,6 +32,7 @@ class BaseCreateWalletPresenter {
     }
     
     func walletCreated(_ wallet: UDWallet) {  }
+    func didFailToCreateWallet() { }
     func viewDidLoad() { }
     func viewDidAppear() { }
 }
@@ -47,21 +48,30 @@ extension BaseCreateWalletPresenter: CreateWalletPresenterProtocol {
 // MARK: - Common methods
 extension BaseCreateWalletPresenter {
     func createUDWallet() {
-        guard !isCreatingWallet else { return }
+        guard !isCreatingWallet,
+            let view else { return }
         
         Task {
-            view?.setNavigationGestureEnabled(false)
+            view.setNavigationGestureEnabled(false)
             isCreatingWallet = true
             do {
                 let wallet = try await udWalletsService.createNewUDWallet()
-                view?.setNavigationGestureEnabled(true)
+                view.setNavigationGestureEnabled(true)
+                appContext.analyticsService.log(event: .didAddWallet,
+                                                withParameters: [.walletType : wallet.type.rawValue])
                 Vibration.success.vibrate()
                 walletCreated(wallet)
+            } catch WalletError.walletsLimitExceeded(let limit) {
+                view.setNavigationGestureEnabled(true)
+                await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                       maxNumberOfWallets: limit)
+                didFailToCreateWallet()
             } catch {
                 Debugger.printFailure("Failed to create UD wallet: \(error)", critical: true)
-                view?.setNavigationGestureEnabled(true)
-                view?.showSimpleAlert(title: String.Constants.creationFailed.localized(),
+                view.setNavigationGestureEnabled(true)
+                view.showSimpleAlert(title: String.Constants.creationFailed.localized(),
                                       body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
+                didFailToCreateWallet()
             }
             isCreatingWallet = false
         }

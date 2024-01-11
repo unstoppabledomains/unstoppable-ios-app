@@ -41,7 +41,17 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     // Add/Remove
+    var walletsNumberLimit: Int { User.instance.getWalletsNumberLimit() }
+    
+    var canAddNewWallet: Bool {
+        let maxNumberOfWallets = walletsNumberLimit
+        let numberOfWalletsUserHas = getUserWallets().count
+        return numberOfWalletsUserHas < maxNumberOfWallets
+    }
+    
     func createNewUDWallet() async throws -> UDWallet {
+        try checkIfAbleToAddNewWallet()
+        
         let namePrefix = "Vault"
         let newName = UDWalletsStorage.instance.getLowestIndexedName(startingWith: namePrefix)
         let waitAtLeast: TimeInterval = 3
@@ -83,6 +93,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     
     private func importWallet(privateSeed: String,
                               walletConstructorBlock: ( () async throws -> UDWallet )) async throws -> UDWallet {
+        try checkIfAbleToAddNewWallet()
         var wallet: UDWallet
         do {
             wallet = try await walletConstructorBlock()
@@ -123,6 +134,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     // TODO: - Make all connect process happen inside of this class
     func addExternalWalletWith(address: String,
                                walletRecord: WCWalletsProvider.WalletRecord) throws -> UDWallet {
+        try checkIfAbleToAddNewWallet()
         let namePrefix = walletRecord.name
         let newName = UDWalletsStorage.instance.getLowestIndexedName(startingWith: namePrefix)
         let wallet = UDWallet.createLinked(aliasName: newName,
@@ -412,6 +424,12 @@ private extension UDWalletsService {
         
         KeychainPrivateKeyStorage.instance.store(privateKey: privateSeed, for: address)
         store(wallet: wallet)
+    }
+    
+    func checkIfAbleToAddNewWallet() throws {
+        if !canAddNewWallet {
+            throw WalletError.walletsLimitExceeded(walletsNumberLimit)
+        }
     }
 }
 

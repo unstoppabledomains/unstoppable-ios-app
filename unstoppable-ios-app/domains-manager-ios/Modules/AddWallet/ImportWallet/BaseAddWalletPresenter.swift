@@ -99,12 +99,18 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
                     } else {
                         wallet = try await udWalletsService.importWalletWith(mnemonics: input)
                     }
+                    
+                    appContext.analyticsService.log(event: .didAddWallet, 
+                                                    withParameters: [.walletType : wallet.type.rawValue])
                     view.setContinueButtonEnabled(true)
                     didCreateWallet(wallet: wallet)
                 } catch WalletError.ethWalletAlreadyExists {
                     view.setContinueButtonEnabled(true)
-                    view.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                         body: String.Constants.walletAlreadyConnectedError.localized())
+                    view.showSimpleAlert(title: String.Constants.error.localized(),
+                                         body: String.Constants.walletAlreadyAddedError.localized())
+                } catch WalletError.walletsLimitExceeded(let limit) {
+                    await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                           maxNumberOfWallets: limit)
                 } catch {
                     view.setContinueButtonEnabled(true)
                     Debugger.printFailure("Failed to create a wallet, error: \(error)", critical: true)

@@ -31,6 +31,7 @@ extension String {
         case udBlue
         case communitiesInfo
         case setupApplePayInstruction
+        case unstoppableDomainSearch(searchKey: String)
         
         var urlString: String {
             switch self {
@@ -99,6 +100,8 @@ extension String {
                 return "https://support.apple.com/en-us/108398"
             case .direct(let url):
                 return url.absoluteString
+            case .unstoppableDomainSearch(let searchKey):
+                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             }
         }
         
@@ -375,6 +378,7 @@ extension String {
         static let failedToFindWalletForDomain = "FAILED_TO_FIND_WALLET_FOR_DOMAIN"
         static let failedToCreateWatchWallet = "FAILED_TO_CREATE_WATCH_WALLET"
         static let walletAlreadyConnectedError = "WALLET_ALREADY_CONNECTED_ERROR"
+        static let walletAlreadyAddedError = "WALLET_ALREADY_ADDED_ERROR"
         static let failedToConnectExternalWallet = "FAILED_TO_CONNECT_EXTERNAL_WALLET"
         static let pleaseTryAgain = "PLEASE_TRY_AGAIN"
         static let somethingWentWrong = "SOMETHING_WENT_WRONG"

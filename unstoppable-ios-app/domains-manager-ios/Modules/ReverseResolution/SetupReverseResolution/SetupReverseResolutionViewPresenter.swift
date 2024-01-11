@@ -41,6 +41,8 @@ class SetupReverseResolutionViewPresenter {
     
     func viewDidLoad() {
         view?.setWith(walletInfo: walletInfo, domain: domain)
+        view?.setConfirmButton(title: String.Constants.confirm.localized(),
+                               icon: nil)
     }
     func confirmButtonPressed() {
         logButtonPressedAnalyticEvents(button: .confirm, parameters: [.domainName: domainName ?? "N/A"])

@@ -43,7 +43,8 @@ class ConnectExternalWalletViewPresenter {
 extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenterProtocol {
     func didSelectItem(_ item: ConnectExternalWalletViewController.Item) {
         UDVibration.buttonTap.vibrate()
-
+        guard let view else { return }
+        
         switch item {
         case .externalWallet(let description):
             let wcWalletSelected = description.walletRecord
@@ -58,15 +59,18 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
                     } catch ExternalWalletConnectionService.ConnectionError.noResponse {
                         // Ignore
                     } catch ExternalWalletConnectionService.ConnectionError.ethWalletAlreadyExists {
-                        view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                        view.showSimpleAlert(title: String.Constants.error.localized(),
                                              body: String.Constants.walletAlreadyConnectedError.localized())
+                    } catch ExternalWalletConnectionService.ConnectionError.walletsLimitExceeded(let limit) {
+                        await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                               maxNumberOfWallets: limit)
                     } catch {
-                        view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                        view.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                               body: String.Constants.failedToConnectExternalWallet.localized())
                     }
                 }
             } else if let appStoreId = wcWalletSelected.make?.appStoreId {
-                view?.openAppStore(for: appStoreId)
+                view.openAppStore(for: appStoreId)
             } else {
                 Debugger.printFailure("No AppStore Id for external wallet \(wcWalletSelected.name)", critical: true)
             }
