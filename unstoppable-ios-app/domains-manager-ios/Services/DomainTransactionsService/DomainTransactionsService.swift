@@ -25,7 +25,7 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
     func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
         let start = Date()
         let transactions = try await txsFetcherFactory.createFetcher().fetchAllPendingTxs(for: domains)
-        Debugger.printTimeSensitiveInfo(topic: .Transactions,
+        Debugger.printTimeSensitiveInfo(topic: .Network,
                                         "to load \(transactions.count) transactions for \(domains.count) domains",
                                         startDate: start,
                                         timeout: 2)

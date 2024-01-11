@@ -168,9 +168,9 @@ struct TransactionItem: Codable {
     func isMintingTransaction() -> Bool {
         guard self.operation != .mintDomain else { return true }
         
-        let mintingIds = MintingDomainsStorage.retrieveMintingDomains().map({$0.transactionId})
-        guard let selfId = self.id else { return false }
-        return operation == .transferDomain && mintingIds.contains(selfId)
+        let mintingNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
+        guard let selfName = self.domainName else { return false }
+        return operation == .transferDomain && mintingNames.contains(selfName)
     }
 }
 

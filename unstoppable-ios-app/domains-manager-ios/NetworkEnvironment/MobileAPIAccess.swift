@@ -247,7 +247,7 @@ extension NetworkService {
     public func mint(domains: [DomainItem],
                       with email: String,
                       code: String,
-                      stripeIntent: String?) async throws -> [TransactionItem] {
+                      stripeIntent: String?) async throws {
         guard let request = try? APIRequestBuilder().users(email: email)
             .secure(code: code)
             .mint(domains, stripeIntent: stripeIntent)
@@ -256,14 +256,9 @@ extension NetworkService {
             throw NetworkLayerError.creatingURLFailed
         }
         
-        let data = try await fetchData(for: request.url,
-                                       body: request.body,
-                                       extraHeaders: request.headers)
-        if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
-            let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
-            return txArray
-        }
-        throw NetworkLayerError.parsingTxsError
+        let _ = try await fetchData(for: request.url,
+                                    body: request.body,
+                                    extraHeaders: request.headers)
     }
 }
 

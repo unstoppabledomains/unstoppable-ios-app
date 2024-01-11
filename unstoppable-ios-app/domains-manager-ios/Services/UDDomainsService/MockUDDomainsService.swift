@@ -89,7 +89,7 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
                      paidDomains: [String],
                      to wallet: UDWallet,
                      userEmail: String,
-                     securityCode: String) async throws -> [TransactionItem] { [] }
+                     securityCode: String) async throws { }
     func getReferralCodeFor(domain: DomainItem) async throws -> String? { nil }
     
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress? { nil }
