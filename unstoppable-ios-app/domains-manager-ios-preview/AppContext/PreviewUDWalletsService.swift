@@ -8,6 +8,9 @@
 import Foundation
 
 final class UDWalletsService: UDWalletsServiceProtocol {
+    var walletsNumberLimit: Int { 20 }
+    var canAddNewWallet: Bool { true }
+    
     func getUserWallets() -> [UDWallet] {
         []
     }
