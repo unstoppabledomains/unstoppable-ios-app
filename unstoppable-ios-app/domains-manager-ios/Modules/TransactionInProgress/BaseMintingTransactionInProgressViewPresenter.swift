@@ -31,15 +31,12 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
      
     override func refreshMintingTransactions() {
         Task {
-            let transactions = try await transactionsService.updateTransactionsListFor(domains: mintingDomains.map({ $0.name }))
+            let transactions = try await transactionsService.updatePendingTransactionsListFor(domains: mintingDomains.map({ $0.name }))
             
             for i in 0..<mintingDomains.count {
-                if let domainMintingTransaction = transactions.first(where: {
-                    guard let txDomainName = $0.domainName else { return false }
-                    return $0.isMintingTransaction() && txDomainName == mintingDomains[i].name }) {
-                    mintingDomains[i].isMinting = domainMintingTransaction.isPending
-                    mintingDomains[i].transactionHash = domainMintingTransaction.transactionHash
-                }
+                let transactionInProgress = transactions.first(where: { $0.domainName == mintingDomains[i].name })
+                mintingDomains[i].isMinting = transactionInProgress != nil && transactionInProgress?.isMintingTransaction() == true
+                mintingDomains[i].transactionHash = transactionInProgress?.transactionHash
             }
             
             let pendingDomains = self.pendingDomains

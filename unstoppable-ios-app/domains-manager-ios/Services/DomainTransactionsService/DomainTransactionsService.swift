@@ -22,19 +22,19 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
         storage.injectTxsUpdate_Blocking(transactions)
     }
     
-    func updateTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
         let start = Date()
-        let transactions = try await txsFetcherFactory.createFetcher().fetchAllTxs(for: domains)
+        let transactions = try await txsFetcherFactory.createFetcher().fetchAllPendingTxs(for: domains)
         Debugger.printTimeSensitiveInfo(topic: .Transactions,
                                         "to load \(transactions.count) transactions for \(domains.count) domains",
                                         startDate: start,
                                         timeout: 2)
-        storage.injectTxsUpdate_Blocking(transactions)
+        storage.replaceTxs_Blocking(transactions)
         return transactions
     }
     
     func pendingTxsExistFor (domain: DomainItem) async throws -> Bool {
-        let transactions = try await updateTransactionsListFor(domains: [domain.name])
+        let transactions = try await updatePendingTransactionsListFor(domains: [domain.name])
         return transactions.containPending(domain)
     }
 }

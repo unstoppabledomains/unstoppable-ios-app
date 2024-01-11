@@ -8,13 +8,15 @@
 import Foundation
 
 protocol TxsFetcher {
-    func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem]
+    func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem]
 }
 
 extension NetworkService: TxsFetcher {
-    public func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem] {
+    private var transactionsRequestLimit: Int { 25 }
+    
+    public func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem] {
         do {
-            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
+            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: transactionsRequestLimit)
             return txs
         } catch {
             Debugger.printFailure("Failed to fetch TXS, error: \(error)", critical: false)
@@ -420,6 +422,7 @@ extension TransactionItem: PaginatedFetchable {
                                           page: Int,
                                           perPage: Int) throws -> APIRequest {
         guard let endpoint = Endpoint.transactionsByDomainsPost(domains: originItems,
+                                                                status: .pending,
                                                                 page: page,
                                                                 perPage: perPage) else {
             throw FetchRequestBuilderError.txs
