@@ -551,7 +551,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
                                              maxNumberOfWallets: Int) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 288
+            let selectionViewHeight: CGFloat = 308
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedPullUpTitle.localized()),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .warningIcon,
@@ -567,7 +567,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     
     func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,
                                                     maxNumberOfWallets: Int) {
-        let selectionViewHeight: CGFloat = 268
+        let selectionViewHeight: CGFloat = 328
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedAlreadyPullUpTitle.localized()),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: .warningIcon,
