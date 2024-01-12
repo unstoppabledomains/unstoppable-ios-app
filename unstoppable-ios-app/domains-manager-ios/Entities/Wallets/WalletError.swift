@@ -22,7 +22,17 @@ enum WalletError: Error {
     case importedWalletWithoutUNS
     case ethWalletNil
     case unsupportedBlockchainType
-    
+    case walletsLimitExceeded(Int)
+
     case failedToBackUp
     case incorrectBackupPassword
+    
+    var isCritical: Bool {
+        switch self {
+        case .ethWalletAlreadyExists, .walletsLimitExceeded:
+            return false
+        default:
+            return true
+        }
+    }
 }

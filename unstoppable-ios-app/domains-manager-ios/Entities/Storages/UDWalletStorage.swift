@@ -21,7 +21,7 @@ final class UDWalletsStorage {
     func getWalletsList(ownedBy userId: Int) -> [UDWallet] {
             let result = udWalletsStorage.retrieve() ?? []
         guard result.count > 0 else {
-            Debugger.printWarning("No wallets found in cache")
+            Debugger.printWarning("No wallets found in cache", suppressBugSnag: true)
             return []
         }
 

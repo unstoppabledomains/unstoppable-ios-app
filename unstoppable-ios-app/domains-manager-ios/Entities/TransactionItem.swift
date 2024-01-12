@@ -1,5 +1,5 @@
 //
-//  TransactionProtocol.swift
+//  TransactionItem.swift
 //  domains-manager-ios
 //
 //  Created by Roman Medvid on 15.10.2020.
@@ -7,15 +7,6 @@
 
 import Foundation
 import BigInt
-
- // Refactoring
-protocol TransactionProtocol {
-    func makeCopy(with nonce: Int, gasPrice: Gwei) -> TransactionProtocol
-    
-    var isPending: Bool { get }
-    var gasPrice: Gwei? { get }
-    var nonce: Int? { get }
-}
 
 enum TxType: String, Codable {
     case zilTx = "ZilTx"
@@ -29,7 +20,7 @@ enum TxStatusGroup: String, Codable {
     case failed = "Failed"
 }
 
-struct TransactionItem: TransactionProtocol, Codable {
+struct TransactionItem: Codable {
     static let cnsConfirmationBlocksBLOCKS: UInt64 = 12
     var id: UInt64?
     var transactionHash: HexAddress?
@@ -77,30 +68,6 @@ struct TransactionItem: TransactionProtocol, Codable {
                   isPending:  isPending,
                   type: jsonResponse.type,
                   operation: jsonResponse.operation)
-    }
-    
-    func getName() -> String? {
-        guard let logs = self.logs else { return nil }
-        guard logs.count > 0 else { return nil }
-        
-        let name: String = logs.reduce("", { accumName, log in
-            guard log.topics.count > 0 else { return accumName }
-            let eventHash = log.topics[0]
-            guard let event = TransactionItem.EventType(rawValue: eventHash) else {
-                return accumName
-            }
-            guard !TransactionItem.typesToAvoid.contains(event) else { return accumName }
-            
-            return accumName == "" ? event.name : "\(accumName), \(event.name)"
-        })
-        return name
-    }
-    
-    func makeCopy(with nonce: Int, gasPrice: Gwei) -> TransactionProtocol {
-        var newTx = self
-        newTx.nonce = nonce
-        newTx.gasPrice = gasPrice
-        return newTx
     }
     
     private func parseNameId(_ tx: TransactionItem) -> (String?, HexAddress?) {
@@ -201,10 +168,9 @@ struct TransactionItem: TransactionProtocol, Codable {
     func isMintingTransaction() -> Bool {
         guard self.operation != .mintDomain else { return true }
         
-        let mintingIds = MintingDomainsStorage.retrieveMintingDomains().map({$0.transactionId})
-        guard let selfId = self.id else { return false }
-        return operation == .transferDomain && mintingIds.contains(selfId)
-        
+        let mintingNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
+        guard let selfName = self.domainName else { return false }
+        return operation == .transferDomain && mintingNames.contains(selfName)
     }
 }
 
@@ -278,84 +244,5 @@ extension Array where Element == TransactionItem {
     
     func filterPending(extraCondition: ( (TransactionItem) -> Bool) = { _ in true }) -> Self {
         self.filter({ $0.isPending && extraCondition($0) })
-    }
-}
-
-struct TransactionLogResponse: Codable {
-    var address: String
-    var blockHash: String
-    var blockNumber: String
-    var data: String
-    var logIndex: String
-    var removed: Bool
-    var topics: [String]
-    var transactionHash: String
-    var transactionIndex: String
-}
-
-extension TransactionLogResponse: Hashable, Equatable, Comparable {
-    static func < (lhs: TransactionLogResponse, rhs: TransactionLogResponse) -> Bool {
-        return lhs.blockNumber < rhs.blockNumber
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(transactionHash)
-    }
-    
-    static func == (lhs: TransactionLogResponse, rhs: TransactionLogResponse) -> Bool {
-        return lhs.transactionHash == rhs.transactionHash
-    }
-    
-    var methodHash: HexAddress {
-        topics[0]
-    }
-}
-
-struct TransactionResponseArray: Decodable {
-    var jsonrpc: String
-    var id: Int
-    var result: [TransactionLogResponse]
-}
-
-protocol ErrorResponseHolder {
-    var error: ErrorResponse { set get }
-}
-
-struct TransactionArrayErrorResponse: Decodable, ErrorResponseHolder {
-    var jsonrpc: String
-    var id: String
-    var error: ErrorResponse
-}
-
-struct ErrorResponse: Codable {
-    var code: Int
-    var message: String
-}
-
-struct ApiErrorResponse: Codable {
-    var message: String
-    var status: Int
-}
-
-extension TransactionLogResponse {
-    func getDomainNameFromData() -> String? {
-        guard self.data != "0x" else {
-            Debugger.printFailure("Should not attampt to parse a name that is not provided", critical: true)
-            return "* should not parse 0x"
-        }
-        return self.data.hexToAscii
-    }
-    
-    var domainTokenId: HexAddress? {
-        guard let eventType = TransactionItem.EventType(rawValue: self.topics[0])  else {
-            Debugger.printFailure("Unknown signature hash", critical: true)
-            return nil
-        }
-        if TransactionItem.typesToAvoid.contains(eventType) { fatalError() }
-        let index = eventType.domainIdFieldIndex
-        guard self.topics.count > index else {
-            Debugger.printFailure("Wrong index of domainId field", critical: true)
-            return nil }
-        return self.topics[index]
     }
 }

@@ -65,7 +65,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         
     }
     
-    func authorizeUserOnAppOpening() async {
+    func authorizeUserOnAppOpening() async throws {
         
     }
     

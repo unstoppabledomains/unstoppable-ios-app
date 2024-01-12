@@ -74,7 +74,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let conversations = try await client.conversations.list()
         try await migrateXMTPConsentsFromUDIfNeeded(for: user, client: client, using: conversations)
         
-        let approvedAddressesList = Set(approvedUsersStorage.getApprovedTopicsListFor(userId: user.id).map { $0.approvedAddress })
+        let approvedAddressesList = XMTPServiceHelper.getListOfApprovedAddressesForUser(user)
         let chats = conversations.compactMap({ conversation in
             XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
                                                           userId: user.id,

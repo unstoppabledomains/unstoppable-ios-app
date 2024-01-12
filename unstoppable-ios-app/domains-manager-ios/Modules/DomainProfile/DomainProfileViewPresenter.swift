@@ -35,7 +35,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
 final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
     
     var analyticsName: Analytics.ViewName { .domainProfile }
-
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : domainName]}
     private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: AnyCancellable?
     private var preRequestedAction: PreRequestedProfileAction?
@@ -122,6 +122,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
     }
     
     func confirmChangesButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         askToSaveChanges()
     }
     
@@ -1056,7 +1057,7 @@ private extension DomainProfileViewPresenter {
             let state = stateController.state
             
             var isSetPrimaryActionAvailable: Bool { !domain.isPrimary && domain.isInteractable }
-            var isSetReverseResolutionActionAvailable: Bool { domain.isInteractable && domain.name != walletInfo.reverseResolutionDomain?.name }
+            var isSetReverseResolutionActionAvailable: Bool { domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name }
             var isSetReverseResolutionActionVisible: Bool { state == .default || state == .updatingRecords }
             
             var topActionsGroup: DomainProfileActionsGroup = [.copyDomain]
@@ -1076,7 +1077,7 @@ private extension DomainProfileViewPresenter {
             topActionsGroup.append(.viewWallet(subtitle: viewWalletSubtitle))
             topActionsGroup.append(.viewInBrowser)
             
-            if domain.isInteractable,
+            if domain.isAbleToTransfer,
                state == .default {
                 topActionsGroup.append(.transfer)
             }
@@ -1298,7 +1299,7 @@ private extension DomainProfileViewPresenter {
             dataHolder.set(profile: profile)
             dataHolder.set(recordsData: recordsData)
         case .transactions:
-            let transactions = try await domainTransactionsService.updateTransactionsListFor(domains: [domain.name])
+            let transactions = try await domainTransactionsService.updatePendingTransactionsListFor(domains: [domain.name])
             dataHolder.set(transactions: transactions)
         }
     }

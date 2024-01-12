@@ -25,6 +25,7 @@ extension Analytics {
         case didSwipeTutorialPage
         case iCloudDisabledAlertAppear, iCloudDisabledAlertShowTutorialPressed, iCloudDisabledAlertCancelPressed
         case didConnectToExternalWallet, failedToConnectExternalWallet
+        case didAddWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
         case domainPressed, domainMoved
@@ -70,6 +71,7 @@ extension Analytics {
         // Purchase domain
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
+        case didSelectNotSupportedDomainForPurchaseInSearch
     }
 }
 
@@ -116,6 +118,9 @@ extension Analytics {
         case error
         case id
         case fromWallet, toWallet
+        case isSkip
+        case searchType
+        case walletType
     }
 }
 
@@ -222,6 +227,7 @@ extension Analytics {
         case hide, showAll
         case dontAlreadyHaveDomain
         case createVault
+        case openDomainProfile
         
         // Backup type
         case iCloud, manually
@@ -335,6 +341,7 @@ extension Analytics {
         case openUnpaidDomainsInfo, openSetupApplePayInfo
         
         case suggestionBanner
+        case inspire, cancelInspire
     }
 }
 
@@ -385,6 +392,7 @@ extension Analytics {
         case purchaseDomainsAskToSign
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
         case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
+        case searchPurchaseDomainNotSupported
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

@@ -29,6 +29,7 @@
 "RENAME_ITEM" = "Rename Wallet";
 
 "WALLET_ALREADY_CONNECTED_ERROR" = "This wallet is already connected";
+"WALLET_ALREADY_ADDED_ERROR" = "This wallet is already added";
 
 /* PAYMENTS */
 "UD_FEE_LABEL" = "Unstoppable Domains Fee";
@@ -934,7 +935,7 @@
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_TITLE" = "Signature required";
 "PURCHASE_WALLET_AUTH_SIG_REQUIRED_SUBTITLE" = "You will be redirected to %@ to sign a message";
 "FINISH_SETUP_PROFILE_PULL_UP_TITLE" = "Finish setting up your domain\n%@";
-"FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE" = "Please confirm the transaction in your external wallet to secure your domain. This signature verifies your identity and completes the setup.";
+"FINISH_SETUP_PROFILE_PULL_UP_SUBTITLE" = "Sign a transaction to verify your identity and complete the setup.";
 "SIGN_TRANSACTION" = "Sign transaction";
 "FINISH_SETUP_PROFILE_FAILED_PULL_UP_TITLE" = "Failed to update profile";
 "CANCEL_SETUP" = "Cancel setup";
@@ -945,3 +946,5 @@
 "AI_SEARCH_HINT_1" = "For example, \"Company that makes shoes\"";
 "AI_SEARCH_HINT_2" = "Single word or names will likely return irrelevant results.";
 "AI_SEARCH_HINT_3" = "Limited to 30 searches.";
+"PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE" = "Coming soon";
+"PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE" = ".%@ domains are currently only for sale from our website.";

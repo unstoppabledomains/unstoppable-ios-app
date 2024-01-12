@@ -52,6 +52,14 @@ final class MockUDWalletsService {
 
 // MARK: - UDWalletsServiceProtocol
 extension MockUDWalletsService: UDWalletsServiceProtocol {
+    var walletsNumberLimit: Int {
+        Constants.defaultWalletsNumberLimit
+    }
+    
+    var canAddNewWallet: Bool {
+        true
+    }
+    
     func setReverseResolution(to domain: DomainItem, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws { }
     
     func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {

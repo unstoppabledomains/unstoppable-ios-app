@@ -52,7 +52,7 @@ private extension PurchaseDomainsSelectWalletView {
         UDCollectionListRowButton(content: {
             UDListItemView(title: walletDisplayInfo.title,
                            subtitle: walletDisplayInfo.subtitle,
-                           image: walletDisplayInfo.image,
+                           imageType: .image(walletDisplayInfo.image),
                            imageStyle: walletDisplayInfo.imageStyle,
                            rightViewStyle: walletDisplayInfo.rightViewStyle)
         }, callback: {

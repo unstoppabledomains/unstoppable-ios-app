@@ -26,6 +26,15 @@ struct NetworkConfig {
         "https://\(Self.migratedEndpoint)"
     }
     
+    static var websiteHost: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return "www.ud-staging.com"
+        } else {
+            return "unstoppabledomains.com"
+        }
+    }
+    
     static var baseDomainProfileUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {

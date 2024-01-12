@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 17, *)
 #Preview {
-    let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil)
+    let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)
     let vc = DomainProfileViewController.nibInstance()
     let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
                                                domain: domain)

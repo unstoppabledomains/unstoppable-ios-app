@@ -408,6 +408,15 @@ extension EthereumTransaction {
     }
 }
 
+protocol ErrorResponseHolder {
+    var error: ErrorResponse { set get }
+}
+
+struct ErrorResponse: Codable {
+    var code: Int
+    var message: String
+}
+
 enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     
     case creatingURLFailed
@@ -426,6 +435,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     case failedParseUnsRegistryAddress
     case failedToValidateResolver
     case failedParseProfileData
+    case domainHasNullRecordValue
     case connectionLost
     case requestCancelled
     case notConnectedToInternet
@@ -473,6 +483,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
         case .invalidBlockchainAbbreviation: return "invalidBlockchainAbbreviation"
         case .failedBuildSignRequest: return "failedBuildSignRequest"
         case .requestCancelled: return "requestCancelled"
+        case .domainHasNullRecordValue: return "domainHasNullRecordValue"
         }
     }
     

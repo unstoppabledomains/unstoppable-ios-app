@@ -24,12 +24,14 @@ extension String {
         case showcaseDomainBadge(domainName: String, badgeCode: String)
         case badgesLeaderboard
         case generic(url: String)
+        case direct(url: URL)
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
         case udBlue
         case communitiesInfo
         case setupApplePayInstruction
+        case unstoppableDomainSearch(searchKey: String)
         
         var urlString: String {
             switch self {
@@ -96,6 +98,10 @@ extension String {
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:
                 return "https://support.apple.com/en-us/108398"
+            case .direct(let url):
+                return url.absoluteString
+            case .unstoppableDomainSearch(let searchKey):
+                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             }
         }
         
@@ -372,6 +378,7 @@ extension String {
         static let failedToFindWalletForDomain = "FAILED_TO_FIND_WALLET_FOR_DOMAIN"
         static let failedToCreateWatchWallet = "FAILED_TO_CREATE_WATCH_WALLET"
         static let walletAlreadyConnectedError = "WALLET_ALREADY_CONNECTED_ERROR"
+        static let walletAlreadyAddedError = "WALLET_ALREADY_ADDED_ERROR"
         static let failedToConnectExternalWallet = "FAILED_TO_CONNECT_EXTERNAL_WALLET"
         static let pleaseTryAgain = "PLEASE_TRY_AGAIN"
         static let somethingWentWrong = "SOMETHING_WENT_WRONG"
@@ -1039,6 +1046,8 @@ extension String {
         static let aiSearchHint1 = "AI_SEARCH_HINT_1"
         static let aiSearchHint2 = "AI_SEARCH_HINT_2"
         static let aiSearchHint3 = "AI_SEARCH_HINT_3"
+        static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
+        static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
     }
     
     enum BlockChainIcons: String {

@@ -180,7 +180,6 @@ extension DomainProfileViewController: UICollectionViewDelegate {
 // MARK: - Actions
 private extension DomainProfileViewController {
     @IBAction func confirmChangesButtonPressed() {
-        logProfileButtonPressedAnalyticEvents(button: .confirm)
         presenter.confirmChangesButtonPressed()
     }
     
@@ -251,7 +250,7 @@ private extension DomainProfileViewController {
     }
     
     func logProfileButtonPressedAnalyticEvents(button: Analytics.Button) {
-        logButtonPressedAnalyticEvents(button: button, parameters: [.domainName: presenter.domainName])
+        logButtonPressedAnalyticEvents(button: button)
     }
 }
 

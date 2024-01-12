@@ -97,9 +97,7 @@ private extension PublicProfileView {
         ZStack {
             Color.brandUnstoppableBlue 
             if let coverImage = viewModel.coverImage {
-                Image(uiImage: coverImage)
-                    .resizable()
-                    .scaledToFill()
+                UIImageBridgeView(image: coverImage)
                     .blur(radius: 80)
             }
             Color.black.opacity(0.56)
@@ -168,9 +166,8 @@ private extension PublicProfileView {
     @ViewBuilder
     func bannerView() -> some View {
         if let coverImage = viewModel.coverImage {
-            Image(uiImage: coverImage)
-                .resizable()
-                .scaledToFill()
+            UIImageBridgeView(image: coverImage,
+                              height: 90)
         } else {
             Color.black.opacity(0.32)
         }
@@ -179,9 +176,9 @@ private extension PublicProfileView {
     @ViewBuilder
     func avatarView() -> some View {
         ZStack(alignment: .bottomTrailing) {
-            Image(uiImage: viewModel.avatarImage ?? .domainSharePlaceholder)
-                .resizable()
-                .scaledToFill()
+            UIImageBridgeView(image: viewModel.avatarImage ?? .domainSharePlaceholder,
+                              width: avatarSize,
+                              height: avatarSize)
                 .squareFrame(avatarSize)
                 .clipForAvatarStyle(avatarStyle)
             if viewModel.isUDBlue {
@@ -773,14 +770,9 @@ private extension PublicProfileView {
     }
 }
 
-struct PublicProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
-            PublicProfileView(domain: .init(walletAddress: "0x123", name: "dans.crypto"),
-                              viewingDomain: .init(name: "oleg.x"), 
-                              preRequestedAction: nil)
-                .previewDevice(PreviewDevice(rawValue: device))
-                .previewDisplayName(device)
-        }
-    }
+@available(iOS 17, *)
+#Preview {
+    PublicProfileView(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
+                      viewingDomain: .init(name: "oleg.x"),
+                      preRequestedAction: nil)
 }

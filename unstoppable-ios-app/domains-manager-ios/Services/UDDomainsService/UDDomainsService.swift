@@ -93,7 +93,7 @@ extension UDDomainsService: UDDomainsServiceProtocol {
                      paidDomains: [String],
                      to wallet: UDWallet,
                      userEmail: String,
-                     securityCode: String) async throws -> [TransactionItem] {
+                     securityCode: String) async throws {
         try await startMintingOfDomains(domains,
                                         paidDomains: paidDomains,
                                         to: wallet,
@@ -120,23 +120,21 @@ private extension UDDomainsService {
 
 // MARK: - Minting
 private extension UDDomainsService {
-    @discardableResult
     func startMintingOfDomains(_ domains: [String],
                                paidDomains: [String],
                                to wallet: UDWallet,
                                userEmail: String,
-                               securityCode: String) async throws -> [TransactionItem] {
+                               securityCode: String) async throws {
         
         let domainItems = createDomainItems(from: domains, for: wallet)
         let _ = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
         
         do {
-            let txs = try await NetworkService().mint(domains: domainItems,
-                                                      with: userEmail,
-                                                      code: securityCode,
-                                                      stripeIntent: nil)
+            try await NetworkService().mint(domains: domainItems,
+                                            with: userEmail,
+                                            code: securityCode,
+                                            stripeIntent: nil)
             try? await Task.sleep(seconds: 0.1)
-            return txs
         } catch {
             let description = error.getTypedDescription()
             Debugger.printFailure(description)

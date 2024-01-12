@@ -51,39 +51,7 @@ extension WebViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if User.instance.getSettings().isTestnetUsed {
-            if let credentials = WebViewController.authChallengeState.credentials,
-               challenge.previousFailureCount == WebViewController.authChallengeState.failureAttempts {
-                completionHandler(.useCredential, credentials)
-            } else {
-                let alert = UIAlertController(title: "Authroization", message: nil, preferredStyle: .alert)
-                alert.addTextField { textField in
-                    textField.placeholder = "Login"
-                    if let login = WebViewController.authChallengeState.credentials?.user {
-                        textField.text = login
-                    }
-                }
-                alert.addTextField { textField in
-                    textField.placeholder = "Password"
-                    textField.isSecureTextEntry = true 
-                }
-                
-                alert.addAction(UIAlertAction(title: "Submit", style: .default, handler: {  _ in
-                    let login = alert.textFields![0].text ?? ""
-                    let password = alert.textFields![1].text ?? ""
-                    let credentials = URLCredential(user: login,
-                                                    password: password,
-                                                    persistence: .none)
-                    WebViewController.authChallengeState.credentials = credentials
-                    WebViewController.authChallengeState.failureAttempts = challenge.previousFailureCount
-                    completionHandler(.useCredential, credentials)
-                }))
-                
-                present(alert, animated: true)
-            }
-        } else {
-            completionHandler(.performDefaultHandling, nil)
-        }
+        completionHandler(.performDefaultHandling, nil)
     }
 }
 

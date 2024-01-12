@@ -89,7 +89,7 @@ private extension AppLaunchService {
                     
                     await coreAppCoordinator.showOnboarding(onboardingFlow)
                     Task.detached(priority: .background) { [unowned self] in
-                        await sceneDelegate?.authorizeUserOnAppOpening()
+                        try? await sceneDelegate?.authorizeUserOnAppOpening()
                     }
                     completion?()
                 } else {
@@ -138,7 +138,7 @@ private extension AppLaunchService {
         
         Task.detached(priority: .background) { [unowned self] in
             try await Task.sleep(seconds: 0.05)
-            await self.sceneDelegate?.authorizeUserOnAppOpening()
+            try? await self.sceneDelegate?.authorizeUserOnAppOpening()
             await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise))
         }
 

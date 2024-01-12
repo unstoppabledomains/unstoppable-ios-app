@@ -242,11 +242,22 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         router.showChatsListScreen()
     }
     
-    @MainActor
     func scrollTo(domain: DomainDisplayInfo, animated: Bool) {
         guard let i = stateController.domains.firstIndex(where: { $0.name == domain.name }) else { return }
         
         setNewIndex(i, animated: animated)
+    }
+}
+
+// MARK: - Open methods
+extension DomainsCollectionPresenter {
+    func shouldOpenDomainProfile(_ domain: DomainDisplayInfo) async -> Bool {
+        guard !domain.isMinting, !domain.isTransferring  else { return false }
+        
+        let domains = stateController.domains
+        await askToFinishSetupPurchasedProfileIfNeeded(domains: domains)
+        
+        return true
     }
 }
 
@@ -339,7 +350,7 @@ private extension DomainsCollectionPresenter {
         let walletsWithoutRR = stateController.walletsWithInfo.filter({ $0.displayInfo?.reverseResolutionDomain == nil })
         
         for wallet in walletsWithoutRR {
-            let walletInteractableDomains = domains.filter({ $0.isOwned(by: [wallet.wallet] )}).interactableItems()
+            let walletInteractableDomains = domains.filter({ $0.isOwned(by: [wallet.wallet] )}).availableForRRItems()
             if !walletInteractableDomains.isEmpty {
                 return wallet
             }
@@ -464,7 +475,7 @@ private extension DomainsCollectionPresenter {
             let domains = stateController.domains
             let walletsWithInfo = stateController.walletsWithInfo
             guard let primary = domains.first(where: { $0.isPrimary }),
-                  primary.isInteractable,
+                  primary.isAbleToSetAsRR,
                   let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
                   let walletInfo = walletWithInfo.displayInfo,
                   walletInfo.reverseResolutionDomain == nil,
@@ -528,14 +539,7 @@ private extension DomainsCollectionPresenter {
     func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
         guard let view else { return }
         
-        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
-        let profilesReadyToSubmit = pendingProfiles.filter { profile in
-            if let domain = domains.first(where: { $0.name == profile.domainName }),
-               domain.state == .default {
-                return true
-            }
-            return false
-        }
+        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
         if !profilesReadyToSubmit.isEmpty {
             let domainItems = await dataAggregatorService.getDomainItems()
             let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
@@ -549,6 +553,17 @@ private extension DomainsCollectionPresenter {
                                                                             in: view)
             await view.dismissPullUpMenu()
             await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+        }
+    }
+    
+    func getPurchasedProfilesReadyToSubmit(domains: [DomainDisplayInfo]) -> [DomainProfilePendingChanges] {
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        return pendingProfiles.filter { profile in
+            if let domain = domains.first(where: { $0.name == profile.domainName }),
+               domain.state == .default {
+                return true
+            }
+            return false
         }
     }
     
@@ -839,7 +854,13 @@ private extension DomainsCollectionPresenter {
                 guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
                       let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
                 
-                await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, preRequestedAction: nil, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
+                await router.showDomainProfile(domain, 
+                                               wallet: domainWallet,
+                                               walletInfo: walletInfo, 
+                                               preRequestedAction: nil,
+                                               dismissCallback: { [weak self] in
+                    self?.didCloseDomainProfile(domain)
+                })
             case .parked:
                 let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
                                                                                   domain: domain,
@@ -936,8 +957,7 @@ private extension DomainsCollectionPresenter {
             let domainsToTransform = Array(stateController.domains.prefix(Constants.testMintingDomainsCount))
             mintingDomains = domainsToTransform.map({ MintingDomain(name: $0.name,
                                                                     walletAddress: $0.ownerWallet ?? "",
-                                                                    isPrimary: false,
-                                                                    transactionId: 0)})
+                                                                    isPrimary: false) })
         } else {
             mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
         }

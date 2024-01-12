@@ -99,6 +99,10 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
                            walletInfo: WalletDisplayInfo,
                            preRequestedAction: PreRequestedProfileAction?,
                            dismissCallback: EmptyCallback?) async {
+        guard await presenter?.shouldOpenDomainProfile(domain) == true else {
+            presenter?.scrollTo(domain: domain, animated: true)
+            return
+        }
         
         await showDomainProfileFromDomainsCollection(domain,
                                                      wallet: wallet,

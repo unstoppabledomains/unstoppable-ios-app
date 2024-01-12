@@ -26,8 +26,15 @@ class ViewController: UIViewController {
         }
     }
     
+    func showPurchaseDomainsSearch() {
+        let view = PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
+        
+        let vc = UIHostingController(rootView: view)
+        addChildViewController(vc, andEmbedToView: self.view)
+    }
+    
     func showPurchaseDomainsCheckout() {
-        let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
+        let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true),
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
                                                profileChanges: .init(domainName: "oleg.x"),
@@ -38,18 +45,25 @@ class ViewController: UIViewController {
     }
     
     func showDomainsCollection() {
-        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
-        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
-        domainsCollectionVC.presenter = presenter
-        let nav = CNavigationController(rootViewController: domainsCollectionVC)
-        nav.modalTransitionStyle = .crossDissolve
-        nav.modalPresentationStyle = .fullScreen
+        let router = DomainsCollectionRouter()
+        let vc = router.configureViewController(mintingState: .default)
+        vc.modalTransitionStyle = .crossDissolve
+        vc.modalPresentationStyle = .fullScreen
         
-        present(nav, animated: false)
+        present(vc, animated: false)
+        
+//        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
+//        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
+//        domainsCollectionVC.presenter = presenter
+//        let nav = CNavigationController(rootViewController: domainsCollectionVC)
+//        nav.modalTransitionStyle = .crossDissolve
+//        nav.modalPresentationStyle = .fullScreen
+//
+//        present(nav, animated: false)
     }
 
     func showDomainProfile() {
-        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil)
+        let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)
         let vc = DomainProfileViewController.nibInstance()
         let presenter = PurchaseDomainDomainProfileViewPresenter(view: vc,
                                                                  domain: domain)
