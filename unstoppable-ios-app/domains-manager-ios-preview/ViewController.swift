@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        showPurchaseDomainsSearch()
+        showDomainsCollection()
     }
     
     @IBAction func runPurchaseButtonPressed() {
@@ -45,14 +45,21 @@ class ViewController: UIViewController {
     }
     
     func showDomainsCollection() {
-        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
-        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
-        domainsCollectionVC.presenter = presenter
-        let nav = CNavigationController(rootViewController: domainsCollectionVC)
-        nav.modalTransitionStyle = .crossDissolve
-        nav.modalPresentationStyle = .fullScreen
+        let router = DomainsCollectionRouter()
+        let vc = router.configureViewController(mintingState: .default)
+        vc.modalTransitionStyle = .crossDissolve
+        vc.modalPresentationStyle = .fullScreen
         
-        present(nav, animated: false)
+        present(vc, animated: false)
+        
+//        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
+//        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
+//        domainsCollectionVC.presenter = presenter
+//        let nav = CNavigationController(rootViewController: domainsCollectionVC)
+//        nav.modalTransitionStyle = .crossDissolve
+//        nav.modalPresentationStyle = .fullScreen
+//
+//        present(nav, animated: false)
     }
 
     func showDomainProfile() {

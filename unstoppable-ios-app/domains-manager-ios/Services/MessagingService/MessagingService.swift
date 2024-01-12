@@ -92,10 +92,14 @@ extension MessagingService: MessagingServiceProtocol {
                     return nil
                 }
                 var walletDisplayInfo = walletWithInfo.displayInfo
-                if walletDisplayInfo?.reverseResolutionDomain == nil,
-                   applicableDomains.first(where: { $0.isUDDomain }) == nil {
-                    /// If wallet doesn't have any UNS domain, we still allow to chat as other (ENS only for now) domain
-                    walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                if walletDisplayInfo?.reverseResolutionDomain == nil {
+                    if applicableDomains.first(where: { $0.isUDDomain }) == nil {
+                        /// If wallet doesn't have any UNS domain, we still allow to chat as other (ENS only for now) domain
+                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                    } else if applicableDomains.first(where: { $0.isAbleToSetAsRR }) == nil {
+                        /// If wallet has only L1 domains (that can't be set as RR ATM), we still allow to chat
+                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                    }
                 }
                 return walletDisplayInfo
             }

@@ -1057,7 +1057,7 @@ private extension DomainProfileViewPresenter {
             let state = stateController.state
             
             var isSetPrimaryActionAvailable: Bool { !domain.isPrimary && domain.isInteractable }
-            var isSetReverseResolutionActionAvailable: Bool { domain.isInteractable && domain.name != walletInfo.reverseResolutionDomain?.name }
+            var isSetReverseResolutionActionAvailable: Bool { domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name }
             var isSetReverseResolutionActionVisible: Bool { state == .default || state == .updatingRecords }
             
             var topActionsGroup: DomainProfileActionsGroup = [.copyDomain]
@@ -1077,7 +1077,7 @@ private extension DomainProfileViewPresenter {
             topActionsGroup.append(.viewWallet(subtitle: viewWalletSubtitle))
             topActionsGroup.append(.viewInBrowser)
             
-            if domain.isInteractable,
+            if domain.isAbleToTransfer,
                state == .default {
                 topActionsGroup.append(.transfer)
             }

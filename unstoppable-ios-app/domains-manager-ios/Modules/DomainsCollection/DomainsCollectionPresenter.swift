@@ -350,7 +350,7 @@ private extension DomainsCollectionPresenter {
         let walletsWithoutRR = stateController.walletsWithInfo.filter({ $0.displayInfo?.reverseResolutionDomain == nil })
         
         for wallet in walletsWithoutRR {
-            let walletInteractableDomains = domains.filter({ $0.isOwned(by: [wallet.wallet] )}).interactableItems()
+            let walletInteractableDomains = domains.filter({ $0.isOwned(by: [wallet.wallet] )}).availableForRRItems()
             if !walletInteractableDomains.isEmpty {
                 return wallet
             }
@@ -475,7 +475,7 @@ private extension DomainsCollectionPresenter {
             let domains = stateController.domains
             let walletsWithInfo = stateController.walletsWithInfo
             guard let primary = domains.first(where: { $0.isPrimary }),
-                  primary.isInteractable,
+                  primary.isAbleToSetAsRR,
                   let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
                   let walletInfo = walletWithInfo.displayInfo,
                   walletInfo.reverseResolutionDomain == nil,

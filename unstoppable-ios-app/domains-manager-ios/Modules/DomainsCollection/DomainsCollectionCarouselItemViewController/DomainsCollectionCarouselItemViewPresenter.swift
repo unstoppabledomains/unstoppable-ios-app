@@ -328,7 +328,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         })]
         
         if !domain.isSetForRR,
-           domain.isInteractable,
+           domain.isAbleToSetAsRR,
            !domain.isUpdatingRecords,
            let wallet = walletWithInfo?.wallet {
             let isEnabled = await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
