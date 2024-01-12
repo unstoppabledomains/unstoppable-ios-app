@@ -15,12 +15,24 @@ extension NetworkService {
     }
     
     public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+        struct SerializedNullableRecordValue: Decodable {
+            let records: [String : String?]?
+        }
+
         guard let url = Endpoint.getPublicProfile(for: domainName,
                                                   fields: fields).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)
         guard let info = SerializedPublicDomainProfile.objectFromData(data) else {
+            
+            // detect the case if the value of the record was nil, which failed the parsing
+            if let nullableRecords = SerializedNullableRecordValue.objectFromData(data)?.records,
+               !nullableRecords.allSatisfy({$0.value != nil}) {
+                Debugger.printFailure("Domain \(domainName) has null record value", critical: true)
+                throw NetworkLayerError.domainHasNullRecordValue
+            }
+            
             throw NetworkLayerError.failedParseProfileData
         }
         return info

@@ -435,6 +435,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     case failedParseUnsRegistryAddress
     case failedToValidateResolver
     case failedParseProfileData
+    case domainHasNullRecordValue
     case connectionLost
     case requestCancelled
     case notConnectedToInternet
