@@ -553,18 +553,24 @@ extension Endpoint {
     
     struct DomainArray: Encodable {
         let domain: [String]
+        let status: TxStatusGroup?
     }
+    
     
     struct TxsArrayRequest: Encodable {
         let txs: DomainArray
     }
     
-    static func transactionsByDomainsPost(domains: [String], page: Int, perPage: Int) -> Endpoint? {
+    static func transactionsByDomainsPost(domains: [String], 
+                                          status: TxStatusGroup?,
+                                          page: Int,
+                                          perPage: Int) -> Endpoint? {
         var paramQueryItems: [URLQueryItem] = []
         paramQueryItems.append( URLQueryItem(name: "page", value: "\(page)") )
         paramQueryItems.append( URLQueryItem(name: "perPage", value: "\(perPage)") )
         
-        let req = TxsArrayRequest(txs: DomainArray(domain: domains.map({ $0 })))
+        let req = TxsArrayRequest(txs: DomainArray(domain: domains.map({ $0 }),
+                                                   status: status))
         guard let json = try? JSONEncoder().encode(req) else { return nil }
 
         return composeResolutionEndpoint(paramQueryItems: paramQueryItems,

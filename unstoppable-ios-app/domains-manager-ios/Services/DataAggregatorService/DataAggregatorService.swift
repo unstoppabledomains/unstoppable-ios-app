@@ -212,21 +212,22 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
                      securityCode: String) async throws -> [MintingDomain] {
         do {
             await stopRefreshTimer()
-            let transactions = try await domainsService.mintDomains(domains,
-                                                                    paidDomains: paidDomains,
-                                                                    to: wallet,
-                                                                    userEmail: userEmail,
-                                                                    securityCode: securityCode)
+            try await domainsService.mintDomains(domains,
+                                                 paidDomains: paidDomains,
+                                                 to: wallet,
+                                                 userEmail: userEmail,
+                                                 securityCode: securityCode)
+            let transactions = domains.map { TransactionItem(id: 0,
+                                                             domainName: $0,
+                                                             isPending: true,
+                                                             type: .maticTx,
+                                                             operation: .mintDomain) }
             transactionsService.cacheTransactions(transactions)
             
-            let mintingDomains = domains.compactMap({ (domainName: String) -> MintingDomain?  in
-                guard let foundTx = transactions.first(where: { $0.domainName == domainName }),
-                      let txId = foundTx.id else { return nil }
-                return MintingDomain(name: domainName,
-                                     walletAddress: wallet.address,
-                                     isPrimary: false,
-                                     transactionId: txId,
-                                     transactionHash: nil) })
+            let mintingDomains = domains.map { MintingDomain(name: $0,
+                                                             walletAddress: wallet.address,
+                                                             isPrimary: false,
+                                                             transactionHash: nil) }
             
             var currentMintingDomains = MintingDomainsStorage.retrieveMintingDomains()
             currentMintingDomains.append(contentsOf: mintingDomains)
@@ -397,7 +398,7 @@ private extension DataAggregatorService {
             
             var transactions: [TransactionItem] = []
             do {
-                let newTransactions = try await transactionsService.updateTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
+                let newTransactions = try await transactionsService.updatePendingTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
                 transactions = newTransactions
             } catch {
                 Debugger.printFailure("Failed to load transactions for \(domains.count) domains with error: \(error.localizedDescription)", critical: false)
@@ -608,7 +609,6 @@ private extension DataAggregatorService {
                 return MintingDomain(name: domainName,
                                      walletAddress: mintingDomain.walletAddress,
                                      isPrimary: false,  
-                                     transactionId: mintingDomain.transactionId,
                                      transactionHash: mintingDomain.transactionHash)
             })
             return mintingDomains

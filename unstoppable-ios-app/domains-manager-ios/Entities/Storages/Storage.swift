@@ -217,6 +217,12 @@ extension Storage: TxsStorage {
             transactionStorage.store(updatedTxsCache)
         }
     }
+    
+    func replaceTxs_Blocking(_ newTxs: [TransactionItem]) {
+        Storage.instance.txWorkerQueue.sync {
+            _ = transactionStorage.store(newTxs)
+        }
+    }
 }
 
 extension Array where Element == TransactionItem {

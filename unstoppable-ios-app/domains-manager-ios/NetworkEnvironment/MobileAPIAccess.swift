@@ -8,13 +8,15 @@
 import Foundation
 
 protocol TxsFetcher {
-    func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem]
+    func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem]
 }
 
 extension NetworkService: TxsFetcher {
-    public func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem] {
+    private var transactionsRequestLimit: Int { 25 }
+    
+    public func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem] {
         do {
-            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
+            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: transactionsRequestLimit)
             return txs
         } catch {
             Debugger.printFailure("Failed to fetch TXS, error: \(error)", critical: false)
@@ -245,7 +247,7 @@ extension NetworkService {
     public func mint(domains: [DomainItem],
                       with email: String,
                       code: String,
-                      stripeIntent: String?) async throws -> [TransactionItem] {
+                      stripeIntent: String?) async throws {
         guard let request = try? APIRequestBuilder().users(email: email)
             .secure(code: code)
             .mint(domains, stripeIntent: stripeIntent)
@@ -254,14 +256,9 @@ extension NetworkService {
             throw NetworkLayerError.creatingURLFailed
         }
         
-        let data = try await fetchData(for: request.url,
-                                       body: request.body,
-                                       extraHeaders: request.headers)
-        if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
-            let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
-            return txArray
-        }
-        throw NetworkLayerError.parsingTxsError
+        let _ = try await fetchData(for: request.url,
+                                    body: request.body,
+                                    extraHeaders: request.headers)
     }
 }
 
@@ -420,6 +417,7 @@ extension TransactionItem: PaginatedFetchable {
                                           page: Int,
                                           perPage: Int) throws -> APIRequest {
         guard let endpoint = Endpoint.transactionsByDomainsPost(domains: originItems,
+                                                                status: .pending,
                                                                 page: page,
                                                                 perPage: perPage) else {
             throw FetchRequestBuilderError.txs

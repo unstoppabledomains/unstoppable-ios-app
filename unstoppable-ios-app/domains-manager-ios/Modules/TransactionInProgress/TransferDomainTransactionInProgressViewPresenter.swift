@@ -43,7 +43,7 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
     
     override func refreshMintingTransactions() {
         Task {
-            let transactions = try await transactionsService.updateTransactionsListFor(domains: [domainDisplayInfo.name])
+            let transactions = try await transactionsService.updatePendingTransactionsListFor(domains: [domainDisplayInfo.name])
             
             if let domainReverseResolutionTransaction = transactions
                 .filterPending(extraCondition: { $0.operation == .transferDomain })
