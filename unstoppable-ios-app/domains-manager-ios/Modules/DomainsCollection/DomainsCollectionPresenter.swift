@@ -957,8 +957,7 @@ private extension DomainsCollectionPresenter {
             let domainsToTransform = Array(stateController.domains.prefix(Constants.testMintingDomainsCount))
             mintingDomains = domainsToTransform.map({ MintingDomain(name: $0.name,
                                                                     walletAddress: $0.ownerWallet ?? "",
-                                                                    isPrimary: false,
-                                                                    transactionId: 0)})
+                                                                    isPrimary: false) })
         } else {
             mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
         }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
+final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
     
     override var analyticsName: Analytics.ViewName { .reverseResolutionTransactionInProgress }
     private let domain: DomainItem
@@ -47,7 +47,7 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
     
     override func refreshMintingTransactions() {
         Task {
-            let transactions = try await transactionsService.updateTransactionsListFor(domains: [domain.name])
+            let transactions = try await transactionsService.updatePendingTransactionsListFor(domains: [domain.name])
 
             if let domainReverseResolutionTransaction = transactions
                                                             .filterPending(extraCondition: { $0.operation == .setReverseResolution})

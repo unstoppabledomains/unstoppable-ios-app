@@ -78,7 +78,7 @@
 		307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D312603C087007B14C3 /* UDWalletZil.swift */; };
 		307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */; };
 		307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 307B1D592603C8E0007B14C3 /* BigInt */; };
-		307EC19B25383EF600D62BA1 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307EC19A25383EF600D62BA1 /* TransactionProtocol.swift */; };
+		307EC19B25383EF600D62BA1 /* TransactionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307EC19A25383EF600D62BA1 /* TransactionItem.swift */; };
 		307F82B82677532D0070A9A6 /* PaymentConfirmationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307F82B72677532D0070A9A6 /* PaymentConfirmationDelegate.swift */; };
 		309194EF2582C52400D132B9 /* MobileAPIAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3091944F2582B4DD00D132B9 /* MobileAPIAccess.swift */; };
 		30972CC4258A62A700D7E229 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30972CC3258A62A700D7E229 /* LocalStorage.swift */; };
@@ -2368,7 +2368,7 @@
 		307B1D312603C087007B14C3 /* UDWalletZil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletZil.swift; sourceTree = "<group>"; };
 		307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletEthereum.swift; sourceTree = "<group>"; };
 		307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
-		307EC19A25383EF600D62BA1 /* TransactionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProtocol.swift; sourceTree = "<group>"; };
+		307EC19A25383EF600D62BA1 /* TransactionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionItem.swift; sourceTree = "<group>"; };
 		307F82B72677532D0070A9A6 /* PaymentConfirmationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentConfirmationDelegate.swift; sourceTree = "<group>"; };
 		3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletAutonamingTests.swift; sourceTree = "<group>"; };
 		308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testUpdateRecords.swift; sourceTree = "<group>"; };
@@ -6860,7 +6860,7 @@
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C69F99552A9F167F004B1958 /* SocialDescription.swift */,
 				C6109EA128E6B1CC0027D5D8 /* Toast.swift */,
-				307EC19A25383EF600D62BA1 /* TransactionProtocol.swift */,
+				307EC19A25383EF600D62BA1 /* TransactionItem.swift */,
 				C6C8F98E2B2189CB00A9834D /* TxOperation.swift */,
 				C61808812B19BC680032E543 /* TransactionError.swift */,
 				306486CC25273C4400388026 /* User.swift */,
@@ -8836,7 +8836,7 @@
 				30B3DC9228758E9B006FAA64 /* CurrencyExchangeRates.swift in Sources */,
 				C69F99202A9F1264004B1958 /* Line.swift in Sources */,
 				C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */,
-				307EC19B25383EF600D62BA1 /* TransactionProtocol.swift in Sources */,
+				307EC19B25383EF600D62BA1 /* TransactionItem.swift in Sources */,
 				C642A6A92841157E00299C6E /* TransactionInProgressViewController.swift in Sources */,
 				C63A352628F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 				C6E041AE2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift in Sources */,
