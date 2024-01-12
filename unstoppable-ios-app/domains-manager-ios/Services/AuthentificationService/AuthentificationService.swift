@@ -115,7 +115,7 @@ private extension AuthentificationService {
             authenticateWith(policy: policy,
                              uiHandler: uiHandler) { response in
                 guard response == true else {
-                    Debugger.printFailure("face not recognized", critical: false)
+                    Debugger.printFailure("face not recognized", critical: false, suppressBugSnag: true)
                     cancellationCallback?()
                     return
                 }
