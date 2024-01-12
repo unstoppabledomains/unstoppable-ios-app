@@ -96,7 +96,7 @@ public struct Debugger {
         let message = "\(String.itTook(from: startDate)) \(s)"
         let timeAfterStart = Date().timeIntervalSince(startDate)
         if timeAfterStart > timeout {
-            printWarning(message)
+            printWarning(message, suppressBugSnag: true)
         } else {
             printInfo(topic: topic, message)
         }
