@@ -9,9 +9,8 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @State private var tokens: [TokenDescription] = TokenDescription.mock()
-    @State private var domains: [DomainDisplayInfo] = createMockDomains()
-    @State private var selectedContentType: ContentType = .tokens
+    @ObservedObject private var presenter = HomeWalletViewPresenter()
+    
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -75,7 +74,6 @@ private extension HomeWalletView {
                 .titleText()
         }
         .frame(maxWidth: .infinity)
-//        .background(Color.black)
     }
     
     @ViewBuilder
@@ -117,7 +115,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func contentTypeSelector() -> some View {
-        Picker("", selection: $selectedContentType) {
+        Picker("", selection: $presenter.selectedContentType) {
             ForEach(ContentType.allCases, id: \.self) { contentType in
                 Text(contentType.title)
             }
@@ -127,7 +125,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func contentForSelectedType() -> some View {
-        switch selectedContentType {
+        switch presenter.selectedContentType {
         case .tokens:
             tokensContentView()
         case .collectibles:
@@ -140,7 +138,7 @@ private extension HomeWalletView {
     @ViewBuilder
     func tokensContentView() -> some View {
         VStack(spacing: 0) {
-            ForEach(tokens) { token in
+            ForEach(presenter.tokens) { token in
                 Button {
                     
                 } label: {
@@ -180,26 +178,13 @@ private extension HomeWalletView {
     @ViewBuilder
     func domainsContentView() -> some View {
         LazyVGrid(columns: columns, spacing: 16) {
-            ForEach(domains, id: \.name) { domain in
+            ForEach(presenter.domains, id: \.name) { domain in
                 Image(uiImage: UIImage.Preview.previewLandscape!)
                     .resizable()
                     .aspectRatio(1, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
-    }
-
-    enum WalletAction: String, CaseIterable {
-        case receive, profile, copy, more
-        
-        var title: String { rawValue }
-        var icon: Image { .systemGlobe }
-    }
-    
-    enum ContentType: String, CaseIterable {
-        case tokens, collectibles, domains
-        
-        var title: String { rawValue }
     }
 }
 
@@ -209,43 +194,3 @@ private extension HomeWalletView {
     }
 }
 
-struct TokenDescription: Hashable, Identifiable {
-    var id: String { ticker }
-    
-    let ticker: String
-    let fullName: String
-    let value: Double
-    let fiatValue: Double
-    
-    
-    static func mock() -> [TokenDescription] {
-        var tickers = ["ETH", "MATIC", "USDC", "1INCH",
-                       "SOL", "USDT", "DOGE", "DAI"]
-        tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
-        var tokens = [TokenDescription]()
-        for ticker in tickers {
-            let value = Double(arc4random_uniform(10000)) + 20
-            let token = TokenDescription(ticker: ticker,
-                                         fullName: ticker,
-                                         value: value,
-                                         fiatValue: value)
-            tokens.append(token)
-            
-        }
-        
-        return tokens
-    }
-}
-
-func createMockDomains() -> [DomainDisplayInfo] {
-    var domains = [DomainDisplayInfo]()
-    
-    for i in 0..<100 {
-        let domain = DomainDisplayInfo(name: "oleg_\(i).x", 
-                                       ownerWallet: "",
-                                       isSetForRR: false)
-        domains.append(domain)
-    }
-    
-    return domains
-}
