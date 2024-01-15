@@ -9,9 +9,9 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @ObservedObject private var presenter = HomeWalletViewPresenter()
+    @ObservedObject private var viewModel = HomeWalletViewModel()
     
-    private let columns = [
+    private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
@@ -49,31 +49,9 @@ struct HomeWalletView: View {
 private extension HomeWalletView {
     @ViewBuilder
     func walletHeaderView() -> some View {
-        VStack(alignment: .center, spacing: 20) {
-            Image(uiImage: UIImage.Preview.previewPortrait!)
-                .resizable()
-                .squareFrame(80)
-                .clipShape(Circle())
-                .background(Color.clear)
-            
-            Button {
-                presenter.domainNamePressed()
-            } label: {
-                HStack {
-                    Text(presenter.domainName)
-                        .font(.currentFont(size: 16, weight: .medium))
-                    
-                    Image(systemName: "chevron.up.chevron.down")
-                        .squareFrame(20)
-                }
-                .foregroundStyle(Color.foregroundSecondary)
-            }
-            .buttonStyle(.plain)
-            
-            Text(formatCartPrice(presenter.totalBalance))
-                .titleText()
-        }
-        .frame(maxWidth: .infinity)
+        HomeWalletHeaderView(wallet: viewModel.selectedWallet,
+                             totalBalance: viewModel.totalBalance,
+                             domainNamePressedCallback: viewModel.domainNamePressed)
     }
     
     @ViewBuilder
@@ -88,7 +66,7 @@ private extension HomeWalletView {
     @ViewBuilder
     func walletActionView(for action: WalletAction) -> some View {
         Button {
-            presenter.walletActionPressed(action)
+            viewModel.walletActionPressed(action)
         } label: {
             VStack(spacing: 4) {
                 action.icon
@@ -115,12 +93,12 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func contentTypeSelector() -> some View {
-        HomeWalletContentTypeSelectorView(selectedContentType: $presenter.selectedContentType)
+        HomeWalletContentTypeSelectorView(selectedContentType: $viewModel.selectedContentType)
     }
     
     @ViewBuilder
     func contentForSelectedType() -> some View {
-        switch presenter.selectedContentType {
+        switch viewModel.selectedContentType {
         case .tokens:
             tokensContentView()
         case .collectibles:
@@ -132,12 +110,12 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func tokensContentView() -> some View {
-        ForEach(presenter.tokens) { token in
+        ForEach(viewModel.tokens) { token in
             Button {
                 
             } label: {
                 HomeWalletTokenRowView(token: token, onAppear: {
-                    presenter.loadIconIfNeededFor(token: token)
+                    viewModel.loadIconIfNeededFor(token: token)
                 })
             }
             .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
@@ -146,13 +124,13 @@ private extension HomeWalletView {
 
     @ViewBuilder
     func collectiblesContentView() -> some View {
-        HomeWalletCollectiblesEmptyView(walletAddress: presenter.walletAddress)
+        HomeWalletCollectiblesEmptyView(walletAddress: viewModel.walletAddress)
     }
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        LazyVGrid(columns: columns, spacing: 16) {
-            ForEach(presenter.domains, id: \.name) { domain in
+        LazyVGrid(columns: gridColumns, spacing: 16) {
+            ForEach(viewModel.domains, id: \.name) { domain in
                 Image(uiImage: UIImage.Preview.previewLandscape!)
                     .resizable()
                     .aspectRatio(1, contentMode: .fit)

@@ -1,5 +1,5 @@
 //
-//  HomeWalletViewPresenter.swift
+//  HomeWalletViewModel.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 15.01.2024.
@@ -9,8 +9,9 @@ import SwiftUI
 
 extension HomeWalletView {
     @MainActor
-    final class HomeWalletViewPresenter: ObservableObject {
+    final class HomeWalletViewModel: ObservableObject {
         
+        @Published private(set) var selectedWallet: WalletWithInfo = WalletWithInfo.mock.first!
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published var selectedContentType: ContentType = .tokens
