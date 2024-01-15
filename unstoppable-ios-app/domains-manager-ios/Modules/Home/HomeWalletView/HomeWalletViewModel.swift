@@ -149,9 +149,10 @@ extension HomeWalletView {
         }
         
         static func mock() -> [TokenDescription] {
-            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
-                           "SOL", "USDT", "DOGE", "DAI"]
-            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
+            var tickers = ["ETH", "MATIC"]
+//            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
+//                           "SOL", "USDT", "DOGE", "DAI"]
+//            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
             var tokens = [TokenDescription]()
             for ticker in tickers {
                 let value = Double(arc4random_uniform(10000))

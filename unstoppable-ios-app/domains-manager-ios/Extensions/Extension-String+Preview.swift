@@ -1055,6 +1055,8 @@ extension String {
         static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
         
         // Home
+        static let homeWalletTokensComeTitle = "HOME_WALLET_TOKENS_COME_TITLE"
+        static let homeWalletTokensComeSubtitle = "HOME_WALLET_TOKENS_COME_SUBTITLE"
         static let homeWalletCollectiblesEmptyTitle = "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE"
         static let homeWalletCollectiblesEmptySubtitle = "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE"
     }

@@ -114,12 +114,14 @@ private extension HomeWalletView {
             Button {
                 
             } label: {
-                HomeWalletTokenRowView(token: token, onAppear: {
+                HomeWalletTokenRowView(token: token, 
+                                       onAppear: {
                     viewModel.loadIconIfNeededFor(token: token)
                 })
             }
             .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
+        HomeWalletMoreTokensView()
     }
 
     @ViewBuilder

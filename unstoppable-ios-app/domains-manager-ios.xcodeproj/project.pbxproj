@@ -1145,6 +1145,8 @@
 		C6B65F5D2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */; };
 		C6B65F622B55015F006D1812 /* HomeWalletHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */; };
 		C6B65F632B55015F006D1812 /* HomeWalletHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */; };
+		C6B65F652B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */; };
+		C6B65F662B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */; };
 		C6B6858B280077F7000F9037 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858A280077F7000F9037 /* UIImage.swift */; };
 		C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */ = {isa = PBXBuildFile; fileRef = C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */; };
@@ -3273,6 +3275,7 @@
 		C6B65F582B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletCollectiblesEmptyView.swift; sourceTree = "<group>"; };
 		C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletContentTypeSelectorView.swift; sourceTree = "<group>"; };
 		C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletHeaderView.swift; sourceTree = "<group>"; };
+		C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletMoreTokensView.swift; sourceTree = "<group>"; };
 		C6B6858A280077F7000F9037 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		C6B6858F28007C09000F9037 /* UDCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBox.swift; sourceTree = "<group>"; };
 		C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = allDoneConfettiAnimation.gif; sourceTree = "<group>"; };
@@ -6922,6 +6925,7 @@
 				C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */,
 				C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */,
 				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
+				C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */,
 				C6B65F582B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift */,
 			);
 			path = HomeWalletView;
@@ -8733,6 +8737,7 @@
 				C6526DB929D2BACB00D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AE2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
+				C6B65F652B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */,
 				C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6C39EDF2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */,
 				C6C8F9582B2185F800A9834D /* KeychainKey.swift in Sources */,
@@ -9858,6 +9863,7 @@
 				C6C8F8702B21822700A9834D /* TutorialViewPresenter.swift in Sources */,
 				C61807EC2B19A6980032E543 /* PreviewUDWalletsService.swift in Sources */,
 				C6D647262B1ED91F00D724AC /* PullUpViewService+Tools.swift in Sources */,
+				C6B65F662B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */,
 				C6D645B82B1DBC4300D724AC /* KeepingAnimationImageView.swift in Sources */,
 				C6C8F8BC2B2182E400A9834D /* SetupReverseResolutionViewPresenter.swift in Sources */,
 				C6C8F8C22B2182E400A9834D /* ChooseReverseResolutionDomainViewController.swift in Sources */,
