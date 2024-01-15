@@ -14,7 +14,9 @@ extension HomeWalletView {
         @Published private(set) var selectedWallet: WalletWithInfo = WalletWithInfo.mock.first!
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
-        @Published var selectedContentType: ContentType = .tokens
+        @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
+        @Published var nftsCollectionsExpandedIds: Set<String> = []
+        @Published var selectedContentType: ContentType = .collectibles
         
         var totalBalance: Int { 20000 }
         
@@ -82,85 +84,6 @@ extension HomeWalletView {
             case .more:
                 return .dotsIcon
             }
-        }
-    }
-    
-    struct TokenDescription: Hashable, Identifiable {
-        var id: String { symbol }
-        
-        let symbol: String
-        let name: String
-        let balance: Double
-        var marketUsd: Double?
-        var icon: UIImage? = nil
-        var fiatValue: Double? {
-            if let marketUsd {
-                return marketUsd * balance
-            }
-            return nil
-        }
-        
-        static let iconSize: InitialsView.InitialsSize = .default
-        static let iconStyle: InitialsView.Style = .gray
-        
-        init(walletBalance: ProfileWalletBalance) {
-            self.symbol = walletBalance.symbol
-            self.name = walletBalance.name
-            self.balance = walletBalance.balance
-            self.marketUsd = walletBalance.value?.marketUsd
-            self.icon = appContext.imageLoadingService.cachedImage(for: .currencyTicker(symbol,
-                                                                                        size: TokenDescription.iconSize,
-                                                                                        style: TokenDescription.iconStyle))
-        }
-        
-        init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
-            self.symbol = symbol
-            self.name = name
-            self.balance = balance
-            self.marketUsd = marketUsd
-            self.icon = icon
-        }
-        
-        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {
-            guard icon == nil else { return }
-            
-            Task {
-                let size = TokenDescription.iconSize
-                let style = TokenDescription.iconStyle
-                let ticker = symbol
-                let initials = await appContext.imageLoadingService.loadImage(from: .initials(ticker,
-                                                                                              size: size,
-                                                                                              style: style),
-                                                                              downsampleDescription: nil)
-                iconUpdated(initials)
-                
-                
-                if let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
-                                                                                                   size: size,
-                                                                                                   style: style),
-                                                                             downsampleDescription: .icon) {
-                    iconUpdated(icon)
-                }
-            }
-        }
-        
-        static func mock() -> [TokenDescription] {
-            let tickers = ["ETH", "MATIC"]
-//            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
-//                           "SOL", "USDT", "DOGE", "DAI"]
-//            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
-            var tokens = [TokenDescription]()
-            for ticker in tickers {
-                let value = Double(arc4random_uniform(10000))
-                let token = TokenDescription(symbol: ticker,
-                                             name: ticker,
-                                             balance: value,
-                                             marketUsd: value)
-                tokens.append(token)
-                
-            }
-            
-            return tokens
         }
     }
 }

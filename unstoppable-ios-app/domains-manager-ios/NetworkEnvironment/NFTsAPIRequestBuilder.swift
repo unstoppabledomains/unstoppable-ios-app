@@ -17,7 +17,8 @@ final class NFTsAPIRequestBuilder {
         }
         if let chains,
            !chains.isEmpty {
-            url += "&symbols=MATIC"
+            let chainsList = chains.map { $0.rawValue }.joined(separator: ",")
+            url += "&symbols=\(chainsList)"
         }
         
         return APIRequest(url: URL(string: url)!,

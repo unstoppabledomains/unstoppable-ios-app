@@ -1158,6 +1158,10 @@
 		C6B65F792B550FC2006D1812 /* WalletNFTsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F762B550FC1006D1812 /* WalletNFTsServiceProtocol.swift */; };
 		C6B65F7A2B550FC2006D1812 /* WalletNFTsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F762B550FC1006D1812 /* WalletNFTsServiceProtocol.swift */; };
 		C6B65F7C2B551054006D1812 /* PreviewWalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F7B2B551054006D1812 /* PreviewWalletNFTsService.swift */; };
+		C6B65F7E2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */; };
+		C6B65F7F2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */; };
+		C6B65F842B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */; };
+		C6B65F852B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */; };
 		C6B6858B280077F7000F9037 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858A280077F7000F9037 /* UIImage.swift */; };
 		C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */ = {isa = PBXBuildFile; fileRef = C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */; };
@@ -3294,6 +3298,8 @@
 		C6B65F752B550FC1006D1812 /* WalletNFTsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletNFTsService.swift; sourceTree = "<group>"; };
 		C6B65F762B550FC1006D1812 /* WalletNFTsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletNFTsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B65F7B2B551054006D1812 /* PreviewWalletNFTsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewWalletNFTsService.swift; sourceTree = "<group>"; };
+		C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeWalletView+Entities.swift"; sourceTree = "<group>"; };
+		C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletNFTsCollectionSectionView.swift; sourceTree = "<group>"; };
 		C6B6858A280077F7000F9037 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		C6B6858F28007C09000F9037 /* UDCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBox.swift; sourceTree = "<group>"; };
 		C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = allDoneConfettiAnimation.gif; sourceTree = "<group>"; };
@@ -6944,7 +6950,9 @@
 			isa = PBXGroup;
 			children = (
 				C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */,
+				C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */,
 				C6FED9E12B4FD7F600D6378F /* HomeWalletView.swift */,
+				C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */,
 				C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */,
 				C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */,
 				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
@@ -8861,6 +8869,7 @@
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
 				C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
+				C6B65F7E2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */,
 				C6D5DAD428374B4600379C38 /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
 				29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
 				C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */,
@@ -9111,6 +9120,7 @@
 				C6109E8E28E6AA660027D5D8 /* AppContextProtocol.swift in Sources */,
 				C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */,
+				C6B65F842B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */,
 				C6D647A22B1F187600D724AC /* UDRouter+Common.swift in Sources */,
 				C603D7AA2A56FC2300CEC696 /* ChatUserBubbledMessageCell.swift in Sources */,
 				C6010D1A287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
@@ -10117,6 +10127,7 @@
 				C61808212B19AB1E0032E543 /* DomainToPurchase.swift in Sources */,
 				C6C8F8662B21811000A9834D /* UDWalletBackUpError.swift in Sources */,
 				C61807B72B199E370032E543 /* PreviewUIImage.swift in Sources */,
+				C6B65F852B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */,
 				C6C8F9802B2188FA00A9834D /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D646F62B1ED65200D724AC /* Extension-String+Common.swift in Sources */,
 				C6D645922B1DBAFC00D724AC /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,
@@ -10223,6 +10234,7 @@
 				C61807EA2B19A6400032E543 /* UDWalletsServiceProtocol.swift in Sources */,
 				C6D6474C2B1EDB6D00D724AC /* ReviewTransferSwitcherCell.swift in Sources */,
 				C6D645C42B1DBD3900D724AC /* CNavigationBarBackButton.swift in Sources */,
+				C6B65F7F2B55153E006D1812 /* HomeWalletView+Entities.swift in Sources */,
 				C61807B52B199DF50032E543 /* UIColor.swift in Sources */,
 				C6C8F9982B218DBB00A9834D /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */,
 				C6C8F8DE2B21836400A9834D /* NoParkedDomainsFoundViewController.swift in Sources */,

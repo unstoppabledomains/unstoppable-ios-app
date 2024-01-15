@@ -126,7 +126,13 @@ private extension HomeWalletView {
 
     @ViewBuilder
     func collectiblesContentView() -> some View {
-        HomeWalletCollectiblesEmptyView(walletAddress: viewModel.selectedWallet.address)
+        if viewModel.nftsCollections.isEmpty {
+            HomeWalletCollectiblesEmptyView(walletAddress: viewModel.selectedWallet.address)
+        } else {
+            ForEach(viewModel.nftsCollections) { nftCollection in
+                HomeWalletNFTsCollectionSectionView(collection: nftCollection, nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds)
+            }
+        }
     }
     
     @ViewBuilder
