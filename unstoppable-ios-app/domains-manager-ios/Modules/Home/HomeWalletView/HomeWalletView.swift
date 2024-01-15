@@ -115,12 +115,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func contentTypeSelector() -> some View {
-        Picker("", selection: $presenter.selectedContentType) {
-            ForEach(ContentType.allCases, id: \.self) { contentType in
-                Text(contentType.title)
-            }
-        }
-        .pickerStyle(.segmented)
+        HomeWalletContentTypeSelectorView(selectedContentType: $presenter.selectedContentType)
     }
     
     @ViewBuilder
