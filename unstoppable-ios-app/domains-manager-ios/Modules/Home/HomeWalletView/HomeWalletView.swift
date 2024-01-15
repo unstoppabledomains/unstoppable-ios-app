@@ -57,13 +57,13 @@ private extension HomeWalletView {
                 .background(Color.clear)
             
             Button {
-                
+                presenter.domainNamePressed()
             } label: {
                 HStack {
                     Text("dans.crypto")
                         .font(.currentFont(size: 16, weight: .medium))
                     
-                    Image(systemName: "chevron.compact.down")
+                    Image(systemName: "chevron.up.chevron.down")
                         .squareFrame(20)
                 }
                 .foregroundStyle(Color.foregroundSecondary)
@@ -88,7 +88,7 @@ private extension HomeWalletView {
     @ViewBuilder
     func walletActionView(for action: WalletAction) -> some View {
         Button {
-            
+            presenter.walletActionPressed(action)
         } label: {
             VStack(spacing: 4) {
                 action.icon
@@ -137,34 +137,12 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func tokensContentView() -> some View {
-        VStack(spacing: 0) {
+        LazyVStack(spacing: 0) {
             ForEach(presenter.tokens) { token in
                 Button {
                     
                 } label: {
-                    HStack(spacing: 16) {
-                        Image(uiImage: .ethBGLarge)
-                            .resizable()
-                            .squareFrame(40)
-                            .clipShape(Circle())
-                        
-                        VStack(alignment: .leading) {
-                            Text(token.fullName)
-                                .font(.currentFont(size: 16, weight: .medium))
-                                .foregroundStyle(Color.foregroundDefault)
-                            Text("\(Int(token.value)) \(token.ticker)")
-                                .font(.currentFont(size: 14, weight: .regular))
-                                .foregroundStyle(Color.foregroundSecondary)
-                        }
-                        Spacer()
-                        
-                        VStack(alignment: .leading) {
-                            Text("$\(Int(token.fiatValue))")
-                                .font(.currentFont(size: 16, weight: .medium))
-                                .foregroundStyle(Color.foregroundDefault)
-                        }
-                    }
-                    .frame(height: 64)
+                    HomeWalletTokenRowView(token: token)
                 }
             }
         }
@@ -172,9 +150,9 @@ private extension HomeWalletView {
 
     @ViewBuilder
     func collectiblesContentView() -> some View {
-        
+        HomeWalletCollectiblesEmptyView(walletAddress: presenter.walletAddress)
     }
-
+    
     @ViewBuilder
     func domainsContentView() -> some View {
         LazyVGrid(columns: columns, spacing: 16) {

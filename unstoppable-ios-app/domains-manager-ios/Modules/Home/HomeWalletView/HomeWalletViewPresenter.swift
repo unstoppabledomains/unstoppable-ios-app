@@ -13,7 +13,18 @@ extension HomeWalletView {
         
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
-        @Published var selectedContentType: ContentType = .tokens
+        @Published var selectedContentType: ContentType = .collectibles
+        
+        
+        var walletAddress: String { "" } // TODO: - Take from wallet
+        
+        func walletActionPressed(_ action: WalletAction) {
+            
+        }
+        
+        func domainNamePressed() {
+            
+        }
         
         
     }
@@ -23,14 +34,45 @@ extension HomeWalletView {
     enum ContentType: String, CaseIterable {
         case tokens, collectibles, domains
         
-        var title: String { rawValue }
+        var title: String {
+            switch self {
+            case .tokens:
+                return String.Constants.tokens.localized()
+            case .collectibles:
+                return String.Constants.collectibles.localized()
+            case .domains:
+                return String.Constants.domain.localized()
+            }
+        }
     }
     
     enum WalletAction: String, CaseIterable {
         case receive, profile, copy, more
         
-        var title: String { rawValue }
-        var icon: Image { .systemGlobe }
+        var title: String {
+            switch self {
+            case .receive:
+                return String.Constants.receive.localized()
+            case .profile:
+                return String.Constants.profile.localized()
+            case .copy:
+                return String.Constants.copy.localized()
+            case .more:
+                return String.Constants.more.localized()
+            }
+        }
+        var icon: Image {
+            switch self {
+            case .receive:
+                return .arrowBottom
+            case .profile:
+                return .personIcon
+            case .copy:
+                return .squareBehindSquareIcon
+            case .more:
+                return .dotsIcon
+            }
+        }
     }
 }
 

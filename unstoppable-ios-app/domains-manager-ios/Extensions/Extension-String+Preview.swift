@@ -213,6 +213,11 @@ extension String {
         static let download = "DOWNLOAD"
         static let unencrypted = "UNENCRYPTED"
         static let viewInBrowser = "VIEW_IN_BROWSER"
+        static let tokens = "TOKENS"
+        static let collectibles = "COLLECTIBLES"
+        static let receive = "RECEIVE"
+        static let profile = "PROFILE"
+        static let more = "MORE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1048,6 +1053,10 @@ extension String {
         static let aiSearchHint3 = "AI_SEARCH_HINT_3"
         static let purchaseSearchCantButPullUpTitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE"
         static let purchaseSearchCantButPullUpSubtitle = "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE"
+        
+        // Home
+        static let homeWalletCollectiblesEmptyTitle = "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE"
+        static let homeWalletCollectiblesEmptySubtitle = "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE"
     }
     
     enum BlockChainIcons: String {

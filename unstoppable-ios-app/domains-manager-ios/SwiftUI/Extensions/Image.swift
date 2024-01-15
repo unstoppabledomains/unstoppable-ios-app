@@ -41,5 +41,10 @@ extension Image {
     static let magicWandIcon = Image(uiImage: .magicWandIcon)
     static let warningIcon = Image(uiImage: .warningIcon)
     static let tapSingleIcon = Image(uiImage: .tapSingleIcon)
+    static let layoutGridEmptyIcon = Image(uiImage: .layoutGridEmptyIcon)
+    static let squareBehindSquareIcon = Image(uiImage: .squareBehindSquareIcon)
+    static let dotsIcon = Image(uiImage: .dotsIcon)
+    static let personIcon = Image(uiImage: .personIcon)
+    static let arrowBottom = Image(uiImage: .arrowBottom)
     
 }
