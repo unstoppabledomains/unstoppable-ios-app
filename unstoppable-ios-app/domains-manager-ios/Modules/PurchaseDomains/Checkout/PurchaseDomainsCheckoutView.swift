@@ -107,7 +107,7 @@ private extension PurchaseDomainsCheckoutView {
             if case .hasUnpaidDomains = cartStatus {
                 topWarningViewWith(message: .hasUnpaidDomains) {
                     logButtonPressedAnalyticEvents(button: .openUnpaidDomainsInfo)
-                    openLinkExternally(.mainLanding)
+                    openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
                 }
             } else if !purchaseDomainsService.isApplePaySupported {
                 topWarningViewWith(message: .applePayNotSupported) {
