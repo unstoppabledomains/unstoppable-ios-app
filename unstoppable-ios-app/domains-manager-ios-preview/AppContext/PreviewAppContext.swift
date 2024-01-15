@@ -69,7 +69,8 @@ struct AppContext: AppContextProtocol {
     var messagingService: MessagingServiceProtocol = MessagingService()
     
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
-    
+    var walletNFTsService: WalletNFTsServiceProtocol = PreviewWalletNFTsService()
+
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
 

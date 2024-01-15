@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @ObservedObject private var viewModel = HomeWalletViewModel()
+    @StateObject private var viewModel = HomeWalletViewModel()
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -126,7 +126,7 @@ private extension HomeWalletView {
 
     @ViewBuilder
     func collectiblesContentView() -> some View {
-        HomeWalletCollectiblesEmptyView(walletAddress: viewModel.walletAddress)
+        HomeWalletCollectiblesEmptyView(walletAddress: viewModel.selectedWallet.address)
     }
     
     @ViewBuilder

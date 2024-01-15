@@ -157,6 +157,9 @@ extension UIImage {
     static let squareBehindSquareIcon = UIImage(named: "squareBehindSquareIcon")!
     static let personIcon = UIImage(named: "personIcon")!
     static let arrowBottom = UIImage(named: "arrowBottom")!
+    static let solanaIcon = UIImage(named: "solanaIcon")!
+    static let cardanoIcon = UIImage(named: "cardanoIcon")!
+    static let hederaIcon = UIImage(named: "hederaIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

@@ -16,9 +16,6 @@ extension HomeWalletView {
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published var selectedContentType: ContentType = .tokens
         
-        
-        var domainName: String { "dans.crypto" }
-        var walletAddress: String { "" } // TODO: - Take from wallet
         var totalBalance: Int { 20000 }
         
         func walletActionPressed(_ action: WalletAction) {
@@ -30,7 +27,6 @@ extension HomeWalletView {
         }
         
         func loadIconIfNeededFor(token: TokenDescription) {
-            print("On appear token \(token.symbol)")
             guard token.icon == nil else { return }
             
             token.loadIconIfNeeded { [weak self] image in
@@ -149,7 +145,7 @@ extension HomeWalletView {
         }
         
         static func mock() -> [TokenDescription] {
-            var tickers = ["ETH", "MATIC"]
+            let tickers = ["ETH", "MATIC"]
 //            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
 //                           "SOL", "USDT", "DOGE", "DAI"]
 //            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
