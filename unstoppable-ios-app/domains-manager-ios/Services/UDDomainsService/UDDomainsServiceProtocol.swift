@@ -19,7 +19,7 @@ protocol UDDomainsServiceProtocol {
                      paidDomains: [String],
                      to wallet: UDWallet,
                      userEmail: String,
-                     securityCode: String) async throws -> [TransactionItem]
+                     securityCode: String) async throws 
     
     func findDomains(by domainNames: [String]) -> [DomainItem]
     func getAllDomains() -> [DomainItem]

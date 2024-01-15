@@ -67,7 +67,7 @@ extension DomainName {
     private func domainComponents() -> [String]? {
         let components = self.components(separatedBy: String.dotSeparator)
         guard components.count >= 2 else {
-            Debugger.printFailure("Domain name with no deterctable NS: \(self)", critical: false)
+            Debugger.printFailure("Domain name with no detectable NS: \(self)", critical: false)
             return nil
         }
         return components

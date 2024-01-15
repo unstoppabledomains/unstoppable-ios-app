@@ -149,7 +149,7 @@ private extension WalletDetailsViewPresenter {
             
             let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let walletDomains = domains.filter({ $0.isOwned(by: [wallet] )})
-            let interactableDomains = walletDomains.filter({ $0.isInteractable })
+            let domainsAvailableForRR = walletDomains.availableForRRItems()
             let rrDomain = await dataAggregatorService.reverseResolutionDomain(for: wallet)
             var isRRSetupInProgress = false
             if let rrDomain = rrDomain {
@@ -190,7 +190,7 @@ private extension WalletDetailsViewPresenter {
                 if isRRSetupInProgress {
                     snapshot.appendItems([.listItem(.reverseResolution(state: .settingFor(domain: rrDomain)))])
                 } else {
-                    if interactableDomains.count == 1 {
+                    if domainsAvailableForRR.count == 1 {
                         // For single domain there's no reason to show updating records state since user can't change it. 
                         snapshot.appendItems([.listItem(.reverseResolution(state: .setFor(domain: rrDomain, isEnabled: false, isUpdatingRecords: false)))])
                     } else {
@@ -200,7 +200,7 @@ private extension WalletDetailsViewPresenter {
                     }
                 }
             } else {
-                if !interactableDomains.isEmpty {
+                if !domainsAvailableForRR.isEmpty {
                     snapshot.appendItems([.listItem(.reverseResolution(state: .notSet(isEnabled: isReverseResolutionChangeAllowed)))])
                 }
             }

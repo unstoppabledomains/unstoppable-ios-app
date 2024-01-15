@@ -96,13 +96,13 @@ public struct Debugger {
         let message = "\(String.itTook(from: startDate)) \(s)"
         let timeAfterStart = Date().timeIntervalSince(startDate)
         if timeAfterStart > timeout {
-            printWarning(message)
+            printWarning(message, suppressBugSnag: true)
         } else {
             printInfo(topic: topic, message)
         }
     }
     
-    public static func printFailure(_ s: String, critical: Bool = false) {
+    public static func printFailure(_ s: String, critical: Bool = false, suppressBugSnag: Bool = false) {
         #if DEBUG
         if critical {
             fatalError("⛔️ CRITICAL ERROR: \(s)")
@@ -110,6 +110,9 @@ public struct Debugger {
             logger.critical("🟥 \(s)")
         }
         #else
+        guard !suppressBugSnag else {
+            return
+        }
         let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
                                     reason: "",
                                     userInfo: nil)
@@ -117,10 +120,13 @@ public struct Debugger {
         #endif
     }
     
-    static func printWarning(_ s: String) {
+    static func printWarning(_ s: String, suppressBugSnag: Bool = false) {
         #if DEBUG
         logger.warning("🟨🔸 WARNING: \(s)")
         #else
+        guard !suppressBugSnag else {
+            return
+        }
         let exception = NSException(name:NSExceptionName(rawValue: "WARNING: \(s)"),
                                     reason: "",
                                     userInfo: nil)

@@ -134,6 +134,8 @@ extension DomainDisplayInfo {
     }
     var isZilliqaBased: Bool { blockchain == .Zilliqa }
     var isInteractable: Bool { usageType == .normal }
+    var isAbleToSetAsRR: Bool { usageType == .normal && blockchain == .Matic }
+    var isAbleToTransfer: Bool { usageType == .normal && blockchain == .Matic }
     var isAvailableForMessaging: Bool {
         switch usageType {
         case .normal:
@@ -153,6 +155,10 @@ extension Array where Element == DomainDisplayInfo {
     
     func availableForMessagingItems() -> [DomainDisplayInfo] {
         self.filter { $0.isAvailableForMessaging }
+    }
+    
+    func availableForRRItems() -> [DomainDisplayInfo] {
+        self.filter { $0.isAbleToSetAsRR }
     }
     
     func requirePNItems() -> [DomainDisplayInfo] {

@@ -20,6 +20,7 @@ final class LoginWithEmailOnboardingViewPresenter: LoginWithEmailViewPresenter {
     }
     
     override func didAuthorizeAction() {
+        onboardingFlowManager?.onboardingData.loginProvider = .email
         onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }

@@ -45,8 +45,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
             } else {
                 let mintingDomains = mintingInProgressDomains.map({ MintingDomain(name: $0.name,
                                                                                   walletAddress: $0.displayInfo.ownerWallet ?? "",
-                                                                                  isPrimary: false,
-                                                                                  transactionId: 0)})
+                                                                                  isPrimary: false) })
                 try? MintingDomainsStorage.save(mintingDomains: mintingDomains)
             }
         }
@@ -147,7 +146,6 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         let mintingDomains = domains.map({ domain in MintingDomain(name: domain,
                                                                    walletAddress: wallet.address,
                                                                    isPrimary: false,
-                                                                   transactionId: 0,
                                                                    transactionHash: transactions.first(where: { $0.domainName == domain })?.transactionHash) })
         return mintingDomains
     }
