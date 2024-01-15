@@ -620,3 +620,16 @@ struct UpdateProfilePendingChangesRequest {
     let pendingChanges: DomainProfilePendingChanges
     let domain: DomainItem
 }
+
+struct ProfileWalletBalance: Codable {
+    let symbol: String
+    let name: String
+    let balance: Double
+    var value: Value?
+    
+    struct Value: Codable {
+        let marketUsd: Double?
+        let walletUsd: Double?
+    }
+}
+

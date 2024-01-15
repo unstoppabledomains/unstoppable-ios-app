@@ -60,7 +60,7 @@ private extension HomeWalletView {
                 presenter.domainNamePressed()
             } label: {
                 HStack {
-                    Text("dans.crypto")
+                    Text(presenter.domainName)
                         .font(.currentFont(size: 16, weight: .medium))
                     
                     Image(systemName: "chevron.up.chevron.down")
@@ -70,7 +70,7 @@ private extension HomeWalletView {
             }
             .buttonStyle(.plain)
             
-            Text("200$")
+            Text(formatCartPrice(presenter.totalBalance))
                 .titleText()
         }
         .frame(maxWidth: .infinity)
@@ -132,14 +132,15 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func tokensContentView() -> some View {
-        LazyVStack(spacing: 0) {
-            ForEach(presenter.tokens) { token in
-                Button {
-                    
-                } label: {
-                    HomeWalletTokenRowView(token: token)
-                }
+        ForEach(presenter.tokens) { token in
+            Button {
+                
+            } label: {
+                HomeWalletTokenRowView(token: token, onAppear: {
+                    presenter.loadIconIfNeededFor(token: token)
+                })
             }
+            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
     }
 

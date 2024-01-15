@@ -13,10 +13,12 @@ extension HomeWalletView {
         
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
-        @Published var selectedContentType: ContentType = .collectibles
+        @Published var selectedContentType: ContentType = .tokens
         
         
+        var domainName: String { "dans.crypto" }
         var walletAddress: String { "" } // TODO: - Take from wallet
+        var totalBalance: Int { 20000 }
         
         func walletActionPressed(_ action: WalletAction) {
             
@@ -26,7 +28,18 @@ extension HomeWalletView {
             
         }
         
-        
+        func loadIconIfNeededFor(token: TokenDescription) {
+            print("On appear token \(token.symbol)")
+            guard token.icon == nil else { return }
+            
+            token.loadIconIfNeeded { [weak self] image in
+                DispatchQueue.main.async {
+                    if let i = self?.tokens.firstIndex(where: { $0.id == token.id }) {
+                        self?.tokens[i].icon = image
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -41,7 +54,7 @@ extension HomeWalletView {
             case .collectibles:
                 return String.Constants.collectibles.localized()
             case .domains:
-                return String.Constants.domain.localized()
+                return String.Constants.domains.localized()
             }
         }
     }
@@ -74,33 +87,83 @@ extension HomeWalletView {
             }
         }
     }
-}
-
-struct TokenDescription: Hashable, Identifiable {
-    var id: String { ticker }
     
-    let ticker: String
-    let fullName: String
-    let value: Double
-    let fiatValue: Double
-    
-    
-    static func mock() -> [TokenDescription] {
-        var tickers = ["ETH", "MATIC", "USDC", "1INCH",
-                       "SOL", "USDT", "DOGE", "DAI"]
-        tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
-        var tokens = [TokenDescription]()
-        for ticker in tickers {
-            let value = Double(arc4random_uniform(10000)) + 20
-            let token = TokenDescription(ticker: ticker,
-                                         fullName: ticker,
-                                         value: value,
-                                         fiatValue: value)
-            tokens.append(token)
-            
+    struct TokenDescription: Hashable, Identifiable {
+        var id: String { symbol }
+        
+        let symbol: String
+        let name: String
+        let balance: Double
+        var marketUsd: Double?
+        var icon: UIImage? = nil
+        var fiatValue: Double? {
+            if let marketUsd {
+                return marketUsd * balance
+            }
+            return nil
         }
         
-        return tokens
+        static let iconSize: InitialsView.InitialsSize = .default
+        static let iconStyle: InitialsView.Style = .gray
+        
+        init(walletBalance: ProfileWalletBalance) {
+            self.symbol = walletBalance.symbol
+            self.name = walletBalance.name
+            self.balance = walletBalance.balance
+            self.marketUsd = walletBalance.value?.marketUsd
+            self.icon = appContext.imageLoadingService.cachedImage(for: .currencyTicker(symbol,
+                                                                                        size: TokenDescription.iconSize,
+                                                                                        style: TokenDescription.iconStyle))
+        }
+        
+        init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
+            self.symbol = symbol
+            self.name = name
+            self.balance = balance
+            self.marketUsd = marketUsd
+            self.icon = icon
+        }
+        
+        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {
+            guard icon == nil else { return }
+            
+            Task {
+                let size = TokenDescription.iconSize
+                let style = TokenDescription.iconStyle
+                let ticker = symbol
+                let initials = await appContext.imageLoadingService.loadImage(from: .initials(ticker,
+                                                                                              size: size,
+                                                                                              style: style),
+                                                                              downsampleDescription: nil)
+                iconUpdated(initials)
+                
+                
+                if let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
+                                                                                                   size: size,
+                                                                                                   style: style),
+                                                                             downsampleDescription: .icon) {
+                    iconUpdated(icon)
+                }
+            }
+        }
+        
+        static func mock() -> [TokenDescription] {
+            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
+                           "SOL", "USDT", "DOGE", "DAI"]
+            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
+            var tokens = [TokenDescription]()
+            for ticker in tickers {
+                let value = Double(arc4random_uniform(10000))
+                let token = TokenDescription(symbol: ticker,
+                                             name: ticker,
+                                             balance: value,
+                                             marketUsd: value)
+                tokens.append(token)
+                
+            }
+            
+            return tokens
+        }
     }
 }
 

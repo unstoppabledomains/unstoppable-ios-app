@@ -184,12 +184,14 @@ fileprivate extension ImageLoadingService {
                 return image
             }
             return await fetchImageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
-        case .currency(let currency, let size, let style):
-            if let url = URL(string: NetworkConfig.currencyIconUrl(for: currency)),
+        case .currencyTicker(let ticker, let size, let style):
+            if let url = URL(string: NetworkConfig.currencyIconUrl(for: ticker)),
                let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
-            return await fetchImageFor(source: .initials(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .initials(ticker, size: size, style: style), downsampleDescription: downsampleDescription)
+        case .currency(let currency, let size, let style):
+            return await fetchImageFor(source: .currencyTicker(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
         case .wcApp(let appInfo, let size):
             if let url = appInfo.getIconURL(),
                let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {

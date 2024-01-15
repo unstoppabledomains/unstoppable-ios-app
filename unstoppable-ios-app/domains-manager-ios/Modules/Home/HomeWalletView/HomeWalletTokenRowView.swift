@@ -9,35 +9,42 @@ import SwiftUI
 
 struct HomeWalletTokenRowView: View {
     
-    let token: TokenDescription
+    let token: HomeWalletView.TokenDescription
+    let onAppear: EmptyCallback
     
     var body: some View {
         HStack(spacing: 16) {
-            Image(uiImage: .ethBGLarge)
+            Image(uiImage: token.icon ?? .ethBGLarge)
                 .resizable()
                 .squareFrame(40)
                 .clipShape(Circle())
             
             VStack(alignment: .leading) {
-                Text(token.fullName)
+                Text(token.name)
                     .font(.currentFont(size: 16, weight: .medium))
                     .foregroundStyle(Color.foregroundDefault)
-                Text("\(Int(token.value)) \(token.ticker)")
+                Text("\(Int(token.balance)) \(token.symbol)")
                     .font(.currentFont(size: 14, weight: .regular))
                     .foregroundStyle(Color.foregroundSecondary)
             }
             Spacer()
             
             VStack(alignment: .leading) {
-                Text("$\(Int(token.fiatValue))")
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
+                if let fiatValue = token.fiatValue {
+                    Text("$\(Int(fiatValue))")
+                        .font(.currentFont(size: 16, weight: .medium))
+                        .foregroundStyle(Color.foregroundDefault)
+                }
             }
         }
         .frame(height: 64)
+        .onAppear {
+            onAppear()
+        }
     }
 }
 
 #Preview {
-    HomeWalletTokenRowView(token: TokenDescription.mock().first!)
+    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!,
+                           onAppear: { })
 }
