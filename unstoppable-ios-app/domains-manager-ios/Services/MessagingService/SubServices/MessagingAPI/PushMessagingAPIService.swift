@@ -598,8 +598,8 @@ private extension PushMessagingAPIService {
     }
     
     func getLinkFrom(message: MessagingChatMessage) -> String? {
-        let messageMetadata: PushEnvironment.MessageServiceMetadata = try! decodeServiceMetadata(from: message.serviceMetadata)
-        return messageMetadata.link
+        let messageMetadata: PushEnvironment.MessageServiceMetadata? = try? decodeServiceMetadata(from: message.serviceMetadata)
+        return messageMetadata?.link
     }
 }
 
