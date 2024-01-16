@@ -454,12 +454,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                      filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
-        func convertPushMessageToChatMessage(_ message: Push.Message) throws -> MessagingChatMessage {
-            guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
-                                                                                            in: chat,
-                                                                                            pgpKey: pgpPrivateKey,
-                                                                                            isRead: true,
-                                                                                            filesService: filesService) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+        func convertPushMessageToChatMessage(_ message: Push.Message) async throws -> MessagingChatMessage {
+            guard let chatMessage = await PushEntitiesTransformer.convertPushMessageToChatMessage(message,
+                                                                                                  in: chat,
+                                                                                                  pgpKey: pgpPrivateKey,
+                                                                                                  isRead: true,
+                                                                                                  filesService: filesService) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
             
             return chatMessage
         }
@@ -480,14 +480,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 message = try await Push.PushChat.sendMessage(sendOptions)
             }
             
-            return try convertPushMessageToChatMessage(message)
+            return try await convertPushMessageToChatMessage(message)
         case .group, .community:
             let receiver = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
             let sendOptions = try await buildPushSendOptions(for: messageType,
                                                              receiver: receiver,
                                                              by: user)
             let message = try await Push.PushChat.sendMessage(sendOptions)
-            return try convertPushMessageToChatMessage(message)
+            return try await convertPushMessageToChatMessage(message)
         }
     }
     
@@ -511,11 +511,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                        userWallet: user.wallet,
                                                                        isApproved: true,
                                                                        publicKeys: publicKeys),
-              let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
-                                                                                        in: chat,
-                                                                                        pgpKey: pgpPrivateKey,
-                                                                                        isRead: true,
-                                                                                        filesService: filesService) else {
+              let chatMessage = await PushEntitiesTransformer.convertPushMessageToChatMessage(message,
+                                                                                              in: chat,
+                                                                                              pgpKey: pgpPrivateKey,
+                                                                                              isRead: true,
+                                                                                              filesService: filesService) else {
             throw PushMessagingAPIServiceError.failedToConvertPushMessage
         }
         
@@ -716,7 +716,7 @@ extension PushMessagingAPIService {
     }
 }
 
-extension DomainItem: Push.Signer, Push.TypedSinger {
+extension DomainItem: Push.Signer, Push.TypedSigner {
     func getEip191Signature(message: String) async throws -> String {
         try await self.personalSign(message: message)
     }
@@ -744,12 +744,16 @@ final class DefaultPushMessagingAPIServiceDataProvider: PushMessagingAPIServiceD
                                                            pgpPrivateKey: "", // Get encrypted messages
                                                            toDecrypt: false,
                                                            env: env)
-        
-        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
-                                                                                                         in: chat,
-                                                                                                         pgpKey: pgpPrivateKey,
-                                                                                                         isRead: isRead,
-                                                                                                         filesService: filesService) })
+        var messages: [MessagingChatMessage] = []
+        for pushMessage in pushMessages {
+            if let message = await PushEntitiesTransformer.convertPushMessageToChatMessage(pushMessage,
+                                                                                           in: chat,
+                                                                                           pgpKey: pgpPrivateKey,
+                                                                                           isRead: isRead,
+                                                                                           filesService: filesService) {
+                messages.append(message)
+            }
+        }
         return messages
     }
 }

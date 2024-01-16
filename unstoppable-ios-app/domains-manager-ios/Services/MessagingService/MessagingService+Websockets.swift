@@ -137,7 +137,7 @@ private extension MessagingService {
             if let chat = await storageService.getChatWith(id: messageEntity.chatId,
                                                            of: profile.id,
                                                            serviceIdentifier: profile.serviceIdentifier),
-               let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) {
+               let message = await messageEntity.transformToMessageBlock(messageEntity, chat, filesService) {
                 messages.append(.init(message: message, profile: profile))
             }
         }
