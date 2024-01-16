@@ -1164,6 +1164,10 @@
 		C6B65F852B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */; };
 		C6B65F872B557FEB006D1812 /* HomeTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F862B557FEB006D1812 /* HomeTabViewController.swift */; };
 		C6B65F882B557FEB006D1812 /* HomeTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F862B557FEB006D1812 /* HomeTabViewController.swift */; };
+		C6B65F8D2B565B1F006D1812 /* HomeWalletActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */; };
+		C6B65F8E2B565B1F006D1812 /* HomeWalletActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */; };
+		C6B65F902B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */; };
+		C6B65F912B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */; };
 		C6B6858B280077F7000F9037 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858A280077F7000F9037 /* UIImage.swift */; };
 		C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */ = {isa = PBXBuildFile; fileRef = C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */; };
@@ -3303,6 +3307,8 @@
 		C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeWalletView+Entities.swift"; sourceTree = "<group>"; };
 		C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletNFTsCollectionSectionView.swift; sourceTree = "<group>"; };
 		C6B65F862B557FEB006D1812 /* HomeTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabViewController.swift; sourceTree = "<group>"; };
+		C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletActionsView.swift; sourceTree = "<group>"; };
+		C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletSortingSelectorView.swift; sourceTree = "<group>"; };
 		C6B6858A280077F7000F9037 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		C6B6858F28007C09000F9037 /* UDCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBox.swift; sourceTree = "<group>"; };
 		C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = allDoneConfettiAnimation.gif; sourceTree = "<group>"; };
@@ -6956,6 +6962,8 @@
 				C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */,
 				C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */,
 				C6FED9E12B4FD7F600D6378F /* HomeWalletView.swift */,
+				C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */,
+				C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */,
 				C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */,
 				C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */,
 				C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */,
@@ -8786,6 +8794,7 @@
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
 				C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C6F060C02ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift in Sources */,
+				C6B65F902B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6DDF2502B147F1A006D1F0B /* UDButtonStyle.swift in Sources */,
@@ -8919,6 +8928,7 @@
 				C671E38728FE85C800A2B3A0 /* CarouselView.swift in Sources */,
 				C685A94928408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift in Sources */,
 				C62396812A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */,
+				C6B65F8D2B565B1F006D1812 /* HomeWalletActionsView.swift in Sources */,
 				C63A350C28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
 				C6B65F872B557FEB006D1812 /* HomeTabViewController.swift in Sources */,
 				C67B6D4C2AE79AB000F74B0B /* ImagesCacheStorage.swift in Sources */,
@@ -9968,6 +9978,7 @@
 				C6C8F9942B218BA600A9834D /* PreviewAnyCodable.swift in Sources */,
 				C6D6460A2B1DC06300D724AC /* UserDefaults.swift in Sources */,
 				C6C8F92F2B2183C700A9834D /* DomainsListViewController.swift in Sources */,
+				C6B65F912B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
 				C6C8F8D62B21834200A9834D /* UpgradeToPolygonTutorial.swift in Sources */,
 				C61807BF2B19A2CC0032E543 /* AppContextProtocol.swift in Sources */,
 				C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
@@ -10349,6 +10360,7 @@
 				C6D647502B1EDB6D00D724AC /* TransferDomainNavigationManager.swift in Sources */,
 				C6D647052B1ED7C300D724AC /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C6D647482B1EDA6E00D724AC /* PreviewSignPaymentTransactionUIConfiguration.swift in Sources */,
+				C6B65F8E2B565B1F006D1812 /* HomeWalletActionsView.swift in Sources */,
 				C6960C382B19973F00B79E28 /* NetworkConfig.swift in Sources */,
 				C6D646292B1DC2AB00D724AC /* PullUpCollectionViewCell.swift in Sources */,
 				C6D646D22B1ED2B900D724AC /* EnterDomainProfileSocialValuePresenter.swift in Sources */,

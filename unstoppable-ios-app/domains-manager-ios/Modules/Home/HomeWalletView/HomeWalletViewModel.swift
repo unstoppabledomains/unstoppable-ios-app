@@ -83,6 +83,11 @@ extension HomeWalletView {
         }
         
         func walletActionPressed(_ action: WalletAction) {
+            print("Action pressed \(action.title)")
+        }
+        
+        func walletSubActionPressed(_ subAction: WalletSubAction) {
+            print("SubAction pressed \(subAction.title)")
             
         }
         
@@ -153,6 +158,7 @@ extension HomeWalletView {
                 return String.Constants.more.localized()
             }
         }
+        
         var icon: Image {
             switch self {
             case .receive:
@@ -165,8 +171,34 @@ extension HomeWalletView {
                 return .dotsIcon
             }
         }
+        
+        var subActions: [WalletSubAction] {
+            switch self {
+            case .receive, .profile, .copy:
+                return []
+            case .more:
+                return [.connectedApps]
+            }
+        }
     }
-  
+    enum WalletSubAction: String, CaseIterable {
+        case connectedApps
+        
+        var title: String {
+            switch self {
+            case .connectedApps:
+                return String.Constants.connectedAppsTitle.localized()
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+            case .connectedApps:
+                return .appleIcon
+            }
+        }
+    }
+
     enum TokensSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
         case highestValue, marketCap, alphabetical
         
