@@ -12,6 +12,7 @@ struct HomeWalletNFTsCollectionSectionView: View {
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
     let nftAppearCallback: @MainActor (_ nft: NFTDisplayInfo, _ collection: HomeWalletView.NFTsCollectionDescription)->()
+    let nftSelectedCallback: (NFTDisplayInfo)->()
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -83,17 +84,24 @@ private extension HomeWalletNFTsCollectionSectionView {
     
     @ViewBuilder
     func nftCellView(_ nft: NFTDisplayInfo) -> some View {
-        Image(uiImage: nft.icon ?? .init())
-            .resizable()
-            .transition(.opacity)
-            .background(Color.backgroundSubtle)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .aspectRatio(1, contentMode: .fit)
+        Button {
+            UDVibration.buttonTap.vibrate()
+            nftSelectedCallback(nft)
+        } label: {
+            Image(uiImage: nft.icon ?? .init())
+                .resizable()
+                .transition(.opacity)
+                .background(Color.backgroundSubtle)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .aspectRatio(1, contentMode: .fit)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
     HomeWalletNFTsCollectionSectionView(collection: HomeWalletView.NFTsCollectionDescription.mock().first!,
                                         nftsCollectionsExpandedIds: .constant([]),
-                                        nftAppearCallback: { _,_ in })
+                                        nftAppearCallback: { _,_ in },
+                                        nftSelectedCallback: { _ in })
 }

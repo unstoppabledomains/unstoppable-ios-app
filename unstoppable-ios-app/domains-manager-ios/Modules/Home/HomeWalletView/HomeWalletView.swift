@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeWalletView: View {
     
     @StateObject private var viewModel = HomeWalletViewModel()
+    @State private var selectedNFT: NFTDisplayInfo?
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -48,6 +49,9 @@ struct HomeWalletView: View {
         .background(Color.backgroundDefault)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $selectedNFT, content: { nft in
+            NFTDetailsView(nft: nft)
+        })
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -137,9 +141,14 @@ private extension HomeWalletView {
             ForEach(viewModel.nftsCollections) { nftCollection in
                 HomeWalletNFTsCollectionSectionView(collection: nftCollection, 
                                                     nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds,
-                                                    nftAppearCallback: viewModel.loadIconIfNeededForNFT)
+                                                    nftAppearCallback: viewModel.loadIconIfNeededForNFT, 
+                                                    nftSelectedCallback: didSelectNFT)
             }
         }
+    }
+    
+    func didSelectNFT(_ nft: NFTDisplayInfo) {
+        selectedNFT = nft
     }
     
     @ViewBuilder
