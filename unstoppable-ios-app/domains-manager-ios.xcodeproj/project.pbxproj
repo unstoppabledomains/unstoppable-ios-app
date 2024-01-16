@@ -6962,14 +6962,7 @@
 				C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */,
 				C6B65F7D2B55153E006D1812 /* HomeWalletView+Entities.swift */,
 				C6FED9E12B4FD7F600D6378F /* HomeWalletView.swift */,
-				C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */,
-				C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */,
-				C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */,
-				C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */,
-				C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */,
-				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
-				C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */,
-				C6B65F582B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift */,
+				C6B65F922B565E52006D1812 /* Subviews */,
 			);
 			path = HomeWalletView;
 			sourceTree = "<group>";
@@ -6990,6 +6983,21 @@
 				C6B65F762B550FC1006D1812 /* WalletNFTsServiceProtocol.swift */,
 			);
 			path = WalletNFTsService;
+			sourceTree = "<group>";
+		};
+		C6B65F922B565E52006D1812 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				C6B65F8C2B565B1F006D1812 /* HomeWalletActionsView.swift */,
+				C6B65F582B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift */,
+				C6B65F5B2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift */,
+				C6B65F612B55015F006D1812 /* HomeWalletHeaderView.swift */,
+				C6B65F642B550471006D1812 /* HomeWalletMoreTokensView.swift */,
+				C6B65F832B5517FB006D1812 /* HomeWalletNFTsCollectionSectionView.swift */,
+				C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */,
+				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
+			);
+			path = Subviews;
 			sourceTree = "<group>";
 		};
 		C6B6859428008740000F9037 /* Animations */ = {

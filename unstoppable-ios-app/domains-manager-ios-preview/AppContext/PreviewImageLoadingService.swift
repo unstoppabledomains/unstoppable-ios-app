@@ -10,6 +10,9 @@ import UIKit
 final class ImageLoadingService: ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         switch source {
+        case .domain:
+            try? await Task.sleep(seconds: 1)
+            return UIImage.Preview.previewPortrait
         case .initials(let initials, let size, let style):
             return await InitialsView(initials: initials, size: size, style: style).toInitialsImage()
         case .currencyTicker(let ticker, let size, let style):

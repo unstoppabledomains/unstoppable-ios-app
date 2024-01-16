@@ -26,6 +26,7 @@ extension HomeWalletView {
         var totalBalance: Int { 20000 }
         
         init() {
+            selectedWallet.displayInfo?.reverseResolutionDomain = .init(name: "oleg.x", ownerWallet: "", isSetForRR: true)
             tokens.append(.createSkeletonEntity())
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
