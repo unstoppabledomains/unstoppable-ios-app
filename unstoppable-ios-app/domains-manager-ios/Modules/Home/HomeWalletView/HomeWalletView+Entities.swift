@@ -107,12 +107,9 @@ extension HomeWalletView {
             var collections = [NFTsCollectionDescription]()
             
             for name in names {
-                
-                let collection = NFTsCollectionDescription(collectionName: name, nfts: [.mock(),
-                                                                                        .mock(),
-                                                                                        .mock(),
-                                                                                        .mock(),
-                                                                                        .mock()])
+                let numOfNFTs = Int(arc4random_uniform(10) + 1)
+                let nfts = (0...numOfNFTs).map { _ in  NFTDescription.mock() }
+                let collection = NFTsCollectionDescription(collectionName: name, nfts: nfts)
                 collections.append(collection)
             }
             

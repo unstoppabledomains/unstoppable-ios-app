@@ -29,6 +29,9 @@ struct HomeWalletView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .padding(.vertical)
+                sortingOptionsForSelectedType()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -89,6 +92,7 @@ private extension HomeWalletView {
             }
         }
         .buttonStyle(.plain)
+        .withoutAnimation()
     }
     
     @ViewBuilder
@@ -109,6 +113,47 @@ private extension HomeWalletView {
     }
     
     @ViewBuilder
+    func sortingOptionsForSelectedType() -> some View {
+        switch viewModel.selectedContentType {
+        case .tokens:
+            sortingOptionsView(sortingOptions: TokensSortingOptions.allCases, selectedOption: $viewModel.selectedTokensSortingOption)
+        case .collectibles:
+            sortingOptionsView(sortingOptions: CollectiblesSortingOptions.allCases, selectedOption: $viewModel.selectedCollectiblesSortingOption)
+        case .domains:
+            sortingOptionsView(sortingOptions: DomainsSortingOptions.allCases, selectedOption: $viewModel.selectedDomainsSortingOption)
+        }
+    }
+    
+    @ViewBuilder
+    func sortingOptionsView(sortingOptions: [some HomeViewSortingOption],
+                            selectedOption: Binding<some HomeViewSortingOption>) -> some View {
+        Menu {
+            Picker("", selection: selectedOption) {
+                ForEach(sortingOptions,
+                        id: \.self) {
+                    option in
+                    Text(option.title)
+                }
+            }
+        } label: {
+            HStack(alignment: .center, spacing: 8) {
+                Image.filterIcon
+                    .resizable()
+                    .squareFrame(16)
+                Text(selectedOption.wrappedValue.title)
+                    .font(.currentFont(size: 14, weight: .medium))
+                Line()
+                    .stroke(lineWidth: 1)
+                    .offset(y: 10)
+            }
+            .frame(height: 20)
+        }
+        .withoutAnimation()
+        .foregroundStyle(Color.foregroundSecondary)
+        .padding(EdgeInsets(top: -16, leading: 0, bottom: 0, trailing: 0))
+    }
+    
+    @ViewBuilder
     func tokensContentView() -> some View {
         ForEach(viewModel.tokens) { token in
             Button {
@@ -124,7 +169,7 @@ private extension HomeWalletView {
         HomeWalletMoreTokensView()
             .offset(y: -HomeWalletTokenRowView.height + 25)
     }
-
+    
     @ViewBuilder
     func collectiblesContentView() -> some View {
         if viewModel.nftsCollections.isEmpty {

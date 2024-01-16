@@ -78,9 +78,7 @@ private extension HomeWalletNFTsCollectionSectionView {
             }
         }
         .buttonStyle(.plain)
-        .transaction { transaction in
-            transaction.animation = nil
-        }
+        .withoutAnimation()
     }
     
     @ViewBuilder

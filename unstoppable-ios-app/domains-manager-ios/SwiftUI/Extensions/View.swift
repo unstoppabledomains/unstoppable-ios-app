@@ -46,3 +46,11 @@ extension View {
     }
     
 }
+
+extension View {
+    func withoutAnimation() -> some View {
+        self.transaction { transaction in
+            transaction.animation = nil
+        }
+    }
+}

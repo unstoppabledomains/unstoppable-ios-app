@@ -46,5 +46,6 @@ extension Image {
     static let dotsIcon = Image(uiImage: .dotsIcon)
     static let personIcon = Image(uiImage: .personIcon)
     static let arrowBottom = Image(uiImage: .arrowBottom)
+    static let filterIcon = Image(uiImage: .filterIcon).renderingMode(.template)
     
 }

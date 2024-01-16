@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 extension HomeWalletView {
     @MainActor
@@ -17,11 +18,68 @@ extension HomeWalletView {
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
         @Published var nftsCollectionsExpandedIds: Set<String> = []
         @Published var selectedContentType: ContentType = .tokens
-        
+        @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
+        @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
+        @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
+        private var subscribers: Set<AnyCancellable> = []
+
         var totalBalance: Int { 20000 }
         
         init() {
             tokens.append(.createSkeletonEntity())
+            
+            $selectedTokensSortingOption.sink { [weak self] sortOption in
+                self?.sortTokens(sortOption)
+            }.store(in: &subscribers)
+            $selectedCollectiblesSortingOption.sink { [weak self] sortOption in
+                self?.sortCollectibles(sortOption)
+            }.store(in: &subscribers)
+            $selectedDomainsSortingOption.sink { [weak self] sortOption in
+                self?.sortDomains(sortOption)
+            }.store(in: &subscribers)
+        }
+        
+        private func sortTokens(_ sortOption: TokensSortingOptions) {
+            switch sortOption {
+            case .alphabetical:
+                tokens = tokens.sorted(by: { lhs, rhs in
+                    if lhs.isSkeleton {
+                        return false
+                    }
+                    return lhs.symbol < rhs.symbol
+                })
+            case .highestValue:
+                tokens = tokens.sorted(by: { lhs, rhs in
+                    if lhs.isSkeleton {
+                        return false
+                    }
+                    return lhs.balance > rhs.balance
+                })
+            case .marketCap:
+                tokens = tokens.sorted(by: { lhs, rhs in
+                    if lhs.isSkeleton {
+                        return false
+                    }
+                    return lhs.balance > rhs.balance
+                })
+            }
+        }
+        
+        private func sortCollectibles(_ sortOption: CollectiblesSortingOptions) {
+            switch sortOption {
+            case .mostCollected:
+                nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
+                    lhs.nfts.count > rhs.nfts.count
+                })
+            case .alphabetical:
+                nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
+                    lhs.collectionName < rhs.collectionName
+                })
+            }
+        }
+        
+        private func sortDomains(_ sortOption: DomainsSortingOptions) {
+            
         }
         
         func walletActionPressed(_ action: WalletAction) {
@@ -58,6 +116,10 @@ extension HomeWalletView {
             }
         }
     }
+}
+
+protocol HomeViewSortingOption: Hashable, CaseIterable {
+    var title: String { get }
 }
 
 extension HomeWalletView {
@@ -101,6 +163,47 @@ extension HomeWalletView {
                 return .squareBehindSquareIcon
             case .more:
                 return .dotsIcon
+            }
+        }
+    }
+  
+    enum TokensSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+        case highestValue, marketCap, alphabetical
+        
+        var title: String {
+            switch self {
+            case .highestValue:
+                return "Highest Value"
+            case .marketCap:
+                return "Market Cap"
+            case .alphabetical:
+                return "Alphabetical"
+            }
+        }
+    }
+    
+    enum CollectiblesSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+        case mostCollected, alphabetical
+        
+        var title: String {
+            switch self {
+            case .mostCollected:
+                return "Most collected"
+            case .alphabetical:
+                return "Alphabetical"
+            }
+        }
+    }
+    
+    enum DomainsSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+        case salePrice, alphabetical
+        
+        var title: String {
+            switch self {
+            case .salePrice:
+                return "Highest Sale Price"
+            case .alphabetical:
+                return "Alphabetical"
             }
         }
     }

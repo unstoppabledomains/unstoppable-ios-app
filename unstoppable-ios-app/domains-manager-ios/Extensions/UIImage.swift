@@ -160,6 +160,7 @@ extension UIImage {
     static let solanaIcon = UIImage(named: "solanaIcon")!
     static let cardanoIcon = UIImage(named: "cardanoIcon")!
     static let hederaIcon = UIImage(named: "hederaIcon")!
+    static let filterIcon = UIImage(named: "filterIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
