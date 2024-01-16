@@ -50,7 +50,7 @@ struct Constants {
     static let numberOfUnreadMessagesBeforePrefetch: Int = 7
     static let maxImageResolution: CGFloat = 1000
     static let shouldHideBlockedUsersLocally = true
-    static let isCommunitiesEnabled = false
+    static let isCommunitiesEnabled = true
     static let ensDomainTLD: String = "eth"
     static let comDomainTLD: String = "com"
     static let lensDomainTLD: String = "lens"

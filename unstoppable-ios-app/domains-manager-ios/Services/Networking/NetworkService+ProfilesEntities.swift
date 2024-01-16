@@ -356,7 +356,7 @@ struct BadgeDetailedInfo: Codable, Hashable {
         let rank: Int?
         let holders: Int
         let domains: Int
-        let featured: [String]
+        let featured: [String]?
     }
 }
 
