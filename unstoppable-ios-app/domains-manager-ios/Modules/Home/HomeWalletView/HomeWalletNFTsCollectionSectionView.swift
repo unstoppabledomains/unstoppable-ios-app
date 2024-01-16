@@ -11,6 +11,8 @@ struct HomeWalletNFTsCollectionSectionView: View {
     
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
+    let nftAppearCallback: @MainActor (_ nft: HomeWalletView.NFTDescription, _ collection: HomeWalletView.NFTsCollectionDescription)->()
+    
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -21,16 +23,14 @@ struct HomeWalletNFTsCollectionSectionView: View {
             sectionHeaderView()
             LazyVGrid(columns: gridColumns, spacing: 16) {
                 ForEach(0..<numberOfNFTsVisible, id: \.self) { i in
-                    //                let nft = collection.nfts[i]
-                    Image(uiImage: UIImage.Preview.previewLandscape!)
-                        .resizable()
-                        .aspectRatio(1, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .transition(.opacity)
+                    nftCellView(collection.nfts[i])
                         .transaction { transaction in
                             if i <= 1 {
                                 transaction.animation = nil
                             }
+                        }
+                        .onAppear {
+                            nftAppearCallback(collection.nfts[i], collection)
                         }
                 }
             }
@@ -82,9 +82,20 @@ private extension HomeWalletNFTsCollectionSectionView {
             transaction.animation = nil
         }
     }
+    
+    @ViewBuilder
+    func nftCellView(_ nft: HomeWalletView.NFTDescription) -> some View {
+        Image(uiImage: nft.icon ?? .init())
+            .resizable()
+            .transition(.opacity)
+            .background(Color.backgroundSubtle)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .aspectRatio(1, contentMode: .fit)
+    }
 }
 
 #Preview {
     HomeWalletNFTsCollectionSectionView(collection: HomeWalletView.NFTsCollectionDescription.mock().first!,
-                                        nftsCollectionsExpandedIds: .constant([]))
+                                        nftsCollectionsExpandedIds: .constant([]),
+                                        nftAppearCallback: { _,_ in })
 }

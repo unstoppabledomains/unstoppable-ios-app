@@ -81,9 +81,9 @@ private extension HomeWalletView {
             .frame(height: 72)
             .frame(minWidth: 0, maxWidth: .infinity)
             .background(Color.backgroundOverlay)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay {
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(lineWidth: 1)
                     .foregroundStyle(Color.borderMuted)
             }
@@ -122,6 +122,7 @@ private extension HomeWalletView {
             .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
         HomeWalletMoreTokensView()
+            .offset(y: -HomeWalletTokenRowView.height + 25)
     }
 
     @ViewBuilder
@@ -130,7 +131,9 @@ private extension HomeWalletView {
             HomeWalletCollectiblesEmptyView(walletAddress: viewModel.selectedWallet.address)
         } else {
             ForEach(viewModel.nftsCollections) { nftCollection in
-                HomeWalletNFTsCollectionSectionView(collection: nftCollection, nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds)
+                HomeWalletNFTsCollectionSectionView(collection: nftCollection, 
+                                                    nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds,
+                                                    nftAppearCallback: viewModel.loadIconIfNeededForNFT)
             }
         }
     }

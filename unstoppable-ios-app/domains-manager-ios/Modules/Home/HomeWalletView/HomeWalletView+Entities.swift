@@ -16,6 +16,7 @@ extension HomeWalletView {
         let balance: Double
         var marketUsd: Double?
         var icon: UIImage? = nil
+        private(set) var isSkeleton: Bool = false
         var fiatValue: Double? {
             if let marketUsd {
                 return marketUsd * balance
@@ -42,6 +43,12 @@ extension HomeWalletView {
             self.balance = balance
             self.marketUsd = marketUsd
             self.icon = icon
+        }
+        
+        static func createSkeletonEntity() -> TokenDescription {
+            var token = TokenDescription(symbol: "000", name: "0000000000000000", balance: 10000, marketUsd: 1)
+            token.isSkeleton = true
+            return token 
         }
         
         func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {
@@ -93,7 +100,7 @@ extension HomeWalletView {
         var id: String { collectionName }
 
         let collectionName: String
-        let nfts: [NFTDescription]
+        var nfts: [NFTDescription]
         
         static func mock() -> [NFTsCollectionDescription] {
             let names = ["Azuki", "Mutant Ape Yacht Club", "DeGods", "Grunchy Tigers"]
@@ -118,14 +125,16 @@ extension HomeWalletView {
         
         let name: String?
         let description: String?
-        let imageUrl: String?
-        let videoUrl: String?
+        let imageUrl: URL?
+        let videoUrl: URL?
         let link: String?
         let tags: [String]
         let collection: String?
         let mint: String?
         var chain: NFTModelChain?
         var address: String?
+        
+        var icon: UIImage?
         
         var isDomainNFT: Bool { tags.contains("domain") }
         var isUDDomainNFT: Bool {
@@ -142,8 +151,8 @@ extension HomeWalletView {
         init(nftModel: NFTModel) {
             self.name = nftModel.name
             self.description = nftModel.description
-            self.imageUrl = nftModel.imageUrl
-            self.videoUrl = nftModel.videoUrl
+            self.imageUrl = URL(string: nftModel.imageUrl ?? "")
+            self.videoUrl = URL(string: nftModel.videoUrl ?? "")
             self.link = nftModel.link
             self.tags = nftModel.tags
             self.collection = nftModel.collection
@@ -152,7 +161,7 @@ extension HomeWalletView {
             self.address = nftModel.address
         }
 
-        init(name: String? = nil, description: String? = nil, imageUrl: String? = nil, videoUrl: String? = nil, link: String? = nil, tags: [String], collection: String? = nil, mint: String? = nil, chain: NFTModelChain? = nil, address: String? = nil) {
+        init(name: String? = nil, description: String? = nil, imageUrl: URL? = nil, videoUrl: URL? = nil, link: String? = nil, tags: [String], collection: String? = nil, mint: String? = nil, chain: NFTModelChain? = nil, address: String? = nil) {
             self.name = name
             self.description = description
             self.imageUrl = imageUrl
@@ -166,7 +175,18 @@ extension HomeWalletView {
         }
         
         static func mock() -> NFTDescription {
-            .init(name: "Name", tags: [], mint: UUID().uuidString)
+            .init(name: "Name", 
+                  imageUrl: URL(string: "https://google.com"),
+                  tags: [], mint: UUID().uuidString)
+        }
+        
+        func loadIcon() async -> UIImage? {
+            guard let imageUrl else { return nil }
+            
+            try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
+            return UIImage.Preview.previewLandscape
+//            return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
+//                                                                  downsampleDescription: .mid)
         }
     }
 }
