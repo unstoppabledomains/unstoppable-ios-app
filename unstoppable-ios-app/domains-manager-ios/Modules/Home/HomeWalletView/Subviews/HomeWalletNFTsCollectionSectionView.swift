@@ -11,7 +11,7 @@ struct HomeWalletNFTsCollectionSectionView: View {
     
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
-    let nftAppearCallback: @MainActor (_ nft: HomeWalletView.NFTDescription, _ collection: HomeWalletView.NFTsCollectionDescription)->()
+    let nftAppearCallback: @MainActor (_ nft: NFTDisplayInfo, _ collection: HomeWalletView.NFTsCollectionDescription)->()
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -82,7 +82,7 @@ private extension HomeWalletNFTsCollectionSectionView {
     }
     
     @ViewBuilder
-    func nftCellView(_ nft: HomeWalletView.NFTDescription) -> some View {
+    func nftCellView(_ nft: NFTDisplayInfo) -> some View {
         Image(uiImage: nft.icon ?? .init())
             .resizable()
             .transition(.opacity)

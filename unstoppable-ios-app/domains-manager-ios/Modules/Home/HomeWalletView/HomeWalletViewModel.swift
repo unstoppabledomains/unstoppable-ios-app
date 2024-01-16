@@ -109,7 +109,7 @@ extension HomeWalletView {
             }
         }
         
-        func loadIconIfNeededForNFT(_ nft: NFTDescription, in collection: NFTsCollectionDescription) {
+        func loadIconIfNeededForNFT(_ nft: NFTDisplayInfo, in collection: NFTsCollectionDescription) {
             guard nft.icon == nil,
                 nft.imageUrl != nil else { return }
             

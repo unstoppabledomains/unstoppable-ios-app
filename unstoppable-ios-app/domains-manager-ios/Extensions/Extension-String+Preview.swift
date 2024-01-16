@@ -1061,6 +1061,7 @@ extension String {
         static let homeWalletTokensComeSubtitle = "HOME_WALLET_TOKENS_COME_SUBTITLE"
         static let homeWalletCollectiblesEmptyTitle = "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE"
         static let homeWalletCollectiblesEmptySubtitle = "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE"
+        static let nftDetailsAboutCollectionHeader = "NFT_DETAILS_ABOUT_COLLECTION_HEADER"
     }
     
     enum BlockChainIcons: String {

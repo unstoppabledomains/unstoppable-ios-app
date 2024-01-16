@@ -51,5 +51,6 @@ extension Image {
     static let qrBarCodeIcon = Image("qrBarCodeIcon")
     static let homeLineIcon = Image("homeLineIcon")
     static let chevronGrabberVertical = Image("chevronGrabberVertical")
+    static let notesIcon = Image("notesIcon")
     
 }
