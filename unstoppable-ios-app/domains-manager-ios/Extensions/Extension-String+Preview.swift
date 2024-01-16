@@ -219,6 +219,7 @@ extension String {
         static let profile = "PROFILE"
         static let more = "MORE"
         static let home = "HOME"
+        static let messages = "MESSAGES"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

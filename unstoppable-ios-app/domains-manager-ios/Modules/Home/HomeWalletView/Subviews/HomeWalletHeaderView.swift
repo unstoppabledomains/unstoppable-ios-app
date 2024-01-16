@@ -29,12 +29,11 @@ struct HomeWalletHeaderView: View {
             Button {
                 domainNamePressedCallback()
             } label: {
-                HStack {
+                HStack(spacing: 0) {
                     Text(getCurrentTitle())
                         .font(.currentFont(size: 16, weight: .medium))
-                    
-                    Image(systemName: "chevron.up.chevron.down")
-                        .squareFrame(20)
+                    Image.chevronGrabberVertical
+                        .squareFrame(24)
                 }
                 .foregroundStyle(Color.foregroundSecondary)
             }

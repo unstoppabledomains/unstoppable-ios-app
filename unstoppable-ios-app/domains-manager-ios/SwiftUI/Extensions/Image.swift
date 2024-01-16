@@ -49,5 +49,7 @@ extension Image {
     static let filterIcon = Image(uiImage: .filterIcon).renderingMode(.template)
     static let gearshape = Image(uiImage: .gearshape).renderingMode(.template)
     static let qrBarCodeIcon = Image("qrBarCodeIcon")
+    static let homeLineIcon = Image("homeLineIcon")
+    static let chevronGrabberVertical = Image("chevronGrabberVertical")
     
 }

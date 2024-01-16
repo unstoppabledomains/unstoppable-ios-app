@@ -14,16 +14,16 @@ struct HomeTabView: View {
                 HomeWalletView()
             }
             .tabItem {
-                Label(String.Constants.home.localized(),
-                      systemImage: "house")
+                Label(title: { Text(String.Constants.home.localized()) },
+                      icon: { Image.homeLineIcon })
             }
-            NavigationView {   
+            NavigationView {
                 HomeWalletView()
             }
-                .tabItem {
-                    Label(String.Constants.pluralNMessages.localized(2),
-                          systemImage: "message.fill")
-                }
+            .tabItem {
+                Label(title: { Text(String.Constants.messages.localized()) },
+                      icon: { Image.messageCircleIcon24 })
+            }
         }
         .tint(.foregroundDefault)
     }
