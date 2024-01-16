@@ -46,8 +46,30 @@ struct HomeWalletView: View {
             .animation(.default, value: UUID())
         }
         .background(Color.backgroundDefault)
-        .navigationTitle("Vault 1")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    
+                } label: {
+                    Image.gearshape
+                        .resizable()
+                        .squareFrame(24)
+                        .foregroundStyle(Color.foregroundDefault)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    
+                } label: {
+                    Image.qrBarCodeIcon
+                        .resizable()
+                        .squareFrame(24)
+                        .foregroundStyle(Color.foregroundDefault)
+                }
+            }
+        })
 
     }
 }
