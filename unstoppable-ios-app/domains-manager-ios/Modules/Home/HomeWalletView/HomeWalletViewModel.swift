@@ -21,6 +21,7 @@ extension HomeWalletView {
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
+        @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
 
         var totalBalance: Int { 20000 }
@@ -124,7 +125,7 @@ extension HomeWalletView {
         }
         
         func domainNamePressed() {
-            
+            isSelectWalletPresented = true
         }
         
         func loadIconIfNeededFor(token: TokenDescription) {

@@ -47,6 +47,7 @@ struct HomeWalletView: View {
         .sheet(item: $selectedNFT, content: { nft in
             NFTDetailsView(nft: nft)
         })
+        .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -149,6 +150,25 @@ private extension HomeWalletView {
     @ViewBuilder
     func domainsContentView() -> some View {
         HomeWalletsDomainsSectionView(domains: viewModel.domains)
+    }
+}
+
+// MARK: - Private methods
+private extension HomeWalletView {
+    struct ShowingWalletSelection: ViewModifier {
+        @Binding var isSelectWalletPresented: Bool
+        
+        func body(content: Content) -> some View {
+            content
+                .sheet(isPresented: $isSelectWalletPresented, content: {
+                    if #available(iOS 16.0, *) {
+                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
+                            .presentationDetents([.medium, .large])
+                    } else {
+                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
+                    }
+                })
+        }
     }
 }
 

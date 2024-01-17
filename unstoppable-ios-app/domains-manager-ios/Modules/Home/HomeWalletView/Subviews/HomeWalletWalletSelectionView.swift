@@ -1,5 +1,5 @@
 //
-//  HomeWalletProfileSelectionView.swift
+//  HomeWalletWalletSelectionView:.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 17.01.2024.
@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct HomeWalletProfileSelectionView: View {
+struct HomeWalletWalletSelectionView: View {
     
     @State private var wallets: [WalletWithInfo] = []
     @State private var selectedWallet: WalletWithInfo? = nil
+    var walletSelectedCallback: (WalletWithInfo)->()
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                DismissIndicatorView()
                 titleView()
                 selectedWalletView()
                 walletsListView()
@@ -30,7 +30,7 @@ struct HomeWalletProfileSelectionView: View {
 }
 
 // MARK: - Private methods
-private extension HomeWalletProfileSelectionView {
+private extension HomeWalletWalletSelectionView {
     func onAppear() {
         Task {
             let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
@@ -44,6 +44,7 @@ private extension HomeWalletProfileSelectionView {
         Text("Profiles")
             .font(.currentFont(size: 22, weight: .bold))
             .foregroundStyle(Color.foregroundDefault)
+            .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
     }
     
     @ViewBuilder
@@ -51,7 +52,6 @@ private extension HomeWalletProfileSelectionView {
         if let selectedWallet {
             UDCollectionSectionBackgroundView {
                 listViewFor(wallet: selectedWallet)
-                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             }
         }
     }
@@ -61,19 +61,29 @@ private extension HomeWalletProfileSelectionView {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
                 ForEach(wallets, id: \.address) { wallet in
-                    listViewFor(wallet: wallet)
+                    Button {
+                        UDVibration.buttonTap.vibrate()
+                        
+                    } label: {
+                        listViewFor(wallet: wallet)
+                    }
                 }
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
+    }
+    
+    func isWalletAbleToSetRR(_ wallet: WalletWithInfo) -> Bool {
+        (wallet.displayInfo?.udDomainsCount ?? 0) > 0
     }
     
     @ViewBuilder
     func listViewFor(wallet: WalletWithInfo) -> some View {
         UDListItemView(title: titleForWallet(wallet),
                        subtitle: subtitleForWallet(wallet),
+                       subtitleStyle: subtitleStyleForWallet(wallet),
                        imageType: imageTypeForWallet(wallet),
-                       rightViewStyle: nil)
+                       rightViewStyle: wallet.address == selectedWallet?.address ? .checkmark : nil)
+        .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
    
     func titleForWallet(_ wallet: WalletWithInfo) -> String {
@@ -83,14 +93,25 @@ private extension HomeWalletProfileSelectionView {
         return wallet.displayName
     }
     
-    func subtitleForWallet(_ wallet: WalletWithInfo) -> String {
+    func subtitleForWallet(_ wallet: WalletWithInfo) -> String? {
         if wallet.displayInfo?.reverseResolutionDomain != nil {
             if wallet.displayInfo?.isNameSet == true {
                 return "\(wallet.displayName) · \(wallet.address.walletAddressTruncated)"
             }
             return wallet.address.walletAddressTruncated
         }
-        return "No primary domain"
+        if isWalletAbleToSetRR(wallet) {
+            return "No primary domain"
+        }
+        return nil
+    }
+    
+    func subtitleStyleForWallet(_ wallet: WalletWithInfo) -> UDListItemView.SubtitleStyle {
+        if wallet.displayInfo?.reverseResolutionDomain == nil,
+           isWalletAbleToSetRR(wallet) {
+            return .warning
+        }
+         return .default
     }
     
     func imageTypeForWallet(_ wallet: WalletWithInfo) -> UDListItemView.ImageType {
@@ -130,5 +151,5 @@ private extension HomeWalletProfileSelectionView {
 }
 
 #Preview {
-    HomeWalletProfileSelectionView()
+    HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
 }
