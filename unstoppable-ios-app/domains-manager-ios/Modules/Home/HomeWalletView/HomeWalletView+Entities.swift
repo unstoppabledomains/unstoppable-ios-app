@@ -78,7 +78,7 @@ extension HomeWalletView {
         var icon: Image {
             switch self {
             case .connectedApps:
-                return .appleIcon
+                return Image(systemName: "app.badge.checkmark")
             }
         }
     }
