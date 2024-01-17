@@ -413,9 +413,18 @@ private extension PurchaseDomainsCheckoutView {
         
     }
     
+    var checkoutButtonTitle: String {
+        if case .ready(let cart) = cartStatus,
+           cart.totalPrice == 0,
+           cart.appliedDiscountDetails.totalSum > 0 {
+            return String.Constants.payWithCredits.localized()
+        }
+        return String.Constants.pay.localized()
+    }
+    
     @ViewBuilder
     func checkoutButton() -> some View {
-        UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
+        UDButtonView(text: checkoutButtonTitle, icon: .appleIcon, style: .large(.applePay)) {
             logButtonPressedAnalyticEvents(button: .pay, parameters: [.value : String(cartStatus.totalPrice)])
             startPurchaseDomains()
         }

@@ -32,6 +32,7 @@ private extension BaseFirebaseInteractionService.URLSList {
     static var USER_CART_CALCULATIONS_URL: String { USER_CART_URL.appendingURLPathComponent("calculations") }
     
     static var PAYMENT_STRIPE_URL: String { baseAPIURL.appendingURLPathComponents("payment", "stripe") }
+    static var STORE_CHECKOUT_URL: String { baseAPIURL.appendingURLPathComponents("store", "checkout") }
     static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
 
 }
@@ -210,11 +211,24 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func purchaseDomainsInTheCart(to wallet: UDUserAccountCryptWallet) async throws {
+        if udCart.calculations.totalAmountDue > 0 {
+            try await purchaseDomainsInTheCartWithStripe(to: wallet)
+        } else {
+            try await purchaseDomainsInTheCartWithCredits(to: wallet)
+        }
+    }
+    
+    func purchaseDomainsInTheCartWithStripe(to wallet: UDUserAccountCryptWallet) async throws {
         let paymentDetails = try await prepareStripePaymentDetails(for: wallet)
         let paymentService = appContext.createStripeInstance(amount: paymentDetails.amount, using: paymentDetails.clientSecret)
         try await paymentService.payWithStripe()
         try? await refreshUserCart()
     }
+    
+    func purchaseDomainsInTheCartWithCredits(to wallet: UDUserAccountCryptWallet) async throws {
+        try await checkoutWithCredits(to: wallet)
+    }
+    
     func makeSearchDomainsRequestWith(key: String) async throws -> SearchDomainsResponse {
         let queryComponents = ["q" : key]
         let urlString = URLSList.DOMAIN_SEARCH_URL.appendingURLQueryComponents(queryComponents)
@@ -363,7 +377,7 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
+    func checkoutWithCredits(to wallet: UDUserAccountCryptWallet) async throws {
         struct RequestBody: Codable {
             let cryptoWalletId: Int
             let applyStoreCredits: Bool
@@ -372,6 +386,27 @@ private extension FirebasePurchaseDomainsService {
             let zipCode: String?
         }
         
+        let urlString = URLSList.STORE_CHECKOUT_URL
+        let body = RequestBody(cryptoWalletId: wallet.id,
+                               applyStoreCredits: checkoutData.isStoreCreditsOn,
+                               applyPromoCredits: checkoutData.isPromoCreditsOn,
+                               discountCode: checkoutData.discountCodeIfEntered,
+                               zipCode: checkoutData.zipCodeIfEntered)
+        let request = try APIRequest(urlString: urlString,
+                                     body: body,
+                                     method: .post)
+        let data = try await makeFirebaseAPIDataRequest(request)
+        print((try? JSONSerialization.jsonObject(with: data, options: [])))
+    }
+    
+    func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
+        struct RequestBody: Codable {
+            let cryptoWalletId: Int
+            let applyStoreCredits: Bool
+            let applyPromoCredits: Bool
+            let discountCode: String?
+            let zipCode: String?
+        }
         
         let urlString = URLSList.PAYMENT_STRIPE_URL
         let body = RequestBody(cryptoWalletId: wallet.id,

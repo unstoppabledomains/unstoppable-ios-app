@@ -222,6 +222,8 @@ extension ChatViewPresenter: UDFeatureFlagsListener {
                 view?.setCanSendAttachments(newValue)
                 reloadCachedMessages()
             }
+        default:
+            return 
         }
     }
 }
