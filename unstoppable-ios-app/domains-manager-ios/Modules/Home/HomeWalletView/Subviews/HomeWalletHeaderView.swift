@@ -55,7 +55,7 @@ private extension HomeWalletHeaderView {
         if let rrDomain = wallet.displayInfo?.reverseResolutionDomain {
             return rrDomain.name
         }
-        return wallet.address.walletAddressTruncated
+        return wallet.displayInfo?.displayName ?? wallet.address.walletAddressTruncated
     }
     
     func loadAvatarIfNeeded() {

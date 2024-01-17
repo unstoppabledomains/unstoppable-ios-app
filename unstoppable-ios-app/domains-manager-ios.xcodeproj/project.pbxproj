@@ -1180,6 +1180,10 @@
 		C6B65FA52B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA32B5791B4006D1812 /* HomeWalletDomainCellView.swift */; };
 		C6B65FA72B5798FD006D1812 /* AnimatedFromiOS16.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA62B5798FD006D1812 /* AnimatedFromiOS16.swift */; };
 		C6B65FA82B5798FD006D1812 /* AnimatedFromiOS16.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA62B5798FD006D1812 /* AnimatedFromiOS16.swift */; };
+		C6B65FAA2B57A582006D1812 /* HomeWalletProfileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA92B57A582006D1812 /* HomeWalletProfileSelectionView.swift */; };
+		C6B65FAB2B57A582006D1812 /* HomeWalletProfileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA92B57A582006D1812 /* HomeWalletProfileSelectionView.swift */; };
+		C6B65FAD2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */; };
+		C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */; };
 		C6B6858B280077F7000F9037 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858A280077F7000F9037 /* UIImage.swift */; };
 		C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */ = {isa = PBXBuildFile; fileRef = C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */; };
@@ -3327,6 +3331,8 @@
 		C6B65FA02B57912F006D1812 /* HomeWalletsDomainsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletsDomainsSectionView.swift; sourceTree = "<group>"; };
 		C6B65FA32B5791B4006D1812 /* HomeWalletDomainCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletDomainCellView.swift; sourceTree = "<group>"; };
 		C6B65FA62B5798FD006D1812 /* AnimatedFromiOS16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedFromiOS16.swift; sourceTree = "<group>"; };
+		C6B65FA92B57A582006D1812 /* HomeWalletProfileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletProfileSelectionView.swift; sourceTree = "<group>"; };
+		C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissIndicatorView.swift; sourceTree = "<group>"; };
 		C6B6858A280077F7000F9037 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		C6B6858F28007C09000F9037 /* UDCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBox.swift; sourceTree = "<group>"; };
 		C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = allDoneConfettiAnimation.gif; sourceTree = "<group>"; };
@@ -6548,6 +6554,7 @@
 				C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */,
 				C655CA9B2B16E5BE00FDA063 /* UDToggleStyle.swift */,
 				C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */,
+				C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */,
 				C6DDF2432B147F1A006D1F0B /* Buttons */,
 				C69F990F2A9F1264004B1958 /* Shapes */,
 				C655CA902B16E51B00FDA063 /* Skeleton */,
@@ -7020,6 +7027,7 @@
 				C6B65F9D2B57876F006D1812 /* HomeWalletNFTCellView.swift */,
 				C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */,
 				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
+				C6B65FA92B57A582006D1812 /* HomeWalletProfileSelectionView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -9191,6 +9199,7 @@
 				C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
+				C6B65FAD2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
 				30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */,
 				C6D5DAC1283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
 				C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */,
@@ -9382,6 +9391,7 @@
 				C63A351028F0071B0057D34B /* DomainProfileViewController.swift in Sources */,
 				C6AE670D2AA1CA260061D87D /* Debug-Tools-Dev.swift in Sources */,
 				C66FCD032844871E009B9525 /* MockUserDataService.swift in Sources */,
+				C6B65FAA2B57A582006D1812 /* HomeWalletProfileSelectionView.swift in Sources */,
 				C679B600291936FD00F543A7 /* DomainProfileUpdateDataRequestType.swift in Sources */,
 				C6B5136228320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift in Sources */,
 				C6A2D58E284FA0AB00327C47 /* WalletConnectServiceProtocol.swift in Sources */,
@@ -9892,6 +9902,7 @@
 				C61807E72B19A61D0032E543 /* DomainTransactionsServiceProtocol.swift in Sources */,
 				C6D646F92B1ED74500D724AC /* LoadingIndicatorView.swift in Sources */,
 				C618087F2B19BC470032E543 /* Vibration.swift in Sources */,
+				C6B65FAB2B57A582006D1812 /* HomeWalletProfileSelectionView.swift in Sources */,
 				C6C8F9082B21838400A9834D /* ChatsListViewPresenter.swift in Sources */,
 				C6C8F9482B2184F000A9834D /* CodeVerificationView.swift in Sources */,
 				C61807D72B19A46D0032E543 /* AuthentificationServiceProtocol.swift in Sources */,
@@ -10387,6 +10398,7 @@
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,
 				C6D646D62B1ED2E700D724AC /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
 				C6D646C62B1ED24E00D724AC /* SocialsType.swift in Sources */,
+				C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
 				C6D646AA2B1ED15F00D724AC /* DomainProfileViewPresenter.swift in Sources */,
 				C6D645982B1DBB0700D724AC /* EmptyCollectionSectionFooter.swift in Sources */,
 				C6D646592B1ED10D00D724AC /* DomainProfileMetadataCell.swift in Sources */,

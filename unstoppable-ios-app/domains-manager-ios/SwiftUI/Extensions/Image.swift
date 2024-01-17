@@ -52,5 +52,7 @@ extension Image {
     static let homeLineIcon = Image("homeLineIcon")
     static let chevronGrabberVertical = Image("chevronGrabberVertical")
     static let notesIcon = Image("notesIcon")
+    static let vaultSafeIcon = Image("vaultSafeIcon")
+    static let walletExternalIcon = Image("walletExternalIcon")
     
 }

@@ -15,7 +15,7 @@ struct NFTDetailsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                dismissIndicatorView()
+                DismissIndicatorView()
                 nftImageView()
                 nftCollectionInfoView()
                 separatorView()
@@ -48,17 +48,6 @@ private extension NFTDetailsView {
             if nftImage == nil {
                 ProgressView()
             }
-        }
-    }
-    
-    @ViewBuilder
-    func dismissIndicatorView() -> some View {
-        HStack {
-            Spacer()
-            RoundedRectangle(cornerRadius: 2)
-                .foregroundStyle(Color.backgroundSubtle)
-                .frame(width: 40, height: 4)
-            Spacer()
         }
     }
     
