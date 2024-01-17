@@ -106,6 +106,16 @@ extension HomeWalletView {
         
         func walletActionPressed(_ action: WalletAction) {
             print("Action pressed \(action.title)")
+            switch action {
+            case .receive:
+                return
+            case .profile:
+                return
+            case .copy:
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
+            case .more:
+                return
+            }
         }
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
