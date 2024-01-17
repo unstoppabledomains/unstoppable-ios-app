@@ -17,6 +17,36 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
             return await InitialsView(initials: initials, size: size, style: style).toInitialsImage()
         case .currencyTicker(let ticker, let size, let style):
             return await loadImage(from: .initials(ticker, size: size, style: style), downsampleDescription: downsampleDescription)
+        case .url(let url, let maxImageSize):
+            do {
+                let imageData = try Data(contentsOf: url)
+                
+                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
+                    return gif
+                }
+                
+                return autoreleasepool {
+                    var finalImage: UIImage?
+                    
+                    if let image = UIImage(data: imageData) {
+                        finalImage = image
+                    } else {
+                        finalImage = UIImage.from(svgData: imageData)
+                    }
+                    
+                    if let downsampleDescription,
+                       let image = finalImage,
+                       let downsampledImage = self.downsample(image: image, downsampleDescription: downsampleDescription) {
+                        finalImage = downsampledImage
+                    }
+                    
+                    guard let image = finalImage else { return nil }
+                    
+                    return image
+                }
+            } catch {
+                return nil
+            }
         default:
             return nil
         }
@@ -27,7 +57,7 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
     }
     
     func downsample(image: UIImage, downsampleDescription: DownsampleDescription) -> UIImage? {
-        nil
+        image
     }
     
     func storeImage(_ image: UIImage, for source: ImageSource) async {

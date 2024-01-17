@@ -17,7 +17,7 @@ extension HomeWalletView {
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
         @Published var nftsCollectionsExpandedIds: Set<String> = []
-        @Published var selectedContentType: ContentType = .tokens
+        @Published var selectedContentType: ContentType = .domains
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
@@ -38,6 +38,27 @@ extension HomeWalletView {
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
                 self?.sortDomains(sortOption)
             }.store(in: &subscribers)
+            
+            Task {
+                do {
+                    let nfts = try await appContext.walletNFTsService.getImageNFTsFor(domainName: "")
+                    if !nfts.isEmpty {
+                        let collectionNameToNFTs: [String? : [NFTModel]] = .init(grouping: nfts, by: { $0.collection })
+                        var collections: [NFTsCollectionDescription] = []
+                        
+                        for (collectionName, nftModels) in collectionNameToNFTs {
+                            guard let collectionName else { continue }
+                            
+                            let nfts = nftModels.map { NFTDisplayInfo(nftModel: $0) }
+                            let collection = NFTsCollectionDescription(collectionName: collectionName, nfts: nfts)
+                            collections.append(collection)
+                        }
+                        
+                        self.nftsCollections = collections
+                        sortCollectibles(selectedCollectiblesSortingOption)
+                    }
+                } catch { }
+            }
         }
         
         private func sortTokens(_ sortOption: TokensSortingOptions) {
@@ -110,16 +131,16 @@ extension HomeWalletView {
         }
         
         func loadIconIfNeededForNFT(_ nft: NFTDisplayInfo, in collection: NFTsCollectionDescription) {
-            guard nft.icon == nil,
-                nft.imageUrl != nil else { return }
-            
-            Task { @MainActor in
-                if let icon = await nft.loadIcon(),
-                   let i = nftsCollections.firstIndex(where: { $0.id == collection.id }),
-                   let j = nftsCollections[i].nfts.firstIndex(where: { $0.id == nft.id }) {
-                    nftsCollections[i].nfts[j].icon = icon
-                }
-            }
+//            guard nft.icon == nil,
+//                nft.imageUrl != nil else { return }
+//            
+//            Task { @MainActor in
+//                if let icon = await nft.loadIcon(),
+//                   let i = nftsCollections.firstIndex(where: { $0.id == collection.id }),
+//                   let j = nftsCollections[i].nfts.firstIndex(where: { $0.id == nft.id }) {
+//                    nftsCollections[i].nfts[j].icon = icon
+//                }
+//            }
         }
     }
 }
@@ -127,7 +148,7 @@ extension HomeWalletView {
 func createMockDomains() -> [DomainDisplayInfo] {
     var domains = [DomainDisplayInfo]()
     
-    for i in 0..<100 {
+    for i in 0..<5 {
         let domain = DomainDisplayInfo(name: "oleg_\(i).x",
                                        ownerWallet: "",
                                        isSetForRR: false)

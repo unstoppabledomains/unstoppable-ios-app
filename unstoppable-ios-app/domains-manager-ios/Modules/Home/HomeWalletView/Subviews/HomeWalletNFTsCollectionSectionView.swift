@@ -36,7 +36,7 @@ struct HomeWalletNFTsCollectionSectionView: View {
                 }
             }
         }
-        .transition(.scale)
+        .withoutAnimation()
     }
 }
 
@@ -79,7 +79,6 @@ private extension HomeWalletNFTsCollectionSectionView {
             }
         }
         .buttonStyle(.plain)
-        .withoutAnimation()
     }
     
     @ViewBuilder
@@ -88,12 +87,7 @@ private extension HomeWalletNFTsCollectionSectionView {
             UDVibration.buttonTap.vibrate()
             nftSelectedCallback(nft)
         } label: {
-            Image(uiImage: nft.icon ?? .init())
-                .resizable()
-                .transition(.opacity)
-                .background(Color.backgroundSubtle)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .aspectRatio(1, contentMode: .fit)
+            HomeWalletNFTCellView(nft: nft)
         }
         .buttonStyle(.plain)
     }

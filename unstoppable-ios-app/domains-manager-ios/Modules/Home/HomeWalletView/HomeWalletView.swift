@@ -12,11 +12,6 @@ struct HomeWalletView: View {
     @StateObject private var viewModel = HomeWalletViewModel()
     @State private var selectedNFT: NFTDisplayInfo?
     
-    private let gridColumns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
-    
     var body: some View {
         ZStack {
             List {
@@ -153,14 +148,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        LazyVGrid(columns: gridColumns, spacing: 16) {
-            ForEach(viewModel.domains, id: \.name) { domain in
-                Image(uiImage: UIImage.Preview.previewLandscape!)
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-        }
+        HomeWalletsDomainsSectionView(domains: viewModel.domains)
     }
 }
 

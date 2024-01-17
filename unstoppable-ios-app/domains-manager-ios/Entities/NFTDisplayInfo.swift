@@ -73,9 +73,9 @@ struct NFTDisplayInfo: Hashable, Identifiable {
     func loadIcon() async -> UIImage? {
         guard let imageUrl else { return nil }
         
-        //            try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
-        return UIImage.Preview.previewLandscape
-        //            return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
-        //                                                                  downsampleDescription: .mid)
+//                    try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
+//        return UIImage.Preview.previewLandscape
+                    return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
+                                                                          downsampleDescription: .mid)
     }
 }
