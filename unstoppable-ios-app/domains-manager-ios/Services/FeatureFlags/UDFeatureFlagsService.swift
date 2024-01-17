@@ -19,10 +19,7 @@ final class UDFeatureFlagsService {
         let ldMobileKey = LaunchDarkly.productionMobileKey
         #endif
         ldService = LaunchDarklyService(mobileKey: ldMobileKey)
-        
-        DispatchQueue.main.async {
-            self.subscribeToLD()
-        }
+        subscribeToLD()
     }
     
 }
