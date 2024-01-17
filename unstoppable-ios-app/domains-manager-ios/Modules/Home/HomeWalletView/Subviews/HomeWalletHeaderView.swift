@@ -27,6 +27,7 @@ struct HomeWalletHeaderView: View {
                 }
             
             Button {
+                UDVibration.buttonTap.vibrate()
                 domainNamePressedCallback()
             } label: {
                 HStack(spacing: 0) {

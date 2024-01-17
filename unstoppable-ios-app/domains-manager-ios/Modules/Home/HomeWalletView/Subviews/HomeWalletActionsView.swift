@@ -35,6 +35,7 @@ private extension HomeWalletActionsView {
             Menu {
                 ForEach(action.subActions, id: \.self) { subAction in
                     Button {
+                        UDVibration.buttonTap.vibrate()
                         subActionCallback(subAction)
                     } label: {
                         Label(
@@ -55,6 +56,7 @@ private extension HomeWalletActionsView {
                                 icon: Image,
                                 callback: EmptyCallback? = nil) -> some View {
         Button {
+            UDVibration.buttonTap.vibrate()
             callback?()
         } label: {
             VStack(spacing: 4) {

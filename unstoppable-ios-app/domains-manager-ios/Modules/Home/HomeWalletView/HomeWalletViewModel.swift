@@ -17,7 +17,7 @@ extension HomeWalletView {
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
         @Published var nftsCollectionsExpandedIds: Set<String> = []
-        @Published var selectedContentType: ContentType = .domains
+        @Published var selectedContentType: ContentType = .tokens
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice

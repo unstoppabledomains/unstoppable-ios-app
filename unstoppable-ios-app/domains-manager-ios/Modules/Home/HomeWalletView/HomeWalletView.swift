@@ -39,7 +39,7 @@ struct HomeWalletView: View {
             .listStyle(.plain)
             .clearListBackground()
             .background(.clear)
-            .animation(.default, value: UUID())
+            .animatedFromiOS16()
         }
         .background(Color.backgroundDefault)
         .navigationTitle("")
