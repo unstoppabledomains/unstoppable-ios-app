@@ -1184,6 +1184,7 @@
 		C6B65FAB2B57A582006D1812 /* HomeWalletWalletSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FA92B57A582006D1812 /* HomeWalletWalletSelectionView.swift */; };
 		C6B65FAD2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */; };
 		C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */; };
+		C6B65FAF2B580F40006D1812 /* WalletWithInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B740286474E000DC562B /* WalletWithInfo.swift */; };
 		C6B6858B280077F7000F9037 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858A280077F7000F9037 /* UIImage.swift */; };
 		C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6858F28007C09000F9037 /* UDCheckBox.swift */; };
 		C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */ = {isa = PBXBuildFile; fileRef = C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */; };
@@ -9973,6 +9974,7 @@
 				C61808612B19BBFE0032E543 /* PositionObservingView.swift in Sources */,
 				C6960C622B199AE600B79E28 /* String+Localization.swift in Sources */,
 				C6C8F93A2B2183DC00A9834D /* RearrangeDomainCell.swift in Sources */,
+				C6B65FAF2B580F40006D1812 /* WalletWithInfo.swift in Sources */,
 				C6D646A12B1ED15A00D724AC /* PublicProfileView.swift in Sources */,
 				C6B65FA52B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */,
 				C6960C542B19996700B79E28 /* PaymentConfiguration.swift in Sources */,

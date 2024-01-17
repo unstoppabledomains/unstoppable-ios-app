@@ -7,14 +7,7 @@
 
 import UIKit
 
-struct WalletWithInfo {
-    var wallet: UDWallet
-    var displayInfo: WalletDisplayInfo?
-    
-    var address: String { wallet.address }
-    var displayName: String {
-        displayInfo?.displayName ?? address.walletAddressTruncated
-    }
+extension WalletWithInfo {
     
     static let mock: [WalletWithInfo] = UDWallet.mock.map { WalletWithInfo(wallet: $0, displayInfo: .init(wallet: $0, domainsCount: Int(arc4random_uniform(3)), udDomainsCount: Int(arc4random_uniform(3))))}
     
