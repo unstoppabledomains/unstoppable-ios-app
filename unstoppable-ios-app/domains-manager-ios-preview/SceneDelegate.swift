@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
  
@@ -24,9 +25,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         window.makeKeyAndVisible()
         self.window = window
         
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
-        let nav = CNavigationController(rootViewController: vc)
-        window.rootViewController = nav
+        
+        let view = HomeTabView()
+        
+        let vc = UIHostingController(rootView: view)
+        window.rootViewController = vc
+        
+        
+//        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
+//        let nav = CNavigationController(rootViewController: vc)
+//        window.rootViewController = nav
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

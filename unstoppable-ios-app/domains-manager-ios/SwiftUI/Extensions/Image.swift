@@ -41,5 +41,18 @@ extension Image {
     static let magicWandIcon = Image(uiImage: .magicWandIcon)
     static let warningIcon = Image(uiImage: .warningIcon)
     static let tapSingleIcon = Image(uiImage: .tapSingleIcon)
+    static let layoutGridEmptyIcon = Image(uiImage: .layoutGridEmptyIcon)
+    static let squareBehindSquareIcon = Image(uiImage: .squareBehindSquareIcon)
+    static let dotsIcon = Image(uiImage: .dotsIcon)
+    static let personIcon = Image(uiImage: .personIcon)
+    static let arrowBottom = Image(uiImage: .arrowBottom)
+    static let filterIcon = Image(uiImage: .filterIcon).renderingMode(.template)
+    static let gearshape = Image(uiImage: .gearshape).renderingMode(.template)
+    static let qrBarCodeIcon = Image("qrBarCodeIcon")
+    static let homeLineIcon = Image("homeLineIcon")
+    static let chevronGrabberVertical = Image("chevronGrabberVertical")
+    static let notesIcon = Image("notesIcon")
+    static let vaultSafeIcon = Image("vaultSafeIcon")
+    static let walletExternalIcon = Image("walletExternalIcon")
     
 }

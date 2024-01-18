@@ -40,7 +40,8 @@ protocol AppContextProtocol {
     var messagingService: MessagingServiceProtocol { get }
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol { get }
-    
+    var walletNFTsService: WalletNFTsServiceProtocol { get }
+
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol

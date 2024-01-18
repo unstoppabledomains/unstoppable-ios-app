@@ -153,6 +153,15 @@ extension UIImage {
     static let usaFlagIcon = UIImage(named: "usaFlagIcon")!
     static let tagIcon = UIImage(named: "tagIcon")!
     static let tapSingleIcon = UIImage(named: "tapSingleIcon")!
+    static let layoutGridEmptyIcon = UIImage(named: "layoutGridEmptyIcon")!
+    static let squareBehindSquareIcon = UIImage(named: "squareBehindSquareIcon")!
+    static let personIcon = UIImage(named: "personIcon")!
+    static let arrowBottom = UIImage(named: "arrowBottom")!
+    static let solanaIcon = UIImage(named: "solanaIcon")!
+    static let cardanoIcon = UIImage(named: "cardanoIcon")!
+    static let hederaIcon = UIImage(named: "hederaIcon")!
+    static let filterIcon = UIImage(named: "filterIcon")!
+    static let qrBarCodeIcon = UIImage(named: "qrBarCodeIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

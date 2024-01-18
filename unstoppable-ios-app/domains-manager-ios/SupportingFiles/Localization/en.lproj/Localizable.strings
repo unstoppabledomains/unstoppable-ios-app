@@ -80,7 +80,7 @@
 
 /* Common */
 "DOMAIN" = "Domain";
-"DOMAINS" = "domains";
+"DOMAINS" = "Domains";
 "CONTINUE" = "Continue";
 "SKIP" = "Skip";
 "HELP" = "Help";
@@ -156,6 +156,13 @@
 "DOWNLOAD" = "Download";
 "UNENCRYPTED" = "Unencrypted";
 "VIEW_IN_BROWSER" = "View in browser";
+"TOKENS" = "Tokens";
+"COLLECTIBLES" = "Collectibles";
+"RECEIVE" = "Receive";
+"PROFILE" = "Profile";
+"MORE" = "More";
+"HOME" = "Home";
+"MESSAGES" = "Messages";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -949,3 +956,10 @@
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_TITLE" = "Coming soon";
 "PURCHASE_SEARCH_CANT_BUY_PULL_UP_SUBTITLE" = ".%@ domains are currently only for sale from our website.";
 "PAY_WITH_CREDITS" = "Pay with credits";
+
+// Home
+"HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
+"HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum and Polygon tokens, more coming in the future updates!";
+"HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
+"HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
+"NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";

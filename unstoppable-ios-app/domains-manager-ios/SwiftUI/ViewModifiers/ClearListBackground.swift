@@ -10,13 +10,10 @@ import SwiftUI
 struct ClearListBackground: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 16.0, *) {
-            return AnyView(
-                content
-                .scrollContentBackground(.hidden)
-            )
+            return content.scrollContentBackground(.hidden)
         } else {
             UITableView.appearance().backgroundColor = .clear
-            return AnyView(content)
+            return content
         }
     }
 }

@@ -16,7 +16,7 @@ final class DomainTransactionsService: DomainTransactionsServiceProtocol {
         
     }
     
-    func updateTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
         []
     }
     

@@ -33,7 +33,7 @@ final class UDDomainsService: UDDomainsServiceProtocol {
     }
     
     func mintDomains(_ domains: [String], paidDomains: [String], to wallet: UDWallet, userEmail: String, securityCode: String) async throws {
-        []
+        
     }
     
     func findDomains(by domainNames: [String]) -> [DomainItem] {

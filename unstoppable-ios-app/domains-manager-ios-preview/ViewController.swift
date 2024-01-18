@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        showDomainsCollection()
+        showHomeTabView()
     }
     
     @IBAction func runPurchaseButtonPressed() {
@@ -71,5 +71,14 @@ class ViewController: UIViewController {
         let nav = EmptyRootCNavigationController(rootViewController: vc)
         present(nav, animated: false)
     }
+    
+    func showHomeTabView() {
+        let view = HomeTabView()
+        
+        let vc = UIHostingController(rootView: view)
+        addChildViewController(vc, andEmbedToView: self.view)
+    }
+    
+    
 }
 

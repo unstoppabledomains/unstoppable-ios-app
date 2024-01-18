@@ -12,7 +12,7 @@ final class DomainsListPresenter: DomainsListViewPresenter {
     private let walletWithInfo: WalletWithInfo
     override var analyticsName: Analytics.ViewName { .domainsList }
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
-    override var title: String { String.Constants.domains.localized().capitalizedFirstCharacter + " · \(domains.count)" }
+    override var title: String { String.Constants.domains.localized() + " · \(domains.count)" }
 
     init(view: DomainsListViewProtocol,
          domains: [DomainDisplayInfo],

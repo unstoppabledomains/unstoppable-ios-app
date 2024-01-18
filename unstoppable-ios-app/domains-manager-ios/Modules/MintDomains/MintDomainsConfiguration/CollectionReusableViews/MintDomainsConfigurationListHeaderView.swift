@@ -22,7 +22,7 @@ final class MintDomainsConfigurationListHeaderView: CollectionGenericContentView
         
         self.selectAllButtonCallback = selectAllButtonCallback
         let label = UILabel()
-        label.setAttributedTextWith(text: String.Constants.domains.localized().capitalizedFirstCharacter + " ･ " + "\(domainsCount)",
+        label.setAttributedTextWith(text: String.Constants.domains.localized() + " ･ " + "\(domainsCount)",
                                     font: .currentFont(withSize: 14, weight: .medium),
                                     textColor: .foregroundSecondary)
         

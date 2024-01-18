@@ -12,4 +12,7 @@ struct WalletWithInfo {
     var displayInfo: WalletDisplayInfo?
     
     var address: String { wallet.address }
+    var displayName: String {
+        displayInfo?.displayName ?? address.walletAddressTruncated
+    }
 }

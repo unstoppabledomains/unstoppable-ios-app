@@ -15,6 +15,7 @@ struct UDListItemView: View {
     
     let title: String
     var subtitle: String? = nil
+    var subtitleStyle: SubtitleStyle = .default
     var value: String? = nil
     var imageType: ImageType
     var imageStyle: ImageStyle = .centred()
@@ -88,10 +89,26 @@ private extension UDListItemView {
     
     @ViewBuilder
     func subtitleView() -> some View {
+        switch subtitleStyle {
+        case .default:
+            subtitleText()
+                .foregroundStyle(Color.foregroundSecondary)
+        case .warning:
+            HStack(spacing: 8) {
+                Image.warningIcon
+                    .resizable()
+                    .squareFrame(16)
+                subtitleText()
+            }
+            .foregroundStyle(Color.foregroundWarning)
+        }
+    }
+    
+    @ViewBuilder
+    func subtitleText() -> some View {
         if let subtitle {
             Text(subtitle)
                 .font(.currentFont(size: 14))
-                .foregroundStyle(Color.foregroundSecondary)
                 .frame(height: 20)
         }
     }
@@ -126,6 +143,11 @@ extension UDListItemView {
     enum ImageStyle {
         case centred(offset: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         case full
+    }
+    
+    enum SubtitleStyle {
+        case `default`
+        case warning
     }
     
     enum RightViewStyle {
