@@ -78,7 +78,6 @@ private extension HomeWalletView {
     @ViewBuilder
     func walletHeaderView() -> some View {
         HomeWalletHeaderView(wallet: viewModel.selectedWallet,
-                             totalBalance: viewModel.totalBalance,
                              domainNamePressedCallback: viewModel.domainNamePressed)
     }
     
@@ -117,10 +116,7 @@ private extension HomeWalletView {
             Button {
                 
             } label: {
-                HomeWalletTokenRowView(token: token, 
-                                       onAppear: {
-                    viewModel.loadIconIfNeededFor(token: token)
-                })
+                HomeWalletTokenRowView(token: token)
             }
             .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
@@ -136,7 +132,6 @@ private extension HomeWalletView {
             ForEach(viewModel.nftsCollections) { nftCollection in
                 HomeWalletNFTsCollectionSectionView(collection: nftCollection, 
                                                     nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds,
-                                                    nftAppearCallback: viewModel.loadIconIfNeededForNFT, 
                                                     nftSelectedCallback: didSelectNFT)
             }
         }

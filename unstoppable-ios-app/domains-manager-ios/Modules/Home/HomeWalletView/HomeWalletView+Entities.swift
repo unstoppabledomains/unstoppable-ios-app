@@ -133,7 +133,6 @@ extension HomeWalletView {
         let name: String
         let balance: Double
         var marketUsd: Double?
-        var icon: UIImage? = nil
         private(set) var isSkeleton: Bool = false
         var fiatValue: Double? {
             if let marketUsd {
@@ -150,9 +149,6 @@ extension HomeWalletView {
             self.name = walletBalance.name
             self.balance = Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0 //walletBalance.balance
             self.marketUsd = Double((walletBalance.value?.marketUsd ?? "").replacingOccurrences(of: "$", with: "").trimmedSpaces)
-            self.icon = appContext.imageLoadingService.cachedImage(for: .currencyTicker(symbol,
-                                                                                        size: TokenDescription.iconSize,
-                                                                                        style: TokenDescription.iconStyle))
         }
         
         init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
@@ -160,7 +156,6 @@ extension HomeWalletView {
             self.name = name
             self.balance = balance
             self.marketUsd = marketUsd
-            self.icon = icon
         }
         
         static func createSkeletonEntity() -> TokenDescription {
@@ -169,9 +164,7 @@ extension HomeWalletView {
             return token 
         }
         
-        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {
-            guard icon == nil else { return }
-            
+        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {            
             Task {
                 let size = TokenDescription.iconSize
                 let style = TokenDescription.iconStyle

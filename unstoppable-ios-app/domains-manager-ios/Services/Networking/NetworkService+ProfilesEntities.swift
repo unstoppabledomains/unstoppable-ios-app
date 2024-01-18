@@ -622,13 +622,13 @@ struct UpdateProfilePendingChangesRequest {
     let domain: DomainItem
 }
 
-struct ProfileWalletBalance: Codable {
+struct ProfileWalletBalance: Codable, Hashable {
     let symbol: String
     let name: String
     let balance: String
     var value: Value?
     
-    struct Value: Codable {
+    struct Value: Codable, Hashable {
         let marketUsd: String?
         let walletUsd: String?
     }

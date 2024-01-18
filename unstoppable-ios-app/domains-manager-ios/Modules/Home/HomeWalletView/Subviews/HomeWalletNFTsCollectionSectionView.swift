@@ -11,7 +11,6 @@ struct HomeWalletNFTsCollectionSectionView: View {
     
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
-    let nftAppearCallback: @MainActor (_ nft: NFTDisplayInfo, _ collection: HomeWalletView.NFTsCollectionDescription)->()
     let nftSelectedCallback: (NFTDisplayInfo)->()
     
     private let gridColumns = [
@@ -29,9 +28,6 @@ struct HomeWalletNFTsCollectionSectionView: View {
                             if i <= 1 {
                                 transaction.animation = nil
                             }
-                        }
-                        .onAppear {
-                            nftAppearCallback(collection.nfts[i], collection)
                         }
                 }
             }
@@ -96,6 +92,5 @@ private extension HomeWalletNFTsCollectionSectionView {
 #Preview {
     HomeWalletNFTsCollectionSectionView(collection: HomeWalletView.NFTsCollectionDescription.mock().first!,
                                         nftsCollectionsExpandedIds: .constant([]),
-                                        nftAppearCallback: { _,_ in },
                                         nftSelectedCallback: { _ in })
 }

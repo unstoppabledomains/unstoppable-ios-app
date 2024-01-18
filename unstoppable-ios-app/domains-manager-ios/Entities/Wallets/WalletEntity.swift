@@ -8,6 +8,7 @@
 import Foundation
 
 struct WalletEntity: Codable {
+    
     let udWallet: UDWallet
     let displayInfo: WalletDisplayInfo
     var domains: [DomainDisplayInfo]
@@ -17,7 +18,26 @@ struct WalletEntity: Codable {
     
     var address: String { udWallet.address }
     var displayName: String { displayInfo.displayName }
+    var totalBalance: Int { 20000 }
     
+}
+
+extension WalletEntity: Hashable {
+    static func == (lhs: WalletEntity, rhs: WalletEntity) -> Bool {
+        lhs.displayInfo == rhs.displayInfo &&
+        lhs.domains == rhs.domains &&
+        lhs.nfts == rhs.nfts &&
+        lhs.balance == rhs.balance &&
+        lhs.rrDomain == rhs.rrDomain
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(displayInfo)
+        hasher.combine(domains)
+        hasher.combine(nfts)
+        hasher.combine(balance)
+        hasher.combine(rrDomain)
+    }
 }
 
 // MARK: - Open methods

@@ -23,8 +23,6 @@ extension HomeWalletView {
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
         @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
-
-        var totalBalance: Int { 20000 }
         
         init(selectedWallet: WalletEntity) {
             self.selectedWallet = selectedWallet
@@ -132,32 +130,6 @@ extension HomeWalletView {
         
         func domainNamePressed() {
             isSelectWalletPresented = true
-        }
-        
-        func loadIconIfNeededFor(token: TokenDescription) {
-            guard !token.isSkeleton,
-                  token.icon == nil else { return }
-            
-            token.loadIconIfNeeded { [weak self] image in
-                DispatchQueue.main.async {
-                    if let i = self?.tokens.firstIndex(where: { $0.id == token.id }) {
-                        self?.tokens[i].icon = image
-                    }
-                }
-            }
-        }
-        
-        func loadIconIfNeededForNFT(_ nft: NFTDisplayInfo, in collection: NFTsCollectionDescription) {
-//            guard nft.icon == nil,
-//                nft.imageUrl != nil else { return }
-//            
-//            Task { @MainActor in
-//                if let icon = await nft.loadIcon(),
-//                   let i = nftsCollections.firstIndex(where: { $0.id == collection.id }),
-//                   let j = nftsCollections[i].nfts.firstIndex(where: { $0.id == nft.id }) {
-//                    nftsCollections[i].nfts[j].icon = icon
-//                }
-//            }
         }
     }
 }

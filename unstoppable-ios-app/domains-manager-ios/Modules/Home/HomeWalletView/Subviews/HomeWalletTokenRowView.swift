@@ -11,11 +11,11 @@ struct HomeWalletTokenRowView: View {
     
     static let height: CGFloat = 64
     let token: HomeWalletView.TokenDescription
-    let onAppear: EmptyCallback
+    @State private var icon: UIImage?
     
     var body: some View {
         HStack(spacing: 16) {
-            Image(uiImage: token.icon ?? .init())
+            Image(uiImage: icon ?? .init())
                 .resizable()
                 .squareFrame(40)
                 .background(Color.backgroundSubtle)
@@ -50,6 +50,9 @@ struct HomeWalletTokenRowView: View {
             }
         }
         .frame(height: HomeWalletTokenRowView.height)
+        .onChange(of: token, perform: { newValue in
+            loadIconFor(token: newValue)
+        })
         .onAppear {
             onAppear()
         }
@@ -58,7 +61,24 @@ struct HomeWalletTokenRowView: View {
     }
 }
 
+// MARK: - Private methods
+private extension HomeWalletTokenRowView {
+    func onAppear() {
+        loadIconFor(token: token)
+    }
+    
+    func loadIconFor(token: HomeWalletView.TokenDescription) {
+        icon = nil
+        guard !token.isSkeleton else { return }
+        
+        token.loadIconIfNeeded { image in
+            DispatchQueue.main.async {
+                self.icon = image
+            }
+        }
+    }
+}
+
 #Preview {
-    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!,
-                           onAppear: { })
+    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!)
 }

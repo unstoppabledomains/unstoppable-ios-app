@@ -10,9 +10,9 @@ import SwiftUI
 struct HomeWalletHeaderView: View {
     
     let wallet: WalletEntity
-    let totalBalance: Int
     let domainNamePressedCallback: EmptyCallback
     @State private var domainAvatar: UIImage?
+    @State private var rrDomainName: String?
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -40,32 +40,41 @@ struct HomeWalletHeaderView: View {
             }
             .buttonStyle(.plain)
             
-            Text(formatCartPrice(totalBalance))
+            Text(formatCartPrice(wallet.totalBalance))
                 .titleText()
         }
         .frame(maxWidth: .infinity)
-        .onAppear(perform: loadAvatarIfNeeded)
+        .onChange(of: wallet, perform: { wallet in
+            loadAvatarIfNeeded(wallet: wallet)
+        })
+        .onAppear(perform: onAppear)
     }
     
 }
 
 // MARK: - Private methods
 private extension HomeWalletHeaderView {
+    func onAppear() {
+        loadAvatarIfNeeded(wallet: wallet)
+    }
+    
+    func loadAvatarIfNeeded(wallet: WalletEntity) {
+        Task {
+            if rrDomainName != wallet.rrDomain?.name {
+                self.domainAvatar = nil
+                if let domain = wallet.rrDomain,
+                   let image = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
+                    self.domainAvatar = image
+                }
+            }
+        }
+    }
+    
     func getCurrentTitle() -> String {
         if let rrDomain = wallet.rrDomain {
             return rrDomain.name
         }
         return wallet.displayName
-    }
-    
-    func loadAvatarIfNeeded() {
-        Task {
-            if domainAvatar == nil,
-               let domain = wallet.rrDomain,
-               let image = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
-                self.domainAvatar = image
-            }
-        }
     }
     
     @ViewBuilder
@@ -110,6 +119,5 @@ private extension HomeWalletHeaderView {
 
 #Preview {
     HomeWalletHeaderView(wallet: WalletEntity.mock().first!,
-                         totalBalance: 20000,
                          domainNamePressedCallback: { })
 }
