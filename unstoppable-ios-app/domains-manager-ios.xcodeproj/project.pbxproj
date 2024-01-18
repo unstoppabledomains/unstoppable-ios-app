@@ -306,6 +306,8 @@
 		C617FD972B58BB7600B93433 /* WalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD962B58BB7600B93433 /* WalletsDataService.swift */; };
 		C617FD992B58BC2900B93433 /* WalletEntitiesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD982B58BC2900B93433 /* WalletEntitiesStorage.swift */; };
 		C617FD9B2B58D7C600B93433 /* MockWalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD9A2B58D7C600B93433 /* MockWalletsDataService.swift */; };
+		C617FD9E2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */; };
+		C617FD9F2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */; };
 		C61807AF2B199D800032E543 /* CoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECE962833A3E400978ED5 /* CoinRecord.swift */; };
 		C61807B12B199DBC0032E543 /* DefaultAppVersionFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807B02B199DBC0032E543 /* DefaultAppVersionFetcher.swift */; };
 		C61807B22B199DD70032E543 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0A27FF299800A517D5 /* UIView.swift */; };
@@ -2651,6 +2653,7 @@
 		C617FD962B58BB7600B93433 /* WalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataService.swift; sourceTree = "<group>"; };
 		C617FD982B58BC2900B93433 /* WalletEntitiesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntitiesStorage.swift; sourceTree = "<group>"; };
 		C617FD9A2B58D7C600B93433 /* MockWalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWalletsDataService.swift; sourceTree = "<group>"; };
+		C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataServiceEnvironmentKey.swift; sourceTree = "<group>"; };
 		C61807B02B199DBC0032E543 /* DefaultAppVersionFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAppVersionFetcher.swift; sourceTree = "<group>"; };
 		C61807B62B199E370032E543 /* PreviewUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewUIImage.swift; sourceTree = "<group>"; };
 		C61807BA2B199FD10032E543 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
@@ -4693,6 +4696,16 @@
 			path = WalletsDataService;
 			sourceTree = "<group>";
 		};
+		C617FD9C2B58DBAF00B93433 /* EnvironmentKeys */ = {
+			isa = PBXGroup;
+			children = (
+				C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */,
+				C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */,
+				C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */,
+			);
+			path = EnvironmentKeys;
+			sourceTree = "<group>";
+		};
 		C61807C62B19A37A0032E543 /* AppContext */ = {
 			isa = PBXGroup;
 			children = (
@@ -5066,9 +5079,7 @@
 			isa = PBXGroup;
 			children = (
 				C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */,
-				C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */,
 				C63095C62B0DA5DE00205054 /* PurchaseDomainsCart.swift */,
-				C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */,
 				C63095C82B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift */,
 				C63095C92B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift */,
 				C63095CA2B0DA5DE00205054 /* DomainToPurchase.swift */,
@@ -6979,6 +6990,7 @@
 				C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */,
 				C6D646DE2B1ED46200D724AC /* WalletConnectController.swift */,
 				C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */,
+				C617FD9C2B58DBAF00B93433 /* EnvironmentKeys */,
 				C63095C42B0DA5DE00205054 /* Purchase domains */,
 				C671E39D28FE973800A2B3A0 /* CarouselItems */,
 				C63538E42948891200ECABA6 /* Domains */,
@@ -9472,6 +9484,7 @@
 				C6861B742A5BE9AA00A1632B /* ChatEmptyView.swift in Sources */,
 				290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */,
 				C6C9DEA02834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
+				C617FD9E2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */,
 				C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */,
 				C6FF2D9728F0238100148007 /* DomainProfileSectionChangeUIDescription.swift in Sources */,
 				C60982712824094100546392 /* ViewWithDashesProgress.swift in Sources */,
@@ -10311,6 +10324,7 @@
 				C6D645862B1DBAA700D724AC /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C618081F2B19AB160032E543 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C6C8F8AF2B2182CF00A9834D /* EnterEmailVerificationCodeViewController.swift in Sources */,
+				C617FD9F2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */,
 				C60C59B62B47FC0900A2522C /* LoginProvider.swift in Sources */,
 				C6C8F9222B2183B700A9834D /* EnterPasscodeViewController.swift in Sources */,
 				C6C8F9392B2183DC00A9834D /* ChooseNewPrimaryDomainPresenter.swift in Sources */,

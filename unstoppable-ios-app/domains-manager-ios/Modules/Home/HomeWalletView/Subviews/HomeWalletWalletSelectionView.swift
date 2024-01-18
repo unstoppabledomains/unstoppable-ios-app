@@ -9,9 +9,10 @@ import SwiftUI
 
 struct HomeWalletWalletSelectionView: View {
     
-    @State private var wallets: [WalletWithInfo] = []
-    @State private var selectedWallet: WalletWithInfo? = nil
-    var walletSelectedCallback: (WalletWithInfo)->()
+    @Environment(\.walletsDataService) private var walletsDataService
+    
+    @State private var wallets: [WalletEntity] = []
+    @State private var selectedWallet: WalletEntity? = nil
     
     var body: some View {
         ScrollView {
@@ -32,11 +33,9 @@ struct HomeWalletWalletSelectionView: View {
 // MARK: - Private methods
 private extension HomeWalletWalletSelectionView {
     func onAppear() {
-        Task {
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            self.selectedWallet = wallets.first
-            self.wallets = wallets.filter({ $0.address != selectedWallet?.address })
-        }
+        let wallets = walletsDataService.wallets
+        self.selectedWallet = walletsDataService.selectedWallet
+        self.wallets = wallets.filter({ $0.address != selectedWallet?.address })
     }
     
     @ViewBuilder
@@ -63,7 +62,7 @@ private extension HomeWalletWalletSelectionView {
                 ForEach(wallets, id: \.address) { wallet in
                     Button {
                         UDVibration.buttonTap.vibrate()
-                        
+                        walletsDataService.setSelectedWallet(wallet)
                     } label: {
                         listViewFor(wallet: wallet)
                     }
@@ -72,12 +71,12 @@ private extension HomeWalletWalletSelectionView {
         }
     }
     
-    func isWalletAbleToSetRR(_ wallet: WalletWithInfo) -> Bool {
-        (wallet.displayInfo?.udDomainsCount ?? 0) > 0
+    func isWalletAbleToSetRR(_ wallet: WalletEntity) -> Bool {
+        wallet.displayInfo.udDomainsCount > 0
     }
     
     @ViewBuilder
-    func listViewFor(wallet: WalletWithInfo) -> some View {
+    func listViewFor(wallet: WalletEntity) -> some View {
         UDListItemView(title: titleForWallet(wallet),
                        subtitle: subtitleForWallet(wallet),
                        subtitleStyle: subtitleStyleForWallet(wallet),
@@ -86,16 +85,16 @@ private extension HomeWalletWalletSelectionView {
         .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
    
-    func titleForWallet(_ wallet: WalletWithInfo) -> String {
-        if let rrDomain = wallet.displayInfo?.reverseResolutionDomain {
+    func titleForWallet(_ wallet: WalletEntity) -> String {
+        if let rrDomain = wallet.rrDomain {
             return rrDomain.name
         }
         return wallet.displayName
     }
     
-    func subtitleForWallet(_ wallet: WalletWithInfo) -> String? {
-        if wallet.displayInfo?.reverseResolutionDomain != nil {
-            if wallet.displayInfo?.isNameSet == true {
+    func subtitleForWallet(_ wallet: WalletEntity) -> String? {
+        if wallet.rrDomain != nil {
+            if wallet.displayInfo.isNameSet {
                 return "\(wallet.displayName) · \(wallet.address.walletAddressTruncated)"
             }
             return wallet.address.walletAddressTruncated
@@ -106,20 +105,20 @@ private extension HomeWalletWalletSelectionView {
         return nil
     }
     
-    func subtitleStyleForWallet(_ wallet: WalletWithInfo) -> UDListItemView.SubtitleStyle {
-        if wallet.displayInfo?.reverseResolutionDomain == nil,
+    func subtitleStyleForWallet(_ wallet: WalletEntity) -> UDListItemView.SubtitleStyle {
+        if wallet.rrDomain == nil,
            isWalletAbleToSetRR(wallet) {
             return .warning
         }
          return .default
     }
     
-    func imageTypeForWallet(_ wallet: WalletWithInfo) -> UDListItemView.ImageType {
-        if let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
+    func imageTypeForWallet(_ wallet: WalletEntity) -> UDListItemView.ImageType {
+        if let rrDomain = wallet.rrDomain,
            let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) {
             return .uiImage(avatar)
         }
-        switch wallet.wallet.type {
+        switch wallet.udWallet.type {
         case .defaultGeneratedLocally, .generatedLocally:
             return .image(.vaultSafeIcon)
         default:
@@ -131,7 +130,7 @@ private extension HomeWalletWalletSelectionView {
     func addWalletView() -> some View {
         UDCollectionSectionBackgroundView {
             Button {
-                
+                UDVibration.buttonTap.vibrate()
             } label: {
                 HStack(spacing: 16) {
                     Image.plusIconNav
@@ -151,5 +150,5 @@ private extension HomeWalletWalletSelectionView {
 }
 
 #Preview {
-    HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
+    HomeWalletWalletSelectionView()
 }

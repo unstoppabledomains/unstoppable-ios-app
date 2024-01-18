@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeWalletHeaderView: View {
     
-    let wallet: WalletWithInfo
+    let wallet: WalletEntity
     let totalBalance: Int
     let domainNamePressedCallback: EmptyCallback
     @State private var domainAvatar: UIImage?
@@ -52,16 +52,16 @@ struct HomeWalletHeaderView: View {
 // MARK: - Private methods
 private extension HomeWalletHeaderView {
     func getCurrentTitle() -> String {
-        if let rrDomain = wallet.displayInfo?.reverseResolutionDomain {
+        if let rrDomain = wallet.rrDomain {
             return rrDomain.name
         }
-        return wallet.displayInfo?.displayName ?? wallet.address.walletAddressTruncated
+        return wallet.displayName
     }
     
     func loadAvatarIfNeeded() {
         Task {
             if domainAvatar == nil,
-               let domain = wallet.displayInfo?.reverseResolutionDomain,
+               let domain = wallet.rrDomain,
                let image = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
                 self.domainAvatar = image
             }
@@ -70,7 +70,7 @@ private extension HomeWalletHeaderView {
     
     @ViewBuilder
     func getAvatarView() -> some View {
-        if let domain = wallet.displayInfo?.reverseResolutionDomain {
+        if let domain = wallet.rrDomain {
             getAvatarViewForDomain(domain)
         } else {
             getAvatarViewToGetDomain()
@@ -109,7 +109,7 @@ private extension HomeWalletHeaderView {
 }
 
 #Preview {
-    HomeWalletHeaderView(wallet: WalletWithInfo.mock.first!,
+    HomeWalletHeaderView(wallet: WalletEntity.mock().first!,
                          totalBalance: 20000,
                          domainNamePressedCallback: { })
 }

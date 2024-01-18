@@ -479,4 +479,20 @@ struct WalletEntity: Codable {
     var rrDomain: DomainDisplayInfo?
     
     var address: String { udWallet.address }
+    var displayName: String { displayInfo.displayName }
+    
+    static func mock() -> [WalletEntity] {
+        WalletWithInfo.mock.map {
+            let domains = createMockDomains()
+            let numOfNFTs = Int(arc4random_uniform(10) + 1)
+            let nfts = (0...numOfNFTs).map { _ in  NFTDisplayInfo.mock() }
+            return WalletEntity(udWallet: $0.wallet,
+                                displayInfo: $0.displayInfo!,
+                                domains: domains,
+                                nfts: nfts,
+                                balance: [],
+                                rrDomain: domains.randomElement())
+            
+        }
+    }
 }

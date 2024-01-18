@@ -12,7 +12,7 @@ extension HomeWalletView {
     @MainActor
     final class HomeWalletViewModel: ObservableObject {
         
-        @Published private(set) var selectedWallet: WalletWithInfo = WalletWithInfo.mock.first!
+        @Published private(set) var selectedWallet: WalletEntity = WalletEntity.mock().first!
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
@@ -27,7 +27,7 @@ extension HomeWalletView {
         var totalBalance: Int { 20000 }
         
         init() {
-            selectedWallet.displayInfo?.reverseResolutionDomain = .init(name: "oleg.x", ownerWallet: "", isSetForRR: true)
+            setSelectedWallet(selectedWallet)
             tokens.append(.createSkeletonEntity())
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
@@ -39,27 +39,32 @@ extension HomeWalletView {
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
                 self?.sortDomains(sortOption)
             }.store(in: &subscribers)
+            appContext.walletsDataService.selectedWalletPublisher.sink { [weak self] selectedWallet in
+                if let selectedWallet {
+                    self?.setSelectedWallet(selectedWallet)
+                }
+            }.store(in: &subscribers)
+        }
+        
+        private func setSelectedWallet(_ wallet: WalletEntity) {
+            selectedWallet = wallet
+            tokens = wallet.balance.map { TokenDescription(walletBalance: $0) }
+            domains = wallet.domains
             
-            Task {
-                do {
-                    let nfts = try await appContext.walletNFTsService.getImageNFTsFor(domainName: "")
-                    if !nfts.isEmpty {
-                        let collectionNameToNFTs: [String? : [NFTModel]] = .init(grouping: nfts, by: { $0.collection })
-                        var collections: [NFTsCollectionDescription] = []
-                        
-                        for (collectionName, nftModels) in collectionNameToNFTs {
-                            guard let collectionName else { continue }
-                            
-                            let nfts = nftModels.map { NFTDisplayInfo(nftModel: $0) }
-                            let collection = NFTsCollectionDescription(collectionName: collectionName, nfts: nfts)
-                            collections.append(collection)
-                        }
-                        
-                        self.nftsCollections = collections
-                        sortCollectibles(selectedCollectiblesSortingOption)
-                    }
-                } catch { }
+            let collectionNameToNFTs: [String? : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
+            var collections: [NFTsCollectionDescription] = []
+            
+            for (collectionName, nfts) in collectionNameToNFTs {
+                guard let collectionName else { continue }
+                
+                let collection = NFTsCollectionDescription(collectionName: collectionName, nfts: nfts)
+                collections.append(collection)
             }
+            
+            self.nftsCollections = collections
+            sortCollectibles(selectedCollectiblesSortingOption)
+            sortDomains(selectedDomainsSortingOption)
+            sortTokens(selectedTokensSortingOption)
         }
         
         private func sortTokens(_ sortOption: TokensSortingOptions) {
@@ -106,7 +111,6 @@ extension HomeWalletView {
         }
         
         func walletActionPressed(_ action: WalletAction) {
-            print("Action pressed \(action.title)")
             switch action {
             case .receive:
                 return

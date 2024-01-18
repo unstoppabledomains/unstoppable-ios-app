@@ -162,10 +162,10 @@ private extension HomeWalletView {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
                     if #available(iOS 16.0, *) {
-                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
+                        HomeWalletWalletSelectionView()
                             .presentationDetents([.medium, .large])
                     } else {
-                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
+                        HomeWalletWalletSelectionView()
                     }
                 })
         }
