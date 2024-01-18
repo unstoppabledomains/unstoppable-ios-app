@@ -12,7 +12,7 @@ extension HomeWalletView {
     @MainActor
     final class HomeWalletViewModel: ObservableObject {
         
-        @Published private(set) var selectedWallet: WalletEntity = WalletEntity.mock().first!
+        @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
         @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
@@ -26,9 +26,10 @@ extension HomeWalletView {
 
         var totalBalance: Int { 20000 }
         
-        init() {
+        init(selectedWallet: WalletEntity) {
+            self.selectedWallet = selectedWallet
+            
             setSelectedWallet(selectedWallet)
-            tokens.append(.createSkeletonEntity())
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
                 self?.sortTokens(sortOption)
@@ -39,7 +40,7 @@ extension HomeWalletView {
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
                 self?.sortDomains(sortOption)
             }.store(in: &subscribers)
-            appContext.walletsDataService.selectedWalletPublisher.sink { [weak self] selectedWallet in
+            appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
                 if let selectedWallet {
                     self?.setSelectedWallet(selectedWallet)
                 }
@@ -49,6 +50,7 @@ extension HomeWalletView {
         private func setSelectedWallet(_ wallet: WalletEntity) {
             selectedWallet = wallet
             tokens = wallet.balance.map { TokenDescription(walletBalance: $0) }
+            tokens.append(.createSkeletonEntity())
             domains = wallet.domains
             
             let collectionNameToNFTs: [String? : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })

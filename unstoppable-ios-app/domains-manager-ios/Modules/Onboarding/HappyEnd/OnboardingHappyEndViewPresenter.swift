@@ -29,6 +29,7 @@ final class OnboardingHappyEndViewPresenter: BaseHappyEndViewPresenter {
         User.instance.update(settings: settings)
         
         ConfettiImageView.releaseAnimations()
-        appContext.coreAppCoordinator.showHome(mintingState: .default)
+        guard let wallet = appContext.walletsDataService.selectedWallet else { return } // TODO: - Refactoring
+        appContext.coreAppCoordinator.showHome(mintingState: .default, wallet: wallet)
     }
 }

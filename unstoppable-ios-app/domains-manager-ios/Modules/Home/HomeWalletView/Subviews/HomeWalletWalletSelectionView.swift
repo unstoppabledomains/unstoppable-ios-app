@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeWalletWalletSelectionView: View {
     
     @Environment(\.walletsDataService) private var walletsDataService
-    
+    @Environment(\.presentationMode) private var presentationMode
+
     @State private var wallets: [WalletEntity] = []
     @State private var selectedWallet: WalletEntity? = nil
     
@@ -62,6 +63,7 @@ private extension HomeWalletWalletSelectionView {
                 ForEach(wallets, id: \.address) { wallet in
                     Button {
                         UDVibration.buttonTap.vibrate()
+                        presentationMode.wrappedValue.dismiss()
                         walletsDataService.setSelectedWallet(wallet)
                     } label: {
                         listViewFor(wallet: wallet)

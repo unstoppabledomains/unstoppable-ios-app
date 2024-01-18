@@ -148,8 +148,8 @@ extension HomeWalletView {
         init(walletBalance: ProfileWalletBalance) {
             self.symbol = walletBalance.symbol
             self.name = walletBalance.name
-            self.balance = walletBalance.balance
-            self.marketUsd = walletBalance.value?.marketUsd
+            self.balance = Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0 //walletBalance.balance
+            self.marketUsd = Double((walletBalance.value?.marketUsd ?? "").replacingOccurrences(of: "$", with: "").trimmedSpaces)
             self.icon = appContext.imageLoadingService.cachedImage(for: .currencyTicker(symbol,
                                                                                         size: TokenDescription.iconSize,
                                                                                         style: TokenDescription.iconStyle))

@@ -34,8 +34,10 @@ final class WalletsDataService {
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
         wallets = storage.getCachedWallets()
-        ensureConsistencyWithUDWallets()
-        setCachedSelectedWallet()
+        queue.async {
+            self.ensureConsistencyWithUDWallets()
+            self.setCachedSelectedWallet()
+        }
     }
     
 }
@@ -359,13 +361,13 @@ private extension WalletsDataService {
             do {
                 let walletBalances = try await loadBalanceFor(wallet: wallet)
                 mutateWalletEntity(wallet) { wallet in
-                    wallet.balance = walletBalances
+                    wallet.balance = walletBalances ?? []
                 }
             }
         }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [ProfileWalletBalance] {
+    func loadBalanceFor(wallet: WalletEntity) async throws -> [ProfileWalletBalance]? {
         // TODO: - Load wallet balance per wallet
 
         if let domain = wallet.domains.first {
@@ -420,6 +422,9 @@ private extension WalletsDataService {
 private extension WalletsDataService {
     func setCachedSelectedWallet() {
         selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
+        if let selectedWallet {
+            refreshWalletBalancesAsync(selectedWallet)
+        }
     }
     
     func ensureConsistencyWithUDWallets() {

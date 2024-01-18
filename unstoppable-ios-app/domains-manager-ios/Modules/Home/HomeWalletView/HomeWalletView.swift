@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @StateObject private var viewModel = HomeWalletViewModel()
+    @StateObject var viewModel: HomeWalletViewModel
     @State private var selectedNFT: NFTDisplayInfo?
     
     var body: some View {
@@ -70,7 +70,6 @@ struct HomeWalletView: View {
                 }
             }
         })
-
     }
 }
 
@@ -174,7 +173,7 @@ private extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView()
+        HomeWalletView(viewModel: .init(selectedWallet: WalletEntity.mock().first!))
     }
 }
 

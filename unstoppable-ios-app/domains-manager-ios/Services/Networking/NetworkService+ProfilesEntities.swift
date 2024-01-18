@@ -13,7 +13,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let referralCode: String?
     let social: DomainProfileSocialInfo?
     let records: [String : String]?
-    let walletBalances: [ProfileWalletBalance]
+    let walletBalances: [ProfileWalletBalance]?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -625,12 +625,12 @@ struct UpdateProfilePendingChangesRequest {
 struct ProfileWalletBalance: Codable {
     let symbol: String
     let name: String
-    let balance: Double
+    let balance: String
     var value: Value?
     
     struct Value: Codable {
-        let marketUsd: Double?
-        let walletUsd: Double?
+        let marketUsd: String?
+        let walletUsd: String?
     }
 }
 

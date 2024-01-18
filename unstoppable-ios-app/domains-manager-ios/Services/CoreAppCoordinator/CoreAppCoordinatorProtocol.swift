@@ -11,7 +11,7 @@ import UIKit
 protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEventsUIHandler {
     func startWith(window: UIWindow)
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
-    func showHome(mintingState: DomainsCollectionMintingState)
+    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity)
     func showAppUpdateRequired()
     func setKeyWindow()
     @discardableResult

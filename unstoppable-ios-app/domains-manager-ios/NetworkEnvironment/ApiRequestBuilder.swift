@@ -612,7 +612,7 @@ extension Endpoint {
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/public/\(domainName)",
-            queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
+            queryItems: fields.isEmpty ? [] : [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: ""
         )
     }

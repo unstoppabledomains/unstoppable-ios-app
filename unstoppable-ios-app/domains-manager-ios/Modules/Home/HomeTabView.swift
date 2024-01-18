@@ -8,17 +8,20 @@
 import SwiftUI
 
 struct HomeTabView: View {
+    
+    let selectedWallet: WalletEntity
+    
     var body: some View {
         TabView {
             NavigationView {
-                HomeWalletView()
+                HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             }
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
             NavigationView {
-                HomeWalletView()
+                HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             }
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
@@ -28,11 +31,12 @@ struct HomeTabView: View {
         .tint(.foregroundDefault)
     }
     
-    init() {
+    init(selectedWallet: WalletEntity) {
+        self.selectedWallet = selectedWallet
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
     }
 }
 
 #Preview {
-    HomeTabView()
+    HomeTabView(selectedWallet: WalletEntity.mock().first!)
 }
