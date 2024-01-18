@@ -12,6 +12,7 @@ struct HomeWalletNFTsCollectionSectionView: View {
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
     let nftSelectedCallback: (NFTDisplayInfo)->()
+    private let minNumOfVisibleNFTs = 2
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -44,7 +45,7 @@ private extension HomeWalletNFTsCollectionSectionView {
     var numberOfNFTsVisible: Int {
         let numberOfNFTs = collection.nfts.count
         
-        return isExpanded ? numberOfNFTs : min(collection.nfts.count, 2) //Take no more then 2 NFTs
+        return isExpanded ? numberOfNFTs : min(collection.nfts.count, minNumOfVisibleNFTs) //Take no more then 2 NFTs
     }
     
     @ViewBuilder
@@ -64,14 +65,16 @@ private extension HomeWalletNFTsCollectionSectionView {
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()
                 
-                HStack(spacing: 8) {
-                    Text(String(collection.nfts.count))
-                        .font(.currentFont(size: 16))
-                    Image(uiImage: isExpanded ? .chevronUp : .chevronDown)
-                        .resizable()
-                        .squareFrame(20)
+                if collection.nfts.count > minNumOfVisibleNFTs {
+                    HStack(spacing: 8) {
+                        Text(String(collection.nfts.count))
+                            .font(.currentFont(size: 16))
+                        Image(uiImage: isExpanded ? .chevronUp : .chevronDown)
+                            .resizable()
+                            .squareFrame(20)
+                    }
+                    .foregroundStyle(Color.foregroundSecondary)
                 }
-                .foregroundStyle(Color.foregroundSecondary)
             }
         }
         .buttonStyle(.plain)

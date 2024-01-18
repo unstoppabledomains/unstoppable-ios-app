@@ -51,12 +51,10 @@ extension HomeWalletView {
             tokens.append(.createSkeletonEntity())
             domains = wallet.domains
             
-            let collectionNameToNFTs: [String? : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
+            let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection ?? "No collection" })
             var collections: [NFTsCollectionDescription] = []
             
-            for (collectionName, nfts) in collectionNameToNFTs {
-                guard let collectionName else { continue }
-                
+            for (collectionName, nfts) in collectionNameToNFTs {                
                 let collection = NFTsCollectionDescription(collectionName: collectionName, nfts: nfts)
                 collections.append(collection)
             }

@@ -58,7 +58,7 @@ extension WalletsDataService: UDWalletsServiceListener {
             switch notification {
             case .walletsUpdated, .walletRemoved:
                 udWalletsUpdated()
-            case .reverseResolutionDomainChanged(let domainName, let txIds):
+            case .reverseResolutionDomainChanged(let domainName, _):
                 if let selectedWallet,
                    selectedWallet.domains.first(where: { $0.name == domainName }) != nil {
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
@@ -402,7 +402,9 @@ private extension WalletsDataService {
     func loadNFTsFor(wallet: WalletEntity) async throws -> [NFTDisplayInfo] {
         // TODO: - Load NFTs per wallet
 
-        if let domain = wallet.domains.first {
+        if let rrDomain = wallet.rrDomain {
+            return try await fetchNFTsFor(domainName: rrDomain.name)
+        } else if let domain = wallet.domains.first {
             return try await fetchNFTsFor(domainName: domain.name)
         }
         
@@ -414,7 +416,7 @@ private extension WalletsDataService {
     }
     
     func fetchNFTsFor(domainName: String) async throws -> [NFTDisplayInfo] {
-        try await walletNFTsService.refreshNFTsFor(domainName: domainName).map { NFTDisplayInfo(nftModel: $0) }
+        try await walletNFTsService.refreshNFTsFor(domainName: domainName).clearingInvalidNFTs().map { NFTDisplayInfo(nftModel: $0) }
     }
 }
 
@@ -423,7 +425,7 @@ private extension WalletsDataService {
     func setCachedSelectedWallet() {
         selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
         if let selectedWallet {
-            refreshWalletBalancesAsync(selectedWallet)
+            refreshDataForWalletAsync(selectedWallet)
         }
     }
     

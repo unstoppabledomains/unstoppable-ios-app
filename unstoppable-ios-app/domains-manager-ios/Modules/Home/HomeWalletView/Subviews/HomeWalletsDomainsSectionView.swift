@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeWalletsDomainsSectionView: View {
     
-    @State var domains: [DomainDisplayInfo]
+    let domains: [DomainDisplayInfo]
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),

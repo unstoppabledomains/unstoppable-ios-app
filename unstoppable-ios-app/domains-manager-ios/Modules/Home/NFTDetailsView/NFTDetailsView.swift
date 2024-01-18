@@ -103,6 +103,7 @@ private extension NFTDetailsView {
                 Text(String.Constants.nftDetailsAboutCollectionHeader.localized(collectionName))
                     .font(.currentFont(size: 16, weight: .medium))
                     .foregroundStyle(Color.foregroundDefault)
+                Spacer()
             }
             Text(nft.description ?? "-")
                 .font(.currentFont(size: 16))

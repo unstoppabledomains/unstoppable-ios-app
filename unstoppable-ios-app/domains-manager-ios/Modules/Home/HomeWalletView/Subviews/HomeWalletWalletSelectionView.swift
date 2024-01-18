@@ -83,6 +83,7 @@ private extension HomeWalletWalletSelectionView {
                        subtitle: subtitleForWallet(wallet),
                        subtitleStyle: subtitleStyleForWallet(wallet),
                        imageType: imageTypeForWallet(wallet),
+                       imageStyle: imageStyleForWallet(wallet),
                        rightViewStyle: wallet.address == selectedWallet?.address ? .checkmark : nil)
         .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
@@ -126,6 +127,14 @@ private extension HomeWalletWalletSelectionView {
         default:
             return .image(.walletExternalIcon)
         }
+    }
+    
+    func imageStyleForWallet(_ wallet: WalletEntity) -> UDListItemView.ImageStyle {
+        if let rrDomain = wallet.rrDomain,
+           let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) {
+            return .full
+        }
+        return .centred()
     }
     
     @ViewBuilder

@@ -73,7 +73,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         
 //                    try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
 //        return UIImage.Preview.previewLandscape
-                    return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
-                                                                          downsampleDescription: .mid)
+        return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
+                                                              downsampleDescription: .mid)
     }
 }
