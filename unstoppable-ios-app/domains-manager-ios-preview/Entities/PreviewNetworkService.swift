@@ -182,7 +182,8 @@ extension NetworkService {
               socialAccounts: nil,
               referralCode: nil,
               social: nil,
-              records: nil)
+              records: nil,
+              walletBalances: [])
     }
     
     public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {

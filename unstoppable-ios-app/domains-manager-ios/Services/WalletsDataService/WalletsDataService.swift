@@ -8,14 +8,6 @@
 import Foundation
 import Combine
 
-protocol WalletsDataServiceProtocol {
-    var selectedWalletPublisher: Published<WalletEntity?>.Publisher  { get }
-    var selectedWallet: WalletEntity? { get }
-    var wallets: [WalletEntity] { get }
-    
-    func setSelectedWallet(_ wallet: WalletEntity)
-}
-
 final class WalletsDataService {
     
     private let queue = DispatchQueue(label: "com.unstoppable.wallets.data")
@@ -467,32 +459,5 @@ private extension WalletsDataService {
                             nfts: [],
                             balance: [],
                             rrDomain: nil)
-    }
-}
-
-struct WalletEntity: Codable {
-    let udWallet: UDWallet
-    let displayInfo: WalletDisplayInfo
-    var domains: [DomainDisplayInfo]
-    var nfts: [NFTDisplayInfo]
-    var balance: [ProfileWalletBalance]
-    var rrDomain: DomainDisplayInfo?
-    
-    var address: String { udWallet.address }
-    var displayName: String { displayInfo.displayName }
-    
-    static func mock() -> [WalletEntity] {
-        WalletWithInfo.mock.map {
-            let domains = createMockDomains()
-            let numOfNFTs = Int(arc4random_uniform(10) + 1)
-            let nfts = (0...numOfNFTs).map { _ in  NFTDisplayInfo.mock() }
-            return WalletEntity(udWallet: $0.wallet,
-                                displayInfo: $0.displayInfo!,
-                                domains: domains,
-                                nfts: nfts,
-                                balance: [],
-                                rrDomain: domains.randomElement())
-            
-        }
     }
 }
