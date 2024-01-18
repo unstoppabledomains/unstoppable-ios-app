@@ -155,7 +155,8 @@ struct PushEntitiesTransformer {
                                                 in chat: MessagingChat,
                                                 pgpKey: String,
                                                 isRead: Bool,
-                                                filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessage? {
+                                                filesService: MessagingFilesServiceProtocol,
+                                                env: Push.ENV) async -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let id = pushMessage.cid,
               let chatServiceMetadata = chat.serviceMetadata,
@@ -165,7 +166,8 @@ struct PushEntitiesTransformer {
                                                            userId: chat.userId,
                                                            pgpKey: pgpKey,
                                                            chatPublicKeys: chatMetadata.publicKeys,
-                                                           filesService: filesService) else { return nil }
+                                                           filesService: filesService,
+                                                           env: env) else { return nil }
         
         var time = Date()
         if let timestamp = pushMessage.timestamp {
@@ -206,9 +208,12 @@ struct PushEntitiesTransformer {
                                                userId: String,
                                                pgpKey: String,
                                                chatPublicKeys: [String],
-                                               filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType? {
+                                               filesService: MessagingFilesServiceProtocol,
+                                               env: Push.ENV) async throws -> MessagingChatMessageDisplayType? {
         let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-        guard let decryptedContent = try? await Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
+        guard let decryptedContent = try? await Push.PushChat.decryptMessage(message: pushMessage,
+                                                                             privateKeyArmored: pgpKey,
+                                                                             env: env) else { return nil }
         
         let type: MessagingChatMessageDisplayType
         
@@ -267,12 +272,13 @@ struct PushEntitiesTransformer {
         let pushMessage = serviceContent.pushMessage
         let pgpKey = serviceContent.pgpKey
         let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
-
+        let env = PushServiceHelper.getCurrentPushEnvironment()
         return await convertPushMessageToChatMessage(pushMessage,
                                                      in: chat,
                                                      pgpKey: pgpKey,
                                                      isRead: thisUserWallet == webSocketMessage.senderWallet,
-                                                     filesService: filesService)
+                                                     filesService: filesService,
+                                                     env: env)
     }
     
     static func convertMessagingWebSocketGroupMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketGroupMessageEntity,
@@ -284,12 +290,14 @@ struct PushEntitiesTransformer {
               let fromWallet = getWalletAddressFrom(eip155String: serviceContent.pushMessage.fromDID) else { return nil }
         
         let pushMessage = serviceContent.pushMessage
-        
+        let env = PushServiceHelper.getCurrentPushEnvironment()
+
         return await convertPushMessageToChatMessage(pushMessage,
                                                      in: chat,
                                                      pgpKey: pgpKey,
                                                      isRead: fromWallet == thisUserWallet,
-                                                     filesService: filesService)
+                                                     filesService: filesService,
+                                                     env: env)
     }
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,
