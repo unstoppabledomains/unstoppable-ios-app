@@ -38,6 +38,10 @@ struct MintingDomainsStorage {
         return object
     }
     
+    static func retrieveMintingDomainsFor(walletAddress: String) -> [MintingDomain] {
+        retrieveMintingDomains().filter({ $0.walletAddress == walletAddress })
+    }
+    
     static private func retrieve(key: Key) -> Data? {
         UserDefaults.standard.object(forKey: key.rawValue) as? Data
     }

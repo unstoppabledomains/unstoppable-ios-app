@@ -13,6 +13,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let referralCode: String?
     let social: DomainProfileSocialInfo?
     let records: [String : String]?
+    let walletBalances: [ProfileWalletBalance]
 }
 
 struct SerializedUserDomainProfile: Codable {

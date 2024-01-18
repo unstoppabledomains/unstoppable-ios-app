@@ -9,7 +9,7 @@ import Foundation
 
 typealias WalletBalance = WalletBalanceDisplayInfo
 
-struct WalletBalanceDisplayInfo: Hashable {
+struct WalletBalanceDisplayInfo: Hashable, Codable {
     
     let address: String
     let exchangeRate: Double
