@@ -98,7 +98,6 @@ extension AppDelegate: AppDelegateProtocol {
 private extension AppDelegate {
     func setup() {
         setVersionAndBuildNumber()
-        configureNavBar()
         setupAppearance()
         setupBugsnag()
         setupFeatureFlags()
