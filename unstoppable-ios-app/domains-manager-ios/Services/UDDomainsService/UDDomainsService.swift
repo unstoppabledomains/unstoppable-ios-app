@@ -57,7 +57,11 @@ extension UDDomainsService: UDDomainsServiceProtocol {
     }
     
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
-        let domainsPFPInfo = await loadPFPs(for: domains)
+        await updateDomainsPFPInfo(for: domains.map { $0.name })
+    }
+    
+    func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo] {
+        let domainsPFPInfo = await loadPFPs(for: domainNames)
         domainsPFPStorage.saveCachedPFPInfo(domainsPFPInfo)
         return domainsPFPInfo
     }
@@ -161,7 +165,7 @@ private extension UDDomainsService {
 
 // MARK: - Private methods
 private extension UDDomainsService {
-    func loadPFPs(for domains: [DomainItem]) async -> [DomainPFPInfo] {
+    func loadPFPs(for domains: [DomainName]) async -> [DomainPFPInfo] {
         guard !domains.isEmpty else { return  [] }
         
         let start = Date()
@@ -170,7 +174,7 @@ private extension UDDomainsService {
         await withTaskGroup(of: DomainPFPInfo?.self, body: { group in
             for domain in domains {
                 group.addTask {
-                    if let pfpInfo = await self.loadPFP(for: domain.name) {
+                    if let pfpInfo = await self.loadPFP(for: domain) {
                         return pfpInfo
                     } else {
                         return nil

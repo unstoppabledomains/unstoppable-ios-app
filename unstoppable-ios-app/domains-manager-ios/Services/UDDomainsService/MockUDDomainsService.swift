@@ -66,6 +66,7 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
         []
     }
+    func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo] { [] }
 
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
         try await Task.sleep(seconds: 0.3)
