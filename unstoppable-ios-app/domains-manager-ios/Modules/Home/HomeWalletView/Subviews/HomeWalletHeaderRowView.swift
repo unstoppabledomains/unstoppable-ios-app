@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-struct HomeWalletHeaderView: View {
+struct HomeWalletHeaderRowView: View {
     
     let wallet: WalletEntity
-    let domainNamePressedCallback: EmptyCallback
     @State private var domainAvatar: UIImage?
     @State private var rrDomainName: String?
     
@@ -25,35 +24,20 @@ struct HomeWalletHeaderView: View {
                         .stroke(lineWidth: 2)
                         .foregroundStyle(Color.backgroundDefault)
                 }
-            
-            Button {
-                UDVibration.buttonTap.vibrate()
-                domainNamePressedCallback()
-            } label: {
-                HStack(spacing: 0) {
-                    Text(getCurrentTitle())
-                        .font(.currentFont(size: 16, weight: .medium))
-                    Image.chevronGrabberVertical
-                        .squareFrame(24)
-                }
-                .foregroundStyle(Color.foregroundSecondary)
-            }
-            .buttonStyle(.plain)
-            
-            Text(formatCartPrice(wallet.totalBalance))
-                .titleText()
         }
         .frame(maxWidth: .infinity)
         .onChange(of: wallet, perform: { wallet in
             loadAvatarIfNeeded(wallet: wallet)
         })
         .onAppear(perform: onAppear)
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
     
 }
 
 // MARK: - Private methods
-private extension HomeWalletHeaderView {
+private extension HomeWalletHeaderRowView {
     func onAppear() {
         loadAvatarIfNeeded(wallet: wallet)
     }
@@ -68,13 +52,6 @@ private extension HomeWalletHeaderView {
                 }
             }
         }
-    }
-    
-    func getCurrentTitle() -> String {
-        if let rrDomain = wallet.rrDomain {
-            return rrDomain.name
-        }
-        return wallet.displayName
     }
     
     @ViewBuilder
@@ -118,6 +95,5 @@ private extension HomeWalletHeaderView {
 }
 
 #Preview {
-    HomeWalletHeaderView(wallet: WalletEntity.mock().first!,
-                         domainNamePressedCallback: { })
+    HomeWalletHeaderRowView(wallet: WalletEntity.mock().first!)
 }

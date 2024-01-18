@@ -10,21 +10,24 @@ import SwiftUI
 struct HomeWalletView: View {
     
     @StateObject var viewModel: HomeWalletViewModel
+    @State private var isHeaderVisible: Bool = true
     @State private var selectedNFT: NFTDisplayInfo?
-    
+
     var body: some View {
-        ZStack {
+        NavigationViewWithCustomTitle(content: {
             List {
-                walletHeaderView()
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                HomeWalletHeaderRowView(wallet: viewModel.selectedWallet)
+                    .onAppearanceChange($isHeaderVisible)
+                HomeWalletProfileSelectionView(wallet: viewModel.selectedWallet,
+                                               domainNamePressedCallback: viewModel.domainNamePressed)
+                HomeWalletTotalBalanceView(wallet: viewModel.selectedWallet)
+                
                 HomeWalletActionsView(actionCallback: { action in
                     viewModel.walletActionPressed(action)
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
                 })
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+               
                 contentTypeSelector()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -40,45 +43,48 @@ struct HomeWalletView: View {
             .clearListBackground()
             .background(.clear)
             .animatedFromiOS16()
-        }
-        .background(Color.backgroundDefault)
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $selectedNFT, content: { nft in
-            NFTDetailsView(nft: nft)
-        })
-        .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
-        .toolbar(content: {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    
-                } label: {
-                    Image.gearshape
-                        .resizable()
-                        .squareFrame(24)
-                        .foregroundStyle(Color.foregroundDefault)
+            .background(Color.backgroundDefault)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $selectedNFT, content: { nft in
+                NFTDetailsView(nft: nft)
+            })
+            .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        
+                    } label: {
+                        Image.gearshape
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    
-                } label: {
-                    Image.qrBarCodeIcon
-                        .resizable()
-                        .squareFrame(24)
-                        .foregroundStyle(Color.foregroundDefault)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image.qrBarCodeIcon
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
                 }
-            }
-        })
+            })
+        }, customTitle: {
+            navigationView()
+        }, isTitleVisible: !isHeaderVisible)
     }
 }
 
 // MARK: - Private methods
 private extension HomeWalletView {
     @ViewBuilder
-    func walletHeaderView() -> some View {
-        HomeWalletHeaderView(wallet: viewModel.selectedWallet,
-                             domainNamePressedCallback: viewModel.domainNamePressed)
+    func navigationView() -> some View {
+        HStack {
+            Text(viewModel.selectedWallet.displayName)
+        }
     }
     
     @ViewBuilder

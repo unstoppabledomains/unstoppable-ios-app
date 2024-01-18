@@ -18,6 +18,8 @@ struct HomeWalletActionsView: View {
                 walletActionView(for: action)
             }
         }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 }
 

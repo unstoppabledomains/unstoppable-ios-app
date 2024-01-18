@@ -13,13 +13,12 @@ struct HomeTabView: View {
     
     var body: some View {
         TabView {
-            NavigationView {
-                HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
-            }
+            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
+            
             NavigationView {
                 HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             }
@@ -40,3 +39,4 @@ struct HomeTabView: View {
 #Preview {
     HomeTabView(selectedWallet: WalletEntity.mock().first!)
 }
+
