@@ -21,10 +21,22 @@ struct NavigationViewWithCustomTitle<Content: View, Header: View>: View {
         .overlay(alignment: .top, content: {
             if isTitleVisible {
                 customTitle()
+                    .offset(y: currentTitleOffset)
             }
         })
     }
     
+    @MainActor
+    private var currentTitleOffset: CGFloat {
+        if #available(iOS 17, *) {
+            if (SceneDelegate.shared?.window?.safeAreaInsets.bottom ?? 0) > 0 {
+                return 6
+            }
+            return 11
+        } else {
+            return 11
+        }
+    }
 }
 
 #Preview {

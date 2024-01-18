@@ -12,7 +12,7 @@ struct HomeWalletView: View {
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
     @State private var selectedNFT: NFTDisplayInfo?
-
+    
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             List {
@@ -74,7 +74,7 @@ struct HomeWalletView: View {
             })
         }, customTitle: {
             navigationView()
-        }, isTitleVisible: !isHeaderVisible)
+        }, isTitleVisible: isHeaderVisible)
     }
 }
 
@@ -82,8 +82,25 @@ struct HomeWalletView: View {
 private extension HomeWalletView {
     @ViewBuilder
     func navigationView() -> some View {
-        HStack {
+        if let rrDomain = viewModel.selectedWallet.rrDomain {
+            HStack {
+                UIImageBridgeView(image: appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder)
+                    .squareFrame(20)
+                    .clipShape(Circle())
+                Text(rrDomain.name + rrDomain.name + rrDomain.name + rrDomain.name + rrDomain.name)
+                    .font(.currentFont(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.foregroundDefault)
+                    .lineLimit(1)
+            }
+            .frame(height: 20)
+            .frame(maxWidth: 240)
+        } else {
             Text(viewModel.selectedWallet.displayName)
+                .font(.currentFont(size: 16, weight: .semibold))
+                .foregroundStyle(Color.foregroundDefault)
+                .lineLimit(1)
+                .frame(height: 20)
+                .frame(maxWidth: 240)
         }
     }
     

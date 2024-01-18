@@ -58,15 +58,17 @@ private extension HomeWalletWalletSelectionView {
     
     @ViewBuilder
     func walletsListView() -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 0) {
-                ForEach(wallets, id: \.address) { wallet in
-                    Button {
-                        UDVibration.buttonTap.vibrate()
-                        presentationMode.wrappedValue.dismiss()
-                        walletsDataService.setSelectedWallet(wallet)
-                    } label: {
-                        listViewFor(wallet: wallet)
+        if !wallets.isEmpty {
+            UDCollectionSectionBackgroundView {
+                VStack(alignment: .center, spacing: 0) {
+                    ForEach(wallets, id: \.address) { wallet in
+                        Button {
+                            UDVibration.buttonTap.vibrate()
+                            presentationMode.wrappedValue.dismiss()
+                            walletsDataService.setSelectedWallet(wallet)
+                        } label: {
+                            listViewFor(wallet: wallet)
+                        }
                     }
                 }
             }
