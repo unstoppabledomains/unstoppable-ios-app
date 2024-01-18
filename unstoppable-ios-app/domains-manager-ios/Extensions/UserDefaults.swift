@@ -28,6 +28,7 @@ public enum UserDefaultsKey: String {
     case viewedHotFeatureSuggestions
     case dismissedHotFeatureSuggestions
     case didMigrateXMTPConsentsListFromUD
+    case selectedWalletAddress
     
     // Purchase domains
     case purchasedDomains
@@ -53,6 +54,7 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
     @UserDefaultsOptionalValue(key: .currentMessagingOwnerWallet) static var currentMessagingOwnerWallet: String?
+    @UserDefaultsOptionalValue(key: .selectedWalletAddress) static var selectedWalletAddress: String?
 }
 
 // MARK: - Property Wrappers

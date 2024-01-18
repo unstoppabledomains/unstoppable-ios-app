@@ -41,6 +41,7 @@ protocol AppContextProtocol {
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol { get }
     var walletNFTsService: WalletNFTsServiceProtocol { get }
+    var walletsDataService: WalletsDataServiceProtocol { get }
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     

@@ -6,6 +6,15 @@
 //
 
 import Foundation
+import Combine
+
+protocol WalletsDataServiceProtocol {
+    var selectedWalletPublisher: Published<WalletEntity?>.Publisher  { get }
+    var selectedWallet: WalletEntity? { get }
+    var wallets: [WalletEntity] { get }
+    
+    func setSelectedWallet(_ wallet: WalletEntity)
+}
 
 final class WalletsDataService {
     
@@ -17,9 +26,10 @@ final class WalletsDataService {
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletNFTsService: WalletNFTsServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
-
-    private var selectedWallet: WalletEntity? = nil
-    private var wallets: [WalletEntity] = []
+    
+    private(set) var wallets: [WalletEntity] = []
+    @Published private(set) var selectedWallet: WalletEntity? = nil
+    var selectedWalletPublisher: Published<WalletEntity?>.Publisher { $selectedWallet }
     
     init(domainsService: UDDomainsServiceProtocol,
          walletsService: UDWalletsServiceProtocol,
@@ -33,9 +43,48 @@ final class WalletsDataService {
         self.walletNFTsService = walletNFTsService
         wallets = storage.getCachedWallets()
         ensureConsistencyWithUDWallets()
-        setSelectedWallet()
+        setCachedSelectedWallet()
     }
     
+}
+
+// MARK: - WalletsDataServiceProtocol
+extension WalletsDataService: WalletsDataServiceProtocol {
+    func setSelectedWallet(_ wallet: WalletEntity) {
+        selectedWallet = wallet
+        refreshDataForWalletAsync(wallet)
+        UserDefaults.selectedWalletAddress = wallet.address
+    }
+}
+
+// MARK: - UDWalletsServiceListener
+extension WalletsDataService: UDWalletsServiceListener {
+    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+        Task {
+            switch notification {
+            case .walletsUpdated, .walletRemoved:
+                udWalletsUpdated()
+            case .reverseResolutionDomainChanged(let domainName, let txIds):
+                if let selectedWallet,
+                   selectedWallet.domains.first(where: { $0.name == domainName }) != nil {
+                    refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
+                }
+            }
+        }
+    }
+    
+    private func udWalletsUpdated() {
+        ensureConsistencyWithUDWallets()
+        
+        if self.wallets.first(where: { $0.address == selectedWallet?.address }) == nil {
+            if self.wallets.isEmpty {
+                UserDefaults.selectedWalletAddress = nil
+                selectedWallet = nil
+            } else {
+                setSelectedWallet(self.wallets.first!)
+            }
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -377,8 +426,8 @@ private extension WalletsDataService {
 
 // MARK: - Setup methods
 private extension WalletsDataService {
-    func setSelectedWallet() {
-        selectedWallet = wallets.first
+    func setCachedSelectedWallet() {
+        selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
     }
     
     func ensureConsistencyWithUDWallets() {

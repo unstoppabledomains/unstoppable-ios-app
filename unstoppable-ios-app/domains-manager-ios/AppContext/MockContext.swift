@@ -58,6 +58,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = MockUDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
     private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
+    private(set) lazy var walletsDataService: WalletsDataServiceProtocol = MockWalletsDataService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     
