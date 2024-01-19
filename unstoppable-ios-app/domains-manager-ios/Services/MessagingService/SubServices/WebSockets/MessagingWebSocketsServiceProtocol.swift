@@ -39,5 +39,5 @@ struct MessagingWebSocketGroupMessageEntity {
     let serviceContent: Any
     var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketGroupMessageEntity,
                                    _ chat: MessagingChat,
-                                   _ filesService: MessagingFilesServiceProtocol)->(MessagingChatMessage?))
+                                   _ filesService: MessagingFilesServiceProtocol)async->(MessagingChatMessage?))
 }

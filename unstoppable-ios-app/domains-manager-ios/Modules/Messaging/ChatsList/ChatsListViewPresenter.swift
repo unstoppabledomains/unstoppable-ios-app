@@ -724,7 +724,7 @@ private extension ChatsListViewPresenter {
     
     func joinCommunity(_ community: MessagingChatDisplayInfo) {
         guard let selectedProfileWalletPair,
-              selectedProfileWalletPair.isUDBlueEnabled else {
+              selectedProfileWalletPair.isUDBlueEnabled || !appContext.udFeatureFlagsService.valueFor(flag: .udBlueRequiredForCommunities) else {
             view?.openLinkExternally(.udBlue)
             return
         }
