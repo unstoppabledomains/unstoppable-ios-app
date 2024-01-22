@@ -361,23 +361,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         switch chat.displayInfo.type {
         case .private(let details):
-            let account = chat.displayInfo.thisUserDetails.wallet
             let otherUserAddress = details.otherUser.wallet
-            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-            
-            if blocked {
-                try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
-                                              account: account,
-                                              pgpPrivateKey: pgpPrivateKey,
-                                              env: env)
-            } else {
-                try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
-                                                account: account,
-                                                pgpPrivateKey: pgpPrivateKey,
-                                                env: env)
-            }
+            try await setOtherUserAddress(otherUserAddress, blocked: blocked, by: user)
         case .group, .community:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
+        }
+    }
+    
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
+        let env = getCurrentPushEnvironment()
+
+        switch groupChat.displayInfo.type {
+        case .private:
+            return
+        case .group, .community:
+            let otherUserAddress = otherUser.wallet
+            try await setOtherUserAddress(otherUserAddress, blocked: blocked, by: user)
         }
     }
     
@@ -701,6 +703,23 @@ private extension PushMessagingAPIService {
             return .image
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
+        }
+    }
+    
+    func setOtherUserAddress(_ otherUserAddress: String, blocked: Bool, by user: MessagingChatUserProfile) async throws {
+        let env = getCurrentPushEnvironment()
+        let account = user.wallet
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        if blocked {
+            try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
+                                          account: account,
+                                          pgpPrivateKey: pgpPrivateKey,
+                                          env: env)
+        } else {
+            try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
+                                            account: account,
+                                            pgpPrivateKey: pgpPrivateKey,
+                                            env: env)
         }
     }
 }

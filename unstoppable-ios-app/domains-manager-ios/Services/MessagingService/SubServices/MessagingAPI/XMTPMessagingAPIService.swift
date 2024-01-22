@@ -157,6 +157,13 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
+        throw XMTPServiceError.unsupportedAction
+    }
+    
     func block(chats: [MessagingChat],
                by user: MessagingChatUserProfile) async throws {
         try await setChats(chats: chats, blocked: true, by: user)

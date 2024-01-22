@@ -247,14 +247,20 @@ extension MessagingService: MessagingServiceProtocol {
         return try await apiService.getBlockingStatusForChat(chat)
     }
     
-    func setUser(in chat: MessagingChatDisplayInfo,
+    func setUser(in chatType: MessagingBlockUserInChatType,
                  blocked: Bool) async throws {
-        let serviceIdentifier = chat.serviceIdentifier
+        let serviceIdentifier = chatType.chat.serviceIdentifier
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
-        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
-
-        try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        let profile = try await getUserProfileWith(wallet: chatType.chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
+        let chat = try await getMessagingChatFor(displayInfo: chatType.chat, userId: profile.id)
+        
+        switch chatType {
+        case .chat:
+            try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        case .userInGroup(let otherUser, _):
+            try await apiService.setUser(otherUser, in: chat, blocked: blocked, by: profile)
+        }
+        
         if Constants.shouldHideBlockedUsersLocally {
             try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
             notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)

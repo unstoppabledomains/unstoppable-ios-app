@@ -33,7 +33,7 @@ protocol MessagingServiceProtocol {
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
-    func setUser(in chat: MessagingChatDisplayInfo,
+    func setUser(in chatType: MessagingBlockUserInChatType,
                  blocked: Bool) async throws
     func block(chats: [MessagingChatDisplayInfo]) async throws
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws

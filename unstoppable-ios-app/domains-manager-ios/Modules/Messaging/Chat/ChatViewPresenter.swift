@@ -324,8 +324,8 @@ private extension ChatViewPresenter {
                         return false
                     }
                 })
-
             }
+            
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
@@ -703,7 +703,7 @@ private extension ChatViewPresenter {
         Task {
             do {
                 view?.setLoading(active: true)
-                try await messagingService.setUser(in: chat, blocked: blocked)
+                try await messagingService.setUser(in: .chat(chat), blocked: blocked)
                 await updateUIForChatApprovedState()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -826,7 +826,7 @@ private extension ChatViewPresenter {
         switch message.senderType {
         case .thisUser:
             openLinkOrDomainProfile(url)
-        case .otherUser:
+        case .otherUser(let otherUser):
             Task {
                 do {
                     let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
@@ -836,11 +836,42 @@ private extension ChatViewPresenter {
                     case .handle:
                         openLinkOrDomainProfile(url)
                     case .block:
-                        try await messagingService.setUser(in: chat, blocked: true)
+                        switch chat.type {
+                        case .private:
+                            try await messagingService.setUser(in: .chat(chat), blocked: true)
+                        case .group, .community:
+                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
+                        }
+                        
                         view.cNavigationController?.popViewController(animated: true)
                     }
                 } catch { }
             }
+        }
+    }
+    
+    func setGroupChatUser(_ otherUser: MessagingChatUserDisplayInfo,
+                          blocked: Bool,
+                          chat: MessagingChatDisplayInfo) async throws {
+        switch chat.type {
+        case .group:
+            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
+        case .community(var details):
+            var blockedUsersList = details.blockedUsersList
+            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
+            let otherUserWallet = otherUser.wallet.normalized
+            if blocked {
+                blockedUsersList.append(otherUserWallet)
+            } else {
+                blockedUsersList.removeAll(where: { $0 == otherUserWallet })
+            }
+            details.blockedUsersList = blockedUsersList
+            var chat = chat
+            chat.type = .community(details)
+            self.conversationState = .existingChat(chat)
+            await addMessages([])
+        case .private:
+            return 
         }
     }
     
