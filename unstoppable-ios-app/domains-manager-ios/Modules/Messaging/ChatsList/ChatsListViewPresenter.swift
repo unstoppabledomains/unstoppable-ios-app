@@ -870,7 +870,8 @@ private extension ChatsListViewPresenter {
         var configurations: [ChatsListViewController.DataTypeUIConfiguration] = [.init(dataType: .chats, badge: chatsBadge),
                                                                                  .init(dataType: .channels, badge: inboxBadge)]
         if Constants.isCommunitiesEnabled {
-            let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
+            let groupedCommunities = groupCommunitiesByJoinStatus(communitiesList)
+            let communitiesBadge = groupedCommunities.joined.reduce(0, { $0 + $1.unreadMessagesCount })
             configurations.insert(.init(dataType: .communities, badge: communitiesBadge), at: 1)
         }
         

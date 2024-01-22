@@ -887,7 +887,9 @@ private extension CoreDataMessagingStorageService {
         let chatIdPredicate = NSPredicate(format: "chatId == %@", chatId)
         let userIdPredicate = NSPredicate(format: "userId == %@", userId)
         let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, userIdPredicate, isNotReadPredicate])
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, 
+                                                                        userIdPredicate,
+                                                                        isNotReadPredicate])
         let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
                                                       predicate: predicate,
                                                       in: backgroundContext)) ?? 0
