@@ -317,7 +317,7 @@ extension Analytics {
         case createMessagingProfile
         case messageInputSend, messageInputPlus, messageInputPlusAction
         case viewMessagingProfile, viewGroupChatInfo
-        case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo
+        case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo, viewBlockedUsersList
         case block, unblock, leaveGroup, joinCommunity, leaveCommunity
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage

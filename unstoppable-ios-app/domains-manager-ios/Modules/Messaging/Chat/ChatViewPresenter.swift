@@ -588,6 +588,16 @@ private extension ChatViewPresenter {
                                                          parameters: [.communityName: details.displayName])
                     self?.didPressViewCommunityInfoButton(communityDetails: details)
                 }))
+                
+                if !details.blockedUsersList.isEmpty {
+                    actions.append(.init(type: .blockedUsers, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .viewBlockedUsersList,
+                                                             parameters: [.communityName: details.displayName])
+                        self?.didPressViewBlockedUsersListButton(communityDetails: details,
+                                                                 in: chat)
+                    }))
+                }
+                
                 if details.isJoined {
                     actions.append(.init(type: .leaveCommunity, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .leaveCommunity,
@@ -662,6 +672,33 @@ private extension ChatViewPresenter {
             await appContext.pullUpViewService.showCommunityChatInfoPullUp(communityDetails: communityDetails,
                                                                            by: profile,
                                                                            in: view)
+        }
+    }
+    
+    func didPressViewBlockedUsersListButton(communityDetails: MessagingCommunitiesChatDetails,
+                                            in chat: MessagingChatDisplayInfo) {
+        Task {
+            guard let view else { return }
+            
+            await appContext.pullUpViewService.showCommunityBlockedUsersListPullUp(communityDetails: communityDetails,
+                                                                                   by: profile,
+                                                                                   unblockCallback: { [weak self] user in
+                Task {
+                    view.setLoading(active: true)
+                    if let chat = try? await self?.setGroupChatUser(user,
+                                                                    blocked: false,
+                                                                    chat: chat),
+                       case .community(let communityDetails) = chat.type {
+                        if communityDetails.blockedUsersList.isEmpty {
+                            await view.dismissPullUpMenu()
+                        } else {
+                            self?.didPressViewBlockedUsersListButton(communityDetails: communityDetails, in: chat)
+                        }
+                    }
+                    view.setLoading(active: false)
+                }
+            },
+                                                                                   in: view)
         }
     }
     
@@ -868,12 +905,14 @@ private extension ChatViewPresenter {
         }
     }
     
+    @discardableResult
     func setGroupChatUser(_ otherUser: MessagingChatUserDisplayInfo,
                           blocked: Bool,
-                          chat: MessagingChatDisplayInfo) async throws {
+                          chat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo? {
         switch chat.type {
         case .group:
             try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
+            return chat
         case .community(var details):
             var blockedUsersList = details.blockedUsersList
             try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
@@ -889,8 +928,10 @@ private extension ChatViewPresenter {
             self.conversationState = .existingChat(chat)
             await addMessages([])
             showData(animated: true, isLoading: false)
+            await setupBarButtons()
+            return chat
         case .private:
-            return
+            return nil
         }
     }
     

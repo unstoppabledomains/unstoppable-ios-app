@@ -127,4 +127,8 @@ protocol PullUpViewServiceProtocol {
     func showCommunityChatInfoPullUp(communityDetails: MessagingCommunitiesChatDetails,
                                      by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                      in viewController: UIViewController) async
+    func showCommunityBlockedUsersListPullUp(communityDetails: MessagingCommunitiesChatDetails,
+                                             by messagingProfile: MessagingChatUserProfileDisplayInfo,
+                                             unblockCallback: @escaping ((MessagingChatUserDisplayInfo)->()),
+                                             in viewController: UIViewController) async
 }
