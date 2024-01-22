@@ -18,6 +18,7 @@ class ChatUserMessageCell: ChatBaseCell {
     private var otherUserInfo: MessagingChatUserDisplayInfo?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
+    private(set) var isGroupChatMessage = false
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
@@ -44,6 +45,7 @@ class ChatUserMessageCell: ChatBaseCell {
  
     func setWith(message: MessagingChatMessageDisplayInfo,
                  isGroupChatMessage: Bool) {
+        self.isGroupChatMessage = isGroupChatMessage
         switch message.deliveryState {
         case .delivered:
             timeLabelTapGesture?.isEnabled = false

@@ -20,6 +20,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
     func setEmptyState(_ state: ChatEmptyView.State?)
     func setCanSendAttachments(_ canSendAttachments: Bool)
+    func saveImage(_ image: UIImage)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -212,6 +213,16 @@ extension ChatViewController: ChatViewProtocol {
     func setCanSendAttachments(_ canSendAttachments: Bool) {
         chatInputView.setCanSendAttachments(canSendAttachments)
     }
+    
+    func saveImage(_ image: UIImage) {
+        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
+                                                        in: presentedViewController,
+                                                        shouldShowAlertIfNotGranted: true) { granted in
+            if granted {
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
+            }
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -275,11 +286,12 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        UIContextMenuConfiguration(actionProvider: { suggestedActions in
-            UIMenu(children: [
-                UIAction(title: "Copy") { _ in   },
-                UIAction(title: "Delete", attributes: .destructive) { _ in   }
-            ])
+        guard let indexPath = indexPaths.first,
+              let cell = collectionView.cellForItem(at: indexPath) as? ChatBaseCell,
+              let menu = cell.getContextMenu() else { return nil }
+        
+        return UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            menu
         })
     }
     
@@ -292,7 +304,6 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         let visiblePath = UIBezierPath(roundedRect: visibleFrame, cornerRadius: 10.0)
 
         let parameters = UIPreviewParameters()
-        parameters.backgroundColor = UIColor.clear
         parameters.visiblePath = visiblePath
         
         return UITargetedPreview(view: cell, parameters: parameters)
@@ -503,17 +514,7 @@ private extension ChatViewController {
         }), image: image)
         present(imageDetailsVC, animated: true)
     }
-    
-    func saveImage(_ image: UIImage) {
-        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
-                                                        in: presentedViewController,
-                                                        shouldShowAlertIfNotGranted: true) { granted in
-            if granted {
-                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
-            }
-        }
-    }
-    
+  
     @objc func handleImageSavingWith(image: UIImage, error: Error?, contextInfo: UnsafeRawPointer) {
         Task { @MainActor in
             if error != nil {
@@ -811,6 +812,10 @@ extension ChatViewController {
         case delete
         case unencrypted
         case viewSenderProfile(MessagingChatSender)
+        
+        case copyText(String)
+        case saveImage(UIImage)
+        case blockUserInGroup(MessagingChatUserDisplayInfo)
     }
     
     enum ChatFeedAction: Hashable {

@@ -12,6 +12,7 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
 
     @IBOutlet private weak var messageTextView: UITextView!
     
+    private var messageText = ""
     private var externalLinkHandleCallback: ChatMessageLinkPressedCallback?
     
     override func awakeFromNib() {
@@ -20,6 +21,24 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
         setupTextView(messageTextView, externalLinkPressedCallback: { [weak self] url in
             self?.externalLinkHandleCallback?(url)
         })
+    }
+    
+    override func getContextMenu() -> UIMenu? {
+        if isGroupChatMessage,
+           case .otherUser(let user) = sender {
+            return  UIMenu(children: [
+                UIAction(title: String.Constants.copy.localized(),
+                         image: .copyToClipboardIcon) { [weak self] _ in
+                    self?.actionCallback?(.copyText(self?.messageText ?? ""))
+                },
+                UIAction(title: String.Constants.block.localized(),
+                         image: .systemMultiplyCircle,
+                         attributes: .destructive) { [weak self] _ in
+                             self?.actionCallback?(.blockUserInGroup(user))
+                }
+            ])
+        }
+        return nil
     }
     
     override func getContextMenuPreviewFrame() -> CGRect? {
@@ -45,7 +64,8 @@ extension ChatTextCell {
             messageColor = .foregroundOnEmphasisOpacity
         }
         
-        messageTextView.setAttributedTextWith(text: configuration.textMessageDisplayInfo.text,
+        self.messageText = configuration.textMessageDisplayInfo.text
+        messageTextView.setAttributedTextWith(text: messageText,
                                               font: .currentFont(withSize: 16, weight: .regular),
                                               textColor: messageColor,
                                               lineHeight: 24)

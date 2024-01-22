@@ -121,6 +121,7 @@ extension Analytics {
         case isSkip
         case searchType
         case walletType
+        case chatId
     }
 }
 
@@ -321,7 +322,10 @@ extension Analytics {
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
         case bulkBlockButtonPressed
-        
+        case copyChatMessageToClipboard
+        case saveChatImage
+        case blockUserInGroupChat
+
         // Public profile
         case follow, unfollow
         case followersList, socialsList, cryptoList

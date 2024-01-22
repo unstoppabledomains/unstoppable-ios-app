@@ -70,7 +70,7 @@ struct PushEntitiesTransformer {
             
             
             if let communityChatDetails {
-                let blockedUsersList = communityChatDetails.blockedUsersList.compactMap { getWalletAddressFrom(eip155String: $0) }
+                let blockedUsersList = prepare(blockedUsersList: communityChatDetails.blockedUsersList)
                 let isJoined = members.first(where: { $0.wallet.lowercased() == userWallet.lowercased() }) != nil
                 let communityChatDetails = MessagingCommunitiesChatDetails(type: .badge(communityChatDetails.badgeInfo),
                                                                            isJoined: isJoined,
@@ -134,7 +134,7 @@ struct PushEntitiesTransformer {
                                            user: MessagingChatUserProfile,
                                            blockedUsersList: [String]) -> MessagingChat {
         let thisUserDetails = MessagingChatUserDisplayInfo(wallet: user.wallet)
-        let blockedUsersList = blockedUsersList.compactMap { getWalletAddressFrom(eip155String: $0) }
+        let blockedUsersList = prepare(blockedUsersList: blockedUsersList)
         let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.badge.code,
                                             thisUserDetails: thisUserDetails,
                                             avatarURL: URL(string: badgeInfo.badge.logo),
@@ -155,6 +155,10 @@ struct PushEntitiesTransformer {
         return MessagingChat(userId: user.id,
                              displayInfo: info,
                              serviceMetadata: serviceMetadata)
+    }
+    
+    private static func prepare(blockedUsersList: [String]) -> [String] {
+        blockedUsersList.compactMap { getWalletAddressFrom(eip155String: $0)?.normalized }
     }
     
     static func getPushChatIdFrom(chat: MessagingChat) -> String {

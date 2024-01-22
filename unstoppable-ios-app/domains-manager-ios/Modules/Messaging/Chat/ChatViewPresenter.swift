@@ -745,6 +745,24 @@ private extension ChatViewPresenter {
                     didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
                 }
             }
+        case .copyText(let text):
+            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
+            UIPasteboard.general.string = text
+            Vibration.success.vibrate()
+        case .saveImage(let image):
+            logButtonPressedAnalyticEvents(button: .saveChatImage)
+            view?.saveImage(image)
+        case .blockUserInGroup(let user):
+            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
+                                           parameters: [.chatId : chat.id,
+                                                        .wallet: user.wallet])
+            Task {
+                view?.setLoading(active: true)
+                try? await setGroupChatUser(user,
+                                            blocked: true,
+                                            chat: chat)
+                view?.setLoading(active: false)
+            }
         }
     }
     
@@ -870,8 +888,9 @@ private extension ChatViewPresenter {
             chat.type = .community(details)
             self.conversationState = .existingChat(chat)
             await addMessages([])
+            showData(animated: true, isLoading: false)
         case .private:
-            return 
+            return
         }
     }
     

@@ -29,6 +29,28 @@ final class ChatImageCell: ChatUserMessageCell {
         setImageSize(.square(size: maxSize))
     }
     
+    override func getContextMenu() -> UIMenu? {
+        if isGroupChatMessage,
+           case .otherUser(let user) = sender {
+            var children: [UIAction] = []
+            if let currentImage {
+                children.append(UIAction(title: String.Constants.save.localized(),
+                                         image: .downloadIcon) { [weak self] _ in
+                    self?.actionCallback?(.saveImage(currentImage))
+                })
+            }
+            
+            children.append(UIAction(title: String.Constants.block.localized(),
+                                     image: .systemMultiplyCircle,
+                                     attributes: .destructive) { [weak self] _ in
+                self?.actionCallback?(.blockUserInGroup(user))
+            })
+            
+            return  UIMenu(children: children)
+        }
+        return nil
+    }
+    
     override func getContextMenuPreviewFrame() -> CGRect? {
         var visibleFrame = convert(imageView.frame, to: self)
         visibleFrame.size.height = frame.height
