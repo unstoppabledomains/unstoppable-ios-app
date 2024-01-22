@@ -23,6 +23,8 @@ class ChatUserMessageCell: ChatBaseCell {
     override func awakeFromNib() {
         super.awakeFromNib()
                 
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         let timeLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTimeLabel))
         timeLabel.addGestureRecognizer(timeLabelTapGesture)
         self.timeLabelTapGesture = timeLabelTapGesture

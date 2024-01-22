@@ -28,7 +28,16 @@ final class ChatImageCell: ChatUserMessageCell {
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapImage)))
         setImageSize(.square(size: maxSize))
     }
-
+    
+    override func getContextMenuPreviewFrame() -> CGRect? {
+        var visibleFrame = convert(imageView.frame, to: self)
+        visibleFrame.size.height = frame.height
+        let leadingOffsetToRemove: CGFloat = 15
+        visibleFrame.size.width -= leadingOffsetToRemove
+        visibleFrame.origin.x += leadingOffsetToRemove
+        visibleFrame = visibleFrame.insetBy(dx: -15, dy: -5)
+        return visibleFrame
+    }
 }
 
 // MARK: - Open methods

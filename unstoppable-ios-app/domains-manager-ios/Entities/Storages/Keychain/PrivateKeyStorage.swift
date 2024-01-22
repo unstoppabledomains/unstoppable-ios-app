@@ -45,7 +45,7 @@ extension PrivateKeyStorage {
             Debugger.printInfo("Retrieved private key for key: \(key)")
             return value
         } catch {
-            Debugger.printFailure("Failed to get the priv key for the key: \(key) with error \(error.localizedDescription)", critical: isCritical, suppressBugSnag: !isCritical)
+            Debugger.printFailure("Failed to get the priv key for the key: \(key) with error \(error.localizedDescription)", critical: isCritical)
             return nil
         }
     }
@@ -62,7 +62,7 @@ extension PrivateKeyStorage {
             Debugger.printInfo("Retrieved private key for key: \(pubKeyHex) (non-normalized)")
             return value
         } catch {
-            Debugger.printFailure("Failed to get the priv key for the key: \(pubKeyHex) with error \(error.localizedDescription)", critical: isCritical, suppressBugSnag: !isCritical)
+            Debugger.printFailure("Failed to get the priv key for the key: \(pubKeyHex) with error \(error.localizedDescription)", critical: isCritical)
             return nil
         }
     }

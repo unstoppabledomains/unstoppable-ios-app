@@ -273,6 +273,30 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         }
         return proposedContentOffset
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            UIMenu(children: [
+                UIAction(title: "Copy") { _ in   },
+                UIAction(title: "Delete", attributes: .destructive) { _ in   }
+            ])
+        })
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+                        highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ChatBaseCell,
+              let visibleFrame = cell.getContextMenuPreviewFrame() else { return nil }
+        
+        let visiblePath = UIBezierPath(roundedRect: visibleFrame, cornerRadius: 10.0)
+
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
+        parameters.visiblePath = visiblePath
+        
+        return UITargetedPreview(view: cell, parameters: parameters)
+    }
 }
 
 // MARK: - ChatInputViewDelegate

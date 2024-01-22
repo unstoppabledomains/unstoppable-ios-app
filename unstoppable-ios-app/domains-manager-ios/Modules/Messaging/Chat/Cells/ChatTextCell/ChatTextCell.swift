@@ -22,7 +22,15 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
         })
     }
     
-
+    override func getContextMenuPreviewFrame() -> CGRect? {
+        var visibleFrame = convert(bubbleContainerView.frame, to: self)
+        visibleFrame.size.height = frame.height
+        let leadingOffsetToRemove: CGFloat = 15
+        visibleFrame.size.width -= leadingOffsetToRemove
+        visibleFrame.origin.x += leadingOffsetToRemove
+        visibleFrame = visibleFrame.insetBy(dx: -15, dy: -10)
+        return visibleFrame
+    }
 }
 
 // MARK: - Open methods
