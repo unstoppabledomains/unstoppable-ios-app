@@ -35,12 +35,17 @@ struct PushEntitiesTransformer {
         return userProfile
     }
     
+    struct CommunityChatDetails {
+        let badgeInfo: BadgeDetailedInfo
+        let blockedUsersList: [String]
+    }
+    
     static func convertPushChatToChat(_ pushChat: PushChat,
                                       userId: String,
                                       userWallet: String,
                                       isApproved: Bool,
                                       publicKeys: [String],
-                                      badgeInfo: BadgeDetailedInfo? = nil) -> MessagingChat? {
+                                      communityChatDetails: CommunityChatDetails? = nil) -> MessagingChat? {
         
         func convertChatMembersToUserDisplayInfo(_ members: [PushGroupChatMember]) -> [MessagingChatUserDisplayInfo] {
             members.compactMap({
@@ -64,14 +69,16 @@ struct PushEntitiesTransformer {
             let pendingMembers = convertChatMembersToUserDisplayInfo(groupInfo.pendingMembers)
             
             
-            if let badgeInfo {
+            if let communityChatDetails {
+                let blockedUsersList = communityChatDetails.blockedUsersList.compactMap { getWalletAddressFrom(eip155String: $0) }
                 let isJoined = members.first(where: { $0.wallet.lowercased() == userWallet.lowercased() }) != nil
-                let communityChatDetails = MessagingCommunitiesChatDetails(type: .badge(badgeInfo),
+                let communityChatDetails = MessagingCommunitiesChatDetails(type: .badge(communityChatDetails.badgeInfo),
                                                                            isJoined: isJoined,
                                                                            isPublic: groupInfo.isPublic,
                                                                            members: members,
                                                                            pendingMembers: pendingMembers,
-                                                                           adminWallets: adminWallets)
+                                                                           adminWallets: adminWallets,
+                                                                           blockedUsersList: blockedUsersList)
                 
                 chatType = .community(communityChatDetails)
             } else {
@@ -123,8 +130,11 @@ struct PushEntitiesTransformer {
         return chat
     }
     
-    static func buildEmptyCommunityChatFor(badgeInfo: BadgeDetailedInfo, user: MessagingChatUserProfile) -> MessagingChat {
+    static func buildEmptyCommunityChatFor(badgeInfo: BadgeDetailedInfo,
+                                           user: MessagingChatUserProfile,
+                                           blockedUsersList: [String]) -> MessagingChat {
         let thisUserDetails = MessagingChatUserDisplayInfo(wallet: user.wallet)
+        let blockedUsersList = blockedUsersList.compactMap { getWalletAddressFrom(eip155String: $0) }
         let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.badge.code,
                                             thisUserDetails: thisUserDetails,
                                             avatarURL: URL(string: badgeInfo.badge.logo),
@@ -134,7 +144,8 @@ struct PushEntitiesTransformer {
                                                                    isPublic: true,
                                                                    members: [],
                                                                    pendingMembers: [],
-                                                                   adminWallets: [])),
+                                                                   adminWallets: [], 
+                                                                   blockedUsersList: blockedUsersList)),
                                             unreadMessagesCount: 0,
                                             isApproved: true,
                                             lastMessageTime: Date())

@@ -313,17 +313,20 @@ private extension ChatViewPresenter {
             }
             loadRemoteContentOfMessageAsync(message)
         }
-        if isCommunityChat(),
-           !featureFlagsService.valueFor(flag: .communityMediaEnabled) {
-            // Filter media attachments
-            self.messages = self.messages.filter({ message in
-                switch message.type {
-                case .text:
-                    return true
-                default:
-                    return false
-                }
-            })
+        if let communityChatDetails = getCommunityChatDetails() {
+            if !featureFlagsService.valueFor(flag: .communityMediaEnabled) {
+                // Filter media attachments
+                self.messages = self.messages.filter({ message in
+                    switch message.type {
+                    case .text:
+                        return true
+                    default:
+                        return false
+                    }
+                })
+
+            }
+            self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
     }
@@ -502,18 +505,22 @@ private extension ChatViewPresenter {
         }
     }
     
-    func isCommunityChat() -> Bool {
+    func getCommunityChatDetails() -> MessagingCommunitiesChatDetails? {
         switch conversationState {
         case .existingChat(let chat):
             switch chat.type {
-            case .community:
-                return true
+            case .community(let details):
+                return details
             case .private, .group:
-                return false
+                return nil
             }
         case .newChat:
-            return false
+            return nil
         }
+    }
+    
+    func isCommunityChat() -> Bool {
+        getCommunityChatDetails() != nil
     }
     
     func setupBarButtons() async {
