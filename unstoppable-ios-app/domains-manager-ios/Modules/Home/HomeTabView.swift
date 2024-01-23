@@ -13,12 +13,13 @@ struct HomeTabView: View {
     let selectedWallet: WalletEntity
 
     var body: some View {
-        TabView {
+        TabView(selection: $tabState.tabViewSelection) {
             HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
+            .tag(0)
             .tabBarVisible(tabState.isTabBarVisible)
             
             NavigationView {
@@ -28,6 +29,7 @@ struct HomeTabView: View {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
             }
+            .tag(1)
         }
         .tint(.foregroundDefault)
         .environmentObject(tabState)
@@ -46,5 +48,6 @@ struct HomeTabView: View {
 
 class TabStateManager: ObservableObject {
     @Published var isTabBarVisible: Bool = true
+    @Published var tabViewSelection: Int = 0
 }
 
