@@ -535,7 +535,8 @@ private extension CoreDataMessagingStorageService {
                                                                        isPublic: details.isPublic,
                                                                        members: members,
                                                                        pendingMembers: pendingMembers,
-                                                                       adminWallets: details.adminWallets)
+                                                                       adminWallets: details.adminWallets,
+                                                                       blockedUsersList: details.blockedUsersList ?? [])
             return .community(communityChatDetails)
         }
         
@@ -592,7 +593,8 @@ private extension CoreDataMessagingStorageService {
                                                                      isPublic: details.isPublic,
                                                                      memberWallets: memberWallets,
                                                                      pendingMembersWallets: pendingMembersWallets,
-                                                                     adminWallets: details.adminWallets).jsonRepresentation()
+                                                                     adminWallets: details.adminWallets,
+                                                                     blockedUsersList: details.blockedUsersList).jsonRepresentation()
         }
     }
 }
@@ -955,6 +957,7 @@ private extension CoreDataMessagingStorageService {
         let memberWallets: [String]
         let pendingMembersWallets: [String]
         let adminWallets: [String]
+        var blockedUsersList: [String]?
     }
     
     struct CoreDataUnknownMessageDetails: Codable {

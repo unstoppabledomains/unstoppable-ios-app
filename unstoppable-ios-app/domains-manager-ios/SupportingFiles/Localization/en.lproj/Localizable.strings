@@ -150,6 +150,8 @@
 "APPS" = "Apps";
 "VIEW_PROFILE" = "View profile";
 "BLOCK" = "Block";
+"BLOCK_USER" = "Block user";
+"BLOCKED" = "Blocked";
 "UNBLOCK" = "Unblock";
 "VIEW_INFO" = "View info";
 "LEAVE" = "Leave";

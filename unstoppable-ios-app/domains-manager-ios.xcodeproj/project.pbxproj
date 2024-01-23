@@ -538,6 +538,8 @@
 		C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
 		C62BD9722B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BD9702B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.swift */; };
 		C62BD9732B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C62BD9712B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.xib */; };
+		C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
+		C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
 		C62C3F8B283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
 		C62C3F90283F35610094FC93 /* CodeVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */; };
 		C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F95283F40D30094FC93 /* CodeVerificationCharacterView.swift */; };
@@ -2718,6 +2720,7 @@
 		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
 		C62BD9702B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionGetDomainCardCell.swift; sourceTree = "<group>"; };
 		C62BD9712B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionGetDomainCardCell.xib; sourceTree = "<group>"; };
+		C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingBlockUserInChatType.swift; sourceTree = "<group>"; };
 		C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResendCodeButton.swift; sourceTree = "<group>"; };
 		C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
 		C62C3F95283F40D30094FC93 /* CodeVerificationCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationCharacterView.swift; sourceTree = "<group>"; };
@@ -5403,6 +5406,7 @@
 				C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */,
 				C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */,
 				C66107932A3180DA0076782F /* MessagingNewsChannelFeed.swift */,
+				C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */,
 				C65272142A14937A001A084C /* Chats */,
 				C65272132A149370001A084C /* Messages */,
 			);
@@ -8744,6 +8748,7 @@
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
+				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */,
@@ -9921,6 +9926,7 @@
 				C6C8F91F2B2183AB00A9834D /* InviteFriendsViewPresenter.swift in Sources */,
 				C6D646932B1ED14400D724AC /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C61808482B19B9680032E543 /* PreviewAppLaunchService.swift in Sources */,
+				C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C6D647822B1EE22D00D724AC /* UITableView.swift in Sources */,
 				C6C8F9952B218BBB00A9834D /* Double.swift in Sources */,
 				C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */,

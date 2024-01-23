@@ -31,6 +31,10 @@ protocol MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws
     func block(chats: [MessagingChat],
                by user: MessagingChatUserProfile) async throws
     func isAbleToContactAddress(_ address: String,

@@ -18,11 +18,14 @@ class ChatUserMessageCell: ChatBaseCell {
     private var otherUserInfo: MessagingChatUserDisplayInfo?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
+    private(set) var isGroupChatMessage = false
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
         super.awakeFromNib()
                 
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         let timeLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTimeLabel))
         timeLabel.addGestureRecognizer(timeLabelTapGesture)
         self.timeLabelTapGesture = timeLabelTapGesture
@@ -42,6 +45,7 @@ class ChatUserMessageCell: ChatBaseCell {
  
     func setWith(message: MessagingChatMessageDisplayInfo,
                  isGroupChatMessage: Bool) {
+        self.isGroupChatMessage = isGroupChatMessage
         switch message.deliveryState {
         case .delivered:
             timeLabelTapGesture?.isEnabled = false
@@ -144,7 +148,8 @@ extension ChatUserMessageCell {
             let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
                                                                                                          size: .default),
                                                                        downsampleDescription: .icon)
-            if userInfo.wallet == self.otherUserInfo?.wallet {
+            if let image,
+               userInfo.wallet == self.otherUserInfo?.wallet {
                 otherUserAvatarView?.image = image
             }
         }
