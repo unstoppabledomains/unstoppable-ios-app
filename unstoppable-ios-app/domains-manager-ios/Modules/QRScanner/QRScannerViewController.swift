@@ -44,11 +44,18 @@ final class QRScannerViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+                
+        setNavBarTint(.white)
+    }
   
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         presenter.viewDidAppear()
+        setNavBarTint(.white)
     }
     
     override func viewDidLayoutSubviews() {
@@ -221,6 +228,7 @@ private extension QRScannerViewController {
     func setup() {
         view.backgroundColor = .black
         title = String.Constants.scanQRCodeTitle.localized()
+        navigationController?.navigationBar.tintColor = .white
         appsConnectedItemView.isHidden = true
     }
     
@@ -324,5 +332,23 @@ extension QRScannerViewController {
         case scanning
         case permissionsDenied
         case cameraNotAvailable
+    }
+}
+
+import SwiftUI
+struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
+    
+    var selectedDomain: DomainDisplayInfo
+    var qrRecognizedCallback: EmptyAsyncCallback
+    
+    // Function to create the UIViewController
+    func makeUIViewController(context: Context) -> QRScannerViewController {
+        UDRouter().buildQRScannerModule(selectedDomain: selectedDomain,
+                                        qrRecognizedCallback: qrRecognizedCallback)
+    }
+    
+    // Function to update the UIViewController
+    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) {
+        // Update the UIViewController if needed
     }
 }

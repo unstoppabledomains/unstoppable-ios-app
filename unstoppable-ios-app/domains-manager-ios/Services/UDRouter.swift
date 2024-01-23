@@ -283,6 +283,22 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.pushViewController(vc, animated: true)
     }
 
+    func buildQRScannerModule(selectedDomain: DomainDisplayInfo,
+                              qrRecognizedCallback: @escaping EmptyAsyncCallback) -> QRScannerViewController {
+        let vc = QRScannerViewController.nibInstance()
+
+        let presenter = QRScannerViewPresenter(view: vc,
+                                               selectedDomain: selectedDomain,
+                                               dataAggregatorService: appContext.dataAggregatorService,
+                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
+                                               networkReachabilityService: appContext.networkReachabilityService,
+                                               udWalletsService: appContext.udWalletsService)
+        presenter.qrRecognizedCallback = qrRecognizedCallback
+        vc.presenter = presenter
+        vc.hidesBottomBarWhenPushed = true
+        return vc
+    }
+    
     func showSignTransactionDomainSelectionScreen(selectedDomain: DomainDisplayInfo,
                                                   swipeToDismissEnabled: Bool,
                                                   in viewController: UIViewController) async throws -> (DomainDisplayInfo, WalletBalance?) {
@@ -877,20 +893,6 @@ private extension UDRouter {
         let presenter = DomainsListSearchPresenter(view: vc,
                                                    domains: domains,
                                                    searchCallback: searchCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildQRScannerModule(selectedDomain: DomainDisplayInfo,
-                              qrRecognizedCallback: @escaping EmptyAsyncCallback) -> UIViewController {
-        let vc = QRScannerViewController.nibInstance()
-        let presenter = QRScannerViewPresenter(view: vc,
-                                               selectedDomain: selectedDomain,
-                                               dataAggregatorService: appContext.dataAggregatorService,
-                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
-                                               networkReachabilityService: appContext.networkReachabilityService,
-                                               udWalletsService: appContext.udWalletsService)
-        presenter.qrRecognizedCallback = qrRecognizedCallback
         vc.presenter = presenter
         return vc
     }

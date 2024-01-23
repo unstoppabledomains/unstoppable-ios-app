@@ -13,7 +13,9 @@ struct HomeWalletView: View {
 
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
+    @State private var isOtherScreenPresented: Bool = false
     @State private var selectedNFT: NFTDisplayInfo?
+    @State private var navigationState: NavigationStateManager?
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -41,6 +43,16 @@ struct HomeWalletView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             }
+            .onChange(of: isHeaderVisible) { newValue in
+                withAnimation {
+                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
+                }
+            }
+            .onChange(of: isOtherScreenPresented) { newValue in
+                withAnimation {
+                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
+                }
+            }
             .listStyle(.plain)
             .clearListBackground()
             .background(.clear)
@@ -64,8 +76,15 @@ struct HomeWalletView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        
+                    NavigationLink {
+                        if let domain = viewModel.selectedWallet.rrDomain {
+                            QRScannerViewControllerWrapper(selectedDomain: domain, qrRecognizedCallback: {
+                                
+                            })
+                            .ignoresSafeArea()
+                            .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                            .onAppearanceChange($isOtherScreenPresented)
+                        }
                     } label: {
                         Image.qrBarCodeIcon
                             .resizable()
@@ -76,7 +95,10 @@ struct HomeWalletView: View {
             })
         }, customTitle: {
             navigationView()
-        }, isTitleVisible: !isHeaderVisible)
+        }, navigationStateProvider: { state in
+            self.navigationState = state
+            state.customTitle = navigationView
+        })
     }
 }
 

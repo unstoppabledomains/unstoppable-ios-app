@@ -9,19 +9,25 @@ import SwiftUI
 
 struct NavigationViewWithCustomTitle<Content: View, Header: View>: View {
     
+
     @ViewBuilder var content: () -> Content
     @ViewBuilder var customTitle: () -> Header
-    let isTitleVisible: Bool
+    @StateObject private var navigationState = NavigationStateManager()
+    var navigationStateProvider: (NavigationStateManager)->()
 
     var body: some View {
         WrappedNavigationView {
             content()
         }
         .overlay(alignment: .top, content: {
-            if isTitleVisible {
-                customTitle()
+            if navigationState.isTitleVisible,
+            let customTitle = navigationState.customTitle {
+                AnyView(customTitle())
                     .offset(y: currentTitleOffset)
             }
+        })
+        .onAppear(perform: {
+            navigationStateProvider(navigationState)
         })
     }
     
@@ -43,9 +49,8 @@ struct NavigationViewWithCustomTitle<Content: View, Header: View>: View {
         Text("Hello")
     }, customTitle: {
         Text("Custom PopUp View!")
-    }, isTitleVisible: true)
+    }, navigationStateProvider: { _ in })
 }
-
 
 private struct WrappedNavigationView<Content: View>: View {
     
@@ -62,4 +67,9 @@ private struct WrappedNavigationView<Content: View>: View {
             }
         }
     }
+}
+
+class NavigationStateManager: ObservableObject {
+    @Published var isTitleVisible: Bool = false
+    @Published var customTitle: (() -> any View)?
 }

@@ -50,16 +50,10 @@ extension UIViewController {
     
     func customiseNavigationBackButton(image: UIImage = BaseViewController.NavBackIconStyle.arrow.icon) {
         let backButtonBackgroundImage = image.withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
-        let standardApp = UINavigationBarAppearance()
-        standardApp.configureWithTransparentBackground()
-        standardApp.setBackIndicatorImage(backButtonBackgroundImage,
-                                          transitionMaskImage: backButtonBackgroundImage)
-        self.navigationController?.navigationBar.standardAppearance = standardApp
-        self.navigationController?.navigationBar.scrollEdgeAppearance = standardApp
-        
-        let backBarButton = BarButtonItemWithoutMenu(title: " ", style: .plain, target: nil, action: nil)
-        backBarButton.tintColor = .foregroundDefault
-        navigationItem.backBarButtonItem = backBarButton
+        self.navigationController?.navigationBar.standardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
+                                                                                          transitionMaskImage: backButtonBackgroundImage)
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.setBackIndicatorImage(backButtonBackgroundImage,
+                                                                                             transitionMaskImage: backButtonBackgroundImage)
     }
 
     func showInfoScreenWith(preset: InfoScreen.Preset) {
