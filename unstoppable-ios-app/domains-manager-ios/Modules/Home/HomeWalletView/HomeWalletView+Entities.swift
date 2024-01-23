@@ -159,6 +159,20 @@ extension HomeWalletView {
             self.marketUsd = marketUsd
         }
         
+        init(walletToken: WalletTokenPortfolio.Token) {
+            self.symbol = walletToken.symbol
+            self.name = walletToken.name
+            self.balance = (Double(walletToken.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0).rounded(toDecimalPlaces: 2)
+            self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
+        }
+        
+        static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
+            let tokenDescription = TokenDescription(walletBalance: walletBalance)
+            let subTokenDescriptions = walletBalance.tokens?.map { TokenDescription(walletToken: $0) } ?? [] 
+            
+            return [tokenDescription] + subTokenDescriptions
+        }
+        
         static func createSkeletonEntity() -> TokenDescription {
             var token = TokenDescription(symbol: "000", name: "0000000000000000", balance: 10000, marketUsd: 1)
             token.isSkeleton = true

@@ -47,7 +47,7 @@ extension HomeWalletView {
         
         private func setSelectedWallet(_ wallet: WalletEntity) {
             selectedWallet = wallet
-            tokens = wallet.balance.map { TokenDescription(walletBalance: $0) }
+            tokens = wallet.balance.map { TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
             tokens.append(.createSkeletonEntity())
             domains = wallet.domains
             
