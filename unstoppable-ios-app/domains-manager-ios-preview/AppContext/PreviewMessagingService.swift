@@ -58,7 +58,7 @@ final class MessagingService: MessagingServiceProtocol {
         .unblocked
     }
     
-    func setUser(in chat: MessagingChatDisplayInfo, blocked: Bool) async throws {
+    func setUser(in chatType: MessagingBlockUserInChatType, blocked: Bool) async throws {
         
     }
     
