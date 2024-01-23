@@ -49,6 +49,7 @@ final class ChatViewPresenter {
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 20
     private var messages: [MessagingChatMessageDisplayInfo] = []
+    private var messagesCache: Set<MessagingChatMessageDisplayInfo> = []
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
@@ -303,6 +304,7 @@ private extension ChatViewPresenter {
     }
     
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
+        messagesCache.formUnion(messages)
         for message in messages {
             var message = message
             await message.prepareToDisplay()
@@ -911,11 +913,11 @@ private extension ChatViewPresenter {
                           chat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo? {
         switch chat.type {
         case .group:
-            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
+            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: blocked)
             return chat
         case .community(var details):
             var blockedUsersList = details.blockedUsersList
-            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: true)
+            try await messagingService.setUser(in: .userInGroup(otherUser, chat), blocked: blocked)
             let otherUserWallet = otherUser.wallet.normalized
             if blocked {
                 blockedUsersList.append(otherUserWallet)
@@ -926,7 +928,11 @@ private extension ChatViewPresenter {
             var chat = chat
             chat.type = .community(details)
             self.conversationState = .existingChat(chat)
-            await addMessages([])
+            if blocked {
+                await addMessages([])
+            } else {
+                await addMessages(Array(messagesCache))
+            }
             showData(animated: true, isLoading: false)
             await setupBarButtons()
             return chat
