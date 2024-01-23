@@ -14,6 +14,7 @@ struct MessagingCommunitiesChatDetails: Hashable, Codable {
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
     let adminWallets: [String]
+    var blockedUsersList: [String]
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
 
