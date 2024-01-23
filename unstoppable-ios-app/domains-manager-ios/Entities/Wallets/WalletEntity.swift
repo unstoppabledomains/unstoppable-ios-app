@@ -18,7 +18,7 @@ struct WalletEntity: Codable {
     
     var address: String { udWallet.address }
     var displayName: String { displayInfo.displayName }
-    var totalBalance: Int { 20000 }
+    var totalBalance: Double { balance.reduce(0.0, { $0 + ($1.totalValueUsdAmt ?? 0) }) }
     
 }
 

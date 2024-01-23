@@ -47,7 +47,7 @@ struct HomeWalletView: View {
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = 
-                    !isOtherScreenPresented && 
+                    !isOtherScreenPresented &&
                     !isHeaderVisible &&
                     tabState.tabViewSelection == 0
                 }
