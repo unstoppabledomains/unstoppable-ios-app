@@ -75,6 +75,10 @@ struct NetworkService {
         return ["Authorization" : "Bearer \(authAPIKey)"]
     }
     
+    static var profilesAPIHeader: [String : String] {
+        ["x-api-key" : profilesAPIKey]
+    }
+    
     func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {

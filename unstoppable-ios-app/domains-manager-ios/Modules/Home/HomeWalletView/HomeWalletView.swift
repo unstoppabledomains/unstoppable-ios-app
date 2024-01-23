@@ -9,22 +9,27 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @StateObject private var viewModel = HomeWalletViewModel()
+    @Environment(\.imageLoadingService) private var imageLoadingService
+
+    @StateObject var viewModel: HomeWalletViewModel
+    @State private var isHeaderVisible: Bool = true
     @State private var selectedNFT: NFTDisplayInfo?
     
     var body: some View {
-        ZStack {
+        NavigationViewWithCustomTitle(content: {
             List {
-                walletHeaderView()
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                HomeWalletHeaderRowView(wallet: viewModel.selectedWallet)
+                    .onAppearanceChange($isHeaderVisible)
+                HomeWalletProfileSelectionView(wallet: viewModel.selectedWallet,
+                                               domainNamePressedCallback: viewModel.domainNamePressed)
+                HomeWalletTotalBalanceView(wallet: viewModel.selectedWallet)
+                
                 HomeWalletActionsView(actionCallback: { action in
                     viewModel.walletActionPressed(action)
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
                 })
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+               
                 contentTypeSelector()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -40,47 +45,67 @@ struct HomeWalletView: View {
             .clearListBackground()
             .background(.clear)
             .animatedFromiOS16()
-        }
-        .background(Color.backgroundDefault)
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $selectedNFT, content: { nft in
-            NFTDetailsView(nft: nft)
-        })
-        .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
-        .toolbar(content: {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    
-                } label: {
-                    Image.gearshape
-                        .resizable()
-                        .squareFrame(24)
-                        .foregroundStyle(Color.foregroundDefault)
+            .background(Color.backgroundDefault)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $selectedNFT, content: { nft in
+                NFTDetailsView(nft: nft)
+            })
+            .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        
+                    } label: {
+                        Image.gearshape
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    
-                } label: {
-                    Image.qrBarCodeIcon
-                        .resizable()
-                        .squareFrame(24)
-                        .foregroundStyle(Color.foregroundDefault)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image.qrBarCodeIcon
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
                 }
-            }
-        })
-
+            })
+        }, customTitle: {
+            navigationView()
+        }, isTitleVisible: !isHeaderVisible)
     }
 }
 
 // MARK: - Private methods
 private extension HomeWalletView {
     @ViewBuilder
-    func walletHeaderView() -> some View {
-        HomeWalletHeaderView(wallet: viewModel.selectedWallet,
-                             totalBalance: viewModel.totalBalance,
-                             domainNamePressedCallback: viewModel.domainNamePressed)
+    func navigationView() -> some View {
+        if let rrDomain = viewModel.selectedWallet.rrDomain {
+            HStack {
+                UIImageBridgeView(image: imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder,
+                                  width: 20,
+                                  height: 20)
+                    .squareFrame(20)
+                    .clipShape(Circle())
+                Text(rrDomain.name)
+                    .font(.currentFont(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.foregroundDefault)
+                    .lineLimit(1)
+            }
+            .frame(height: 20)
+            .frame(maxWidth: 240)
+        } else {
+            Text(viewModel.selectedWallet.displayName)
+                .font(.currentFont(size: 16, weight: .semibold))
+                .foregroundStyle(Color.foregroundDefault)
+                .lineLimit(1)
+                .frame(height: 20)
+                .frame(maxWidth: 240)
+        }
     }
     
     @ViewBuilder
@@ -118,10 +143,7 @@ private extension HomeWalletView {
             Button {
                 
             } label: {
-                HomeWalletTokenRowView(token: token, 
-                                       onAppear: {
-                    viewModel.loadIconIfNeededFor(token: token)
-                })
+                HomeWalletTokenRowView(token: token)
             }
             .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
@@ -137,7 +159,6 @@ private extension HomeWalletView {
             ForEach(viewModel.nftsCollections) { nftCollection in
                 HomeWalletNFTsCollectionSectionView(collection: nftCollection, 
                                                     nftsCollectionsExpandedIds: $viewModel.nftsCollectionsExpandedIds,
-                                                    nftAppearCallback: viewModel.loadIconIfNeededForNFT, 
                                                     nftSelectedCallback: didSelectNFT)
             }
         }
@@ -161,12 +182,8 @@ private extension HomeWalletView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
-                            .presentationDetents([.medium, .large])
-                    } else {
-                        HomeWalletWalletSelectionView(walletSelectedCallback: { _ in })
-                    }
+                    HomeWalletWalletSelectionView()
+                        .adaptiveSheet()
                 })
         }
     }
@@ -174,7 +191,7 @@ private extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView()
+        HomeWalletView(viewModel: .init(selectedWallet: WalletEntity.mock().first!))
     }
 }
 

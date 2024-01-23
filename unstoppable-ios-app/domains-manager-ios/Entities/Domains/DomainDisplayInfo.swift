@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainDisplayInfo: Hashable, DomainEntity, Equatable {
+struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable {
     
     private(set) var name: String
     private(set) var ownerWallet: String?
@@ -87,7 +87,7 @@ extension DomainDisplayInfo {
 
 // MARK: - State
 extension DomainDisplayInfo {
-    enum State: Hashable {
+    enum State: Hashable, Codable {
         case `default`, minting, updatingRecords, parking(status: DomainParkingStatus), transfer
         
         static func == (lhs: Self, rhs: Self) -> Bool {

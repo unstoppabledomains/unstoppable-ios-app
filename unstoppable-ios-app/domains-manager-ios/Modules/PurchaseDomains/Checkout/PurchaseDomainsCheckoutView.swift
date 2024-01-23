@@ -630,18 +630,11 @@ private extension PurchaseDomainsCheckoutView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
-                                                        wallets: wallets,
-                                                        selectedWalletCallback: selectedWalletCallback)
-                        .presentationDetents([.medium, .large])
-                        .environment(\.analyticsViewName, analyticsName)
-                    } else {
-                        PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
-                                                        wallets: wallets,
-                                                        selectedWalletCallback: selectedWalletCallback)
-                        .environment(\.analyticsViewName, analyticsName)
-                    }
+                    PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
+                                                    wallets: wallets,
+                                                    selectedWalletCallback: selectedWalletCallback)
+                    .adaptiveSheet()
+                    .environment(\.analyticsViewName, analyticsName)
                 })
         }
     }

@@ -23,6 +23,9 @@ final class UDDomainsService: UDDomainsServiceProtocol {
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
         []
     }
+    func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo] {
+        []
+    }
     
     func loadPFP(for domainName: DomainName) async -> DomainPFPInfo? {
         nil

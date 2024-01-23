@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeWalletDomainCellView: View {
     
+    @Environment(\.imageLoadingService) private var imageLoadingService
+
     @State var domain: DomainDisplayInfo
     @State private var icon: UIImage?
 
@@ -45,7 +47,7 @@ private extension HomeWalletDomainCellView {
     func onAppear() {
         if icon == nil {
             Task {
-                icon = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid)
+                icon = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid)
             }
         }
     }

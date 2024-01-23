@@ -11,11 +11,11 @@ struct HomeWalletTokenRowView: View {
     
     static let height: CGFloat = 64
     let token: HomeWalletView.TokenDescription
-    let onAppear: EmptyCallback
+    @State private var icon: UIImage?
     
     var body: some View {
         HStack(spacing: 16) {
-            Image(uiImage: token.icon ?? .init())
+            Image(uiImage: icon ?? .init())
                 .resizable()
                 .squareFrame(40)
                 .background(Color.backgroundSubtle)
@@ -30,7 +30,7 @@ struct HomeWalletTokenRowView: View {
                     .frame(height: token.isSkeleton ? 16 : 24)
                     .skeletonable()
                     .skeletonCornerRadius(12)
-                Text("\(Int(token.balance)) \(token.symbol)")
+                Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.symbol)")
                     .font(.currentFont(size: 14, weight: .regular))
                     .foregroundStyle(Color.foregroundSecondary)
                     .frame(height: token.isSkeleton ? 12 : 20)
@@ -41,8 +41,9 @@ struct HomeWalletTokenRowView: View {
             
             VStack(alignment: .leading) {
                 if let fiatValue = token.fiatValue {
-                    Text("$\(Int(fiatValue))")
+                    Text("$\(fiatValue.formatted(toMaxNumberAfterComa: 2))")
                         .font(.currentFont(size: 16, weight: .medium))
+                        .monospacedDigit()
                         .foregroundStyle(Color.foregroundDefault)
                         .skeletonable()
                         .skeletonCornerRadius(12)
@@ -50,6 +51,9 @@ struct HomeWalletTokenRowView: View {
             }
         }
         .frame(height: HomeWalletTokenRowView.height)
+        .onChange(of: token, perform: { newValue in
+            loadIconFor(token: newValue)
+        })
         .onAppear {
             onAppear()
         }
@@ -58,7 +62,24 @@ struct HomeWalletTokenRowView: View {
     }
 }
 
+// MARK: - Private methods
+private extension HomeWalletTokenRowView {
+    func onAppear() {
+        loadIconFor(token: token)
+    }
+    
+    func loadIconFor(token: HomeWalletView.TokenDescription) {
+        icon = nil
+        guard !token.isSkeleton else { return }
+        
+        token.loadIconIfNeeded { image in
+            DispatchQueue.main.async {
+                self.icon = image
+            }
+        }
+    }
+}
+
 #Preview {
-    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!,
-                           onAppear: { })
+    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!)
 }

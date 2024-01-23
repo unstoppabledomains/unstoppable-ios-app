@@ -20,6 +20,10 @@ struct PurchasedDomainsStorage {
         PurchasedDomainsStorage.purchasedDomains ?? []
     }
   
+    static func retrievePurchasedDomainsFor(walletAddress: String) -> [PendingPurchasedDomain] {
+        retrievePurchasedDomains().filter { $0.walletAddress == walletAddress}
+    }
+    
     static func setPendingNonEmptyProfiles(_ pendingProfiles: [DomainProfilePendingChanges]) {
         PurchasedDomainsStorage.purchasedDomainsPendingProfiles = pendingProfiles.filter { !$0.isEmpty }
     }

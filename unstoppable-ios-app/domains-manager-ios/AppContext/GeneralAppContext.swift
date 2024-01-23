@@ -29,6 +29,8 @@ final class GeneralAppContext: AppContextProtocol {
     let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     let purchaseDomainsService: PurchaseDomainsServiceProtocol
     let messagingService: MessagingServiceProtocol
+    let walletsDataService: WalletsDataServiceProtocol
+    let walletNFTsService: WalletNFTsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -53,13 +55,14 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
-    private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
-
+    
     init() {
         authentificationService = AuthentificationService()
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
+        walletNFTsService = WalletNFTsService()
+        
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
@@ -76,6 +79,12 @@ final class GeneralAppContext: AppContextProtocol {
                                                           transactionsService: domainTransactionsService,
                                                           walletConnectServiceV2: walletConnectServiceV2)
         self.dataAggregatorService = dataAggregatorService
+        
+        walletsDataService = WalletsDataService(domainsService: udDomainsService,
+                                                walletsService: udWalletsService,
+                                                transactionsService: domainTransactionsService,
+                                                walletConnectServiceV2: walletConnectServiceV2,
+                                                walletNFTsService: walletNFTsService)
         
         // WC requests
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,

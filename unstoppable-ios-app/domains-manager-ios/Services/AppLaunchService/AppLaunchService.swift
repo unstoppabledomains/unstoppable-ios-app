@@ -185,8 +185,8 @@ private extension AppLaunchService {
             if let newAppVersionInfo = await stateMachine.appVersionInfo,
                !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
-            } else {
-                coreAppCoordinator.showHome(mintingState: mintingState)
+            } else if let wallet = appContext.walletsDataService.selectedWallet { // TODO: - Refactoring
+                coreAppCoordinator.showHome(mintingState: mintingState, wallet: wallet)
             }
             completion?()
         case .dataLoadedLate:

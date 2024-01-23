@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeWalletNFTCellView: View {
     
-    @State var nft: NFTDisplayInfo
+    let nft: NFTDisplayInfo
     @State private var icon: UIImage?
     
     var body: some View {
@@ -19,6 +19,9 @@ struct HomeWalletNFTCellView: View {
             .background(icon == nil ? Color.backgroundSubtle : Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .aspectRatio(1, contentMode: .fit)
+            .onChange(of: nft, perform: { newValue in
+                loadIconFor(nft: newValue)
+            })
             .onAppear(perform: onAppear)
     }
 }
@@ -26,10 +29,14 @@ struct HomeWalletNFTCellView: View {
 // MARK: - Private methods
 private extension HomeWalletNFTCellView {
     func onAppear() {
-        if icon == nil {
-            Task {
-                icon = await nft.loadIcon()
-            }
+        loadIconFor(nft: nft)
+    }
+    
+    func loadIconFor(nft: NFTDisplayInfo) {
+        icon = nil
+        Task {
+            let icon = await nft.loadIcon()
+            self.icon = icon
         }
     }
 }

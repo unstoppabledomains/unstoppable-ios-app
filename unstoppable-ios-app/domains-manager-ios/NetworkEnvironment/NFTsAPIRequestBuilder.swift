@@ -10,7 +10,7 @@ import Foundation
 final class NFTsAPIRequestBuilder {
     
     func nftsFor(domainName: String, limit: Int, cursor: String?, chains: [NFTModelChain]?) -> APIRequest {
-        var url = nftsURLFor(domainName: domainName) + "?limit=\(limit)&resolve=true"
+        var url = nftsURLFor(domainName: domainName) + "?limit=\(limit)"
     
         if let cursor {
            url += "&cursor=\(cursor)"
@@ -32,6 +32,6 @@ final class NFTsAPIRequestBuilder {
     }
     
     private func baseURL() -> String  {
-       "https://" + NetworkConfig.baseProfileHost + "/api/public"
+       "https://" + NetworkConfig.baseProfileHost + "/profile/public"
     }
 }

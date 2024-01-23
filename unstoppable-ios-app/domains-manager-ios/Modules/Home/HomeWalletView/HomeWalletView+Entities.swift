@@ -133,8 +133,8 @@ extension HomeWalletView {
         let name: String
         let balance: Double
         var marketUsd: Double?
-        var icon: UIImage? = nil
         private(set) var isSkeleton: Bool = false
+        
         var fiatValue: Double? {
             if let marketUsd {
                 return marketUsd * balance
@@ -145,14 +145,11 @@ extension HomeWalletView {
         static let iconSize: InitialsView.InitialsSize = .default
         static let iconStyle: InitialsView.Style = .gray
         
-        init(walletBalance: ProfileWalletBalance) {
+        init(walletBalance: WalletTokenPortfolio) {
             self.symbol = walletBalance.symbol
             self.name = walletBalance.name
-            self.balance = walletBalance.balance
-            self.marketUsd = walletBalance.value?.marketUsd
-            self.icon = appContext.imageLoadingService.cachedImage(for: .currencyTicker(symbol,
-                                                                                        size: TokenDescription.iconSize,
-                                                                                        style: TokenDescription.iconStyle))
+            self.balance = (Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0).rounded(toDecimalPlaces: 2)
+            self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         }
         
         init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
@@ -160,7 +157,6 @@ extension HomeWalletView {
             self.name = name
             self.balance = balance
             self.marketUsd = marketUsd
-            self.icon = icon
         }
         
         static func createSkeletonEntity() -> TokenDescription {
@@ -169,9 +165,7 @@ extension HomeWalletView {
             return token 
         }
         
-        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {
-            guard icon == nil else { return }
-            
+        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {            
             Task {
                 let size = TokenDescription.iconSize
                 let style = TokenDescription.iconStyle

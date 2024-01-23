@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 @MainActor
 final class CoreAppCoordinator {
@@ -40,8 +41,9 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         setOnboardingAsRoot(flow)
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState) {
-        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
+    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity) {
+//        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
+        setHomeScreenAsRoot(wallet: wallet) // TODO: - Refactoring
         if let event = pendingDeepLinkEvent {
             handleDeepLinkEvent(event)
         }
@@ -308,6 +310,12 @@ private extension CoreAppCoordinator {
         currentRoot = .domainsCollection(router: router)
     }
     
+    func setHomeScreenAsRoot(wallet: WalletEntity) {
+        let vc = UIHostingController(rootView: HomeTabView(selectedWallet: wallet))
+        setRootViewController(vc)
+        currentRoot = .home
+    }
+    
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
         let onboardingVC = OnboardingNavigationController.instantiate(flow: flow)
         setRootViewController(onboardingVC)
@@ -357,5 +365,6 @@ extension CoreAppCoordinator {
 private extension CoreAppCoordinator {
     enum CurrentRoot {
         case none, onboarding, domainsCollection(router: DomainsCollectionRouter), appUpdate
+        case home
     }
 }

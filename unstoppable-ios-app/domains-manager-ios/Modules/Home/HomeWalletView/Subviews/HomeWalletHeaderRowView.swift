@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct HomeWalletHeaderView: View {
+struct HomeWalletHeaderRowView: View {
     
-    let wallet: WalletWithInfo
-    let totalBalance: Int
-    let domainNamePressedCallback: EmptyCallback
+    @Environment(\.imageLoadingService) private var imageLoadingService
+
+    let wallet: WalletEntity
     @State private var domainAvatar: UIImage?
+    @State private var rrDomainName: String?
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -25,52 +26,39 @@ struct HomeWalletHeaderView: View {
                         .stroke(lineWidth: 2)
                         .foregroundStyle(Color.backgroundDefault)
                 }
-            
-            Button {
-                UDVibration.buttonTap.vibrate()
-                domainNamePressedCallback()
-            } label: {
-                HStack(spacing: 0) {
-                    Text(getCurrentTitle())
-                        .font(.currentFont(size: 16, weight: .medium))
-                    Image.chevronGrabberVertical
-                        .squareFrame(24)
-                }
-                .foregroundStyle(Color.foregroundSecondary)
-            }
-            .buttonStyle(.plain)
-            
-            Text(formatCartPrice(totalBalance))
-                .titleText()
         }
         .frame(maxWidth: .infinity)
-        .onAppear(perform: loadAvatarIfNeeded)
+        .onChange(of: wallet, perform: { wallet in
+            loadAvatarIfNeeded(wallet: wallet)
+        })
+        .onAppear(perform: onAppear)
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
     
 }
 
 // MARK: - Private methods
-private extension HomeWalletHeaderView {
-    func getCurrentTitle() -> String {
-        if let rrDomain = wallet.displayInfo?.reverseResolutionDomain {
-            return rrDomain.name
-        }
-        return wallet.displayInfo?.displayName ?? wallet.address.walletAddressTruncated
+private extension HomeWalletHeaderRowView {
+    func onAppear() {
+        loadAvatarIfNeeded(wallet: wallet)
     }
     
-    func loadAvatarIfNeeded() {
+    func loadAvatarIfNeeded(wallet: WalletEntity) {
         Task {
-            if domainAvatar == nil,
-               let domain = wallet.displayInfo?.reverseResolutionDomain,
-               let image = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
-                self.domainAvatar = image
+            if rrDomainName != wallet.rrDomain?.name {
+                self.domainAvatar = nil
+                if let domain = wallet.rrDomain,
+                   let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
+                    self.domainAvatar = image
+                }
             }
         }
     }
     
     @ViewBuilder
     func getAvatarView() -> some View {
-        if let domain = wallet.displayInfo?.reverseResolutionDomain {
+        if let domain = wallet.rrDomain {
             getAvatarViewForDomain(domain)
         } else {
             getAvatarViewToGetDomain()
@@ -109,7 +97,5 @@ private extension HomeWalletHeaderView {
 }
 
 #Preview {
-    HomeWalletHeaderView(wallet: WalletWithInfo.mock.first!,
-                         totalBalance: 20000,
-                         domainNamePressedCallback: { })
+    HomeWalletHeaderRowView(wallet: WalletEntity.mock().first!)
 }

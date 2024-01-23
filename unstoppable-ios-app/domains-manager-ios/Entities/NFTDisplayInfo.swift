@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct NFTDisplayInfo: Hashable, Identifiable {
+struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     var id: String { mint ?? UUID().uuidString }
     
     let name: String?
@@ -20,8 +20,6 @@ struct NFTDisplayInfo: Hashable, Identifiable {
     let mint: String?
     var chain: NFTModelChain?
     var address: String?
-    
-    var icon: UIImage?
     
     var isDomainNFT: Bool { tags.contains("domain") }
     var isUDDomainNFT: Bool {
@@ -75,7 +73,7 @@ struct NFTDisplayInfo: Hashable, Identifiable {
         
 //                    try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
 //        return UIImage.Preview.previewLandscape
-                    return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
-                                                                          downsampleDescription: .mid)
+        return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
+                                                              downsampleDescription: .mid)
     }
 }

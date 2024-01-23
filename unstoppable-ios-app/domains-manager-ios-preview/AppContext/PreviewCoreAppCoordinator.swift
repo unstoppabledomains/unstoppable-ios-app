@@ -17,7 +17,7 @@ final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState) {
+    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity) {
         
     }
     
