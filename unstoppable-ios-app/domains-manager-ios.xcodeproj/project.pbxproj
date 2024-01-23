@@ -1253,6 +1253,8 @@
 		C6C57C582869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C57C572869DC810093FD8C /* WallpaperDomainImagePreviewView.xib */; };
 		C6C57C5D2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C57C5C2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift */; };
 		C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C75C682848E82000DD8E3F /* Sequence.swift */; };
+		C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */; };
+		C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */; };
 		C6C8F80E2B217C8F00A9834D /* NSLayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E37C27FEE2D40044E408 /* NSLayoutHelper.swift */; };
 		C6C8F80F2B217CA900A9834D /* EmptyRootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */; };
 		C6C8F8102B217CC000A9834D /* ConnectNewExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098291282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift */; };
@@ -3414,6 +3416,7 @@
 		C6C57C572869DC810093FD8C /* WallpaperDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WallpaperDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C6C57C5C2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6C75C682848E82000DD8E3F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVisibleModifier.swift; sourceTree = "<group>"; };
 		C6C8F8242B217CDD00A9834D /* UDWallet+RecoveryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDWallet+RecoveryType.swift"; sourceTree = "<group>"; };
 		C6C8F8282B217D7C00A9834D /* WCRegistryWalletProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRegistryWalletProxy.swift; sourceTree = "<group>"; };
 		C6C8F82B2B217D9600A9834D /* PreviewSessionV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSessionV2.swift; sourceTree = "<group>"; };
@@ -6646,6 +6649,7 @@
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
 				C6B65FA62B5798FD006D1812 /* AnimatedFromiOS16.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
+				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
 				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C617FDB22B5919CC00B93433 /* OnAppearanceChange.swift */,
@@ -8591,6 +8595,7 @@
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
+				C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
 				C6D645FC2B1DBF8C00D724AC /* MintDomainsResult.swift in Sources */,
 				C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C655CAA62B16E82800FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */,
@@ -9705,6 +9710,7 @@
 				C61808712B19BC150032E543 /* Image.swift in Sources */,
 				C61807F92B19A7DF0032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,
+				C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
 				C6D645BC2B1DBCE400D724AC /* ScrollViewOffsetListener.swift in Sources */,
 				C6C8F8352B217E9600A9834D /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C6D645E82B1DBE6B00D724AC /* RaisedTertiaryButton.swift in Sources */,

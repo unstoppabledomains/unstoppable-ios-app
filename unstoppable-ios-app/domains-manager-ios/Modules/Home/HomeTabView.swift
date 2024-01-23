@@ -9,8 +9,9 @@ import SwiftUI
 
 struct HomeTabView: View {
     
+    @StateObject private var tabState = TabStateManager()
     let selectedWallet: WalletEntity
-    
+
     var body: some View {
         TabView {
             HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
@@ -18,6 +19,7 @@ struct HomeTabView: View {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
+            .tabBarVisible(tabState.isTabBarVisible)
             
             NavigationView {
                 HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
@@ -28,6 +30,7 @@ struct HomeTabView: View {
             }
         }
         .tint(.foregroundDefault)
+        .environmentObject(tabState)
     }
     
     init(selectedWallet: WalletEntity) {
@@ -38,5 +41,10 @@ struct HomeTabView: View {
 
 #Preview {
     HomeTabView(selectedWallet: WalletEntity.mock().first!)
+}
+
+
+class TabStateManager: ObservableObject {
+    @Published var isTabBarVisible: Bool = true
 }
 

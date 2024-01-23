@@ -11,6 +11,7 @@ struct HomeWalletView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
+    @EnvironmentObject var tabState: TabStateManager
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
@@ -51,6 +52,7 @@ struct HomeWalletView: View {
             .onChange(of: isOtherScreenPresented) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
+                    tabState.isTabBarVisible = !isOtherScreenPresented
                 }
             }
             .listStyle(.plain)
