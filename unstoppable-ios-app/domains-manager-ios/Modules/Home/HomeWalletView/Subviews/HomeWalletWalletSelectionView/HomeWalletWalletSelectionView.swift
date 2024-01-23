@@ -75,70 +75,13 @@ private extension HomeWalletWalletSelectionView {
         }
     }
     
-    func isWalletAbleToSetRR(_ wallet: WalletEntity) -> Bool {
-        wallet.displayInfo.udDomainsCount > 0
-    }
-    
     @ViewBuilder
     func listViewFor(wallet: WalletEntity) -> some View {
-        UDListItemView(title: titleForWallet(wallet),
-                       subtitle: subtitleForWallet(wallet),
-                       subtitleStyle: subtitleStyleForWallet(wallet),
-                       imageType: imageTypeForWallet(wallet),
-                       imageStyle: imageStyleForWallet(wallet),
-                       rightViewStyle: wallet.address == selectedWallet?.address ? .checkmark : nil)
+        HomeWalletWalletSelectionRowView(wallet: wallet, 
+                                         isSelected: wallet.address == selectedWallet?.address )
         .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
-   
-    func titleForWallet(_ wallet: WalletEntity) -> String {
-        if let rrDomain = wallet.rrDomain {
-            return rrDomain.name
-        }
-        return wallet.displayName
-    }
-    
-    func subtitleForWallet(_ wallet: WalletEntity) -> String? {
-        if wallet.rrDomain != nil {
-            if wallet.displayInfo.isNameSet {
-                return "\(wallet.displayName) · \(wallet.address.walletAddressTruncated)"
-            }
-            return wallet.address.walletAddressTruncated
-        }
-        if isWalletAbleToSetRR(wallet) {
-            return "No primary domain"
-        }
-        return nil
-    }
-    
-    func subtitleStyleForWallet(_ wallet: WalletEntity) -> UDListItemView.SubtitleStyle {
-        if wallet.rrDomain == nil,
-           isWalletAbleToSetRR(wallet) {
-            return .warning
-        }
-         return .default
-    }
-    
-    func imageTypeForWallet(_ wallet: WalletEntity) -> UDListItemView.ImageType {
-        if let rrDomain = wallet.rrDomain,
-           let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) {
-            return .uiImage(avatar)
-        }
-        switch wallet.udWallet.type {
-        case .defaultGeneratedLocally, .generatedLocally:
-            return .image(.vaultSafeIcon)
-        default:
-            return .image(.walletExternalIcon)
-        }
-    }
-    
-    func imageStyleForWallet(_ wallet: WalletEntity) -> UDListItemView.ImageStyle {
-        if let rrDomain = wallet.rrDomain,
-           let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) {
-            return .full
-        }
-        return .centred()
-    }
-    
+ 
     @ViewBuilder
     func addWalletView() -> some View {
         UDCollectionSectionBackgroundView {

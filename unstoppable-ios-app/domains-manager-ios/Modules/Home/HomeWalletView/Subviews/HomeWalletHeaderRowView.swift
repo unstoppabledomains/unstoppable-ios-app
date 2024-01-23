@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeWalletHeaderRowView: View {
     
+    @Environment(\.imageLoadingService) private var imageLoadingService
+
     let wallet: WalletEntity
     @State private var domainAvatar: UIImage?
     @State private var rrDomainName: String?
@@ -47,7 +49,7 @@ private extension HomeWalletHeaderRowView {
             if rrDomainName != wallet.rrDomain?.name {
                 self.domainAvatar = nil
                 if let domain = wallet.rrDomain,
-                   let image = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
+                   let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
                     self.domainAvatar = image
                 }
             }

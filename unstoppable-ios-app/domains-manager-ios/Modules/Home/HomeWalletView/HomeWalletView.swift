@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
+    @Environment(\.imageLoadingService) private var imageLoadingService
+
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
     @State private var selectedNFT: NFTDisplayInfo?
@@ -84,7 +86,7 @@ private extension HomeWalletView {
     func navigationView() -> some View {
         if let rrDomain = viewModel.selectedWallet.rrDomain {
             HStack {
-                UIImageBridgeView(image: appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder,
+                UIImageBridgeView(image: imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder,
                                   width: 20,
                                   height: 20)
                     .squareFrame(20)
@@ -180,12 +182,8 @@ private extension HomeWalletView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        HomeWalletWalletSelectionView()
-                            .presentationDetents([.medium, .large])
-                    } else {
-                        HomeWalletWalletSelectionView()
-                    }
+                    HomeWalletWalletSelectionView()
+                        .adaptiveSheet()
                 })
         }
     }
