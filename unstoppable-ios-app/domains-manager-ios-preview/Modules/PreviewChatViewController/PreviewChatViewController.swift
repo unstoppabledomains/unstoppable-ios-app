@@ -75,7 +75,7 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
     }
     
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
-        let isGroupChatMessage = true // conversationState.isGroupConversation
+        let isGroupChatMessage = true
         
         switch message.type {
         case .text(let textMessageDisplayInfo):
@@ -118,7 +118,7 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
     }
     
     func createTextMessage(text: String) -> MessagingChatMessageDisplayInfo {
-        let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+        let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(domainName: "oleg.x", withPFP: true)
         let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         
         return MessagingChatMessageDisplayInfo(id: "1",
@@ -134,7 +134,7 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
     }
     
     func createImageMessage(image: UIImage?) -> MessagingChatMessageDisplayInfo {
-        let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+        let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(domainName: "oleg.x", withPFP: true)
         
         var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
         imageDetails.image = image

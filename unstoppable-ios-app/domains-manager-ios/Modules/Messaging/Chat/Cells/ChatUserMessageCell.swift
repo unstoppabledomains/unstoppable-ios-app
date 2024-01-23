@@ -148,7 +148,8 @@ extension ChatUserMessageCell {
             let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
                                                                                                          size: .default),
                                                                        downsampleDescription: .icon)
-            if userInfo.wallet == self.otherUserInfo?.wallet {
+            if let image,
+               userInfo.wallet == self.otherUserInfo?.wallet {
                 otherUserAvatarView?.image = image
             }
         }

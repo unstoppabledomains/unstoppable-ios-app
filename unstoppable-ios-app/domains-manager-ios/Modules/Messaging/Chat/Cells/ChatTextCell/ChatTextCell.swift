@@ -31,7 +31,7 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
                          image: .copyToClipboardIcon) { [weak self] _ in
                     self?.actionCallback?(.copyText(self?.messageText ?? ""))
                 },
-                UIAction(title: String.Constants.block.localized(),
+                UIAction(title: String.Constants.blockUser.localized(),
                          image: .systemMultiplyCircle,
                          attributes: .destructive) { [weak self] _ in
                              self?.actionCallback?(.blockUserInGroup(user))
@@ -44,7 +44,7 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
     override func getContextMenuPreviewFrame() -> CGRect? {
         var visibleFrame = convert(bubbleContainerView.frame, to: self)
         visibleFrame.size.height = frame.height
-        let leadingOffsetToRemove: CGFloat = 15
+        let leadingOffsetToRemove: CGFloat = -25
         visibleFrame.size.width -= leadingOffsetToRemove
         visibleFrame.origin.x += leadingOffsetToRemove
         visibleFrame = visibleFrame.insetBy(dx: -15, dy: -10)

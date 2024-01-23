@@ -40,7 +40,7 @@ final class ChatImageCell: ChatUserMessageCell {
                 })
             }
             
-            children.append(UIAction(title: String.Constants.block.localized(),
+            children.append(UIAction(title: String.Constants.blockUser.localized(),
                                      image: .systemMultiplyCircle,
                                      attributes: .destructive) { [weak self] _ in
                 self?.actionCallback?(.blockUserInGroup(user))
@@ -54,7 +54,7 @@ final class ChatImageCell: ChatUserMessageCell {
     override func getContextMenuPreviewFrame() -> CGRect? {
         var visibleFrame = convert(imageView.frame, to: self)
         visibleFrame.size.height = frame.height
-        let leadingOffsetToRemove: CGFloat = 15
+        let leadingOffsetToRemove: CGFloat = -25
         visibleFrame.size.width -= leadingOffsetToRemove
         visibleFrame.origin.x += leadingOffsetToRemove
         visibleFrame = visibleFrame.insetBy(dx: -15, dy: -5)

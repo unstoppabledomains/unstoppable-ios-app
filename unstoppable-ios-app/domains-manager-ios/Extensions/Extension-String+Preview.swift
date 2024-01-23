@@ -207,6 +207,7 @@ extension String {
         static let apps = "APPS"
         static let viewProfile = "VIEW_PROFILE"
         static let block = "BLOCK"
+        static let blockUser = "BLOCK_USER"
         static let blocked = "BLOCKED"
         static let unblock = "UNBLOCK"
         static let viewInfo = "VIEW_INFO"
