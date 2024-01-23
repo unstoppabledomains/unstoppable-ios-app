@@ -161,15 +161,8 @@ extension PullUpViewService {
                                      by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                      in viewController: UIViewController) async {
         let title = communityDetails.displayName
-        var avatarImage: UIImage?
-        
-        if let url = URL(string: communityDetails.displayIconUrl) {
-            avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url), downsampleDescription: .mid)
-        } else {
-            avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.allMembers,
-                                                                       iconSize: 56)
-        }
-        
+        let avatarImage = await getAvatarImageFor(communityDetails: communityDetails)
+      
         buildAndShowGroupMembersChatInfo(with: title,
                                          avatarImage: avatarImage,
                                          members: communityDetails.members,
@@ -179,21 +172,62 @@ extension PullUpViewService {
                                          in: viewController)
     }
     
+    func showCommunityBlockedUsersListPullUp(communityDetails: MessagingCommunitiesChatDetails,
+                                             by messagingProfile: MessagingChatUserProfileDisplayInfo,
+                                             unblockCallback: @escaping ((MessagingChatUserDisplayInfo)->()),
+                                             in viewController: UIViewController) async {
+        let title = communityDetails.displayName
+        let avatarImage = await getAvatarImageFor(communityDetails: communityDetails)
+        let blockedUsersList = communityDetails.blockedUsersList
+        let blockedMembers = communityDetails.allMembers.filter({ blockedUsersList.contains($0.wallet.normalized) })
+            
+        buildAndShowGroupMembersChatInfo(with: title,
+                                         avatarImage: avatarImage,
+                                         members: blockedMembers,
+                                         pendingMembers: [],
+                                         adminWallets: [],
+                                         by: messagingProfile,
+                                         unblockCallback: unblockCallback,
+                                         in: viewController)
+    }
+    
 }
 
 // MARK: - Private methods
 private extension PullUpViewService {
+    func getAvatarImageFor(communityDetails: MessagingCommunitiesChatDetails) async -> UIImage? {
+        if let url = URL(string: communityDetails.displayIconUrl) {
+            return await appContext.imageLoadingService.loadImage(from: .url(url), downsampleDescription: .mid)
+        } else {
+            return await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.allMembers,
+                                                                            iconSize: 56)
+        }
+    }
+    
     func buildAndShowGroupMembersChatInfo(with title: String,
                                           avatarImage: UIImage?,
                                           members: [MessagingChatUserDisplayInfo],
                                           pendingMembers: [MessagingChatUserDisplayInfo],
                                           adminWallets: [String],
                                           by messagingProfile: MessagingChatUserProfileDisplayInfo,
+                                          unblockCallback: ((MessagingChatUserDisplayInfo)->())? = nil,
                                           in viewController: UIViewController) {
         let admins = Set(adminWallets)
-        let memberItems = members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: false) })
-        let pendingMemberItems = pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: true) })
-        let items = memberItems + pendingMemberItems
+        let memberItems = members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0,
+                                                                             isAdmin: admins.contains($0.wallet),
+                                                                             isPending: false) })
+        let pendingMemberItems = pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0,
+                                                                                           isAdmin: admins.contains($0.wallet),
+                                                                                           isPending: true) })
+        var items = memberItems + pendingMemberItems
+        if let unblockCallback {
+            for i in 0..<items.count {
+                let item = items[i]
+                items[i].unblockCallback = {
+                    unblockCallback(item.userInfo)
+                }
+            }
+        }
         
         let baseContentHeight: CGFloat = 216
         let requiredSelectionViewHeight = baseContentHeight + items.reduce(0.0, { $0 + $1.height })
@@ -209,11 +243,11 @@ private extension PullUpViewService {
                                                                      isScrollingEnabled: shouldScroll),
                                                 items: items)
         
-        let pullUpVC = presentPullUpView(in: viewController,
-                                         pullUp: .messagingCommunityChatInfo,
-                                         contentView: selectionView,
-                                         isDismissAble: true,
-                                         height: selectionViewHeight)
+        let pullUpVC = showOrUpdate(in: viewController,
+                                    pullUp: .messagingCommunityChatInfo,
+                                    contentView: selectionView,
+                                    isDismissAble: true,
+                                    height: selectionViewHeight)
         
         selectionView.itemSelectedCallback = { [weak pullUpVC] item in
             Task {

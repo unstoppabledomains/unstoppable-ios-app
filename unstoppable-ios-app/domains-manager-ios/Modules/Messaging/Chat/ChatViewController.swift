@@ -20,6 +20,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
     func setEmptyState(_ state: ChatEmptyView.State?)
     func setCanSendAttachments(_ canSendAttachments: Bool)
+    func saveImage(_ image: UIImage)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -212,6 +213,16 @@ extension ChatViewController: ChatViewProtocol {
     func setCanSendAttachments(_ canSendAttachments: Bool) {
         chatInputView.setCanSendAttachments(canSendAttachments)
     }
+    
+    func saveImage(_ image: UIImage) {
+        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
+                                                        in: presentedViewController,
+                                                        shouldShowAlertIfNotGranted: true) { granted in
+            if granted {
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
+            }
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -272,6 +283,30 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
             return adjustedOffset
         }
         return proposedContentOffset
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let indexPath = indexPaths.first,
+              let cell = collectionView.cellForItem(at: indexPath) as? ChatBaseCell,
+              let menu = cell.getContextMenu() else { return nil }
+        
+        return UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            menu
+        })
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+                        highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ChatBaseCell,
+              let visibleFrame = cell.getContextMenuPreviewFrame() else { return nil }
+        
+        let visiblePath = UIBezierPath(roundedRect: visibleFrame, cornerRadius: 10.0)
+
+        let parameters = UIPreviewParameters()
+        parameters.visiblePath = visiblePath
+        
+        return UITargetedPreview(view: cell, parameters: parameters)
     }
 }
 
@@ -479,17 +514,7 @@ private extension ChatViewController {
         }), image: image)
         present(imageDetailsVC, animated: true)
     }
-    
-    func saveImage(_ image: UIImage) {
-        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
-                                                        in: presentedViewController,
-                                                        shouldShowAlertIfNotGranted: true) { granted in
-            if granted {
-                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
-            }
-        }
-    }
-    
+  
     @objc func handleImageSavingWith(image: UIImage, error: Error?, contextInfo: UnsafeRawPointer) {
         Task { @MainActor in
             if error != nil {
@@ -787,6 +812,10 @@ extension ChatViewController {
         case delete
         case unencrypted
         case viewSenderProfile(MessagingChatSender)
+        
+        case copyText(String)
+        case saveImage(UIImage)
+        case blockUserInGroup(MessagingChatUserDisplayInfo)
     }
     
     enum ChatFeedAction: Hashable {
@@ -812,7 +841,7 @@ extension ChatViewController {
         }
         
         enum ActionType {
-            case viewProfile, block, viewInfo, leave, copyAddress
+            case viewProfile, block, viewInfo, leave, copyAddress, blockedUsers
             case joinCommunity, leaveCommunity
             
             var title: String {
@@ -831,6 +860,8 @@ extension ChatViewController {
                     return String.Constants.join.localized()
                 case .leaveCommunity:
                     return String.Constants.leave.localized()
+                case .blockedUsers:
+                    return String.Constants.blocked.localized()
                 }
             }
             
@@ -838,7 +869,7 @@ extension ChatViewController {
                 switch self {
                 case .viewProfile, .viewInfo:
                     return .arrowUpRight
-                case .block:
+                case .block, .blockedUsers:
                     return .systemMultiplyCircle
                 case .leave, .leaveCommunity:
                     return .systemRectangleArrowRight
@@ -851,7 +882,7 @@ extension ChatViewController {
             
             var isDestructive: Bool {
                 switch self {
-                case .viewProfile, .viewInfo, .copyAddress, .joinCommunity:
+                case .viewProfile, .viewInfo, .copyAddress, .joinCommunity, .blockedUsers:
                     return false
                 case .block, .leave, .leaveCommunity:
                     return true

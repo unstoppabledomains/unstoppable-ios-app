@@ -9,7 +9,12 @@ import UIKit
 
 final class ImageLoadingService: ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
-        nil
+        switch source {
+        case .initials(let initials, let size, let style):
+            return await InitialsView(initials: initials, size: size, style: style).toInitialsImage()
+        default:
+            return nil
+        }
     }
     
     func cachedImage(for source: ImageSource) -> UIImage? {
