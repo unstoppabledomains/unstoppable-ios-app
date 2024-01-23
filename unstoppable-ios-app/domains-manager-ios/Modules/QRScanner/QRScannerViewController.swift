@@ -341,14 +341,10 @@ struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
     var selectedDomain: DomainDisplayInfo
     var qrRecognizedCallback: EmptyAsyncCallback
     
-    // Function to create the UIViewController
     func makeUIViewController(context: Context) -> QRScannerViewController {
         UDRouter().buildQRScannerModule(selectedDomain: selectedDomain,
                                         qrRecognizedCallback: qrRecognizedCallback)
     }
     
-    // Function to update the UIViewController
-    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) {
-        // Update the UIViewController if needed
-    }
+    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) { }
 }

@@ -26,12 +26,8 @@ struct ViewPullUp: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: isPresented, content: {
-                if #available(iOS 16.0, *) {
-                    pullUpContentView()
-                        .presentationDetents([.height(configuration?.calculateHeight() ?? 0)])
-                } else {
-                    pullUpContentView()
-                }
+                pullUpContentView()
+                    .presentationDetents([.height(configuration?.calculateHeight() ?? 0)])
             })
     }
     

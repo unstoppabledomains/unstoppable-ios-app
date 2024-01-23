@@ -7,16 +7,15 @@
 
 import SwiftUI
 
-struct NavigationViewWithCustomTitle<Content: View, Header: View>: View {
+struct NavigationViewWithCustomTitle<Content: View>: View {
     
 
     @ViewBuilder var content: () -> Content
-    @ViewBuilder var customTitle: () -> Header
-    @StateObject private var navigationState = NavigationStateManager()
     var navigationStateProvider: (NavigationStateManager)->()
+    @StateObject private var navigationState = NavigationStateManager()
 
     var body: some View {
-        WrappedNavigationView {
+        NavigationStack {
             content()
         }
         .overlay(alignment: .top, content: {
@@ -47,26 +46,7 @@ struct NavigationViewWithCustomTitle<Content: View, Header: View>: View {
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, customTitle: {
-        Text("Custom PopUp View!")
     }, navigationStateProvider: { _ in })
-}
-
-private struct WrappedNavigationView<Content: View>: View {
-    
-    @ViewBuilder var content: () -> Content
-    
-    var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                content()
-            }
-        } else {
-            NavigationView {
-                content()
-            }
-        }
-    }
 }
 
 class NavigationStateManager: ObservableObject {

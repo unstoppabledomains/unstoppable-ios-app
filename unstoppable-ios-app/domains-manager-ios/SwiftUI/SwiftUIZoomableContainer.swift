@@ -25,18 +25,10 @@ struct SwiftUIZoomableContainer<Content: View>: View {
     }
     
     var body: some View {
-        if #available(iOS 16.0, *) {
-            wrappedContent
-                .onTapGesture(count: 2, perform: doubleTapAction)
-        } else {
-            wrappedContent
-        }
-    }
-    
-    private var wrappedContent: some View {
         ZoomableScrollView(scale: $currentScale, tapLocation: $tapLocation) {
             content
         }
+        .onTapGesture(count: 2, perform: doubleTapAction)
     }
     
     private struct ZoomableScrollView<ScrollContent: View>: UIViewRepresentable {

@@ -95,8 +95,6 @@ struct HomeWalletView: View {
                     }
                 }
             })
-        }, customTitle: {
-            navigationView()
         }, navigationStateProvider: { state in
             self.navigationState = state
             state.customTitle = navigationView

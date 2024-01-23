@@ -610,12 +610,8 @@ private extension PurchaseDomainsCheckoutView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectDiscountsPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PurchaseDomainsSelectDiscountsView()
-                            .presentationDetents([.medium])
-                    } else {
-                        PurchaseDomainsSelectDiscountsView()
-                    }
+                    PurchaseDomainsSelectDiscountsView()
+                        .presentationDetents([.medium])
                 })
         }
     }

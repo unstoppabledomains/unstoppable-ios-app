@@ -12,12 +12,8 @@ struct TabBarVisibleModifier: ViewModifier {
     let visible: Bool
     
     func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content
-                .toolbar(visible ? .visible : .hidden, for: .tabBar)
-        } else {
-            content
-        }
+        content
+            .toolbar(visible ? .visible : .hidden, for: .tabBar)
     }
 }
 
