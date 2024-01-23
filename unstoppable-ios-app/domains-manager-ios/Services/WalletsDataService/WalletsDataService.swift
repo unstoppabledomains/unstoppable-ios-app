@@ -36,7 +36,7 @@ final class WalletsDataService {
         wallets = storage.getCachedWallets()
         queue.async {
             self.ensureConsistencyWithUDWallets()
-            self.setCachedSelectedWallet()
+            self.setCachedSelectedWalletAndRefresh()
         }
     }
     
@@ -408,10 +408,13 @@ private extension WalletsDataService {
 
 // MARK: - Setup methods
 private extension WalletsDataService {
-    func setCachedSelectedWallet() {
+    func setCachedSelectedWalletAndRefresh() {
         selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
         if let selectedWallet {
             refreshDataForWalletAsync(selectedWallet)
+        }
+        for wallet in wallets where wallet.address != selectedWallet?.address {
+            refreshDataForWalletAsync(wallet)
         }
     }
     
