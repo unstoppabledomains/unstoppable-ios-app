@@ -74,7 +74,7 @@ struct HomeWalletView: View {
             })
         }, customTitle: {
             navigationView()
-        }, isTitleVisible: isHeaderVisible)
+        }, isTitleVisible: !isHeaderVisible)
     }
 }
 
@@ -84,10 +84,12 @@ private extension HomeWalletView {
     func navigationView() -> some View {
         if let rrDomain = viewModel.selectedWallet.rrDomain {
             HStack {
-                UIImageBridgeView(image: appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder)
+                UIImageBridgeView(image: appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder,
+                                  width: 20,
+                                  height: 20)
                     .squareFrame(20)
                     .clipShape(Circle())
-                Text(rrDomain.name + rrDomain.name + rrDomain.name + rrDomain.name + rrDomain.name)
+                Text(rrDomain.name)
                     .font(.currentFont(size: 16, weight: .semibold))
                     .foregroundStyle(Color.foregroundDefault)
                     .lineLimit(1)

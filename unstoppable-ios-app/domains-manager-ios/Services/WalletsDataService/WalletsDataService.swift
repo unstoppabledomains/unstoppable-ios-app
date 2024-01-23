@@ -367,22 +367,8 @@ private extension WalletsDataService {
         }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [ProfileWalletBalance]? {
-        // TODO: - Load wallet balance per wallet
-
-        if let domain = wallet.domains.first {
-            return try await fetchDomainProfile(domainName: domain.name).walletBalances
-        }
-        
-        let domains = try await domainsService.updateDomainsList(for: [wallet.udWallet])
-        if let domain = domains.first {
-            return try await fetchDomainProfile(domainName: domain.name).walletBalances
-        }
-        return []
-    }
-    
-    func fetchDomainProfile(domainName: String) async throws -> SerializedPublicDomainProfile {
-        try await NetworkService().fetchPublicProfile(for: domainName, fields: [])
+    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio]? {
+         try await NetworkService().fetchCryptoPortfolioFor(wallet: wallet.address)
     }
 }
 

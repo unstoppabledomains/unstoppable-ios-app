@@ -13,7 +13,7 @@ struct WalletEntity: Codable {
     let displayInfo: WalletDisplayInfo
     var domains: [DomainDisplayInfo]
     var nfts: [NFTDisplayInfo]
-    var balance: [ProfileWalletBalance]
+    var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
     
     var address: String { udWallet.address }

@@ -30,7 +30,7 @@ struct HomeWalletTokenRowView: View {
                     .frame(height: token.isSkeleton ? 16 : 24)
                     .skeletonable()
                     .skeletonCornerRadius(12)
-                Text("\(Int(token.balance)) \(token.symbol)")
+                Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.symbol)")
                     .font(.currentFont(size: 14, weight: .regular))
                     .foregroundStyle(Color.foregroundSecondary)
                     .frame(height: token.isSkeleton ? 12 : 20)
@@ -41,8 +41,9 @@ struct HomeWalletTokenRowView: View {
             
             VStack(alignment: .leading) {
                 if let fiatValue = token.fiatValue {
-                    Text("$\(Int(fiatValue))")
+                    Text("$\(fiatValue.formatted(toMaxNumberAfterComa: 2))")
                         .font(.currentFont(size: 16, weight: .medium))
+                        .monospacedDigit()
                         .foregroundStyle(Color.foregroundDefault)
                         .skeletonable()
                         .skeletonCornerRadius(12)

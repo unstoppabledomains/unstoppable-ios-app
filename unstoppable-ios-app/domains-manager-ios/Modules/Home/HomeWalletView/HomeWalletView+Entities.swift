@@ -134,6 +134,7 @@ extension HomeWalletView {
         let balance: Double
         var marketUsd: Double?
         private(set) var isSkeleton: Bool = false
+        
         var fiatValue: Double? {
             if let marketUsd {
                 return marketUsd * balance
@@ -144,11 +145,11 @@ extension HomeWalletView {
         static let iconSize: InitialsView.InitialsSize = .default
         static let iconStyle: InitialsView.Style = .gray
         
-        init(walletBalance: ProfileWalletBalance) {
+        init(walletBalance: WalletTokenPortfolio) {
             self.symbol = walletBalance.symbol
             self.name = walletBalance.name
-            self.balance = Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0 //walletBalance.balance
-            self.marketUsd = Double((walletBalance.value?.marketUsd ?? "").replacingOccurrences(of: "$", with: "").trimmedSpaces)
+            self.balance = (Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0).rounded(toDecimalPlaces: 2)
+            self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         }
         
         init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {

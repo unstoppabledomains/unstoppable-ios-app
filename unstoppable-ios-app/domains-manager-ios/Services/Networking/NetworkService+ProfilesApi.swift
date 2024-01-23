@@ -370,3 +370,15 @@ extension NetworkService {
         }
     }
 }
+
+// MARK: - Open methods
+extension NetworkService {
+  
+    public func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet)
+        let response: [WalletTokenPortfolio] = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                          method: .get,
+                                                                          dateDecodingStrategy: .defaultDateDecodingStrategy())
+        return response
+    }
+}

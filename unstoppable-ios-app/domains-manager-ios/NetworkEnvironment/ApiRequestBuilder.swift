@@ -837,3 +837,19 @@ extension Endpoint {
     }
     
 }
+
+// MARK: - Open methods
+extension Endpoint {
+    
+    static func getCryptoPortfolio(for wallet: String) -> Endpoint {
+        //https://api.ud-staging.com/profile/user/0xcd0dadab45baf9a06ce1279d1342ecc3f44845af/wallets
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/user/\(wallet)/wallets",
+            queryItems: [],
+            body: "",
+            headers: NetworkService.profilesAPIHeader
+        )
+    }
+    
+}
