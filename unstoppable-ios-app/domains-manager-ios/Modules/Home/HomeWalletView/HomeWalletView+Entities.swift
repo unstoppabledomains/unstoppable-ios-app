@@ -132,7 +132,9 @@ extension HomeWalletView {
         let symbol: String
         let name: String
         let balance: Double
+        let balanceUsd: Double
         var marketUsd: Double?
+        var parentSymbol: String?
         private(set) var isSkeleton: Bool = false
         
         var fiatValue: Double? {
@@ -148,42 +150,57 @@ extension HomeWalletView {
         init(walletBalance: WalletTokenPortfolio) {
             self.symbol = walletBalance.symbol
             self.name = walletBalance.name
-            self.balance = (Double(walletBalance.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0).rounded(toDecimalPlaces: 2)
+            self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
+            self.balanceUsd = walletBalance.value.walletUsdAmt
             self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         }
         
-        init(symbol: String, name: String, balance: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
+        init(symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
             self.symbol = symbol
             self.name = name
             self.balance = balance
+            self.balanceUsd = balanceUsd
             self.marketUsd = marketUsd
         }
         
-        init(walletToken: WalletTokenPortfolio.Token) {
+        init(walletToken: WalletTokenPortfolio.Token, parentSymbol: String) {
             self.symbol = walletToken.symbol
             self.name = walletToken.name
-            self.balance = (Double(walletToken.balance.replacingOccurrences(of: "$", with: "").trimmedSpaces) ?? 0).rounded(toDecimalPlaces: 2)
+            self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
+            self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
             self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
+            self.parentSymbol = parentSymbol
         }
         
         static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
-            let subTokenDescriptions = walletBalance.tokens?.map { TokenDescription(walletToken: $0) } ?? [] 
+            let subTokenDescriptions = walletBalance.tokens?.map { TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) } ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
         
         static func createSkeletonEntity() -> TokenDescription {
-            var token = TokenDescription(symbol: "000", name: "0000000000000000", balance: 10000, marketUsd: 1)
+            var token = TokenDescription(symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
             token.isSkeleton = true
             return token 
         }
         
-        func loadIconIfNeeded(iconUpdated: @escaping (UIImage?)->()) {            
+        func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
+            loadIconFor(ticker: symbol, iconUpdated: iconUpdated)
+        }
+        
+        func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
+            if let parentSymbol {
+                loadIconFor(ticker: parentSymbol, iconUpdated: iconUpdated)
+            } else {
+                iconUpdated(nil)
+            }
+        }
+        
+        private func loadIconFor(ticker: String, iconUpdated: @escaping (UIImage?)->()) {
             Task {
                 let size = TokenDescription.iconSize
                 let style = TokenDescription.iconStyle
-                let ticker = symbol
                 let initials = await appContext.imageLoadingService.loadImage(from: .initials(ticker,
                                                                                               size: size,
                                                                                               style: style),
@@ -199,7 +216,7 @@ extension HomeWalletView {
                 }
             }
         }
-        
+       
         static func mock() -> [TokenDescription] {
             let tickers = ["ETH", "MATIC"]
             //            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
@@ -210,7 +227,8 @@ extension HomeWalletView {
                 let value = Double(arc4random_uniform(10000))
                 let token = TokenDescription(symbol: ticker,
                                              name: ticker,
-                                             balance: value,
+                                             balance: value, 
+                                             balanceUsd: value,
                                              marketUsd: value)
                 tokens.append(token)
                 

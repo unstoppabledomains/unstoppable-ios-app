@@ -79,7 +79,7 @@ extension HomeWalletView {
                     if lhs.isSkeleton {
                         return false
                     }
-                    return lhs.balance > rhs.balance
+                    return lhs.balanceUsd > rhs.balanceUsd
                 })
             case .marketCap:
                 tokens = tokens.sorted(by: { lhs, rhs in

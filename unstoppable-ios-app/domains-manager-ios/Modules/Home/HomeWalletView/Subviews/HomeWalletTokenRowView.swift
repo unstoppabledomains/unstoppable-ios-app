@@ -12,15 +12,33 @@ struct HomeWalletTokenRowView: View {
     static let height: CGFloat = 64
     let token: HomeWalletView.TokenDescription
     @State private var icon: UIImage?
+    @State private var parentIcon: UIImage?
     
     var body: some View {
         HStack(spacing: 16) {
-            Image(uiImage: icon ?? .init())
-                .resizable()
-                .squareFrame(40)
-                .background(Color.backgroundSubtle)
-                .skeletonable()
-                .clipShape(Circle())
+            ZStack(alignment: .bottomTrailing) {
+                Image(uiImage: icon ?? .init())
+                    .resizable()
+                    .squareFrame(40)
+                    .background(Color.backgroundSubtle)
+                    .skeletonable()
+                    .clipShape(Circle())
+                
+                if let parentSymbol = token.parentSymbol {
+                    Image(uiImage: parentIcon ?? .init())
+                        .resizable()
+                        .squareFrame(20)
+                        .background(Color.backgroundDefault)
+                        .skeletonable()
+                        .clipShape(Circle())
+                        .overlay {
+                            Circle()
+                                .stroke(lineWidth: 2)
+                                .foregroundStyle(Color.backgroundDefault)
+                        }
+                        .offset(x: 4, y: 4)
+                }
+            }
             
             VStack(alignment: .leading,
                    spacing: token.isSkeleton ? 8 : 0) {
@@ -70,11 +88,17 @@ private extension HomeWalletTokenRowView {
     
     func loadIconFor(token: HomeWalletView.TokenDescription) {
         icon = nil
+        parentIcon = nil
         guard !token.isSkeleton else { return }
         
-        token.loadIconIfNeeded { image in
+        token.loadTokenIcon { image in
             DispatchQueue.main.async {
                 self.icon = image
+            }
+        }
+        token.loadParentIcon { image in
+            DispatchQueue.main.async {
+                self.parentIcon = image
             }
         }
     }
