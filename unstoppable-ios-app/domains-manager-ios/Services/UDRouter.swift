@@ -284,7 +284,7 @@ class UDRouter: DomainProfileSignatureValidator {
     }
 
     func buildQRScannerModule(selectedWallet: WalletEntity,
-                              qrRecognizedCallback: @escaping EmptyAsyncCallback) -> QRScannerViewController {
+                              qrRecognizedCallback: @escaping MainActorAsyncCallback) -> QRScannerViewController {
         let vc = QRScannerViewController.nibInstance()
 
         let presenter = QRScannerViewPresenter(view: vc,

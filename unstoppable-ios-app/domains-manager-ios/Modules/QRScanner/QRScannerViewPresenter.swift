@@ -29,7 +29,7 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     private var selectedWallet: WalletEntity
     private var blockchainType: BlockchainType = UserDefaults.selectedBlockchainType
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
-    var qrRecognizedCallback: EmptyAsyncCallback?
+    var qrRecognizedCallback: MainActorAsyncCallback?
     
     init(view: QRScannerViewProtocol,
          selectedWallet: WalletEntity,

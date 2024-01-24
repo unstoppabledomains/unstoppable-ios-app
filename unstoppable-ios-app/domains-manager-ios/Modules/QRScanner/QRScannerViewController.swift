@@ -339,7 +339,7 @@ import SwiftUI
 struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
     
     var selectedWallet: WalletEntity
-    var qrRecognizedCallback: EmptyAsyncCallback
+    var qrRecognizedCallback: MainActorAsyncCallback
     
     func makeUIViewController(context: Context) -> QRScannerViewController {
         UDRouter().buildQRScannerModule(selectedWallet: selectedWallet,

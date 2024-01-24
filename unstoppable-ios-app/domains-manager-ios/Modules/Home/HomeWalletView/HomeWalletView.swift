@@ -18,6 +18,7 @@ struct HomeWalletView: View {
     @State private var selectedNFT: NFTDisplayInfo?
     @State private var selectedDomain: DomainDisplayInfo?
     @State private var navigationState: NavigationStateManager?
+    @State private var pullUp: ViewPullUpConfigurationType?
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -77,35 +78,14 @@ struct HomeWalletView: View {
                                                    sourceScreen: .domainsCollection)
                 .ignoresSafeArea()
             })
+            .viewPullUp($pullUp)
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        SettingsViewControllerWrapper()
-                        .ignoresSafeArea()
-                        .toolbar(.hidden, for: .navigationBar)
-                        .onAppearanceChange($isOtherScreenPresented)
-                    } label: {
-                        Image.gearshape
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
+                    settingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
-                            
-                        })
-                        .ignoresSafeArea()
-                        .navigationTitle(String.Constants.scanQRCodeTitle.localized())
-                        .onAppearanceChange($isOtherScreenPresented)
-                    } label: {
-                        Image.qrBarCodeIcon
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
+                    qrNavButtonView()
                 }
             })
         }, navigationStateProvider: { state in
@@ -210,6 +190,40 @@ private extension HomeWalletView {
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
         selectedDomain = domain
+    }
+    
+    @ViewBuilder
+    func settingsNavButtonView() -> some View {
+        NavigationLink {
+            SettingsViewControllerWrapper()
+                .ignoresSafeArea()
+                .toolbar(.hidden, for: .navigationBar)
+                .onAppearanceChange($isOtherScreenPresented)
+        } label: {
+            Image.gearshape
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
+        }
+    }
+    
+    @ViewBuilder
+    func qrNavButtonView() -> some View {
+        NavigationLink {
+            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
+                if pullUp == nil {
+                    
+                }
+            })
+            .ignoresSafeArea()
+            .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+            .onAppearanceChange($isOtherScreenPresented)
+        } label: {
+            Image.qrBarCodeIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
+        }
     }
 }
 
