@@ -18,7 +18,7 @@ struct WalletEntity: Codable {
     
     var address: String { udWallet.address }
     var displayName: String { displayInfo.displayName }
-    var totalBalance: Double { balance.reduce(0.0, { $0 + ($1.totalValueUsdAmt ?? 0) }) }
+    var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     
 }
 
@@ -59,7 +59,7 @@ extension WalletEntity {
                                                          balanceAmt: 1,
                                                          tokens: nil,
                                                          stats: nil,
-                                                         nfts: nil,
+//                                                         nfts: nil,
                                                          value: .init(marketUsd: "$2,206.70",
                                                                       marketUsdAmt: 2206.7,
                                                                       walletUsd: "$2,206.70",
@@ -86,7 +86,7 @@ extension WalletEntity {
                                                                                      walletUsd: "$9.2",
                                                                                      walletUsdAmt: 9.2))],
                                                          stats: nil,
-                                                         nfts: nil,
+//                                                         nfts: nil,
                                                          value: .init(marketUsd: "$0.71",
                                                                       marketUsdAmt: 0.71,
                                                                       walletUsd: "$0.71", 

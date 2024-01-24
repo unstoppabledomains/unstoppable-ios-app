@@ -136,14 +136,7 @@ extension HomeWalletView {
         var marketUsd: Double?
         var parentSymbol: String?
         private(set) var isSkeleton: Bool = false
-        
-        var fiatValue: Double? {
-            if let marketUsd {
-                return marketUsd * balance
-            }
-            return nil
-        }
-        
+       
         static let iconSize: InitialsView.InitialsSize = .default
         static let iconStyle: InitialsView.Style = .gray
         

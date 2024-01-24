@@ -58,14 +58,12 @@ struct HomeWalletTokenRowView: View {
             Spacer()
             
             VStack(alignment: .leading) {
-                if let fiatValue = token.fiatValue {
-                    Text("$\(fiatValue.formatted(toMaxNumberAfterComa: 2))")
-                        .font(.currentFont(size: 16, weight: .medium))
-                        .monospacedDigit()
-                        .foregroundStyle(Color.foregroundDefault)
-                        .skeletonable()
-                        .skeletonCornerRadius(12)
-                }
+                Text("$\(token.balanceUsd.formatted(toMaxNumberAfterComa: 2))")
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .monospacedDigit()
+                    .foregroundStyle(Color.foregroundDefault)
+                    .skeletonable()
+                    .skeletonCornerRadius(12)
             }
         }
         .frame(height: HomeWalletTokenRowView.height)

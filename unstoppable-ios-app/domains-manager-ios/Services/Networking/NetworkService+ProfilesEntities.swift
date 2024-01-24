@@ -646,10 +646,14 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let balanceAmt: Double
     let tokens: [Token]?
     let stats: Stats?
-    let nfts: [NFT]?
+//    let nfts: [NFT]?
     let value: Value
     let totalValueUsdAmt: Double?
     let totalValueUsd: String?
+    
+    var totalTokensBalance: Double {
+        value.walletUsdAmt + (tokens?.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) }) ?? 0)
+    }
     
     struct NFT: Codable, Hashable {
         let name: String
@@ -660,7 +664,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
         let totalSupply: Int
         let latestAcquiredDate: String
         let contractAddresses: [String]
-        let nftIds: [String]
+        let nftIds: [String]?
         let floorPrice: [FloorPrice]?
         let totalValueUsdAmt: Double?
         let totalValueUsd: String?
