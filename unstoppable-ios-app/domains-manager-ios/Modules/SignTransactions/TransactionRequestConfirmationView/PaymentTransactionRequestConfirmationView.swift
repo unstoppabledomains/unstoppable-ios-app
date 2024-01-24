@@ -69,13 +69,15 @@ extension PaymentTransactionRequestConfirmationView {
 // MARK: - Refresh balance methods
 private extension PaymentTransactionRequestConfirmationView {
     func refresh() async throws {
-        guard let configuration = self.configuration else { return }
+        guard let configuration = self.configuration,
+        let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == configuration.walletAddress }) else { return }
         
         let chainId = configuration.chainId
         let blockchainType: BlockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum
-        let balance = try await appContext.udWalletsService.getBalanceFor(walletAddress: configuration.walletAddress, blockchainType: blockchainType, forceRefresh: true)
+        guard let balance = wallet.balanceFor(blockchainType: blockchainType) else { return }
+        
         costView?.setWith(cost: configuration.cost,
-                          exchangeRate: balance.exchangeRate,
+                          exchangeRate: balance.value.marketUsdAmt ?? 0,
                           blockchainType: blockchainType,
                           pullUp: pullUp)
 
@@ -83,9 +85,9 @@ private extension PaymentTransactionRequestConfirmationView {
         let quantity = cost.quantity
         let gasFee = cost.gasPrice
         let price = Double(quantity + gasFee).ethValue
-        let isEnoughMoney = balance.coinBalance >= price
+        let isEnoughMoney = balance.balanceAmt >= price
         
-        balanceValueLabel?.setAttributedTextWith(text: balance.formattedValue,
+        balanceValueLabel?.setAttributedTextWith(text: balance.value.walletUsd,
                                                  font: .currentFont(withSize: 16, weight: .medium),
                                                  textColor: isEnoughMoney ? .foregroundDefault : .foregroundWarning,
                                                  alignment: .right)

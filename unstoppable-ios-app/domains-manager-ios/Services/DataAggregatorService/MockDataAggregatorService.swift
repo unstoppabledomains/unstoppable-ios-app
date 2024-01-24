@@ -77,24 +77,6 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         return walletsWithInfo
     }
     
-    func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance] {
-        var walletsWithInfo = [WalletWithInfoAndBalance]()
-        
-        let wallets = walletsService.getUserWallets()
-        for wallet in wallets {
-            let displayInfo = await getWalletDisplayInfo(for: wallet)
-            let walletWithInfoAndBalance = WalletWithInfoAndBalance(wallet: wallet,
-                                                                    displayInfo: displayInfo,
-                                                                    balance: .init(address: wallet.address,
-                                                                                   quantity: try! .init(10),
-                                                                                   exchangeRate: 1,
-                                                                                   blockchain: .Ethereum))
-            walletsWithInfo.append(walletWithInfoAndBalance)
-        }
-        
-        return walletsWithInfo
-    }
-    
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         let rrDomain = await reverseResolutionDomain(for: wallet)
         let domains = await getDomainsDisplayInfo()

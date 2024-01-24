@@ -48,39 +48,6 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return await wallets.asyncMap({ await WalletWithInfo(wallet: $0, displayInfo: getWalletDisplayInfo(for: $0)) })
     }
     
-    func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance] {
-        let walletsWithInfo = await getWalletsWithInfo()
-        var balances = [WalletBalance]()
-        
-        try await withThrowingTaskGroup(of: WalletBalance.self, body: { [unowned self] group in
-            /// 1. Fill group with tasks
-            for wallet in walletsWithInfo {
-                group.addTask {
-                    /// Note: This block capturing self.
-                    return try await self.walletsService.getBalanceFor(walletAddress: wallet.wallet.address, blockchainType: blockchainType, forceRefresh: false)
-                }
-            }
-            
-            /// 2. Take values from group
-            for try await balance in group {
-                balances.append(balance)
-            }
-        })
-        
-        var walletsWithInfoAndBalance = [WalletWithInfoAndBalance]()
-        
-        for walletWithInfo in walletsWithInfo {
-            guard let balance = balances.first(where: { $0.address == walletWithInfo.wallet.address }) else {
-                Debugger.printFailure("Failed to get balance for wallet and error wasn't thrown", critical: true)
-                throw WalletError.unsupportedBlockchainType
-            }
-            let walletWithInfoAndBalance = WalletWithInfoAndBalance(wallet: walletWithInfo.wallet, displayInfo: walletWithInfo.displayInfo, balance: balance)
-            walletsWithInfoAndBalance.append(walletWithInfoAndBalance)
-        }
-        
-        return walletsWithInfoAndBalance
-    }
-  
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         let domains = await getDomainsDisplayInfo()
         let reverseResolutionDomain = await reverseResolutionDomain(for: wallet)

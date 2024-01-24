@@ -13,7 +13,7 @@ protocol QRScannerViewProtocol: BaseViewControllerProtocol {
     func startCaptureSession()
     func stopCaptureSession()
     func setState(_ state: QRScannerViewController.State)
-    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool)
+    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool)
     func setWith(appsConnected: Int)
     func setBlockchainTypeSelectionWith(availableTypes: [BlockchainType], selectedType: BlockchainType)
     func removeBlockchainTypeSelection()
@@ -117,7 +117,7 @@ extension QRScannerViewController: QRScannerViewProtocol {
         }
     }
     
-    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
+    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool) {
         selectedDomainItemView.setWith(domain: selectedDomain, wallet: wallet, balance: balance, isSelectable: isSelectable)
     }
     
@@ -338,11 +338,11 @@ extension QRScannerViewController {
 import SwiftUI
 struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
     
-    var selectedDomain: DomainDisplayInfo
+    var selectedWallet: WalletEntity
     var qrRecognizedCallback: EmptyAsyncCallback
     
     func makeUIViewController(context: Context) -> QRScannerViewController {
-        UDRouter().buildQRScannerModule(selectedDomain: selectedDomain,
+        UDRouter().buildQRScannerModule(selectedWallet: selectedWallet,
                                         qrRecognizedCallback: qrRecognizedCallback)
     }
     

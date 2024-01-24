@@ -20,6 +20,9 @@ struct WalletEntity: Codable {
     var displayName: String { displayInfo.displayName }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     
+    func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
+        balance.first(where: { $0.symbol == blockchainType.rawValue })
+    }
 }
 
 extension WalletEntity: Hashable {

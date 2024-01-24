@@ -85,14 +85,12 @@ struct HomeWalletView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        if let domain = viewModel.selectedWallet.rrDomain {
-                            QRScannerViewControllerWrapper(selectedDomain: domain, qrRecognizedCallback: {
-                                
-                            })
-                            .ignoresSafeArea()
-                            .navigationTitle(String.Constants.scanQRCodeTitle.localized())
-                            .onAppearanceChange($isOtherScreenPresented)
-                        }
+                        QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
+                            
+                        })
+                        .ignoresSafeArea()
+                        .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                        .onAppearanceChange($isOtherScreenPresented)
                     } label: {
                         Image.qrBarCodeIcon
                             .resizable()

@@ -259,21 +259,6 @@ extension NetworkService {
         let error: ErrorDescription
     }
     
-    func fetchBalance (address: HexAddress,
-                       layerId: UnsConfigManager.BlockchainLayerId) async throws -> SplitQuantity {
-        
-        
-        guard let data = try? await NetworkService().fetchData(for: getJRPCProviderUrl(layerId: layerId),
-                                                               body: "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\": [\"\(address)\", \"latest\"],\"id\":1}",
-                                                               method: .post),
-              let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) else {
-            throw NetworkLayerError.failedFetchBalance
-        }
-        let bigUInt = BigUInt(response.result.dropFirst(2), radix: 16) ?? 0
-        return try SplitQuantity(bigUInt)
-    }
-    
-    
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String

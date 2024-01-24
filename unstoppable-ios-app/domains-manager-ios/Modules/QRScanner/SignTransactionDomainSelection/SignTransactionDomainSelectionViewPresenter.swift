@@ -15,7 +15,7 @@ protocol SignTransactionDomainSelectionViewPresenterProtocol: BasePresenterProto
     func subheadButtonPressed()
 }
 
-typealias DomainWithBalanceSelectionCallback = (DomainDisplayInfo, WalletBalance?)->()
+typealias DomainWithBalanceSelectionCallback = (DomainDisplayInfo)->()
 
 final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     
@@ -25,7 +25,7 @@ final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     private var domains: [DomainDisplayInfo] = []
     private var filteredDomains: [DomainDisplayInfo] = []
     private var domainsWithReverseResolution: [DomainDisplayInfo] = []
-    private var walletsWithInfo: [WalletWithInfoAndOptionalBalance] = []
+    private var wallets: [WalletEntity] = []
     private var isSearchActive = false
     private var searchKey = ""
     private var visibleWalletsAddresses: Set<HexAddress> = []
@@ -47,12 +47,8 @@ final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
 // MARK: - SignTransactionDomainSelectionViewPresenterProtocol
 extension SignTransactionDomainSelectionViewPresenter: SignTransactionDomainSelectionViewPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            await prepareData()
-            showData(animated: false)
-            await loadData()
-            showData(animated: false)
-        }
+        prepareData()
+        showData(animated: false)
     }
     
     func didSelectItem(_ item: SignTransactionDomainSelectionViewController.Item) {
@@ -61,9 +57,8 @@ extension SignTransactionDomainSelectionViewPresenter: SignTransactionDomainSele
             logButtonPressedAnalyticEvents(button: .signWCTransactionDomainSelected,
                                            parameters: [.domainName: domainItem.name])
             UDVibration.buttonTap.vibrate()
-            if domainItem != selectedDomain,
-               let selectedDomainWallet = walletsWithInfo.first(where: { $0.wallet.owns(domain: domainItem) }) {
-                domainSelectedCallback?(domainItem, selectedDomainWallet.balance)
+            if domainItem != selectedDomain {
+                domainSelectedCallback?(domainItem)
             }
             
             Task {
@@ -134,25 +129,11 @@ extension SignTransactionDomainSelectionViewPresenter: DataAggregatorServiceList
 
 // MARK: - Private functions
 private extension SignTransactionDomainSelectionViewPresenter {
-    func prepareData() async {
-        domains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+    func prepareData() {
+        self.wallets = appContext.walletsDataService.wallets
+        domains = wallets.reduce([DomainDisplayInfo](), { $0 + $1.domains })
         filteredDomains = domains
-        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
-        self.walletsWithInfo = walletsWithInfo.map({ WalletWithInfoAndOptionalBalance(wallet: $0.wallet,
-                                                                                      displayInfo: $0.displayInfo,
-                                                                                      balance: nil)})
-        self.domainsWithReverseResolution = walletsWithInfo.compactMap({ $0.displayInfo?.reverseResolutionDomain })
-    }
-    
-    func loadData() async {
-        do {
-            let walletsWithInfo = try await dataAggregatorService.getWalletsWithInfoAndBalance(for: UserDefaults.selectedBlockchainType)
-            self.walletsWithInfo = walletsWithInfo.map({ WalletWithInfoAndOptionalBalance(wallet: $0.wallet,
-                                                                                          displayInfo: $0.displayInfo,
-                                                                                          balance: $0.balance)})
-        } catch {
-            view?.showAlertWith(error: error)
-        }
+        domainsWithReverseResolution = wallets.compactMap({ $0.rrDomain })
     }
     
     func showData(animated: Bool) {
@@ -170,14 +151,14 @@ private extension SignTransactionDomainSelectionViewPresenter {
         } else {
             var walletsToDomains: [LocalWalletInfo : [DomainDisplayInfo]] = [:]
             
-            for walletWithInfo in walletsWithInfo {
-                let domains = filteredDomains.filter({ walletWithInfo.wallet.owns(domain: $0) })
+            for walletWithInfo in wallets {
+                let domains = filteredDomains.filter({ walletWithInfo.udWallet.owns(domain: $0) })
                 if !domains.isEmpty {
-                    let info = LocalWalletInfo(name: walletWithInfo.displayInfo?.displayName ?? "",
-                                               address: walletWithInfo.displayInfo?.address ?? "",
-                                               balance: walletWithInfo.balance,
+                    let info = LocalWalletInfo(wallet: walletWithInfo,
+                                               name: walletWithInfo.displayName,
+                                               address: walletWithInfo.address,
                                                selectedDomain: domains.first(where: { $0.name == selectedDomain.name }),
-                                               reverseResolutionDomain: walletWithInfo.displayInfo?.reverseResolutionDomain)
+                                               reverseResolutionDomain: walletWithInfo.rrDomain)
                     walletsToDomains[info] = domains
                 }
             }
@@ -192,12 +173,11 @@ private extension SignTransactionDomainSelectionViewPresenter {
                     }
                     return $0.name < $1.name
                 })
-                
+                let blockchainType = UserDefaults.selectedBlockchainType
                 for info in sortedInfos {
                     /// Add section for wallet's domains
-                    snapshot.appendSections([.walletDomains(walletName: info.name,
-                                                            walletAddress: info.address,
-                                                            balance: info.balance)])
+                    snapshot.appendSections([.walletDomains(wallet: info.wallet,
+                                                            blockchainType: blockchainType)])
                     
                     let domains = walletsToDomains[info] ?? []
                     /// Always show domain with reverse resolution at the top.
@@ -263,9 +243,9 @@ private extension SignTransactionDomainSelectionViewPresenter {
     }
     
     struct LocalWalletInfo: Hashable {
+        let wallet: WalletEntity
         let name: String
         let address: String
-        let balance: WalletBalance?
         let selectedDomain: DomainDisplayInfo?
         let reverseResolutionDomain: DomainDisplayInfo?
         
@@ -285,13 +265,5 @@ private extension SignTransactionDomainSelectionViewPresenter {
             visibleWalletsAddresses.insert(walletAddress)
         }
         showData(animated: true)
-    }
-}
-
-private extension SignTransactionDomainSelectionViewPresenter {
-    struct WalletWithInfoAndOptionalBalance {
-        var wallet: UDWallet
-        var displayInfo: WalletDisplayInfo?
-        var balance: WalletBalance?
     }
 }

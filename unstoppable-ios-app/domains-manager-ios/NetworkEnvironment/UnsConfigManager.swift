@@ -160,16 +160,6 @@ struct UnsConfigManager {
         }
     }
     
-    static func getBlockchainLayerId(for blockchainType: BlockchainType) throws -> BlockchainLayerId {
-        switch blockchainType {
-        case .Ethereum: return .l1
-        case .Matic: return .l2
-        case .Zilliqa:
-            Debugger.printFailure("Trying to get blockchain layer id for ZIL network", critical: true)
-            throw Error.unsupportedBlockchainType
-        }
-    }
-    
     struct BlockchainConfigData: Equatable {
         let l1: BlockchainNetwork
         let l2: BlockchainNetwork

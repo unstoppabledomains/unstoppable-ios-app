@@ -12,22 +12,22 @@ final class SignTransactionDomainSelectionSectionHeaderView: CollectionGenericCo
     class var reuseIdentifier: String { "SignTransactionDomainSelectionSectionHeaderView" }
     static let Height: CGFloat = 52
         
-    func setHeader(for walletName: String,
-                   balance: WalletBalance?) {
+    func setHeader(for wallet: WalletEntity,
+                   blockchainType: BlockchainType) {
         
         contentView.removeArrangedSubviews()
         
         let label = UILabel()
-        label.setAttributedTextWith(text: walletName,
+        label.setAttributedTextWith(text: wallet.displayName,
                                     font: .currentFont(withSize: 14, weight: .medium),
                                     textColor: .foregroundSecondary)
         contentView.addArrangedSubview(label)
 
-        if let balance = balance {
+        if let balance = wallet.balanceFor(blockchainType: blockchainType) {
             contentView.distribution = .fill
 
             let balanceLabel = UILabel()
-            let buttonTitle: String = balance.formattedValue
+            let buttonTitle: String = balance.value.walletUsd
             balanceLabel.setAttributedTextWith(text: buttonTitle,
                                                font: .currentFont(withSize: 14, weight: .medium),
                                                textColor: .foregroundSecondary)
