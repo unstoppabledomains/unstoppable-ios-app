@@ -692,3 +692,27 @@ extension DomainProfileViewController {
         }
     }
 }
+
+import SwiftUI
+struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
+    
+    let domain: DomainDisplayInfo
+    let wallet: UDWallet
+    let walletInfo: WalletDisplayInfo
+    let preRequestedAction: PreRequestedProfileAction?
+    let sourceScreen: DomainProfileViewPresenter.SourceScreen
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildDomainProfileModule(domain: domain,
+                                            wallet: wallet,
+                                            walletInfo: walletInfo,
+                                            preRequestedAction: preRequestedAction,
+                                            sourceScreen: sourceScreen)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        nav.isModalInPresentation = true
+
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+}

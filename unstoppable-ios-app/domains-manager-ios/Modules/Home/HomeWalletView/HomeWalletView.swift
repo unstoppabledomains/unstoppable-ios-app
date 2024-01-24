@@ -16,6 +16,7 @@ struct HomeWalletView: View {
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
     @State private var selectedNFT: NFTDisplayInfo?
+    @State private var selectedDomain: DomainDisplayInfo?
     @State private var navigationState: NavigationStateManager?
     
     var body: some View {
@@ -67,6 +68,14 @@ struct HomeWalletView: View {
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $selectedNFT, content: { nft in
                 NFTDetailsView(nft: nft)
+            })
+            .sheet(item: $selectedDomain, content: { domain in
+                DomainProfileViewControllerWrapper(domain: domain,
+                                                   wallet: viewModel.selectedWallet.udWallet,
+                                                   walletInfo: viewModel.selectedWallet.displayInfo,
+                                                   preRequestedAction: nil,
+                                                   sourceScreen: .domainsCollection)
+                .ignoresSafeArea()
             })
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
@@ -196,7 +205,11 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domains: viewModel.domains)
+        HomeWalletsDomainsSectionView(domains: viewModel.domains, domainSelectedCallback: didSelectDomain)
+    }
+    
+    func didSelectDomain(_ domain: DomainDisplayInfo) {
+        selectedDomain = domain
     }
 }
 

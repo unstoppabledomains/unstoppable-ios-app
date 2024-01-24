@@ -1322,17 +1322,3 @@ extension DomainProfileViewPresenter {
         case domainsCollection, domainsList
     }
 }
-
-import SwiftUI
-struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
-    
-    var selectedWallet: WalletEntity
-    var qrRecognizedCallback: EmptyAsyncCallback
-    
-    func makeUIViewController(context: Context) -> QRScannerViewController {
-        UDRouter().buildQRScannerModule(selectedWallet: selectedWallet,
-                                        qrRecognizedCallback: qrRecognizedCallback)
-    }
-    
-    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) { }
-}
