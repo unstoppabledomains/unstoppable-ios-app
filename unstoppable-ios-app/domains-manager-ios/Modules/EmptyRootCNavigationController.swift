@@ -35,6 +35,8 @@ final class EmptyRootCNavigationController: CNavigationController {
         } else if topViewController is EmptyRootCNavigationController || topViewController != rootViewController {
             transitionHandler.isInteractionEnabled = topViewController != rootViewController
             return super.popViewController(animated: animated, completion: completion)
+        } else if let navigationController {
+            navigationController.popViewController(animated: true)
         } else {
             dismissCallback?()
             presentingViewController?.dismiss(animated: true)

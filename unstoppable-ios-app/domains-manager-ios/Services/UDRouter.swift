@@ -16,7 +16,7 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.pushViewController(settingsVC, animated: true)
     }
     
-    private func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
+    func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
                                           loginCallback: loginCallback,

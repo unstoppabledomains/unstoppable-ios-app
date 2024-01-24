@@ -71,8 +71,11 @@ struct HomeWalletView: View {
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        
+                    NavigationLink {
+                        SettingsViewControllerWrapper()
+                        .ignoresSafeArea()
+                        .toolbar(.hidden, for: .navigationBar)
+                        .onAppearanceChange($isOtherScreenPresented)
                     } label: {
                         Image.gearshape
                             .resizable()

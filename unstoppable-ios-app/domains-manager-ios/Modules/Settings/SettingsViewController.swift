@@ -355,3 +355,16 @@ extension SettingsViewController {
         }
     }
 }
+
+import SwiftUI
+struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildSettingsModule(loginCallback: nil)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+}
