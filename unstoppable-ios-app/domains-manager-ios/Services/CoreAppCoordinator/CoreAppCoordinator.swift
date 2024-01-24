@@ -162,6 +162,8 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
+//        case .home(let tabRouter):
+            
         default: throw WalletConnectUIError.cancelled
         }
     }
@@ -213,6 +215,10 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
             if let pullUpView = hostView as? PullUpViewController,
                pullUpView.pullUp == .wcLoading {
                 await hostView.dismissPullUpMenu()
+            }
+        case .home(let tabRouter):
+            if tabRouter.pullUp?.analyticName == .wcLoading {
+                tabRouter.pullUp = nil
             }
         default: return
         }
@@ -311,9 +317,10 @@ private extension CoreAppCoordinator {
     }
     
     func setHomeScreenAsRoot(wallet: WalletEntity) {
-        let vc = UIHostingController(rootView: HomeTabView(selectedWallet: wallet))
+        let view = HomeTabView(selectedWallet: wallet)
+        let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
-        currentRoot = .home
+        currentRoot = .home(tabRouter: view.router)
     }
     
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
@@ -365,6 +372,6 @@ extension CoreAppCoordinator {
 private extension CoreAppCoordinator {
     enum CurrentRoot {
         case none, onboarding, domainsCollection(router: DomainsCollectionRouter), appUpdate
-        case home
+        case home(tabRouter: HomeTabRouter)
     }
 }

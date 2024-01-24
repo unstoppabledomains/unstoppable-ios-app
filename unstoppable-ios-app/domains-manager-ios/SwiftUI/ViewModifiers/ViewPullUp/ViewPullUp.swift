@@ -24,11 +24,25 @@ struct ViewPullUp: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: isPresented, content: {
-                pullUpContentView()
-                    .presentationDetents([.height(type?.calculateHeight() ?? 0)])
-            })
+        if case .viewModifier(let conf) = type {
+//            content.modifier(conf.modifier)
+//            conf.applyOnView(content)
+            AnyView(conf.modifierBlock(content))
+        } else {
+            content
+                .sheet(isPresented: isPresented, content: {
+                    pullUpContentView()
+                        .onAppear {
+                            appContext.analyticsService.log(event: .pullUpDidAppear,
+                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""])
+                        }
+                        .onDisappear {
+                            appContext.analyticsService.log(event: .pullUpClosed,
+                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""])
+                        }
+                        .presentationDetents([.height(type?.calculateHeight() ?? 0)])
+                })
+        }
     }
     
     private func closeAndPassCallback(_ callback: MainActorAsyncCallback?) {
@@ -87,17 +101,9 @@ private extension ViewPullUp {
                                 bottom: ViewPullUp.sideOffset,
                                 trailing: ViewPullUp.sideOffset))
             .interactiveDismissDisabled(!configuration.dismissAble)
-            .onAppear {
-                appContext.analyticsService.log(event: .pullUpDidAppear,
-                                                withParameters: [.pullUpName : configuration.analyticName.rawValue])
-            }
-            .onDisappear {
-                appContext.analyticsService.log(event: .pullUpClosed,
-                                                withParameters: [.pullUpName : configuration.analyticName.rawValue])
-            }
         case .custom(let configuration):
             AnyView(configuration.content())
-        case .none:
+        case .none, .viewModifier:
             VStack { }
         }
     }

@@ -10,7 +10,86 @@ import SwiftUI
 struct ViewPullUpCustomContentConfiguration {
     @ViewBuilder var content: () -> any View
     let height: CGFloat
+    let analyticName: Analytics.PullUp
 }
+
+struct ViewPullUpViewModifierConfiguration {
+    @ViewBuilder var modifierBlock: (any View) -> any View
+    let height: CGFloat
+    let analyticName: Analytics.PullUp
+    
+    func applyOnView(_ view: any View) -> any View {
+        modifierBlock(view)
+    }
+}
+
+// MARK: - Open methods
+extension ViewPullUpViewModifierConfiguration {
+    typealias ServerConnectConfigurationResult = Result<WalletConnectServiceV2.ConnectionUISettings, Error>
+    typealias ServerConnectConfigurationResultCallback = (ServerConnectConfigurationResult)->()
+    static func serverConnectConfirmationPullUp(connectionConfig: WCRequestUIConfiguration, completion: @escaping ServerConnectConfigurationResultCallback) -> ViewPullUpViewModifierConfiguration {
+        .init(modifierBlock: { view in
+            AnyView(view).modifier(ServerConnectConfirmationPullUpModifier(connectionConfig: connectionConfig, completion: completion))
+        }, height: 1, analyticName: .addWalletSelection)
+    }
+    
+    private struct ServerConnectConfirmationPullUpModifier: ViewModifier {
+        
+        let connectionConfig: WCRequestUIConfiguration
+        @State var completion: ServerConnectConfigurationResultCallback?
+        @State private var pullUp: ViewPullUpConfigurationType?
+        @State private var baseSignTransactionView: BaseSignTransactionView?
+        
+        func body(content: Content) -> some View {
+            content
+                .viewPullUp($pullUp)
+                .onChange(of: pullUp, perform: { newValue in
+                    if newValue == nil {
+                        completion?(.failure(PullUpViewService.PullUpError.cancelled))
+                    }
+                })
+                .onAppear {
+                    pullUp = .custom(.showServerConnectConfirmationPullUp(for: connectionConfig, updateSignTransactionViewBlock: { signTransactionView in
+                        self.baseSignTransactionView = signTransactionView
+                    },
+                                                                          confirmationCallback: { connectionSettings in
+                        Task {
+                            if connectionConfig.isSARequired {
+                                do {
+                                    try await appContext.authentificationService.verifyWith(uiHandler: SceneDelegate.shared!.window!.rootViewController!, purpose: .confirm)
+                                    finishWith(result: .success(connectionSettings))
+                                }
+                            } else {
+                                finishWith(result: .success(connectionSettings))
+                            }
+                        }
+                    }, domainButtonCallback: { [weak baseSignTransactionView] domain in
+                        Task {
+                            do {
+                                
+                                let isSetForRR = await appContext.dataAggregatorService.isReverseResolutionSet(for: domain.name)
+                                let selectedDomain = DomainDisplayInfo(domainItem: domain, isSetForRR: isSetForRR)
+                                let newDomain = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
+                                                                                                              swipeToDismissEnabled: false,
+                                                                                                              in: SceneDelegate.shared!.window!.rootViewController!.topVisibleViewController())
+                                
+                                let domain = try await appContext.dataAggregatorService.getDomainWith(name: newDomain.name)
+                                baseSignTransactionView?.setDomainInfo(domain, isSelectable: true)
+                            }
+                        }
+                    }))
+                }
+        }
+        
+        func finishWith(result: ServerConnectConfigurationResult) {
+            completion?(result)
+            self.completion = nil
+            self.pullUp = nil
+        }
+    }
+
+}
+
 
 // MARK: - Open methods
 extension ViewPullUpCustomContentConfiguration {
@@ -21,6 +100,84 @@ extension ViewPullUpCustomContentConfiguration {
                     .tint(Color.foregroundDefault)
             }
             .backgroundStyle(Color.backgroundDefault)
-        }, height: 428)
+        },
+              height: 428,
+              analyticName: .wcLoading)
     }
+    
+    
+    struct ViewWrapper: UIViewRepresentable {
+        
+        var view: UIView
+        
+        func makeUIView(context: Context) -> some UIView {
+            view
+        }
+       
+        func updateUIView(_ uiView: UIViewType, context: Context) { }
+    }
+    
+
+    @MainActor
+    static func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
+                                                    updateSignTransactionViewBlock: (BaseSignTransactionView)->(),
+                                             confirmationCallback: @escaping ((WalletConnectServiceV2.ConnectionUISettings)->()),
+                                             domainButtonCallback: @escaping ((DomainItem)->())) -> ViewPullUpCustomContentConfiguration {
+        
+        let signTransactionView: BaseSignTransactionView
+        let selectionViewHeight: CGFloat
+        let pullUp: Analytics.PullUp
+        let connectionConfiguration: WalletConnectServiceV2.ConnectionConfig
+        let viewFrame: CGRect = UIScreen.main.bounds
+        
+        switch connectionConfig {
+        case .signMessage(let configuration):
+            let signMessageConfirmationView = SignMessageRequestConfirmationView(frame: viewFrame)
+            signMessageConfirmationView.configureWith(configuration)
+            selectionViewHeight = signMessageConfirmationView.requiredHeight()
+            signTransactionView = signMessageConfirmationView
+            pullUp = .wcRequestSignMessageConfirmation
+            connectionConfiguration = configuration.connectionConfig
+        case .payment(let configuration):
+            let signPaymentConfirmationView = PaymentTransactionRequestConfirmationView(frame: viewFrame)
+            signPaymentConfirmationView.configureWith(configuration)
+            selectionViewHeight = configuration.isGasFeeOnlyTransaction ? 512 : 564
+            signTransactionView = signPaymentConfirmationView
+            pullUp = .wcRequestTransactionConfirmation
+            connectionConfiguration = configuration.connectionConfig
+        case .connectWallet(let connectionConfig):
+            let connectServerConfirmationView = ConnectServerRequestConfirmationView(frame: viewFrame)
+            connectServerConfirmationView.setWith(connectionConfig: connectionConfig)
+            selectionViewHeight = 376
+            signTransactionView = connectServerConfirmationView
+            pullUp = .wcRequestConnectConfirmation
+            connectionConfiguration = connectionConfig
+        }
+        updateSignTransactionViewBlock(signTransactionView)
+        signTransactionView.setRequireSA(connectionConfig.isSARequired)
+        signTransactionView.pullUp = pullUp
+        let chainIds = connectionConfiguration.appInfo.getChainIds().map({ String($0) }).joined(separator: ",")
+        let analyticParameters: Analytics.EventParameters = [.wcAppName: connectionConfiguration.appInfo.getDappName(),
+                                                             .hostURL: connectionConfiguration.appInfo.getDappHostName(),
+                                                             .chainId: chainIds]
+        
+        
+        signTransactionView.confirmationCallback = confirmationCallback
+        signTransactionView.domainButtonCallback = domainButtonCallback
+        
+        return .init(content: {
+            ViewWrapper(view: signTransactionView)
+        },
+                     height: selectionViewHeight,
+                     analyticName: pullUp)
+        
+//        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+//            if case .payment = connectionConfig,
+//               !UserDefaults.wcFriendlyReminderShown {
+//                UserDefaults.wcFriendlyReminderShown = true
+////                showWCFriendlyReminderPullUp(in: pullUpView)
+//            }
+//        }
+    }
+    
 }

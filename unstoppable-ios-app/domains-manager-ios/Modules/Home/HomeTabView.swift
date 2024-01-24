@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeTabView: View {
     
     @StateObject private var tabState = TabStateManager()
+    @StateObject var router = HomeTabRouter()
     let selectedWallet: WalletEntity
 
     var body: some View {
@@ -22,9 +23,7 @@ struct HomeTabView: View {
             .tag(0)
             .tabBarVisible(tabState.isTabBarVisible)
             
-            NavigationView {
-                HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
-            }
+            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
@@ -33,6 +32,7 @@ struct HomeTabView: View {
         }
         .tint(.foregroundDefault)
         .environmentObject(tabState)
+        .viewPullUp($router.pullUp)
     }
     
     init(selectedWallet: WalletEntity) {
@@ -45,9 +45,13 @@ struct HomeTabView: View {
     HomeTabView(selectedWallet: WalletEntity.mock().first!)
 }
 
-
 class TabStateManager: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var tabViewSelection: Int = 0
+}
+
+
+class HomeTabRouter: ObservableObject {
+    @Published var pullUp: ViewPullUpConfigurationType?
 }
 
