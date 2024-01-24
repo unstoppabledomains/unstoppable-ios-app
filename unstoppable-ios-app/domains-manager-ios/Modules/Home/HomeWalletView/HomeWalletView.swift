@@ -62,8 +62,6 @@ struct HomeWalletView: View {
             }
             .listStyle(.plain)
             .clearListBackground()
-            .background(.clear)
-            .animatedFromiOS16()
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -212,7 +210,7 @@ private extension HomeWalletView {
         NavigationLink {
             QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
                 if pullUp == nil {
-                    
+                    pullUp = .custom(.loadingIndicator())
                 }
             })
             .ignoresSafeArea()

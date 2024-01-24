@@ -9,7 +9,6 @@ import SwiftUI
 
 struct NavigationViewWithCustomTitle<Content: View>: View {
     
-
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
     @StateObject private var navigationState = NavigationStateManager()

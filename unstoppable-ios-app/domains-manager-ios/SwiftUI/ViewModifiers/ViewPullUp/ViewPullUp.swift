@@ -95,6 +95,8 @@ private extension ViewPullUp {
                 appContext.analyticsService.log(event: .pullUpClosed,
                                                 withParameters: [.pullUpName : configuration.analyticName.rawValue])
             }
+        case .custom(let configuration):
+            AnyView(configuration.content())
         case .none:
             VStack { }
         }
