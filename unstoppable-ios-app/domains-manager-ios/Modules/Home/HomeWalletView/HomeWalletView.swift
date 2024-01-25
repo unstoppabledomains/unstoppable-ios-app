@@ -243,7 +243,7 @@ private extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: WalletEntity.mock().first!))
+        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!))
     }
 }
 

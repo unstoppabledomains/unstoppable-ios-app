@@ -97,5 +97,5 @@ private extension HomeWalletHeaderRowView {
 }
 
 #Preview {
-    HomeWalletHeaderRowView(wallet: WalletEntity.mock().first!)
+    HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!)
 }

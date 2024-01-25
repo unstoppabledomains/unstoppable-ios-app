@@ -96,6 +96,6 @@ private extension HomeWalletWalletSelectionRowView {
 }
 
 #Preview {
-    HomeWalletWalletSelectionRowView(wallet: WalletEntity.mock()[0],
+    HomeWalletWalletSelectionRowView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                                      isSelected: false)
 }
