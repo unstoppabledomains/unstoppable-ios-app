@@ -125,7 +125,7 @@ struct NetworkService {
                 throw error
             }
             try await Task.sleep(nanoseconds: 750_000_000)
-            return try await fetchData(for: url, method: .get) // allow another attempt in 0.75 sec
+            return try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders) // allow another attempt in 0.75 sec
         }
         return data
     }
