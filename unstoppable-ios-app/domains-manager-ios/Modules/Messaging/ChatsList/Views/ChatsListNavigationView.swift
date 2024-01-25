@@ -230,7 +230,7 @@ extension ChatsListNavigationView {
 @available (iOS 17.0, *)
 #Preview {
     let view =  ChatsListNavigationView(frame: CGRect(x: 0, y: 0, width: 390, height: 40))
-    let wallets = WalletEntity.mock()
+    let wallets = MockEntitiesFabric.Wallet.mockEntities()
     let wallet = wallets[0]
     let wallet2 = wallets[1]
     view.setWithConfiguration(.init(selectedWallet: wallet,
