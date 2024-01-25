@@ -34,14 +34,12 @@ struct ViewPullUp: ViewModifier {
                     didDismissCurrentPullUp()
                 }
             }, content: { type in
-                if tag > 0 {
-                    pullUpContentView(type: type)
-                        .onAppear {
-                            appContext.analyticsService.log(event: .pullUpDidAppear,
-                                                            withParameters: [.pullUpName : type.analyticName.rawValue].adding(type.additionalAnalyticParameters))
-                        }
-                        .presentationDetents([.height(type.calculateHeight())])
-                }
+                pullUpContentView(type: type)
+                    .onAppear {
+                        appContext.analyticsService.log(event: .pullUpDidAppear,
+                                                        withParameters: [.pullUpName : type.analyticName.rawValue].adding(type.additionalAnalyticParameters))
+                    }
+                    .presentationDetents([.height(type.calculateHeight())])
             })
             .onChange(of: type) { newValue in
                 if let newValue {

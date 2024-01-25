@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ViewPullUpCustomContentConfiguration {
+    let id = UUID()
     @ViewBuilder var content: () -> any View
     let height: CGFloat
     let analyticName: Analytics.PullUp

@@ -8,6 +8,7 @@
 import UIKit
 
 struct ViewPullUpDefaultConfiguration {
+    let id = UUID()
     var icon: IconContent? = nil
     var title: LabelType?
     var subtitle: Subtitle? = nil

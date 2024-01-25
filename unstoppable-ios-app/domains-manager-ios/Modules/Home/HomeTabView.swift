@@ -12,6 +12,7 @@ struct HomeTabView: View {
     @StateObject private var tabState: TabStateManager
     @StateObject var router: HomeTabRouter
     let selectedWallet: WalletEntity
+    private let id: UUID
 
     var body: some View {
         TabView(selection: $tabState.tabViewSelection) {
@@ -33,7 +34,7 @@ struct HomeTabView: View {
         .tint(.foregroundDefault)
         .environmentObject(tabState)
         .environmentObject(router)
-        .viewPullUp($router.pullUp)
+        .viewPullUp(router.currentPullUp(id: id))
     }
     
     init(selectedWallet: WalletEntity,
@@ -42,6 +43,7 @@ struct HomeTabView: View {
         self._tabState = StateObject(wrappedValue: tabState)
         self._router = StateObject(wrappedValue: tabRouter)
         self.selectedWallet = selectedWallet
+        self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
     }
 }
@@ -59,6 +61,34 @@ class TabStateManager: ObservableObject {
 class HomeTabRouter: ObservableObject {
     @Published var pullUp: ViewPullUpConfigurationType?
     
+    let id: UUID = UUID()
+    private var topViews: [UUID] = []
+    
+    func currentPullUp(id: UUID) -> Binding<ViewPullUpConfigurationType?> {
+        if !topViews.isEmpty {
+            guard self.id != id else {
+                return Binding { nil } set: { newValue in }
+            }
+        } else {
+            guard self.id == id else {
+                return Binding { nil } set: { newValue in }
+            }
+        }
+        return Binding { [weak self] in
+            self?.pullUp
+        } set: { [weak self] newValue in
+            self?.pullUp = newValue
+        }
+    }
+    
+    func registerTopView(id: UUID) {
+        topViews.append(id)
+    }
+    
+    func unregisterTopView(id: UUID) {
+        topViews.removeAll()
+    }
+    
     @MainActor
     func dismissPullUpMenu() async {
         if pullUp != nil {
@@ -72,3 +102,25 @@ class HomeTabRouter: ObservableObject {
     }
 }
 
+struct HomeTabPullUpHandlerModifier: ViewModifier {
+    
+    let tabRouter: HomeTabRouter
+    let id = UUID()
+    
+    func body(content: Content) -> some View {
+        content
+            .viewPullUp(tabRouter.currentPullUp(id: id))
+            .onAppear {
+                tabRouter.registerTopView(id: id)
+            }
+            .onDisappear {
+                tabRouter.unregisterTopView(id: id)
+            }
+    }
+}
+
+extension View {
+    func pullUpHandler(_ tabRouter: HomeTabRouter) -> some View {
+        modifier(HomeTabPullUpHandlerModifier(tabRouter: tabRouter))
+    }
+}

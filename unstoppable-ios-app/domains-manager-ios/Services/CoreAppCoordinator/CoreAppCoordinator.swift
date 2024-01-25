@@ -182,6 +182,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
+                await tabRouter.dismissPullUpMenu()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }

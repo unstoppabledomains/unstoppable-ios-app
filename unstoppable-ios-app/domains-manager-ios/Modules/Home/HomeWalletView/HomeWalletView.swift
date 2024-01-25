@@ -19,7 +19,6 @@ struct HomeWalletView: View {
     @State private var selectedNFT: NFTDisplayInfo?
     @State private var selectedDomain: DomainDisplayInfo?
     @State private var navigationState: NavigationStateManager?
-    @State private var pullUp: ViewPullUpConfigurationType?
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -68,6 +67,7 @@ struct HomeWalletView: View {
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $selectedNFT, content: { nft in
                 NFTDetailsView(nft: nft)
+                    .pullUpHandler(tabRouter)
             })
             .sheet(item: $selectedDomain, content: { domain in
                 DomainProfileViewControllerWrapper(domain: domain,
@@ -76,8 +76,8 @@ struct HomeWalletView: View {
                                                    preRequestedAction: nil,
                                                    sourceScreen: .domainsCollection)
                 .ignoresSafeArea()
+                .pullUpHandler(tabRouter)
             })
-            .viewPullUp($pullUp)
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {

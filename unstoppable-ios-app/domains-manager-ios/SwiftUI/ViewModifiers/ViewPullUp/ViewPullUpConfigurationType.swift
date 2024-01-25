@@ -7,10 +7,19 @@
 
 import Foundation
 
-enum ViewPullUpConfigurationType {
+enum ViewPullUpConfigurationType: Identifiable {
   
     case `default`(ViewPullUpDefaultConfiguration)
     case custom(ViewPullUpCustomContentConfiguration)
+    
+    var id: UUID {
+        switch self {
+        case .default(let conf):
+            return conf.id
+        case .custom(let conf):
+            return conf.id
+        }
+    }
     
     var analyticName: Analytics.PullUp {
         switch self {
@@ -51,10 +60,8 @@ enum ViewPullUpConfigurationType {
 }
 
 // MARK: - Equatable
-extension ViewPullUpConfigurationType: Equatable, Identifiable {
-    var id: String { analyticName.rawValue }
-    
+extension ViewPullUpConfigurationType: Equatable {
     static func == (lhs: ViewPullUpConfigurationType, rhs: ViewPullUpConfigurationType) -> Bool {
-        lhs.analyticName == rhs.analyticName
+        lhs.id == rhs.id
     }
 }
