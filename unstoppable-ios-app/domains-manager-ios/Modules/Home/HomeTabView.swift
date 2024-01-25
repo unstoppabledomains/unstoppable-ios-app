@@ -58,5 +58,17 @@ class TabStateManager: ObservableObject {
 
 class HomeTabRouter: ObservableObject {
     @Published var pullUp: ViewPullUpConfigurationType?
+    
+    @MainActor
+    func dismissPullUpMenu() async {
+        if pullUp != nil {
+            pullUp = nil
+            await withSafeCheckedMainActorContinuation { completion in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    completion(Void())
+                }
+            }
+        }
+    }
 }
 

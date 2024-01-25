@@ -19,6 +19,7 @@ struct ViewPullUpDefaultConfiguration {
     var dismissAble: Bool = true
     var analyticName: Analytics.PullUp
     var additionalAnalyticParameters: Analytics.EventParameters = [:]
+    var dismissCallback: EmptyCallback? = nil
 
     // Title
     enum LabelType {
@@ -233,5 +234,17 @@ extension ViewPullUpDefaultConfiguration {
     
     func heightForIconContent(_ iconContent: IconContent) -> CGFloat {
         iconContent.iconSize
+    }
+}
+
+// MARK: - Open methods
+extension ViewPullUpDefaultConfiguration {
+    static func showWCConnectionFailed(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .grimaseIcon,
+                          size: .small), title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
+              subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())), contentAlignment: .center,
+              cancelButton: .gotItButton(),
+              analyticName: .wcConnectionFailed,
+              dismissCallback: dismissCallback)
     }
 }

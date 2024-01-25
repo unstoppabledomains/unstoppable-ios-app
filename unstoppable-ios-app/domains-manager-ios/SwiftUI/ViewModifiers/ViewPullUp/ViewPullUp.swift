@@ -18,6 +18,7 @@ struct ViewPullUp: ViewModifier {
     var typeChangedCallback: ((ViewPullUpConfigurationType?)->())? = nil
     @State private var tag = 0
     @State private var dismissAnalyticParameters = Analytics.EventParameters()
+    @State private var dismissCallback: EmptyCallback?
     var isPresented: Binding<Bool> {
         Binding {
             type != nil
@@ -27,9 +28,25 @@ struct ViewPullUp: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        currentContent(content: content)
+        content
+            .sheet(isPresented: isPresented, content: {
+                if tag > 0 {
+                    pullUpContentView()
+                        .onAppear {
+                            appContext.analyticsService.log(event: .pullUpDidAppear,
+                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""].adding(type?.additionalAnalyticParameters ?? [:]))
+                        }
+                        .onDisappear {
+                            appContext.analyticsService.log(event: .pullUpClosed,
+                                                            withParameters: dismissAnalyticParameters)
+                            dismissCallback?()
+                        }
+                        .presentationDetents([.height(type?.calculateHeight() ?? 0)])
+                }
+            })
             .onChange(of: type) { newValue in
                 if let newValue {
+                    dismissCallback = newValue.dismissCallback
                     dismissAnalyticParameters = [.pullUpName : newValue.analyticName.rawValue].adding(newValue.additionalAnalyticParameters)
                 }
                 if newValue == nil {
@@ -45,30 +62,6 @@ struct ViewPullUp: ViewModifier {
                 }
                 typeChangedCallback?(newValue)
             }
-    }
-    
-    @MainActor
-    @ViewBuilder
-    private func currentContent(content: Content) -> some View {
-        if case .viewModifier(let conf) = type {
-            AnyView(conf.modifierBlock(content))
-        } else {
-            content
-                .sheet(isPresented: isPresented, content: {
-                    if tag > 0 {
-                        pullUpContentView()
-                            .onAppear {
-                                appContext.analyticsService.log(event: .pullUpDidAppear,
-                                                                withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""].adding(type?.additionalAnalyticParameters ?? [:]))
-                            }
-                            .onDisappear {
-                                appContext.analyticsService.log(event: .pullUpClosed,
-                                                                withParameters: dismissAnalyticParameters)
-                            }
-                            .presentationDetents([.height(type?.calculateHeight() ?? 0)])
-                    }
-                })
-        }
     }
     
     private func closeAndPassCallback(_ callback: MainActorAsyncCallback?) {
@@ -129,7 +122,7 @@ private extension ViewPullUp {
             .interactiveDismissDisabled(!configuration.dismissAble)
         case .custom(let configuration):
             AnyView(configuration.content())
-        case .none, .viewModifier:
+        case .none:
             VStack { }
         }
     }

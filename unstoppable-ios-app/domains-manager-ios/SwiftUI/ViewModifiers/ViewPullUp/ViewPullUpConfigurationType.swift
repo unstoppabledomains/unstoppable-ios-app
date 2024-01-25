@@ -11,7 +11,6 @@ enum ViewPullUpConfigurationType {
   
     case `default`(ViewPullUpDefaultConfiguration)
     case custom(ViewPullUpCustomContentConfiguration)
-    case viewModifier(ViewPullUpViewModifierConfiguration)
     
     var analyticName: Analytics.PullUp {
         switch self {
@@ -19,8 +18,6 @@ enum ViewPullUpConfigurationType {
             return conf.analyticName
         case .custom(let conf):
             return conf.analyticName
-        case .viewModifier(let conf):
-            return .unspecified
         }
     }
     
@@ -31,8 +28,6 @@ enum ViewPullUpConfigurationType {
             return conf.calculateHeight()
         case .custom(let conf):
             return conf.height
-        case .viewModifier(let conf):
-            return 0
         }
     }
     
@@ -42,11 +37,17 @@ enum ViewPullUpConfigurationType {
             return conf.additionalAnalyticParameters
         case .custom(let conf):
             return conf.additionalAnalyticParameters
-        case .viewModifier(let conf):
-            return [:]
         }
     }
-    
+    var dismissCallback: EmptyCallback? {
+        switch self {
+        case .default(let conf):
+            return conf.dismissCallback
+        case .custom(let conf):
+            return conf.dismissCallback
+        }
+    }
+
 }
 
 // MARK: - Equatable
