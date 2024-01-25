@@ -29,7 +29,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
     @State private var error: PullUpErrorConfiguration?
-    @State private var pullUp: ViewPullUpConfiguration?
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
     @State private var isSelectWalletPresented = false
@@ -560,7 +560,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     func warnToSignInExternalWallet(_ wallet: WalletWithInfo, externalWalletInfo: ExternalWalletInfo, forceReload: Bool = false) {
-        pullUp = .init(icon: .init(icon: externalWalletInfo.icon,
+        pullUp = .default(.init(icon: .init(icon: externalWalletInfo.icon,
                                    size: .large),
                        title: .text(String.Constants.purchaseWalletAuthSigRequiredTitle.localized()),
                        subtitle: .label(.text(String.Constants.purchaseWalletAuthSigRequiredSubtitle.localized(externalWalletInfo.name))),
@@ -571,7 +571,7 @@ private extension PurchaseDomainsCheckoutView {
             authorizeWithSelectedWalle(wallet, forceReload: forceReload)
         })),
                        dismissAble: false, 
-                       analyticName: .purchaseDomainsAskToSign)
+                       analyticName: .purchaseDomainsAskToSign))
     }
     
     struct ExternalWalletInfo {
@@ -610,12 +610,8 @@ private extension PurchaseDomainsCheckoutView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectDiscountsPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PurchaseDomainsSelectDiscountsView()
-                            .presentationDetents([.medium])
-                    } else {
-                        PurchaseDomainsSelectDiscountsView()
-                    }
+                    PurchaseDomainsSelectDiscountsView()
+                        .presentationDetents([.medium])
                 })
         }
     }

@@ -12,12 +12,8 @@ struct NavBarVisibleModifier: ViewModifier {
     let visible: Bool
     
     func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content
-                .toolbarBackground(visible ? .visible : .hidden, for: .navigationBar)
-        } else {
-            content
-        }
+        content
+            .toolbarBackground(visible ? .visible : .hidden, for: .navigationBar)
     }
 }
 

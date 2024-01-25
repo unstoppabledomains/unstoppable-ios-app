@@ -273,32 +273,6 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
     
-    // Balance
-    func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
-        let layerId = try UnsConfigManager.getBlockchainLayerId(for: blockchainType)
-        async let ratesTask = CurrencyExchangeRates.getRates(forceRefresh: forceRefresh)
-        async let quantityTask = NetworkService().fetchBalance(address: walletAddress,
-                                                                 layerId: layerId)
-        
-        let (quantity, rates) = try await (quantityTask, ratesTask)
-        
-        let exchangeRate: Double
-        switch blockchainType {
-        case .Ethereum:
-            exchangeRate = rates.usdToEth
-        case .Matic:
-            exchangeRate = rates.usdToMatic
-        case .Zilliqa:
-            Debugger.printFailure("Trying to get balance of ZIL wallet", critical: true)
-            throw WalletError.unsupportedBlockchainType
-        }
-        
-        return WalletBalance(address: walletAddress,
-                             quantity: quantity,
-                             exchangeRate: exchangeRate,
-                             blockchain: blockchainType)
-    }
-    
     // Reverse Resolution
     func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? {
         try await reverseResolutionDomainName(for: wallet.address)

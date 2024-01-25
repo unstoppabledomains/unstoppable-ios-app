@@ -13,7 +13,7 @@ protocol QRScannerViewProtocol: BaseViewControllerProtocol {
     func startCaptureSession()
     func stopCaptureSession()
     func setState(_ state: QRScannerViewController.State)
-    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool)
+    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool)
     func setWith(appsConnected: Int)
     func setBlockchainTypeSelectionWith(availableTypes: [BlockchainType], selectedType: BlockchainType)
     func removeBlockchainTypeSelection()
@@ -44,11 +44,18 @@ final class QRScannerViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+                
+        setNavBarTint(.white)
+    }
   
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         presenter.viewDidAppear()
+        setNavBarTint(.white)
     }
     
     override func viewDidLayoutSubviews() {
@@ -110,7 +117,7 @@ extension QRScannerViewController: QRScannerViewProtocol {
         }
     }
     
-    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
+    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool) {
         selectedDomainItemView.setWith(domain: selectedDomain, wallet: wallet, balance: balance, isSelectable: isSelectable)
     }
     
@@ -221,6 +228,7 @@ private extension QRScannerViewController {
     func setup() {
         view.backgroundColor = .black
         title = String.Constants.scanQRCodeTitle.localized()
+        navigationController?.navigationBar.tintColor = .white
         appsConnectedItemView.isHidden = true
     }
     
@@ -325,4 +333,18 @@ extension QRScannerViewController {
         case permissionsDenied
         case cameraNotAvailable
     }
+}
+
+import SwiftUI
+struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
+    
+    var selectedWallet: WalletEntity
+    var qrRecognizedCallback: MainActorAsyncCallback
+    
+    func makeUIViewController(context: Context) -> QRScannerViewController {
+        UDRouter().buildQRScannerModule(selectedWallet: selectedWallet,
+                                        qrRecognizedCallback: qrRecognizedCallback)
+    }
+    
+    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) { }
 }

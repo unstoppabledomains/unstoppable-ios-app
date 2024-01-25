@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable {
+struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable, Identifiable {
+    
+    var id: String { name }
     
     private(set) var name: String
     private(set) var ownerWallet: String?

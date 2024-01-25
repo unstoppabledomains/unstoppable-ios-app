@@ -18,8 +18,11 @@ struct WalletEntity: Codable {
     
     var address: String { udWallet.address }
     var displayName: String { displayInfo.displayName }
-    var totalBalance: Int { 20000 }
+    var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     
+    func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
+        balance.first(where: { $0.symbol == blockchainType.rawValue })
+    }
 }
 
 extension WalletEntity: Hashable {
@@ -37,23 +40,5 @@ extension WalletEntity: Hashable {
         hasher.combine(nfts)
         hasher.combine(balance)
         hasher.combine(rrDomain)
-    }
-}
-
-// MARK: - Open methods
-extension WalletEntity {
-    static func mock() -> [WalletEntity] {
-        WalletWithInfo.mock.map {
-            let domains = createMockDomains()
-            let numOfNFTs = Int(arc4random_uniform(10) + 1)
-            let nfts = (0...numOfNFTs).map { _ in  NFTDisplayInfo.mock() }
-            return WalletEntity(udWallet: $0.wallet,
-                                displayInfo: $0.displayInfo!,
-                                domains: domains,
-                                nfts: nfts,
-                                balance: [],
-                                rrDomain: domains.randomElement())
-            
-        }
     }
 }

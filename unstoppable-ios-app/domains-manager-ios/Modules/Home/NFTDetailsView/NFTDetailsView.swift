@@ -69,6 +69,7 @@ private extension NFTDetailsView {
                 Menu {
                     ForEach(NFTAction.allCases, id: \.self) { action in
                         Button {
+                            UDVibration.buttonTap.vibrate()
                             
                         } label: {
                             Label(

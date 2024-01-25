@@ -11,9 +11,14 @@ struct HomeWalletView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
+    @EnvironmentObject var tabState: TabStateManager
+    @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
+    @State private var isOtherScreenPresented: Bool = false
     @State private var selectedNFT: NFTDisplayInfo?
+    @State private var selectedDomain: DomainDisplayInfo?
+    @State private var navigationState: NavigationStateManager?
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -41,42 +46,51 @@ struct HomeWalletView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             }
+            .onChange(of: isHeaderVisible) { newValue in
+                withAnimation {
+                    navigationState?.isTitleVisible = 
+                    !isOtherScreenPresented &&
+                    !isHeaderVisible &&
+                    tabState.tabViewSelection == 0
+                }
+            }
+            .onChange(of: isOtherScreenPresented) { newValue in
+                withAnimation {
+                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
+                    tabState.isTabBarVisible = !isOtherScreenPresented
+                }
+            }
             .listStyle(.plain)
             .clearListBackground()
-            .background(.clear)
-            .animatedFromiOS16()
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $selectedNFT, content: { nft in
                 NFTDetailsView(nft: nft)
+                    .pullUpHandler(tabRouter)
+            })
+            .sheet(item: $selectedDomain, content: { domain in
+                DomainProfileViewControllerWrapper(domain: domain,
+                                                   wallet: viewModel.selectedWallet.udWallet,
+                                                   walletInfo: viewModel.selectedWallet.displayInfo,
+                                                   preRequestedAction: nil,
+                                                   sourceScreen: .domainsCollection)
+                .ignoresSafeArea()
+                .pullUpHandler(tabRouter)
             })
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        
-                    } label: {
-                        Image.gearshape
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
+                    settingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        
-                    } label: {
-                        Image.qrBarCodeIcon
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
+                    qrNavButtonView()
                 }
             })
-        }, customTitle: {
-            navigationView()
-        }, isTitleVisible: !isHeaderVisible)
+        }, navigationStateProvider: { state in
+            self.navigationState = state
+            state.customTitle = navigationView
+        })
     }
 }
 
@@ -170,7 +184,45 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domains: viewModel.domains)
+        HomeWalletsDomainsSectionView(domains: viewModel.domains, domainSelectedCallback: didSelectDomain)
+    }
+    
+    func didSelectDomain(_ domain: DomainDisplayInfo) {
+        selectedDomain = domain
+    }
+    
+    @ViewBuilder
+    func settingsNavButtonView() -> some View {
+        NavigationLink {
+            SettingsViewControllerWrapper()
+                .ignoresSafeArea()
+                .toolbar(.hidden, for: .navigationBar)
+                .onAppearanceChange($isOtherScreenPresented)
+        } label: {
+            Image.gearshape
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
+        }
+    }
+    
+    @ViewBuilder
+    func qrNavButtonView() -> some View {
+        NavigationLink {
+            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
+                if tabRouter.pullUp == nil {
+                    tabRouter.pullUp = .custom(.loadingIndicator())
+                }
+            })
+            .ignoresSafeArea()
+            .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+            .onAppearanceChange($isOtherScreenPresented)
+        } label: {
+            Image.qrBarCodeIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
+        }
     }
 }
 
@@ -191,7 +243,7 @@ private extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: WalletEntity.mock().first!))
+        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!))
     }
 }
 

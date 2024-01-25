@@ -62,12 +62,6 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
     
     func setReverseResolution(to domain: DomainItem, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws { }
     
-    func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
-        let quantity = try NetworkService.SplitQuantity(1000)
-        
-        return WalletBalance(address: walletAddress, quantity: quantity, exchangeRate: 1, blockchain: .Ethereum)
-    }
-    
     func find(by address: HexAddress) -> UDWallet? {
         wallets.first(where: { $0.address == address })
     }

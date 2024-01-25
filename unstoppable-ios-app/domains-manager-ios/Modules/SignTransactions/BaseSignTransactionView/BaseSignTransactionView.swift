@@ -180,6 +180,7 @@ private extension BaseSignTransactionView {
     @IBAction func cancelButtonPressed(_ sender: Any) {
         logButtonPressed(.cancel)
         pullUpView?.cancel()
+        findViewController()?.dismiss(animated: true)
     }
     
     @IBAction func confirmButtonPressed(_ sender: Any) {

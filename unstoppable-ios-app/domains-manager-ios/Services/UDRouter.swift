@@ -16,7 +16,7 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.pushViewController(settingsVC, animated: true)
     }
     
-    private func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
+    func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
                                           loginCallback: loginCallback,
@@ -276,20 +276,36 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func showQRScanner(in viewController: CNavigationController,
-                       selectedDomain: DomainDisplayInfo,
+                       selectedWallet: WalletEntity,
                        qrRecognizedCallback: @escaping EmptyAsyncCallback) {
-        let vc = buildQRScannerModule(selectedDomain: selectedDomain,
+        let vc = buildQRScannerModule(selectedWallet: selectedWallet,
                                       qrRecognizedCallback: qrRecognizedCallback)
         viewController.pushViewController(vc, animated: true)
     }
 
+    func buildQRScannerModule(selectedWallet: WalletEntity,
+                              qrRecognizedCallback: @escaping MainActorAsyncCallback) -> QRScannerViewController {
+        let vc = QRScannerViewController.nibInstance()
+
+        let presenter = QRScannerViewPresenter(view: vc,
+                                               selectedWallet: selectedWallet,
+                                               dataAggregatorService: appContext.dataAggregatorService,
+                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
+                                               networkReachabilityService: appContext.networkReachabilityService,
+                                               udWalletsService: appContext.udWalletsService)
+        presenter.qrRecognizedCallback = qrRecognizedCallback
+        vc.presenter = presenter
+        vc.hidesBottomBarWhenPushed = true
+        return vc
+    }
+    
     func showSignTransactionDomainSelectionScreen(selectedDomain: DomainDisplayInfo,
                                                   swipeToDismissEnabled: Bool,
-                                                  in viewController: UIViewController) async throws -> (DomainDisplayInfo, WalletBalance?) {
+                                                  in viewController: UIViewController) async throws -> (DomainDisplayInfo) {
         try await withSafeCheckedThrowingMainActorContinuation { completion in
             let vc = buildSignTransactionDomainSelectionModule(selectedDomain: selectedDomain,
-                                                               domainSelectedCallback: { (domain, balance) in
-                completion(.success((domain, balance)))
+                                                               domainSelectedCallback: { (domain) in
+                completion(.success((domain)))
             })
             vc.isModalInPresentation = !swipeToDismissEnabled
             presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
@@ -410,20 +426,6 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
-    private func prepareProfileScreen(in viewToPresent: UIViewController,
-                                      domain: DomainDisplayInfo,
-                                      walletInfo: WalletDisplayInfo) async -> Bool {
-        guard await isProfileSignatureAvailable(for: domain,
-                                                walletInfo: walletInfo,
-                                                in: viewToPresent) else { return false }
-        
-        if !UserDefaults.didShowDomainProfileInfoTutorial {
-            UserDefaults.didShowDomainProfileInfoTutorial = true
-            await UDRouter().showDomainProfileTutorial(in: viewToPresent)
-        }
-        return true
-    }
-    
     func buildDomainProfileModule(domain: DomainDisplayInfo,
                                   wallet: UDWallet,
                                   walletInfo: WalletDisplayInfo,
@@ -447,6 +449,20 @@ class UDRouter: DomainProfileSignatureValidator {
                                                    externalEventsService: appContext.externalEventsService)
         vc.presenter = presenter
         return vc
+    }
+    
+    private func prepareProfileScreen(in viewToPresent: UIViewController,
+                                      domain: DomainDisplayInfo,
+                                      walletInfo: WalletDisplayInfo) async -> Bool {
+        guard await isProfileSignatureAvailable(for: domain,
+                                                walletInfo: walletInfo,
+                                                in: viewToPresent) else { return false }
+        
+        if !UserDefaults.didShowDomainProfileInfoTutorial {
+            UserDefaults.didShowDomainProfileInfoTutorial = true
+            await UDRouter().showDomainProfileTutorial(in: viewToPresent)
+        }
+        return true
     }
     
     func runAddSocialsFlow(with mode: DomainProfileAddSocialNavigationController.Mode,
@@ -877,20 +893,6 @@ private extension UDRouter {
         let presenter = DomainsListSearchPresenter(view: vc,
                                                    domains: domains,
                                                    searchCallback: searchCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildQRScannerModule(selectedDomain: DomainDisplayInfo,
-                              qrRecognizedCallback: @escaping EmptyAsyncCallback) -> UIViewController {
-        let vc = QRScannerViewController.nibInstance()
-        let presenter = QRScannerViewPresenter(view: vc,
-                                               selectedDomain: selectedDomain,
-                                               dataAggregatorService: appContext.dataAggregatorService,
-                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
-                                               networkReachabilityService: appContext.networkReachabilityService,
-                                               udWalletsService: appContext.udWalletsService)
-        presenter.qrRecognizedCallback = qrRecognizedCallback
         vc.presenter = presenter
         return vc
     }

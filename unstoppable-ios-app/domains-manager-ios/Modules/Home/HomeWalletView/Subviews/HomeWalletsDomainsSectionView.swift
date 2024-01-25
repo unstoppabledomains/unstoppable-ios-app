@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeWalletsDomainsSectionView: View {
     
     let domains: [DomainDisplayInfo]
-    
+    let domainSelectedCallback: (DomainDisplayInfo)->()
+
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -19,12 +20,18 @@ struct HomeWalletsDomainsSectionView: View {
     var body: some View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(domains, id: \.name) { domain in
-                HomeWalletDomainCellView(domain: domain)
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    domainSelectedCallback(domain)
+                } label: {
+                    HomeWalletDomainCellView(domain: domain)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
 }
 
 #Preview {
-    HomeWalletsDomainsSectionView(domains: [])
+    HomeWalletsDomainsSectionView(domains: [], domainSelectedCallback: { _ in })
 }

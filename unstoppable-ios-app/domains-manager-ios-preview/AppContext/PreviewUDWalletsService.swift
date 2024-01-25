@@ -83,10 +83,6 @@ final class UDWalletsService: UDWalletsServiceProtocol {
         
     }
     
-    func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
-        WalletBalance(address: "", quantity: .init(doubleEth: 0, intEther: 0, gwei: 0, wei: 0), exchangeRate: 0, blockchain: .Ethereum)
-    }
-    
     func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? {
         nil
     }

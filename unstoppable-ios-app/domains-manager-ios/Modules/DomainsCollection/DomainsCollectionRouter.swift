@@ -87,10 +87,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func showQRScanner(selectedDomain: DomainDisplayInfo) {
-        guard let navigationController = self.navigationController else { return }
+        guard let navigationController = self.navigationController,
+        let wallet = appContext.walletsDataService.wallets.first(where: { wallet in
+            wallet.domains.first(where: { $0.isSameEntity(selectedDomain) }) != nil
+        }) else { return }
         
         showQRScanner(in: navigationController,
-                      selectedDomain: selectedDomain,
+                      selectedWallet: wallet,
                       qrRecognizedCallback: { Task { await self.presenter?.didRecognizeQRCode() } })
     }
     

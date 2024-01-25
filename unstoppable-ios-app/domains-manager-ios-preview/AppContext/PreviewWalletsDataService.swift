@@ -14,7 +14,7 @@ final class PreviewWalletsDataService: WalletsDataServiceProtocol {
     var selectedWalletPublisher: Published<WalletEntity?>.Publisher { $selectedWallet }
     
     init() {
-        wallets = WalletEntity.mock()
+        wallets = MockEntitiesFabric.Wallet.mockEntities()
         selectedWallet = wallets.first
     }
     

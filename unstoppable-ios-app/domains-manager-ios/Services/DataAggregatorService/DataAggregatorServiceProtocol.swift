@@ -10,7 +10,6 @@ import Foundation
 protocol DataAggregatorServiceProtocol {
     func aggregateData(shouldRefreshPFP: Bool) async
     func getWalletsWithInfo() async -> [WalletWithInfo]
-    func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance]
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
     func getDomainItems() async -> [DomainItem]
     func getDomainsDisplayInfo() async -> [DomainDisplayInfo]

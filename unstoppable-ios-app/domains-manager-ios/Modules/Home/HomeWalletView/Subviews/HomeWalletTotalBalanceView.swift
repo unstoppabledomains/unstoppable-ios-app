@@ -12,7 +12,7 @@ struct HomeWalletTotalBalanceView: View {
     let wallet: WalletEntity
 
     var body: some View {
-        Text(formatCartPrice(wallet.totalBalance))
+        Text("$\(wallet.totalBalance.formatted(toMaxNumberAfterComa: 2))")
             .titleText()
             .frame(maxWidth: .infinity)
             .listRowBackground(Color.clear)
