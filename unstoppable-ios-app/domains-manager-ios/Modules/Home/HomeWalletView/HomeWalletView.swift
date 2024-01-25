@@ -12,6 +12,7 @@ struct HomeWalletView: View {
     @Environment(\.imageLoadingService) private var imageLoadingService
 
     @EnvironmentObject var tabState: TabStateManager
+    @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
@@ -209,8 +210,8 @@ private extension HomeWalletView {
     func qrNavButtonView() -> some View {
         NavigationLink {
             QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
-                if pullUp == nil {
-                    pullUp = .custom(.loadingIndicator())
+                if tabRouter.pullUp == nil {
+                    tabRouter.pullUp = .custom(.loadingIndicator())
                 }
             })
             .ignoresSafeArea()

@@ -18,7 +18,8 @@ struct ViewPullUpDefaultConfiguration {
     var isScrollingEnabled: Bool = false
     var dismissAble: Bool = true
     var analyticName: Analytics.PullUp
-    
+    var additionalAnalyticParameters: Analytics.EventParameters = [:]
+
     // Title
     enum LabelType {
         case text(_ text: String)

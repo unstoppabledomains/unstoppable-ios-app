@@ -9,8 +9,8 @@ import SwiftUI
 
 struct HomeTabView: View {
     
-    @StateObject private var tabState = TabStateManager()
-    @StateObject var router = HomeTabRouter()
+    @StateObject private var tabState: TabStateManager
+    @StateObject var router: HomeTabRouter
     let selectedWallet: WalletEntity
 
     var body: some View {
@@ -32,17 +32,22 @@ struct HomeTabView: View {
         }
         .tint(.foregroundDefault)
         .environmentObject(tabState)
+        .environmentObject(router)
         .viewPullUp($router.pullUp)
     }
     
-    init(selectedWallet: WalletEntity) {
+    init(selectedWallet: WalletEntity,
+         tabRouter: HomeTabRouter) {
+        let tabState = TabStateManager()
+        self._tabState = StateObject(wrappedValue: tabState)
+        self._router = StateObject(wrappedValue: tabRouter)
         self.selectedWallet = selectedWallet
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
     }
 }
 
 #Preview {
-    HomeTabView(selectedWallet: WalletEntity.mock().first!)
+    HomeTabView(selectedWallet: WalletEntity.mock().first!, tabRouter: HomeTabRouter())
 }
 
 class TabStateManager: ObservableObject {

@@ -20,7 +20,7 @@ enum ViewPullUpConfigurationType {
         case .custom(let conf):
             return conf.analyticName
         case .viewModifier(let conf):
-            return conf.analyticName
+            return .unspecified
         }
     }
     
@@ -32,11 +32,20 @@ enum ViewPullUpConfigurationType {
         case .custom(let conf):
             return conf.height
         case .viewModifier(let conf):
-            return conf.height
+            return 0
         }
     }
     
-   
+    var additionalAnalyticParameters: Analytics.EventParameters {
+        switch self {
+        case .default(let conf):
+            return conf.additionalAnalyticParameters
+        case .custom(let conf):
+            return conf.additionalAnalyticParameters
+        case .viewModifier(let conf):
+            return [:]
+        }
+    }
     
 }
 

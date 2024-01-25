@@ -101,7 +101,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
                 let wcRequest = try await getWCConnectionRequest(for: qrCode)
                 try await handleWCRequest(wcRequest)
                 await view.dismiss(animated: false)
-                view.cNavigationController?.popViewController(animated: true)
+                view.navigationController?.popViewController(animated: true)
                 qrRecognizedCallback?()
             } catch {
                 waitAndResumeAcceptingQRCodes()

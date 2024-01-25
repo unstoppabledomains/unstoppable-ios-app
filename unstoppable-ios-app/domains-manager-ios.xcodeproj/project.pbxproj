@@ -686,6 +686,8 @@
 		C64F8E022B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */; };
 		C64F8E042B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */; };
 		C64F8E052B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */; };
+		C64F8E072B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E062B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift */; };
+		C64F8E082B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64F8E062B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift */; };
 		C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
 		C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */; };
 		C6500B4F2A41924700ACAA8C /* ChannelFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B4D2A41924700ACAA8C /* ChannelFeedCell.swift */; };
@@ -2929,6 +2931,7 @@
 		C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpDefaultConfiguration.swift; sourceTree = "<group>"; };
 		C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpConfigurationType.swift; sourceTree = "<group>"; };
 		C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpCustomContentConfiguration.swift; sourceTree = "<group>"; };
+		C64F8E062B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpViewModifierConfiguration.swift; sourceTree = "<group>"; };
 		C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostPrimaryButton.swift; sourceTree = "<group>"; };
 		C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewPresenter.swift; sourceTree = "<group>"; };
 		C6500B4D2A41924700ACAA8C /* ChannelFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelFeedCell.swift; sourceTree = "<group>"; };
@@ -5440,6 +5443,7 @@
 				C6D646442B1E084C00D724AC /* ViewPullUp.swift */,
 				C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */,
 				C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */,
+				C64F8E062B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift */,
 				C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */,
 			);
 			path = ViewPullUp;
@@ -9136,6 +9140,7 @@
 				C623969F2A288AE300363F60 /* MessagingChat.swift in Sources */,
 				C6BF42CC2A49553900A02860 /* ChatLoadingCell.swift in Sources */,
 				C6F9FBD42A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift in Sources */,
+				C64F8E072B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift in Sources */,
 				C63095F02B0DA66400205054 /* UDGoogleSigner.swift in Sources */,
 				C671E3EE2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
 				C6E041D3295553B40080F8E3 /* UDButtonConfiguration.swift in Sources */,
@@ -9752,6 +9757,7 @@
 				C6D646852B1ED12D00D724AC /* DomainProfileMetadataSection.swift in Sources */,
 				C6D6464A2B1ED0D900D724AC /* DomainProfileViewController.swift in Sources */,
 				C6D646F12B1ED5BB00D724AC /* UDTextView.swift in Sources */,
+				C64F8E082B61409D0075D37F /* ViewPullUpViewModifierConfiguration.swift in Sources */,
 				C6B65F7C2B551054006D1812 /* PreviewWalletNFTsService.swift in Sources */,
 				C6960C322B19954A00B79E28 /* String.swift in Sources */,
 				C6D645E12B1DBD9000D724AC /* BaseCollectionViewPresenterProtocol.swift in Sources */,

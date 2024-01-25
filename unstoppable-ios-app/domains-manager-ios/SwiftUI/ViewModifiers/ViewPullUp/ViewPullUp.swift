@@ -15,6 +15,9 @@ struct ViewPullUp: ViewModifier {
     static let titleLineHeight: CGFloat = 28
     
     @Binding var type: ViewPullUpConfigurationType?
+    var typeChangedCallback: ((ViewPullUpConfigurationType?)->())? = nil
+    @State private var tag = 0
+    @State private var dismissAnalyticParameters = Analytics.EventParameters()
     var isPresented: Binding<Bool> {
         Binding {
             type != nil
@@ -24,23 +27,46 @@ struct ViewPullUp: ViewModifier {
     }
     
     func body(content: Content) -> some View {
+        currentContent(content: content)
+            .onChange(of: type) { newValue in
+                if let newValue {
+                    dismissAnalyticParameters = [.pullUpName : newValue.analyticName.rawValue].adding(newValue.additionalAnalyticParameters)
+                }
+                if newValue == nil {
+                    tag = 0
+                } else if tag > 0 {
+                    withAnimation {
+                        tag = 0
+                        type = newValue
+                        tag += 1
+                    }
+                } else {
+                    tag += 1
+                }
+                typeChangedCallback?(newValue)
+            }
+    }
+    
+    @MainActor
+    @ViewBuilder
+    private func currentContent(content: Content) -> some View {
         if case .viewModifier(let conf) = type {
-//            content.modifier(conf.modifier)
-//            conf.applyOnView(content)
             AnyView(conf.modifierBlock(content))
         } else {
             content
                 .sheet(isPresented: isPresented, content: {
-                    pullUpContentView()
-                        .onAppear {
-                            appContext.analyticsService.log(event: .pullUpDidAppear,
-                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""])
-                        }
-                        .onDisappear {
-                            appContext.analyticsService.log(event: .pullUpClosed,
-                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""])
-                        }
-                        .presentationDetents([.height(type?.calculateHeight() ?? 0)])
+                    if tag > 0 {
+                        pullUpContentView()
+                            .onAppear {
+                                appContext.analyticsService.log(event: .pullUpDidAppear,
+                                                                withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""].adding(type?.additionalAnalyticParameters ?? [:]))
+                            }
+                            .onDisappear {
+                                appContext.analyticsService.log(event: .pullUpClosed,
+                                                                withParameters: dismissAnalyticParameters)
+                            }
+                            .presentationDetents([.height(type?.calculateHeight() ?? 0)])
+                    }
                 })
         }
     }
@@ -207,7 +233,7 @@ private extension ViewPullUp {
                      isLoading: content.isLoading, isSuccess: content.isSuccessState, callback: {
             appContext.analyticsService.log(event: .buttonPressed,
                                             withParameters: [.button : content.analyticsName.rawValue,
-                                                             .pullUpName: configuration.analyticName.rawValue])
+                                                             .pullUpName: configuration.analyticName.rawValue].adding(configuration.additionalAnalyticParameters))
             closeAndPassCallback(content.action)
         })
         .allowsHitTesting(content.isUserInteractionEnabled)
@@ -232,7 +258,9 @@ private extension ViewPullUp {
 }
 
 extension View {
-    func viewPullUp(_ type: Binding<ViewPullUpConfigurationType?>) -> some View {
-        self.modifier(ViewPullUp(type: type))
+    func viewPullUp(_ type: Binding<ViewPullUpConfigurationType?>,
+                    typeChangedCallback: ((ViewPullUpConfigurationType?)->())? = nil) -> some View {
+        self.modifier(ViewPullUp(type: type,
+                                 typeChangedCallback: typeChangedCallback))
     }
 }

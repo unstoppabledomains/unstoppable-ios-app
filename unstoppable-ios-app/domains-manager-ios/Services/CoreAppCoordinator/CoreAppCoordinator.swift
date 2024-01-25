@@ -162,8 +162,31 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
-//        case .home(let tabRouter):
+        case .home(let tabRouter):
+            guard let hostView = window?.rootViewController?.topVisibleViewController() else { throw WalletConnectUIError.noControllerToPresent }
             
+            do {
+                Vibration.success.vibrate()
+                let domainToProcessRequest = try await withSafeCheckedThrowingMainActorContinuation { completion in
+                    tabRouter.pullUp = .viewModifier(.serverConnectConfirmationPullUp(connectionConfig: config,
+                                                                                      topViewController: hostView,
+                                                                                      completion: { result in
+                        switch result {
+                        case .success(let settings):
+                            completion(.success(settings))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }))
+                }
+                await hostView.dismissPullUpMenu()
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
+                return domainToProcessRequest
+            } catch {
+                try? await awaitPullUpDisappear()
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
+                throw WalletConnectUIError.cancelled
+            }
         default: throw WalletConnectUIError.cancelled
         }
     }
@@ -317,10 +340,11 @@ private extension CoreAppCoordinator {
     }
     
     func setHomeScreenAsRoot(wallet: WalletEntity) {
-        let view = HomeTabView(selectedWallet: wallet)
+        let router = HomeTabRouter()
+        let view = HomeTabView(selectedWallet: wallet, tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
-        currentRoot = .home(tabRouter: view.router)
+        currentRoot = .home(tabRouter: router)
     }
     
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
