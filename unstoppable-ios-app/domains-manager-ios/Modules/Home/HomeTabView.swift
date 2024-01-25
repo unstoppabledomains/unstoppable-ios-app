@@ -62,10 +62,10 @@ class HomeTabRouter: ObservableObject {
     @Published var pullUp: ViewPullUpConfigurationType?
     
     let id: UUID = UUID()
-    private var topViews: [UUID] = []
+    private var topViews = 0
     
     func currentPullUp(id: UUID) -> Binding<ViewPullUpConfigurationType?> {
-        if !topViews.isEmpty {
+        if topViews != 0 {
             guard self.id != id else {
                 return Binding { nil } set: { newValue in }
             }
@@ -82,11 +82,12 @@ class HomeTabRouter: ObservableObject {
     }
     
     func registerTopView(id: UUID) {
-        topViews.append(id)
+        topViews += 1
     }
     
     func unregisterTopView(id: UUID) {
-        topViews.removeAll()
+        topViews -= 1
+        topViews = max(0, topViews)
     }
     
     @MainActor
@@ -103,7 +104,6 @@ class HomeTabRouter: ObservableObject {
 }
 
 struct HomeTabPullUpHandlerModifier: ViewModifier {
-    
     let tabRouter: HomeTabRouter
     let id = UUID()
     
