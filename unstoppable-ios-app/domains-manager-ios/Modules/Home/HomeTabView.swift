@@ -24,12 +24,14 @@ struct HomeTabView: View {
             .tag(0)
             .tabBarVisible(tabState.isTabBarVisible)
             
-            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
+            ChatsListViewControllerWrapper(tabState: tabState)
+                .ignoresSafeArea()
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
             }
             .tag(1)
+            .tabBarVisible(tabState.isTabBarVisible)
         }
         .tint(.foregroundDefault)
         .environmentObject(tabState)

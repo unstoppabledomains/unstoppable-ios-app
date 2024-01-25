@@ -11,7 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
+    func setNavigationWith(selectedWallet: WalletEntity, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
     func stopSearching()
     func setActivityIndicator(active: Bool)
 }
@@ -125,7 +125,7 @@ extension ChatsListViewController: ChatsListViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
  
-    func setNavigationWith(selectedWallet: WalletDisplayInfo,
+    func setNavigationWith(selectedWallet: WalletEntity,
                            wallets: [ChatsListNavigationView.WalletTitleInfo],
                            isLoading: Bool) {
         navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
@@ -696,5 +696,58 @@ extension ChatsListViewController {
     enum Mode {
         case `default`
         case editing
+    }
+}
+
+
+import SwiftUI
+struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
+  
+    
+    
+    @StateObject var navTracker: NavigationTracker
+    
+    init(tabState: TabStateManager) {
+        self._navTracker = StateObject(wrappedValue: NavigationTracker(tabState: tabState))
+    }
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildChatsListModule(presentOptions: .default)
+        let nav = CNavigationController(rootViewController: vc)
+        nav.delegate = navTracker
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        print("LOGO: - Update uiViewController")
+        uiViewController.cNavigationController?.delegate = navTracker
+    }
+    
+    
+    final class NavigationTracker: ObservableObject, CNavigationControllerDelegate {
+        nonisolated
+        init(tabState: TabStateManager) {
+            self.tabState = tabState
+        }
+        
+        let tabState: TabStateManager
+        
+        deinit {
+            print("LOGO: - Did deinit")
+        }
+
+        func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool) {
+            print("LOGO: - will show")
+        }
+        
+        func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool) {
+            print("LOGO: - did show")
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 0.3) {
+                    self.tabState.isTabBarVisible = navigationController.viewControllers.count == 1
+                }
+            }
+        }
+        
     }
 }
