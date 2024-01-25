@@ -163,31 +163,6 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
-        case .home(let tabRouter):
-            guard let topVC else { throw WalletConnectUIError.noControllerToPresent }
-            
-            do {
-                Vibration.success.vibrate()
-                let domainToProcessRequest = try await withSafeCheckedThrowingMainActorContinuation { completion in
-                    tabRouter.pullUp = .custom(.serverConnectConfirmationPullUp(connectionConfig: config,
-                                                                                      topViewController: topVC,
-                                                                                      completion: { result in
-                        switch result {
-                        case .success(let settings):
-                            completion(.success(settings))
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }))
-                }
-                await tabRouter.dismissPullUpMenu()
-                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
-                return domainToProcessRequest
-            } catch {
-                await tabRouter.dismissPullUpMenu()
-                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
-                throw WalletConnectUIError.cancelled
-            }
         default: throw WalletConnectUIError.cancelled
         }
     }
@@ -225,48 +200,6 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 
                 await showErrorAlert(in: topVC)
             }
-        case .home(let tabRouter):
-            @MainActor
-            func showViewPullUpConfigurationType() async {
-                Vibration.error.vibrate()
-                await withSafeCheckedContinuation { completion in
-                    switch error.groupType {
-                    case .failedConnection, .connectionTimeout:
-                        tabRouter.pullUp = .default(.wcConnectionFailed(dismissCallback: {
-                            completion(Void())
-                        }))
-                    case .failedTx:
-                        tabRouter.pullUp = .default(.wcTransactionFailed(dismissCallback: {
-                            completion(Void())
-                        }))
-                    case .networkNotSupported:
-                        tabRouter.pullUp = .default(.wcNetworkNotSupported(dismissCallback: {
-                            completion(Void())
-                        }))
-                    case .lowAllowance:
-                        tabRouter.pullUp = .default(.wcLowBalance(dismissCallback: {
-                            completion(Void())
-                        }))
-                    case .methodUnsupported:
-                        tabRouter.pullUp = .default(.wcRequestNotSupported(dismissCallback: {
-                            completion(Void())
-                        }))
-                    }
-                }
-            }
-            
-            switch error.groupType {
-            case .connectionTimeout:
-                await showViewPullUpConfigurationType()
-            case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
-                if let pullUp = tabRouter.pullUp,
-                   pullUp.analyticName != .wcLoading {
-                    return
-                }
-                
-                await showViewPullUpConfigurationType()
-            }
-            
         default: return
         }
     }
