@@ -104,6 +104,32 @@ struct NetworkService {
         return data
     }
     
+    @discardableResult
+    func fetchDataHandlingThrottleFor(endpoint: Endpoint,
+                      method: HttpRequestMethod) async throws -> Data {
+        guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
+        let data = try await fetchDataHandlingThrottle(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
+        return data
+    }
+    
+    func fetchDataHandlingThrottle(for url: URL,
+                                           body: String = "",
+                                           method: HttpRequestMethod = .post,
+                                           extraHeaders: [String: String]  = [:]) async throws -> Data {
+        let data: Data
+        do {
+            data = try await fetchData(for: url, method: .get)
+        } catch  {
+            guard let err = error as? NetworkLayerError,
+                  err == NetworkLayerError.backendThrottle else {
+                throw error
+            }
+            try await Task.sleep(nanoseconds: 750_000_000)
+            return try await fetchData(for: url, method: .get) // allow another attempt in 0.75 sec
+        }
+        return data
+    }
+    
     func fetchDecodableDataFor<T: Decodable>(endpoint: Endpoint,
                                              method: HttpRequestMethod,
                                              using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
@@ -417,7 +443,10 @@ struct ErrorResponse: Codable {
     var message: String
 }
 
-enum NetworkLayerError: LocalizedError, RawValueLocalizable {
+enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
+    static func < (lhs: NetworkLayerError, rhs: NetworkLayerError) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
     
     case creatingURLFailed
     case badResponseOrStatusCode(code: Int, message: String?)
