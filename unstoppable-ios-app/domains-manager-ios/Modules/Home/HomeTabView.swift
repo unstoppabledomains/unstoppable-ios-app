@@ -49,7 +49,7 @@ struct HomeTabView: View {
 }
 
 #Preview {
-    HomeTabView(selectedWallet: WalletEntity.mock().first!, tabRouter: HomeTabRouter())
+    HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
 }
 
 class TabStateManager: ObservableObject {
