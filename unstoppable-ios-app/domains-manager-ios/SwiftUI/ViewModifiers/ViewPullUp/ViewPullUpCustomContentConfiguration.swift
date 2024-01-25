@@ -87,7 +87,10 @@ extension ViewPullUpCustomContentConfiguration {
                                                 completion: completion)
         }, height: selectionViewHeight,
               analyticName: pullUp,
-              additionalAnalyticParameters: analyticParameters)
+              additionalAnalyticParameters: analyticParameters,
+                     dismissCallback: {
+            completion(.failure(PullUpViewService.PullUpError.cancelled))
+        })
     }
     
     typealias ServerConnectConfigurationResult = Result<WalletConnectServiceV2.ConnectionUISettings, Error>
@@ -99,16 +102,21 @@ extension ViewPullUpCustomContentConfiguration {
         let baseSignTransactionView: BaseSignTransactionView
         var topViewController: UIViewController
         @State var completion: ServerConnectConfigurationResultCallback?
-//        @State private var baseSignTransactionView: BaseSignTransactionView?
         
         var body: some View {
-            wrappedContent()
+            VStack {
+                DismissIndicatorView()
+                    .padding()
+
+                wrappedContent()
+            }
+            .background(Color.backgroundDefault)
         }
         
         @MainActor
         @ViewBuilder
         func wrappedContent() -> some View {
-            ViewWrapper(view: baseSignTransactionView)
+            UIViewToViewWrapper(view: baseSignTransactionView)
                 .onAppear(perform: {
                     baseSignTransactionView.confirmationCallback = { [weak topViewController] connectionSettings in
                         Task {
@@ -141,9 +149,6 @@ extension ViewPullUpCustomContentConfiguration {
                         }
                     }
                 })
-                .onDisappear {
-                    finishWith(result: .failure(PullUpViewService.PullUpError.cancelled))
-                }
         }
 
         func finishWith(result: ServerConnectConfigurationResult) {
@@ -152,7 +157,7 @@ extension ViewPullUpCustomContentConfiguration {
         }
     }
     
-    struct ViewWrapper: UIViewRepresentable {
+    struct UIViewToViewWrapper: UIViewRepresentable {
         
         var view: UIView
         

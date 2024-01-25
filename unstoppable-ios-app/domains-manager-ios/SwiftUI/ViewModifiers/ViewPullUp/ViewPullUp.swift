@@ -29,23 +29,25 @@ struct ViewPullUp: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: isPresented, content: {
+            .sheet(item: $type, onDismiss: {
+                if type?.id == nil {
+                    didDismissCurrentPullUp()
+                }
+            }, content: { type in
                 if tag > 0 {
-                    pullUpContentView()
+                    pullUpContentView(type: type)
                         .onAppear {
                             appContext.analyticsService.log(event: .pullUpDidAppear,
-                                                            withParameters: [.pullUpName : type?.analyticName.rawValue ?? ""].adding(type?.additionalAnalyticParameters ?? [:]))
+                                                            withParameters: [.pullUpName : type.analyticName.rawValue].adding(type.additionalAnalyticParameters))
                         }
-                        .onDisappear {
-                            appContext.analyticsService.log(event: .pullUpClosed,
-                                                            withParameters: dismissAnalyticParameters)
-                            dismissCallback?()
-                        }
-                        .presentationDetents([.height(type?.calculateHeight() ?? 0)])
+                        .presentationDetents([.height(type.calculateHeight())])
                 }
             })
             .onChange(of: type) { newValue in
                 if let newValue {
+                    if tag > 0  {
+                        didDismissCurrentPullUp()
+                    }
                     dismissCallback = newValue.dismissCallback
                     dismissAnalyticParameters = [.pullUpName : newValue.analyticName.rawValue].adding(newValue.additionalAnalyticParameters)
                 }
@@ -53,7 +55,6 @@ struct ViewPullUp: ViewModifier {
                     tag = 0
                 } else if tag > 0 {
                     withAnimation {
-                        tag = 0
                         type = newValue
                         tag += 1
                     }
@@ -71,12 +72,17 @@ struct ViewPullUp: ViewModifier {
         }
     }
     
+    private func didDismissCurrentPullUp() {
+        appContext.analyticsService.log(event: .pullUpClosed,
+                                        withParameters: dismissAnalyticParameters)
+        dismissCallback?()
+    }
 }
 
 // MARK: - View builders
 private extension ViewPullUp {
     @ViewBuilder
-    func pullUpContentView() -> some View {
+    func pullUpContentView(type: ViewPullUpConfigurationType) -> some View {
         switch type {
         case .default(let configuration):
             VStack(spacing: 16) {
@@ -122,8 +128,6 @@ private extension ViewPullUp {
             .interactiveDismissDisabled(!configuration.dismissAble)
         case .custom(let configuration):
             AnyView(configuration.content())
-        case .none:
-            VStack { }
         }
     }
     

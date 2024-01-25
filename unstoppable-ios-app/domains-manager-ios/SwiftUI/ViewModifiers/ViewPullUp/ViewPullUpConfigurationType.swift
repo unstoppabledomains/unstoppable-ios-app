@@ -51,7 +51,9 @@ enum ViewPullUpConfigurationType {
 }
 
 // MARK: - Equatable
-extension ViewPullUpConfigurationType: Equatable {
+extension ViewPullUpConfigurationType: Equatable, Identifiable {
+    var id: String { analyticName.rawValue }
+    
     static func == (lhs: ViewPullUpConfigurationType, rhs: ViewPullUpConfigurationType) -> Bool {
         lhs.analyticName == rhs.analyticName
     }

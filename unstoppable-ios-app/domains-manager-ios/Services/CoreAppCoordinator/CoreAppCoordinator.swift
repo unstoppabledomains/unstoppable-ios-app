@@ -142,12 +142,11 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
-        func awaitPullUpDisappear() async throws {
-            try await Task.sleep(seconds: 0.2)
-        }
-        
         switch currentRoot {
         case .domainsCollection(let router):
+            func awaitPullUpDisappear() async throws {
+                try await Task.sleep(seconds: 0.2)
+            }
             guard let hostView = router.topViewController() else { throw WalletConnectUIError.noControllerToPresent }
             do {
                 Vibration.success.vibrate()
@@ -168,7 +167,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
             do {
                 Vibration.success.vibrate()
                 let domainToProcessRequest = try await withSafeCheckedThrowingMainActorContinuation { completion in
-                    tabRouter.pullUp = .viewModifier(.serverConnectConfirmationPullUp(connectionConfig: config,
+                    tabRouter.pullUp = .custom(.serverConnectConfirmationPullUp(connectionConfig: config,
                                                                                       topViewController: hostView,
                                                                                       completion: { result in
                         switch result {
@@ -179,11 +178,10 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                         }
                     }))
                 }
-                await hostView.dismissPullUpMenu()
+                await tabRouter.dismissPullUpMenu()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
-                try? await awaitPullUpDisappear()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
@@ -193,25 +191,24 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
     
     @MainActor
     func didFailToConnect(with error: WalletConnectRequestError) async {
-        @MainActor
-        func showErrorAlert(in hostView: UIViewController) async {
-            Vibration.error.vibrate()
-            switch error.groupType {
-            case .failedConnection, .connectionTimeout:
-                await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
-            case .failedTx:
-                await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
-            case .networkNotSupported:
-                await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
-            case .lowAllowance:
-                await pullUpViewService.showWCLowBalancePullUp(in: hostView)
-            case .methodUnsupported:
-                await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
-            }
-        }
-        
         switch currentRoot {
         case .domainsCollection(let router):
+            @MainActor
+            func showErrorAlert(in hostView: UIViewController) async {
+                Vibration.error.vibrate()
+                switch error.groupType {
+                case .failedConnection, .connectionTimeout:
+                    await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
+                case .failedTx:
+                    await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
+                case .networkNotSupported:
+                    await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
+                case .lowAllowance:
+                    await pullUpViewService.showWCLowBalancePullUp(in: hostView)
+                case .methodUnsupported:
+                    await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
+                }
+            }
             guard let hostView = router.topViewController() else { return }
             
             switch error.groupType {
@@ -225,6 +222,52 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 
                 await showErrorAlert(in: hostView)
             }
+        case .home(let tabRouter):
+            @MainActor
+            func showViewPullUpConfigurationType() async {
+                Vibration.error.vibrate()
+                await withSafeCheckedContinuation { completion in
+                    switch error.groupType {
+                    case .failedConnection, .connectionTimeout:
+                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                            completion(Void())
+                        }))
+                    case .failedTx:
+                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                            completion(Void())
+                        }))
+                        //                    await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
+                    case .networkNotSupported:
+                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                            completion(Void())
+                        }))
+                        //                    await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
+                    case .lowAllowance:
+                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                            completion(Void())
+                        }))
+                        //                    await pullUpViewService.showWCLowBalancePullUp(in: hostView)
+                    case .methodUnsupported:
+                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                            completion(Void())
+                        }))
+                        //                    await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
+                    }
+                }
+            }
+            
+            switch error.groupType {
+            case .connectionTimeout:
+                await showViewPullUpConfigurationType()
+            case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
+                if let pullUp = tabRouter.pullUp,
+                   pullUp.analyticName != .wcLoading {
+                    return
+                }
+                
+                await showViewPullUpConfigurationType()
+            }
+            
         default: return
         }
     }
