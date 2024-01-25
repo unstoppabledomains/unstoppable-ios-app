@@ -240,12 +240,55 @@ extension ViewPullUpDefaultConfiguration {
 
 // MARK: - Open methods
 extension ViewPullUpDefaultConfiguration {
-    static func showWCConnectionFailed(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+    static func wcConnectionFailed(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
         .init(icon: .init(icon: .grimaseIcon,
-                          size: .small), title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
-              subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())), contentAlignment: .center,
+                          size: .small), 
+              title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
+              subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
               cancelButton: .gotItButton(),
               analyticName: .wcConnectionFailed,
               dismissCallback: dismissCallback)
     }
+    
+    static func wcTransactionFailed(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .cancelCircleIcon,
+                          size: .small),
+              title: .text(String.Constants.transactionFailed.localized()),
+              subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
+              cancelButton: .gotItButton(),
+              analyticName: .wcTransactionFailed,
+              dismissCallback: dismissCallback)
+    }
+    
+    static func wcNetworkNotSupported(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .grimaseIcon,
+                          size: .small),
+              title: .text(String.Constants.networkNotSupportedInfoTitle.localized()),
+              subtitle: .label(.text(String.Constants.networkNotSupportedInfoDescription.localized())),
+              cancelButton: .gotItButton(),
+              analyticName: .wcNetworkNotSupported,
+              dismissCallback: dismissCallback)
+    }
+    
+    static func wcLowBalance(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .cancelCircleIcon,
+                          size: .small),
+              title: .text(String.Constants.insufficientBalance.localized()),
+              subtitle: .label(.text(String.Constants.walletConnectLowBalanceAlertDescription.localized())),
+              cancelButton: .gotItButton(),
+              analyticName: .wcLowBalance,
+              dismissCallback: dismissCallback)
+    }
+    
+    static func wcRequestNotSupported(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .grimaseIcon,
+                          size: .small),
+              title: .text(String.Constants.wcRequestNotSupportedInfoTitle.localized()),
+              subtitle: .label(.text(String.Constants.wcRequestNotSupportedInfoDescription.localized())),
+              cancelButton: .gotItButton(),
+              analyticName: .wcRequestNotSupported,
+              dismissCallback: dismissCallback)
+    }
+    
 }
+

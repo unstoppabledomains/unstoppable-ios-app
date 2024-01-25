@@ -230,29 +230,25 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 await withSafeCheckedContinuation { completion in
                     switch error.groupType {
                     case .failedConnection, .connectionTimeout:
-                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                        tabRouter.pullUp = .default(.wcConnectionFailed(dismissCallback: {
                             completion(Void())
                         }))
                     case .failedTx:
-                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                        tabRouter.pullUp = .default(.wcTransactionFailed(dismissCallback: {
                             completion(Void())
                         }))
-                        //                    await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
                     case .networkNotSupported:
-                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                        tabRouter.pullUp = .default(.wcNetworkNotSupported(dismissCallback: {
                             completion(Void())
                         }))
-                        //                    await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
                     case .lowAllowance:
-                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                        tabRouter.pullUp = .default(.wcLowBalance(dismissCallback: {
                             completion(Void())
                         }))
-                        //                    await pullUpViewService.showWCLowBalancePullUp(in: hostView)
                     case .methodUnsupported:
-                        tabRouter.pullUp = .default(.showWCConnectionFailed(dismissCallback: {
+                        tabRouter.pullUp = .default(.wcRequestNotSupported(dismissCallback: {
                             completion(Void())
                         }))
-                        //                    await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
                     }
                 }
             }
@@ -285,7 +281,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
             }
         case .home(let tabRouter):
             if tabRouter.pullUp?.analyticName == .wcLoading {
-                tabRouter.pullUp = nil
+                await tabRouter.dismissPullUpMenu()
             }
         default: return
         }
