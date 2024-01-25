@@ -11,10 +11,11 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
+    @State var path: NavigationPath
     @StateObject private var navigationState = NavigationStateManager()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             content()
         }
         .overlay(alignment: .top, content: {
@@ -45,7 +46,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, navigationStateProvider: { _ in })
+    }, navigationStateProvider: { _ in }, path: .init())
 }
 
 class NavigationStateManager: ObservableObject {

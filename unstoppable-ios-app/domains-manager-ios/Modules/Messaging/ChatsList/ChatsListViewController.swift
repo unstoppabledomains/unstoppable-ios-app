@@ -709,7 +709,7 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
     
     @StateObject var navTracker: NavigationTracker
     
-    init(tabState: TabStateManager) {
+    init(tabState: HomeTabRouter) {
         self._navTracker = StateObject(wrappedValue: NavigationTracker(tabState: tabState))
     }
     
@@ -724,11 +724,11 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
     
     final class NavigationTracker: ObservableObject, CNavigationControllerDelegate {
         nonisolated
-        init(tabState: TabStateManager) {
+        init(tabState: HomeTabRouter) {
             self.tabState = tabState
         }
         
-        let tabState: TabStateManager
+        let tabState: HomeTabRouter
         
         func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool) {
             if viewController != navigationController.rootViewController {

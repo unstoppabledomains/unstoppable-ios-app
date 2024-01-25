@@ -9,40 +9,49 @@ import SwiftUI
 
 struct HomeTabView: View {
     
-    @StateObject private var tabState: TabStateManager
     @StateObject var router: HomeTabRouter
     let selectedWallet: WalletEntity
     private let id: UUID
 
     var body: some View {
-        TabView(selection: $tabState.tabViewSelection) {
+        TabView(selection: $router.tabViewSelection) {
             HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
             .tag(0)
-            .tabBarVisible(tabState.isTabBarVisible)
+            .tabBarVisible(router.isTabBarVisible)
             
-            ChatsListViewControllerWrapper(tabState: tabState)
+            ChatsListViewControllerWrapper(tabState: router)
                 .ignoresSafeArea()
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
             }
             .tag(1)
-            .tabBarVisible(tabState.isTabBarVisible)
+            .tabBarVisible(router.isTabBarVisible)
         }
         .tint(.foregroundDefault)
-        .environmentObject(tabState)
         .environmentObject(router)
         .viewPullUp(router.currentPullUp(id: id))
+        .sheet(item: $router.presentedNFT, content: { nft in
+            NFTDetailsView(nft: nft)
+                .pullUpHandler(router)
+        })
+        .sheet(item: $router.presentedDomain, content: { presentationDetails in
+            DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
+                                               wallet: presentationDetails.wallet.udWallet,
+                                               walletInfo: presentationDetails.wallet.displayInfo,
+                                               preRequestedAction: nil,
+                                               sourceScreen: .domainsCollection)
+            .ignoresSafeArea()
+            .pullUpHandler(router)
+        })
     }
     
     init(selectedWallet: WalletEntity,
          tabRouter: HomeTabRouter) {
-        let tabState = TabStateManager()
-        self._tabState = StateObject(wrappedValue: tabState)
         self._router = StateObject(wrappedValue: tabRouter)
         self.selectedWallet = selectedWallet
         self.id = tabRouter.id
@@ -54,14 +63,20 @@ struct HomeTabView: View {
     HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
 }
 
-class TabStateManager: ObservableObject {
+final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var tabViewSelection: Int = 0
-}
-
-
-class HomeTabRouter: ObservableObject {
     @Published var pullUp: ViewPullUpConfigurationType?
+    @Published var walletViewNavPath: NavigationPath = NavigationPath()
+    @Published var presentedNFT: NFTDisplayInfo?
+    @Published var presentedDomain: DomainPresentationDetails?
+
+    struct DomainPresentationDetails: Identifiable {
+        var id: String { domain.name }
+        
+        let domain: DomainDisplayInfo
+        let wallet: WalletEntity
+    }
     
     let id: UUID = UUID()
     private var topViews = 0
