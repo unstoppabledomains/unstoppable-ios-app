@@ -118,7 +118,7 @@ struct NetworkService {
                                            extraHeaders: [String: String]  = [:]) async throws -> Data {
         let data: Data
         do {
-            data = try await fetchData(for: url, method: .get)
+            data = try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders)
         } catch  {
             guard let err = error as? NetworkLayerError,
                   err == NetworkLayerError.backendThrottle else {
