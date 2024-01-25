@@ -42,6 +42,7 @@ final class ChatsListViewController: BaseViewController {
     private var navView: ChatsListNavigationView!
     private var state: State = .loading
     private let operationQueue = OperationQueue()
+    private let scrollableContentBottomOffset: CGFloat = 52
 
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var isObservingKeyboard: Bool { true }
@@ -87,11 +88,11 @@ final class ChatsListViewController: BaseViewController {
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
-        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset
+        collectionView.contentInset.bottom = keyboardHeight + scrollableContentBottomOffset
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
-        collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
+        collectionView.contentInset.bottom = scrollableContentBottomOffset
     }
     
     override func shouldPopOnBackButton() -> Bool {
@@ -119,7 +120,7 @@ extension ChatsListViewController: ChatsListViewProtocol {
             activityIndicator.stopAnimating()
         }
         
-        setupCollectionInset()
+        setupCollectionTopInset()
         setupActionButton()
         setupNavigation()
         cNavigationController?.updateNavigationBar()
@@ -169,7 +170,7 @@ extension ChatsListViewController: UICollectionViewDelegate {
 extension ChatsListViewController: UDSearchBarDelegate {
     func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStartSearching)
-        setupCollectionInset(isSearchActive: true)
+        setupCollectionTopInset(isSearchActive: true)
         presenter.didStartSearch(with: searchMode)
     }
     
@@ -241,7 +242,7 @@ private extension ChatsListViewController {
             cNavigationBar?.setBackButton(hidden: true)
         case .editing:
             mode = .default
-            collectionView.contentInset.bottom = 0
+            collectionView.contentInset.bottom = scrollableContentBottomOffset
             cNavigationBar?.setBackButton(hidden: false)
         }
         
@@ -273,7 +274,7 @@ private extension ChatsListViewController {
     }
     
     func setSearchBarActive(_ isActive: Bool) {
-        setupCollectionInset(isSearchActive: isActive)
+        setupCollectionTopInset(isSearchActive: isActive)
         cNavigationBar?.setSearchActive(isActive, animated: true)
         if !isActive {
             searchMode = .default
@@ -398,7 +399,7 @@ private extension ChatsListViewController {
         }
     }
     
-    func setupCollectionInset(isSearchActive: Bool = false) {
+    func setupCollectionTopInset(isSearchActive: Bool = false) {
         switch state {
         case .chatsList, .loading:
             collectionView.contentInset.top = isSearchActive ? 58 : 110
@@ -413,8 +414,9 @@ private extension ChatsListViewController {
         collectionView.register(ChatsListSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: ChatsListSectionHeaderView.reuseIdentifier)
-        setupCollectionInset()
-        
+        setupCollectionTopInset()
+        collectionView.contentInset.bottom = scrollableContentBottomOffset
+
         configureDataSource()
     }
     
