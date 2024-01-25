@@ -92,7 +92,7 @@ struct HomeWalletView: View {
         }, navigationStateProvider: { state in
             self.navigationState = state
             state.customTitle = navigationView
-        }, path: tabRouter.walletViewNavPath)
+        }, path: $tabRouter.walletViewNavPath)
     }
 }
 

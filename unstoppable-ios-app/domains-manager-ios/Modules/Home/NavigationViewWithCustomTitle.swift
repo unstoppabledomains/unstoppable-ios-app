@@ -11,7 +11,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
-    @State var path: NavigationPath
+    @Binding var path: NavigationPath
     @StateObject private var navigationState = NavigationStateManager()
 
     var body: some View {
@@ -46,7 +46,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, navigationStateProvider: { _ in }, path: .init())
+    }, navigationStateProvider: { _ in }, path: .constant(.init()))
 }
 
 class NavigationStateManager: ObservableObject {

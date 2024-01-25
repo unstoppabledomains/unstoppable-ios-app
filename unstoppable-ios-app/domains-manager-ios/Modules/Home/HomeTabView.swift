@@ -118,6 +118,12 @@ final class HomeTabRouter: ObservableObject {
             }
         }
     }
+    
+    func popToRoot() {
+        presentedNFT = nil
+        presentedDomain = nil
+        walletViewNavPath = .init()
+    }
 }
 
 struct HomeTabPullUpHandlerModifier: ViewModifier {
