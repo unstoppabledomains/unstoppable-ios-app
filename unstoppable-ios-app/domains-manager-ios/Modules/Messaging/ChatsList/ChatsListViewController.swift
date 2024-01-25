@@ -718,11 +718,7 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
         return nav
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        print("LOGO: - Update uiViewController")
-        uiViewController.cNavigationController?.delegate = navTracker
-    }
-    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
     
     final class NavigationTracker: ObservableObject, CNavigationControllerDelegate {
         nonisolated
@@ -732,20 +728,17 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
         
         let tabState: TabStateManager
         
-        deinit {
-            print("LOGO: - Did deinit")
-        }
-
         func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool) {
-            print("LOGO: - will show")
+            if viewController != navigationController.rootViewController {
+                withAnimation {
+                    self.tabState.isTabBarVisible = false
+                }
+            }
         }
         
         func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool) {
-            print("LOGO: - did show")
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.3) {
-                    self.tabState.isTabBarVisible = navigationController.viewControllers.count == 1
-                }
+            withAnimation {
+                self.tabState.isTabBarVisible = viewController == navigationController.rootViewController
             }
         }
         
