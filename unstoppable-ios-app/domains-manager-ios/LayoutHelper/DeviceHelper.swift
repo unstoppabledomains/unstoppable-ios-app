@@ -207,6 +207,10 @@ extension UIDevice {
     }
 }
 
+extension UIDevice {
+    static let deviceDidShakeNotification = Notification.Name(rawValue: "deviceDidShakeNotification")
+}
+
 // #-#-#-#-#-#-#-#-#-#-#-#-#
 // MARK: UIDevice extensions
 // #-#-#-#-#-#-#-#-#-#-#-#-#

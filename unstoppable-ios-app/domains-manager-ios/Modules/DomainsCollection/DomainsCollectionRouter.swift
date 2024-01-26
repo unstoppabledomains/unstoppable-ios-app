@@ -263,7 +263,7 @@ extension DomainsCollectionRouter {
         
         return openedChannelId.normalized.contains(channelId.normalized)
     }
-    // TODO: - Track on new Home screen
+    
     func didRegisterShakeDevice() {
         guard let navigationController = self.navigationController else { return }
         

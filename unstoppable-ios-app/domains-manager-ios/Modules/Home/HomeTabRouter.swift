@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 @MainActor
 final class HomeTabRouter: ObservableObject {
@@ -16,12 +17,21 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
+    @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var isResolvingPrimaryDomain: Bool = false
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
+    
     let id: UUID = UUID()
     private var topViews = 0
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init() {
+        NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
+            self?.didRegisterShakeDevice()
+        }.store(in: &cancellables)
+    }
   
 }
 
@@ -118,6 +128,15 @@ extension HomeTabRouter {
             }
         }
     }
+    
+    func didRegisterShakeDevice() {
+        Task {
+            await popToRootAndWait()
+            presentedUBTSearch = .init(searchResultCallback: { [weak self] device, domain in
+                self?.didSelectUBTDomain(device, by: domain)
+            })
+        }
+    }
 }
 
 // MARK: - Pull up related
@@ -194,6 +213,19 @@ private extension HomeTabRouter {
         await popToRootAndWait()
         chatsListCoordinator?.update(presentOptions: options)
     }
+    
+    func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
+                            by domain: DomainDisplayInfo) {
+        Task {
+            guard let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
+            
+            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                           name: btDomainInfo.domainName)
+            showPublicDomainProfile(of: publicDomainInfo,
+                                    viewingDomain: domain,
+                                    preRequestedAction: nil)
+        }
+    }
 }
 
 // MARK: - DomainPresentationDetails
@@ -213,5 +245,10 @@ extension HomeTabRouter {
         let domain: PublicDomainDisplayInfo
         let viewingDomain: DomainItem
         var preRequestedAction: PreRequestedProfileAction? = nil
+    }
+    
+    struct UBTSearchPresentationDetails: Identifiable {
+        let id = UUID()
+        let searchResultCallback: UDBTSearchResultCallback
     }
 }

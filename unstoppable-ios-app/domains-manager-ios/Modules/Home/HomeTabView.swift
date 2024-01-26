@@ -60,6 +60,10 @@ struct HomeTabView: View {
                               preRequestedAction: presentationDetails.preRequestedAction)
                 .pullUpHandler(router)
         })
+        .fullScreenCover(item: $router.presentedUBTSearch, content: { presentationDetails in
+            UDBTSearchView(controller: UBTController(),
+                           searchResultCallback: presentationDetails.searchResultCallback)
+        })
     }
     
     init(selectedWallet: WalletEntity,

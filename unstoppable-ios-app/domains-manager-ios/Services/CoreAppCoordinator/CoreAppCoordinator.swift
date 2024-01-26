@@ -69,6 +69,8 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         switch currentRoot {
         case .domainsCollection(let router):
             router.didRegisterShakeDevice()
+        case .home(let router):
+            router.didRegisterShakeDevice()
         default:
             return 
         }
@@ -236,9 +238,9 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                pullUpView.pullUp == .wcLoading {
                 await hostView.dismissPullUpMenu()
             }
-        case .home(let tabRouter):
-            if tabRouter.pullUp?.analyticName == .wcLoading {
-                await tabRouter.dismissPullUpMenu()
+        case .home(let router):
+            if router.pullUp?.analyticName == .wcLoading {
+                await router.dismissPullUpMenu()
             }
         default: return
         }
@@ -402,6 +404,6 @@ extension CoreAppCoordinator {
 private extension CoreAppCoordinator {
     enum CurrentRoot {
         case none, onboarding, domainsCollection(router: DomainsCollectionRouter), appUpdate
-        case home(tabRouter: HomeTabRouter)
+        case home(router: HomeTabRouter)
     }
 }
