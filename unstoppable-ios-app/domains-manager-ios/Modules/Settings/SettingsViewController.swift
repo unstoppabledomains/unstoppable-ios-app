@@ -359,12 +359,67 @@ extension SettingsViewController {
 import SwiftUI
 struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
     
+    @StateObject var navTracker: NavigationTracker = NavigationTracker()
+
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = UDRouter().buildSettingsModule(loginCallback: nil)
         let nav = EmptyRootCNavigationController(rootViewController: vc)
-        
+        navTracker.settingsNav = nav
         return nav
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            navTracker.setNavigationController(uiViewController.navigationController)
+        }
+    }
+    
+    /// Track when user goes back to home, check any presented view controller and dismiss. 
+    final class NavigationTracker: NSObject, ObservableObject, UINavigationControllerDelegate {
+        private weak var originalDelegate: UINavigationControllerDelegate?
+        var settingsNav: CNavigationController?
+        
+        func setNavigationController(_ navigationController: UINavigationController?) {
+            originalDelegate = navigationController?.delegate
+            navigationController?.delegate = self
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+
+            if viewController == navigationController.viewControllers.first {
+                if settingsNav?.presentedViewController != nil {
+                    settingsNav?.dismiss(animated: true)
+                }
+                for viewController in settingsNav?.viewControllers ?? [] {
+                    if viewController.presentedViewController != nil {
+                        viewController.dismiss(animated: true)
+                    }
+                }
+                navigationController.delegate = originalDelegate
+            }
+            originalDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+            originalDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+        }
+        
+        func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+            originalDelegate?.navigationControllerSupportedInterfaceOrientations?(navigationController) ?? .portrait
+        }
+        
+        func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
+            originalDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .portrait
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+            originalDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+            originalDelegate?.navigationController?(navigationController,
+                                                    animationControllerFor: operation,
+                                                    from: fromVC, to: toVC)
+        }
+    }
 }
