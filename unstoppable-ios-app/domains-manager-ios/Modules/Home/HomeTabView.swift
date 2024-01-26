@@ -54,6 +54,12 @@ struct HomeTabView: View {
             .ignoresSafeArea()
             .pullUpHandler(router)
         })
+        .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
+            PublicProfileView(domain: presentationDetails.domain,
+                              viewingDomain: presentationDetails.viewingDomain,
+                              preRequestedAction: presentationDetails.preRequestedAction)
+                .pullUpHandler(router)
+        })
     }
     
     init(selectedWallet: WalletEntity,

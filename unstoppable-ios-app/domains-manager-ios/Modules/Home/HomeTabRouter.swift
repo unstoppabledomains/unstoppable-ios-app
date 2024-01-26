@@ -14,6 +14,9 @@ final class HomeTabRouter: ObservableObject {
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
+    @Published var presentedPublicDomain: PublicDomainPresentationDetails?
+    @Published var isResolvingPrimaryDomain: Bool = false
+    weak var mintingNav: MintDomainsNavigationController?
     
     let id: UUID = UUID()
     private var topViews = 0
@@ -40,6 +43,46 @@ extension HomeTabRouter {
                                 wallet: wallet,
                                 preRequestedProfileAction: preRequestedAction,
                                 dismissCallback: dismissCallback)
+    }
+    
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem,
+                                 preRequestedAction: PreRequestedProfileAction?) {
+        presentedPublicDomain = .init(domain: domain,
+                                      viewingDomain: viewingDomain,
+                                      preRequestedAction: preRequestedAction)
+    }
+    
+    func showPublicDomainProfileFromDeepLink(of domain: PublicDomainDisplayInfo,
+                                             viewingDomain: DomainItem,
+                                             preRequestedAction: PreRequestedProfileAction?) async {
+        await popToRootAndWait()
+        showPublicDomainProfile(of: domain,
+                                viewingDomain: viewingDomain,
+                                preRequestedAction: preRequestedAction)
+    }
+    
+    func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
+        Task { @MainActor in
+            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            
+            let topPresentedViewController = appContext.coreAppCoordinator.topVC
+            if let mintingNav {
+                mintingNav.setMode(mode)
+            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
+                // MARK: - Ignore minting request when add/import/connect wallet
+            } else if !isResolvingPrimaryDomain {
+                await popToRootAndWait()
+                guard await isMintingAvailable() else { return }
+                
+                let mintedDomains = domains.interactableItems()
+                
+                walletViewNavPath.append(HomeWalletView.NavigationDestination.minting(mode: mode, 
+                                                                                      mintedDomains: mintedDomains,
+                                                                                      domainsMintedCallback: { result in
+                }))
+            }
+        }
     }
 }
 
@@ -77,6 +120,7 @@ private extension HomeTabRouter {
     func popToRoot() {
         presentedNFT = nil
         presentedDomain = nil
+        presentedPublicDomain = nil
         walletViewNavPath = .init()
     }
     
@@ -92,6 +136,23 @@ private extension HomeTabRouter {
             }
         }
     }
+    
+    func isMintingAvailable() async -> Bool {
+        guard let topPresentedViewController = await appContext.coreAppCoordinator.topVC else { return false }
+
+        guard appContext.networkReachabilityService?.isReachable == true else {
+            await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topPresentedViewController,
+                                                                       unavailableFeature: .minting)
+            return false
+        }
+        
+        guard User.instance.getAppVersionInfo().mintingIsEnabled else {
+            await appContext.pullUpViewService.showMintingNotAvailablePullUp(in: topPresentedViewController)
+            return false
+        }
+        
+        return true
+    }
 }
 
 // MARK: - DomainPresentationDetails
@@ -103,5 +164,13 @@ extension HomeTabRouter {
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
         var dismissCallback: EmptyCallback? = nil
+    }
+    
+    struct PublicDomainPresentationDetails: Identifiable {
+        var id: String { domain.name }
+        
+        let domain: PublicDomainDisplayInfo
+        let viewingDomain: DomainItem
+        var preRequestedAction: PreRequestedProfileAction? = nil
     }
 }

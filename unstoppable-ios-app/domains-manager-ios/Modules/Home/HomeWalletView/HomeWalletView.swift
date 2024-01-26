@@ -78,6 +78,16 @@ struct HomeWalletView: View {
                     .ignoresSafeArea()
                     .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                     .onAppearanceChange($isOtherScreenPresented)
+                case .minting(let mode, let mintedDomains, let domainsMintedCallback):
+                    MintDomainsNavigationControllerWrapper(mode: mode,
+                                                           mintedDomains: mintedDomains,
+                                                           domainsMintedCallback: domainsMintedCallback,
+                                                           mintingNavProvider: { mintingNav in
+                        tabRouter.mintingNav = mintingNav
+                    })
+                    .ignoresSafeArea()
+                    .toolbar(.hidden, for: .navigationBar)
+                    .onAppearanceChange($isOtherScreenPresented)
                 }
             }
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
@@ -212,11 +222,6 @@ private extension HomeWalletView {
                 .foregroundStyle(Color.foregroundDefault)
         }
     }
-    
-    enum NavigationDestination: Hashable {
-        case settings
-        case qrScanner
-    }
 }
 
 // MARK: - Private methods
@@ -231,6 +236,42 @@ private extension HomeWalletView {
                         .adaptiveSheet()
                 })
         }
+    }
+}
+
+// MARK: - Open methods
+extension HomeWalletView {
+    enum NavigationDestination: Hashable {
+        case settings
+        case qrScanner
+        case minting(mode: MintDomainsNavigationController.Mode,
+                     mintedDomains: [DomainDisplayInfo],
+                     domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.settings, .settings):
+                return true
+            case (.qrScanner, .qrScanner):
+                return true
+            case (.minting, .minting):
+                return true
+            default:
+                return false
+            }
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .settings:
+                hasher.combine(0)
+            case .qrScanner:
+                hasher.combine(1)
+            case .minting:
+                hasher.combine(2)
+            }
+        }
+        
     }
 }
 

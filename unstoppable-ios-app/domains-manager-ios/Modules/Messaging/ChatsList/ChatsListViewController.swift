@@ -704,8 +704,6 @@ extension ChatsListViewController {
 
 import SwiftUI
 struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
-  
-    
     
     @StateObject var navTracker: NavigationTracker
     

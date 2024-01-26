@@ -49,6 +49,9 @@ final class MintDomainsNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
+            if let navigationController {
+                return navigationController.popViewController(animated: true)
+            }
             return cNavigationController?.popViewController(animated: true)
         } else if topViewController is MintDomainsConfigurationViewController {
             return super.popTo(EnterEmailViewController.self)
@@ -364,3 +367,23 @@ extension MintDomainsNavigationController {
     }
 }
 
+
+import SwiftUI
+struct MintDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
+    
+    let mode: MintDomainsNavigationController.Mode
+    let mintedDomains: [DomainDisplayInfo]
+    let domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback
+    var mintingNavProvider: (MintDomainsNavigationController)->()
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let mintDomainsNavigationController = MintDomainsNavigationController(mode: mode, 
+                                                                              mintedDomains: mintedDomains)
+        mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
+        mintingNavProvider(mintDomainsNavigationController)
+        return mintDomainsNavigationController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+}

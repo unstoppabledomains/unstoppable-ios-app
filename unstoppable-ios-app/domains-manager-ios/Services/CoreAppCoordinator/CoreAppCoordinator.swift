@@ -88,7 +88,7 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         }
     }
     
-    private var topVC: UIViewController? { window?.rootViewController?.topVisibleViewController() }
+    var topVC: UIViewController? { window?.rootViewController?.topVisibleViewController() }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -292,6 +292,15 @@ private extension CoreAppCoordinator {
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
             case .showUserDomainProfile(let domain, let wallet, let action):
                 Task { await router.showDomainProfile(domain, wallet: wallet.udWallet, walletInfo: wallet.displayInfo, preRequestedAction: action, dismissCallback: nil) }
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+                Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, viewingDomain: viewingDomain, preRequestedAction: action) }
+            }
+        case .home(let router):
+            switch event {
+            case .mintDomainsVerificationCode(let email, let code):
+                router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
+            case .showUserDomainProfile(let domain, let wallet, let action):
+                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action, dismissCallback: nil) }
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, viewingDomain: viewingDomain, preRequestedAction: action) }
             }
