@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var tabViewSelection: HomeTab = .wallets
@@ -25,7 +26,6 @@ final class HomeTabRouter: ObservableObject {
 
 // MARK: - Open methods
 extension HomeTabRouter {
-    @MainActor
     func dismissPullUpMenu() async {
         if pullUp != nil {
             pullUp = nil
@@ -138,7 +138,7 @@ private extension HomeTabRouter {
     }
     
     func isMintingAvailable() async -> Bool {
-        guard let topPresentedViewController = await appContext.coreAppCoordinator.topVC else { return false }
+        guard let topPresentedViewController = appContext.coreAppCoordinator.topVC else { return false }
 
         guard appContext.networkReachabilityService?.isReachable == true else {
             await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topPresentedViewController,
