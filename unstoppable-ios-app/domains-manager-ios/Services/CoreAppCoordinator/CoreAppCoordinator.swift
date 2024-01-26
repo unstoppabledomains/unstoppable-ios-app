@@ -109,12 +109,10 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
         switch currentRoot {
         case .domainsCollection(let router):
             switch uiFlow {
-            case .showDomainProfile(let domain, let walletWithInfo):
-                guard let walletInfo = walletWithInfo.displayInfo else { throw CoordinatorError.incorrectArguments }
-                
+            case .showDomainProfile(let domain, let wallet):
                 await router.showDomainProfile(domain,
-                                               wallet: walletWithInfo.wallet,
-                                               walletInfo: walletInfo,
+                                               wallet: wallet.udWallet,
+                                               walletInfo: wallet.displayInfo,
                                                preRequestedAction: nil,
                                                dismissCallback: nil)
             case .primaryDomainMinted(let primaryDomain):
@@ -123,6 +121,30 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 await router.showHomeScreenList()
             case .showPullUpLoading:
                 guard let topVC = router.topViewController() else { throw CoordinatorError.noRootVC }
+                
+                pullUpViewService.showLoadingIndicator(in: topVC)
+            case .showChat(let chatId, let profile):
+                await router.showChat(chatId, profile: profile)
+            case .showNewChat(let description, let profile):
+                await router.showChatWith(options: .newChat(description: description), profile: profile)
+            case .showChannel(let channelId, let profile):
+                await router.showChannel(channelId, profile: profile)
+            case .showChatsList(let profile):
+                await router.jumpToChatsList(profile: profile)
+            }
+        case .home(let router):
+            switch uiFlow {
+            case .showDomainProfile(let domain, let wallet):
+                await router.showDomainProfile(domain,
+                                               wallet: wallet,
+                                               preRequestedAction: nil,
+                                               dismissCallback: nil)
+            case .primaryDomainMinted(let primaryDomain):
+                await router.primaryDomainMinted(primaryDomain)
+            case .showHomeScreenList:
+                await router.showHomeScreenList()
+            case .showPullUpLoading:
+                guard let topVC else { throw CoordinatorError.noRootVC }
                 
                 pullUpViewService.showLoadingIndicator(in: topVC)
             case .showChat(let chatId, let profile):

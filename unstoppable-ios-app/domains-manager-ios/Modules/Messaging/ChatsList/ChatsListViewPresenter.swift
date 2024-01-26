@@ -33,8 +33,9 @@ extension ChatsListViewPresenterProtocol {
 }
 
 @MainActor
-protocol ChatsListCoordinator {
+protocol ChatsListCoordinator: AnyObject {
     func update(presentOptions: ChatsList.PresentOptions)
+    func popToChatsList()
 }
 
 @MainActor
@@ -227,6 +228,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 extension ChatsListViewPresenter: ChatsListCoordinator {
     func update(presentOptions: ChatsList.PresentOptions) {
         view?.presentedViewController?.dismiss(animated: true)
+        
         Task {
             do {
                 let appCoordinator = appContext.coreAppCoordinator
@@ -265,11 +267,19 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
         }
     }
     
+    func popToChatsList() {
+        view?.presentedViewController?.dismiss(animated: true)
+        view?.cNavigationController?.presentedViewController?.dismiss(animated: true)
+        if let view {
+            view.cNavigationController?.popToViewController(view, animated: true)
+        }
+    }
+    
     private func dataTypeFor(chatId: String) -> ChatsListDataType {
         communitiesList.first(where: { $0.id.contains(chatId) }) != nil ? .communities : .chats
     }
     
-    private func popToChatsList() async {
+    private func popToChatsListAndWait() async {
         guard let view else { return }
         
         view.cNavigationController?.popToViewController(view, animated: true)
@@ -414,7 +424,7 @@ private extension ChatsListViewPresenter {
     
     func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
                                dataType: ChatsListDataType) async throws {
-        await popToChatsList()
+        await popToChatsListAndWait()
         if selectedDataType != dataType {
             selectedDataType = dataType
             showData()

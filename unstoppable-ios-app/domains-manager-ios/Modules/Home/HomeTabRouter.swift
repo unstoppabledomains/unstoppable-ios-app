@@ -18,6 +18,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
     @Published var isResolvingPrimaryDomain: Bool = false
     weak var mintingNav: MintDomainsNavigationController?
+    weak var chatsListCoordinator: ChatsListCoordinator?
     
     let id: UUID = UUID()
     private var topViews = 0
@@ -31,6 +32,39 @@ extension HomeTabRouter {
             pullUp = nil
             await waitForScreenClosed()
         }
+    }
+    
+    func showHomeScreenList() async {
+        await popToRootAndWait()
+        tabViewSelection = .wallets
+    }
+    
+    func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
+        if let mintingNav {
+            mintingNav.refreshMintingProgress()
+            Debugger.printWarning("Primary domain minted: Already on minting screen")
+            return
+        }
+    }
+    
+    func showPullUpLoading() {
+        pullUp = .custom(.loadingIndicator())
+    }
+    
+    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo?) async {
+        await showChatsListWith(options: .showChatsList(profile: profile))
+    }
+    
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatWith(options: .existingChat(chatId: chatId), profile: profile)
+    }
+    
+    func showChatWith(options: ChatsList.PresentOptions.PresentChatOptions, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(options: options, profile: profile))
+    }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
     }
     
     func showDomainProfile(_ domain: DomainDisplayInfo,
@@ -122,6 +156,7 @@ private extension HomeTabRouter {
         presentedDomain = nil
         presentedPublicDomain = nil
         walletViewNavPath = .init()
+        chatsListCoordinator?.popToChatsList()
     }
     
     func popToRootAndWait() async {
@@ -152,6 +187,12 @@ private extension HomeTabRouter {
         }
         
         return true
+    }
+    
+    func showChatsListWith(options: ChatsList.PresentOptions) async {
+        tabViewSelection = .messaging
+        await popToRootAndWait()
+        chatsListCoordinator?.update(presentOptions: options)
     }
 }
 

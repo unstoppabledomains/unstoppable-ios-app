@@ -715,6 +715,7 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
         let vc = UDRouter().buildChatsListModule(presentOptions: .default)
         let nav = CNavigationController(rootViewController: vc)
         nav.delegate = navTracker
+        navTracker.tabState.chatsListCoordinator = vc.presenter as? ChatsListCoordinator
         return nav
     }
     
