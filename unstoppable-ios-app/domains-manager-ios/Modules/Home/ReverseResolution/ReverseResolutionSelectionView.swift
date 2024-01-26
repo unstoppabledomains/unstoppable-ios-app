@@ -19,23 +19,30 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                ScrollView {
-                    LazyVStack {
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 16) {
                         headerView()
                         domainsListView()
+                        buyDomainView()
                     }
                 }
-                confirmView()
             }
+            .background(Color.backgroundDefault)
+
+            .ignoresSafeArea(edges: .bottom)
             .toolbar(content: {
                 ToolbarItem(placement: .navigation) {
                     CloseButtonView {
                         
                     }
                 }
+                ToolbarItem(placement: .bottomBar) {
+                    confirmView()
+                }
             })
             .onAppear(perform: {
                 domains = wallet.domains.availableForRRItems()
+                domains = Array(domains.prefix(4))
             })
         }
     }
@@ -46,7 +53,7 @@ private extension ReverseResolutionSelectionView {
     @ViewBuilder
     func headerView() -> some View {
         VStack {
-            Image.appleIcon
+            Image.crownIcon
                 .resizable()
                 .squareFrame(48)
                 .foregroundStyle(Color.foregroundMuted)
@@ -75,14 +82,14 @@ private extension ReverseResolutionSelectionView {
     @ViewBuilder
     func domainsListView() -> some View {
         UDCollectionSectionBackgroundView {
-            LazyVStack(alignment: .center, spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(domains) { domain in
                     domainsRowView(domain)
                 }
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
-        .padding()
+        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
     }
     
     @ViewBuilder
@@ -90,7 +97,6 @@ private extension ReverseResolutionSelectionView {
         UDCollectionListRowButton(content: {
             ReverseResolutionSelectionRowView(domain: domain,
                                               isSelected: domain.name == selectedDomain?.name)
-            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
         }, callback: {
             UDVibration.buttonTap.vibrate()
             selectedDomain = domain
@@ -98,12 +104,31 @@ private extension ReverseResolutionSelectionView {
     }
     
     @ViewBuilder
+    func buyDomainView() -> some View {
+        UDCollectionSectionBackgroundView {
+            UDCollectionListRowButton(content: {
+                UDListItemView(title: String.Constants.buyNewDomain.localized(),
+                               titleColor: .foregroundAccent,
+                               imageType: .image(.plusIconNav),
+                               imageStyle: .clearImage(foreground: .foregroundAccent))
+                .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
+            }, callback: {
+                UDVibration.buttonTap.vibrate()
+            })
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        }
+        .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+    }
+    
+    @ViewBuilder
     func confirmView() -> some View {
-        UDButtonView(text: String.Constants.confirm.localized(), icon: nil, style: .large(.raisedPrimary)) {
+        UDButtonView(text: String.Constants.confirm.localized(),
+                     icon: nil,
+                     style: .large(.raisedPrimary)) {
             logButtonPressedAnalyticEvents(button: .confirm, parameters: [.value : selectedDomain?.name ?? ""])
         }
-        .disabled(selectedDomain == nil)
-        .padding()
+                     .disabled(selectedDomain == nil)
+                     .padding(EdgeInsets(top: 0, leading: 4, bottom: 2, trailing: 4))
     }
 }
 
