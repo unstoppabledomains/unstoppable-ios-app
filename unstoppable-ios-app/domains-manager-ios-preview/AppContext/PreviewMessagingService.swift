@@ -23,7 +23,7 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func fetchWalletsAvailableForMessaging() -> [WalletEntity] {
-        WalletEntity.mock()
+        MockEntitiesFabric.Wallet.mockEntities() 
     }
     
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
