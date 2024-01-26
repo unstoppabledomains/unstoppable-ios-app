@@ -94,7 +94,8 @@ extension HomeTabRouter {
                                  preRequestedAction: PreRequestedProfileAction?) {
         presentedPublicDomain = .init(domain: domain,
                                       viewingDomain: viewingDomain,
-                                      preRequestedAction: preRequestedAction)
+                                      preRequestedAction: preRequestedAction,
+                                      delegate: self)
     }
     
     func showPublicDomainProfileFromDeepLink(of domain: PublicDomainDisplayInfo,
@@ -165,6 +166,67 @@ extension HomeTabRouter {
     func unregisterTopView(id: UUID) {
         topViews -= 1
         topViews = max(0, topViews)
+    }
+}
+
+// MARK: - Open methods
+extension HomeTabRouter: PublicProfileViewDelegate {
+    private var topVC: UIViewController? { appContext.coreAppCoordinator.topVC }
+    func publicProfileDidSelectBadge(_ badge: DomainProfileBadgeDisplayInfo, in profile: DomainName) {
+        guard let topVC else { return }
+        appContext.pullUpViewService.showBadgeInfoPullUp(in: topVC,
+                                                         badgeDisplayInfo: badge,
+                                                         domainName: profile)
+    }
+    
+    func publicProfileDidSelectShareProfile(_ profile: DomainName) {
+        guard let topVC else { return }
+
+        topVC.shareDomainProfile(domainName: profile, isUserDomain: false)
+    }
+    
+    func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem) {
+        Task {
+            let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
+            var messagingProfile: MessagingChatUserProfileDisplayInfo
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: displayInfo) {
+                messagingProfile = profile
+            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
+                messagingProfile = profile
+            } else {
+                await jumpToChatsList(profile: nil)
+                return
+            }
+            
+            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
+               let chat = chatsList.first(where: { chat in
+                   switch chat.type {
+                   case .private(let details):
+                       return details.otherUser.wallet.lowercased() == profile.walletAddress
+                   case .group, .community:
+                       return false
+                   }
+               }) {
+                await showChat(chat.id, profile: messagingProfile)
+            } else {
+                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
+                                                                            domainName: profile.name)
+                await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
+            }
+            
+        }
+    }
+    
+    func publicProfileDidSelectOpenLeaderboard() {
+        guard let topVC else { return }
+        
+        topVC.openLink(.badgesLeaderboard)
+    }
+    
+    func publicProfileDidSelectViewInBrowser(domainName: String) {
+        guard let topVC else { return }
+        
+        topVC.openLink(.domainProfilePage(domainName: domainName))
     }
 }
 
@@ -245,6 +307,7 @@ extension HomeTabRouter {
         let domain: PublicDomainDisplayInfo
         let viewingDomain: DomainItem
         var preRequestedAction: PreRequestedProfileAction? = nil
+        var delegate: PublicProfileViewDelegate
     }
     
     struct UBTSearchPresentationDetails: Identifiable {

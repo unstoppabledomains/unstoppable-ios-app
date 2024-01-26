@@ -57,7 +57,8 @@ struct HomeTabView: View {
         .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
             PublicProfileView(domain: presentationDetails.domain,
                               viewingDomain: presentationDetails.viewingDomain,
-                              preRequestedAction: presentationDetails.preRequestedAction)
+                              preRequestedAction: presentationDetails.preRequestedAction,
+                              delegate: presentationDetails.delegate)
                 .pullUpHandler(router)
         })
         .fullScreenCover(item: $router.presentedUBTSearch, content: { presentationDetails in

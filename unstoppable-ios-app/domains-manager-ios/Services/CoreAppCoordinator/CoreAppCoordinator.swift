@@ -352,7 +352,7 @@ private extension CoreAppCoordinator {
         let view = HomeTabView(selectedWallet: wallet, tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
-        currentRoot = .home(tabRouter: router)
+        currentRoot = .home(router: router)
     }
     
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
