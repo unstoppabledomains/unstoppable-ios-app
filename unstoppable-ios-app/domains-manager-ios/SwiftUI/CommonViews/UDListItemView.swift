@@ -151,7 +151,7 @@ extension UDListItemView {
     }
     
     enum RightViewStyle {
-        case chevron, checkmark, errorCircle
+        case chevron, checkmark, checkmarkEmpty, errorCircle
         
         var image: Image {
             switch self {
@@ -159,6 +159,8 @@ extension UDListItemView {
                 return .chevronRight
             case .checkmark:
                 return .checkCircle
+            case .checkmarkEmpty:
+                return .checkCircleEmpty
             case .errorCircle:
                 return .infoIcon
             }
@@ -170,6 +172,8 @@ extension UDListItemView {
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
+            case .checkmarkEmpty:
+                return .borderEmphasis
             case .errorCircle:
                 return .foregroundDanger
             }

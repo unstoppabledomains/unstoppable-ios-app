@@ -14,7 +14,7 @@ extension HomeWalletView {
         
         @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
-        @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
+        @Published private(set) var domains: [DomainDisplayInfo] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
         @Published var nftsCollectionsExpandedIds: Set<String> = []
         @Published var selectedContentType: ContentType = .tokens
@@ -130,17 +130,4 @@ extension HomeWalletView {
             isSelectWalletPresented = true
         }
     }
-}
-
-func createMockDomains() -> [DomainDisplayInfo] {
-    var domains = [DomainDisplayInfo]()
-    
-    for i in 0..<5 {
-        let domain = DomainDisplayInfo(name: "oleg_\(i).x",
-                                       ownerWallet: "",
-                                       isSetForRR: false)
-        domains.append(domain)
-    }
-    
-    return domains
 }
