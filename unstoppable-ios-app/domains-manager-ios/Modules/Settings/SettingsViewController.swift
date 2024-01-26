@@ -374,7 +374,7 @@ struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
         }
     }
     
-    /// Track when user goes back to home, check any presented view controller and dismiss. 
+    /// Track when user goes back to home, check any presented view controller and dismiss.
     final class NavigationTracker: NSObject, ObservableObject, UINavigationControllerDelegate {
         private weak var originalDelegate: UINavigationControllerDelegate?
         var settingsNav: CNavigationController?

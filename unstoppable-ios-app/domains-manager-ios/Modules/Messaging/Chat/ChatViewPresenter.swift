@@ -950,11 +950,11 @@ private extension ChatViewPresenter {
             switch showDomainResult {
             case .none:
                 view.openLink(.generic(url: url.absoluteString))
-            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
+            case .showUserDomainProfile(let domain, let wallet, let action):
                 await UDRouter().showDomainProfileScreen(in: view,
                                                          domain: domain,
-                                                         wallet: wallet,
-                                                         walletInfo: walletInfo,
+                                                         wallet: wallet.udWallet,
+                                                         walletInfo: wallet.displayInfo,
                                                          preRequestedAction: action,
                                                          dismissCallback: nil)
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):

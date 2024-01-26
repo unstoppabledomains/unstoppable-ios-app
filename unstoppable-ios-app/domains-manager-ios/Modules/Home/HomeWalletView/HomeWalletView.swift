@@ -48,7 +48,7 @@ struct HomeWalletView: View {
                     navigationState?.isTitleVisible = 
                     !isOtherScreenPresented &&
                     !isHeaderVisible &&
-                    tabRouter.tabViewSelection == 0
+                    tabRouter.tabViewSelection == .wallets
                 }
             }
             .onChange(of: isOtherScreenPresented) { newValue in
