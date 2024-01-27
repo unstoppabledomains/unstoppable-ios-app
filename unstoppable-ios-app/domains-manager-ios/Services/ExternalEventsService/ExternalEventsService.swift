@@ -133,13 +133,13 @@ private extension ExternalEventsService {
             guard let domain = (try await findDomainsWith(domainNames: [domainName])).first else {
                 throw EventsHandlingError.cantFindDomain
             }
-            let walletWithInfo = try await findWalletWithInfo(for: domain)
+            let wallet = try await findWalletEntity(for: domain)
 
             Task.detached(priority: .high) { [weak self] in
                 await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             }
             
-            return .showDomainProfile(domain: domain, walletWithInfo: walletWithInfo)
+            return .showDomainProfile(domain: domain, wallet: wallet)
         case .mintingFinished(let domainNames):
             let domains = try await findDomainsWith(domainNames: domainNames)
             
@@ -148,8 +148,8 @@ private extension ExternalEventsService {
             } else {
                 if domains.count == 1 {
                     let domain = domains[0]
-                    let walletWithInfo = try await findWalletWithInfo(for: domain)
-                    return .showDomainProfile(domain: domain, walletWithInfo: walletWithInfo)
+                    let wallet = try await findWalletEntity(for: domain)
+                    return .showDomainProfile(domain: domain, wallet: wallet)
                 }
                 return .showHomeScreenList
             }
@@ -237,6 +237,16 @@ private extension ExternalEventsService {
         }
         
         return walletWithInfo
+    }
+    
+    func findWalletEntity(for domain: DomainDisplayInfo) async throws -> WalletEntity {
+        let wallets = appContext.walletsDataService.wallets
+        
+        guard let wallet = wallets.first(where: { domain.isOwned(by: $0.udWallet) }) else {
+            Debugger.printFailure("Failed to find wallet for external event", critical: true)
+            throw EventsHandlingError.cantFindWallet
+        }
+        return wallet
     }
 }
 

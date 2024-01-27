@@ -406,7 +406,8 @@ private extension CNavigationController {
             fromViewController.beginAppearanceTransition(true, animated: animated)
             fromViewController.endAppearanceTransition()
             fromViewController.didMove(toParent: self)
-            
+            delegate?.navigationController(self, didShow: fromViewController, animated: animated)
+
             setTransitioning(false)
         }
         var isSwipe = false

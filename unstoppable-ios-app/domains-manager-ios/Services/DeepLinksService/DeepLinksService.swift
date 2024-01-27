@@ -101,11 +101,9 @@ private extension DeepLinksService {
                 return
             case .showUserDomainProfile(let domain,
                                         let wallet,
-                                        let walletInfo,
                                         let action):
                 notifyWaitersWith(event: .showUserDomainProfile(domain: domain,
                                                                 wallet: wallet,
-                                                                walletInfo: walletInfo,
                                                                 action: action),
                                   receivedState: receivedState)
             case .showPublicDomainProfile(let publicDomainDisplayInfo,

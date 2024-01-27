@@ -7,40 +7,68 @@
 
 import SwiftUI
 
+enum HomeTab: Hashable {
+    case wallets
+    case messaging
+}
+
 struct HomeTabView: View {
     
-    @StateObject private var tabState: TabStateManager
     @StateObject var router: HomeTabRouter
     let selectedWallet: WalletEntity
     private let id: UUID
 
     var body: some View {
-        TabView(selection: $tabState.tabViewSelection) {
+        TabView(selection: $router.tabViewSelection) {
             HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
             }
-            .tag(0)
-            .tabBarVisible(tabState.isTabBarVisible)
+            .tag(HomeTab.wallets)
+            .tabBarVisible(router.isTabBarVisible)
             
-            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
+            ChatsListViewControllerWrapper(tabState: router)
+                .ignoresSafeArea()
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
             }
-            .tag(1)
+            .tag(HomeTab.messaging)
+            .tabBarVisible(router.isTabBarVisible)
         }
         .tint(.foregroundDefault)
-        .environmentObject(tabState)
         .environmentObject(router)
         .viewPullUp(router.currentPullUp(id: id))
+        .sheet(item: $router.presentedNFT, content: { nft in
+            NFTDetailsView(nft: nft)
+                .pullUpHandler(router)
+        })
+        .sheet(item: $router.presentedDomain, content: { presentationDetails in
+            DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
+                                               wallet: presentationDetails.wallet.udWallet,
+                                               walletInfo: presentationDetails.wallet.displayInfo,
+                                               preRequestedAction: presentationDetails.preRequestedProfileAction,
+                                               sourceScreen: .domainsCollection,
+                                               dismissCallback: presentationDetails.dismissCallback)
+            .ignoresSafeArea()
+            .pullUpHandler(router)
+        })
+        .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
+            PublicProfileView(domain: presentationDetails.domain,
+                              viewingDomain: presentationDetails.viewingDomain,
+                              preRequestedAction: presentationDetails.preRequestedAction,
+                              delegate: presentationDetails.delegate)
+                .pullUpHandler(router)
+        })
+        .fullScreenCover(item: $router.presentedUBTSearch, content: { presentationDetails in
+            UDBTSearchView(controller: UBTController(),
+                           searchResultCallback: presentationDetails.searchResultCallback)
+        })
     }
     
     init(selectedWallet: WalletEntity,
          tabRouter: HomeTabRouter) {
-        let tabState = TabStateManager()
-        self._tabState = StateObject(wrappedValue: tabState)
         self._router = StateObject(wrappedValue: tabRouter)
         self.selectedWallet = selectedWallet
         self.id = tabRouter.id
@@ -50,77 +78,4 @@ struct HomeTabView: View {
 
 #Preview {
     HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
-}
-
-class TabStateManager: ObservableObject {
-    @Published var isTabBarVisible: Bool = true
-    @Published var tabViewSelection: Int = 0
-}
-
-
-class HomeTabRouter: ObservableObject {
-    @Published var pullUp: ViewPullUpConfigurationType?
-    
-    let id: UUID = UUID()
-    private var topViews = 0
-    
-    func currentPullUp(id: UUID) -> Binding<ViewPullUpConfigurationType?> {
-        if topViews != 0 {
-            guard self.id != id else {
-                return Binding { nil } set: { newValue in }
-            }
-        } else {
-            guard self.id == id else {
-                return Binding { nil } set: { newValue in }
-            }
-        }
-        return Binding { [weak self] in
-            self?.pullUp
-        } set: { [weak self] newValue in
-            self?.pullUp = newValue
-        }
-    }
-    
-    func registerTopView(id: UUID) {
-        topViews += 1
-    }
-    
-    func unregisterTopView(id: UUID) {
-        topViews -= 1
-        topViews = max(0, topViews)
-    }
-    
-    @MainActor
-    func dismissPullUpMenu() async {
-        if pullUp != nil {
-            pullUp = nil
-            await withSafeCheckedMainActorContinuation { completion in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    completion(Void())
-                }
-            }
-        }
-    }
-}
-
-struct HomeTabPullUpHandlerModifier: ViewModifier {
-    let tabRouter: HomeTabRouter
-    let id = UUID()
-    
-    func body(content: Content) -> some View {
-        content
-            .viewPullUp(tabRouter.currentPullUp(id: id))
-            .onAppear {
-                tabRouter.registerTopView(id: id)
-            }
-            .onDisappear {
-                tabRouter.unregisterTopView(id: id)
-            }
-    }
-}
-
-extension View {
-    func pullUpHandler(_ tabRouter: HomeTabRouter) -> some View {
-        modifier(HomeTabPullUpHandlerModifier(tabRouter: tabRouter))
-    }
 }

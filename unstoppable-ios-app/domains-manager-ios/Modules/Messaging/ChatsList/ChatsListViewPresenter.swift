@@ -12,7 +12,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
     var analyticsName: Analytics.ViewName { get }
     
     func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode)
-    func didSelectWallet(_ wallet: WalletDisplayInfo)
+    func didSelectWallet(_ wallet: WalletEntity)
     func actionButtonPressed()
     func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction)
     
@@ -23,7 +23,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
 }
 
 extension ChatsListViewPresenterProtocol {
-    func didSelectWallet(_ wallet: WalletDisplayInfo) { }
+    func didSelectWallet(_ wallet: WalletEntity) { }
     func actionButtonPressed() { }
     func createCommunitiesProfileButtonPressed() { }
     func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) { }
@@ -33,8 +33,9 @@ extension ChatsListViewPresenterProtocol {
 }
 
 @MainActor
-protocol ChatsListCoordinator {
+protocol ChatsListCoordinator: AnyObject {
     func update(presentOptions: ChatsList.PresentOptions)
+    func popToChatsList()
 }
 
 @MainActor
@@ -45,7 +46,7 @@ final class ChatsListViewPresenter {
     private let messagingService: MessagingServiceProtocol
     private var presentOptions: ChatsList.PresentOptions
 
-    private var wallets: [WalletDisplayInfo] = []
+    private var wallets: [WalletEntity] = []
     private var profileWalletPairsCache: [ChatProfileWalletPair] = []
     private var selectedProfileWalletPair: ChatProfileWalletPair?
     private var selectedDataType: ChatsListDataType = .chats
@@ -122,7 +123,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         }
     }
     
-    func didSelectWallet(_ wallet: WalletDisplayInfo) {
+    func didSelectWallet(_ wallet: WalletEntity) {
         guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
         
         logButtonPressedAnalyticEvents(button: .messagingProfileInList, parameters: [.wallet: wallet.address])
@@ -133,7 +134,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
                 var isUDBlueEnabled = false
-                if let rrDomain = wallet.reverseResolutionDomain {
+                if let rrDomain = wallet.rrDomain {
                     profile = try? await messagingService.getUserMessagingProfile(for: rrDomain)
                     isUDBlueEnabled = await getUDBlueEnabledStatus(for: rrDomain)
                 }
@@ -155,7 +156,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
                 let wallet = selectedProfileWalletPair.wallet
-                if let rrDomain = wallet.reverseResolutionDomain {
+                if let rrDomain = wallet.rrDomain {
                     createProfileFor(domain: rrDomain,
                                      in: wallet)
                 } else {
@@ -175,7 +176,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
                 try await messagingService.createCommunityProfile(for: profile)
-                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: selectedProfileWalletPair.wallet.reverseResolutionDomain)
+                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: selectedProfileWalletPair.wallet.rrDomain)
                 try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
                                                         profile: profile,
                                                         isCommunitiesEnabled: true,
@@ -227,6 +228,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 extension ChatsListViewPresenter: ChatsListCoordinator {
     func update(presentOptions: ChatsList.PresentOptions) {
         view?.presentedViewController?.dismiss(animated: true)
+        
         Task {
             do {
                 let appCoordinator = appContext.coreAppCoordinator
@@ -265,11 +267,19 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
         }
     }
     
+    func popToChatsList() {
+        view?.presentedViewController?.dismiss(animated: true)
+        view?.cNavigationController?.presentedViewController?.dismiss(animated: true)
+        if let view {
+            view.cNavigationController?.popToViewController(view, animated: true)
+        }
+    }
+    
     private func dataTypeFor(chatId: String) -> ChatsListDataType {
         communitiesList.first(where: { $0.id.contains(chatId) }) != nil ? .communities : .chats
     }
     
-    private func popToChatsList() async {
+    private func popToChatsListAndWait() async {
         guard let view else { return }
         
         view.cNavigationController?.popToViewController(view, animated: true)
@@ -354,7 +364,7 @@ extension ChatsListViewPresenter: SceneActivationListener {
             case .foregroundActive:
                 if let selectedProfileWalletPair,
                    !selectedProfileWalletPair.isUDBlueEnabled,
-                   let domain = selectedProfileWalletPair.wallet.reverseResolutionDomain {
+                   let domain = selectedProfileWalletPair.wallet.rrDomain {
                     /// Refresh UDBlue status
                     let isUDBlueEnabled = await getUDBlueEnabledStatus(for: domain)
                     self.selectedProfileWalletPair?.isUDBlueEnabled = isUDBlueEnabled
@@ -414,7 +424,7 @@ private extension ChatsListViewPresenter {
     
     func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
                                dataType: ChatsListDataType) async throws {
-        await popToChatsList()
+        await popToChatsListAndWait()
         if selectedDataType != dataType {
             selectedDataType = dataType
             showData()
@@ -435,8 +445,8 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func loadReadyForChattingWalletsOrClose() async throws -> [WalletDisplayInfo] {
-        let wallets = await messagingService.fetchWalletsAvailableForMessaging()
+    func loadReadyForChattingWalletsOrClose() async throws -> [WalletEntity] {
+        let wallets = messagingService.fetchWalletsAvailableForMessaging()
         guard !wallets.isEmpty else {
             Debugger.printWarning("User got to chats screen without wallets with domains")
             await awaitForUIReady()
@@ -454,12 +464,12 @@ private extension ChatsListViewPresenter {
         return false
     }
     
-    func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
+    func resolveInitialProfileWith(wallets: [WalletEntity]) async throws {
         if let profile = await messagingService.getLastUsedMessagingProfile(among: wallets),
            let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
             /// User already used chat with some profile, select last used.
             let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-            let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet.reverseResolutionDomain)
+            let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet.rrDomain)
 
             try await selectProfileWalletPair(.init(wallet: wallet,
                                                     profile: profile,
@@ -467,7 +477,7 @@ private extension ChatsListViewPresenter {
                                                     isUDBlueEnabled: isUDBlueEnabled))
         } else {
             for wallet in wallets {
-                guard let rrDomain = wallet.reverseResolutionDomain else { continue }
+                guard let rrDomain = wallet.rrDomain else { continue }
                 let isUDBlueEnabled = await getUDBlueEnabledStatus(for: rrDomain)
                 
                 if let profile = try? await messagingService.getUserMessagingProfile(for: rrDomain) {
@@ -497,13 +507,13 @@ private extension ChatsListViewPresenter {
     }
     
     func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo,
-                          usingWallets wallets: [WalletDisplayInfo]) async throws {
+                          usingWallets wallets: [WalletEntity]) async throws {
         guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
             try await resolveInitialProfileWith(wallets: wallets)
             return
         }
         let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-        let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet.reverseResolutionDomain)
+        let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet.rrDomain)
         try await selectProfileWalletPair(.init(wallet: wallet,
                                                 profile: profile,
                                                 isCommunitiesEnabled: isCommunitiesEnabled,
@@ -552,7 +562,7 @@ private extension ChatsListViewPresenter {
         }
         
         guard let profile = chatProfile.profile else {
-            let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
+            let state: MessagingProfileStateAnalytics = chatProfile.wallet.rrDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
             logAnalytic(event: .willShowMessagingProfile,
                         parameters: [.state : state.rawValue,
                                      .wallet: chatProfile.wallet.address])
@@ -594,7 +604,7 @@ private extension ChatsListViewPresenter {
                                 isLoading: isLoading)
     }
     
-    func unreadMessagesCountFor(wallet: WalletDisplayInfo) -> Int? {
+    func unreadMessagesCountFor(wallet: WalletEntity) -> Int? {
         profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address })?.profile?.unreadMessagesCount
     }
     
@@ -788,7 +798,7 @@ private extension ChatsListViewPresenter {
             people = localChats.map { .existingChat($0) }
             
             // Domain profiles
-            let domainProfiles = searchData.domainProfiles.filter({ $0.ownerAddress != nil && $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress!.lowercased()) })
+            let domainProfiles = searchData.domainProfiles.filter({ $0.ownerAddress != nil && $0.name != selectedProfileWalletPair?.wallet.rrDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress!.lowercased()) })
             people += domainProfiles.map { profile in
                 let pfpURL: URL? = profile.imageType == .default ? nil : URL(string: profile.imagePath ?? "")
                 
@@ -931,14 +941,13 @@ private extension ChatsListViewPresenter {
                                      in: nav)
     }
     
-    func askToSetRRDomainAndCreateProfileFor(wallet: WalletDisplayInfo) {
+    func askToSetRRDomainAndCreateProfileFor(wallet: WalletEntity) {
         Task {
-            guard let view,
-                let udWallet = appContext.udWalletsService.getUserWallets().first(where: { $0.address == wallet.address }) else { return }
+            guard let view else { return }
             
             let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                        for: udWallet,
-                                                                        walletInfo: wallet,
+                                                                        for: wallet.udWallet,
+                                                                        walletInfo: wallet.displayInfo,
                                                                         mode: .chooseFirstForMessaging)
             
             switch result {
@@ -946,14 +955,14 @@ private extension ChatsListViewPresenter {
                 return
             case .set(let domain):
                 var wallet = wallet
-                wallet.reverseResolutionDomain = domain
+                wallet.rrDomain = domain
                 createProfileFor(domain: domain, in: wallet)
             }
         }
     }
     
     func createProfileFor(domain: DomainDisplayInfo,
-                          in wallet: WalletDisplayInfo) {
+                          in wallet: WalletEntity) {
         Task {
             do {
                 let profile = try await messagingService.createUserMessagingProfile(for: domain)
@@ -979,7 +988,7 @@ private extension ChatsListViewPresenter {
 // MARK: - Private methods
 private extension ChatsListViewPresenter {
     struct ChatProfileWalletPair {
-        let wallet: WalletDisplayInfo
+        let wallet: WalletEntity
         let profile: MessagingChatUserProfileDisplayInfo?
         let isCommunitiesEnabled: Bool
         var isUDBlueEnabled: Bool

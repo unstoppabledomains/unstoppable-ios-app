@@ -82,52 +82,52 @@ extension MessagingService: MessagingServiceProtocol {
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
     
-    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] {
-        let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            .compactMap { walletWithInfo -> WalletDisplayInfo? in
-                let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
+    func fetchWalletsAvailableForMessaging() -> [WalletEntity] {
+        let wallets = appContext.walletsDataService.wallets
+            .compactMap { wallet -> WalletEntity? in
+                var wallet = wallet
+                let walletDomains = wallet.domains
                 let applicableDomains = walletDomains.availableForMessagingItems()
                 if applicableDomains.isEmpty {
                     return nil
                 }
-                var walletDisplayInfo = walletWithInfo.displayInfo
-                if walletDisplayInfo?.reverseResolutionDomain == nil {
+                
+                if wallet.rrDomain == nil {
                     if applicableDomains.first(where: { $0.isUDDomain }) == nil {
                         /// If wallet doesn't have any UNS domain, we still allow to chat as other (ENS only for now) domain
-                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                        wallet.rrDomain = applicableDomains.first
                     } else if applicableDomains.first(where: { $0.isAbleToSetAsRR }) == nil {
                         /// If wallet has only L1 domains (that can't be set as RR ATM), we still allow to chat
-                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                        wallet.rrDomain = applicableDomains.first
                     }
                 }
-                return walletDisplayInfo
+                return wallet
             }
             .sorted(by: {
-                if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
+                if $0.rrDomain == nil && $1.rrDomain != nil {
                     return false
-                } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
+                } else if $0.rrDomain != nil && $1.rrDomain == nil {
                     return true
                 }
-                return $0.domainsCount > $1.domainsCount
+                return $0.domains.count > $1.domains.count
             })
         
         return wallets
     }
     
-    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? {
-        let wallets: [WalletDisplayInfo]
+    func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo? {
+        let wallets: [WalletEntity]
         
         if let givenWallets {
             wallets = givenWallets
         } else {
-            wallets = await fetchWalletsAvailableForMessaging()
+            wallets = fetchWalletsAvailableForMessaging()
         }
         
         if let apiService = try? getDefaultAPIService(),
            let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
            let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
-           let rrDomain = wallet.reverseResolutionDomain,
+           let rrDomain = wallet.rrDomain,
            let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
            let profile = try? storageService.getUserProfileFor(domain: domain,
                                                                serviceIdentifier: apiService.serviceIdentifier) {

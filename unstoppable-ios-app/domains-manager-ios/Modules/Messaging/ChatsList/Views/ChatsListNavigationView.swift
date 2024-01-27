@@ -22,7 +22,7 @@ final class ChatsListNavigationView: UIView {
     private var isLoading = false
     
     var pressedCallback: EmptyCallback?
-    var walletSelectedCallback: ((WalletDisplayInfo)->())?
+    var walletSelectedCallback: ((WalletEntity)->())?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -91,7 +91,7 @@ extension ChatsListNavigationView {
 
 // MARK: - Private methods
 private extension ChatsListNavigationView {
-    func setWithWallet(_ wallet: WalletDisplayInfo) {
+    func setWithWallet(_ wallet: WalletEntity) {
         let title = getTitleFor(wallet: wallet)
         titleButton.setAttributedTextWith(text: title,
                                           font: titleFont,
@@ -100,8 +100,8 @@ private extension ChatsListNavigationView {
         Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
     }
 
-    func getTitleFor(wallet: WalletDisplayInfo) -> String {
-        wallet.reverseResolutionDomain?.name ?? wallet.displayName
+    func getTitleFor(wallet: WalletEntity) -> String {
+        wallet.rrDomain?.name ?? wallet.displayName
     }
     
     func setButtonWith(configuration: Configuration) {
@@ -127,7 +127,7 @@ private extension ChatsListNavigationView {
         let wallet = walletTitleInfo.wallet
         let title = getTitleFor(wallet: wallet)
         var subtitle: String
-        if wallet.reverseResolutionDomain == nil {
+        if wallet.rrDomain == nil {
             subtitle = String.Constants.messagingSetPrimaryDomain.localized()
         } else {
             subtitle = wallet.displayName
@@ -148,8 +148,8 @@ private extension ChatsListNavigationView {
         return action
     }
     
-    func getAvatarImageFor(wallet: WalletDisplayInfo) async -> UIImage {
-        if let rrDomain = wallet.reverseResolutionDomain,
+    func getAvatarImageFor(wallet: WalletEntity) async -> UIImage {
+        if let rrDomain = wallet.rrDomain,
            let avatar = await UIMenuDomainAvatarLoader.menuAvatarFor(domain: rrDomain,
                                                                      size: 24) {
             return avatar
@@ -215,14 +215,14 @@ private extension ChatsListNavigationView {
 // MARK: - Open methods
 extension ChatsListNavigationView {
     struct Configuration {
-        let selectedWallet: WalletDisplayInfo
+        let selectedWallet: WalletEntity
         let wallets: [WalletTitleInfo]
         let isLoading: Bool
         
     }
 
     struct WalletTitleInfo {
-        let wallet: WalletDisplayInfo
+        let wallet: WalletEntity
         let numberOfUnreadMessages: Int?
     }
 }
@@ -230,20 +230,9 @@ extension ChatsListNavigationView {
 @available (iOS 17.0, *)
 #Preview {
     let view =  ChatsListNavigationView(frame: CGRect(x: 0, y: 0, width: 390, height: 40))
-    let wallet = WalletDisplayInfo(name: "name.x",
-                                   address: "asdads",
-                                   domainsCount: 1,
-                                   udDomainsCount: 1,
-                                   source: .imported,
-                                   isBackedUp: false,
-                                   reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
-    let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
-                                    address: "asdads",
-                                    domainsCount: 1,
-                                    udDomainsCount: 1,
-                                    source: .imported,
-                                    isBackedUp: false,
-                                    reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
+    let wallets = MockEntitiesFabric.Wallet.mockEntities()
+    let wallet = wallets[0]
+    let wallet2 = wallets[1]
     view.setWithConfiguration(.init(selectedWallet: wallet,
                                     wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
                                               .init(wallet: wallet2, numberOfUnreadMessages: 0)],

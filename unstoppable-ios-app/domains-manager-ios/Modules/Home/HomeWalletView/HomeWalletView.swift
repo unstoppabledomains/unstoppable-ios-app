@@ -11,13 +11,10 @@ struct HomeWalletView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
-    @EnvironmentObject var tabState: TabStateManager
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
-    @State private var selectedNFT: NFTDisplayInfo?
-    @State private var selectedDomain: DomainDisplayInfo?
     @State private var navigationState: NavigationStateManager?
     
     var body: some View {
@@ -51,13 +48,13 @@ struct HomeWalletView: View {
                     navigationState?.isTitleVisible = 
                     !isOtherScreenPresented &&
                     !isHeaderVisible &&
-                    tabState.tabViewSelection == 0
+                    tabRouter.tabViewSelection == .wallets
                 }
             }
             .onChange(of: isOtherScreenPresented) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
-                    tabState.isTabBarVisible = !isOtherScreenPresented
+                    tabRouter.isTabBarVisible = !isOtherScreenPresented
                 }
             }
             .listStyle(.plain)
@@ -65,19 +62,34 @@ struct HomeWalletView: View {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(item: $selectedNFT, content: { nft in
-                NFTDetailsView(nft: nft)
-                    .pullUpHandler(tabRouter)
-            })
-            .sheet(item: $selectedDomain, content: { domain in
-                DomainProfileViewControllerWrapper(domain: domain,
-                                                   wallet: viewModel.selectedWallet.udWallet,
-                                                   walletInfo: viewModel.selectedWallet.displayInfo,
-                                                   preRequestedAction: nil,
-                                                   sourceScreen: .domainsCollection)
-                .ignoresSafeArea()
-                .pullUpHandler(tabRouter)
-            })
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                switch destination {
+                case .settings:
+                    SettingsViewControllerWrapper()
+                        .ignoresSafeArea()
+                        .toolbar(.hidden, for: .navigationBar)
+                        .onAppearanceChange($isOtherScreenPresented)
+                case .qrScanner:
+                    QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
+                        if tabRouter.pullUp == nil {
+                            tabRouter.pullUp = .custom(.loadingIndicator())
+                        }
+                    })
+                    .ignoresSafeArea()
+                    .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                    .onAppearanceChange($isOtherScreenPresented)
+                case .minting(let mode, let mintedDomains, let domainsMintedCallback):
+                    MintDomainsNavigationControllerWrapper(mode: mode,
+                                                           mintedDomains: mintedDomains,
+                                                           domainsMintedCallback: domainsMintedCallback,
+                                                           mintingNavProvider: { mintingNav in
+                        tabRouter.mintingNav = mintingNav
+                    })
+                    .ignoresSafeArea()
+                    .toolbar(.hidden, for: .navigationBar)
+                    .onAppearanceChange($isOtherScreenPresented)
+                }
+            }
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
@@ -90,7 +102,7 @@ struct HomeWalletView: View {
         }, navigationStateProvider: { state in
             self.navigationState = state
             state.customTitle = navigationView
-        })
+        }, path: $tabRouter.walletViewNavPath)
     }
 }
 
@@ -179,7 +191,7 @@ private extension HomeWalletView {
     }
     
     func didSelectNFT(_ nft: NFTDisplayInfo) {
-        selectedNFT = nft
+        tabRouter.presentedNFT = nft
     }
     
     @ViewBuilder
@@ -188,17 +200,12 @@ private extension HomeWalletView {
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
-        selectedDomain = domain
+        tabRouter.presentedDomain = .init(domain: domain, wallet: viewModel.selectedWallet)
     }
     
     @ViewBuilder
     func settingsNavButtonView() -> some View {
-        NavigationLink {
-            SettingsViewControllerWrapper()
-                .ignoresSafeArea()
-                .toolbar(.hidden, for: .navigationBar)
-                .onAppearanceChange($isOtherScreenPresented)
-        } label: {
+        NavigationLink(value: NavigationDestination.settings) {
             Image.gearshape
                 .resizable()
                 .squareFrame(24)
@@ -208,16 +215,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink {
-            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
-                if tabRouter.pullUp == nil {
-                    tabRouter.pullUp = .custom(.loadingIndicator())
-                }
-            })
-            .ignoresSafeArea()
-            .navigationTitle(String.Constants.scanQRCodeTitle.localized())
-            .onAppearanceChange($isOtherScreenPresented)
-        } label: {
+        NavigationLink(value: NavigationDestination.qrScanner) {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
@@ -238,6 +236,42 @@ private extension HomeWalletView {
                         .adaptiveSheet()
                 })
         }
+    }
+}
+
+// MARK: - Open methods
+extension HomeWalletView {
+    enum NavigationDestination: Hashable {
+        case settings
+        case qrScanner
+        case minting(mode: MintDomainsNavigationController.Mode,
+                     mintedDomains: [DomainDisplayInfo],
+                     domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.settings, .settings):
+                return true
+            case (.qrScanner, .qrScanner):
+                return true
+            case (.minting, .minting):
+                return true
+            default:
+                return false
+            }
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .settings:
+                hasher.combine(0)
+            case .qrScanner:
+                hasher.combine(1)
+            case .minting:
+                hasher.combine(2)
+            }
+        }
+        
     }
 }
 

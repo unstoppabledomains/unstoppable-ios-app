@@ -615,6 +615,15 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
+    func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> ChatsListViewController {
+        let vc = ChatsListViewController.nibInstance()
+        let presenter = ChatsListViewPresenter(view: vc,
+                                               presentOptions: presentOptions,
+                                               messagingService: appContext.messagingService)
+        vc.presenter = presenter
+        return vc
+    }
+    
     func showChatRequestsScreen(dataType: ChatsRequestsListViewPresenter.DataType,
                                 profile: MessagingChatUserProfileDisplayInfo,
                                 in nav: CNavigationController) {
@@ -1053,16 +1062,7 @@ private extension UDRouter {
         vc.presenter = presenter
         return vc
     }
-    
-    func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> UIViewController {
-        let vc = ChatsListViewController.nibInstance()
-        let presenter = ChatsListViewPresenter(view: vc,
-                                               presentOptions: presentOptions,
-                                               messagingService: appContext.messagingService)
-        vc.presenter = presenter
-        return vc
-    }
-    
+   
     func buildChatRequestsModuleWith(dataType: ChatsRequestsListViewPresenter.DataType,
                                      profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
         let vc = ChatsListViewController.nibInstance()
@@ -1076,6 +1076,7 @@ private extension UDRouter {
     func buildChatModule(profile: MessagingChatUserProfileDisplayInfo,
                          conversationState: MessagingChatConversationState) -> UIViewController {
         let vc = ChatViewController.nibInstance()
+        vc.hidesBottomBarWhenPushed = true
         let presenter = ChatViewPresenter(view: vc,
                                           profile: profile,
                                           conversationState: conversationState,
@@ -1088,6 +1089,7 @@ private extension UDRouter {
     func buildChannelModule(profile: MessagingChatUserProfileDisplayInfo,
                             channel: MessagingNewsChannel) -> UIViewController {
         let vc = ChatViewController.nibInstance()
+        vc.hidesBottomBarWhenPushed = true
         let presenter = ChannelViewPresenter(view: vc,
                                              profile: profile,
                                              channel: channel)

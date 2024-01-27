@@ -9,6 +9,8 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
+    var topVC: UIViewController? { nil }
+    
     func startWith(window: UIWindow) {
         
     }

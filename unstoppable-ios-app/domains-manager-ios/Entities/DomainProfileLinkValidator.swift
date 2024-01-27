@@ -52,13 +52,11 @@ struct DomainProfileLinkValidator {
         }
         
         let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-        let walletsWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo()
+        let wallets = appContext.walletsDataService.wallets
         if let domain = userDomains.first(where: { $0.name == domainName }),
-           let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: domain) }),
-           let walletInfo = walletWithInfo.displayInfo {
+           let wallet = wallets.first(where: { $0.udWallet.owns(domain: domain) }) {
             return .showUserDomainProfile(domain: domain,
-                                          wallet: walletWithInfo.wallet,
-                                          walletInfo: walletInfo,
+                                          wallet: wallet,
                                           action: preRequestedAction)
         } else if let userDomainDisplayInfo = userDomains.first,
                   let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: userDomainDisplayInfo.name),
@@ -75,7 +73,7 @@ struct DomainProfileLinkValidator {
     
     enum ShowDomainProfileResult {
         case none
-        case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, action: PreRequestedProfileAction?)
+        case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
         case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)
     }
 }
