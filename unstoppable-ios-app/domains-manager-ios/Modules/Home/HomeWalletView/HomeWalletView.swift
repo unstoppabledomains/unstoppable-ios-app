@@ -70,11 +70,7 @@ struct HomeWalletView: View {
                         .toolbar(.hidden, for: .navigationBar)
                         .onAppearanceChange($isOtherScreenPresented)
                 case .qrScanner:
-                    QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
-                        if tabRouter.pullUp == nil {
-                            tabRouter.pullUp = .custom(.loadingIndicator())
-                        }
-                    })
+                    QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
                     .ignoresSafeArea()
                     .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                     .onAppearanceChange($isOtherScreenPresented)
