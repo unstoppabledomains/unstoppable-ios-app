@@ -433,7 +433,7 @@ private extension WalletsDataService {
 // MARK: - Setup methods
 private extension WalletsDataService {
     func setCachedSelectedWalletAndRefresh() {
-        selectedWallet =  wallets.first
+        selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
         if let selectedWallet {
             refreshDataForWalletAsync(selectedWallet)
         }
