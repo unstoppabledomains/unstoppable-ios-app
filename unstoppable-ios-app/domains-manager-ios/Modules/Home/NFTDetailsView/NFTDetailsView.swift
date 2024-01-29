@@ -91,7 +91,7 @@ private extension NFTDetailsView {
         }
     }
     
-    var collectionName: String { nft.collection ?? "-" }
+    var collectionName: String { nft.collection }
     
     @ViewBuilder
     func nftDescriptionInfoView() -> some View {
@@ -141,5 +141,5 @@ private extension NFTDetailsView {
 }
 
 #Preview {
-    NFTDetailsView(nft: .mock())
+    NFTDetailsView(nft: MockEntitiesFabric.NFTs.mockDisplayInfo())
 }

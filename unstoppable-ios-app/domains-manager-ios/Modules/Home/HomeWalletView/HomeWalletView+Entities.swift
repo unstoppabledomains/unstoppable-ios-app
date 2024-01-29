@@ -245,7 +245,7 @@ extension HomeWalletView {
             
             for name in names {
                 let numOfNFTs = Int(arc4random_uniform(10) + 1)
-                let nfts = (0...numOfNFTs).map { _ in  NFTDisplayInfo.mock() }
+                let nfts = (0...numOfNFTs).map { _ in  MockEntitiesFabric.NFTs.mockDisplayInfo() }
                 let collection = NFTsCollectionDescription(collectionName: name, nfts: nfts)
                 collections.append(collection)
             }

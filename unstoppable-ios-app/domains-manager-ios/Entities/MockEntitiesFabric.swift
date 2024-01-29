@@ -29,7 +29,7 @@ extension MockEntitiesFabric {
             WalletWithInfo.mock.map {
                 let domains = Domains.mockDomainDisplayInfo()
                 let numOfNFTs = Int(arc4random_uniform(10) + 1)
-                let nfts = (0...numOfNFTs).map { _ in  NFTDisplayInfo.mock() }
+                let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
                 
                 
                 let balance: [WalletTokenPortfolio] = [.init(address: $0.address,
@@ -107,7 +107,20 @@ extension MockEntitiesFabric {
     }
     
     enum NFTs {
+        static func mockDisplayInfo() -> NFTDisplayInfo {
+            .init(name: "NFT Name",
+                  description: "The MUTANT APE YACHT CLUB is a collection of up to 20,000 Mutant Apes that can only be created by exposing an existing Bored Ape to a vial of MUTANT SERUM or by minting a Mutant Ape in the public sale.",
+                  imageUrl: URL(string: "https://google.com"),
+                  link: "https://google.com",
+                  tags: [],
+                  collection: "Collection name",
+                  mint: UUID().uuidString,
+                  traits: ["Background" : "M1 Orange"])
+        }
+        
         static func mockNFTModels() -> [NFTModel] {
+            []
+            /*
             [.init(name: "Metropolis Avatar #3041",
                    description: "Introducing your Metropolis Avatar: endlessly customizable even after minting. However, while the accessories are exchangeable, your avatar’s base body (including eyes, nose, mouth, and ears) are Soulbound to you like a signature. This means that if you want to change your base you’ll need to mint a new Soulbound avatar, but don’t worry! All clothing and accessories are wearable across all of your Metropolis avatars as long as they exist within the same wallet.\nThis is a Citizen. Born from the Earth, their desires are more terrestrial in nature. Groundedness, community, creativity, and folklore are some of the things they value above all else. Check out MetropolisWorldLore.io/characters to learn more about their various factions and where you belong!\nHave fun, and welcome to the world!",
                    imageUrl: "https://avatarimg.metropolisworld.net/img/1?a=659&a=407&a=637&a=671&a=488&a=496&a=350&a=2875&a=514&a=3066&a=3292",
@@ -158,6 +171,7 @@ extension MockEntitiesFabric {
                    collection: "POAP",
                    mint: "6513349/109032")
             ]
+            */
         }
     }
 }

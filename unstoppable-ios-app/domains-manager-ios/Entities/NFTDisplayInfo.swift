@@ -8,16 +8,17 @@
 import UIKit
 
 struct NFTDisplayInfo: Hashable, Identifiable, Codable {
-    var id: String { mint ?? UUID().uuidString }
+    var id: String { mint }
     
     let name: String?
     let description: String?
     let imageUrl: URL?
-    let videoUrl: URL?
-    let link: String?
+    var videoUrl: URL? = nil
+    let link: String
     let tags: [String]
-    let collection: String?
-    let mint: String?
+    let collection: String
+    let mint: String
+    let traits: [String : String]
     var chain: NFTModelChain?
     var address: String?
     
@@ -32,48 +33,28 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     }
     
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
-    
+   
+    func loadIcon() async -> UIImage? {
+        guard let imageUrl else { return nil }
+        
+        return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
+                                                              downsampleDescription: .mid)
+    }
+}
+
+// MARK: - Open methods
+extension NFTDisplayInfo {
     init(nftModel: NFTModel) {
         self.name = nftModel.name
         self.description = nftModel.description
         self.imageUrl = URL(string: nftModel.imageUrl ?? "")
-        self.videoUrl = URL(string: nftModel.videoUrl ?? "")
+        self.videoUrl = nil
         self.link = nftModel.link
-        self.tags = nftModel.tags
+        self.tags = nftModel.tags ?? []
         self.collection = nftModel.collection
         self.mint = nftModel.mint
         self.chain = nftModel.chain
         self.address = nftModel.address
-    }
-    
-    init(name: String? = nil, description: String? = nil, imageUrl: URL? = nil, videoUrl: URL? = nil, link: String? = nil, tags: [String], collection: String? = nil, mint: String? = nil, chain: NFTModelChain? = nil, address: String? = nil) {
-        self.name = name
-        self.description = description
-        self.imageUrl = imageUrl
-        self.videoUrl = videoUrl
-        self.link = link
-        self.tags = tags
-        self.collection = collection
-        self.mint = mint
-        self.chain = chain
-        self.address = address
-    }
-    
-    static func mock() -> NFTDisplayInfo {
-        .init(name: "NFT Name",
-              description: "The MUTANT APE YACHT CLUB is a collection of up to 20,000 Mutant Apes that can only be created by exposing an existing Bored Ape to a vial of MUTANT SERUM or by minting a Mutant Ape in the public sale.",
-              imageUrl: URL(string: "https://google.com"),
-              tags: [],
-              collection: "Collection name",
-              mint: UUID().uuidString)
-    }
-    
-    func loadIcon() async -> UIImage? {
-        guard let imageUrl else { return nil }
-        
-//                    try? await Task.sleep(seconds: TimeInterval(arc4random_uniform(5)))
-//        return UIImage.Preview.previewLandscape
-        return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
-                                                              downsampleDescription: .mid)
+        self.traits = nftModel.traits ?? [:]
     }
 }

@@ -42,5 +42,5 @@ private extension HomeWalletNFTCellView {
 }
 
 #Preview {
-    HomeWalletNFTCellView(nft: .mock())
+    HomeWalletNFTCellView(nft: MockEntitiesFabric.NFTs.mockDisplayInfo())
 }

@@ -128,7 +128,7 @@ private extension WalletNFTsService {
         let data = try await NetworkService().fetchData(for: request.url,
                                                         method: .get,
                                                         extraHeaders: request.headers)
-        guard var response = NFTsResponse.objectFromData(data, using: .convertFromSnakeCase) else { throw NetworkLayerError.responseFailedToParse }
+        guard var response = NFTsResponse.objectFromData(data) else { throw NetworkLayerError.responseFailedToParse }
         response.prepare()
         Debugger.printInfo(topic: .NFT, "Did get NFTs \(response.nfts.count) for domain: \(wallet), cursor: \(cursor ?? "Nil"), chains: \(chains.map({ $0.rawValue} ))")
 
@@ -207,9 +207,9 @@ private struct NFTsResponse: Codable {
 
 private struct NFTModelsForChainResponse: Codable {
     var cursor: String?
-    var enabled: Bool
     var verified: Bool?
     var address: String
+    @DecodeIgnoringFailed
     var nfts: [NFTModel]
     var chain: NFTModelChain?
     

@@ -50,6 +50,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             .onAppear(perform: { setAvailableDomains() })
             .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
                 guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
+                      wallet.rrDomain == nil,
                       wallet.isReverseResolutionChangeAllowed() else {
                     dismiss()
                     return
