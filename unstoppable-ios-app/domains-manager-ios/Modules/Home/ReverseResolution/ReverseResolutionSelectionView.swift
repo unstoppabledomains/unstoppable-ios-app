@@ -41,6 +41,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                     CloseButtonView {
                         
                     }
+                    .opacity(0)
                 }
                 ToolbarItem(placement: .bottomBar) {
                     confirmView()
