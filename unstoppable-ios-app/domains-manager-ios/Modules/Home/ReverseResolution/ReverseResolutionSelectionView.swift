@@ -34,9 +34,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                 }
             }
             .background(Color.backgroundDefault)
-            .displayError($error, dismissCallback: {
-                tabRouter.resolvingPrimaryDomainWallet = nil
-            })
+            .displayError($error, dismissCallback: dismiss)
             .toolbar(content: {
                 ToolbarItem(placement: .navigation) {
                     CloseButtonView {
@@ -149,12 +147,16 @@ private extension ReverseResolutionSelectionView {
                 
                 try await udWalletsService.setReverseResolution(to: domain,
                                                                 paymentConfirmationDelegate: paymentHandler)
-                tabRouter.resolvingPrimaryDomainWallet = nil
+                dismiss()
             } catch {
                 self.error = error
             }
             isSettingRRDomain = false
         }
+    }
+    
+    func dismiss() {
+        tabRouter.resolvingPrimaryDomainWallet = nil
     }
 }
 
