@@ -23,6 +23,12 @@ struct WalletEntity: Codable {
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
         balance.first(where: { $0.symbol == blockchainType.rawValue })
     }
+    
+    func isReverseResolutionChangeAllowed() -> Bool {
+        let domainsAllowedToSetRR = domains.availableForRRItems().filter({ $0.name != rrDomain?.name && $0.isReverseResolutionChangeAllowed() })
+        
+        return !domainsAllowedToSetRR.isEmpty
+    }
 }
 
 extension WalletEntity: Identifiable {

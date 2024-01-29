@@ -49,6 +49,10 @@ extension WalletsDataService: WalletsDataServiceProtocol {
         refreshDataForWalletAsync(wallet)
         UserDefaults.selectedWalletAddress = wallet.address
     }
+    
+    func refreshDataForWallet(_ wallet: WalletEntity) async throws  {
+        await refreshDataForWalletSync(wallet)
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -89,6 +93,14 @@ private extension WalletsDataService {
         refreshWalletNFTsAsync(wallet)
     }
     
+    func refreshDataForWalletSync(_ wallet: WalletEntity) async {
+        async let domainsTask: () = refreshWalletDomainsSync(wallet, shouldRefreshPFP: true)
+        async let walletsTask: () = refreshWalletBalancesSync(wallet)
+        async let NFTsTask: () = refreshWalletNFTsSync(wallet)
+        
+        await (_) = (domainsTask, walletsTask, NFTsTask)
+    }
+    
     func getUDWallets() -> [UDWallet] {
         walletsService.getUserWallets()
     }
@@ -110,46 +122,50 @@ private extension WalletsDataService {
 private extension WalletsDataService {
     func refreshWalletDomainsAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) {
         Task {
-            do {
-                async let domainsTask = domainsService.updateDomainsList(for: [wallet.udWallet])
-                async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
-                let (domains, reverseResolutionDomainName) = try await (domainsTask, reverseResolutionTask)
-                let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomainsFor(walletAddress: wallet.address).map({ $0.name })
-                let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains, for: wallet.address)
-                
-                if domains.isEmpty,
-                   mintingDomainsNames.isEmpty,
-                   pendingPurchasedDomains.isEmpty {
-                    mutateWalletEntity(wallet) { wallet in
-                        wallet.domains = []
-                        wallet.rrDomain = nil
-                    }
-                    return
-                }
-               
-                async let transactionsTask = transactionsService.updatePendingTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
-                async let domainsPFPInfoTask = loadDomainsPFPIfNotTooLarge(domains)
-                let (transactions, domainsPFPInfo) = try await (transactionsTask, domainsPFPInfoTask)
-                
-                let finalDomains = await buildWalletDomainsDisplayInfoData(wallet: wallet,
-                                                                           domains: domains,
-                                                                           pfpInfo: domainsPFPInfo,
-                                                                           withTransactions: transactions,
-                                                                           reverseResolutionDomainName: reverseResolutionDomainName)
-                
-                walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
-           
-                if shouldRefreshPFP {
-                    await loadWalletDomainsPFPIfTooLarge(wallet)
-                }
-            }
+            await refreshWalletDomainsSync(wallet, shouldRefreshPFP: shouldRefreshPFP)
         }
+    }
+
+    func refreshWalletDomainsSync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
+        do {
+            async let domainsTask = domainsService.updateDomainsList(for: [wallet.udWallet])
+            async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
+            let (domains, reverseResolutionDomainName) = try await (domainsTask, reverseResolutionTask)
+            let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomainsFor(walletAddress: wallet.address).map({ $0.name })
+            let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains, for: wallet.address)
+            
+            if domains.isEmpty,
+               mintingDomainsNames.isEmpty,
+               pendingPurchasedDomains.isEmpty {
+                mutateWalletEntity(wallet) { wallet in
+                    wallet.domains = []
+                    wallet.rrDomain = nil
+                }
+                return
+            }
+            
+            async let transactionsTask = transactionsService.updatePendingTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
+            async let domainsPFPInfoTask = loadDomainsPFPIfNotTooLarge(domains)
+            let (transactions, domainsPFPInfo) = try await (transactionsTask, domainsPFPInfoTask)
+            
+            let finalDomains = await buildWalletDomainsDisplayInfoData(wallet: wallet,
+                                                                       domains: domains,
+                                                                       pfpInfo: domainsPFPInfo,
+                                                                       withTransactions: transactions,
+                                                                       reverseResolutionDomainName: reverseResolutionDomainName)
+            
+            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
+            
+            if shouldRefreshPFP {
+                await loadWalletDomainsPFPIfTooLarge(wallet)
+            }
+        } catch { }
     }
     
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
                                            domains: [DomainItem],
                                            pfpInfo: [DomainPFPInfo],
-                                           withTransactions transactions: [TransactionItem],
+                                           withTransactions pendingTransactions: [TransactionItem],
                                            reverseResolutionDomainName: DomainName?) async -> [DomainWithDisplayInfo] {
         
         let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
@@ -158,11 +174,11 @@ private extension WalletsDataService {
         var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
         for domain in domains {
             var domainState: DomainDisplayInfo.State = .default
-            if transactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
+            if pendingTransactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
-            } else if transactions.containMintingInProgress(domain) {
+            } else if pendingTransactions.containMintingInProgress(domain) {
                 domainState = .minting
-            } else if transactions.containPending(domain) {
+            } else if pendingTransactions.containPending(domain) {
                 domainState = .updatingRecords
             }
             
@@ -186,7 +202,7 @@ private extension WalletsDataService {
         domainsWithDisplayInfo.append(contentsOf: purchasedDomainsWithDisplayInfo)
         
         // Set minting domains
-        let mintingTransactions = transactions.filterPending(extraCondition: { $0.isMintingTransaction() })
+        let mintingTransactions = pendingTransactions.filterPending(extraCondition: { $0.isMintingTransaction() })
         let mintingDomainsNames = mintingTransactions.compactMap({ $0.domainName })
         var mintingDomainsWithDisplayInfoItems = [DomainWithDisplayInfo]()
         
@@ -358,13 +374,17 @@ private extension WalletsDataService {
 private extension WalletsDataService {
     func refreshWalletBalancesAsync(_ wallet: WalletEntity) {
         Task {
-            do {
-                let walletBalances = try await loadBalanceFor(wallet: wallet)
-                mutateWalletEntity(wallet) { wallet in
-                    wallet.balance = walletBalances ?? []
-                }
-            }
+            await refreshWalletBalancesSync(wallet)
         }
+    }
+    
+    func refreshWalletBalancesSync(_ wallet: WalletEntity) async {
+        do {
+            let walletBalances = try await loadBalanceFor(wallet: wallet)
+            mutateWalletEntity(wallet) { wallet in
+                wallet.balance = walletBalances ?? []
+            }
+        } catch { }
     }
     
     func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio]? {
@@ -376,13 +396,17 @@ private extension WalletsDataService {
 private extension WalletsDataService {
     func refreshWalletNFTsAsync(_ wallet: WalletEntity) {
         Task {
-            do {
-                let nfts = try await loadNFTsFor(wallet: wallet)
-                mutateWalletEntity(wallet) { wallet in
-                    wallet.nfts = nfts
-                }
-            }
+            await refreshWalletNFTsSync(wallet)
         }
+    }
+    
+    func refreshWalletNFTsSync(_ wallet: WalletEntity) async {
+        do {
+            let nfts = try await loadNFTsFor(wallet: wallet)
+            mutateWalletEntity(wallet) { wallet in
+                wallet.nfts = nfts
+            }
+        } catch { }
     }
     
     func loadNFTsFor(wallet: WalletEntity) async throws -> [NFTDisplayInfo] {
@@ -409,7 +433,7 @@ private extension WalletsDataService {
 // MARK: - Setup methods
 private extension WalletsDataService {
     func setCachedSelectedWalletAndRefresh() {
-        selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
+        selectedWallet =  wallets.first
         if let selectedWallet {
             refreshDataForWalletAsync(selectedWallet)
         }

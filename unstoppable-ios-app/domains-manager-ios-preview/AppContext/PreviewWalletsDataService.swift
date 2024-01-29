@@ -8,6 +8,7 @@
 import Foundation
 
 final class PreviewWalletsDataService: WalletsDataServiceProtocol {
+   
     
     private(set) var wallets: [WalletEntity] = []
     @Published private(set) var selectedWallet: WalletEntity? = nil
@@ -21,4 +22,9 @@ final class PreviewWalletsDataService: WalletsDataServiceProtocol {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
     }
+    
+    func refreshDataForWallet(_ wallet: WalletEntity) async throws {
+        
+    }
+    
 }

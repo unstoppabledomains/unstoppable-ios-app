@@ -134,13 +134,11 @@ extension HomeWalletView {
             isSelectWalletPresented = true
         }
         
-        func runSelectRRDomainInSelectedWalletIfNeeded() {
+        private func runSelectRRDomainInSelectedWalletIfNeeded() {
             guard selectedWallet.rrDomain == nil else { return }
             
-            let domainsAvailableForRR = selectedWallet.domains.availableForRRItems()
-            
-            if !domainsAvailableForRR.isEmpty,
-               router.resolvingPrimaryDomainWallet == nil {
+            if router.resolvingPrimaryDomainWallet == nil,
+               selectedWallet.isReverseResolutionChangeAllowed() {
                 router.resolvingPrimaryDomainWallet = selectedWallet
             }
         }

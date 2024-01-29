@@ -13,4 +13,5 @@ protocol WalletsDataServiceProtocol {
     var wallets: [WalletEntity] { get }
     
     func setSelectedWallet(_ wallet: WalletEntity)
+    func refreshDataForWallet(_ wallet: WalletEntity) async throws
 }

@@ -99,6 +99,9 @@ struct HomeWalletView: View {
                     qrNavButtonView()
                 }
             })
+            .refreshable {
+                try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
+            }
         }, navigationStateProvider: { state in
             self.navigationState = state
             state.customTitle = navigationView
