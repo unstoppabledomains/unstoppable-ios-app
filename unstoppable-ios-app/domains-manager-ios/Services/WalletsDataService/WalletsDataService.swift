@@ -33,6 +33,7 @@ final class WalletsDataService {
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
+        walletsService.addListener(self)
         wallets = storage.getCachedWallets()
         queue.async {
             self.ensureConsistencyWithUDWallets()
@@ -63,9 +64,14 @@ extension WalletsDataService: UDWalletsServiceListener {
             case .walletsUpdated, .walletRemoved:
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
-                if let selectedWallet,
-                   selectedWallet.domains.first(where: { $0.name == domainName }) != nil {
+                if var selectedWallet,
+                   let domainIndex = selectedWallet.domains.firstIndex(where: { $0.name == domainName }) {
+                    var domain = selectedWallet.domains[domainIndex]
+                    domain.setState(.updatingRecords)
+                    selectedWallet.rrDomain = domain
+                    selectedWallet.domains[domainIndex] = domain
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
             }
         }

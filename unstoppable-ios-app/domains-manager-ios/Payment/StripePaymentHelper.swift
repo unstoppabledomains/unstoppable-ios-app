@@ -11,10 +11,10 @@ import Stripe
 import PassKit
 
 struct StripePaymentHelper {
-    weak var hostVc: UIViewController?
+    weak var hostVc: STPApplePayContextDelegate?
     let txCost: NetworkService.TxCost
     
-    init(hostVc: UIViewController, txCost: NetworkService.TxCost) {
+    init(hostVc: STPApplePayContextDelegate, txCost: NetworkService.TxCost) {
         self.hostVc = hostVc
         self.txCost = txCost
     }

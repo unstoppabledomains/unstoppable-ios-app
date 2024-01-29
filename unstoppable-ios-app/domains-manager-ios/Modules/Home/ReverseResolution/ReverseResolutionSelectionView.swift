@@ -9,10 +9,16 @@ import SwiftUI
 
 struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udWalletsService) private var udWalletsService
+    
+    @EnvironmentObject var tabRouter: HomeTabRouter
+    @StateObject private var paymentHandler = SwiftUIViewPaymentHandler()
     var analyticsName: Analytics.ViewName { .setupReverseResolution }
     
     let wallet: WalletEntity
     
+    @State private var error: Error?
+    @State private var isSettingRRDomain = false
     @State private var domains: [DomainDisplayInfo] = []
     @State private var selectedDomain: DomainDisplayInfo?
     
@@ -28,6 +34,9 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                 }
             }
             .background(Color.backgroundDefault)
+            .displayError($error, dismissCallback: {
+                tabRouter.resolvingPrimaryDomainWallet = nil
+            })
             .toolbar(content: {
                 ToolbarItem(placement: .navigation) {
                     CloseButtonView {
@@ -121,11 +130,31 @@ private extension ReverseResolutionSelectionView {
     func confirmView() -> some View {
         UDButtonView(text: String.Constants.confirm.localized(),
                      icon: nil,
-                     style: .large(.raisedPrimary)) {
+                     style: .large(.raisedPrimary),
+                     isLoading: isSettingRRDomain) {
             logButtonPressedAnalyticEvents(button: .confirm, parameters: [.value : selectedDomain?.name ?? ""])
+            setSelectedDomainAsRR()
         }
                      .disabled(selectedDomain == nil)
                      .padding(EdgeInsets(top: 0, leading: 0, bottom: 6, trailing: 0))
+                     .allowsHitTesting(!isSettingRRDomain)
+    }
+    
+    func setSelectedDomainAsRR() {
+        Task {
+            isSettingRRDomain = true
+            do {
+                guard let selectedDomain else { return }
+                let domain = try await appContext.dataAggregatorService.getDomainWith(name: selectedDomain.name)
+                
+                try await udWalletsService.setReverseResolution(to: domain,
+                                                                paymentConfirmationDelegate: paymentHandler)
+                tabRouter.resolvingPrimaryDomainWallet = nil
+            } catch {
+                self.error = error
+            }
+            isSettingRRDomain = false
+        }
     }
 }
 

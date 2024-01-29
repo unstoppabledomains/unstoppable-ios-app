@@ -775,6 +775,10 @@
 		C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
 		C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
 		C65CEB892B6749EE00A13B34 /* PreviewWalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FDA32B58E79E00B93433 /* PreviewWalletsDataService.swift */; };
+		C65CEB8B2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65CEB8A2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift */; };
+		C65CEB8C2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65CEB8A2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift */; };
+		C65CEB8E2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65CEB8D2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift */; };
+		C65CEB8F2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65CEB8D2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift */; };
 		C65DD4B92A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */; };
 		C65DD4C42A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */; };
 		C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = C65DD4C52A7CABC700CAB10C /* Valet */; };
@@ -3024,6 +3028,8 @@
 		C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthTokenStorage.swift; sourceTree = "<group>"; };
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
 		C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserPullUpSelectionItem.swift; sourceTree = "<group>"; };
+		C65CEB8A2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletsServiceEnvironmentKey.swift; sourceTree = "<group>"; };
+		C65CEB8D2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIViewPaymentHandler.swift; sourceTree = "<group>"; };
 		C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPPushNotificationsHelper.swift; sourceTree = "<group>"; };
 		C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPPushNotificationsExtensionHelper.swift; sourceTree = "<group>"; };
 		C65DD4C92A7CACEC00CAB10C /* Extension-String+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String+Notification.swift"; sourceTree = "<group>"; };
@@ -4749,6 +4755,7 @@
 				C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */,
 				C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */,
 				C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */,
+				C65CEB8A2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift */,
 			);
 			path = EnvironmentKeys;
 			sourceTree = "<group>";
@@ -5459,6 +5466,7 @@
 		C64939FA2B637DCB00457363 /* ReverseResolution */ = {
 			isa = PBXGroup;
 			children = (
+				C65CEB8D2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift */,
 				C64939FB2B637DDB00457363 /* ReverseResolutionSelectionView.swift */,
 				C64939FE2B6399EA00457363 /* ReverseResolutionSelectionRowView.swift */,
 			);
@@ -8943,6 +8951,7 @@
 				C6D647342B1ED9D600D724AC /* WCRequestUIConfiguration.swift in Sources */,
 				C650AC3D298105C900A398AB /* UDSegmentedControl.swift in Sources */,
 				C6A474E029D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
+				C65CEB8E2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */,
 				C692C355282EA63100C31393 /* AppearanceSettingsViewController.swift in Sources */,
 				C60982152823B6B900546392 /* MockUDWalletsService.swift in Sources */,
 				3026FA1C27E76F6600FE058B /* ProtectWalletViewController.swift in Sources */,
@@ -8961,6 +8970,7 @@
 				C6E0415B295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C623969A2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
 				C61236F5292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
+				C65CEB8B2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
 				C6F9FBB82A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */,
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
 				C6B40E902B5F83370038CEB0 /* HomeWalletWalletSelectionRowView.swift in Sources */,
@@ -10166,6 +10176,7 @@
 				C6C8F8272B217D3500A9834D /* WCCompatibleWallet.swift in Sources */,
 				C6C8F91E2B2183AB00A9834D /* InviteFriendStepView.swift in Sources */,
 				C6D646912B1ED13C00D724AC /* AddCurrencyViewPresenter.swift in Sources */,
+				C65CEB8C2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
 				C6C8F83D2B217E9600A9834D /* OnboardingBackupWalletPresenter.swift in Sources */,
 				C6D645C82B1DBD3900D724AC /* CNavigationBar.swift in Sources */,
 				C618085B2B19BBFE0032E543 /* UDTextFieldView.swift in Sources */,
@@ -10385,6 +10396,7 @@
 				C6D646722B1ED11B00D724AC /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C6D646FB2B1ED74E00D724AC /* GhostTertiaryWhiteButton.swift in Sources */,
 				C61808702B19BC100032E543 /* ForEach+Skeleton.swift in Sources */,
+				C65CEB8F2B67537900A13B34 /* SwiftUIViewPaymentHandler.swift in Sources */,
 				C6D646332B1DC43D00D724AC /* TextButton.swift in Sources */,
 				C61807C52B19A3580032E543 /* PreviewAppContext.swift in Sources */,
 				C6C8F90E2B21839100A9834D /* ChatListEmptyCell.swift in Sources */,
