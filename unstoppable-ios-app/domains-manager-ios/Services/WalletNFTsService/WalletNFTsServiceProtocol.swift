@@ -8,9 +8,7 @@
 import Foundation
 
 protocol WalletNFTsServiceProtocol {
-    func getImageNFTsFor(domainName: String) async throws -> [NFTModel]
-    @discardableResult
-    func refreshNFTsFor(domainName: String) async throws -> [NFTModel]
+    func fetchNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel]
     
     // Listeners
     func addListener(_ listener: WalletNFTsServiceListener)

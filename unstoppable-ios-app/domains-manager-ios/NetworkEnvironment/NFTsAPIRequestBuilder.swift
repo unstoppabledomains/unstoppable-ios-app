@@ -9,8 +9,8 @@ import Foundation
 
 final class NFTsAPIRequestBuilder {
     
-    func nftsFor(domainName: String, limit: Int, cursor: String?, chains: [NFTModelChain]?) -> APIRequest {
-        var url = nftsURLFor(domainName: domainName) + "?limit=\(limit)"
+    func nftsFor(wallet: String, limit: Int, cursor: String?, chains: [NFTModelChain]?) -> APIRequest {
+        var url = nftsURLFor(wallet: wallet) + "?limit=\(limit)"
     
         if let cursor {
            url += "&cursor=\(cursor)"
@@ -22,16 +22,16 @@ final class NFTsAPIRequestBuilder {
         }
         
         return APIRequest(url: URL(string: url)!,
-                          headers: [:],
+                          headers: NetworkService.profilesAPIHeader,
                           body: "",
                           method: .get)
     }
     
-    func nftsURLFor(domainName: String) -> String {
-        baseURL() + "/\(domainName)/nfts"
+    func nftsURLFor(wallet: String) -> String {
+        baseURL() + "/\(wallet)/nfts"
     }
     
     private func baseURL() -> String  {
-       "https://" + NetworkConfig.baseProfileHost + "/profile/public"
+        "https://" + NetworkConfig.baseProfileHost + "/profile/user"
     }
 }
