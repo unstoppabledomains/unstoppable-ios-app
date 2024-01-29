@@ -49,6 +49,13 @@ extension HomeTabRouter {
         tabViewSelection = .wallets
     }
     
+    func runPurchaseFlow() {
+        Task {
+            await showHomeScreenList()
+            walletViewNavPath.append(HomeWalletView.NavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
+        }
+    }
+    
     func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
         if let mintingNav {
             mintingNav.refreshMintingProgress()
@@ -236,6 +243,7 @@ private extension HomeTabRouter {
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil
+        resolvingPrimaryDomainWallet = nil
         walletViewNavPath = .init()
         chatsListCoordinator?.popToChatsList()
     }

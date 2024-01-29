@@ -39,6 +39,9 @@ final class PurchaseDomainsNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
+            if let navigationController {
+                return navigationController.popViewController(animated: true)
+            }
             return cNavigationController?.popViewController(animated: true)
         }
         return super.popViewController(animated: animated, completion: completion)
@@ -96,6 +99,10 @@ private extension PurchaseDomainsNavigationController {
         cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let domainsPurchasedCallback = self.domainsPurchasedCallback
         self.cNavigationController?.popViewController(animated: true) {
+            domainsPurchasedCallback?(result)
+        }
+        navigationController?.popViewController(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             domainsPurchasedCallback?(result)
         }
     }
@@ -241,4 +248,19 @@ extension PurchaseDomainsNavigationController {
         case cancel
         case purchased(domainName: String)
     }
+}
+
+import SwiftUI
+struct PurchaseDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
+    
+    let domainsPurchasedCallback:  PurchaseDomainsNavigationController.DomainsPurchasedCallback
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
+        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
+        return purchaseDomainsNavigationController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
 }

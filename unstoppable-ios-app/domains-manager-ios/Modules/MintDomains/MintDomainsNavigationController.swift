@@ -164,6 +164,9 @@ private extension MintDomainsNavigationController {
         cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let domainsMintedCallback = self.domainsMintedCallback
         self.cNavigationController?.popViewController(animated: true) {
+        }
+        navigationController?.popViewController(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             domainsMintedCallback?(result)
         }
     }

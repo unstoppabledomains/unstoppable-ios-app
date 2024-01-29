@@ -130,6 +130,7 @@ private extension ReverseResolutionSelectionView {
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }, callback: {
                 UDVibration.buttonTap.vibrate()
+                tabRouter.runPurchaseFlow()
             })
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
