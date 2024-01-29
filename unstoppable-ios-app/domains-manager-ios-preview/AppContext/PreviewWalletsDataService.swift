@@ -10,7 +10,8 @@ import Foundation
 final class PreviewWalletsDataService: WalletsDataServiceProtocol {
    
     
-    private(set) var wallets: [WalletEntity] = []
+    @Published private(set) var wallets: [WalletEntity] = []
+    var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }
     @Published private(set) var selectedWallet: WalletEntity? = nil
     var selectedWalletPublisher: Published<WalletEntity?>.Publisher { $selectedWallet }
     
@@ -27,4 +28,7 @@ final class PreviewWalletsDataService: WalletsDataServiceProtocol {
         
     }
     
+    func didChangeEnvironment() {
+        
+    }
 }

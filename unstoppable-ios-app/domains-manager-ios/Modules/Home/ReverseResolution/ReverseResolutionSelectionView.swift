@@ -10,12 +10,13 @@ import SwiftUI
 struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.udWalletsService) private var udWalletsService
+    @Environment(\.walletsDataService) private var walletsDataService
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject private var paymentHandler = SwiftUIViewPaymentHandler()
     var analyticsName: Analytics.ViewName { .setupReverseResolution }
     
-    let wallet: WalletEntity
+    @State var wallet: WalletEntity
     
     @State private var error: Error?
     @State private var isSettingRRDomain = false
@@ -45,15 +46,26 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                     confirmView()
                 }
             })
-            .onAppear(perform: {
-                domains = wallet.domains.availableForRRItems()
-            })
+            .onAppear(perform: { setAvailableDomains() })
+            .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
+                guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
+                      wallet.isReverseResolutionChangeAllowed() else {
+                    dismiss()
+                    return
+                }
+                self.wallet = wallet
+                setAvailableDomains()
+            }
         }
     }
 }
 
 // MARK: - Private methods
 private extension ReverseResolutionSelectionView {
+    func setAvailableDomains() {
+        domains = wallet.domains.availableForRRItems()
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack {

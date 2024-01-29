@@ -25,9 +25,11 @@ struct WalletEntity: Codable {
     }
     
     func isReverseResolutionChangeAllowed() -> Bool {
-        let domainsAllowedToSetRR = domains.availableForRRItems().filter({ $0.name != rrDomain?.name && $0.isReverseResolutionChangeAllowed() })
+        let domainsAvailableForRR = domains.availableForRRItems()
+        guard !domainsAvailableForRR.isEmpty else { return false }
         
-        return !domainsAllowedToSetRR.isEmpty
+        let isAllowedToSetRR = domainsAvailableForRR.first(where: { !$0.isReverseResolutionChangeAllowed() }) == nil
+        return isAllowedToSetRR
     }
 }
 

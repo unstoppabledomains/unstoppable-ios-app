@@ -187,6 +187,7 @@ private extension SettingsPresenter {
         appContext.messagingService.logout()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
+        appContext.walletsDataService.didChangeEnvironment()
         notificationsService.updateTokenSubscriptions()
     }
     

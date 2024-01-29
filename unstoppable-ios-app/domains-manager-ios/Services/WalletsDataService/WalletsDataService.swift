@@ -19,7 +19,8 @@ final class WalletsDataService {
     private let walletNFTsService: WalletNFTsServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
     
-    private(set) var wallets: [WalletEntity] = []
+    @Published private(set) var wallets: [WalletEntity] = []
+    var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }
     @Published private(set) var selectedWallet: WalletEntity? = nil
     var selectedWalletPublisher: Published<WalletEntity?>.Publisher { $selectedWallet }
     
@@ -54,6 +55,12 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     func refreshDataForWallet(_ wallet: WalletEntity) async throws  {
         await refreshDataForWalletSync(wallet)
     }
+    
+    func didChangeEnvironment() {
+        wallets.forEach { wallet in
+            refreshDataForWalletAsync(wallet)
+        }
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -64,12 +71,14 @@ extension WalletsDataService: UDWalletsServiceListener {
             case .walletsUpdated, .walletRemoved:
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
-                if var selectedWallet,
+                if let selectedWallet,
                    let domainIndex = selectedWallet.domains.firstIndex(where: { $0.name == domainName }) {
                     var domain = selectedWallet.domains[domainIndex]
                     domain.setState(.updatingRecords)
-                    selectedWallet.rrDomain = domain
-                    selectedWallet.domains[domainIndex] = domain
+                    mutateWalletEntity(selectedWallet) { wallet in
+                        wallet.rrDomain = domain
+                        wallet.domains[domainIndex] = domain
+                    }
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
@@ -93,8 +102,8 @@ extension WalletsDataService: UDWalletsServiceListener {
 
 // MARK: - Private methods
 private extension WalletsDataService {
-    func refreshDataForWalletAsync(_ wallet: WalletEntity) {
-        refreshWalletDomainsAsync(wallet, shouldRefreshPFP: true)
+    func refreshDataForWalletAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool = true) {
+        refreshWalletDomainsAsync(wallet, shouldRefreshPFP: shouldRefreshPFP)
         refreshWalletBalancesAsync(wallet)
         refreshWalletNFTsAsync(wallet)
     }
@@ -174,6 +183,13 @@ private extension WalletsDataService {
                                            withTransactions pendingTransactions: [TransactionItem],
                                            reverseResolutionDomainName: DomainName?) async -> [DomainWithDisplayInfo] {
         
+        var reverseResolutionDomainName = reverseResolutionDomainName
+        if let setRRTransaction = pendingTransactions.filterPending(extraCondition: { $0.operation == .setReverseResolution }).first {
+            reverseResolutionDomainName = setRRTransaction.domainName
+        } else if let removeRRTransaction = pendingTransactions.filterPending(extraCondition: { $0.operation == .removeReverseResolution }).first,
+                  removeRRTransaction.domainName == reverseResolutionDomainName {
+            reverseResolutionDomainName = nil
+        }
         let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
         
         // Aggregate domain display info
@@ -457,7 +473,7 @@ private extension WalletsDataService {
         }
         if !removedWallets.isEmpty {
             wallets = wallets.filter { walletEntity in
-                removedWallets.first(where: { $0.address == walletEntity.address }) != nil
+                removedWallets.first(where: { $0.address == walletEntity.address }) == nil
             }
         }
         
