@@ -13,11 +13,13 @@ struct NFTDetailsView: View {
     @State private var nftImage: UIImage?
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
                 DismissIndicatorView()
                 nftImageView()
                 nftCollectionInfoView()
+                separatorView()
+                nftPriceInfoView()
                 separatorView()
                 nftDescriptionInfoView()
             }
@@ -52,8 +54,8 @@ private extension NFTDetailsView {
     }
     
     @ViewBuilder
-    func separatorView() -> some View {
-        Line()
+    func separatorView(direction: Line.Direction = .horizontal) -> some View {
+        Line(direction: direction)
             .stroke(lineWidth: 1)
             .foregroundStyle(Color.foregroundSecondary)
     }
@@ -99,16 +101,46 @@ private extension NFTDetailsView {
             HStack(spacing: 8) {
                 Image.notesIcon
                     .resizable()
+                    .renderingMode(.template)
                     .squareFrame(20)
-                    .foregroundStyle(Color.foregroundSecondary)
                 Text(String.Constants.nftDetailsAboutCollectionHeader.localized(collectionName))
                     .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
                 Spacer()
             }
+            .foregroundStyle(Color.foregroundDefault)
             Text(nft.description ?? "-")
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
+    func nftPriceInfoView() -> some View {
+        HStack(alignment: .center, spacing: 8) {
+            Spacer()
+            nftPriceValueView(title: "Last Sale Price",
+                              value: nft.lastSalePrice)
+            separatorView(direction: .vertical)
+                .frame(width: 1)
+            nftPriceValueView(title: "Floor Price",
+                              value: nft.floorPrice)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
+    func nftPriceValueView(title: String, value: String?) -> some View {
+        VStack(alignment: .center, spacing: 4) {
+            Text(title)
+                .frame(height: 20)
+                .font(.currentFont(size: 14, weight: .medium))
+                .foregroundStyle(Color.white.opacity(0.48))
+            Text(value ?? "None")
+                .frame(height: 24)
+                .font(.currentFont(size: 16, weight: .medium))
+                .foregroundStyle(Color.white.opacity(value == nil ? 0.32 : 1))
         }
         .frame(maxWidth: .infinity)
     }

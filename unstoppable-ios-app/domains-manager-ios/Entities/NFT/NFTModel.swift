@@ -12,7 +12,7 @@ struct NFTModel: Codable, Hashable {
     let link: String
     let collection: String
     let collectionOwners: Int?
-    let collectionLink: String?
+    let collectionLink: URL?
     let name: String?
     let description: String?
     let imageUrl: String?
@@ -32,7 +32,53 @@ struct NFTModel: Codable, Hashable {
         case imageUrl = "image_url"
         case isPublic = "public"
     }
+   
+    var lastSalePrice: String? {
+        let saleTransactions = ([saleDetails?.primary] + (saleDetails?.secondary ?? [])).compactMap { $0 }
+        if let latestPrice = saleTransactions.filter({ $0.date != nil && $0.payment?.symbol != nil && $0.payment?.valueNative != nil }).sorted(by: { $0.date! > $1.date! }).first(where: { $0.payment != nil }) {
+            let symbol = latestPrice.payment!.symbol!
+            let value = latestPrice.payment!.valueNative!
+            return "\(value) \(symbol)"
+        }
+        return nil
+    }
     
+    
+    var floorPriceValue: String? {
+        if let floorPrice,
+           let currency = floorPrice.currency,
+           let value = floorPrice.value {
+            return "\(value) \(currency)"
+        }
+        return nil
+    }
+}
+
+extension NFTModel {
+    struct SaleDetails: Codable, Hashable {
+        let primary: SaleTransaction
+        let secondary: [SaleTransaction]?
+    }
+    
+    struct SaleTransaction: Codable, Hashable {
+        let type: String?
+        let date: Date?
+        let cost: Double?
+        let txHash: String?
+        let marketPlace: String?
+        let payment: PaymentDetails?
+    }
+    
+    struct PaymentDetails: Codable, Hashable {
+        let symbol: String?
+        let valueUsd: Double?
+        let valueNative: Double?
+    }
+    
+    struct FloorPrice: Codable, Hashable {
+        let currency: String?
+        let value: Double?
+    }
 }
 
 extension Array where Element == NFTModel {
@@ -48,29 +94,3 @@ extension Array where Element == NFTModel {
     }
     
 }
-
-struct SaleDetails: Codable, Hashable {
-    let primary: SaleTransaction
-    let secondary: [SaleTransaction]?
-}
-
-struct SaleTransaction: Codable, Hashable {
-    let type: String?
-    let date: String?
-    let cost: Double?
-    let txHash: String?
-    let marketPlace: String?
-    let payment: PaymentDetails?
-}
-
-struct PaymentDetails: Codable, Hashable {
-    let symbol: String?
-    let valueUsd: Double?
-    let valueNative: Double?
-}
-
-struct FloorPrice: Codable, Hashable {
-    let currency: String?
-    let value: Double?
-}
-

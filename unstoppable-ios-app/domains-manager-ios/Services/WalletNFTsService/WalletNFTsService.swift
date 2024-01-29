@@ -209,7 +209,7 @@ private struct NFTModelsForChainResponse: Codable {
     var cursor: String?
     var verified: Bool?
     var address: String
-    @DecodeIgnoringFailed
+//    @DecodeIgnoringFailed
     var nfts: [NFTModel]
     var chain: NFTModelChain?
     

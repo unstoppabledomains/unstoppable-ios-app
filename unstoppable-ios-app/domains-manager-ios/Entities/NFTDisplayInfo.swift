@@ -17,8 +17,11 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let link: String
     let tags: [String]
     let collection: String
+    let collectionLink: URL?
     let mint: String
     let traits: [String : String]
+    let floorPrice: String?
+    let lastSalePrice: String?
     var chain: NFTModelChain?
     var address: String?
     
@@ -56,5 +59,8 @@ extension NFTDisplayInfo {
         self.chain = nftModel.chain
         self.address = nftModel.address
         self.traits = nftModel.traits ?? [:]
+        self.collectionLink = nftModel.collectionLink
+        self.lastSalePrice = nftModel.lastSalePrice
+        self.floorPrice = nftModel.floorPriceValue
     }
 }
