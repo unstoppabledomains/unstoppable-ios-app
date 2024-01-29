@@ -18,7 +18,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
-    @Published var isResolvingPrimaryDomain: Bool = false
+    @Published var resolvingPrimaryDomainWallet: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
@@ -116,7 +116,7 @@ extension HomeTabRouter {
                 mintingNav.setMode(mode)
             } else if let _ = topPresentedViewController as? AddWalletNavigationController {
                 // MARK: - Ignore minting request when add/import/connect wallet
-            } else if !isResolvingPrimaryDomain {
+            } else if resolvingPrimaryDomainWallet == nil {
                 await popToRootAndWait()
                 guard await isMintingAvailable() else { return }
                 

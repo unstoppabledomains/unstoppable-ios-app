@@ -23,9 +23,12 @@ extension HomeWalletView {
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
         @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
+        private var router: HomeTabRouter
         
-        init(selectedWallet: WalletEntity) {
+        init(selectedWallet: WalletEntity,
+             router: HomeTabRouter) {
             self.selectedWallet = selectedWallet
+            self.router = router
             
             setSelectedWallet(selectedWallet)
             
@@ -63,6 +66,7 @@ extension HomeWalletView {
             sortCollectibles(selectedCollectiblesSortingOption)
             sortDomains(selectedDomainsSortingOption)
             sortTokens(selectedTokensSortingOption)
+            runSelectRRDomainInSelectedWalletIfNeeded()
         }
         
         private func sortTokens(_ sortOption: TokensSortingOptions) {
@@ -128,6 +132,17 @@ extension HomeWalletView {
         
         func domainNamePressed() {
             isSelectWalletPresented = true
+        }
+        
+        func runSelectRRDomainInSelectedWalletIfNeeded() {
+            guard selectedWallet.rrDomain == nil else { return }
+            
+            let domainsAvailableForRR = selectedWallet.domains.availableForRRItems()
+            
+            if !domainsAvailableForRR.isEmpty,
+               router.resolvingPrimaryDomainWallet == nil {
+                router.resolvingPrimaryDomainWallet = selectedWallet
+            }
         }
     }
 }

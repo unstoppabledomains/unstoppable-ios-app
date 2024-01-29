@@ -28,8 +28,6 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                 }
             }
             .background(Color.backgroundDefault)
-
-            .ignoresSafeArea(edges: .bottom)
             .toolbar(content: {
                 ToolbarItem(placement: .navigation) {
                     CloseButtonView {
@@ -42,7 +40,6 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             })
             .onAppear(perform: {
                 domains = wallet.domains.availableForRRItems()
-                domains = Array(domains.prefix(4))
             })
         }
     }
@@ -128,7 +125,7 @@ private extension ReverseResolutionSelectionView {
             logButtonPressedAnalyticEvents(button: .confirm, parameters: [.value : selectedDomain?.name ?? ""])
         }
                      .disabled(selectedDomain == nil)
-                     .padding(EdgeInsets(top: 0, leading: 4, bottom: 2, trailing: 4))
+                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 6, trailing: 0))
     }
 }
 

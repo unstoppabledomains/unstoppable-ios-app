@@ -277,7 +277,8 @@ extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!))
+        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
+                                        router: .init()))
     }
 }
 

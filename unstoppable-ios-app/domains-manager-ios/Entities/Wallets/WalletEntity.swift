@@ -25,6 +25,10 @@ struct WalletEntity: Codable {
     }
 }
 
+extension WalletEntity: Identifiable {
+    var id: String { address }
+}
+
 extension WalletEntity: Hashable {
     static func == (lhs: WalletEntity, rhs: WalletEntity) -> Bool {
         lhs.displayInfo == rhs.displayInfo &&
