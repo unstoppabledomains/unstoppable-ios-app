@@ -45,6 +45,12 @@ extension View {
         openURLExternally(url)
     }
     
+    func openLink(_ link: String.Links) {
+        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        topVC.openLink(link)
+    }
+    
 }
 
 extension View {

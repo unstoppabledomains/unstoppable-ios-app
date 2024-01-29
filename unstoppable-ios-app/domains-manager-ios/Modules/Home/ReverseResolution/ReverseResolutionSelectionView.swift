@@ -11,7 +11,8 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.udWalletsService) private var udWalletsService
     @Environment(\.walletsDataService) private var walletsDataService
-    
+    @Environment(\.presentationMode) private var presentationMode
+
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject private var paymentHandler = SwiftUIViewPaymentHandler()
     var analyticsName: Analytics.ViewName { .setupReverseResolution }
@@ -171,7 +172,7 @@ private extension ReverseResolutionSelectionView {
     }
     
     func dismiss() {
-        tabRouter.resolvingPrimaryDomainWallet = nil
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

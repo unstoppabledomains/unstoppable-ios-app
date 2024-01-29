@@ -116,9 +116,10 @@ extension MockEntitiesFabric {
                   collection: "Collection name",
                   collectionLink: URL(string: "https://google.com"),
                   mint: UUID().uuidString,
-                  traits: ["Background" : "M1 Orange"],
-                  floorPrice: "5.32 MATIC", 
+                  traits: [.init(name: "Background", value: "M1 Orange")],
+                  floorPrice: "5.32 MATIC",
                   lastSalePrice: "2.31 MATIC",
+                  lastSaleDate: Date().addingTimeInterval(-86400),
                   chain: .MATIC)
         }
         

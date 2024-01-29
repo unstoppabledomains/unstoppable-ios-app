@@ -103,14 +103,12 @@ private extension HomeWalletView {
                     .lineLimit(1)
             }
             .frame(height: 20)
-            .frame(maxWidth: 240)
         } else {
             Text(viewModel.selectedWallet.displayName)
                 .font(.currentFont(size: 16, weight: .semibold))
                 .foregroundStyle(Color.foregroundDefault)
                 .lineLimit(1)
                 .frame(height: 20)
-                .frame(maxWidth: 240)
         }
     }
     

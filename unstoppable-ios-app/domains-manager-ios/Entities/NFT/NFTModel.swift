@@ -12,7 +12,7 @@ struct NFTModel: Codable, Hashable {
     let link: String
     let collection: String
     let collectionOwners: Int?
-    let collectionLink: URL?
+    let collectionLink: String?
     let name: String?
     let description: String?
     let imageUrl: String?
@@ -33,16 +33,29 @@ struct NFTModel: Codable, Hashable {
         case isPublic = "public"
     }
    
-    var lastSalePrice: String? {
+    private var lastSaleTransaction: SaleTransaction? {
         let saleTransactions = ([saleDetails?.primary] + (saleDetails?.secondary ?? [])).compactMap { $0 }
-        if let latestPrice = saleTransactions.filter({ $0.date != nil && $0.payment?.symbol != nil && $0.payment?.valueNative != nil }).sorted(by: { $0.date! > $1.date! }).first(where: { $0.payment != nil }) {
-            let symbol = latestPrice.payment!.symbol!
-            let value = latestPrice.payment!.valueNative!
+        return saleTransactions
+            .filter({ $0.date != nil && $0.payment?.symbol != nil && $0.payment?.valueNative != nil })
+            .sorted(by: { $0.date! > $1.date! })
+            .first(where: { $0.payment != nil })
+    }
+    
+    var lastSalePrice: String? {
+        if let lastSaleTransaction {
+            let symbol = lastSaleTransaction.payment!.symbol!
+            let value = lastSaleTransaction.payment!.valueNative!
             return "\(value) \(symbol)"
         }
         return nil
     }
     
+    var lastSaleDate: Date? {
+        if let lastSaleTransaction {
+            return lastSaleTransaction.date
+        }
+        return nil
+    }
     
     var floorPriceValue: String? {
         if let floorPrice,

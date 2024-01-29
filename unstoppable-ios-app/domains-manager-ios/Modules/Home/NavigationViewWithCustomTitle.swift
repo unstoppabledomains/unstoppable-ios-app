@@ -11,7 +11,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
-    @Binding var path: NavigationPath
+    @Binding var path: NavigationPath 
     @StateObject private var navigationState = NavigationStateManager()
 
     var body: some View {
@@ -23,6 +23,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
             let customTitle = navigationState.customTitle {
                 AnyView(customTitle())
                     .offset(y: currentTitleOffset)
+                    .frame(maxWidth: 240)
             }
         })
         .onAppear(perform: {

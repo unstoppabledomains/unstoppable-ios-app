@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 16.01.2024.
 //
 
-import UIKit
+import SwiftUI
 
 struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     var id: String { mint }
@@ -19,9 +19,10 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let collection: String
     let collectionLink: URL?
     let mint: String
-    let traits: [String : String]
+    let traits: [Trait]
     let floorPrice: String?
     let lastSalePrice: String?
+    let lastSaleDate: Date?
     var chain: NFTModelChain?
     var address: String?
     
@@ -35,6 +36,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         return false
     }
     
+    var displayName: String { name ?? "-" }
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
    
     func loadIcon() async -> UIImage? {
@@ -42,6 +44,58 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         
         return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
                                                               downsampleDescription: .mid)
+    }
+    
+    struct Trait: Identifiable, Hashable, Codable {
+        var id: String { name }
+        
+        let name: String
+        let value: String
+    }
+    
+    func valueFor(detailType: DetailType) -> String? {
+        switch detailType {
+        case .collectionID:
+            return collectionLink?.absoluteString
+        case .chain:
+            return chain?.fullName
+        case .lastSaleDate:
+            if let lastSaleDate {
+                let formatter = RelativeDateTimeFormatter()
+                formatter.unitsStyle = .full
+                formatter.dateTimeStyle = .named
+                return formatter.localizedString(for: lastSaleDate, relativeTo: Date()).capitalizedFirstCharacter
+            }
+            return nil
+        }
+    }
+        
+    enum DetailType: CaseIterable {
+        case collectionID
+        case chain
+        case lastSaleDate
+        
+        var title: String {
+            switch self {
+            case .collectionID:
+                return "Collection ID"
+            case .chain:
+                return "Chain"
+            case .lastSaleDate:
+                return "Last Updated"
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+            case .collectionID:
+                return .appleIcon
+            case .chain:
+                return .chainLinkIcon
+            case .lastSaleDate:
+                return .timeIcon
+            }
+        }
     }
 }
 
@@ -58,9 +112,10 @@ extension NFTDisplayInfo {
         self.mint = nftModel.mint
         self.chain = nftModel.chain
         self.address = nftModel.address
-        self.traits = nftModel.traits ?? [:]
-        self.collectionLink = nftModel.collectionLink
+        self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
+        self.collectionLink = URL(string: nftModel.collectionLink ?? "")
         self.lastSalePrice = nftModel.lastSalePrice
+        self.lastSaleDate = nftModel.lastSaleDate
         self.floorPrice = nftModel.floorPriceValue
     }
 }

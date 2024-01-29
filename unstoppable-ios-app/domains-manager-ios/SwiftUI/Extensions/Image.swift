@@ -58,5 +58,7 @@ extension Image {
     static let crownIcon = Image("crownIcon")
     static let threeLayersStack = Image("threeLayersStack")
     static let squareInfo = Image("squareInfo")
+    static let chainLinkIcon = Image("chainLinkIcon")
+    static let timeIcon = Image("timeIcon24")
     
 }

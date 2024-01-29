@@ -128,7 +128,7 @@ private extension WalletNFTsService {
         let data = try await NetworkService().fetchData(for: request.url,
                                                         method: .get,
                                                         extraHeaders: request.headers)
-        guard var response = NFTsResponse.objectFromData(data) else { throw NetworkLayerError.responseFailedToParse }
+        guard var response = NFTsResponse.objectFromData(data, dateDecodingStrategy: .noTimeZoneIndicatorDecodingStrategy()) else { throw NetworkLayerError.responseFailedToParse }
         response.prepare()
         Debugger.printInfo(topic: .NFT, "Did get NFTs \(response.nfts.count) for domain: \(wallet), cursor: \(cursor ?? "Nil"), chains: \(chains.map({ $0.rawValue} ))")
 
