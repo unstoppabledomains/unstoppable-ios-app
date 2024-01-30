@@ -57,6 +57,7 @@ struct HomeWalletView: View {
                     tabRouter.isTabBarVisible = !isOtherScreenPresented
                 }
             }
+            .animation(.default, value: UUID())
             .listStyle(.plain)
             .clearListBackground()
             .background(Color.backgroundDefault)
