@@ -29,7 +29,7 @@ struct HomeWalletTokenNotMatchingRowView: View {
                         .font(.currentFont(size: 16, weight: .medium))
                         .foregroundStyle(Color.foregroundDefault)
                         .frame(height: 24)
-                    Text("Record doesn't match owners address")
+                    Text(String.Constants.recordsDoesNotMatchOwnerAddress.localized())
                         .font(.currentFont(size: 14, weight: .medium))
                         .foregroundStyle(Color.foregroundWarning)
                         .frame(height: 20)

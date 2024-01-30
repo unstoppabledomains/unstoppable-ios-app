@@ -65,7 +65,7 @@ private extension HomeWalletsDomainsSectionView {
     var numberOfVisibleSubdomains: Int {
         let numberOfSubdomains = subdomains.count
         
-        return isSubdomainsVisible ? numberOfSubdomains : min(numberOfSubdomains, minNumOfVisibleSubdomains) //Take no more then minNumOfVisibleSubdomains Subdomains
+        return isSubdomainsVisible ? numberOfSubdomains : min(numberOfSubdomains, minNumOfVisibleSubdomains) //Take no more than minNumOfVisibleSubdomains Subdomains
     }
     
     @ViewBuilder

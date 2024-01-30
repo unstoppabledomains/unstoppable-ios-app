@@ -1078,7 +1078,10 @@ extension String {
         static let none = "NONE"
         static let floorPrice = "FLOOR_PRICE"
         static let lastSalePrice = "LAST_SALE_PRICE"
-
+        static let recordsDoesNotMatchOwnerAddress = "RECORDS_DOES_NOT_MATCH_OWNER_ADDRESS"
+        static let recordDoesNotMatchOwnerAddressPullUpTitle = "RECORD_DOES_NOT_MATCH_OWNER_ADDRESS_PULL_UP_TITLE"
+        static let recordDoesNotMatchOwnerAddressPullUpMessage = "RECORD_DOES_NOT_MATCH_OWNER_ADDRESS_PULL_UP_MESSAGE"
+        static let updateRecords = "UPDATE_RECORDS"
     }
     
     enum BlockChainIcons: String {
