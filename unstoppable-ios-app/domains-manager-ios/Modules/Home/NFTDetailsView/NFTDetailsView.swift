@@ -124,7 +124,7 @@ private extension NFTDetailsView {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeaderView(icon: .notesIcon,
                               title: String.Constants.nftDetailsAboutCollectionHeader.localized(collectionName))
-            Text(nft.description ?? "-")
+            Text(nft.description ?? String.Constants.none.localized())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
         }
@@ -149,11 +149,11 @@ private extension NFTDetailsView {
     func nftPriceInfoView() -> some View {
         HStack(alignment: .center, spacing: 8) {
             Spacer()
-            nftPriceValueView(title: "Last Sale Price",
+            nftPriceValueView(title: String.Constants.lastSalePrice.localized(),
                               value: nft.lastSalePrice)
             separatorView(direction: .vertical)
                 .frame(width: 1)
-            nftPriceValueView(title: "Floor Price",
+            nftPriceValueView(title: String.Constants.floorPrice.localized(),
                               value: nft.floorPrice)
             Spacer()
         }
@@ -167,7 +167,7 @@ private extension NFTDetailsView {
                 .frame(height: 20)
                 .font(.currentFont(size: 14, weight: .medium))
                 .foregroundStyle(Color.white.opacity(0.48))
-            Text(value ?? "None")
+            Text(value ?? String.Constants.none.localized())
                 .frame(height: 24)
                 .font(.currentFont(size: 16, weight: .medium))
                 .foregroundStyle(Color.white.opacity(value == nil ? 0.32 : 1))
@@ -181,7 +181,7 @@ private extension NFTDetailsView {
             separatorView()
             VStack(alignment: .leading, spacing: 12) {
                 sectionHeaderView(icon: .threeLayersStack,
-                                  title: "Traits")
+                                  title: String.Constants.traits.localized())
                 FlowLayoutView(nft.traits) { trait in
                     VStack(alignment: .leading, spacing: 0) {
                         Text(trait.name)
@@ -208,7 +208,7 @@ private extension NFTDetailsView {
             separatorView()
             VStack(alignment: .leading, spacing: 12) {
                 sectionHeaderView(icon: .squareInfo,
-                                  title: "Details")
+                                  title: String.Constants.details.localized())
                 VStack(spacing: 0) {
                     ForEach(NFTDisplayInfo.DetailType.allCases, id: \.self) { detailType in
                         if let value = nft.valueFor(detailType: detailType) {
@@ -330,11 +330,11 @@ private extension NFTDetailsView {
         var title: String {
             switch self {
             case .refresh:
-                return "Refresh Metadata"
+                return String.Constants.refreshMetadata.localized()
             case .savePhoto:
-                return "Save to Photos"
+                return String.Constants.saveToPhotos.localized()
             case .viewMarketPlace:
-                return "View on Marketplace"
+                return String.Constants.viewOnMarketPlace.localized()
             }
         }
         

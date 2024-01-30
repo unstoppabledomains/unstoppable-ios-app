@@ -45,31 +45,31 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
                                                               downsampleDescription: .mid)
     }
-    
-    struct Trait: Identifiable, Hashable, Codable {
-        var id: String { name }
-        
-        let name: String
-        let value: String
+}
+
+// MARK: - Open methods
+extension NFTDisplayInfo {
+    init(nftModel: NFTModel) {
+        self.name = nftModel.name
+        self.description = nftModel.description
+        self.imageUrl = URL(string: nftModel.imageUrl ?? "")
+        self.videoUrl = nil
+        self.link = nftModel.link
+        self.tags = nftModel.tags ?? []
+        self.collection = nftModel.collection
+        self.mint = nftModel.mint
+        self.chain = nftModel.chain
+        self.address = nftModel.address
+        self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
+        self.collectionLink = URL(string: nftModel.collectionLink ?? "")
+        self.lastSalePrice = nftModel.lastSalePrice
+        self.lastSaleDate = nftModel.lastSaleDate
+        self.floorPrice = nftModel.floorPriceValue
     }
-    
-    func valueFor(detailType: DetailType) -> String? {
-        switch detailType {
-        case .collectionID:
-            return collectionLink?.absoluteString
-        case .chain:
-            return chain?.fullName
-        case .lastSaleDate:
-            if let lastSaleDate {
-                let formatter = RelativeDateTimeFormatter()
-                formatter.unitsStyle = .full
-                formatter.dateTimeStyle = .named
-                return formatter.localizedString(for: lastSaleDate, relativeTo: Date()).capitalizedFirstCharacter
-            }
-            return nil
-        }
-    }
-        
+}
+
+// MARK: - Open methods
+extension NFTDisplayInfo {
     enum DetailType: CaseIterable {
         case collectionID
         case chain
@@ -97,25 +97,31 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
             }
         }
     }
+    
+    func valueFor(detailType: DetailType) -> String? {
+        switch detailType {
+        case .collectionID:
+            return collectionLink?.absoluteString
+        case .chain:
+            return chain?.fullName
+        case .lastSaleDate:
+            if let lastSaleDate {
+                let formatter = RelativeDateTimeFormatter()
+                formatter.unitsStyle = .full
+                formatter.dateTimeStyle = .named
+                return formatter.localizedString(for: lastSaleDate, relativeTo: Date()).capitalizedFirstCharacter
+            }
+            return nil
+        }
+    }
 }
 
 // MARK: - Open methods
 extension NFTDisplayInfo {
-    init(nftModel: NFTModel) {
-        self.name = nftModel.name
-        self.description = nftModel.description
-        self.imageUrl = URL(string: nftModel.imageUrl ?? "")
-        self.videoUrl = nil
-        self.link = nftModel.link
-        self.tags = nftModel.tags ?? []
-        self.collection = nftModel.collection
-        self.mint = nftModel.mint
-        self.chain = nftModel.chain
-        self.address = nftModel.address
-        self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
-        self.collectionLink = URL(string: nftModel.collectionLink ?? "")
-        self.lastSalePrice = nftModel.lastSalePrice
-        self.lastSaleDate = nftModel.lastSaleDate
-        self.floorPrice = nftModel.floorPriceValue
+    struct Trait: Identifiable, Hashable, Codable {
+        var id: String { name }
+        
+        let name: String
+        let value: String
     }
 }
