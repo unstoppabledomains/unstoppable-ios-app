@@ -11,7 +11,8 @@ import Combine
 @MainActor
 final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
-    @Published var tabViewSelection: HomeTab = .wallets
+    @Published var isSelectWalletPresented: Bool = false
+    @Published var tabViewSelection: HomeTab = .messaging
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
     @Published var presentedNFT: NFTDisplayInfo?
@@ -240,6 +241,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
 // MARK: - Private methods
 private extension HomeTabRouter {
     func popToRoot() {
+        isSelectWalletPresented = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

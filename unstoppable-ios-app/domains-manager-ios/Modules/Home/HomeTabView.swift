@@ -40,6 +40,7 @@ struct HomeTabView: View {
         }
         .tint(.foregroundDefault)
         .viewPullUp(router.currentPullUp(id: id))
+        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectWalletPresented))
         .sheet(item: $router.presentedNFT, content: { nft in
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
@@ -78,6 +79,21 @@ struct HomeTabView: View {
         self.selectedWallet = selectedWallet
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
+    }
+}
+
+// MARK: - Private methods
+private extension HomeTabView {
+    struct ShowingWalletSelection: ViewModifier {
+        @Binding var isSelectWalletPresented: Bool
+        
+        func body(content: Content) -> some View {
+            content
+                .sheet(isPresented: $isSelectWalletPresented, content: {
+                    HomeWalletWalletSelectionView()
+                        .adaptiveSheet()
+                })
+        }
     }
 }
 

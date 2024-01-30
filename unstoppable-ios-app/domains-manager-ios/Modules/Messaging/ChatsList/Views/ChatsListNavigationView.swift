@@ -105,22 +105,10 @@ private extension ChatsListNavigationView {
     }
     
     func setButtonWith(configuration: Configuration) {
-        Task {
-            var actions: [UIMenuElement] = []
-            
-            for wallet in configuration.wallets {
-                let action = await menuAction(for: wallet)
-                actions.append(action)
-            }
-            
-            let menu = UIMenu(title: "", children: actions)
-            titleButton.menu = menu
-            titleButton.showsMenuAsPrimaryAction = true
-            titleButton.addAction(UIAction(handler: { [weak self]  _ in
-                UDVibration.buttonTap.vibrate()
-                self?.pressedCallback?()
-            }), for: .menuActionTriggered)
-        }
+        titleButton.addAction(UIAction(handler: { [weak self]  _ in
+            UDVibration.buttonTap.vibrate()
+            self?.pressedCallback?()
+        }), for: .touchUpInside)
     }
     
     func menuAction(for walletTitleInfo: WalletTitleInfo) async -> UIMenuElement {

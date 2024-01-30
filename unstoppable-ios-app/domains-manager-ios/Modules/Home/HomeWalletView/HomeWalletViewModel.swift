@@ -21,7 +21,6 @@ extension HomeWalletView {
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
-        @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         
@@ -131,7 +130,7 @@ extension HomeWalletView {
         }
         
         func domainNamePressed() {
-            isSelectWalletPresented = true
+            router.isSelectWalletPresented = true
         }
         
         private func runSelectRRDomainInSelectedWalletIfNeeded() {

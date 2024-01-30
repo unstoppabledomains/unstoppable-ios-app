@@ -67,7 +67,6 @@ struct HomeWalletView: View {
                     .ignoresSafeArea()
                     .onAppearanceChange($isOtherScreenPresented)
             }
-            .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     settingsNavButtonView()
@@ -221,21 +220,6 @@ private extension HomeWalletView {
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension HomeWalletView {
-    struct ShowingWalletSelection: ViewModifier {
-        @Binding var isSelectWalletPresented: Bool
-        
-        func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isSelectWalletPresented, content: {
-                    HomeWalletWalletSelectionView()
-                        .adaptiveSheet()
-                })
         }
     }
 }
