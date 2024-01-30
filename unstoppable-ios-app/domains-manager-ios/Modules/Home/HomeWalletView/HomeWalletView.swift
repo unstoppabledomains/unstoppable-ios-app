@@ -143,14 +143,48 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func tokensContentView() -> some View {
-        ForEach(viewModel.tokens) { token in
-            Button {
-                
-            } label: {
-                HomeWalletTokenRowView(token: token)
+        tokensListView()
+        notMatchingTokensListView()
+//        moreTokensView()
+    }
+    
+    @ViewBuilder
+    func tokensListView() -> some View {
+        LazyVStack(spacing: 20) {
+            ForEach(viewModel.tokens) { token in
+                Button {
+                    
+                } label: {
+                    HomeWalletTokenRowView(token: token)
+                }
+                .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }
-            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         }
+    }
+    
+    @ViewBuilder
+    func notMatchingTokensListView() -> some View {
+        if !viewModel.chainsNotMatch.isEmpty {
+            Line()
+                .stroke(lineWidth: 1)
+                .frame(height: 1)
+                .foregroundStyle(Color.foregroundSecondary)
+            LazyVStack(spacing: 20) {
+                ForEach(viewModel.chainsNotMatch) { description in
+                    Button {
+                        
+                    } label: {
+                        HomeWalletTokenNotMatchingRowView(description: description)
+                    }
+                    .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func moreTokensView() -> some View {
         HomeWalletMoreTokensView()
             .offset(y: -HomeWalletTokenRowView.height + 25)
     }
