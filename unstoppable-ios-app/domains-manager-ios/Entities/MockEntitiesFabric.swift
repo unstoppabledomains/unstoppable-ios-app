@@ -101,6 +101,14 @@ extension MockEntitiesFabric {
                 domains.append(domain)
             }
             
+            for i in 0..<5 {
+                let domain = DomainDisplayInfo(name: "subdomain_\(i).oleg_0.x",
+                                               ownerWallet: "",
+                                               blockchain: .Matic,
+                                               isSetForRR: false)
+                domains.append(domain)
+            }
+            
             return domains
         }
 

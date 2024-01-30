@@ -71,6 +71,7 @@ extension DomainDisplayInfo {
     }
     var isTransferring: Bool { state == .transfer }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
+    var isSubdomain: Bool { name.isSubdomain() }
     
     func isReverseResolutionChangeAllowed() -> Bool {
         state == .default
