@@ -75,8 +75,17 @@ struct NetworkService {
         return ["Authorization" : "Bearer \(authAPIKey)"]
     }
     
+    static var currentProfilesAPIKey: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return NetworkService.testnetProfilesAPIKey
+        } else {
+            return NetworkService.mainnetProfilesAPIKey
+        }
+    }
+    
     static var profilesAPIHeader: [String : String] {
-        ["x-api-key" : profilesAPIKey]
+        ["x-api-key" : currentProfilesAPIKey]
     }
     
     func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,

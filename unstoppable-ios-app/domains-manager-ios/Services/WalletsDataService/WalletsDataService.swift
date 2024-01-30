@@ -428,9 +428,7 @@ private extension WalletsDataService {
             mutateWalletEntity(wallet) { wallet in
                 wallet.nfts = nfts
             }
-        } catch { 
-            print("Failed")
-        }
+        } catch { }
     }
     
     func loadNFTsFor(wallet: WalletEntity) async throws -> [NFTDisplayInfo] {
