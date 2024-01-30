@@ -13,14 +13,16 @@ extension HomeWalletView {
     final class HomeWalletViewModel: ObservableObject {
         
         @Published private(set) var selectedWallet: WalletEntity
-        @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
+        @Published private(set) var tokens: [TokenDescription] = []
+        @Published private(set) var nftsCollections: [NFTsCollectionDescription] = []
         @Published private(set) var domains: [DomainDisplayInfo] = []
-        @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
+        @Published private(set) var subdomains: [DomainDisplayInfo] = []
         @Published var nftsCollectionsExpandedIds: Set<String> = []
-        @Published var selectedContentType: ContentType = .tokens
+        @Published var selectedContentType: ContentType = .domains
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
+        @Published var isSubdomainsVisible: Bool = false 
         private var subscribers: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         
@@ -51,7 +53,8 @@ extension HomeWalletView {
             selectedWallet = wallet
             tokens = wallet.balance.map { TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
             tokens.append(.createSkeletonEntity())
-            domains = wallet.domains
+            domains = wallet.domains.filter({ !$0.isSubdomain })
+            subdomains = wallet.domains.filter({ $0.isSubdomain })
             
             let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
             var collections: [NFTsCollectionDescription] = []
@@ -108,6 +111,9 @@ extension HomeWalletView {
         }
         
         private func sortDomains(_ sortOption: DomainsSortingOptions) {
+            subdomains = subdomains.sorted(by: { lhs, rhs in
+                lhs.name < rhs.name
+            })
             switch sortOption {
             case .alphabetical:
                 domains = domains.sorted(by: { lhs, rhs in
