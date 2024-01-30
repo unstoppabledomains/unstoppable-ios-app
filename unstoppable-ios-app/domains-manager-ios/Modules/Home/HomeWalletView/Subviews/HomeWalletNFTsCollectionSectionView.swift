@@ -50,34 +50,18 @@ private extension HomeWalletNFTsCollectionSectionView {
     
     @ViewBuilder
     func sectionHeaderView() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
+        HomeWalletExpandableSectionHeaderView(title: collection.collectionName,
+                                              isExpandable: collection.nfts.count > minNumOfVisibleNFTs,
+                                              numberOfItemsInSection: collection.nfts.count,
+                                              isExpanded: isExpanded,
+                                              actionCallback: {
             let id = collection.id
             if isExpanded {
                 nftsCollectionsExpandedIds.remove(id)
             } else {
                 nftsCollectionsExpandedIds.insert(id)
             }
-        } label: {
-            HStack {
-                Text(collection.collectionName)
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
-                Spacer()
-                
-                if collection.nfts.count > minNumOfVisibleNFTs {
-                    HStack(spacing: 8) {
-                        Text(String(collection.nfts.count))
-                            .font(.currentFont(size: 16))
-                        Image(uiImage: isExpanded ? .chevronUp : .chevronDown)
-                            .resizable()
-                            .squareFrame(20)
-                    }
-                    .foregroundStyle(Color.foregroundSecondary)
-                }
-            }
-        }
-        .buttonStyle(.plain)
+        })
     }
     
     @ViewBuilder

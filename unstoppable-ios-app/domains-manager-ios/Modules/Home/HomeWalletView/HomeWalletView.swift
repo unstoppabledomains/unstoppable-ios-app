@@ -9,8 +9,6 @@ import SwiftUI
 
 struct HomeWalletView: View {
     
-    @Environment(\.imageLoadingService) private var imageLoadingService
-
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
@@ -81,34 +79,59 @@ struct HomeWalletView: View {
             }
         }, navigationStateProvider: { state in
             self.navigationState = state
-            state.customTitle = navigationView
+            state.customTitle = { NavigationTitleView(wallet: viewModel.selectedWallet) }
         }, path: $tabRouter.walletViewNavPath)
     }
 }
 
 // MARK: - Private methods
 private extension HomeWalletView {
-    @ViewBuilder
-    func navigationView() -> some View {
-        if let rrDomain = viewModel.selectedWallet.rrDomain {
-            HStack {
-                UIImageBridgeView(image: imageLoadingService.cachedImage(for: .domain(rrDomain)) ?? .domainSharePlaceholder,
-                                  width: 20,
-                                  height: 20)
+    struct NavigationTitleView: View {
+        
+        @Environment(\.imageLoadingService) private var imageLoadingService
+
+        let wallet: WalletEntity
+        @State private var avatar: UIImage?
+        
+        var body: some View {
+            content()
+                .onAppear(perform: loadAvatar)
+                .onChange(of: wallet) { newValue in
+                    avatar = nil
+                    loadAvatar()
+                }
+        }
+        
+        private func loadAvatar() {
+            Task {
+                if let rrDomain = wallet.rrDomain {
+                    avatar =  await imageLoadingService.loadImage(from: .domain(rrDomain), downsampleDescription: .mid)
+                }
+            }
+        }
+        
+        @ViewBuilder
+        private func content() -> some View {
+            if let rrDomain = wallet.rrDomain {
+                HStack {
+                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder,
+                                      width: 20,
+                                      height: 20)
                     .squareFrame(20)
                     .clipShape(Circle())
-                Text(rrDomain.name)
+                    Text(rrDomain.name)
+                        .font(.currentFont(size: 16, weight: .semibold))
+                        .foregroundStyle(Color.foregroundDefault)
+                        .lineLimit(1)
+                }
+                .frame(height: 20)
+            } else {
+                Text(wallet.displayName)
                     .font(.currentFont(size: 16, weight: .semibold))
                     .foregroundStyle(Color.foregroundDefault)
                     .lineLimit(1)
+                    .frame(height: 20)
             }
-            .frame(height: 20)
-        } else {
-            Text(viewModel.selectedWallet.displayName)
-                .font(.currentFont(size: 16, weight: .semibold))
-                .foregroundStyle(Color.foregroundDefault)
-                .lineLimit(1)
-                .frame(height: 20)
         }
     }
     
@@ -145,7 +168,6 @@ private extension HomeWalletView {
     func tokensContentView() -> some View {
         tokensListView()
         notMatchingTokensListView()
-//        moreTokensView()
     }
     
     @ViewBuilder
@@ -155,11 +177,18 @@ private extension HomeWalletView {
                 Button {
                   
                 } label: {
-                    HomeWalletTokenRowView(token: token)
+                    ZStack {
+                        HomeWalletTokenRowView(token: token)
+                        if token.isSkeleton {
+                            HomeWalletMoreTokensView()
+                                .offset(y: 10)
+                        }
+                    }
                 }
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }
         }
+        .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
     }
     
     @ViewBuilder
@@ -169,16 +198,25 @@ private extension HomeWalletView {
                 .stroke(lineWidth: 1)
                 .frame(height: 1)
                 .foregroundStyle(Color.foregroundSecondary)
-            LazyVStack(spacing: 20) {
-                ForEach(viewModel.chainsNotMatch) { description in
-                    Button {
-                        UDVibration.buttonTap.vibrate()
-                        didSelectNotMatchingTokenDescription(description)
-                    } label: {
-                        HomeWalletTokenNotMatchingRowView(description: description)
+            HomeWalletExpandableSectionHeaderView(title: "Hidden",
+                                                  isExpandable: true,
+                                                  numberOfItemsInSection: viewModel.chainsNotMatch.count,
+                                                  isExpanded: viewModel.isNotMatchingTokensVisible,
+                                                  actionCallback: {
+                viewModel.isNotMatchingTokensVisible.toggle()
+            })
+            if viewModel.isNotMatchingTokensVisible {
+                LazyVStack(spacing: 20) {
+                    ForEach(viewModel.chainsNotMatch) { description in
+                        Button {
+                            UDVibration.buttonTap.vibrate()
+                            didSelectNotMatchingTokenDescription(description)
+                        } label: {
+                            HomeWalletTokenNotMatchingRowView(description: description)
+                        }
+                        .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
+                        .buttonStyle(.plain)
                     }
-                    .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
-                    .buttonStyle(.plain)
                 }
             }
         }
@@ -192,12 +230,6 @@ private extension HomeWalletView {
             })
             tabRouter.pullUp = .default(pullUpConfig)
         }
-    }
-    
-    @ViewBuilder
-    func moreTokensView() -> some View {
-        HomeWalletMoreTokensView()
-            .offset(y: -HomeWalletTokenRowView.height + 25)
     }
     
     @ViewBuilder
@@ -318,6 +350,7 @@ extension HomeWalletView {
     NavigationView {
         HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
                                         router: .init()))
+        .environmentObject(HomeTabRouter())
     }
 }
 

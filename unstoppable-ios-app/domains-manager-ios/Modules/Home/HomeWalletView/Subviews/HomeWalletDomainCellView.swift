@@ -71,7 +71,20 @@ private extension HomeWalletDomainCellView {
     func viewForSubdomain() -> some View {
         ZStack(alignment: .topLeading) {
             Color(hex: "#EDEDEE")
-            cartLogoView().foregroundStyle(Color.black)
+            GridView(rows: 10,
+                     cols: 10,
+                     gridColor: LinearGradient(
+                stops: [
+                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
+                    Gradient.Stop(color: .black.opacity(0.08), location: 0.14),
+                    Gradient.Stop(color: .black.opacity(0.08), location: 0.86),
+                    Gradient.Stop(color: .black.opacity(0), location: 1.00),
+                ],
+                startPoint: UnitPoint(x: 0, y: 0.08),
+                endPoint: UnitPoint(x: 1, y: 0.08)
+            ), lineWidth: 0.2)
+            cartLogoView()
+                .foregroundStyle(Color.black)
                 .padding(EdgeInsets(top: 8, leading: 8, bottom: 0, trailing: 0))
             subdomainMiddleTile()
         }
@@ -132,6 +145,40 @@ private extension HomeWalletDomainCellView {
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
+    
+    struct GridView<S : ShapeStyle>: View {
+        
+        let rows: CGFloat
+        let cols: CGFloat
+        let gridColor: S
+        let lineWidth: CGFloat
+        
+        var body: some View {
+            
+            GeometryReader { geometry in
+                
+                let width = geometry.size.width
+                let height = geometry.size.height
+                let xSpacing = width / cols
+                let ySpacing = height / rows
+                
+                Path { path in
+                    for index in 0...Int(cols) {
+                        let vOffset: CGFloat = CGFloat(index) * xSpacing
+                        path.move(to: CGPoint(x: vOffset, y: 0))
+                        path.addLine(to: CGPoint(x: vOffset, y: height))
+                    }
+                    for index in 0...Int(rows) {
+                        let hOffset: CGFloat = CGFloat(index) * ySpacing
+                        path.move(to: CGPoint(x: 0, y: hOffset))
+                        path.addLine(to: CGPoint(x: width, y: hOffset))
+                    }
+                }
+                .stroke(gridColor, lineWidth: lineWidth)
+            }
+        }
+    }
+
 }
 
 #Preview {

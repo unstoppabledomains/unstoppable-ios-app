@@ -201,8 +201,6 @@ extension ViewPullUpDefaultConfiguration {
             height += ViewPullUp.sideOffset
         }
         
-        
-        
         return height
     }
     

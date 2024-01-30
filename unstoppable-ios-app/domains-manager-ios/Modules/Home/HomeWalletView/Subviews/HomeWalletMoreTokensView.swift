@@ -19,6 +19,8 @@ struct HomeWalletMoreTokensView: View {
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
+        .frame(height: HomeWalletTokenRowView.height)
+
     }
 }
 

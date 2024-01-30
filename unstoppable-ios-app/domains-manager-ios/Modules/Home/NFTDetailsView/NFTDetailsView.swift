@@ -51,7 +51,7 @@ struct NFTDetailsView: View {
             })
         }, navigationStateProvider: { navigationState in
             self.navigationState = navigationState
-            navigationState.customTitle = navigationView
+            navigationState.customTitle = { NavigationTitleView(nft: nft) }
         }, path: .constant(.init()))
     }
 }
@@ -65,17 +65,37 @@ private extension NFTDetailsView {
         }
     }
     
-    @ViewBuilder
-    func navigationView() -> some View {
-        VStack(spacing: 0) {
-            Text(nft.displayName)
-                .font(.currentFont(size: 16, weight: .semibold))
-                .foregroundStyle(Color.foregroundDefault)
-                .frame(height: 24)
-            Text(collectionName)
-                .font(.currentFont(size: 16, weight: .semibold))
-                .foregroundStyle(Color.white.opacity(0.56))
-                .frame(height: 16)
+    struct NavigationTitleView: View {
+        
+        let nft: NFTDisplayInfo
+        @State private var nftImage: UIImage?
+
+        var body: some View {
+            VStack(spacing: 0) {
+                HStack(spacing: 8) {
+                    if let nftImage {
+                        Image(uiImage: nftImage)
+                            .resizable()
+                            .squareFrame(20)
+                            .clipShape(Circle())
+                    }
+                    Text(nft.displayName)
+                        .font(.currentFont(size: 16, weight: .semibold))
+                        .foregroundStyle(Color.foregroundDefault)
+                        .frame(height: 24)
+                }
+                Text(nft.collection)
+                    .font(.currentFont(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.white.opacity(0.56))
+                    .frame(height: 16)
+            }
+            .task {
+                try? await Task.sleep(seconds: 1)
+                let nftImage = await nft.loadIcon()
+                withAnimation {
+                    self.nftImage = nftImage
+                }
+            }
         }
     }
     

@@ -24,6 +24,7 @@ extension HomeWalletView {
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
         @Published var isSubdomainsVisible: Bool = false
+        @Published var isNotMatchingTokensVisible: Bool = false
         
         private var subscribers: Set<AnyCancellable> = []
         private var router: HomeTabRouter
