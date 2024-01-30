@@ -9,7 +9,6 @@ import UIKit
 
 final class ConnectedAppCell: BaseListCollectionViewCell {
 
-
     @IBOutlet private weak var appImageView: ConnectedAppImageView!
     @IBOutlet private weak var appNameLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!

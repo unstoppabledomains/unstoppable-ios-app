@@ -19,6 +19,7 @@ final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
+    var scanCallback: EmptyCallback?
     
     init(view: ConnectedAppsListViewProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
@@ -64,15 +65,19 @@ private extension ConnectedAppsListViewPresenter {
     func showConnectedAppsList() async {
         let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = await walletConnectServiceV2.getConnectedApps()
         
+        var snapshot = ConnectedAppsListSnapshot()
         guard !connectedAppsUnified.isEmpty else {
-            view?.navigationController?.popViewController(animated: true)
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(scanCallback: { [weak self] in 
+                self?.scanCallback?()
+            })])
+            view?.applySnapshot(snapshot, animated: true)
             return
         }
         
         let walletsDisplayInfo = await dataAggregatorService.getWalletsWithInfo().compactMap({ $0.displayInfo })
         let domains = await dataAggregatorService.getDomainsDisplayInfo()
         
-        var snapshot = ConnectedAppsListSnapshot()
         
         // Fill snapshot
         let appsGroupedByWallet = [String : [any UnifiedConnectAppInfoProtocol]].init(grouping: connectedAppsUnified,

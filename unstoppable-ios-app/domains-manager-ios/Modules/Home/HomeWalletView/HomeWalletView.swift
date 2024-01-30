@@ -210,6 +210,7 @@ private extension HomeWalletView {
         case .qrScanner:
             QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                .navigationBarTitleDisplayMode(.inline)
         case .minting(let mode, let mintedDomains, let domainsMintedCallback):
             MintDomainsNavigationControllerWrapper(mode: mode,
                                                    mintedDomains: mintedDomains,

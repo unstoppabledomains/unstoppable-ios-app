@@ -132,7 +132,10 @@ extension HomeWalletView {
         }
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
-            
+            switch subAction {
+            case .connectedApps:
+                router.isConnectedAppsListPresented = true
+            }
         }
         
         func domainNamePressed() {

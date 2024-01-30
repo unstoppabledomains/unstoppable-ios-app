@@ -41,6 +41,13 @@ struct HomeTabView: View {
         .tint(.foregroundDefault)
         .viewPullUp(router.currentPullUp(id: id))
         .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectWalletPresented))
+        .sheet(isPresented: $router.isConnectedAppsListPresented, content: {
+            ConnectedAppsListViewControllerWrapper(scanCallback: {
+                router.showQRScanner()
+            })
+                .ignoresSafeArea()
+                .pullUpHandler(router)
+        })
         .sheet(item: $router.presentedNFT, content: { nft in
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
