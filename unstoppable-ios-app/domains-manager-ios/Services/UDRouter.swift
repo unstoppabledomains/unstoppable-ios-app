@@ -319,6 +319,16 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
+    func buildConnectedAppsModule(scanCallback: EmptyCallback? = nil) -> UIViewController {
+        let vc = ConnectedAppsListViewController.nibInstance()
+        let presenter = ConnectedAppsListViewPresenter(view: vc,
+                                                       dataAggregatorService: appContext.dataAggregatorService,
+                                                       walletConnectServiceV2: appContext.walletConnectServiceV2)
+        presenter.scanCallback = scanCallback
+        vc.presenter = presenter
+        return vc
+    }
+    
     func showUpgradeToPolygonTutorialScreen(in viewController: UIViewController) {
         let vc = UpgradeToPolygonTutorial.nibInstance()
         
@@ -913,15 +923,6 @@ private extension UDRouter {
                                                                     selectedDomain: selectedDomain,
                                                                     domainSelectedCallback: domainSelectedCallback,
                                                                     dataAggregatorService: appContext.dataAggregatorService)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildConnectedAppsModule() -> UIViewController {
-        let vc = ConnectedAppsListViewController.nibInstance()
-        let presenter = ConnectedAppsListViewPresenter(view: vc,
-                                                       dataAggregatorService: appContext.dataAggregatorService,
-                                                       walletConnectServiceV2: appContext.walletConnectServiceV2)
         vc.presenter = presenter
         return vc
     }

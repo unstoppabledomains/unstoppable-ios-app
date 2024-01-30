@@ -19,7 +19,8 @@ typealias ConnectedAppsListSnapshot = NSDiffableDataSourceSnapshot<ConnectedApps
 final class ConnectedAppsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    var cellIdentifiers: [UICollectionViewCell.Type] { [ConnectedAppCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ConnectedAppCell.self,
+                                                        ConnectedAppsEmptyCell.self] }
     var presenter: ConnectedAppsListViewPresenterProtocol!
     private var dataSource: ConnectedAppsListDataSource!
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
@@ -83,6 +84,10 @@ private extension ConnectedAppsListViewController {
                 cell.setWith(displayInfo: displayInfo, actionCallback: actionCallback)
                 
                 return cell
+            case .emptyState(let callback):
+                let cell = collectionView.dequeueCellOfType(ConnectedAppsEmptyCell.self, forIndexPath: indexPath)
+                cell.set(actionCallback: callback)
+                return cell
             }
         })
         
@@ -96,6 +101,8 @@ private extension ConnectedAppsListViewController {
                                                                            for: indexPath) as! CollectionTextHeaderReusableView
                 view.setHeader(walletName)
                 return view
+            default:
+                return nil
             }
         }
     }
@@ -110,31 +117,42 @@ private extension ConnectedAppsListViewController {
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = spacing
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: {
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self]
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
             let layoutSection: NSCollectionLayoutSection
-            
-            layoutSection = .flexibleListItemSection()
-            layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
-                                                                  leading: spacing + 1,
-                                                                  bottom: 1,
-                                                                  trailing: spacing + 1)
-            
-            let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .absolute(CollectionTextHeaderReusableView.Height))
-            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
-                                                                     elementKind: UICollectionView.elementKindSectionHeader,
-                                                                     alignment: .top)
-            layoutSection.boundarySupplementaryItems = [header]
-            
-            let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
-            background.contentInsets.top = CollectionTextHeaderReusableView.Height
-            layoutSection.decorationItems = [background]
-            
+            let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
+
+            switch section {
+            case .walletApps:
+                layoutSection = .flexibleListItemSection()
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
+                                                                      leading: spacing + 1,
+                                                                      bottom: 1,
+                                                                      trailing: spacing + 1)
+                
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(CollectionTextHeaderReusableView.Height))
+                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                                                                         elementKind: UICollectionView.elementKindSectionHeader,
+                                                                         alignment: .top)
+                layoutSection.boundarySupplementaryItems = [header]
+                
+                let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+                background.contentInsets.top = CollectionTextHeaderReusableView.Height
+                layoutSection.decorationItems = [background]
+            case .emptyState, .none:
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                     heightDimension: .fractionalHeight(1.0)))
+                item.contentInsets = .zero
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                       heightDimension: .fractionalHeight(0.9)),
+                    subitems: [item])
+                layoutSection = NSCollectionLayoutSection(group: containerGroup)
+            }
             
             return layoutSection
-            
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
         
@@ -148,15 +166,21 @@ typealias ConnectedAppCellItemActionCallback = @Sendable @MainActor (ConnectedAp
 extension ConnectedAppsListViewController {
     enum Section: Hashable {
         case walletApps(walletName: String)
+        case emptyState
     }
     
     enum Item: Hashable, Sendable {
         case app(_ displayInfo: AppItemDisplayInfo, actionCallback: ConnectedAppCellItemActionCallback)
+        case emptyState(scanCallback: MainActorAsyncCallback)
         
         static func == (lhs: ConnectedAppsListViewController.Item, rhs: ConnectedAppsListViewController.Item) -> Bool {
             switch (lhs, rhs) {
             case (.app(let lhsDisplayInfo, _), .app(let rhsDisplayInfo, _)):
                 return lhsDisplayInfo == rhsDisplayInfo
+            case (.emptyState, .emptyState):
+                return true
+            default:
+                return false
             }
         }
         
@@ -164,6 +188,8 @@ extension ConnectedAppsListViewController {
             switch self {
             case .app(let displayInfo, _):
                 hasher.combine(displayInfo)
+            case .emptyState:
+                hasher.combine(0)
             }
         }
         
@@ -171,6 +197,8 @@ extension ConnectedAppsListViewController {
             switch self {
             case .app(let displayInfo, _):
                 return displayInfo.app.appName
+            case .emptyState:
+                return ""
             }
         }
     }
@@ -244,4 +272,24 @@ extension ConnectedAppsListViewController {
             }
         }
     }
+}
+
+import SwiftUI
+struct ConnectedAppsListViewControllerWrapper: UIViewControllerRepresentable {
+    
+    var scanCallback: EmptyCallback?
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildConnectedAppsModule(scanCallback: scanCallback)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+}
+
+@available(iOS 17, *)
+#Preview {
+    ConnectedAppsListViewControllerWrapper()
+        .ignoresSafeArea()
 }

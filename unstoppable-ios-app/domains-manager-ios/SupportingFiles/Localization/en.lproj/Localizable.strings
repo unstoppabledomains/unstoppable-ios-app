@@ -968,3 +968,11 @@
 "BUY_NEW_DOMAIN" = "Buy new domain";
 "SELECT_PRIMARY_DOMAIN_TITLE" = "Select primary domain for %@";
 "SELECT_PRIMARY_DOMAIN_SUBTITLE" = "Display primary domain instead of your wallet address %@ when connecting to Web3 applications. You can only choose from domains stored in the %@.";
+"SAVE_TO_PHOTOS" = "Save to Photos";
+"REFRESH_METADATA" = "Refresh Metadata";
+"VIEW_ON_MARKETPLACE" = "View on Marketplace";
+"DETAILS" = "Details";
+"TRAITS" = "Traits";
+"NONE" = "None";
+"FLOOR_PRICE" = "Floor Price";
+"LAST_SALE_PRICE" = "Last Sale Price";

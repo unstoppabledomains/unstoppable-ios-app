@@ -28,4 +28,19 @@ enum NFTModelChain: String, Hashable, Codable, CaseIterable {
             return .hederaIcon
         }
     }
+    
+    var fullName: String {
+        switch self {
+        case .ETH:
+            return "Ethereum"
+        case .MATIC:
+            return "Polygon"
+        case .SOL:
+            return "Solana"
+        case .ADA:
+            return "Cardano"
+        case .HBAR:
+            return "Hedera"
+        }
+    }
 }

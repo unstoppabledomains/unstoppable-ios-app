@@ -34,7 +34,7 @@ struct NetworkService {
         "Content-Type": "application/json"]
     
     static let appVersionHeaderKey = "X-IOS-APP-VERSION"
-    
+    static var profilesAPIHeader: [String : String] { ["" : ""] }
     
     init() {
     }

@@ -38,6 +38,7 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListEmptyCell.self,
                                                         CommunityListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
+    var router: HomeTabRouter?
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
     private var state: State = .loading
@@ -306,7 +307,9 @@ private extension ChatsListViewController {
                     self?.presenter.didSelectWallet(wallet)
                 }
                 navView.pressedCallback = { [weak self] in
+                    self?.router?.isSelectWalletPresented = true
                     self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
+                    
                 }
                 navigationItem.titleView = navView
             }
@@ -714,8 +717,9 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = UDRouter().buildChatsListModule(presentOptions: .default)
         let nav = CNavigationController(rootViewController: vc)
+        vc.router = navTracker.tabRouter
         nav.delegate = navTracker
-        navTracker.tabState.chatsListCoordinator = vc.presenter as? ChatsListCoordinator
+        navTracker.tabRouter.chatsListCoordinator = vc.presenter as? ChatsListCoordinator
         return nav
     }
     
@@ -724,22 +728,22 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
     final class NavigationTracker: ObservableObject, CNavigationControllerDelegate {
         nonisolated
         init(tabState: HomeTabRouter) {
-            self.tabState = tabState
+            self.tabRouter = tabState
         }
         
-        let tabState: HomeTabRouter
+        let tabRouter: HomeTabRouter
         
         func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool) {
             if viewController != navigationController.rootViewController {
                 withAnimation {
-                    self.tabState.isTabBarVisible = false
+                    self.tabRouter.isTabBarVisible = false
                 }
             }
         }
         
         func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool) {
             withAnimation {
-                self.tabState.isTabBarVisible = viewController == navigationController.rootViewController
+                self.tabRouter.isTabBarVisible = viewController == navigationController.rootViewController
             }
         }
         

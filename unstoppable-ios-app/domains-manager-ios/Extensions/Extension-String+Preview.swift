@@ -1068,6 +1068,17 @@ extension String {
         static let buyNewDomain = "BUY_NEW_DOMAIN"
         static let selectPrimaryDomainTitle = "SELECT_PRIMARY_DOMAIN_TITLE"
         static let selectPrimaryDomainSubtitle = "SELECT_PRIMARY_DOMAIN_SUBTITLE"
+        
+        
+        static let saveToPhotos = "SAVE_TO_PHOTOS"
+        static let refreshMetadata = "REFRESH_METADATA"
+        static let viewOnMarketPlace = "VIEW_ON_MARKETPLACE"
+        static let details = "DETAILS"
+        static let traits = "TRAITS"
+        static let none = "NONE"
+        static let floorPrice = "FLOOR_PRICE"
+        static let lastSalePrice = "LAST_SALE_PRICE"
+
     }
     
     enum BlockChainIcons: String {

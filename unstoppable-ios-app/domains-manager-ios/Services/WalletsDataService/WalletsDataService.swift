@@ -428,27 +428,13 @@ private extension WalletsDataService {
             mutateWalletEntity(wallet) { wallet in
                 wallet.nfts = nfts
             }
-        } catch { }
+        } catch { 
+            print("Failed")
+        }
     }
     
     func loadNFTsFor(wallet: WalletEntity) async throws -> [NFTDisplayInfo] {
-        // TODO: - Load NFTs per wallet
-
-        if let rrDomain = wallet.rrDomain {
-            return try await fetchNFTsFor(domainName: rrDomain.name)
-        } else if let domain = wallet.domains.first {
-            return try await fetchNFTsFor(domainName: domain.name)
-        }
-        
-        let domains = try await domainsService.updateDomainsList(for: [wallet.udWallet])
-        if let domain = domains.first {
-            return try await fetchNFTsFor(domainName: domain.name)
-        }
-        return []
-    }
-    
-    func fetchNFTsFor(domainName: String) async throws -> [NFTDisplayInfo] {
-        try await walletNFTsService.refreshNFTsFor(domainName: domainName).clearingInvalidNFTs().map { NFTDisplayInfo(nftModel: $0) }
+        try await walletNFTsService.fetchNFTsFor(walletAddress: wallet.address).map { NFTDisplayInfo(nftModel: $0) }
     }
 }
 

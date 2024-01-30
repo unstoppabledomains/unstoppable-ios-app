@@ -655,6 +655,12 @@
 		C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6B3284118E800299C6E /* MintingDomainListCell.swift */; };
 		C642A6B9284118E800299C6E /* MintingDomainListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C642A6B4284118E800299C6E /* MintingDomainListCell.xib */; };
 		C642A6BD28411ECE00299C6E /* MintDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */; };
+		C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */; };
+		C643129D2B68A51D00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */; };
+		C64312A12B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */; };
+		C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */; };
+		C64312A32B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
+		C64312A42B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
 		C64513072808089400413C51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513062808089400413C51 /* UserDefaults.swift */; };
 		C645130C280808ED00413C51 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645130B280808ED00413C51 /* Codable.swift */; };
 		C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */; };
@@ -2920,6 +2926,9 @@
 		C642A6A42841157E00299C6E /* TransactionInProgressViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionInProgressViewController.xib; sourceTree = "<group>"; };
 		C642A6B3284118E800299C6E /* MintingDomainListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainListCell.swift; sourceTree = "<group>"; };
 		C642A6B4284118E800299C6E /* MintingDomainListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MintingDomainListCell.xib; sourceTree = "<group>"; };
+		C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryImageSaver.swift; sourceTree = "<group>"; };
+		C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppsEmptyCell.swift; sourceTree = "<group>"; };
+		C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConnectedAppsEmptyCell.xib; sourceTree = "<group>"; };
 		C64513062808089400413C51 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		C645130B280808ED00413C51 /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUsersTutorialViewController.swift; sourceTree = "<group>"; };
@@ -5444,6 +5453,15 @@
 			path = MintingDomainListCell;
 			sourceTree = "<group>";
 		};
+		C643129E2B68BB1500BCA2A4 /* ConnectedAppsEmptyCell */ = {
+			isa = PBXGroup;
+			children = (
+				C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */,
+				C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */,
+			);
+			path = ConnectedAppsEmptyCell;
+			sourceTree = "<group>";
+		};
 		C645131528096C8700413C51 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -6848,6 +6866,7 @@
 				C6A2D576284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift */,
 				C6A2D577284F9EC600327C47 /* ConnectedAppsListViewController.swift */,
 				C6A2D578284F9EC600327C47 /* ConnectedAppsListViewController.xib */,
+				C643129E2B68BB1500BCA2A4 /* ConnectedAppsEmptyCell */,
 				C6A2D59C28504EA000327C47 /* ConnectedAppCell */,
 			);
 			path = ConnectedAppsList;
@@ -7059,6 +7078,7 @@
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
 				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
+				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C69F99552A9F167F004B1958 /* SocialDescription.swift */,
@@ -8343,6 +8363,7 @@
 				C6ECBF9B28D2E06C00E94309 /* GenericBadgeView.xib in Resources */,
 				C61B3E94283E708500500B6D /* EnterEmailVerificationCodeViewController.xib in Resources */,
 				C603E8CD285859560028C21C /* CollectionViewHeaderCell.xib in Resources */,
+				C64312A32B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */,
 				C6A474E829D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */,
 				C6E04156295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib in Resources */,
 				C60982E8282A7CE000546392 /* ConfirmWordListCell.xib in Resources */,
@@ -8452,6 +8473,7 @@
 				C6D6465C2B1ED10D00D724AC /* DomainProfileBadgeCell.xib in Resources */,
 				C6960C442B19986E00B79E28 /* Inter-SemiBold.ttf in Resources */,
 				C6D645A22B1DBB1600D724AC /* DomainsCollectionViewController.xib in Resources */,
+				C64312A42B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */,
 				C6960C422B19985C00B79E28 /* Localizable.strings in Resources */,
 				C6D646BD2B1ED1A300D724AC /* UDDomainSharingCardView.xib in Resources */,
 				C6960C4C2B19986E00B79E28 /* Inter-Light.ttf in Resources */,
@@ -9444,6 +9466,7 @@
 				C655CA992B16E51B00FDA063 /* EasySkeleton.swift in Sources */,
 				C623968B2A288AB300363F60 /* MessagingPrivateChatDetails.swift in Sources */,
 				C652724D2A15D938001A084C /* ChatViewPresenter.swift in Sources */,
+				C64312A12B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */,
 				C664B679291551E600A76154 /* LinkPresentationService.swift in Sources */,
 				C6F9FBBE2A25C32700102F81 /* MessagingWebSocketEvent.swift in Sources */,
 				C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
@@ -9606,6 +9629,7 @@
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C624D79A281BCA3100F55530 /* SettingsPresenter.swift in Sources */,
 				C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */,
+				C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6E04145295051F10080F8E3 /* DomainsCollectionCarouselItemViewController.swift in Sources */,
 				C6B6B05129713ED000D4E30F /* RearrangeDomainCell.swift in Sources */,
 				C6B65F5C2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
@@ -9785,6 +9809,7 @@
 				C6D645A52B1DBB1600D724AC /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6C8F9842B2188FA00A9834D /* SignTransactionDomainSelectionViewPresenter.swift in Sources */,
 				C6D6469D2B1ED14E00D724AC /* ManageDomainTopInfoCell.swift in Sources */,
+				C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */,
 				C6D6467C2B1ED12100D724AC /* DomainProfileSectionDataChangeType.swift in Sources */,
 				C61807B42B199DE90032E543 /* GradientView.swift in Sources */,
 				C6D647032B1ED7C300D724AC /* MessagingChat.swift in Sources */,
@@ -10120,6 +10145,7 @@
 				C6D645A82B1DBB2300D724AC /* UICollectionViewCell.swift in Sources */,
 				C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6C8F8C82B2182E400A9834D /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
+				C643129D2B68A51D00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6D645EC2B1DBEA000D724AC /* CarouselCollectionViewCell.swift in Sources */,
 				C6D647352B1ED9D600D724AC /* WCRequestUIConfiguration.swift in Sources */,
 				C6A89C4D2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */,

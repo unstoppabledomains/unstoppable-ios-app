@@ -136,8 +136,9 @@ private extension AppLaunchService {
             }
         }
         
-        Task.detached(priority: .background) { [unowned self] in
+        Task.detached(priority: .background) { [weak self] in
             try await Task.sleep(seconds: 0.05)
+            guard let self else { return }
             try? await self.sceneDelegate?.authorizeUserOnAppOpening()
             await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise))
         }

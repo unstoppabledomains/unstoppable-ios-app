@@ -57,6 +57,7 @@ struct HomeWalletView: View {
                     tabRouter.isTabBarVisible = !isOtherScreenPresented
                 }
             }
+            .animation(.default, value: UUID())
             .listStyle(.plain)
             .clearListBackground()
             .background(Color.backgroundDefault)
@@ -67,7 +68,6 @@ struct HomeWalletView: View {
                     .ignoresSafeArea()
                     .onAppearanceChange($isOtherScreenPresented)
             }
-            .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     settingsNavButtonView()
@@ -103,14 +103,12 @@ private extension HomeWalletView {
                     .lineLimit(1)
             }
             .frame(height: 20)
-            .frame(maxWidth: 240)
         } else {
             Text(viewModel.selectedWallet.displayName)
                 .font(.currentFont(size: 16, weight: .semibold))
                 .foregroundStyle(Color.foregroundDefault)
                 .lineLimit(1)
                 .frame(height: 20)
-                .frame(maxWidth: 240)
         }
     }
     
@@ -212,6 +210,7 @@ private extension HomeWalletView {
         case .qrScanner:
             QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                .navigationBarTitleDisplayMode(.inline)
         case .minting(let mode, let mintedDomains, let domainsMintedCallback):
             MintDomainsNavigationControllerWrapper(mode: mode,
                                                    mintedDomains: mintedDomains,
@@ -223,21 +222,6 @@ private extension HomeWalletView {
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension HomeWalletView {
-    struct ShowingWalletSelection: ViewModifier {
-        @Binding var isSelectWalletPresented: Bool
-        
-        func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isSelectWalletPresented, content: {
-                    HomeWalletWalletSelectionView()
-                        .adaptiveSheet()
-                })
         }
     }
 }

@@ -21,7 +21,6 @@ extension HomeWalletView {
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
-        @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         
@@ -54,7 +53,7 @@ extension HomeWalletView {
             tokens.append(.createSkeletonEntity())
             domains = wallet.domains
             
-            let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection ?? "No collection" })
+            let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
             var collections: [NFTsCollectionDescription] = []
             
             for (collectionName, nfts) in collectionNameToNFTs {                
@@ -109,7 +108,14 @@ extension HomeWalletView {
         }
         
         private func sortDomains(_ sortOption: DomainsSortingOptions) {
-            
+            switch sortOption {
+            case .alphabetical:
+                domains = domains.sorted(by: { lhs, rhs in
+                    lhs.name < rhs.name
+                })
+            case .salePrice:
+                domains = domains.shuffled()
+            }
         }
         
         func walletActionPressed(_ action: WalletAction) {
@@ -126,20 +132,25 @@ extension HomeWalletView {
         }
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
-            print("SubAction pressed \(subAction.title)")
-            
+            switch subAction {
+            case .connectedApps:
+                router.isConnectedAppsListPresented = true
+            }
         }
         
         func domainNamePressed() {
-            isSelectWalletPresented = true
+            router.isSelectWalletPresented = true
         }
         
         private func runSelectRRDomainInSelectedWalletIfNeeded() {
-            guard selectedWallet.rrDomain == nil else { return }
-            
-            if router.resolvingPrimaryDomainWallet == nil,
-               selectedWallet.isReverseResolutionChangeAllowed() {
-                router.resolvingPrimaryDomainWallet = selectedWallet
+            Task {
+                guard selectedWallet.rrDomain == nil else { return }
+                try? await Task.sleep(seconds: 0.5)
+                
+                if router.resolvingPrimaryDomainWallet == nil,
+                   selectedWallet.isReverseResolutionChangeAllowed() {
+                    router.resolvingPrimaryDomainWallet = selectedWallet
+                }
             }
         }
     }

@@ -11,7 +11,8 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.udWalletsService) private var udWalletsService
     @Environment(\.walletsDataService) private var walletsDataService
-    
+    @Environment(\.presentationMode) private var presentationMode
+
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject private var paymentHandler = SwiftUIViewPaymentHandler()
     var analyticsName: Analytics.ViewName { .setupReverseResolution }
@@ -37,7 +38,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             .background(Color.backgroundDefault)
             .displayError($error, dismissCallback: dismiss)
             .toolbar(content: {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
                         
                     }
@@ -50,6 +51,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             .onAppear(perform: { setAvailableDomains() })
             .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
                 guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
+                      wallet.rrDomain == nil,
                       wallet.isReverseResolutionChangeAllowed() else {
                     dismiss()
                     return
@@ -170,7 +172,7 @@ private extension ReverseResolutionSelectionView {
     }
     
     func dismiss() {
-        tabRouter.resolvingPrimaryDomainWallet = nil
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

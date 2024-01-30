@@ -11,6 +11,8 @@ import Combine
 @MainActor
 final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
+    @Published var isSelectWalletPresented: Bool = false
+    @Published var isConnectedAppsListPresented: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
@@ -145,6 +147,13 @@ extension HomeTabRouter {
             })
         }
     }
+    
+    func showQRScanner() {
+        Task {
+            await popToRootAndWait()
+            walletViewNavPath.append(HomeWalletView.NavigationDestination.qrScanner)
+        }
+    }
 }
 
 // MARK: - Pull up related
@@ -240,6 +249,8 @@ extension HomeTabRouter: PublicProfileViewDelegate {
 // MARK: - Private methods
 private extension HomeTabRouter {
     func popToRoot() {
+        isSelectWalletPresented = false
+        isConnectedAppsListPresented = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

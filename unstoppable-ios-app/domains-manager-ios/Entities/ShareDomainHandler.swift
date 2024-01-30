@@ -129,20 +129,17 @@ private extension ShareDomainHandler {
     }
     
     func saveImage(_ image: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(handleImageSavingWith(image:error:contextInfo:)), nil)
-    }
-    
-    @objc func handleImageSavingWith(image: UIImage, error: Error?, contextInfo: UnsafeRawPointer) {
         Task { @MainActor in
-            if let error = error {
-                view?.showAlertWith(error: error, handler: nil)
-            } else {
-                Vibration.success.vibrate()
+            do {
+                let saver = PhotoLibraryImageSaver()
+                try await saver.saveImage(image)
                 imageSavedCallback?()
                 if let selectedStyleName {
                     appContext.toastMessageService.showToast(.itemSaved(name: selectedStyleName), isSticky: false)
                 }
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didSaveProfileImage)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
             }
         }
     }
