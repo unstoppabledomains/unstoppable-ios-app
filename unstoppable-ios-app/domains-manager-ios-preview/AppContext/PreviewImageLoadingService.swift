@@ -15,6 +15,15 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
             return UIImage.Preview.previewPortrait
         case .initials(let initials, let size, let style):
             return await InitialsView(initials: initials, size: size, style: style).toInitialsImage()
+        case .domainInitials(let domain, let size):
+            return await loadImage(from: .initials(domain.name, size: size, style: .accent),
+                                   downsampleDescription: downsampleDescription)
+        case .domainItemOrInitials(let domain, let size):
+            if [true, false].randomElement() == true {
+                return await loadImage(from: .domain(domain), downsampleDescription: downsampleDescription)
+            }
+            return await loadImage(from: .domainInitials(domain, size: size),
+                                   downsampleDescription: downsampleDescription)
         case .currencyTicker(let ticker, let size, let style):
             return await loadImage(from: .initials(ticker, size: size, style: style), downsampleDescription: downsampleDescription)
         case .url(let url, let maxImageSize):

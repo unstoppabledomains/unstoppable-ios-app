@@ -11,6 +11,7 @@ struct HomeWalletHeaderRowView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
+    @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     @State private var domainAvatar: UIImage?
     @State private var rrDomainName: String?
@@ -75,7 +76,8 @@ private extension HomeWalletHeaderRowView {
     @ViewBuilder
     func getAvatarViewToGetDomain() -> some View {
         Button {
-            
+            UDVibration.buttonTap.vibrate()
+            tabRouter.runPurchaseFlow()
         } label: {
             ZStack {
                 Circle()

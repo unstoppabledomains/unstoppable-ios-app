@@ -11,6 +11,13 @@ struct DomainItem: DomainEntity {
     var name = ""
     var ownerWallet: String? = ""
     var blockchain: BlockchainType? = .Matic
+    
+    func doesRequirePayment() -> Bool {
+        switch self.getBlockchainType() {
+        case .Ethereum: return true
+        case .Zilliqa, .Matic: return false
+        }
+    }
 }
 
 

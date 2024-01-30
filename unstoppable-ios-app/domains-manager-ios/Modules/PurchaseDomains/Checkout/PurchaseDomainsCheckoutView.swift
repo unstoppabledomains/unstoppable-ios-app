@@ -410,7 +410,6 @@ private extension PurchaseDomainsCheckoutView {
             }
             checkoutButton()
         }
-        
     }
     
     var checkoutButtonTitle: String {

@@ -965,3 +965,6 @@
 "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
 "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
 "NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";
+"BUY_NEW_DOMAIN" = "Buy new domain";
+"SELECT_PRIMARY_DOMAIN_TITLE" = "Select primary domain for %@";
+"SELECT_PRIMARY_DOMAIN_SUBTITLE" = "Display primary domain instead of your wallet address %@ when connecting to Web3 applications. You can only choose from domains stored in the %@.";

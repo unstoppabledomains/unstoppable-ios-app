@@ -10,15 +10,17 @@ import UIKit
 import Stripe
 import PassKit
 
-protocol PaymentConfirmationDelegate: UIViewController {
+protocol PaymentConfirmationDelegate: AnyObject {
     var storedPayload: NetworkService.TxPayload? { set get }
     var storedContinuation: CheckedContinuation<NetworkService.TxPayload, any Error>? { get set }
-
     var paymentInProgress: Bool { set get }
     var stripePaymentHelper: StripePaymentHelper? { set get }
+    
+    func fetchPaymentConfirmationAsync(for domain: DomainItem?,
+                                       payload: NetworkService.TxPayload) async throws -> NetworkService.TxPayload
 }
 
-extension PaymentConfirmationDelegate {
+extension PaymentConfirmationDelegate where Self: UIViewController {
     func fetchPaymentConfirmationAsync(for domain: DomainItem?,
                                              payload: NetworkService.TxPayload) async throws -> NetworkService.TxPayload {
         return try await withCheckedThrowingContinuation { continuation in

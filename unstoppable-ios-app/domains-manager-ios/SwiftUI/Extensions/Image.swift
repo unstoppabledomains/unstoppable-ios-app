@@ -54,5 +54,7 @@ extension Image {
     static let notesIcon = Image("notesIcon")
     static let vaultSafeIcon = Image("vaultSafeIcon")
     static let walletExternalIcon = Image("walletExternalIcon")
+    static let checkCircleEmpty = Image("checkCircleEmpty")
+    static let crownIcon = Image("crownIcon")
     
 }

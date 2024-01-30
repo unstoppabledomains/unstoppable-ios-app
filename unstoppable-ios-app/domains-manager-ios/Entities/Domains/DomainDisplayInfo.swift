@@ -21,12 +21,14 @@ struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable, Identifiab
     
     init(name: String,
          ownerWallet: String,
+         blockchain: BlockchainType? = nil,
          pfpInfo: DomainPFPInfo? = nil,
          state: State = .default,
          order: Int? = nil,
          isSetForRR: Bool) {
         self.name = name
         self.ownerWallet = ownerWallet
+        self.blockchain = blockchain
         self.state = state
         self.domainPFPInfo = pfpInfo
         self.order = order

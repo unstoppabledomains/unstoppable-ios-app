@@ -18,7 +18,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
-    @Published var isResolvingPrimaryDomain: Bool = false
+    @Published var resolvingPrimaryDomainWallet: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
@@ -47,6 +47,13 @@ extension HomeTabRouter {
     func showHomeScreenList() async {
         await popToRootAndWait()
         tabViewSelection = .wallets
+    }
+    
+    func runPurchaseFlow() {
+        Task {
+            await showHomeScreenList()
+            walletViewNavPath.append(HomeWalletView.NavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
+        }
     }
     
     func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
@@ -116,7 +123,7 @@ extension HomeTabRouter {
                 mintingNav.setMode(mode)
             } else if let _ = topPresentedViewController as? AddWalletNavigationController {
                 // MARK: - Ignore minting request when add/import/connect wallet
-            } else if !isResolvingPrimaryDomain {
+            } else if resolvingPrimaryDomainWallet == nil {
                 await popToRootAndWait()
                 guard await isMintingAvailable() else { return }
                 
@@ -236,6 +243,7 @@ private extension HomeTabRouter {
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil
+        resolvingPrimaryDomainWallet = nil
         walletViewNavPath = .init()
         chatsListCoordinator?.popToChatsList()
     }

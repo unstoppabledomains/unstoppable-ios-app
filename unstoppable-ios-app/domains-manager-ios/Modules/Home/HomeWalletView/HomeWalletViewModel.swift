@@ -14,7 +14,7 @@ extension HomeWalletView {
         
         @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [TokenDescription] = TokenDescription.mock()
-        @Published private(set) var domains: [DomainDisplayInfo] = createMockDomains()
+        @Published private(set) var domains: [DomainDisplayInfo] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = NFTsCollectionDescription.mock()
         @Published var nftsCollectionsExpandedIds: Set<String> = []
         @Published var selectedContentType: ContentType = .tokens
@@ -23,9 +23,12 @@ extension HomeWalletView {
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
         @Published var isSelectWalletPresented = false
         private var subscribers: Set<AnyCancellable> = []
+        private var router: HomeTabRouter
         
-        init(selectedWallet: WalletEntity) {
+        init(selectedWallet: WalletEntity,
+             router: HomeTabRouter) {
             self.selectedWallet = selectedWallet
+            self.router = router
             
             setSelectedWallet(selectedWallet)
             
@@ -63,6 +66,7 @@ extension HomeWalletView {
             sortCollectibles(selectedCollectiblesSortingOption)
             sortDomains(selectedDomainsSortingOption)
             sortTokens(selectedTokensSortingOption)
+            runSelectRRDomainInSelectedWalletIfNeeded()
         }
         
         private func sortTokens(_ sortOption: TokensSortingOptions) {
@@ -129,18 +133,14 @@ extension HomeWalletView {
         func domainNamePressed() {
             isSelectWalletPresented = true
         }
+        
+        private func runSelectRRDomainInSelectedWalletIfNeeded() {
+            guard selectedWallet.rrDomain == nil else { return }
+            
+            if router.resolvingPrimaryDomainWallet == nil,
+               selectedWallet.isReverseResolutionChangeAllowed() {
+                router.resolvingPrimaryDomainWallet = selectedWallet
+            }
+        }
     }
-}
-
-func createMockDomains() -> [DomainDisplayInfo] {
-    var domains = [DomainDisplayInfo]()
-    
-    for i in 0..<5 {
-        let domain = DomainDisplayInfo(name: "oleg_\(i).x",
-                                       ownerWallet: "",
-                                       isSetForRR: false)
-        domains.append(domain)
-    }
-    
-    return domains
 }

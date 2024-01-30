@@ -63,32 +63,9 @@ struct HomeWalletView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: NavigationDestination.self) { destination in
-                switch destination {
-                case .settings:
-                    SettingsViewControllerWrapper()
-                        .ignoresSafeArea()
-                        .toolbar(.hidden, for: .navigationBar)
-                        .onAppearanceChange($isOtherScreenPresented)
-                case .qrScanner:
-                    QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: {
-                        if tabRouter.pullUp == nil {
-                            tabRouter.pullUp = .custom(.loadingIndicator())
-                        }
-                    })
+                viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
-                    .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                     .onAppearanceChange($isOtherScreenPresented)
-                case .minting(let mode, let mintedDomains, let domainsMintedCallback):
-                    MintDomainsNavigationControllerWrapper(mode: mode,
-                                                           mintedDomains: mintedDomains,
-                                                           domainsMintedCallback: domainsMintedCallback,
-                                                           mintingNavProvider: { mintingNav in
-                        tabRouter.mintingNav = mintingNav
-                    })
-                    .ignoresSafeArea()
-                    .toolbar(.hidden, for: .navigationBar)
-                    .onAppearanceChange($isOtherScreenPresented)
-                }
             }
             .modifier(ShowingWalletSelection(isSelectWalletPresented: $viewModel.isSelectWalletPresented))
             .toolbar(content: {
@@ -99,6 +76,9 @@ struct HomeWalletView: View {
                     qrNavButtonView()
                 }
             })
+            .refreshable {
+                try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
+            }
         }, navigationStateProvider: { state in
             self.navigationState = state
             state.customTitle = navigationView
@@ -222,6 +202,29 @@ private extension HomeWalletView {
                 .foregroundStyle(Color.foregroundDefault)
         }
     }
+    
+    @ViewBuilder
+    func viewFor(navigationDestination: NavigationDestination) -> some View {
+        switch navigationDestination {
+        case .settings:
+            SettingsViewControllerWrapper()
+                .toolbar(.hidden, for: .navigationBar)
+        case .qrScanner:
+            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
+                .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+        case .minting(let mode, let mintedDomains, let domainsMintedCallback):
+            MintDomainsNavigationControllerWrapper(mode: mode,
+                                                   mintedDomains: mintedDomains,
+                                                   domainsMintedCallback: domainsMintedCallback,
+                                                   mintingNavProvider: { mintingNav in
+                tabRouter.mintingNav = mintingNav
+            })
+            .toolbar(.hidden, for: .navigationBar)
+        case .purchaseDomains(let callback):
+            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
+                .toolbar(.hidden, for: .navigationBar)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -247,6 +250,7 @@ extension HomeWalletView {
         case minting(mode: MintDomainsNavigationController.Mode,
                      mintedDomains: [DomainDisplayInfo],
                      domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
+        case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
@@ -255,6 +259,8 @@ extension HomeWalletView {
             case (.qrScanner, .qrScanner):
                 return true
             case (.minting, .minting):
+                return true
+            case (.purchaseDomains, .purchaseDomains):
                 return true
             default:
                 return false
@@ -269,6 +275,8 @@ extension HomeWalletView {
                 hasher.combine(1)
             case .minting:
                 hasher.combine(2)
+            case .purchaseDomains:
+                hasher.combine(3)
             }
         }
         
@@ -277,7 +285,8 @@ extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!))
+        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
+                                        router: .init()))
     }
 }
 

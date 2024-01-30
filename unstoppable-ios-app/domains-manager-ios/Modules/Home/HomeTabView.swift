@@ -20,7 +20,8 @@ struct HomeTabView: View {
 
     var body: some View {
         TabView(selection: $router.tabViewSelection) {
-            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet))
+            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet,
+                                            router: router))
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
@@ -38,11 +39,14 @@ struct HomeTabView: View {
             .tabBarVisible(router.isTabBarVisible)
         }
         .tint(.foregroundDefault)
-        .environmentObject(router)
         .viewPullUp(router.currentPullUp(id: id))
         .sheet(item: $router.presentedNFT, content: { nft in
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
+        })
+        .sheet(item: $router.resolvingPrimaryDomainWallet, content: { wallet in
+            ReverseResolutionSelectionView(wallet: wallet)
+                .interactiveDismissDisabled(true)
         })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
@@ -65,6 +69,7 @@ struct HomeTabView: View {
             UDBTSearchView(controller: UBTController(),
                            searchResultCallback: presentationDetails.searchResultCallback)
         })
+        .environmentObject(router)
     }
     
     init(selectedWallet: WalletEntity,

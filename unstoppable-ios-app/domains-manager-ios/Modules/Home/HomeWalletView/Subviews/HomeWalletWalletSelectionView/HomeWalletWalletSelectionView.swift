@@ -25,6 +25,7 @@ struct HomeWalletWalletSelectionView: View {
             }
             .padding()
         }
+        .background(Color.backgroundDefault)
         .onAppear(perform: onAppear)
     }
     

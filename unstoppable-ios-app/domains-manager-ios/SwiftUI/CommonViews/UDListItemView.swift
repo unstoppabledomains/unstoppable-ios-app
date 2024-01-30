@@ -14,6 +14,7 @@ struct UDListItemView: View {
     private let iconSize: CGFloat = 40
     
     let title: String
+    var titleColor: Color = .foregroundDefault
     var subtitle: String? = nil
     var subtitleStyle: SubtitleStyle = .default
     var value: String? = nil
@@ -45,16 +46,18 @@ private extension UDListItemView {
     @ViewBuilder
     func imageView() -> some View {
         switch imageStyle {
-        case .centred(let offset):
+        case .centred(let offset, let foreground, let background, let bordered):
             imageForCurrentType(size: CGSize(width: iconSize - offset.leading - offset.trailing,
                                              height: iconSize - offset.top - offset.bottom))
-                .foregroundStyle(Color.foregroundDefault)
+                .foregroundStyle(foreground)
                 .padding(offset)
-                .background(Color.backgroundMuted)
+                .background(background)
                 .clipShape(Circle())
                 .overlay {
-                    Circle()
-                        .stroke(Color.borderSubtle, lineWidth: 1) // border subtle
+                    if bordered {
+                        Circle()
+                            .stroke(Color.borderSubtle, lineWidth: 1) // border subtle
+                    }
                 }
         case .full:
             imageForCurrentType(size: .square(size: iconSize))
@@ -83,7 +86,7 @@ private extension UDListItemView {
     func titleView() -> some View {
         Text(title)
             .font(.currentFont(size: 16, weight: .medium))
-            .foregroundStyle(Color.foregroundDefault)
+            .foregroundStyle(titleColor)
             .frame(height: 24)
     }
     
@@ -141,8 +144,15 @@ extension UDListItemView {
     }
     
     enum ImageStyle {
-        case centred(offset: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+        case centred(offset: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10),
+                     foreground: Color = .foregroundDefault,
+                     background: Color = .backgroundMuted,
+                     bordered: Bool = true)
         case full
+        
+        static func clearImage(foreground: Color) -> ImageStyle {
+            .centred(foreground: foreground, background: .clear, bordered: false)
+        }
     }
     
     enum SubtitleStyle {
@@ -151,7 +161,7 @@ extension UDListItemView {
     }
     
     enum RightViewStyle {
-        case chevron, checkmark, errorCircle
+        case chevron, checkmark, checkmarkEmpty, errorCircle
         
         var image: Image {
             switch self {
@@ -159,6 +169,8 @@ extension UDListItemView {
                 return .chevronRight
             case .checkmark:
                 return .checkCircle
+            case .checkmarkEmpty:
+                return .checkCircleEmpty
             case .errorCircle:
                 return .infoIcon
             }
@@ -170,6 +182,8 @@ extension UDListItemView {
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
+            case .checkmarkEmpty:
+                return .borderEmphasis
             case .errorCircle:
                 return .foregroundDanger
             }
