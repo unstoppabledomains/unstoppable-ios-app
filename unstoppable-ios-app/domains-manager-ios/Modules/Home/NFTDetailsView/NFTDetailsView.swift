@@ -45,6 +45,26 @@ struct NFTDetailsView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        ForEach(NFTAction.allCases, id: \.self) { action in
+                            Button {
+                                UDVibration.buttonTap.vibrate()
+                                
+                            } label: {
+                                Label(
+                                    title: { Text(action.title) },
+                                    icon: { action.icon.bold() }
+                                )
+                            }
+                        }
+                    } label: {
+                        Image.dotsIcon
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
+                }
             })
         }, navigationStateProvider: { navigationState in
             self.navigationState = navigationState
@@ -107,24 +127,6 @@ private extension NFTDetailsView {
                     .font(.currentFont(size: 22, weight: .bold))
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()
-                Menu {
-                    ForEach(NFTAction.allCases, id: \.self) { action in
-                        Button {
-                            UDVibration.buttonTap.vibrate()
-                            
-                        } label: {
-                            Label(
-                                title: { Text(action.title) },
-                                icon: { action.icon }
-                            )
-                        }
-                    }
-                } label: {
-                    Image.dotsIcon
-                        .resizable()
-                        .squareFrame(24)
-                        .foregroundStyle(Color.foregroundSecondary)
-                }
             }
             Text(collectionName)
                 .font(.currentFont(size: 16, weight: .medium))
@@ -294,7 +296,9 @@ private extension NFTDetailsView {
     }
     
     enum NFTAction: CaseIterable {
-        case refresh, savePhoto, viewMarketPlace
+        case savePhoto
+        case refresh
+        case viewMarketPlace
         
         var title: String {
             switch self {
@@ -309,12 +313,12 @@ private extension NFTDetailsView {
         
         var icon: Image {
             switch self {
+            case .savePhoto:
+                return Image(systemName: "square.and.arrow.down")
             case .refresh:
                 return .appleIcon
-            case .savePhoto:
-                return .appleIcon
             case .viewMarketPlace:
-                return .appleIcon
+                return Image(systemName: "arrow.up.right")
             }
         }
     }

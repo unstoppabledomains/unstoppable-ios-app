@@ -38,7 +38,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             .background(Color.backgroundDefault)
             .displayError($error, dismissCallback: dismiss)
             .toolbar(content: {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
                         
                     }
