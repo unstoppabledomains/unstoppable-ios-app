@@ -24,7 +24,7 @@ struct HomeWalletTokenRowView: View {
                     .skeletonable()
                     .clipShape(Circle())
                 
-                if let parentSymbol = token.parentSymbol {
+                if token.parentSymbol != nil {
                     Image(uiImage: parentIcon ?? .init())
                         .resizable()
                         .squareFrame(20)

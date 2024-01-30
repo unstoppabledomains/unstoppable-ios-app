@@ -123,6 +123,7 @@ struct ViewPullUpDefaultConfiguration {
         
         case main(content: ButtonContent)
         case primaryDanger(content: ButtonContent)
+        case primaryGhost(content: ButtonContent)
         case secondary(content: ButtonContent)
         case secondaryDanger(content: ButtonContent)
         case textTertiary(content: ButtonContent)
@@ -131,7 +132,7 @@ struct ViewPullUpDefaultConfiguration {
         
         var height: CGFloat {
             switch self {
-            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay, .raisedTertiary:
+            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay, .raisedTertiary, .primaryGhost:
                 return 48
             case .textTertiary:
                 return 24
@@ -141,14 +142,14 @@ struct ViewPullUpDefaultConfiguration {
         @MainActor
         func callAction() {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content):
                 content.action?()
             }
         }
         
         var content: ButtonContent {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content), .primaryGhost(let content):
                 return content
             }
         }
@@ -199,8 +200,6 @@ extension ViewPullUpDefaultConfiguration {
                                           contentWidth: contentWidth)
             height += ViewPullUp.sideOffset
         }
-        
-        
         
         return height
     }
@@ -288,6 +287,29 @@ extension ViewPullUpDefaultConfiguration {
               cancelButton: .gotItButton(),
               analyticName: .wcRequestNotSupported,
               dismissCallback: dismissCallback)
+    }
+    
+    static func recordDoesNotMatchOwner(chain: BlockchainType,
+                                        ownerAddress: String,
+                                        updateRecordsCallback: @escaping MainActorAsyncCallback) async -> ViewPullUpDefaultConfiguration {
+        let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(chain.rawValue,
+                                                                                        size: .default,
+                                                                                        style: .gray),
+                                                                  downsampleDescription: .icon)
+        
+        return .init(icon: .init(icon: icon ?? .appleIcon,
+                                 size: .large),
+                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(chain.fullName)),
+                     subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnersAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
+                                                      highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
+                     actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
+                                                        analyticsName: .gotIt,
+                                                        action: nil)),
+                     extraButton: .primaryGhost(content: .init(title: String.Constants.updateRecords.localized(),
+                                                                analyticsName: .aboutProfile,
+                                                                action: updateRecordsCallback)),
+              analyticName: .wcRequestNotSupported,
+              dismissCallback: nil)
     }
     
 }

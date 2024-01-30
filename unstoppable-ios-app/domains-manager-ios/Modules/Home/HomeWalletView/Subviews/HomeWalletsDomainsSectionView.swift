@@ -37,35 +37,19 @@ struct HomeWalletsDomainsSectionView: View {
 private extension HomeWalletsDomainsSectionView {
     @ViewBuilder
     func subdomainsSectionHeader() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
+        HomeWalletExpandableSectionHeaderView(title: String.Constants.subdomains.localized(),
+                                              isExpandable: subdomains.count > minNumOfVisibleSubdomains,
+                                              numberOfItemsInSection: subdomains.count,
+                                              isExpanded: isSubdomainsVisible,
+                                              actionCallback: {
             isSubdomainsVisible.toggle()
-        } label: {
-            HStack {
-                Text("Subdomains")
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
-                Spacer()
-                
-                if subdomains.count > minNumOfVisibleSubdomains {
-                    HStack(spacing: 8) {
-                        Text(String(subdomains.count))
-                            .font(.currentFont(size: 16))
-                        Image(uiImage: isSubdomainsVisible ? .chevronUp : .chevronDown)
-                            .resizable()
-                            .squareFrame(20)
-                    }
-                    .foregroundStyle(Color.foregroundSecondary)
-                }
-            }
-        }
-        .buttonStyle(.plain)
+        })
     }
     
     var numberOfVisibleSubdomains: Int {
         let numberOfSubdomains = subdomains.count
         
-        return isSubdomainsVisible ? numberOfSubdomains : min(numberOfSubdomains, minNumOfVisibleSubdomains) //Take no more then minNumOfVisibleSubdomains Subdomains
+        return isSubdomainsVisible ? numberOfSubdomains : min(numberOfSubdomains, minNumOfVisibleSubdomains) //Take no more than minNumOfVisibleSubdomains Subdomains
     }
     
     @ViewBuilder

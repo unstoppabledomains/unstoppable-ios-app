@@ -179,18 +179,18 @@ extension HomeWalletView {
         }
         
         func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
-            loadIconFor(ticker: symbol, iconUpdated: iconUpdated)
+            TokenDescription.loadIconFor(ticker: symbol, iconUpdated: iconUpdated)
         }
         
         func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
             if let parentSymbol {
-                loadIconFor(ticker: parentSymbol, iconUpdated: iconUpdated)
+                TokenDescription.loadIconFor(ticker: parentSymbol, iconUpdated: iconUpdated)
             } else {
                 iconUpdated(nil)
             }
         }
         
-        private func loadIconFor(ticker: String, iconUpdated: @escaping (UIImage?)->()) {
+        static func loadIconFor(ticker: String, iconUpdated: @escaping (UIImage?)->()) {
             Task {
                 let size = TokenDescription.iconSize
                 let style = TokenDescription.iconStyle
@@ -254,4 +254,14 @@ extension HomeWalletView {
         }
     }
     
+}
+
+extension HomeWalletView {
+    struct NotMatchedRecordsDescription: Hashable, Identifiable {
+        var id: String { chain.rawValue }
+        
+        let chain: BlockchainType
+        let numberOfRecordsNotSetToChain: Int
+        let ownerWallet: String
+    }
 }
