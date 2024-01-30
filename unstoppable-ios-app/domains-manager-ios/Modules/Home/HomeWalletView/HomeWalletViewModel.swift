@@ -53,7 +53,7 @@ extension HomeWalletView {
             tokens.append(.createSkeletonEntity())
             domains = wallet.domains
             
-            let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection ?? "No collection" })
+            let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
             var collections: [NFTsCollectionDescription] = []
             
             for (collectionName, nfts) in collectionNameToNFTs {                
@@ -125,7 +125,6 @@ extension HomeWalletView {
         }
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
-            print("SubAction pressed \(subAction.title)")
             
         }
         
@@ -134,11 +133,14 @@ extension HomeWalletView {
         }
         
         private func runSelectRRDomainInSelectedWalletIfNeeded() {
-            guard selectedWallet.rrDomain == nil else { return }
-            
-            if router.resolvingPrimaryDomainWallet == nil,
-               selectedWallet.isReverseResolutionChangeAllowed() {
-                router.resolvingPrimaryDomainWallet = selectedWallet
+            Task {
+                guard selectedWallet.rrDomain == nil else { return }
+                try? await Task.sleep(seconds: 0.5)
+                
+                if router.resolvingPrimaryDomainWallet == nil,
+                   selectedWallet.isReverseResolutionChangeAllowed() {
+                    router.resolvingPrimaryDomainWallet = selectedWallet
+                }
             }
         }
     }

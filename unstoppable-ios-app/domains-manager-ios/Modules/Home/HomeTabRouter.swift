@@ -12,7 +12,7 @@ import Combine
 final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectWalletPresented: Bool = false
-    @Published var tabViewSelection: HomeTab = .messaging
+    @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
     @Published var presentedNFT: NFTDisplayInfo?
