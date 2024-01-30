@@ -108,7 +108,14 @@ extension HomeWalletView {
         }
         
         private func sortDomains(_ sortOption: DomainsSortingOptions) {
-            
+            switch sortOption {
+            case .alphabetical:
+                domains = domains.sorted(by: { lhs, rhs in
+                    lhs.name < rhs.name
+                })
+            case .salePrice:
+                domains = domains.shuffled()
+            }
         }
         
         func walletActionPressed(_ action: WalletAction) {
