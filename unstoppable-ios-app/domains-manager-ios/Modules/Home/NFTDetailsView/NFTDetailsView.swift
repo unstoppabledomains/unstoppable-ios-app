@@ -46,24 +46,7 @@ struct NFTDetailsView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        ForEach(NFTAction.allCases, id: \.self) { action in
-                            Button {
-                                UDVibration.buttonTap.vibrate()
-                                
-                            } label: {
-                                Label(
-                                    title: { Text(action.title) },
-                                    icon: { action.icon.bold() }
-                                )
-                            }
-                        }
-                    } label: {
-                        Image.dotsIcon
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
+                    navActionsView()
                 }
             })
         }, navigationStateProvider: { navigationState in
@@ -295,8 +278,52 @@ private extension NFTDetailsView {
             .offset(y: 4)
     }
     
-    enum NFTAction: CaseIterable {
-        case savePhoto
+    @ViewBuilder
+    func navActionsView() -> some View {
+        Menu {
+            ForEach(availableNFTActions(), id: \.self) { action in
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    handleAction(action)
+                } label: {
+                    Label(
+                        title: { Text(action.title) },
+                        icon: { action.icon.bold() }
+                    )
+                }
+            }
+        } label: {
+            Image.dotsIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
+        }
+    }
+    
+    func handleAction(_ action: NFTAction) {
+        switch action {
+        case .savePhoto(let image):
+            let saver = PhotoLibraryImageSaver()
+            saver.saveImage(image)
+        case .refresh:
+            return
+        case .viewMarketPlace:
+            return
+        }
+    }
+    
+    func availableNFTActions() -> [NFTAction] {
+        var actions: [NFTAction] = []
+        if let nftImage {
+            actions.append(.savePhoto(nftImage))
+        }
+        actions.append(.refresh)
+        
+        return actions
+    }
+    
+    enum NFTAction: Hashable {
+        case savePhoto(UIImage)
         case refresh
         case viewMarketPlace
         

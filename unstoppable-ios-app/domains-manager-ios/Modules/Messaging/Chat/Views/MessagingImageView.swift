@@ -64,11 +64,12 @@ struct MessagingImageView: View {
                                         .foregroundColor(.white)
                                 }
                             }
-                        case .view(let saveCallback):
+                        case .view:
                             Button(action: {
                                 UDVibration.buttonTap.vibrate()
+                                let saver = PhotoLibraryImageSaver()
+                                saver.saveImage(image)
                                 imageSaved()
-                                saveCallback()
                             }) {
                                 Text(saveImageButtonTitle)
                                     .foregroundColor(.white)
@@ -109,7 +110,7 @@ struct MessagingImageView: View {
 extension MessagingImageView {
     enum Mode {
         case confirmSending(callback: ()->())
-        case view(saveCallback: ()->())
+        case view
     }
 }
 

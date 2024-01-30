@@ -655,6 +655,8 @@
 		C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6B3284118E800299C6E /* MintingDomainListCell.swift */; };
 		C642A6B9284118E800299C6E /* MintingDomainListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C642A6B4284118E800299C6E /* MintingDomainListCell.xib */; };
 		C642A6BD28411ECE00299C6E /* MintDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */; };
+		C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */; };
+		C643129D2B68A51D00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */; };
 		C64513072808089400413C51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513062808089400413C51 /* UserDefaults.swift */; };
 		C645130C280808ED00413C51 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645130B280808ED00413C51 /* Codable.swift */; };
 		C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */; };
@@ -2920,6 +2922,7 @@
 		C642A6A42841157E00299C6E /* TransactionInProgressViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionInProgressViewController.xib; sourceTree = "<group>"; };
 		C642A6B3284118E800299C6E /* MintingDomainListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainListCell.swift; sourceTree = "<group>"; };
 		C642A6B4284118E800299C6E /* MintingDomainListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MintingDomainListCell.xib; sourceTree = "<group>"; };
+		C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryImageSaver.swift; sourceTree = "<group>"; };
 		C64513062808089400413C51 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		C645130B280808ED00413C51 /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUsersTutorialViewController.swift; sourceTree = "<group>"; };
@@ -7059,6 +7062,7 @@
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
 				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
+				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C69F99552A9F167F004B1958 /* SocialDescription.swift */,
@@ -9606,6 +9610,7 @@
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C624D79A281BCA3100F55530 /* SettingsPresenter.swift in Sources */,
 				C685A94F284097E200E54044 /* UDDomainCardView.swift in Sources */,
+				C643129B2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6E04145295051F10080F8E3 /* DomainsCollectionCarouselItemViewController.swift in Sources */,
 				C6B6B05129713ED000D4E30F /* RearrangeDomainCell.swift in Sources */,
 				C6B65F5C2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
@@ -10120,6 +10125,7 @@
 				C6D645A82B1DBB2300D724AC /* UICollectionViewCell.swift in Sources */,
 				C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6C8F8C82B2182E400A9834D /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
+				C643129D2B68A51D00BCA2A4 /* PhotoLibraryImageSaver.swift in Sources */,
 				C6D645EC2B1DBEA000D724AC /* CarouselCollectionViewCell.swift in Sources */,
 				C6D647352B1ED9D600D724AC /* WCRequestUIConfiguration.swift in Sources */,
 				C6A89C4D2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */,
