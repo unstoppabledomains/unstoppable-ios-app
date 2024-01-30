@@ -42,7 +42,7 @@ private extension HomeWalletsDomainsSectionView {
             isSubdomainsVisible.toggle()
         } label: {
             HStack {
-                Text("Subdomains")
+                Text(String.Constants.subdomains.localized())
                     .font(.currentFont(size: 16, weight: .medium))
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()

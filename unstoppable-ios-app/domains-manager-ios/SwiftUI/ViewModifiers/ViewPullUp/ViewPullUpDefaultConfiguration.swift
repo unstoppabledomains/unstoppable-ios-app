@@ -301,8 +301,8 @@ extension ViewPullUpDefaultConfiguration {
         
         return .init(icon: .init(icon: icon ?? .appleIcon,
                                  size: .large),
-                     title: .text(String.Constants.recordDoesNotMatchOwnerAddressPullUpTitle.localized(chain.fullName)),
-                     subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnerAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
+                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(chain.fullName)),
+                     subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnersAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
                                                       highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
                      actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
                                                         analyticsName: .gotIt,

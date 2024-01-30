@@ -14,12 +14,15 @@ struct HomeWalletTokenNotMatchingRowView: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            ZStack(alignment: .bottomTrailing) {
+            ZStack {
                 Image(uiImage: icon ?? .init())
                     .resizable()
                     .squareFrame(40)
                     .background(Color.backgroundSubtle)
                     .clipShape(Circle())
+                Circle()
+                    .foregroundStyle(Color.black.opacity(0.4))
+                    .squareFrame(40)
             }
             
             HStack(spacing: 0) {
@@ -29,7 +32,7 @@ struct HomeWalletTokenNotMatchingRowView: View {
                         .font(.currentFont(size: 16, weight: .medium))
                         .foregroundStyle(Color.foregroundDefault)
                         .frame(height: 24)
-                    Text(String.Constants.recordsDoesNotMatchOwnerAddress.localized())
+                    Text(String.Constants.recordsDoesNotMatchOwnersAddress.localized())
                         .font(.currentFont(size: 14, weight: .medium))
                         .foregroundStyle(Color.foregroundWarning)
                         .frame(height: 20)
