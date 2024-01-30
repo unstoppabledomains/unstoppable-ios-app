@@ -262,5 +262,6 @@ extension HomeWalletView {
         
         let chain: BlockchainType
         let numberOfRecordsNotSetToChain: Int
+        let ownerWallet: String
     }
 }

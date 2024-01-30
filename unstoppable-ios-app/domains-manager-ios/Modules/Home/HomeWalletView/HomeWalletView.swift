@@ -153,7 +153,7 @@ private extension HomeWalletView {
         LazyVStack(spacing: 20) {
             ForEach(viewModel.tokens) { token in
                 Button {
-                    
+                  
                 } label: {
                     HomeWalletTokenRowView(token: token)
                 }
@@ -172,7 +172,8 @@ private extension HomeWalletView {
             LazyVStack(spacing: 20) {
                 ForEach(viewModel.chainsNotMatch) { description in
                     Button {
-                        
+                        UDVibration.buttonTap.vibrate()
+                        didSelectNotMatchingTokenDescription(description)
                     } label: {
                         HomeWalletTokenNotMatchingRowView(description: description)
                     }
@@ -180,6 +181,16 @@ private extension HomeWalletView {
                     .buttonStyle(.plain)
                 }
             }
+        }
+    }
+    
+    func didSelectNotMatchingTokenDescription(_ description: NotMatchedRecordsDescription) {
+        Task {
+            let pullUpConfig = await ViewPullUpDefaultConfiguration.recordDoesNotMatchOwner(chain: description.chain,
+                                                                                            ownerAddress: description.ownerWallet, updateRecordsCallback: {
+                viewModel.walletActionPressed(.profile)
+            })
+            tabRouter.pullUp = .default(pullUpConfig)
         }
     }
     

@@ -78,7 +78,8 @@ private extension HomeWalletTokenNotMatchingRowView {
 
 #Preview {
     HomeWalletTokenNotMatchingRowView(description: .init(chain: .Ethereum,
-                                                         numberOfRecordsNotSetToChain: 1))
+                                                         numberOfRecordsNotSetToChain: 1,
+                                                         ownerWallet: "123"))
     .frame(width: 390, height: 64)
     
 }

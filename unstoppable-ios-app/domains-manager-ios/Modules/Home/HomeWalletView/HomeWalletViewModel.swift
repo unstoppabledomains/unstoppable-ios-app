@@ -57,7 +57,9 @@ extension HomeWalletView {
             case .receive:
                 return
             case .profile:
-                return
+                guard let rrDomain = selectedWallet.rrDomain else { return }
+                
+                router.presentedDomain = .init(domain: rrDomain, wallet: selectedWallet)
             case .copy:
                 CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
             case .more:
@@ -189,7 +191,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                                                                        notSetToWallet: walletAddress)
                     if numberOfRecordsNotSetToChain > 0 {
                         return HomeWalletView.NotMatchedRecordsDescription(chain: chain,
-                                                                           numberOfRecordsNotSetToChain: numberOfRecordsNotSetToChain)
+                                                                           numberOfRecordsNotSetToChain: numberOfRecordsNotSetToChain,
+                                                                           ownerWallet: walletAddress)
                     } else {
                         return nil
                     }

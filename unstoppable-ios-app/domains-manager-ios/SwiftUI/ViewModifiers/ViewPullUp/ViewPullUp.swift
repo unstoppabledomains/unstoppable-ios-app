@@ -214,6 +214,9 @@ private extension ViewPullUp {
             buttonWithContent(content, style: .large(.applePay), configuration: configuration)
         case .raisedTertiary(let content):
             buttonWithContent(content, style: .medium(.raisedTertiary), configuration: configuration)
+        case .primaryGhost(let content):
+            buttonWithContent(content, style: .large(.ghostPrimary), configuration: configuration)
+            
         }
     }
     
@@ -245,7 +248,7 @@ private extension ViewPullUp {
     
     @ViewBuilder
     func viewForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
-        Image(uiImage: iconContent.icon.templateImageOfSize(.square(size: iconContent.iconSize)))
+        Image(uiImage: iconContent.icon)
             .resizable()
             .squareFrame(iconContent.iconSize)
             .foregroundStyle(Color(uiColor: iconContent.tintColor))
