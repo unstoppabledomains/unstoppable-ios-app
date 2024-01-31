@@ -93,7 +93,8 @@ private extension AppLaunchService {
                     }
                     completion?()
                 } else {
-                    resolveInitialMintingState(startTime: startTime)
+                    resolveInitialMintingState(startTime: startTime, 
+                                               sessionState: sessionState)
                 }
             } catch {
                 Debugger.printFailure("Failed to migrate legacy wallets", critical: true)
@@ -109,7 +110,8 @@ private extension AppLaunchService {
         try await UDWalletsStorage.instance.initialWalletsCheck()
     }
      
-    func resolveInitialMintingState(startTime: Date) {
+    func resolveInitialMintingState(startTime: Date,
+                                    sessionState: AppSessionInterpreter.State) {
         let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
 
         Task.detached(priority: .medium) { [weak self] in
@@ -140,14 +142,16 @@ private extension AppLaunchService {
             try await Task.sleep(seconds: 0.05)
             guard let self else { return }
             try? await self.sceneDelegate?.authorizeUserOnAppOpening()
-            await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise))
+            await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
+                                          sessionState: sessionState)
         }
 
         Task {
             await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
-            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)))
+            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)),
+                                     sessionState: sessionState)
         }
         
         Task {
@@ -157,7 +161,8 @@ private extension AppLaunchService {
             try await Task.sleep(seconds: timeLeft)
 
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
-            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: mintingState)))
+            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: mintingState)),
+                                     sessionState: sessionState)
         }
     }
     
@@ -176,7 +181,8 @@ private extension AppLaunchService {
     }
     
     @MainActor
-    func handleInitialState(_ state: InitialMintingStateMachine.State?) async {
+    func handleInitialState(_ state: InitialMintingStateMachine.State?,
+                            sessionState: AppSessionInterpreter.State) async {
         guard let state = state else { return }
         
         switch state {
@@ -186,8 +192,15 @@ private extension AppLaunchService {
             if let newAppVersionInfo = await stateMachine.appVersionInfo,
                !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
-            } else if let wallet = appContext.walletsDataService.selectedWallet { // TODO: - Refactoring
-                coreAppCoordinator.showHome(mintingState: mintingState, wallet: wallet)
+            } else { // TODO: - Refactoring
+                switch sessionState {
+                case .walletAdded(let wallet):
+                    coreAppCoordinator.showHome(accountState: .walletAdded(wallet))
+                case .webAccountWithParkedDomains(let user):
+                    coreAppCoordinator.showHome(accountState: .webAccount(user))
+                default:
+                    Void()
+                }
             }
             completion?()
         case .dataLoadedLate:

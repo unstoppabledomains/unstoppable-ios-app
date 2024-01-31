@@ -9,6 +9,8 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
+   
+    
     var topVC: UIViewController? { nil }
     
     func startWith(window: UIWindow) {
@@ -19,7 +21,7 @@ final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity) {
+    func showHome(accountState: HomeAccountState) {
         
     }
     

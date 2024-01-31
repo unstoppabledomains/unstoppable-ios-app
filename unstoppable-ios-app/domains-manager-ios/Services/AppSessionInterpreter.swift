@@ -18,21 +18,19 @@ final class AppSessionInterpreter {
 // MARK: - Open methods
 extension AppSessionInterpreter {
     func state() -> State {
-        let wallets = appContext.udWalletsService.getUserWallets()
-        
-        if wallets.isEmpty {
-            if appContext.firebaseParkedDomainsAuthenticationService.isAuthorized {
+        if let wallet = appContext.walletsDataService.selectedWallet {
+            return .walletAdded(wallet)
+        } else {
+            if let user = appContext.firebaseParkedDomainsAuthenticationService.firebaseUser {
                 let domains = appContext.firebaseParkedDomainsService.getCachedDomains()
                 if domains.isEmpty {
                     return .webAccountWithoutParkedDomains
                 } else {
-                    return .webAccountWithParkedDomains
+                    return .webAccountWithParkedDomains(user)
                 }
             } else {
                 return .noWalletsOrWebAccount
             }
-        } else {
-            return .walletAdded
         }
     }
 }
@@ -41,8 +39,8 @@ extension AppSessionInterpreter {
 extension AppSessionInterpreter {
     enum State {
         case noWalletsOrWebAccount
-        case walletAdded
-        case webAccountWithParkedDomains
+        case walletAdded(WalletEntity)
+        case webAccountWithParkedDomains(FirebaseUser)
         case webAccountWithoutParkedDomains
     }
 }

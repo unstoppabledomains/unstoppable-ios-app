@@ -41,9 +41,9 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         setOnboardingAsRoot(flow)
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity) {
+    func showHome(accountState: HomeAccountState) {
 //        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
-        setHomeScreenAsRoot(wallet: wallet) // TODO: - Refactoring
+        setHomeScreenAsRoot(accountState: accountState) 
         if let event = pendingDeepLinkEvent {
             handleDeepLinkEvent(event)
         }
@@ -347,8 +347,8 @@ private extension CoreAppCoordinator {
         currentRoot = .domainsCollection(router: router)
     }
     
-    func setHomeScreenAsRoot(wallet: WalletEntity) {
-        let router = HomeTabRouter(accountState: .walletAdded(wallet))
+    func setHomeScreenAsRoot(accountState: HomeAccountState) {
+        let router = HomeTabRouter(accountState: accountState)
         let view = HomeTabView(tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
