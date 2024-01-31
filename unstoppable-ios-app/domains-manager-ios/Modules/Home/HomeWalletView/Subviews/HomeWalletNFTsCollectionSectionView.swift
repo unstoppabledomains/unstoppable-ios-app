@@ -43,28 +43,23 @@ private extension HomeWalletNFTsCollectionSectionView {
         nftsCollectionsExpandedIds.contains(collection.id)
     }
     var numberOfNFTsVisible: Int {
-        let numberOfNFTs = collection.nfts.count
-        
-        return isExpanded ? numberOfNFTs : min(collection.nfts.count, minNumOfVisibleNFTs) //Take no more then 2 NFTs
+        let numberOfNFTs = collection.numberOfNFTs
+        return isExpanded ? numberOfNFTs : min(numberOfNFTs, minNumOfVisibleNFTs) //Take no more then 2 NFTs
     }
     
     var nftsNativeValue: String? {
-        let saleDetails = collection.nfts.compactMap({ $0.lastSaleDetails })
-        if saleDetails.isEmpty {
+        if collection.nftsNativeValue == 0 {
             return nil
         }
-        let symbol = saleDetails[0].symbol
-        let value = saleDetails.reduce(0.0, { $0 + $1.valueNative})
-        
-        return "(\(value) \(symbol))"
+        return "(\(collection.nftsNativeValue) \(collection.chainSymbol))"
     }
     
     @ViewBuilder
     func sectionHeaderView() -> some View {
         HomeWalletExpandableSectionHeaderView(title: collection.collectionName,
                                               titleValue: nftsNativeValue,
-                                              isExpandable: collection.nfts.count > minNumOfVisibleNFTs,
-                                              numberOfItemsInSection: collection.nfts.count,
+                                              isExpandable: collection.numberOfNFTs > minNumOfVisibleNFTs,
+                                              numberOfItemsInSection: collection.numberOfNFTs,
                                               isExpanded: isExpanded,
                                               actionCallback: {
             let id = collection.id

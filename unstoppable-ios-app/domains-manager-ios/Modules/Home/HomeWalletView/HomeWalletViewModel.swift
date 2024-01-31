@@ -138,9 +138,22 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     
     func sortCollectibles(_ sortOption: HomeWalletView.CollectiblesSortingOptions) {
         switch sortOption {
+        case .mostRecent:
+            nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
+                if lhs.lastSaleDate == nil && rhs.lastSaleDate == nil {
+                    return lhs.collectionName < rhs.collectionName /// Sort by name collections without sale date info
+                } else if let lhsDate = lhs.lastSaleDate,
+                          let rhsDate = rhs.lastSaleDate {
+                    return lhsDate > rhsDate
+                } else if lhs.lastSaleDate != nil {
+                    return true
+                } else {
+                    return false
+                }
+            })
         case .mostCollected:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
-                lhs.nfts.count > rhs.nfts.count
+                lhs.numberOfNFTs > rhs.numberOfNFTs
             })
         case .alphabetical:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
