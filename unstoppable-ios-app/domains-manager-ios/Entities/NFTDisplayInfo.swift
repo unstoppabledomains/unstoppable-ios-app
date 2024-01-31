@@ -20,7 +20,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let collectionLink: URL?
     let mint: String
     let traits: [Trait]
-    let floorPrice: String?
+    var floorPriceDetails: FloorPriceDetails?
     var lastSaleDetails: SaleDetails?
     var chain: NFTModelChain?
     var address: String?
@@ -57,6 +57,11 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         let valueUsd: Double
         let valueNative: Double
     }
+    
+    struct FloorPriceDetails: Codable, Hashable {
+        let value: Double
+        let currency: String
+    }
 }
 
 // MARK: - Open methods
@@ -81,7 +86,13 @@ extension NFTDisplayInfo {
         } else {
             self.lastSaleDetails = nil
         }
-        self.floorPrice = nftModel.floorPriceValue
+        if let floorPrice = nftModel.floorPrice,
+           let currency = floorPrice.currency,
+           let value = floorPrice.value {
+            self.floorPriceDetails = FloorPriceDetails(value: value, currency: currency)
+        } else {
+            self.floorPriceDetails = nil
+        }
     }
 }
 

@@ -41,14 +41,6 @@ struct NFTModel: Codable, Hashable {
             .first(where: { $0.payment != nil })
     }
     
-    var floorPriceValue: String? {
-        if let floorPrice,
-           let currency = floorPrice.currency,
-           let value = floorPrice.value {
-            return "\(value) \(currency)"
-        }
-        return nil
-    }
 }
 
 extension NFTModel {

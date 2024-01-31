@@ -163,6 +163,13 @@ private extension NFTDetailsView {
         .foregroundStyle(Color.foregroundDefault)
     }
     
+    var floorPriceValue: String? {
+        if let floorPriceDetails = nft.floorPriceDetails {
+            return "\(floorPriceDetails.value) \(floorPriceDetails.currency)"
+        }
+        return nil
+    }
+    
     @ViewBuilder
     func nftPriceInfoView() -> some View {
         HStack(alignment: .center, spacing: 8) {
@@ -172,7 +179,7 @@ private extension NFTDetailsView {
             separatorView(direction: .vertical)
                 .frame(width: 1)
             nftPriceValueView(title: String.Constants.floorPrice.localized(),
-                              value: nft.floorPrice)
+                              value: floorPriceValue)
             Spacer()
         }
         .frame(maxWidth: .infinity)
