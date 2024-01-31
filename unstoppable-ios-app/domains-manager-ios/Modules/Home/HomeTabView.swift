@@ -109,7 +109,7 @@ private extension HomeTabView {
             HomeWalletView(viewModel: .init(selectedWallet: wallet,
                                             router: router))
         case .webAccount(let user):
-            Text("Not implemented")
+            HomeWebView(user: user)
         }
     }
 }

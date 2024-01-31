@@ -61,14 +61,14 @@ struct HomeWalletView: View {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: NavigationDestination.self) { destination in
+            .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
                 viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
                     .onAppearanceChange($isOtherScreenPresented)
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
-                    settingsNavButtonView()
+                    HomeSettingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     qrNavButtonView()
@@ -257,21 +257,8 @@ private extension HomeWalletView {
     }
     
     @ViewBuilder
-    func settingsNavButtonView() -> some View {
-        NavigationLink(value: NavigationDestination.settings) {
-            Image.gearshape
-                .resizable()
-                .squareFrame(24)
-                .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            
-        }
-    }
-    
-    @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink(value: NavigationDestination.qrScanner) {
+        NavigationLink(value: HomeWalletNavigationDestination.qrScanner) {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
@@ -283,7 +270,7 @@ private extension HomeWalletView {
     }
     
     @ViewBuilder
-    func viewFor(navigationDestination: NavigationDestination) -> some View {
+    func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
         case .settings:
             SettingsViewControllerWrapper()
@@ -304,47 +291,6 @@ private extension HomeWalletView {
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
         }
-    }
-}
-
-// MARK: - Open methods
-extension HomeWalletView {
-    enum NavigationDestination: Hashable {
-        case settings
-        case qrScanner
-        case minting(mode: MintDomainsNavigationController.Mode,
-                     mintedDomains: [DomainDisplayInfo],
-                     domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
-        case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
-        
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case (.settings, .settings):
-                return true
-            case (.qrScanner, .qrScanner):
-                return true
-            case (.minting, .minting):
-                return true
-            case (.purchaseDomains, .purchaseDomains):
-                return true
-            default:
-                return false
-            }
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            switch self {
-            case .settings:
-                hasher.combine(0)
-            case .qrScanner:
-                hasher.combine(1)
-            case .minting:
-                hasher.combine(2)
-            case .purchaseDomains:
-                hasher.combine(3)
-            }
-        }
-        
     }
 }
 

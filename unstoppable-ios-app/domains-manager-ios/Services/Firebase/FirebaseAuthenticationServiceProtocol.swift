@@ -47,6 +47,8 @@ protocol FirebaseAuthenticationServiceProtocol: ObservableObject {
 
 struct FirebaseUser: Codable, Hashable {
     var email: String?
+    
+    var displayName: String { email ?? "-||-" }
 }
 
 

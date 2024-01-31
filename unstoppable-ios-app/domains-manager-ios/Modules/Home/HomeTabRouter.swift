@@ -56,7 +56,7 @@ extension HomeTabRouter {
     func runPurchaseFlow() {
         Task {
             await showHomeScreenList()
-            walletViewNavPath.append(HomeWalletView.NavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
+            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
         }
     }
     
@@ -133,7 +133,7 @@ extension HomeTabRouter {
                 
                 let mintedDomains = domains.interactableItems()
                 
-                walletViewNavPath.append(HomeWalletView.NavigationDestination.minting(mode: mode, 
+                walletViewNavPath.append(HomeWalletNavigationDestination.minting(mode: mode,
                                                                                       mintedDomains: mintedDomains,
                                                                                       domainsMintedCallback: { result in
                 }))
@@ -153,7 +153,7 @@ extension HomeTabRouter {
     func showQRScanner() {
         Task {
             await popToRootAndWait()
-            walletViewNavPath.append(HomeWalletView.NavigationDestination.qrScanner)
+            walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner)
         }
     }
 }
