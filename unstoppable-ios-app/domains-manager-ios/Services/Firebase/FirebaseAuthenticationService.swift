@@ -10,11 +10,12 @@ import UIKit
 
 final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
 
-    private var firebaseUser: FirebaseUser?
+    private(set) var firebaseUser: FirebaseUser?
     private var listenerHolders: [FirebaseAuthenticationServiceListenerHolder] = []
     private var loadFirebaseUserTask: Task<FirebaseUser, Error>?
     @Published var isAuthorized: Bool
     var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
+    @UserDefaultsCodableValue(key: .firebaseUser) private var storedFirebaseUser: FirebaseUser?
 
     override init(firebaseAuthService: FirebaseAuthService,
                   firebaseSigner: UDFirebaseSigner) {
@@ -99,6 +100,7 @@ private extension FirebaseAuthenticationService {
     func setFirebaseUser(_ firebaseUser: FirebaseUser?) {
         let shouldNotifyListeners = firebaseUser != self.firebaseUser
         self.firebaseUser = firebaseUser
+        self.storedFirebaseUser = firebaseUser
         
         if shouldNotifyListeners  {
             listenerHolders.forEach { holder in
@@ -107,6 +109,7 @@ private extension FirebaseAuthenticationService {
         }
     }
     func refreshUserProfileAsync() {
+        firebaseUser = storedFirebaseUser
         Task {
             _ = try? await getUserProfile()
         }

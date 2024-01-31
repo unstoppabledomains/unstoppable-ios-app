@@ -29,6 +29,7 @@ final class FirebaseAuthenticationServiceListenerHolder: Equatable {
 }
 
 protocol FirebaseAuthenticationServiceProtocol: ObservableObject {
+    var firebaseUser: FirebaseUser? { get }
     var isAuthorized: Bool { get }
     var isAuthorizedPublisher: Published<Bool>.Publisher  { get }
     

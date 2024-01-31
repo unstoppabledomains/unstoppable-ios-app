@@ -29,6 +29,7 @@ public enum UserDefaultsKey: String {
     case dismissedHotFeatureSuggestions
     case didMigrateXMTPConsentsListFromUD
     case selectedWalletAddress
+    case firebaseUser
     
     // Purchase domains
     case purchasedDomains

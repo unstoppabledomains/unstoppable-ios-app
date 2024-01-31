@@ -12,6 +12,7 @@ final class MockFirebaseInteractionsService {
     
     @Published var isAuthorized: Bool = true
     var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
+    var firebaseUser: FirebaseUser?
     
     private var cart: PurchaseDomainsCart = .empty {
         didSet {

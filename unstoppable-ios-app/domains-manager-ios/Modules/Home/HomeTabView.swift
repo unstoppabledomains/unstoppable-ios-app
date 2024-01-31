@@ -15,13 +15,13 @@ enum HomeTab: Hashable {
 struct HomeTabView: View {
     
     @StateObject var router: HomeTabRouter
+    @State private var accountState: AccountState
     let selectedWallet: WalletEntity
     private let id: UUID
 
     var body: some View {
         TabView(selection: $router.tabViewSelection) {
-            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet,
-                                            router: router))
+            currentWalletView()
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
@@ -86,6 +86,7 @@ struct HomeTabView: View {
     init(selectedWallet: WalletEntity,
          tabRouter: HomeTabRouter) {
         self._router = StateObject(wrappedValue: tabRouter)
+        self._accountState = State(wrappedValue: .walletAdded(selectedWallet))
         self.selectedWallet = selectedWallet
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
@@ -104,6 +105,20 @@ private extension HomeTabView {
                         .adaptiveSheet()
                 })
         }
+    }
+    
+    @ViewBuilder
+    func currentWalletView() -> some View {
+        HomeWalletView(viewModel: .init(selectedWallet: selectedWallet,
+                                        router: router))
+    }
+}
+
+// MARK: - Open methods
+extension HomeTabView {
+    enum AccountState {
+        case walletAdded(WalletEntity) /// Pass selected wallet on app launch 
+        case webAccount(FirebaseUser)
     }
 }
 
