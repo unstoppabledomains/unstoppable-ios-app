@@ -29,6 +29,7 @@ struct HomeWalletsDomainsSectionView: View {
                 gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
             }
         }
+        .withoutAnimation()
     }
     
 }

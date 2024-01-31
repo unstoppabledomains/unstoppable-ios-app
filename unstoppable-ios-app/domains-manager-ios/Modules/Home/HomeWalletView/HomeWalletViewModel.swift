@@ -38,13 +38,19 @@ extension HomeWalletView {
             setSelectedWallet(selectedWallet)
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
-                self?.sortTokens(sortOption)
+                withAnimation {
+                    self?.sortTokens(sortOption)
+                }
             }.store(in: &cancellables)
             $selectedCollectiblesSortingOption.sink { [weak self] sortOption in
-                self?.sortCollectibles(sortOption)
+                withAnimation {
+                    self?.sortCollectibles(sortOption)
+                }
             }.store(in: &cancellables)
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
-                self?.sortDomains(sortOption)
+                withAnimation {
+                    self?.sortDomains(sortOption)
+                }
             }.store(in: &cancellables)
             appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
                 if let selectedWallet {
@@ -153,7 +159,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 lhs.name < rhs.name
             })
         case .salePrice:
-            domains = domains.shuffled()
+            domains = domains.sorted(by: { lhs, rhs in
+                lhs.name > rhs.name
+            })
         }
     }
     
