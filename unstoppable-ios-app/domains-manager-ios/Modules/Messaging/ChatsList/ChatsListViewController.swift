@@ -303,13 +303,9 @@ private extension ChatsListViewController {
         func addNavViewIfNil() {
             if navView == nil {
                 navView = ChatsListNavigationView()
-                navView.walletSelectedCallback = { [weak self] wallet in
-                    self?.presenter.didSelectWallet(wallet)
-                }
                 navView.pressedCallback = { [weak self] in
                     self?.router?.isSelectWalletPresented = true
                     self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
-                    
                 }
                 navigationItem.titleView = navView
             }
@@ -720,6 +716,7 @@ struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
         vc.router = navTracker.tabRouter
         nav.delegate = navTracker
         navTracker.tabRouter.chatsListCoordinator = vc.presenter as? ChatsListCoordinator
+        vc.viewDidLoad()
         return nav
     }
     

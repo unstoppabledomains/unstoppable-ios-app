@@ -25,8 +25,8 @@ extension MockMessagingService: MessagingServiceProtocol {
     func fetchWalletsAvailableForMessaging() -> [WalletEntity] { [] }
     func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
     
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool { true }
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws { throw NSError() }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }

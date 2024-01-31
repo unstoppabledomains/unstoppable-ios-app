@@ -26,8 +26,8 @@ final class MessagingService: MessagingServiceProtocol {
         MockEntitiesFabric.Wallet.mockEntities() 
     }
     
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        .init(id: "1", wallet: domain.ownerWallet!, serviceIdentifier: .xmtp)
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
@@ -152,8 +152,8 @@ final class MessagingService: MessagingServiceProtocol {
         nil
     }
     
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        .init(id: "1", wallet: domain.ownerWallet ?? "", serviceIdentifier: .xmtp)
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {

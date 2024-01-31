@@ -16,9 +16,16 @@ struct WalletEntity: Codable {
     var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
     
+}
+
+// MARK: - Open methods
+extension WalletEntity {
+    
     var address: String { udWallet.address }
+    var ethFullAddress: String { address.ethChecksumAddress() }
     var displayName: String { displayInfo.displayName }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
+    var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
     
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
         balance.first(where: { $0.symbol == blockchainType.rawValue })
@@ -30,6 +37,10 @@ struct WalletEntity: Codable {
         
         let isAllowedToSetRR = domainsAvailableForRR.first(where: { !$0.isReverseResolutionChangeAllowed() }) == nil
         return isAllowedToSetRR
+    }
+    
+    func isOwningDomain(_ domainName: DomainName) -> Bool {
+        domains.first(where: { $0.name == domainName }) != nil
     }
 }
 

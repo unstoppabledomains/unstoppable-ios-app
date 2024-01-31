@@ -188,6 +188,7 @@ extension HomeTabRouter {
 // MARK: - Open methods
 extension HomeTabRouter: PublicProfileViewDelegate {
     private var topVC: UIViewController? { appContext.coreAppCoordinator.topVC }
+    
     func publicProfileDidSelectBadge(_ badge: DomainProfileBadgeDisplayInfo, in profile: DomainName) {
         guard let topVC else { return }
         appContext.pullUpViewService.showBadgeInfoPullUp(in: topVC,
@@ -203,9 +204,9 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem) {
         Task {
-            let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
             var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: displayInfo) {
+            if let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == userDomain.ownerWallet }),
+               let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
                 messagingProfile = profile
             } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
                 messagingProfile = profile
@@ -229,7 +230,6 @@ extension HomeTabRouter: PublicProfileViewDelegate {
                                                                             domainName: profile.name)
                 await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
             }
-            
         }
     }
     

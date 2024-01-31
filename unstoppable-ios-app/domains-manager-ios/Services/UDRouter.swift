@@ -627,8 +627,10 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> ChatsListViewController {
         let vc = ChatsListViewController.nibInstance()
+        let walletsService = appContext.walletsDataService
         let presenter = ChatsListViewPresenter(view: vc,
-                                               presentOptions: presentOptions,
+                                               presentOptions: presentOptions, 
+                                               selectedWallet: walletsService.selectedWallet ?? walletsService.wallets.first!,
                                                messagingService: appContext.messagingService)
         vc.presenter = presenter
         return vc

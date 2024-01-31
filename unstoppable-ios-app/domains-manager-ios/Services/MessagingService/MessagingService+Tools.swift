@@ -40,8 +40,7 @@ extension MessagingService {
     func getUserProfileWith(wallet: String,
                             serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfile {
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        let rrDomain = try await getReverseResolutionDomainItem(for: wallet)
-        return try storageService.getUserProfileFor(domain: rrDomain,
+        return try storageService.getUserProfileFor(wallet: wallet,
                                                     serviceIdentifier: apiService.serviceIdentifier)
     }
     

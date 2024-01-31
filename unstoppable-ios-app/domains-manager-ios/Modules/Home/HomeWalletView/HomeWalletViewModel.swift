@@ -26,7 +26,7 @@ extension HomeWalletView {
         @Published var isSubdomainsVisible: Bool = false
         @Published var isNotMatchingTokensVisible: Bool = false
         
-        private var subscribers: Set<AnyCancellable> = []
+        private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
         
@@ -39,18 +39,18 @@ extension HomeWalletView {
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
                 self?.sortTokens(sortOption)
-            }.store(in: &subscribers)
+            }.store(in: &cancellables)
             $selectedCollectiblesSortingOption.sink { [weak self] sortOption in
                 self?.sortCollectibles(sortOption)
-            }.store(in: &subscribers)
+            }.store(in: &cancellables)
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
                 self?.sortDomains(sortOption)
-            }.store(in: &subscribers)
+            }.store(in: &cancellables)
             appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
                 if let selectedWallet {
                     self?.setSelectedWallet(selectedWallet)
                 }
-            }.store(in: &subscribers)
+            }.store(in: &cancellables)
         }
         
         func walletActionPressed(_ action: WalletAction) {
