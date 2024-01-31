@@ -167,6 +167,8 @@ private extension HomeWalletView {
     @ViewBuilder
     func tokensContentView() -> some View {
         tokensListView()
+        HomeWalletMoreTokensView()
+            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         notMatchingTokensListView()
     }
     
@@ -177,13 +179,7 @@ private extension HomeWalletView {
                 Button {
                   
                 } label: {
-                    ZStack {
-                        HomeWalletTokenRowView(token: token)
-                        if token.isSkeleton {
-                            HomeWalletMoreTokensView()
-                                .offset(y: 10)
-                        }
-                    }
+                    HomeWalletTokenRowView(token: token)
                 }
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }

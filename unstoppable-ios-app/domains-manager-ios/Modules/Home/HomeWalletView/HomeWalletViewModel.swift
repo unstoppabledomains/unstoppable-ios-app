@@ -85,7 +85,6 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
         tokens = wallet.balance.map { HomeWalletView.TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
-        tokens.append(.createSkeletonEntity())
         domains = wallet.domains.filter({ !$0.isSubdomain })
         subdomains = wallet.domains.filter({ $0.isSubdomain })
         
