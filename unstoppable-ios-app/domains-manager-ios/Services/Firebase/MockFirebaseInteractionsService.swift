@@ -132,10 +132,10 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
 // MARK: - FirebaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain] {
-        []
+        MockEntitiesFabric.Domains.mockFirebaseDomains()
     }
     func getParkedDomains() async throws -> [FirebaseDomain] {
-        []
+        MockEntitiesFabric.Domains.mockFirebaseDomains()
     }
     func clearParkedDomains() {
         

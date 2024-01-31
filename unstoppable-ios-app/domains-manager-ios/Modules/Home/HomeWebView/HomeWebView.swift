@@ -9,11 +9,18 @@ import SwiftUI
 
 struct HomeWebView: View {
     
+    @Environment(\.firebaseParkedDomainsService) var firebaseParkedDomainsService
+    
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
     @State private var navigationState: NavigationStateManager?
+    @State private var domains: [FirebaseDomainDisplayInfo] = []
+    private let gridColumns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -60,18 +67,39 @@ struct HomeWebView: View {
                 }
             })
             .refreshable {
-//                try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
+                await loadParkedDomains()
             }
+            .onAppear(perform: onAppear)
         }, navigationStateProvider: { state in
             self.navigationState = state
-            state.customTitle = titleView
+            state.customTitle = { titleView() }
         }, path: $tabRouter.walletViewNavPath)
     }
 }
 
 // MARK: - Private methods
 private extension HomeWebView {
+    func onAppear() {
+        let firebaseDomains = firebaseParkedDomainsService.getCachedDomains()
+        setFiremaseDomains(firebaseDomains)
+        Task {
+            await loadParkedDomains()
+        }
+    }
     
+    func loadParkedDomains() async {
+        if let firebaseDomains = (try? await firebaseParkedDomainsService.getParkedDomains()) {
+            setFiremaseDomains(firebaseDomains)
+        }
+    }
+    
+    func setFiremaseDomains(_ firebaseDomains: [FirebaseDomain]) {
+        self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
+    }
+}
+
+// MARK: - Private methods
+private extension HomeWebView {
     @ViewBuilder
     func titleView() -> some View {
         HStack {
@@ -133,7 +161,17 @@ private extension HomeWebView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-        Text("Hello")
+        LazyVGrid(columns: gridColumns, spacing: 16) {
+            ForEach(domains, id: \.name) { domain in
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    
+                } label: {
+                    HomeWebParkedDomainRowView(firebaseDomain: domain)
+                }
+//                .buttonStyle(.plain)
+            }
+        }
     }
     
     @ViewBuilder

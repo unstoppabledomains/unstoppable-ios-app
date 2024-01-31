@@ -1158,6 +1158,8 @@
 		C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */; };
 		C6A474E829D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */; };
 		C6A474ED29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */; };
+		C6A7E1DB2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A7E1DA2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift */; };
+		C6A7E1DC2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A7E1DA2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift */; };
 		C6A89C482B315B35008AB043 /* HotFeatureSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */; };
 		C6A89C492B315B3D008AB043 /* HotFeatureSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */; };
 		C6A89C4C2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */; };
@@ -3371,6 +3373,7 @@
 		C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsViewController.swift; sourceTree = "<group>"; };
 		C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingParkedDomainsViewController.xib; sourceTree = "<group>"; };
 		C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileParkedActionCoverViewPresenter.swift; sourceTree = "<group>"; };
+		C6A7E1DA2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWebParkedDomainRowView.swift; sourceTree = "<group>"; };
 		C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestion.swift; sourceTree = "<group>"; };
 		C6A89C4B2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestionsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6A89C4E2B315B8D008AB043 /* HotFeatureSuggestionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestionsService.swift; sourceTree = "<group>"; };
@@ -4583,6 +4586,7 @@
 			isa = PBXGroup;
 			children = (
 				C6102FC62B6A339A0098AF75 /* HomeWebView.swift */,
+				C6A7E1DA2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift */,
 			);
 			path = HomeWebView;
 			sourceTree = "<group>";
@@ -9018,6 +9022,7 @@
 				C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */,
 				C65DD4CA2A7CACEC00CAB10C /* Extension-String+Notification.swift in Sources */,
 				C6D6E50C2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
+				C6A7E1DB2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift in Sources */,
 				C6124CD7292351F8005E6537 /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C666893228114B0E002062B4 /* BaseButton.swift in Sources */,
 				C681092128041325002D780E /* GIFAnimationsService.swift in Sources */,
@@ -10153,6 +10158,7 @@
 				C61808462B19B93E0032E543 /* PreviewAnalyticsService.swift in Sources */,
 				C6C8F8F12B21837200A9834D /* ChatInputView.swift in Sources */,
 				C6C8F86E2B2181F400A9834D /* UIStackView.swift in Sources */,
+				C6A7E1DC2B6A44DF009154F7 /* HomeWebParkedDomainRowView.swift in Sources */,
 				C6D645F12B1DBEC600D724AC /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6D647792B1EE09E00D724AC /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6D647162B1ED82E00D724AC /* CollectionViewShowHideCell.swift in Sources */,
