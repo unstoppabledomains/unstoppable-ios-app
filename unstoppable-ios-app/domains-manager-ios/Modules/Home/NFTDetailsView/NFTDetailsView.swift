@@ -60,7 +60,6 @@ struct NFTDetailsView: View {
 private extension NFTDetailsView {
     func onAppear() {
         Task {
-            try? await Task.sleep(seconds: 1)
             nftImage = await nft.loadIcon()
         }
     }
@@ -90,7 +89,6 @@ private extension NFTDetailsView {
                     .frame(height: 16)
             }
             .task {
-                try? await Task.sleep(seconds: 1)
                 let nftImage = await nft.loadIcon()
                 withAnimation {
                     self.nftImage = nftImage
