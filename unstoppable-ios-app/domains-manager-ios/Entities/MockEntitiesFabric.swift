@@ -121,13 +121,15 @@ extension MockEntitiesFabric {
                   imageUrl: URL(string: "https://google.com"),
                   link: "https://google.com",
                   tags: [],
-                  collection: "Collection name",
+                  collection: "Collection name with long name",
                   collectionLink: URL(string: "https://google.com"),
                   mint: UUID().uuidString,
                   traits: [.init(name: "Background", value: "M1 Orange")],
                   floorPrice: "5.32 MATIC",
-                  lastSalePrice: "2.31 MATIC",
-                  lastSaleDate: Date().addingTimeInterval(-86400),
+                  lastSaleDetails: .init(date: Date().addingTimeInterval(-86400),
+                                         symbol: "MATIC",
+                                         valueUsd: 2.01,
+                                         valueNative: 2.31),
                   chain: .MATIC)
         }
         

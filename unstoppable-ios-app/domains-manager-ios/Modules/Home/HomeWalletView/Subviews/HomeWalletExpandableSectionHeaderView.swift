@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeWalletExpandableSectionHeaderView: View {
     
     let title: String
+    var titleValue: String? = nil
     let isExpandable: Bool
     let numberOfItemsInSection: Int
     let isExpanded: Bool
@@ -21,9 +22,17 @@ struct HomeWalletExpandableSectionHeaderView: View {
             actionCallback()
         } label: {
             HStack {
-                Text(title)
-                    .font(.currentFont(size: 16, weight: .medium))
-                    .foregroundStyle(Color.foregroundDefault)
+                HStack {
+                    Text(title)
+                        .foregroundStyle(Color.foregroundDefault)
+                    if let titleValue {
+                        Text(titleValue)
+                            .foregroundStyle(Color.foregroundSecondary)
+                    }
+                }
+                .font(.currentFont(size: 16, weight: .medium))
+                .lineLimit(1)
+                .truncationMode(.middle)
                 Spacer()
                 
                 if isExpandable {

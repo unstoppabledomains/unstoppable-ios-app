@@ -21,8 +21,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let mint: String
     let traits: [Trait]
     let floorPrice: String?
-    let lastSalePrice: String?
-    let lastSaleDate: Date?
+    var lastSaleDetails: SaleDetails?
     var chain: NFTModelChain?
     var address: String?
     
@@ -35,7 +34,13 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         }
         return false
     }
-    
+    var lastSalePrice: String? {
+        guard let lastSaleDetails else { return nil }
+        
+        return "\(lastSaleDetails.valueNative) \(lastSaleDetails.symbol)"
+    }
+    var lastSaleDate: Date? { lastSaleDetails?.date }
+
     var displayName: String { name ?? "-" }
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
    
@@ -44,6 +49,13 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         
         return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
                                                               downsampleDescription: .mid)
+    }
+    
+    struct SaleDetails: Codable, Hashable {
+        let date: Date
+        let symbol: String
+        let valueUsd: Double
+        let valueNative: Double
     }
 }
 
@@ -62,8 +74,13 @@ extension NFTDisplayInfo {
         self.address = nftModel.address
         self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
         self.collectionLink = URL(string: nftModel.collectionLink ?? "")
-        self.lastSalePrice = nftModel.lastSalePrice
-        self.lastSaleDate = nftModel.lastSaleDate
+        if let lastSaleDetails = nftModel.lastSaleTransaction {
+            let payment = lastSaleDetails.payment!
+            self.lastSaleDetails = SaleDetails(date: lastSaleDetails.date!,
+                                               symbol: payment.symbol!, valueUsd: payment.valueUsd!, valueNative: payment.valueNative!)
+        } else {
+            self.lastSaleDetails = nil
+        }
         self.floorPrice = nftModel.floorPriceValue
     }
 }
