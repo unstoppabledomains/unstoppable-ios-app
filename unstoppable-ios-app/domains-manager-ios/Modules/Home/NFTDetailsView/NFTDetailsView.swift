@@ -316,6 +316,9 @@ private extension NFTDetailsView {
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
         }
+        .onButtonTap {
+            
+        }
     }
     
     func handleAction(_ action: NFTAction) {

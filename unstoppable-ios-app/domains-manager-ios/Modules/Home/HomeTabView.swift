@@ -39,6 +39,9 @@ struct HomeTabView: View {
             .tabBarVisible(router.isTabBarVisible)
         }
         .tint(.foregroundDefault)
+        .onChange(of: router.tabViewSelection, perform: { _ in
+            UDVibration.buttonTap.vibrate()
+        })
         .viewPullUp(router.currentPullUp(id: id))
         .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectWalletPresented))
         .sheet(isPresented: $router.isConnectedAppsListPresented, content: {

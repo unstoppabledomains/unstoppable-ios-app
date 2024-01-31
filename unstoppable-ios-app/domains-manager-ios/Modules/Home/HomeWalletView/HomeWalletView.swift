@@ -264,6 +264,9 @@ private extension HomeWalletView {
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
         }
+        .onButtonTap {
+            
+        }
     }
     
     @ViewBuilder
@@ -273,6 +276,9 @@ private extension HomeWalletView {
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
+        }
+        .onButtonTap {
+            
         }
     }
     

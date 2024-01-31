@@ -230,6 +230,8 @@
 		C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61002E92940936F00462983 /* UIGestureRecognizer.swift */; };
 		C6102FC02B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */; };
 		C6102FC12B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */; };
+		C6102FC32B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */; };
+		C6102FC42B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */; };
 		C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */; };
 		C6109E2F28E5AB310027D5D8 /* AuthentificationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2528E5AB310027D5D8 /* AuthentificationServiceProtocol.swift */; };
 		C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2628E5AB310027D5D8 /* AuthentificationService.swift */; };
@@ -2625,6 +2627,7 @@
 		C610029F293E075300462983 /* DomainProfileDataToClipboardCopier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileDataToClipboardCopier.swift; sourceTree = "<group>"; };
 		C61002E92940936F00462983 /* UIGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizer.swift; sourceTree = "<group>"; };
 		C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletExpandableSectionHeaderView.swift; sourceTree = "<group>"; };
+		C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnButtonTapModifier.swift; sourceTree = "<group>"; };
 		C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAuthentificationService.swift; sourceTree = "<group>"; };
 		C6109E2528E5AB310027D5D8 /* AuthentificationServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationServiceProtocol.swift; sourceTree = "<group>"; };
 		C6109E2628E5AB310027D5D8 /* AuthentificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationService.swift; sourceTree = "<group>"; };
@@ -6725,6 +6728,7 @@
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
 				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C617FDB22B5919CC00B93433 /* OnAppearanceChange.swift */,
+				C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */,
 				C6289A462AAB06F9002C2DEC /* SquareFrame.swift */,
 				C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */,
 				C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */,
@@ -9499,6 +9503,7 @@
 				C60982512823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */,
+				C6102FC32B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */,
 				C63095D42B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift in Sources */,
 				C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
@@ -10597,6 +10602,7 @@
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,
 				C6D6467B2B1ED12100D724AC /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C6C8F8922B21829000A9834D /* AppearanceSettingsCell.swift in Sources */,
+				C6102FC42B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */,
 				C6D646872B1ED12D00D724AC /* DomainProfileBadgesSection.swift in Sources */,
 				C6C8F9532B21858200A9834D /* PreviewValet.swift in Sources */,
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,
