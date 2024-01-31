@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         self.window = window
         
         
-        let view = HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
+        let view = HomeTabView(tabRouter: HomeTabRouter(accountState: .walletAdded(MockEntitiesFabric.Wallet.mockEntities().first!)))
         
         let vc = UIHostingController(rootView: view)
         window.rootViewController = vc

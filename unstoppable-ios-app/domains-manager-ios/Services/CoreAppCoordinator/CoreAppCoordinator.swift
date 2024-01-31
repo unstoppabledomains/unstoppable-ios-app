@@ -348,8 +348,8 @@ private extension CoreAppCoordinator {
     }
     
     func setHomeScreenAsRoot(wallet: WalletEntity) {
-        let router = HomeTabRouter()
-        let view = HomeTabView(selectedWallet: wallet, tabRouter: router)
+        let router = HomeTabRouter(accountState: .walletAdded(wallet))
+        let view = HomeTabView(tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
         currentRoot = .home(router: router)

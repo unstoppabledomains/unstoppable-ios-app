@@ -15,8 +15,6 @@ enum HomeTab: Hashable {
 struct HomeTabView: View {
     
     @StateObject var router: HomeTabRouter
-    @State private var accountState: AccountState
-    let selectedWallet: WalletEntity
     private let id: UUID
 
     var body: some View {
@@ -83,11 +81,8 @@ struct HomeTabView: View {
         .environmentObject(router)
     }
     
-    init(selectedWallet: WalletEntity,
-         tabRouter: HomeTabRouter) {
+    init(tabRouter: HomeTabRouter) {
         self._router = StateObject(wrappedValue: tabRouter)
-        self._accountState = State(wrappedValue: .walletAdded(selectedWallet))
-        self.selectedWallet = selectedWallet
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
     }
@@ -109,19 +104,21 @@ private extension HomeTabView {
     
     @ViewBuilder
     func currentWalletView() -> some View {
-        HomeWalletView(viewModel: .init(selectedWallet: selectedWallet,
-                                        router: router))
+        switch router.accountState {
+        case .walletAdded(let wallet):
+            HomeWalletView(viewModel: .init(selectedWallet: wallet,
+                                            router: router))
+        case .webAccount(let user):
+            Text("Not implemented")
+        }
     }
 }
 
-// MARK: - Open methods
-extension HomeTabView {
-    enum AccountState {
-        case walletAdded(WalletEntity) /// Pass selected wallet on app launch 
-        case webAccount(FirebaseUser)
-    }
+enum HomeAccountState {
+    case walletAdded(WalletEntity) /// Pass selected wallet on app launch
+    case webAccount(FirebaseUser)
 }
 
 #Preview {
-    HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
+    HomeTabView(tabRouter: HomeTabRouter(accountState: .walletAdded(MockEntitiesFabric.Wallet.mockEntities().first!)))
 }

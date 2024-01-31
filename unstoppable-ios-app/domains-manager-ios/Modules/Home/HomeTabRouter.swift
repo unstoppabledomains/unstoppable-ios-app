@@ -10,6 +10,7 @@ import Combine
 
 @MainActor
 final class HomeTabRouter: ObservableObject {
+    @Published var accountState: HomeAccountState
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectWalletPresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
@@ -29,7 +30,8 @@ final class HomeTabRouter: ObservableObject {
     private var topViews = 0
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    init(accountState: HomeAccountState) {
+        self.accountState = accountState
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)

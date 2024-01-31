@@ -350,9 +350,11 @@ extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
-                                        router: .init()))
-        .environmentObject(HomeTabRouter())
+        let router = HomeTabRouter(accountState: .walletAdded(MockEntitiesFabric.Wallet.mockEntities().first!))
+        
+        return HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
+                                               router: router))
+        .environmentObject(router)
     }
 }
 
