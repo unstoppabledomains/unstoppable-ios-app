@@ -9,6 +9,8 @@ import Foundation
 
 struct WalletEntity: Codable {
     
+    let address: String 
+    let ethFullAddress: String
     let udWallet: UDWallet
     let displayInfo: WalletDisplayInfo
     var domains: [DomainDisplayInfo]
@@ -16,13 +18,21 @@ struct WalletEntity: Codable {
     var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
     
+    init(udWallet: UDWallet, displayInfo: WalletDisplayInfo, domains: [DomainDisplayInfo], nfts: [NFTDisplayInfo], balance: [WalletTokenPortfolio], rrDomain: DomainDisplayInfo? = nil) {
+        self.address = udWallet.address
+        self.ethFullAddress = address.ethChecksumAddress()
+        self.udWallet = udWallet
+        self.displayInfo = displayInfo
+        self.domains = domains
+        self.nfts = nfts
+        self.balance = balance
+        self.rrDomain = rrDomain
+    }
 }
 
 // MARK: - Open methods
 extension WalletEntity {
     
-    var address: String { udWallet.address }
-    var ethFullAddress: String { address.ethChecksumAddress() }
     var displayName: String { displayInfo.displayName }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
