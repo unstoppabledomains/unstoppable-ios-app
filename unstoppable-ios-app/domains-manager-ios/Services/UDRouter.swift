@@ -920,7 +920,7 @@ private extension UDRouter {
         let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
                                                                     selectedDomain: selectedDomain,
                                                                     domainSelectedCallback: domainSelectedCallback,
-                                                                    dataAggregatorService: appContext.dataAggregatorService)
+                                                                    walletsDataService: appContext.walletsDataService)
         vc.presenter = presenter
         return vc
     }

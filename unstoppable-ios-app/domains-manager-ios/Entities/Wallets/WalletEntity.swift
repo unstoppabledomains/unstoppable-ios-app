@@ -109,4 +109,8 @@ extension Array where Element == WalletEntity {
         
         return first(where: { $0.address == address })
     }
+    
+    func combinedDomains() -> [DomainDisplayInfo] {
+        reduce([DomainDisplayInfo](), { $0 + $1.domains })
+    }
 }

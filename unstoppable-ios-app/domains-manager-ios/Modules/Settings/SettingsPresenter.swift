@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 @MainActor
 protocol SettingsPresenterProtocol: BasePresenterProtocol {
@@ -22,6 +23,8 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     private let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private var firebaseUser: FirebaseUser?
     private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
+    private var cancellables: Set<AnyCancellable> = []
+
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
@@ -34,7 +37,9 @@ final class SettingsPresenter: ViewAnalyticsLogger {
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
         self.firebaseAuthenticationService = firebaseAuthenticationService
-        dataAggregatorService.addListener(self)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.showSettingsAsync()
+        }.store(in: &cancellables)
         firebaseAuthenticationService.addListener(self)
     }
     
@@ -81,26 +86,6 @@ extension SettingsPresenter: SettingsPresenterProtocol {
             showLoginScreen()
         case .inviteFriends:
             showInviteFriendsScreen()
-        }
-    }
-}
-
-// MARK: - DataAggregatorServiceListener
-extension SettingsPresenter: DataAggregatorServiceListener {
-    nonisolated
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task { @MainActor in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .walletsListUpdated, .domainsUpdated, .primaryDomainChanged:
-                    showSettingsAsync()
-                case .domainsPFPUpdated:
-                    return
-                }
-            case .failure:
-                return
-            }
         }
     }
 }

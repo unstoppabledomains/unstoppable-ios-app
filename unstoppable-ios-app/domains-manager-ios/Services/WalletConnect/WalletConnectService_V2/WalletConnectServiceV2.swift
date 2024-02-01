@@ -148,6 +148,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     var appDisconnectedCallback: WCAppDisconnectedCallback?
     var willHandleRequestCallback: EmptyCallback?
     private var connectionCompletion: WCConnectionResultCompletion?
+    private var cancellables: Set<AnyCancellable> = []
 
     init(udWalletsService: UDWalletsServiceProtocol) {
         self.udWalletsService = udWalletsService
@@ -171,8 +172,17 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
-        Task { await MainActor.run {
-            appContext.dataAggregatorService.addListener(self) }
+        Task {
+            appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+                self?.walletsUpdated(wallets)
+            }.store(in: &cancellables)
+        }
+    }
+    
+    private func walletsUpdated(_ wallets: [WalletEntity]) {
+        Task {
+            let domains = wallets.combinedDomains().map { $0.toDomainItem() }
+            disconnectAppsForAbsentDomains(from: domains)
         }
     }
     
@@ -913,18 +923,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             } else {
                 Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
                 throw WalletConnectRequestError.failedFetchGas
-            }
-        }
-    }
-}
-
-extension WalletConnectServiceV2: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        if case .success(let serviceResult) = result,
-           case .domainsUpdated = serviceResult {
-            Task {
-                let validDomains = await appContext.dataAggregatorService.getDomainItems()
-                disconnectAppsForAbsentDomains(from: validDomains)
             }
         }
     }

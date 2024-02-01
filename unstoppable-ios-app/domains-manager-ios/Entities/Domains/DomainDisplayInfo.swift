@@ -186,3 +186,9 @@ extension Array where Element == DomainDisplayInfo {
         }
     }
 }
+
+extension DomainDisplayInfo {
+    func toDomainItem() -> DomainItem {
+        DomainItem(name: name, ownerWallet: ownerWallet, blockchain: blockchain)
+    }
+}
