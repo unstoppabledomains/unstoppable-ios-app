@@ -69,6 +69,8 @@ extension WalletsDataService: UDWalletsServiceListener {
         Task {
             switch notification {
             case .walletsUpdated:
+                /// ATM put delay to fix issue when wallet's state is not external immediately after this notification trigerred 
+                await Task.sleep(seconds: 0.2)
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
                 if let selectedWallet,

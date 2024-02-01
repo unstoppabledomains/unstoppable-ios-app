@@ -320,7 +320,9 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
         
         UDRouter().showImportExistingExternalWalletModule(in: view,
-                                                          externalWalletInfo: wallet.displayInfo) { _ in }
+                                                          externalWalletInfo: wallet.displayInfo) { [weak self] _ in
+            self?.view?.presentedViewController?.dismiss(animated: true)
+        }
     }
     
     func showReverseResolutionInProgress(for domainDisplayInfo: DomainDisplayInfo) {
