@@ -16,8 +16,7 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
     override var domainName: String? { reverseResolutionDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          domains: [DomainDisplayInfo],
          reverseResolutionDomain: DomainDisplayInfo,
          udWalletsService: UDWalletsServiceProtocol,
@@ -26,7 +25,6 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
         self.domains = domains
         super.init(view: view,
                    wallet: wallet,
-                   walletInfo: walletInfo,
                    domain: reverseResolutionDomain,
                    udWalletsService: udWalletsService)
         self.resultCallback = resultCallback

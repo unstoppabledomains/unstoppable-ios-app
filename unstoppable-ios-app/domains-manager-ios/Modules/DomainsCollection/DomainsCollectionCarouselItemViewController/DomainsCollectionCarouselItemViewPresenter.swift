@@ -332,13 +332,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
            domain.isAbleToSetAsRR,
            !domain.isUpdatingRecords,
            let wallet = walletWithInfo?.wallet {
-            let isEnabled = await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
-            
-            actions.append(.setUpRR(isEnabled: isEnabled,
-                                    callback: { [weak self] in
-                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution, parameters: [.domainName: domain.name])
-                self?.showSetupReverseResolutionModule()
-            }))
+//            let isEnabled = await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
+//            
+//            actions.append(.setUpRR(isEnabled: isEnabled,
+//                                    callback: { [weak self] in
+//                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution, parameters: [.domainName: domain.name])
+//                self?.showSetupReverseResolutionModule()
+//            }))
         }
         
         actions.append(.rearrange(callback: { [weak self] in
@@ -394,21 +394,21 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func showSetupReverseResolutionModule() {
-        guard case .domain(let domain) = mode else { return }
-        
-        guard let navigation = view?.containerViewController?.cNavigationController,
-              let walletWithInfo,
-              let walletInfo = walletWithInfo.displayInfo else { return }
-        
-        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                          wallet: walletWithInfo.wallet,
-                                                          walletInfo: walletInfo,
-                                                          domain: domain,
-                                                          resultCallback: {
-            Task { @MainActor in
-                self.didSetDomainForReverseResolution()
-            }
-        })
+//        guard case .domain(let domain) = mode else { return }
+//        
+//        guard let navigation = view?.containerViewController?.cNavigationController,
+//              let walletWithInfo,
+//              let walletInfo = walletWithInfo.displayInfo else { return }
+//        
+//        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+//                                                          wallet: walletWithInfo.wallet,
+//                                                          walletInfo: walletInfo,
+//                                                          domain: domain,
+//                                                          resultCallback: {
+//            Task { @MainActor in
+//                self.didSetDomainForReverseResolution()
+//            }
+//        })
     }
     
     func didSetDomainForReverseResolution() {

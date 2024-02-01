@@ -16,15 +16,13 @@ final class SetupChangeReverseResolutionDomainPresenter: SetupReverseResolutionV
     override var domainName: String? { selectedDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          domain: DomainDisplayInfo,
          udWalletsService: UDWalletsServiceProtocol,
          resultCallback: @escaping MainActorAsyncCallback) {
         self.selectedDomain = domain
         super.init(view: view,
                    wallet: wallet,
-                   walletInfo: walletInfo,
                    domain: domain,
                    udWalletsService: udWalletsService)
         self.changedCallback = resultCallback

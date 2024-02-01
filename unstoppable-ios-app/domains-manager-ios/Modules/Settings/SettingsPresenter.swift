@@ -111,9 +111,9 @@ private extension SettingsPresenter {
         
         snapshot.appendSections([.main(1)])
         let interactableDomains = wallets.combinedDomains().interactableItems()
-        if let primaryDomain = interactableDomains.first {
-            snapshot.appendItems([.homeScreen(primaryDomain.name)])
-        }
+//        if let primaryDomain = interactableDomains.first {
+//            snapshot.appendItems([.homeScreen(primaryDomain.name)])
+//        }
         let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
         snapshot.appendItems([.wallets("\(wallets.count)"),
                               .security(securityName),
@@ -193,23 +193,23 @@ private extension SettingsPresenter {
     }
     
     func showHomeScreenDomainSelection() {
-        guard let view = self.view else { return }
-
-        Task {
-            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
-            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
-                                                                              isFirstPrimaryDomain: false,
-                                                                              configuration: .init(canReverseResolutionETHDomain: false,
-                                                                                                   analyticsView: .sortDomainsFromSettings),
-                                                                              in: view)
-            switch result {
-            case .cancelled:
-                return
-            case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
-                await dataAggregatorService.setDomainsOrder(using: domains)
-                view.cNavigationController?.popToRootViewController(animated: true)
-            }
-        }
+//        guard let view = self.view else { return }
+//
+//        Task {
+//            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+//            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
+//                                                                              isFirstPrimaryDomain: false,
+//                                                                              configuration: .init(canReverseResolutionETHDomain: false,
+//                                                                                                   analyticsView: .sortDomainsFromSettings),
+//                                                                              in: view)
+//            switch result {
+//            case .cancelled:
+//                return
+//            case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
+//                await dataAggregatorService.setDomainsOrder(using: domains)
+//                view.cNavigationController?.popToRootViewController(animated: true)
+//            }
+//        }
     }
     
     func showLoginScreen() {

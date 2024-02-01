@@ -51,14 +51,13 @@ struct DomainProfileLinkValidator {
             preRequestedAction = .showBadge(code: badgeCode)
         }
         
-        let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
         let wallets = appContext.walletsDataService.wallets
-        if let domain = userDomains.first(where: { $0.name == domainName }),
-           let wallet = wallets.first(where: { $0.udWallet.owns(domain: domain) }) {
+        if let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }),
+           let domain = wallet.domains.first(where: { $0.name == domainName }) {
             return .showUserDomainProfile(domain: domain,
                                           wallet: wallet,
                                           action: preRequestedAction)
-        } else if let userDomainDisplayInfo = userDomains.first,
+        } else if let userDomainDisplayInfo = wallets.combinedDomains().first,
                   let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
             let viewingDomain = userDomainDisplayInfo.toDomainItem()
             let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,

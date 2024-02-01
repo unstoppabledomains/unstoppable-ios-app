@@ -77,26 +77,26 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
                     return
                 }
                 
-                if !(await dataAggregatorService.isReverseResolutionChangeAllowed(for: primaryDomain)) {
-                    await finish(result: .domainsOrderSet(domains))
-                    return
-                }
+//                if !(await dataAggregatorService.isReverseResolutionChangeAllowed(for: primaryDomain)) {
+//                    await finish(result: .domainsOrderSet(domains))
+//                    return
+//                }
                 
-                guard let walletWithInfo = walletsWithInfo.first(where: { primaryDomain.isOwned(by: $0.wallet) }),
-                      let displayInfo = walletWithInfo.displayInfo,
-                      let resultCallback = self.resultCallback else {
-                    Debugger.printFailure("Failed to find wallet for selected home screen domain")
-                    await finish(result: .domainsOrderSet(domains))
-                    return
-                }
-                
-                saveDomainsOrder()
-                UDRouter().showSetupNewReverseResolutionModule(in: nav,
-                                                               wallet: walletWithInfo.wallet,
-                                                               walletInfo: displayInfo,
-                                                               domains: self.domains,
-                                                               reverseResolutionDomain: primaryDomain,
-                                                               resultCallback: resultCallback)
+//                guard let walletWithInfo = walletsWithInfo.first(where: { primaryDomain.isOwned(by: $0.wallet) }),
+//                      let displayInfo = walletWithInfo.displayInfo,
+//                      let resultCallback = self.resultCallback else {
+//                    Debugger.printFailure("Failed to find wallet for selected home screen domain")
+//                    await finish(result: .domainsOrderSet(domains))
+//                    return
+//                }
+//                
+//                saveDomainsOrder()
+//                UDRouter().showSetupNewReverseResolutionModule(in: nav,
+//                                                               wallet: walletWithInfo.wallet,
+//                                                               walletInfo: displayInfo,
+//                                                               domains: self.domains,
+//                                                               reverseResolutionDomain: primaryDomain,
+//                                                               resultCallback: resultCallback)
             }
         }
     }

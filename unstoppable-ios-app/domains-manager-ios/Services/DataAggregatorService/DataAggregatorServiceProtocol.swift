@@ -12,15 +12,15 @@ protocol DataAggregatorServiceProtocol {
 //    func getWalletsWithInfo() async -> [WalletWithInfo]
 //    func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
 //    func getDomainItems() async -> [DomainItem]
-    func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
+//    func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
 //    func getDomainWith(name: String) async throws -> DomainItem
 //    func getDomainsWith(names: Set<String>) async -> [DomainItem]
-    func setDomainsOrder(using domains: [DomainDisplayInfo]) async
-    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo?
-    func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool
-    func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool
-    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool
-    func isReverseResolutionSet(for domainName: DomainName) async -> Bool
+//    func setDomainsOrder(using domains: [DomainDisplayInfo]) async
+//    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo?
+//    func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool
+//    func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool
+//    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool
+//    func isReverseResolutionSet(for domainName: DomainName) async -> Bool
     func mintDomains(_ domains: [String],
                      paidDomains: [String],
                      domainsOrderInfoMap: SortDomainsOrderInfoMap,

@@ -89,14 +89,12 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
                     switch state {
                     case .notSet:
                         let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                                    for: wallet.udWallet,
-                                                                                    walletInfo: wallet.displayInfo,
+                                                                                    for: wallet,
                                                                                     mode: .chooseFirstDomain)
                         handleSetupReverseResolution(result: result)
                     case .setFor(let domain, _, _):
                         let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                                    for: wallet.udWallet,
-                                                                                    walletInfo: wallet.displayInfo,
+                                                                                    for: wallet,
                                                                                     mode: .changeDomain(currentDomain: domain))
                         handleSetupReverseResolution(result: result)
                     case .settingFor(let domainDisplayInfo):
@@ -140,10 +138,7 @@ private extension WalletDetailsViewPresenter {
             let walletDomains = wallet.domains
             let domainsAvailableForRR = walletDomains.availableForRRItems()
             let rrDomain = wallet.rrDomain
-            var isRRSetupInProgress = false
-            if let rrDomain = rrDomain {
-                isRRSetupInProgress = await dataAggregatorService.isReverseResolutionSetupInProgress(for: rrDomain.name)
-            }
+            let isRRSetupInProgress = !isReverseResolutionChangeAllowed
             
             let isExternalWallet: Bool
             switch walletInfo.source {

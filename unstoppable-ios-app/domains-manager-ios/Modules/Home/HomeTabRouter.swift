@@ -119,7 +119,7 @@ extension HomeTabRouter {
     
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
         Task { @MainActor in
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            let domains = appContext.walletsDataService.wallets.combinedDomains()
             
             let topPresentedViewController = appContext.coreAppCoordinator.topVC
             if let mintingNav {

@@ -148,20 +148,20 @@ private extension AppLaunchService {
 
         Task {
             await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
-            let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
-            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)),
+//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//            let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
+            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: .default)),
                                      sessionState: sessionState)
         }
         
         Task {
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let timePassed = Date().timeIntervalSince(startTime)
             let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
             await Task.sleep(seconds: timeLeft)
 
-            let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
-            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: mintingState)),
+//            let mintingState = await mintingStateFor(domains: domains, mintingDomains: .default)
+            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: .default)),
                                      sessionState: sessionState)
         }
     }

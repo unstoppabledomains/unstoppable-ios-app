@@ -295,10 +295,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     private func pickDomain() async -> DomainItem? {
-        if let primaryDomainDisplayInfo = await appContext.dataAggregatorService.getDomainsDisplayInfo().first {
-            return primaryDomainDisplayInfo.toDomainItem()
-        }
-        return appContext.udDomainsService.getAllDomains().first
+        appContext.udDomainsService.getAllDomains().first
     }
     
     private func handleSessionProposal( _ proposal: SessionV2.Proposal) async throws -> HexAddress {

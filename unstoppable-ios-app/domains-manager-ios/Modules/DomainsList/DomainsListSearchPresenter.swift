@@ -92,7 +92,7 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             case .cancelled:
                 return
             case .domainsOrderSet(let domains):
-                await appContext.dataAggregatorService.setDomainsOrder(using: domains)
+//                await appContext.dataAggregatorService.setDomainsOrder(using: domains)
                 self.domains = domains
                 showDomains()
             case .domainsOrderAndReverseResolutionSet:

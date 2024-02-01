@@ -16,15 +16,13 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
     private let currentDomain: DomainDisplayInfo
     
     init(view: ChooseReverseResolutionDomainViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          currentDomain: DomainDisplayInfo,
          setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.currentDomain = currentDomain
         super.init(view: view,
                    wallet: wallet,
-                   walletInfo: walletInfo,
                    dataAggregatorService: dataAggregatorService)
         self.setupWalletsReverseResolutionFlowManager = setupWalletsReverseResolutionFlowManager
         self.selectedDomain = currentDomain
@@ -56,7 +54,7 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
         
         snapshot.appendSections([.header])
         let domainName = selectedDomain.name
-        let walletAddress = walletInfo.address.walletAddressTruncated
+        let walletAddress = wallet.address.walletAddressTruncated
         snapshot.appendItems([.header(subtitle: .init(subtitle: String.Constants.setupReverseResolutionDescription.localized(domainName, walletAddress),
                                                       attributes: [.init(text: domainName,
                                                                          fontWeight: .medium,

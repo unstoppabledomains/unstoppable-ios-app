@@ -135,29 +135,29 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
-        Task {
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
-            
-            let topPresentedViewController = navigationController?.topViewController
-            if let mintingNav = topPresentedViewController as? MintDomainsNavigationController {
-                mintingNav.setMode(mode)
-            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
-                // MARK: - Ignore minting request when add/import/connect wallet
-            } else if presenter?.isResolvingPrimaryDomain == false {
-                await resetNavigationToRoot()
-                guard let viewController = self.viewController,
-                      await isMintingAvailable(in: viewController) else { return }
-                
-                let mintedDomains = domains.interactableItems()
-                
-                runMintDomainsFlow(with: mode,
-                                   mintedDomains: mintedDomains,
-                                   domainsMintedCallback: { [weak self] result in
-                    self?.presenter?.didMintDomains(result: result)
-                },
-                                   in: viewController)
-            }
-        }
+//        Task {
+//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//            
+//            let topPresentedViewController = navigationController?.topViewController
+//            if let mintingNav = topPresentedViewController as? MintDomainsNavigationController {
+//                mintingNav.setMode(mode)
+//            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
+//                // MARK: - Ignore minting request when add/import/connect wallet
+//            } else if presenter?.isResolvingPrimaryDomain == false {
+//                await resetNavigationToRoot()
+//                guard let viewController = self.viewController,
+//                      await isMintingAvailable(in: viewController) else { return }
+//                
+//                let mintedDomains = domains.interactableItems()
+//                
+//                runMintDomainsFlow(with: mode,
+//                                   mintedDomains: mintedDomains,
+//                                   domainsMintedCallback: { [weak self] result in
+//                    self?.presenter?.didMintDomains(result: result)
+//                },
+//                                   in: viewController)
+//            }
+//        }
     }
     
     func showBuyDomainsWebView() {

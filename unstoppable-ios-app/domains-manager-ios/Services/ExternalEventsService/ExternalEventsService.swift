@@ -155,7 +155,7 @@ private extension ExternalEventsService {
             }
         case .wcDeepLink(let wcDeepLink):
             let request = try WCRequest.connectWallet(resolveRequest(from: wcDeepLink))
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+            let domains = appContext.walletsDataService.wallets.combinedDomains()
             
             guard let domainDisplayInfoToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
                 Debugger.printWarning("Failed to find any domain to handle WC url")
@@ -213,7 +213,7 @@ private extension ExternalEventsService {
     }
     
     func findDomainsWith(domainNames: [String]) async throws -> [DomainDisplayInfo] {
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
+        let domains = appContext.walletsDataService.wallets.combinedDomains()
         var searchedDomains = [DomainDisplayInfo]()
         for domainName in domainNames {
             if let domain = domains.first(where: { $0.name == domainName }) {

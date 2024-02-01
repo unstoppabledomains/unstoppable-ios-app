@@ -195,7 +195,7 @@ private extension MintDomainsNavigationController {
         let mintingDomains = try await dataAggregatorService.mintDomains(domains,
                                                                          paidDomains: [],
                                                                          domainsOrderInfoMap: domainsOrderInfoMap,
-                                                                         to: wallet,
+                                                                         to: wallet.udWallet,
                                                                          userEmail: email,
                                                                          securityCode: code)
         
@@ -203,9 +203,9 @@ private extension MintDomainsNavigationController {
         /// Since it is impossible to ensure which domain will be set for RR, we will save user's primary domain selection and when minting is done, check if domain set for RR is same as primary. If they won't match, we'll ask if user want to set RR for primary domain just once.
         if let primaryDomainName = domainsOrderInfoMap.first(where: { $0.value == 0 })?.key,
            domains.contains(primaryDomainName),
-           await dataAggregatorService.reverseResolutionDomain(for: wallet) == nil {
+           wallet.rrDomain == nil {
             UserDefaults.preferableDomainNameForRR = primaryDomainName
-        } else if mintedDomains.filter({ wallet.owns(domain: $0) }).isEmpty {
+        } else if wallet.domains.isEmpty {
             /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
             UserDefaults.preferableDomainNameForRR = domains.first
         }
@@ -336,7 +336,7 @@ private extension MintDomainsNavigationController {
     struct MintingData {
         var email: String? = nil
         var code: String? = nil
-        var wallet: UDWallet? = nil
+        var wallet: WalletEntity? = nil
     }
 }
 
@@ -363,7 +363,7 @@ extension MintDomainsNavigationController {
         case noDomainsGotItPressed
         case noDomainsImportWalletPressed
         case domainsPurchased(details: DomainsPurchasedDetails)
-        case didSelectDomainsToMint(_ domains: [String], wallet: UDWallet)
+        case didSelectDomainsToMint(_ domains: [String], wallet: WalletEntity)
         case didConfirmDomainsToMint(_ domains: [String], domainsOrderInfoMap: SortDomainsOrderInfoMap)
         case mintingCompleted
         case skipMinting

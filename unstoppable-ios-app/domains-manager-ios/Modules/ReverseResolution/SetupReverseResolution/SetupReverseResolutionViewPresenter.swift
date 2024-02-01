@@ -20,27 +20,24 @@ protocol SetupReverseResolutionViewPresenterProtocol: BasePresenterProtocol, Vie
 class SetupReverseResolutionViewPresenter {
     private(set) weak var view: SetupReverseResolutionViewProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
-    let wallet: UDWallet
-    let walletInfo: WalletDisplayInfo
+    let wallet: WalletEntity
     let domain: DomainDisplayInfo?
     var domainName: String? { domain?.name }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: SetupReverseResolutionViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          domain: DomainDisplayInfo?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.wallet = wallet
-        self.walletInfo = walletInfo
         self.domain = domain
         self.udWalletsService = udWalletsService
     }
     
     func viewDidLoad() {
-        view?.setWith(walletInfo: walletInfo, domain: domain)
+        view?.setWith(walletInfo: wallet.displayInfo, domain: domain)
         view?.setConfirmButton(title: String.Constants.confirm.localized(),
                                icon: nil)
     }

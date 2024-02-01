@@ -154,7 +154,7 @@ extension PublicProfileView {
                 await performAsyncErrorCatchingBlock {
                     let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
                                                                                 fields: [.profile, .records, .socialAccounts])
-                    let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                    let domains = appContext.walletsDataService.wallets.combinedDomains()
                     await waitForAppear()
                     self.profile = profile
                     isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
@@ -247,7 +247,7 @@ extension PublicProfileView {
         
         private func loadViewingDomainData() {
             Task {
-                let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                let domains = appContext.walletsDataService.wallets.combinedDomains()
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
                 let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),

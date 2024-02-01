@@ -650,8 +650,7 @@ private extension DomainProfileViewPresenter {
         guard let navigation = view?.cNavigationController else { return }
         
         UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                          wallet: dataHolder.wallet.udWallet,
-                                                          walletInfo: dataHolder.wallet.displayInfo,
+                                                          wallet: dataHolder.wallet,
                                                           domain: dataHolder.domain,
                                                           resultCallback: { [weak self] in
             self?.didSetDomainForReverseResolution()

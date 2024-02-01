@@ -124,13 +124,11 @@ private extension UDBTSearchView {
     }
     
     func setInitialPromotingDomain() {
-        Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().availableForMessagingItems()
-            guard !domains.isEmpty else { return }
-            
-            setPromotingDomain(domains[0])
-            canChangePromotingDomain = domains.count > 1
-        }
+        let domains = appContext.walletsDataService.wallets.combinedDomains().availableForMessagingItems()
+        guard !domains.isEmpty else { return }
+        
+        setPromotingDomain(domains[0])
+        canChangePromotingDomain = domains.count > 1
     }
     
     func setPromotingDomain(_ domain: DomainDisplayInfo) {

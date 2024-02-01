@@ -399,22 +399,22 @@ private extension DomainsCollectionPresenter {
         if let walletWithoutRR = findWalletWithoutRRDomain(domains: domains),
            let walletInfo = walletWithoutRR.displayInfo,
            !isResolvingPrimaryDomain,
-           router.isTopPresented(),
-           await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: walletWithoutRR.wallet) {
-            guard let view = self.view else { return }
-            
-            self.isResolvingPrimaryDomain = true
-            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                        for: walletWithoutRR.wallet,
-                                                                        walletInfo: walletInfo,
-                                                                        mode: .chooseFirstDomain)
-            self.isResolvingPrimaryDomain = false
-            switch result {
-            case .cancelled, .set:
-                await resolvePrimaryDomain(domains: domains)
-            case .failed:
-                Void()
-            }
+           router.isTopPresented() {
+//           await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: walletWithoutRR.wallet) {
+//            guard let view = self.view else { return }
+//            
+//            self.isResolvingPrimaryDomain = true
+//            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
+//                                                                        for: walletWithoutRR.wallet,
+//                                                                        walletInfo: walletInfo,
+//                                                                        mode: .chooseFirstDomain)
+//            self.isResolvingPrimaryDomain = false
+//            switch result {
+//            case .cancelled, .set:
+//                await resolvePrimaryDomain(domains: domains)
+//            case .failed:
+//                Void()
+//            }
         }
         
         if !domains.requirePNItems().isEmpty {
@@ -424,11 +424,11 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func updateDomainsListOrder(with domains: [DomainDisplayInfo], newIndex: Int?) async {
-        stateController.set(domains: domains)
-        if let newIndex {
-            setNewIndex(newIndex)
-        }
-        await dataAggregatorService.setDomainsOrder(using: domains)
+//        stateController.set(domains: domains)
+//        if let newIndex {
+//            setNewIndex(newIndex)
+//        }
+//        await dataAggregatorService.setDomainsOrder(using: domains)
     }
     
     @MainActor
@@ -471,29 +471,29 @@ private extension DomainsCollectionPresenter {
     }
     
     func showReverseResolutionPromptIfNeeded() async {
-        do {
-            let domains = stateController.domains
-            let walletsWithInfo = stateController.walletsWithInfo
-            guard let primary = domains.first(where: { $0.isPrimary }),
-                  primary.isAbleToSetAsRR,
-                  let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
-                  let walletInfo = walletWithInfo.displayInfo,
-                  walletInfo.reverseResolutionDomain == nil,
-                  (await dataAggregatorService.isReverseResolutionChangeAllowed(for: primary)) else {
-                return }
-            
-            if UserDefaults.setupRRPromptCounter == 0 ||
-                UserDefaults.setupRRPromptCounter >= Constants.setupRRPromptRepeatInterval {
-                try await askToSetReverseResolutionFor(domain: primary, in: walletInfo)
-                UserDefaults.setupRRPromptCounter = 0
-            } else {
-                UserDefaults.setupRRPromptCounter += 1
-            }
-        } catch AuthentificationError.cancelled {
-            await showReverseResolutionPromptIfNeeded()
-        } catch {
-            UserDefaults.setupRRPromptCounter = 1
-        }
+//        do {
+//            let domains = stateController.domains
+//            let walletsWithInfo = stateController.walletsWithInfo
+//            guard let primary = domains.first(where: { $0.isPrimary }),
+//                  primary.isAbleToSetAsRR,
+//                  let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
+//                  let walletInfo = walletWithInfo.displayInfo,
+//                  walletInfo.reverseResolutionDomain == nil,
+//                  (await dataAggregatorService.isReverseResolutionChangeAllowed(for: primary)) else {
+//                return }
+//            
+//            if UserDefaults.setupRRPromptCounter == 0 ||
+//                UserDefaults.setupRRPromptCounter >= Constants.setupRRPromptRepeatInterval {
+//                try await askToSetReverseResolutionFor(domain: primary, in: walletInfo)
+//                UserDefaults.setupRRPromptCounter = 0
+//            } else {
+//                UserDefaults.setupRRPromptCounter += 1
+//            }
+//        } catch AuthentificationError.cancelled {
+//            await showReverseResolutionPromptIfNeeded()
+//        } catch {
+//            UserDefaults.setupRRPromptCounter = 1
+//        }
     }
     
     func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainDisplayInfo]) async {

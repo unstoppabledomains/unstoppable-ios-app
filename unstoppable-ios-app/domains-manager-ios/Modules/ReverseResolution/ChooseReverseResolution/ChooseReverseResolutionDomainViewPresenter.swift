@@ -20,8 +20,7 @@ protocol ChooseReverseResolutionDomainViewPresenterProtocol: BasePresenterProtoc
 class ChooseReverseResolutionDomainViewPresenter {
     private(set) weak var view: ChooseReverseResolutionDomainViewProtocol?
     
-    let wallet: UDWallet
-    let walletInfo: WalletDisplayInfo
+    let wallet: WalletEntity
     private let dataAggregatorService: DataAggregatorServiceProtocol
     var title: String { "" }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
@@ -30,12 +29,10 @@ class ChooseReverseResolutionDomainViewPresenter {
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: ChooseReverseResolutionDomainViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.view = view
         self.wallet = wallet
-        self.walletInfo = walletInfo
         self.dataAggregatorService = dataAggregatorService
     }
     
@@ -51,10 +48,8 @@ class ChooseReverseResolutionDomainViewPresenter {
 // MARK: - ChooseReverseResolutionViewPresenterProtocol
 extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDomainViewPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            await loadDomains()
-            showDomainsList()
-        }
+        loadDomains()
+        showDomainsList()
     }
     
     func didSelectItem(_ item: ChooseReverseResolutionDomainViewController.Item) {
@@ -72,9 +67,8 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
 
 // MARK: - Private functions
 private extension ChooseReverseResolutionDomainViewPresenter {
-    func loadDomains() async {
-        let domains = await dataAggregatorService.getDomainsDisplayInfo().availableForRRItems()
-        walletDomains = domains.filter({ $0.isOwned(by: wallet ) })
+    func loadDomains() {
+        walletDomains = wallet.domains.availableForRRItems()
     }
 }
 

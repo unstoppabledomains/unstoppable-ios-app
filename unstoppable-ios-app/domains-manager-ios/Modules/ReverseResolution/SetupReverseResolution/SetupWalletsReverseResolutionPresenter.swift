@@ -14,13 +14,11 @@ final class SetupWalletsReverseResolutionPresenter: SetupReverseResolutionViewPr
     override var analyticsName: Analytics.ViewName { .walletSetupReverseResolution }
 
     init(view: SetupReverseResolutionViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          udWalletsService: UDWalletsServiceProtocol,
          setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager) {
         super.init(view: view,
                    wallet: wallet,
-                   walletInfo: walletInfo,
                    domain: nil,
                    udWalletsService: udWalletsService)
         self.setupWalletsReverseResolutionFlowManager = setupWalletsReverseResolutionFlowManager

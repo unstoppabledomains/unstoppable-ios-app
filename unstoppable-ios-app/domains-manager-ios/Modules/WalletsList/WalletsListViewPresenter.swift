@@ -55,8 +55,8 @@ class WalletsListViewPresenter {
         }.store(in: &cancellables)
     }
     
-    func didSelectWallet(_ wallet: UDWallet, walletInfo: WalletDisplayInfo) async {
-        showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+    func didSelectWallet(_ wallet: WalletEntity, walletInfo: WalletDisplayInfo) async {
+        showDetailsOf(wallet: wallet)
     }
     
     func visibleItem(from walletInfo: WalletDisplayInfo) -> WalletsListViewController.Item {
@@ -90,7 +90,7 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
                 guard let wallet = wallets.first(where: { $0.address == walletInfo.address }) else { return }
                 
                 logButtonPressedAnalyticEvents(button: .walletInList, parameters: [.wallet : wallet.address])
-                await didSelectWallet(wallet.udWallet, walletInfo: walletInfo)
+                await didSelectWallet(wallet, walletInfo: walletInfo)
             case .manageICloudBackups:
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .manageICloudBackups)
@@ -198,9 +198,8 @@ private extension WalletsListViewPresenter {
         }
     }
     
-    func showDetailsOf(wallet: UDWallet, walletInfo: WalletDisplayInfo) {
-        guard let nav = view?.cNavigationController,
-            let wallet = wallets.first(where: { $0.address == wallet.address }) else { return }
+    func showDetailsOf(wallet: WalletEntity) {
+        guard let nav = view?.cNavigationController else { return }
         
         UDRouter().showWalletDetailsOf(wallet: wallet,
                                        source: .walletsList,
@@ -256,8 +255,8 @@ private extension WalletsListViewPresenter {
             }
             appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
             if case .createdAndBackedUp(let wallet) = result,
-               let walletInfo = wallets.first(where: { $0.address == wallet.address })?.displayInfo {
-                showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+               let wallet = wallets.first(where: { $0.address == wallet.address }) {
+                showDetailsOf(wallet: wallet)
             }
             AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
         }

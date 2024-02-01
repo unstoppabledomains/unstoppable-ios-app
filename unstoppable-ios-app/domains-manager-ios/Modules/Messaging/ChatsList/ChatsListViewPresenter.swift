@@ -927,8 +927,7 @@ private extension ChatsListViewPresenter {
             guard let view else { return }
             
             let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                        for: wallet.udWallet,
-                                                                        walletInfo: wallet.displayInfo,
+                                                                        for: wallet,
                                                                         mode: .chooseFirstForMessaging)
             
             switch result {
