@@ -17,7 +17,6 @@ typealias WalletsListSnapshot = NSDiffableDataSourceSnapshot<WalletsListViewCont
 
 @MainActor
 final class WalletsListViewController: BaseViewController {
-    
 
     @IBOutlet weak var collectionView: UICollectionView!
     

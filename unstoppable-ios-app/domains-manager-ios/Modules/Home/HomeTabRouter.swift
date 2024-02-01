@@ -25,7 +25,6 @@ final class HomeTabRouter: ObservableObject {
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
-    
     let id: UUID = UUID()
     private var topViews = 0
     private var cancellables: Set<AnyCancellable> = []

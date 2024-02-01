@@ -47,6 +47,12 @@ class WalletsListViewPresenter {
         appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
             self?.walletsUpdated(wallets)
         }.store(in: &cancellables)
+        NotificationCenter.default.publisher(for: Self.walletAddedNotification).sink { [weak self] notification in
+            if self?.view != nil,
+               let result = notification.object as? AddWalletNavigationController.Result {
+                self?.handleWalletAddedResult(result)
+            }
+        }.store(in: &cancellables)
     }
     
     func didSelectWallet(_ wallet: UDWallet, walletInfo: WalletDisplayInfo) async {
@@ -236,6 +242,10 @@ private extension WalletsListViewPresenter {
     }
     
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
+        guard view != nil else {
+            NotificationCenter.default.post(name: Self.walletAddedNotification, object: result)
+            return
+        }
         switch result {
         case .cancelled, .failedToAdd:
             return
@@ -245,8 +255,6 @@ private extension WalletsListViewPresenter {
                 walletName = displayInfo.walletSourceName
             }
             appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-            fetchWallets()
-            showWallets()
             if case .createdAndBackedUp(let wallet) = result,
                let walletInfo = wallets.first(where: { $0.address == wallet.address })?.displayInfo {
                 showDetailsOf(wallet: wallet, walletInfo: walletInfo)
@@ -387,4 +395,5 @@ extension WalletsListViewPresenter {
     enum InitialAction {
         case none, showImportWalletOptionsPullUp, importWallet, connectWallet, createNewWallet
     }
+    static let walletAddedNotification = Notification.Name(rawValue: "walletAddedNotification")
 }
