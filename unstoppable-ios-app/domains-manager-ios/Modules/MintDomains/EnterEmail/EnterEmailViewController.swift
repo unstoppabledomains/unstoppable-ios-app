@@ -85,6 +85,8 @@ extension EnterEmailViewController: UDTextFieldV2Delegate {
     func udTextFieldShouldEndEditing(_ udTextField: UDTextField) -> Bool {
         if cNavigationController?.viewControllers.last != self || cNavigationController?.isTransitioning == true || cNavigationController?.cNavigationController?.isTransitioning == true {
             return true
+        } else if navigationController?.viewControllers.count == 1 {
+            return true 
         }
         return false
     }

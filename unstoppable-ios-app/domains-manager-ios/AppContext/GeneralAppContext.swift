@@ -72,6 +72,7 @@ final class GeneralAppContext: AppContextProtocol {
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
+        udWalletsService.addListener(coreAppCoordinator)
         
         // Data aggregator
         let dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
@@ -156,7 +157,7 @@ final class GeneralAppContext: AppContextProtocol {
         firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
                                                         firebaseSigner: firebaseSigner)
         
-        firebaseParkedDomainsAuthenticationService.addListener(dataAggregatorService)
+        firebaseParkedDomainsAuthenticationService.addListener(coreAppCoordinator)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
         
         // Purchase domains

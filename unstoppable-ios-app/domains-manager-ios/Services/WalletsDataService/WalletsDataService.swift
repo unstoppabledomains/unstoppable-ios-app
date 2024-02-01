@@ -68,7 +68,7 @@ extension WalletsDataService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
             switch notification {
-            case .walletsUpdated, .walletRemoved:
+            case .walletsUpdated:
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
                 if let selectedWallet,
@@ -82,6 +82,8 @@ extension WalletsDataService: UDWalletsServiceListener {
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
+            case .walletRemoved:
+                return
             }
         }
     }
@@ -96,6 +98,9 @@ extension WalletsDataService: UDWalletsServiceListener {
             } else {
                 setSelectedWallet(self.wallets.first!)
             }
+        } else if selectedWallet == nil,
+                  let wallet = self.wallets.first {
+            setSelectedWallet(wallet)            
         }
     }
 }
