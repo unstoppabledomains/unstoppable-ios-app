@@ -160,8 +160,12 @@ extension HomeTabRouter {
         }
     }
     
-    func runAddWalletFlow() {
-        
+    func runAddWalletFlow(initialAction: WalletsListViewPresenter.InitialAction = .none) {
+        Task {
+            await popToRootAndWait()
+            tabViewSelection = .wallets
+            walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
+        }
     }
 }
 
