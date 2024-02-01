@@ -39,7 +39,7 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
                 prevTitleView?.isHidden = true
                 setDashesProgress(0.25)
             }
-            try? await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             prevTitleView?.isHidden = false
         }
     }

@@ -211,7 +211,7 @@ private extension DomainProfileTopInfoSection {
             
             let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
                                                  name: follower.domain)
-            try? await Task.sleep(seconds: 0.2)
+            await Task.sleep(seconds: 0.2)
             UDRouter().showPublicDomainProfile(of: domain,
                                                viewingDomain: viewingDomain,
                                                preRequestedAction: nil,

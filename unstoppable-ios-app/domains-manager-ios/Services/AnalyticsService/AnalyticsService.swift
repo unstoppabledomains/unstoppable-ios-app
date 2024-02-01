@@ -132,7 +132,7 @@ private extension AnalyticsService {
     }
     
     func resolveUserID() async -> String {
-        try? await Task.sleep(seconds: 0.5) // Wait for 0.5 sec before accessing keychain to avoid error -25308. MOB-1078.
+        await Task.sleep(seconds: 0.5) // Wait for 0.5 sec before accessing keychain to avoid error -25308. MOB-1078.
         
         let key = KeychainKey.analyticsId
         let storage = iCloudPrivateKeyStorage()

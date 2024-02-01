@@ -61,7 +61,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         let timeSpent = Date().timeIntervalSince(startDate)
         if timeSpent < waitAtLeast {
             let stillNeedToWait = waitAtLeast - timeSpent
-            try await Task.sleep(seconds: stillNeedToWait)
+            await Task.sleep(seconds: stillNeedToWait)
         }
          
         store(wallet: wallet)

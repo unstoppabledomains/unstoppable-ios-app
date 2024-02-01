@@ -188,7 +188,7 @@ extension PublicProfileView {
                     await waitForAppear()
                     self.isFollowing = isFollowing
                     // Hack for SwiftUI doesn't update button status 
-                    try? await Task.sleep(seconds: 0.1)
+                    await Task.sleep(seconds: 0.1)
                     self.isFollowing = isFollowing
                 }
             }
@@ -268,7 +268,7 @@ extension PublicProfileView {
             
             let dif = uiReadyTime - timeSinceViewAppear
             if dif > 0 {
-                try? await Task.sleep(seconds: dif)
+                await Task.sleep(seconds: dif)
             }
         }
         

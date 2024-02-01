@@ -262,7 +262,7 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
         guard let view else { return }
         
         view.cNavigationController?.popToViewController(view, animated: true)
-        try? await Task.sleep(seconds: CNavigationController.animationDuration)
+        await Task.sleep(seconds: CNavigationController.animationDuration)
     }
 }
 
@@ -516,7 +516,7 @@ private extension ChatsListViewPresenter {
         
         let dif = uiReadyTime - timeSinceViewDidLoad
         if dif > 0 {
-            try? await Task.sleep(seconds: dif)
+            await Task.sleep(seconds: dif)
         }
     }
   

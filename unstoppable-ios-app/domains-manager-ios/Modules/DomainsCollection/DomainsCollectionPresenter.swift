@@ -187,7 +187,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             AppReviewService.shared.appReviewEventDidOccurs(event: .didMintDomains)
         case .domainsPurchased(let details):
             Task {
-                try? await Task.sleep(seconds: 0.2)
+                await Task.sleep(seconds: 0.2)
                 router.runMintDomainsFlow(with: .domainsPurchased(details: details))
             }
         }

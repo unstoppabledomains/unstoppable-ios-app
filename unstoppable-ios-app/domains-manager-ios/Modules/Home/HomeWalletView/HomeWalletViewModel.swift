@@ -181,7 +181,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func runSelectRRDomainInSelectedWalletIfNeeded() {
         Task {
             guard selectedWallet.rrDomain == nil else { return }
-            try? await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             
             if router.resolvingPrimaryDomainWallet == nil,
                selectedWallet.isReverseResolutionChangeAllowed() {

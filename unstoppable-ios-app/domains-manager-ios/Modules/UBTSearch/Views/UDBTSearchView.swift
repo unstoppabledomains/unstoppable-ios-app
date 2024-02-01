@@ -116,7 +116,7 @@ private extension UDBTSearchView {
     func scheduleAddMock() {
         #if DEBUG
         Task {
-            try? await Task.sleep(seconds: 2)
+            await Task.sleep(seconds: 2)
             controller.addMock()
             scheduleAddMock()
         }

@@ -227,9 +227,7 @@ fileprivate extension NotificationsService {
                 try await NetworkService().updatePushNotificationsInfo(info: info)
             } catch {
                 Debugger.printFailure("Failed to update push notifications info \(error.localizedDescription)", critical: false)
-                let interval: TimeInterval = 60
-                let duration = UInt64(interval * 1_000_000_000)
-                try? await Task.sleep(nanoseconds: duration)
+                await Task.sleep(seconds: 60)
                 updatePushNotificationsInfo(info)
             }
         }

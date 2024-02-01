@@ -151,7 +151,7 @@ private extension LoginFlowNavigationController {
     
     func authorizedWithApple() async throws {
         moveToStep(.fetchingDomains)
-        try? await Task.sleep(seconds: 1.5)
+        await Task.sleep(seconds: 1.5)
         moveToStep(.noParkedDomains)
     }
     

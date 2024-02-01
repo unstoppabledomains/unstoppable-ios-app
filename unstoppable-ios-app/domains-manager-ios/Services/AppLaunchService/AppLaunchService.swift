@@ -139,7 +139,7 @@ private extension AppLaunchService {
         }
         
         Task.detached(priority: .background) { [weak self] in
-            try await Task.sleep(seconds: 0.05)
+            await Task.sleep(seconds: 0.05)
             guard let self else { return }
             try? await self.sceneDelegate?.authorizeUserOnAppOpening()
             await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
@@ -158,7 +158,7 @@ private extension AppLaunchService {
             let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let timePassed = Date().timeIntervalSince(startTime)
             let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
-            try await Task.sleep(seconds: timeLeft)
+            await Task.sleep(seconds: timeLeft)
 
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: mintingState)),

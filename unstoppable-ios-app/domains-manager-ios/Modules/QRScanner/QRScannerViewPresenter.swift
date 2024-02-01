@@ -260,7 +260,7 @@ private extension QRScannerViewPresenter {
     }
     
     func wait(for interval: TimeInterval) async throws {
-        try await Task.sleep(seconds: interval)
+        await Task.sleep(seconds: interval)
     }
 }
 

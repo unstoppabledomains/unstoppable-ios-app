@@ -463,7 +463,7 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func scrollToTheTop() async {
         view?.setContentOffset(.zero, animated: true)
-        try? await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.3)
     }
     
     func perform(requestsWithChanges: [RequestWithChanges]) async {

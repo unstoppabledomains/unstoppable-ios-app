@@ -59,7 +59,7 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
                                profileChanges: profileChanges)
         case .didPurchaseDomains:
             Task {
-                try? await Task.sleep(seconds: 0.5)
+                await Task.sleep(seconds: 0.5)
                 await appContext.purchaseDomainsService.reset()
             }
             moveToStep(.purchased)

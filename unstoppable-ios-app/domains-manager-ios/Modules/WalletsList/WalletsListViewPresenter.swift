@@ -64,7 +64,7 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     
     func viewWillAppear() {
         Task {
-            try? await Task.sleep(seconds: 0.3)
+            await Task.sleep(seconds: 0.3)
             checkIfCanAddWalletAndPerform(action: initialAction, isImportOnly: true)
             initialAction = .none
         }

@@ -145,7 +145,7 @@ private extension ChooseNewPrimaryDomainPresenter {
         view?.setTitleHidden(false)
         Task {
             await showData()
-            try? await Task.sleep(seconds: 0.3)
+            await Task.sleep(seconds: 0.3)
             view?.scrollTo(item: .domain(domain, reverseResolutionWalletInfo: rrInfo, isSearching: false))
         }
     }

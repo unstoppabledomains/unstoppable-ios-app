@@ -170,8 +170,8 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         switch currentRoot {
         case .domainsCollection, .home:
-            func awaitPullUpDisappear() async throws {
-                try await Task.sleep(seconds: 0.2)
+            func awaitPullUpDisappear() async {
+                await Task.sleep(seconds: 0.2)
             }
             guard let topVC else { throw WalletConnectUIError.noControllerToPresent }
             do {
@@ -183,7 +183,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
-                try? await awaitPullUpDisappear()
+                await awaitPullUpDisappear()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }

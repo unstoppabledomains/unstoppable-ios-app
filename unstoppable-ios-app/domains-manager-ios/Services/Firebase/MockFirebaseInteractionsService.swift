@@ -74,7 +74,7 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
 // MARK: - PurchaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        try await Task.sleep(seconds: 0.5)
+        await Task.sleep(seconds: 0.5)
         let key = key.lowercased()
         let tlds = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
         let prices = [40000, 20000, 8000, 4000, 500]
@@ -91,7 +91,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     }
     
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        try await Task.sleep(seconds: 0.4)
+        await Task.sleep(seconds: 0.4)
         
         return ["greenfashion", "naturalstyle", "savvydressers", "ethicalclothes", "urbanfashions", "wearables", "consciouslook", "activegears", "minimalista", "outsizeoutfits", "styletone"].map { DomainToPurchaseSuggestion(name: $0) }
     }
@@ -145,7 +145,7 @@ extension MockFirebaseInteractionsService: FirebaseDomainsServiceProtocol {
 // MARK: - Private methods
 private extension MockFirebaseInteractionsService {
     func authorize() async throws {
-        try? await Task.sleep(seconds: 0.4)
+        await Task.sleep(seconds: 0.4)
         isAuthorized = true
     }
     

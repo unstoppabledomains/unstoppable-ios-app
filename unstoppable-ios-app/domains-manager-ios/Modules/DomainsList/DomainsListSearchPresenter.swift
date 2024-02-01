@@ -163,7 +163,7 @@ private extension DomainsListSearchPresenter {
         let debounce = self.debounce
         let task: SearchProfilesTask = Task.detached {
             do {
-                try await Task.sleep(seconds: debounce)
+                await Task.sleep(seconds: debounce)
                 try Task.checkCancellation()
                 
                 let profiles = try await self.searchForDomains(searchKey: searchKey)

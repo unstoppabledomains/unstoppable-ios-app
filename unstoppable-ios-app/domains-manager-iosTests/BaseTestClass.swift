@@ -12,7 +12,7 @@ class BaseTestClass: XCTestCase {
    
     func waitFor(interval: TimeInterval = 0.2) async throws {
         let duration = UInt64(interval * 1_000_000_000)
-        try await Task.sleep(nanoseconds: duration)
+        await Task.sleep(nanoseconds: duration)
     }
     
     private var walletAddress: HexAddress { "0x1944dF1425C2237Ec501206ba416B82f47f9901d" }
