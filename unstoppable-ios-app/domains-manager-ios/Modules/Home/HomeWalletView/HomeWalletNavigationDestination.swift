@@ -9,10 +9,11 @@ import Foundation
 
 enum HomeWalletNavigationDestination: Hashable {
     case settings
-    case qrScanner
+    case qrScanner(selectedWallet: WalletEntity)
     case minting(mode: MintDomainsNavigationController.Mode,
                  mintedDomains: [DomainDisplayInfo],
-                 domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
+                 domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
+                 mintingNavProvider: (MintDomainsNavigationController)->())
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
     
     static func == (lhs: Self, rhs: Self) -> Bool {

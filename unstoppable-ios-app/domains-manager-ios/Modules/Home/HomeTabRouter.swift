@@ -136,6 +136,8 @@ extension HomeTabRouter {
                 walletViewNavPath.append(HomeWalletNavigationDestination.minting(mode: mode,
                                                                                       mintedDomains: mintedDomains,
                                                                                       domainsMintedCallback: { result in
+                }, mintingNavProvider: { [weak self] mintingNav in
+                    self?.mintingNav = mintingNav
                 }))
             }
         }
@@ -153,7 +155,9 @@ extension HomeTabRouter {
     func showQRScanner() {
         Task {
             await popToRootAndWait()
-            walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner)
+            guard let wallet = appContext.walletsDataService.selectedWallet else { return }
+            
+            walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
         }
     }
 }

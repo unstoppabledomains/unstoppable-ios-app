@@ -57,7 +57,7 @@ struct HomeWebView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
-                viewFor(navigationDestination: destination)
+                HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
                     .onAppearanceChange($isOtherScreenPresented)
             }
@@ -185,11 +185,33 @@ private extension HomeWebView {
     }
     
     func handleAction(_ action: WebAction) {
-        
+        switch action {
+        case .addWallet:
+            return
+        case .claim:
+            tabRouter.runMintDomainsFlow(with: .default(email: user.email))
+        case .more:
+            return
+        }
     }
     
     func handleSubAction(_ action: WebSubAction) {
-        
+        switch action {
+        case .logOut:
+            askUserToLogOut()
+        }
+    }
+    
+    func askUserToLogOut() {
+        Task {
+            guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+            try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: topVC)
+            await topVC.dismissPullUpMenu()
+            try await appContext.authentificationService.verifyWith(uiHandler: topVC, purpose: .confirm)
+            
+            appContext.firebaseParkedDomainsAuthenticationService.logout()
+            appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+        }
     }
 }
 

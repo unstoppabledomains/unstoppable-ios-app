@@ -62,7 +62,7 @@ struct HomeWalletView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
-                viewFor(navigationDestination: destination)
+                HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
                     .onAppearanceChange($isOtherScreenPresented)
             }
@@ -258,7 +258,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink(value: HomeWalletNavigationDestination.qrScanner) {
+        NavigationLink(value: HomeWalletNavigationDestination.qrScanner(selectedWallet: viewModel.selectedWallet)) {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
@@ -266,30 +266,6 @@ private extension HomeWalletView {
         }
         .onButtonTap {
             
-        }
-    }
-    
-    @ViewBuilder
-    func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
-        switch navigationDestination {
-        case .settings:
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
-        case .qrScanner:
-            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
-                .navigationTitle(String.Constants.scanQRCodeTitle.localized())
-                .navigationBarTitleDisplayMode(.inline)
-        case .minting(let mode, let mintedDomains, let domainsMintedCallback):
-            MintDomainsNavigationControllerWrapper(mode: mode,
-                                                   mintedDomains: mintedDomains,
-                                                   domainsMintedCallback: domainsMintedCallback,
-                                                   mintingNavProvider: { mintingNav in
-                tabRouter.mintingNav = mintingNav
-            })
-            .toolbar(.hidden, for: .navigationBar)
-        case .purchaseDomains(let callback):
-            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
-                .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
