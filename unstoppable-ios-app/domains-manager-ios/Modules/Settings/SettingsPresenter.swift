@@ -153,9 +153,7 @@ private extension SettingsPresenter {
     }
     
     func showWalletsList() {
-        guard let nav = view?.cNavigationController else { return }
-        
-        UDRouter().showWalletsList(in: nav, initialAction: .none)
+        view?.openWalletsList(initialAction: .none)
     }
     
     func showLegalOptions() {

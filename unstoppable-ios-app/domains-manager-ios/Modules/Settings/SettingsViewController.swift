@@ -12,6 +12,7 @@ import MessageUI
 protocol SettingsViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: SettingsSnapshot, animated: Bool)
     func openFeedbackMailForm()
+    func openWalletsList(initialAction: WalletsListViewPresenter.InitialAction)
 }
 
 typealias SettingsDataSource = UICollectionViewDiffableDataSource<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>
@@ -24,6 +25,7 @@ final class SettingsViewController: BaseViewController {
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [SettingsCollectionViewCell.self] }
     var presenter: SettingsPresenterProtocol!
+    weak var router: HomeTabRouter?
     
     private var dataSource: SettingsDataSource!
     override var prefersLargeTitles: Bool { true }
@@ -60,6 +62,10 @@ extension SettingsViewController: SettingsViewProtocol {
         mail.setSubject("Unstoppable Domains App Feedback - iOS (\(UserDefaults.buildVersion))")
         
         self.present(mail, animated: true)
+    }
+    
+    func openWalletsList(initialAction: WalletsListViewPresenter.InitialAction) {
+        router?.walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
     }
 }
 
@@ -359,16 +365,18 @@ extension SettingsViewController {
 import SwiftUI
 struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
     
-    @StateObject var navTracker: NavigationTracker = NavigationTracker()
+    @StateObject private var navTracker: NavigationTracker = NavigationTracker()
+    @EnvironmentObject private var tabRouter: HomeTabRouter
 
-    func makeUIViewController(context: Context) -> UIViewController {
+    func makeUIViewController(context: Context) -> CNavigationController {
         let vc = UDRouter().buildSettingsModule(loginCallback: nil)
         let nav = EmptyRootCNavigationController(rootViewController: vc)
         navTracker.settingsNav = nav
         return nav
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: CNavigationController, context: Context) {
+        (uiViewController.viewControllers.first as? SettingsViewController)?.router = tabRouter
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             navTracker.setNavigationController(uiViewController.navigationController)
         }
@@ -380,6 +388,8 @@ struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
         var settingsNav: CNavigationController?
         
         func setNavigationController(_ navigationController: UINavigationController?) {
+            guard navigationController?.delegate !== self else { return }
+            
             originalDelegate = navigationController?.delegate
             navigationController?.delegate = self
         }
