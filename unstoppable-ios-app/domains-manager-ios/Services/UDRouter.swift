@@ -36,7 +36,6 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildWalletsListModule(initialAction: WalletsListViewPresenter.InitialAction) -> UIViewController {
         let vc = WalletsListViewController.nibInstance()
         let presenter = WalletsListViewPresenter(view: vc,
-                                                 dataAggregatorService: appContext.dataAggregatorService,
                                                  initialAction: initialAction,
                                                  networkReachabilityService: appContext.networkReachabilityService,
                                                  udWalletsService: appContext.udWalletsService)
@@ -864,7 +863,6 @@ private extension UDRouter {
     func buildSelectWalletToMintModule(selectedWallet: UDWallet?, walletSelectedCallback: @escaping WalletSelectedCallback) -> UIViewController {
         let vc = WalletsListViewController.nibInstance()
         let presenter = WalletListSelectionToMintDomainsPresenter(view: vc,
-                                                                  dataAggregatorService: appContext.dataAggregatorService,
                                                                   udWalletsService: appContext.udWalletsService,
                                                                   selectedWallet: selectedWallet,
                                                                   networkReachabilityService: appContext.networkReachabilityService,

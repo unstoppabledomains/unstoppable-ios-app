@@ -21,13 +21,11 @@ final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter 
     var walletSelectedCallback: WalletSelectedCallback?
     
     init(view: WalletsListViewProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
          selectedWallet: UDWallet?,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          walletSelectedCallback: @escaping WalletSelectedCallback) {
         super.init(view: view,
-                   dataAggregatorService: dataAggregatorService,
                    initialAction: .none,
                    networkReachabilityService: networkReachabilityService,
                    udWalletsService: udWalletsService)

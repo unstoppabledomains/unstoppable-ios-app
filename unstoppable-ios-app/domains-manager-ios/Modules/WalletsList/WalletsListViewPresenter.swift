@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 @MainActor
 protocol WalletsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
@@ -22,11 +23,12 @@ class WalletsListViewPresenter {
     
     private(set) weak var view: WalletsListViewProtocol?
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
-    private var walletsWithInfo = [WalletWithInfo]()
+    private var wallets = [WalletEntity]()
     private var initialAction: InitialAction = .none
+    private var cancellables: Set<AnyCancellable> = []
+    
     var shouldShowManageBackup: Bool { true }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var title: String { String.Constants.settingsWallets.localized() }
@@ -34,16 +36,17 @@ class WalletsListViewPresenter {
     var analyticsName: Analytics.ViewName { .walletsList }
 
     init(view: WalletsListViewProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          initialAction: InitialAction,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
-        self.dataAggregatorService = dataAggregatorService
         self.initialAction = initialAction
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         networkReachabilityService?.addListener(self)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
     }
     
     func didSelectWallet(_ wallet: UDWallet, walletInfo: WalletDisplayInfo) async {
@@ -58,7 +61,6 @@ class WalletsListViewPresenter {
 // MARK: - NewWalletsListViewPresenterProtocol
 extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     func viewDidLoad() {
-        dataAggregatorService.addListener(self)
         refreshWallets()
     }
     
@@ -79,35 +81,16 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             switch item {
             case .walletInfo(let walletInfo), .selectableWalletInfo(let walletInfo, _):
                 UDVibration.buttonTap.vibrate()
-                guard let wallet = walletsWithInfo.first(where: { $0.wallet.address == walletInfo.address }) else { return }
+                guard let wallet = wallets.first(where: { $0.address == walletInfo.address }) else { return }
                 
                 logButtonPressedAnalyticEvents(button: .walletInList, parameters: [.wallet : wallet.address])
-                await didSelectWallet(wallet.wallet, walletInfo: walletInfo)
+                await didSelectWallet(wallet.udWallet, walletInfo: walletInfo)
             case .manageICloudBackups:
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .manageICloudBackups)
                 await showManageBackupsAction()
             case .empty:
                 return
-            }
-        }
-    }
-}
-
-// MARK: - DataResolutionServiceListener
-extension WalletsListViewPresenter: DataAggregatorServiceListener {
-    nonisolated
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task { @MainActor in
-            if case .success(let resultType) = result {
-                switch resultType {
-                case .walletsListUpdated(let wallets):
-                    walletsWithInfo = wallets
-                    removeWalletsDuplicates()
-                    await showWallets()
-                case .domainsUpdated, .primaryDomainChanged, .domainsPFPUpdated:
-                    return
-                }
             }
         }
     }
@@ -123,6 +106,13 @@ extension WalletsListViewPresenter: NetworkReachabilityServiceListener {
 
 // MARK: - Actions
 private extension WalletsListViewPresenter {
+    
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        self.wallets = wallets
+        removeWalletsDuplicates()
+        showWallets()
+    }
+    
     func showAddWalletPullUp(isImportOnly: Bool) {
         guard let view = self.view else { return }
         
@@ -246,24 +236,22 @@ private extension WalletsListViewPresenter {
     }
     
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
-        Task {
-            switch result {
-            case .cancelled, .failedToAdd:
-                return
-            case .created(let wallet), .createdAndBackedUp(let wallet):
-                var walletName = String.Constants.vault.localized()
-                if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
-                    walletName = displayInfo.walletSourceName
-                }
-                appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-                await fetchWallets()
-                await showWallets()
-                if case .createdAndBackedUp(let wallet) = result,
-                   let walletInfo = walletsWithInfo.first(where: { $0.wallet.address == wallet.address })?.displayInfo {
-                    showDetailsOf(wallet: wallet, walletInfo: walletInfo)
-                }
-                AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+        switch result {
+        case .cancelled, .failedToAdd:
+            return
+        case .created(let wallet), .createdAndBackedUp(let wallet):
+            var walletName = String.Constants.vault.localized()
+            if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
+                walletName = displayInfo.walletSourceName
             }
+            appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+            fetchWallets()
+            showWallets()
+            if case .createdAndBackedUp(let wallet) = result,
+               let walletInfo = wallets.first(where: { $0.address == wallet.address })?.displayInfo {
+                showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+            }
+            AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
         }
     }
     
@@ -291,18 +279,16 @@ private extension WalletsListViewPresenter {
 // MARK: - Private functions
 private extension WalletsListViewPresenter {
     func refreshWallets() {
-        Task {
-            await fetchWallets()
-            await showWallets()
-        }
+        fetchWallets()
+        showWallets()
     }
     
-    func fetchWallets() async {
-        walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
+    func fetchWallets() {
+        wallets = appContext.walletsDataService.wallets
         removeWalletsDuplicates()
     }
     
-    func showWallets() async {
+    func showWallets() {
         var snapshot = WalletsListSnapshot()
         
         var isBackUpAvailable = false
@@ -311,7 +297,7 @@ private extension WalletsListViewPresenter {
            !udWalletsService.fetchCloudWalletClusters().isEmpty {
             isBackUpAvailable = true
         }
-        if walletsWithInfo.isEmpty {
+        if wallets.isEmpty {
             snapshot.appendSections([.empty(isBackUpAvailable: isBackUpAvailable)])
             snapshot.appendItems([.empty])
             if isBackUpAvailable {
@@ -320,11 +306,11 @@ private extension WalletsListViewPresenter {
             }
         } else {
             // Break wallets into groups
-            var managedWallets = [WalletWithInfo]()
-            var connectedWallets = [WalletWithInfo]()
+            var managedWallets = [WalletEntity]()
+            var connectedWallets = [WalletEntity]()
             
-            for wallet in walletsWithInfo {
-                if wallet.wallet.walletState == .externalLinked {
+            for wallet in wallets {
+                if wallet.udWallet.walletState == .externalLinked {
                     connectedWallets.append(wallet)
                 } else {
                     managedWallets.append(wallet)
@@ -365,14 +351,13 @@ private extension WalletsListViewPresenter {
     }
     
     func removeWalletsDuplicates() {
-        let allWalletsWithInfo = self.walletsWithInfo
+        let allWallets = self.wallets
         
         // Check for duplicates
-        var walletsWithInfo = [WalletWithInfo]()
-        for walletWithInfo in allWalletsWithInfo {
-            if let displayInfo = walletWithInfo.displayInfo,
-               walletsWithInfo.first(where: { $0.displayInfo == displayInfo }) == nil {
-                walletsWithInfo.append(walletWithInfo)
+        var wallets = [WalletEntity]()
+        for wallet in allWallets {
+            if wallets.first(where: { $0.address == wallet.address }) == nil {
+                wallets.append(wallet)
             } else {
                 let isCritical: Bool
                 #if DEBUG
@@ -380,10 +365,10 @@ private extension WalletsListViewPresenter {
                 #else
                 isCritical = false
                 #endif
-                Debugger.printFailure("Wallet duplicate detected \(walletWithInfo)", critical: isCritical)
+                Debugger.printFailure("Wallet duplicate detected \(wallet)", critical: isCritical)
             }
         }
-        self.walletsWithInfo = walletsWithInfo
+        self.wallets = wallets
     }
     
     func showWalletsNumberLimitReachedPullUp() {
