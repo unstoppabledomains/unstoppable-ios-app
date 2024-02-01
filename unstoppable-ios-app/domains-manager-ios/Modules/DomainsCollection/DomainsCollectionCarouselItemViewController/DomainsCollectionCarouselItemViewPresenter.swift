@@ -306,9 +306,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
            walletWithInfo.displayInfo?.address == domain.ownerWallet {
             vaultName = walletWithInfo.displayInfo?.walletSourceName
         } else {
-            let walletWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) })
-            self.walletWithInfo = walletWithInfo
-            vaultName = walletWithInfo?.displayInfo?.walletSourceName
+//            let walletWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) })
+//            self.walletWithInfo = walletWithInfo
+//            vaultName = walletWithInfo?.displayInfo?.walletSourceName
+            vaultName = nil
         }
         
         var actions: [CardAction] = [

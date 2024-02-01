@@ -163,9 +163,9 @@ private extension ExternalEventsService {
             }
             
             let domainToUse = domainDisplayInfoToUse.toDomainItem()
-            let walletWithInfo = try await findWalletWithInfo(for: domainDisplayInfoToUse)
-            let wallet = walletWithInfo.wallet
-            let target = (wallet, domainToUse)
+            let wallet = try await findWalletEntity(for: domainDisplayInfoToUse)
+            let udWallet = wallet.udWallet
+            let target = (udWallet, domainToUse)
             try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)
             
             return .showPullUpLoading
@@ -223,21 +223,6 @@ private extension ExternalEventsService {
             }
         }
         return searchedDomains
-    }
-    
-    func findWalletWithInfo(for domain: DomainDisplayInfo) async throws -> WalletWithInfo {
-        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
-
-        guard let walletWithInfo = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) }) else {
-            Debugger.printFailure("Failed to find wallet for external event", critical: true)
-            throw EventsHandlingError.cantFindWallet
-        }
-        guard walletWithInfo.displayInfo != nil else {
-            Debugger.printFailure("Wallet without display info", critical: true)
-            throw EventsHandlingError.walletWithoutDisplayInfo
-        }
-        
-        return walletWithInfo
     }
     
     func findWalletEntity(for domain: DomainDisplayInfo) async throws -> WalletEntity {

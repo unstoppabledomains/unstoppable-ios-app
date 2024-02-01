@@ -68,7 +68,7 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     static var connectedAppsToUse: [UnifiedConnectAppInfo] = []
     
-    func getConnectedApps() async -> [UnifiedConnectAppInfo] {
+    func getConnectedApps() -> [UnifiedConnectAppInfo] {
         WalletConnectServiceV2.connectedAppsToUse
     }
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {

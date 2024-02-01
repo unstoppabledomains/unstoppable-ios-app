@@ -155,6 +155,7 @@ private extension ChooseNewPrimaryDomainPresenter {
     }
     
     func showData() async {
+        /*
         walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
         let walletsWithRR = walletsWithInfo.filter({ $0.displayInfo?.reverseResolutionDomain != nil })
 
@@ -213,6 +214,7 @@ private extension ChooseNewPrimaryDomainPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: true)
+         */
     }
     
     func setConfirmButton() {

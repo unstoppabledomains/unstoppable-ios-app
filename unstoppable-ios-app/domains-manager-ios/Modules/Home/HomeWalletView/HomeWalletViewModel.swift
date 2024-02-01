@@ -62,7 +62,7 @@ extension HomeWalletView {
         func walletActionPressed(_ action: WalletAction) {
             switch action {
             case .receive:
-                return
+                router.runPurchaseFlow()
             case .profile:
                 guard let rrDomain = selectedWallet.rrDomain else { return }
                 

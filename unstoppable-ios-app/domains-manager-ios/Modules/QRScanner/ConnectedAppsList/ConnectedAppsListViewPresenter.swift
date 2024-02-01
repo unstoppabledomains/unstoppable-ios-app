@@ -16,16 +16,13 @@ protocol ConnectedAppsListViewPresenterProtocol: BasePresenterProtocol {
 final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: ConnectedAppsListViewProtocol?
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var scanCallback: EmptyCallback?
     
     init(view: ConnectedAppsListViewProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
-        self.dataAggregatorService = dataAggregatorService
         self.walletConnectServiceV2 = walletConnectServiceV2
     }
 }
@@ -33,11 +30,8 @@ final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
 // MARK: - ConnectedAppsListViewPresenterProtocol
 extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            await showConnectedAppsList()
-            appContext.wcRequestsHandlingService.addListener(self)
-            appContext.wcRequestsHandlingService.addListener(self)
-        }
+        showConnectedAppsList()
+        appContext.wcRequestsHandlingService.addListener(self)
     }
     
     func didSelectItem(_ item: ConnectedAppsListViewController.Item) { }
@@ -62,8 +56,8 @@ extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener
 
 // MARK: - Private functions
 private extension ConnectedAppsListViewPresenter {
-    func showConnectedAppsList() async {
-        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = await walletConnectServiceV2.getConnectedApps()
+    func showConnectedAppsList() {
+        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = walletConnectServiceV2.getConnectedApps()
         
         var snapshot = ConnectedAppsListSnapshot()
         guard !connectedAppsUnified.isEmpty else {
@@ -75,9 +69,9 @@ private extension ConnectedAppsListViewPresenter {
             return
         }
         
-        let walletsDisplayInfo = await dataAggregatorService.getWalletsWithInfo().compactMap({ $0.displayInfo })
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        
+        let wallets = appContext.walletsDataService.wallets
+        let walletsDisplayInfo = wallets.map({ $0.displayInfo })
+        let domains = wallets.combinedDomains()
         
         // Fill snapshot
         let appsGroupedByWallet = [String : [any UnifiedConnectAppInfoProtocol]].init(grouping: connectedAppsUnified,

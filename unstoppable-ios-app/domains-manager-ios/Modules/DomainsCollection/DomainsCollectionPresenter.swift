@@ -318,21 +318,21 @@ private extension DomainsCollectionPresenter {
     }
     
     func loadInitialData() async {
-        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
-        stateController.set(walletsWithInfo: walletsWithInfo)
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        setDomains(domains, shouldCheckPresentedDomains: true)
-        
-        if let _ = domains.first(where: { $0.isPrimary }) {
-            switch initialMintingState {
-            case .primaryDomainMinted:
-                view?.runConfettiAnimation()
-            case .default, .mintingPrimary:
-                return
-            }
-        } else {
-            await resolvePrimaryDomain(domains: domains)
-        }
+//        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
+//        stateController.set(walletsWithInfo: walletsWithInfo)
+//        let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//        setDomains(domains, shouldCheckPresentedDomains: true)
+//        
+//        if let _ = domains.first(where: { $0.isPrimary }) {
+//            switch initialMintingState {
+//            case .primaryDomainMinted:
+//                view?.runConfettiAnimation()
+//            case .default, .mintingPrimary:
+//                return
+//            }
+//        } else {
+//            await resolvePrimaryDomain(domains: domains)
+//        }
     }
     
     func isPrimaryDomainResolved(domains: [DomainDisplayInfo]) -> Bool {
@@ -842,24 +842,25 @@ private extension DomainsCollectionPresenter {
                     topView.openLink(.deprecatedCoinTLDPage)
                 }
             case .normal:
-                guard !domain.isMinting else {
-                    showDomainMintingInProgress(domain)
-                    return }
-                guard !domain.isTransferring else {
-                    showDomainTransferringInProgress(domain)
-                    return }
-                
-                let walletsWithInfo = stateController.walletsWithInfo
-                guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
-                      let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
-                
-                await router.showDomainProfile(domain, 
-                                               wallet: domainWallet,
-                                               walletInfo: walletInfo, 
-                                               preRequestedAction: nil,
-                                               dismissCallback: { [weak self] in
-                    self?.didCloseDomainProfile(domain)
-                })
+                return
+//                guard !domain.isMinting else {
+//                    showDomainMintingInProgress(domain)
+//                    return }
+//                guard !domain.isTransferring else {
+//                    showDomainTransferringInProgress(domain)
+//                    return }
+//                
+//                let walletsWithInfo = stateController.walletsWithInfo
+//                guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
+//                      let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
+//                
+//                await router.showDomainProfile(domain, 
+//                                               wallet: domainWallet,
+//                                               walletInfo: walletInfo, 
+//                                               preRequestedAction: nil,
+//                                               dismissCallback: { [weak self] in
+//                    self?.didCloseDomainProfile(domain)
+//                })
             case .parked:
                 let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
                                                                                   domain: domain,
@@ -875,16 +876,16 @@ private extension DomainsCollectionPresenter {
     }
     
     func runDefaultMintingFlow() {
-        Task {
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            guard !wallets.isEmpty else {
-                showNoWalletsToClaimDomainPullUp()
-                return
-            }
-            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
-            let email = userProfile?.email ?? User.instance.email
-            router.runMintDomainsFlow(with: .default(email: email))
-        }
+//        Task {
+//            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+//            guard !wallets.isEmpty else {
+//                showNoWalletsToClaimDomainPullUp()
+//                return
+//            }
+//            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
+//            let email = userProfile?.email ?? User.instance.email
+//            router.runMintDomainsFlow(with: .default(email: email))
+//        }
     }
     func showNoWalletsToClaimDomainPullUp() {
         Task { @MainActor in

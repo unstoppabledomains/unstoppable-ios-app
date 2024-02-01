@@ -126,20 +126,17 @@ private extension PurchaseDomainsNavigationController {
     
     func moveToCheckoutWith(domain: DomainToPurchase,
                             profileChanges: DomainProfilePendingChanges) {
-        Task { @MainActor in
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            guard let selectedWallet = wallets.first else {
-                askUserToAddWalletToPurchase(domain: domain,
-                                             profileChanges: profileChanges)
-                return
-            }
-            
-            purchaseData.domain = domain
-            moveToStep(.checkout(domain: domain,
-                                 profileChanges: profileChanges,
-                                 selectedWallet: selectedWallet,
-                                 wallets: wallets))
+        guard let selectedWallet = appContext.walletsDataService.selectedWallet else {
+            askUserToAddWalletToPurchase(domain: domain,
+                                         profileChanges: profileChanges)
+            return
         }
+        let wallets = appContext.walletsDataService.wallets
+        purchaseData.domain = domain
+        moveToStep(.checkout(domain: domain,
+                             profileChanges: profileChanges,
+                             selectedWallet: selectedWallet,
+                             wallets: wallets))
     }
     
     func askUserToAddWalletToPurchase(domain: DomainToPurchase,
@@ -233,7 +230,7 @@ extension PurchaseDomainsNavigationController {
     enum Step {
         case searchDomain
         case fillProfile(domain: DomainToPurchase)
-        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
+        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletEntity, wallets: [WalletEntity])
         case purchased
     }
     

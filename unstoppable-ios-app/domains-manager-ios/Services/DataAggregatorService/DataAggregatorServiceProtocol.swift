@@ -9,8 +9,8 @@ import Foundation
 
 protocol DataAggregatorServiceProtocol {
     func aggregateData(shouldRefreshPFP: Bool) async
-    func getWalletsWithInfo() async -> [WalletWithInfo]
-    func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
+//    func getWalletsWithInfo() async -> [WalletWithInfo]
+//    func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
 //    func getDomainItems() async -> [DomainItem]
     func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
 //    func getDomainWith(name: String) async throws -> DomainItem

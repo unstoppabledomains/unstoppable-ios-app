@@ -318,7 +318,6 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildConnectedAppsModule(scanCallback: EmptyCallback? = nil) -> UIViewController {
         let vc = ConnectedAppsListViewController.nibInstance()
         let presenter = ConnectedAppsListViewPresenter(view: vc,
-                                                       dataAggregatorService: appContext.dataAggregatorService,
                                                        walletConnectServiceV2: appContext.walletConnectServiceV2)
         presenter.scanCallback = scanCallback
         vc.presenter = presenter

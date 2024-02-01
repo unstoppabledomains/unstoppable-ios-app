@@ -38,7 +38,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
         self.dataAggregatorService = dataAggregatorService
         self.firebaseAuthenticationService = firebaseAuthenticationService
         appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
-            self?.showSettingsAsync()
+            self?.showSettings()
         }.store(in: &cancellables)
         firebaseAuthenticationService.addListener(self)
     }
@@ -50,12 +50,12 @@ extension SettingsPresenter: SettingsPresenterProtocol {
     func viewDidLoad() {
         Task {
             firebaseUser = try? await firebaseAuthenticationService.getUserProfile()
-            showSettingsAsync()
+            showSettings()
         }        
     }
     
     func viewWillAppear() {
-        showSettingsAsync()
+        showSettings()
     }
     
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem) {
@@ -96,45 +96,43 @@ extension SettingsPresenter: FirebaseAuthenticationServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         Task { @MainActor in
             self.firebaseUser = firebaseUser
-            showSettingsAsync()
+            showSettings()
         }
     }
 }
 
 // MARK: - Private methods
 private extension SettingsPresenter {
-    func showSettingsAsync() {
-        Task {
-            let wallets = await dataAggregatorService.getWalletsWithInfo()
-            var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
-            
-            snapshot.appendSections([.main(0)]) // empty header
-            
-            snapshot.appendSections([.main(1)])
-            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
-            if let primaryDomain = interactableDomains.first {
-                snapshot.appendItems([.homeScreen(primaryDomain.name)])
-            }
-            let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
-            snapshot.appendItems([.wallets("\(wallets.count)"),
-                                  .security(securityName),
-                                  .appearance(UserDefaults.appearanceStyle)])
-            #if TESTFLIGHT
-            snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
-            #endif
-            snapshot.appendItems([.websiteAccount(user: firebaseUser)])
-
-            
-            snapshot.appendSections([.main(2)])
-            if !interactableDomains.isEmpty {
-                snapshot.appendItems([.inviteFriends])
-            }
-            snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
-            
-            snapshot.appendSections([.main(3)])
-            
-            view?.applySnapshot(snapshot, animated: false)
+    func showSettings() {
+        let wallets = appContext.walletsDataService.wallets
+        var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
+        
+        snapshot.appendSections([.main(0)]) // empty header
+        
+        snapshot.appendSections([.main(1)])
+        let interactableDomains = wallets.combinedDomains().interactableItems()
+        if let primaryDomain = interactableDomains.first {
+            snapshot.appendItems([.homeScreen(primaryDomain.name)])
         }
+        let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
+        snapshot.appendItems([.wallets("\(wallets.count)"),
+                              .security(securityName),
+                              .appearance(UserDefaults.appearanceStyle)])
+#if TESTFLIGHT
+        snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
+#endif
+        snapshot.appendItems([.websiteAccount(user: firebaseUser)])
+        
+        
+        snapshot.appendSections([.main(2)])
+        if !interactableDomains.isEmpty {
+            snapshot.appendItems([.inviteFriends])
+        }
+        snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
+        
+        snapshot.appendSections([.main(3)])
+        
+        view?.applySnapshot(snapshot, animated: false)
     }
     
     func showWalletsList() {
@@ -190,7 +188,7 @@ private extension SettingsPresenter {
         appContext.pullUpViewService.showAppearanceStyleSelectionPullUp(in: view, selectedStyle: selectedStyle) { [weak self] newStyle in
             self?.logAnalytic(event: .didChangeTheme, parameters: [.theme: newStyle.analyticsName])
             SceneDelegate.shared?.setAppearanceStyle(newStyle)
-            self?.showSettingsAsync()
+            self?.showSettings()
         }
     }
     
