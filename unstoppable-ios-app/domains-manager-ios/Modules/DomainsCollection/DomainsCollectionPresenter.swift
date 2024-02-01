@@ -47,7 +47,7 @@ final class DomainsCollectionPresenter: ViewAnalyticsLogger {
 extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     @MainActor
     func viewDidLoad() {
-        dataAggregatorService.addListener(self)
+//        dataAggregatorService.addListener(self)
         appContext.externalEventsService.addListener(self)
         appContext.messagingService.addListener(self)
         view?.setSettingsButtonHidden(false)

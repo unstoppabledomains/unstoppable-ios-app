@@ -7,6 +7,7 @@
 
 import Foundation
 import UserNotifications
+import Combine
 
 final class LocalNotificationsService {
     
@@ -18,6 +19,7 @@ final class LocalNotificationsService {
     private let dateFormatter: DateFormatter
     private let dateTimeFormatter: DateFormatter
     private let parkingStatusNotificationHour = 19
+    private var cancellables: Set<AnyCancellable> = []
 
     private init() {
         let locale = Locale(identifier: "en_US_POSIX")
@@ -35,39 +37,24 @@ final class LocalNotificationsService {
 
 // MARK: - Open methods
 extension LocalNotificationsService {
-    
-}
-
-// MARK: - DataAggregatorServiceListener
-extension LocalNotificationsService: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        switch result {
-        case .success(let aggregationResult):
-            switch aggregationResult {
-            case .domainsUpdated(let domains):
-                checkNotificationsForParkedDomains(in: domains)
-            default:
-                return
-            }
-        case .failure:
-            return
-        }
+    func setWith(firebaseDomainsService: FirebaseDomainsServiceProtocol) {
+        firebaseDomainsService.parkedDomainsPublisher.receive(on: DispatchQueue.main).sink { [weak self] domains in
+            self?.checkNotificationsForParkedDomains(in: domains)
+        }.store(in: &cancellables)
     }
 }
 
 // MARK: - Private methods
 private extension LocalNotificationsService {
-    func checkNotificationsForParkedDomains(in domains: [DomainDisplayInfo]) {
+    func checkNotificationsForParkedDomains(in domains: [FirebaseDomainDisplayInfo]) {
         removeAllLocalNotifications()
      
-        var expiredDomains = [DomainDisplayInfo]()
+        var expiredDomains = [FirebaseDomainDisplayInfo]()
         var goingToExpireDomains = [GoingToExpireDomain]()
         
         for domain in domains {
-            guard case .parking(let status) = domain.state else {
-                continue
-            }
-            switch status {
+            
+            switch domain.parkingStatus {
             case .claimed, .freeParking:
                 continue
             case .parkingExpired:
@@ -86,7 +73,7 @@ private extension LocalNotificationsService {
         notificationCenter.removeAllPendingNotificationRequests()
     }
     
-    func createNotificationFor(expiredDomains: [DomainDisplayInfo]) {
+    func createNotificationFor(expiredDomains: [FirebaseDomainDisplayInfo]) {
         guard !expiredDomains.isEmpty else { return }
         
         Task {
@@ -155,8 +142,8 @@ private extension LocalNotificationsService {
         }
     }
     
-    func notificationDetailsFor(domain: DomainDisplayInfo,
-                             expiresDate: Date) -> GoingToExpireDomainNotificationDetails? {
+    func notificationDetailsFor(domain: FirebaseDomainDisplayInfo,
+                                expiresDate: Date) -> GoingToExpireDomainNotificationDetails? {
 
         var currentDate = Date()
         let hours = calendar.component(.hour, from: currentDate)
@@ -257,11 +244,11 @@ private extension LocalNotificationsService {
 // MARK: - Private methods
 private extension LocalNotificationsService {
     struct GoingToExpireDomain {
-        let domain: DomainDisplayInfo
+        let domain: FirebaseDomainDisplayInfo
         let expiresDate: Date
         var notificationDate: Date
         
-        init(_ domain: DomainDisplayInfo,
+        init(_ domain: FirebaseDomainDisplayInfo,
              expiresDate: Date) {
             self.domain = domain
             self.expiresDate = expiresDate
@@ -270,7 +257,7 @@ private extension LocalNotificationsService {
     }
     
     struct GoingToExpireDomainNotificationDetails {
-        let domain: DomainDisplayInfo
+        let domain: FirebaseDomainDisplayInfo
         let notificationDate: Date
         let notificationPeriod: DomainExpiresNotificationPeriod
         

@@ -155,10 +155,10 @@ final class GeneralAppContext: AppContextProtocol {
                                                                                        firebaseSigner: firebaseSigner)
         self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
         firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
-                                                        firebaseSigner: firebaseSigner)
+                                                              firebaseSigner: firebaseSigner)
         
         firebaseParkedDomainsAuthenticationService.addListener(coreAppCoordinator)
-        dataAggregatorService.addListener(LocalNotificationsService.shared)
+        LocalNotificationsService.shared.setWith(firebaseDomainsService: firebaseParkedDomainsService)
         
         // Purchase domains
         let firebasePurchaseDomainsRefreshTokenStorage = PurchaseDomainsFirebaseAuthTokenStorage()

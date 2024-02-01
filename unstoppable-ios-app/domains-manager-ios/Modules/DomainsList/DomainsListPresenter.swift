@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class DomainsListPresenter: DomainsListViewPresenter {
     
@@ -13,13 +14,16 @@ final class DomainsListPresenter: DomainsListViewPresenter {
     override var analyticsName: Analytics.ViewName { .domainsList }
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var title: String { String.Constants.domains.localized() + " · \(domains.count)" }
+    private var cancellables: Set<AnyCancellable> = []
 
     init(view: DomainsListViewProtocol,
          domains: [DomainDisplayInfo],
          walletWithInfo: WalletWithInfo) {
         self.walletWithInfo = walletWithInfo
         super.init(view: view, domains: domains)
-        appContext.dataAggregatorService.addListener(self)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
     }
     
     @MainActor
@@ -52,34 +56,21 @@ final class DomainsListPresenter: DomainsListViewPresenter {
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension DomainsListPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            await MainActor.run {
-                switch result {
-                case .success(let resultType):
-                    switch resultType {
-                    case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                        let isDomainsChanged = self.domains != domains
-                        if isDomainsChanged {
-                            let wallet = walletWithInfo.wallet
-                            self.domains = domains.filter({ $0.isOwned(by: [wallet])})
-                            showDomains()
-                            view?.refreshTitle()
-                        }
-                    case .primaryDomainChanged, .walletsListUpdated: return
-                    }
-                case .failure:
-                    return
-                }
-            }
-        }
-    }
-}
-
 // MARK: - Private methods
 private extension DomainsListPresenter {
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        guard let wallet = wallets.findWithAddress(walletWithInfo.address) else {
+            view?.dismiss(animated: true)
+            return
+        }
+        
+        if self.domains != wallet.domains {
+            self.domains = wallet.domains
+            showDomains()
+            view?.refreshTitle()
+        }
+    }
+    
     @MainActor
     func showDomains() {
         var snapshot = DomainsListSnapshot()

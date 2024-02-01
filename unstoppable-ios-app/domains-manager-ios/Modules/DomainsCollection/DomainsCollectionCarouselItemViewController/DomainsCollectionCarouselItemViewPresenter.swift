@@ -52,7 +52,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     @MainActor
     func viewDidLoad() {
         appContext.wcRequestsHandlingService.addListener(self)
-        appContext.dataAggregatorService.addListener(self)
+//        appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
         appContext.hotFeatureSuggestionsService.addListener(self)

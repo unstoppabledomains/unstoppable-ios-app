@@ -11,6 +11,16 @@ final class FirebaseDomainsService: BaseFirebaseInteractionService {
     
     private let storage = FirebaseDomainsStorage.instance
 
+    @Published private(set) var parkedDomains: [FirebaseDomainDisplayInfo] = []
+    var parkedDomainsPublisher: Published<[FirebaseDomainDisplayInfo]>.Publisher  { $parkedDomains }
+    
+    override init(firebaseAuthService: FirebaseAuthService,
+                  firebaseSigner: UDFirebaseSigner) {
+        super.init(firebaseAuthService: firebaseAuthService, firebaseSigner: firebaseSigner)
+        
+        setDomains(storage.getFirebaseDomains())
+    }
+    
 }
 
 // MARK: - FirebaseDomainsLoaderProtocol
@@ -32,7 +42,8 @@ extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
             isThereDomainsToLoad = domains.count >= perPage
         }
         storage.saveFirebaseDomains(result)
-
+        setDomains(result)
+        
         return result
     }
     
@@ -60,6 +71,10 @@ private extension FirebaseDomainsService {
                                                                                dateDecodingStrategy: .defaultDateDecodingStrategy())
         
         return response.domains
+    }
+    
+    func setDomains(_ domains: [FirebaseDomain]) {
+        self.parkedDomains = domains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
 }
 
