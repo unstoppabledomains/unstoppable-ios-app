@@ -45,7 +45,7 @@ final class ChatsListViewPresenter {
     private let messagingService: MessagingServiceProtocol
     private var presentOptions: ChatsList.PresentOptions
 
-    private var selectedWallet: WalletEntity
+    private var selectedWallet: WalletEntity?
     private var wallets: [WalletEntity] = []
     private var profileWalletPairsCache: [ChatProfileWalletPair] = []
     private var selectedProfileWalletPair: ChatProfileWalletPair?
@@ -63,7 +63,7 @@ final class ChatsListViewPresenter {
     
     init(view: ChatsListViewProtocol,
          presentOptions: ChatsList.PresentOptions,
-         selectedWallet: WalletEntity,
+         selectedWallet: WalletEntity?,
          messagingService: MessagingServiceProtocol) {
         self.view = view
         self.presentOptions = presentOptions
@@ -447,9 +447,9 @@ private extension ChatsListViewPresenter {
     func loadReadyForChattingWalletsOrClose() async throws -> [WalletEntity] {
         let wallets = messagingService.fetchWalletsAvailableForMessaging()
         guard !wallets.isEmpty else {
-            Debugger.printWarning("User got to chats screen without wallets with domains")
-            await awaitForUIReady()
-            view?.cNavigationController?.popViewController(animated: true)
+            updateNavigationUI()
+            view?.setState(.noWallet)
+            showData()
             throw ChatsListError.noWalletsForChatting
         }
         
@@ -464,11 +464,12 @@ private extension ChatsListViewPresenter {
     }
     
     func resolveInitialProfileWith(wallets: [WalletEntity]) async throws {
-        let wallet = selectedWallet
-        let profile = try? await messagingService.getUserMessagingProfile(for: wallet)
+        guard let selectedWallet else { return }
+        
+        let profile = try? await messagingService.getUserMessagingProfile(for: selectedWallet)
         let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-        let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet)
-        try await selectProfileWalletPair(.init(wallet: wallet,
+        let isUDBlueEnabled = await getUDBlueEnabledStatus(for: selectedWallet)
+        try await selectProfileWalletPair(.init(wallet: selectedWallet,
                                                 profile: profile,
                                                 isCommunitiesEnabled: isCommunitiesEnabled,
                                                 isUDBlueEnabled: isUDBlueEnabled))
@@ -561,15 +562,20 @@ private extension ChatsListViewPresenter {
     }
     
     func updateNavigationUI() {
-        guard let chatProfile = selectedProfileWalletPair else { return }
+        guard let chatProfile = selectedProfileWalletPair else {
+            if let user = appContext.firebaseParkedDomainsAuthenticationService.firebaseUser {
+                view?.setNavigationWith(navigationState: .webAccount(user))
+            }
+            return
+        }
         
         var isLoading = false
         if let profile = chatProfile.profile {
             isLoading = messagingService.isUpdatingUserData(profile)
         }
-        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
-                                wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
-                                isLoading: isLoading)
+        view?.setNavigationWith(navigationState: .wallet(.init(selectedWallet: chatProfile.wallet,
+                                                               wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
+                                                               isLoading: isLoading)))
     }
     
     func unreadMessagesCountFor(wallet: WalletEntity) -> Int? {
@@ -580,7 +586,9 @@ private extension ChatsListViewPresenter {
         Task {
             var snapshot = ChatsListSnapshot()
             
-            if selectedProfileWalletPair?.profile == nil {
+            if selectedWallet == nil {
+                fillSnapshotForUserWithoutWallet(&snapshot)
+            } else if selectedProfileWalletPair?.profile == nil {
                 fillSnapshotForUserWithoutProfile(&snapshot)
             } else {
                 if searchData.isSearchActive {
@@ -603,6 +611,11 @@ private extension ChatsListViewPresenter {
             
             view?.applySnapshot(snapshot, animated: true)
         }
+    }
+    
+    func fillSnapshotForUserWithoutWallet(_ snapshot: inout ChatsListSnapshot) {
+        snapshot.appendSections([.emptyState])
+        snapshot.appendItems([.emptyState(configuration: .noWalletAdded)])
     }
     
     func fillSnapshotForUserWithoutProfile(_ snapshot: inout ChatsListSnapshot) {

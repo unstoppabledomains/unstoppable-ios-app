@@ -11,7 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(selectedWallet: WalletEntity, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
+    func setNavigationWith(navigationState: ChatsListNavigationView.State)
     func stopSearching()
     func setActivityIndicator(active: Bool)
 }
@@ -51,7 +51,7 @@ final class ChatsListViewController: BaseViewController {
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
-        case .createProfile, .loading, .requestsList: return nil
+        case .createProfile, .loading, .requestsList, .noWallet: return nil
         }
     }
     private var searchBar: UDSearchBar = UDSearchBar()
@@ -127,12 +127,8 @@ extension ChatsListViewController: ChatsListViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
  
-    func setNavigationWith(selectedWallet: WalletEntity,
-                           wallets: [ChatsListNavigationView.WalletTitleInfo],
-                           isLoading: Bool) {
-        navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
-                                            wallets: wallets,
-                                            isLoading: isLoading))
+    func setNavigationWith(navigationState: ChatsListNavigationView.State) {
+        navView?.setWithState(navigationState)
     }
     
     func stopSearching() {
@@ -266,7 +262,7 @@ private extension ChatsListViewController {
     
     func checkIfCollectionScrollingEnabled() {
         switch state {
-        case .chatsList, .loading, .requestsList:
+        case .chatsList, .loading, .requestsList, .noWallet:
             collectionView.isScrollEnabled = true
         case .createProfile:
             let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
@@ -321,7 +317,7 @@ private extension ChatsListViewController {
                                                    action: #selector(newMessageButtonPressed))
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
-        case .createProfile:
+        case .createProfile, .noWallet:
             addNavViewIfNil()
             navView?.isHidden = false
             navigationItem.rightBarButtonItem = nil
@@ -366,7 +362,7 @@ private extension ChatsListViewController {
     
     func setupActionButton() {
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .noWallet:
             actionButtonContainerView.isHidden = true
         case .requestsList:
             switch mode {
@@ -402,7 +398,7 @@ private extension ChatsListViewController {
         switch state {
         case .chatsList, .loading:
             collectionView.contentInset.top = isSearchActive ? 58 : 110
-        case .createProfile, .requestsList:
+        case .createProfile, .requestsList, .noWallet:
             collectionView.contentInset.top = 68
         }
     }
@@ -472,6 +468,9 @@ private extension ChatsListViewController {
                     case .noCommunitiesProfile:
                         self?.logButtonPressedAnalyticEvents(button: .createCommunityProfile)
                         self?.presenter.createCommunitiesProfileButtonPressed()
+                    case .noWalletAdded:
+                        self?.logButtonPressedAnalyticEvents(button: .addWallet)
+                        self?.router?.runAddWalletFlow()
                     }
                 })
                 
@@ -681,6 +680,7 @@ extension ChatsListViewController {
     enum EmptyStateUIConfiguration: Hashable {
         case emptyData(dataType: DataType, isRequestsList: Bool)
         case noCommunitiesProfile
+        case noWalletAdded
     }
     
     struct UserInfoUIConfiguration: Hashable {
@@ -688,6 +688,7 @@ extension ChatsListViewController {
     }
     
     enum State {
+        case noWallet
         case createProfile
         case chatsList
         case loading

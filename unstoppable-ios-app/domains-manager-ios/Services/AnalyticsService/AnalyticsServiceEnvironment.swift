@@ -346,6 +346,8 @@ extension Analytics {
         
         case suggestionBanner
         case inspire, cancelInspire
+        
+        case addWallet
     }
 }
 

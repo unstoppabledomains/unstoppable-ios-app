@@ -160,6 +160,10 @@ extension HomeTabRouter {
             walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
         }
     }
+    
+    func runAddWalletFlow() {
+        
+    }
 }
 
 // MARK: - Pull up related

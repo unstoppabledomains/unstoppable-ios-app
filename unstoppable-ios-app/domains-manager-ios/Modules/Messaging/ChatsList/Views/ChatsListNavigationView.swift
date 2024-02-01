@@ -76,6 +76,28 @@ final class ChatsListNavigationView: UIView {
 
 // MARK: - Open methods
 extension ChatsListNavigationView {
+    func setWithState(_ state: State) {
+        switch state {
+        case .wallet(let configuration):
+            setWithConfiguration(configuration)
+        case .webAccount(let user):
+            setWithWebAccount(user)
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension ChatsListNavigationView {
+    func setWithWebAccount(_ user: FirebaseUser) {
+        setTitle(user.displayName)
+        chevron.isHidden = true
+        titleButton.isUserInteractionEnabled = false
+        self.isLoading = false
+        activityIndicator.isHidden = true
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
     func setWithConfiguration(_ configuration: Configuration) {
         setWithWallet(configuration.selectedWallet)
         setButtonWith(configuration: configuration)
@@ -87,17 +109,18 @@ extension ChatsListNavigationView {
         setNeedsLayout()
         layoutIfNeeded()
     }
-}
-
-// MARK: - Private methods
-private extension ChatsListNavigationView {
+    
     func setWithWallet(_ wallet: WalletEntity) {
         let title = getTitleFor(wallet: wallet)
+        setTitle(title)
+        Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
+    }
+    
+    func setTitle(_ title: String) {
         titleButton.setAttributedTextWith(text: title,
                                           font: titleFont,
                                           textColor: .foregroundDefault,
                                           lineBreakMode: .byTruncatingTail)
-        Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
     }
 
     func getTitleFor(wallet: WalletEntity) -> String {
@@ -207,6 +230,11 @@ extension ChatsListNavigationView {
         let wallets: [WalletTitleInfo]
         let isLoading: Bool
         
+    }
+    
+    enum State {
+        case wallet(Configuration)
+        case webAccount(FirebaseUser)
     }
 
     struct WalletTitleInfo {

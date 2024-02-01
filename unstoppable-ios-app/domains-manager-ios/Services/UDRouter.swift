@@ -630,7 +630,7 @@ class UDRouter: DomainProfileSignatureValidator {
         let walletsService = appContext.walletsDataService
         let presenter = ChatsListViewPresenter(view: vc,
                                                presentOptions: presentOptions, 
-                                               selectedWallet: walletsService.selectedWallet ?? walletsService.wallets.first!,
+                                               selectedWallet: walletsService.selectedWallet,
                                                messagingService: appContext.messagingService)
         vc.presenter = presenter
         return vc
