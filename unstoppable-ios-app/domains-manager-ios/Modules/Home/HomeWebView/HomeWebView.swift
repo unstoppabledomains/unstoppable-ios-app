@@ -14,14 +14,14 @@ struct HomeWebView: View {
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var isHeaderVisible: Bool = true
-    @State private var isOtherScreenPresented: Bool = false
     @State private var navigationState: NavigationStateManager?
     @State private var domains: [FirebaseDomainDisplayInfo] = []
     private let gridColumns = [
         GridItem(.flexible(), spacing: 32),
         GridItem(.flexible(), spacing: 32)
     ]
-    
+    private var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
+
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             List {
@@ -40,15 +40,15 @@ struct HomeWebView: View {
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible =
-                    !isOtherScreenPresented &&
+                    !isOtherScreenPushed &&
                     !isHeaderVisible &&
                     tabRouter.tabViewSelection == .wallets
                 }
             }
-            .onChange(of: isOtherScreenPresented) { newValue in
+            .onChange(of: tabRouter.walletViewNavPath) { newValue in
                 withAnimation {
-                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPresented
+                    navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
+                    tabRouter.isTabBarVisible = !isOtherScreenPushed
                 }
             }
             .listStyle(.plain)
@@ -59,7 +59,6 @@ struct HomeWebView: View {
             .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
                 HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
-                    .onAppearanceChange($isOtherScreenPresented)
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
@@ -174,14 +173,6 @@ private extension HomeWebView {
             }
         }
         .padding(.vertical)
-    }
-    
-    @ViewBuilder
-    func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
-        if case .settings = navigationDestination {
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
-        }
     }
     
     func didSelectDomain(_ firebaseDomain: FirebaseDomainDisplayInfo) {

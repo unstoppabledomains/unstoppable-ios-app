@@ -14,6 +14,7 @@ struct HomeWalletView: View {
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
     @State private var navigationState: NavigationStateManager?
+    var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -44,15 +45,15 @@ struct HomeWalletView: View {
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = 
-                    !isOtherScreenPresented &&
+                    !isOtherScreenPushed &&
                     !isHeaderVisible &&
                     tabRouter.tabViewSelection == .wallets
                 }
             }
-            .onChange(of: isOtherScreenPresented) { newValue in
+            .onChange(of: tabRouter.walletViewNavPath) { _ in
                 withAnimation {
-                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPresented
+                    navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
+                    tabRouter.isTabBarVisible = !isOtherScreenPushed
                 }
             }
             .animation(.default, value: viewModel.selectedWallet)
@@ -64,7 +65,6 @@ struct HomeWalletView: View {
             .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
                 HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
-                    .onAppearanceChange($isOtherScreenPresented)
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {

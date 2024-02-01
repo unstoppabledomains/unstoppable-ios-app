@@ -15,6 +15,7 @@ enum HomeWalletNavigationDestination: Hashable {
                  domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
                  mintingNavProvider: (MintDomainsNavigationController)->())
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
+    case walletsList(WalletsListViewPresenter.InitialAction)
     
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -25,6 +26,8 @@ enum HomeWalletNavigationDestination: Hashable {
         case (.minting, .minting):
             return true
         case (.purchaseDomains, .purchaseDomains):
+            return true
+        case (.walletsList, .walletsList):
             return true
         default:
             return false
@@ -41,7 +44,9 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine(2)
         case .purchaseDomains:
             hasher.combine(3)
+        case .walletsList:
+            hasher.combine(4)
         }
     }
     
-    }
+}

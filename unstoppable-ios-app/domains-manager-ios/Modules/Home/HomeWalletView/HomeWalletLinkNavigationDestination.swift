@@ -28,6 +28,9 @@ struct HomeWalletLinkNavigationDestination {
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
+        case .walletsList(let initialAction):
+            WalletsListViewControllerWrapper(initialAction: initialAction)
+                .toolbar(.hidden, for: .navigationBar)
         }
     }
     
