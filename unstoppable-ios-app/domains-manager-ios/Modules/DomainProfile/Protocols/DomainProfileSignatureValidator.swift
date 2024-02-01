@@ -73,7 +73,7 @@ extension DomainProfileSignatureValidator {
                     case .signMessage:
                         Task.detached {
                             do {
-                                let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+                                let domain = domain.toDomainItem()
                                 try await NetworkService().createAndStorePersistedProfileSignature(for: domain)
                                 await view.dismiss(animated: true, completion: nil)
                                 completion(true)

@@ -192,9 +192,8 @@ private extension DomainProfileBadgesSection {
     func refreshDomainBadges() {
         Task {
             stopRefreshBadgesTimer()
-            guard let controller,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: controller.generalData.domain.name) else { return }
-            
+            guard let controller else { return }
+            let domain = controller.generalData.domain.toDomainItem()
             updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
                 let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)

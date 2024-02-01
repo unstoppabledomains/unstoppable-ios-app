@@ -59,8 +59,8 @@ struct DomainProfileLinkValidator {
                                           wallet: wallet,
                                           action: preRequestedAction)
         } else if let userDomainDisplayInfo = userDomains.first,
-                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: userDomainDisplayInfo.name),
                   let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
+            let viewingDomain = userDomainDisplayInfo.toDomainItem()
             let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,
                                                                   name: domainName)
             return .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,

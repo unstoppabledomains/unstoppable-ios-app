@@ -953,8 +953,7 @@ private extension ChatViewPresenter {
             case .showUserDomainProfile(let domain, let wallet, let action):
                 await UDRouter().showDomainProfileScreen(in: view,
                                                          domain: domain,
-                                                         wallet: wallet.udWallet,
-                                                         walletInfo: wallet.displayInfo,
+                                                         wallet: wallet,
                                                          preRequestedAction: action,
                                                          dismissCallback: nil)
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):

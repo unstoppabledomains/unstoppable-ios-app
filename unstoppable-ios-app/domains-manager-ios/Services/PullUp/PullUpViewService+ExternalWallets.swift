@@ -98,7 +98,7 @@ extension PullUpViewService {
                                                                                                       swipeToDismissEnabled: false,
                                                                                                       in: pullUpView)
                         
-                        let domain = try await appContext.dataAggregatorService.getDomainWith(name: newDomain.name)
+                        let domain = newDomain.toDomainItem()
                         signTransactionView?.setDomainInfo(domain, isSelectable: true)
                     }
                 }

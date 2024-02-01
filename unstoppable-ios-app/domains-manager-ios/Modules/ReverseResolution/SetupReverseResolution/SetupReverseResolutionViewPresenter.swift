@@ -53,7 +53,7 @@ class SetupReverseResolutionViewPresenter {
     func setupReverseResolutionFor(domain: DomainDisplayInfo) async throws {
         guard let view = self.view else { return }
         
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+        let domain = domain.toDomainItem()
         try await udWalletsService.setReverseResolution(to: domain,
                                                         paymentConfirmationDelegate: view)
     }

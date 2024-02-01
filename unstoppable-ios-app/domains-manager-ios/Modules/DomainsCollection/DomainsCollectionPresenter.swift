@@ -523,7 +523,7 @@ private extension DomainsCollectionPresenter {
                                                                                   in: view)
         await view.dismissPullUpMenu()
         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-        let domain = try await dataAggregatorService.getDomainWith(name: domain.name)
+        let domain = domain.toDomainItem()
         do {
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: view)
@@ -537,23 +537,23 @@ private extension DomainsCollectionPresenter {
     }
     
     func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
-        guard let view else { return }
-        
-        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
-        if !profilesReadyToSubmit.isEmpty {
-            let domainItems = await dataAggregatorService.getDomainItems()
-            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
-                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
-                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
-                }
-                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
-                return nil
-            }
-            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
-                                                                            in: view)
-            await view.dismissPullUpMenu()
-            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
-        }
+//        guard let view else { return }
+//        
+//        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
+//        if !profilesReadyToSubmit.isEmpty {
+//            let domainItems = await dataAggregatorService.getDomainItems()
+//            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+//                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
+//                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
+//                }
+//                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+//                return nil
+//            }
+//            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+//                                                                            in: view)
+//            await view.dismissPullUpMenu()
+//            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+//        }
     }
     
     func getPurchasedProfilesReadyToSubmit(domains: [DomainDisplayInfo]) -> [DomainProfilePendingChanges] {
@@ -822,12 +822,11 @@ private extension DomainsCollectionPresenter {
         Task {
             switch domain.usageType {
             case .newNonInteractable:
-                guard let walletAddress = domain.ownerWallet,
-                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                guard let walletAddress = domain.ownerWallet else {
                     Debugger.printInfo("No profile for a non-interactible domain")
                     self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
                     return }
-                
+                let domain = domain.toDomainItem()
                 let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
                 router.showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain)
             case .zil:

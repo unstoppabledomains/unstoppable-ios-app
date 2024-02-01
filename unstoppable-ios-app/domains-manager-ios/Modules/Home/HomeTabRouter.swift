@@ -310,15 +310,12 @@ private extension HomeTabRouter {
     
     func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
                             by domain: DomainDisplayInfo) {
-        Task {
-            guard let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
-            
-            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
-                                                           name: btDomainInfo.domainName)
-            showPublicDomainProfile(of: publicDomainInfo,
-                                    viewingDomain: domain,
-                                    preRequestedAction: nil)
-        }
+        let domain = domain.toDomainItem()
+        let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                       name: btDomainInfo.domainName)
+        showPublicDomainProfile(of: publicDomainInfo,
+                                viewingDomain: domain,
+                                preRequestedAction: nil)
     }
 }
 

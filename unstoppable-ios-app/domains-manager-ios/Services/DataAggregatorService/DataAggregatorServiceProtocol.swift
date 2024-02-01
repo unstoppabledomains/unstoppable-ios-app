@@ -11,10 +11,10 @@ protocol DataAggregatorServiceProtocol {
     func aggregateData(shouldRefreshPFP: Bool) async
     func getWalletsWithInfo() async -> [WalletWithInfo]
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
-    func getDomainItems() async -> [DomainItem]
+//    func getDomainItems() async -> [DomainItem]
     func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
-    func getDomainWith(name: String) async throws -> DomainItem
-    func getDomainsWith(names: Set<String>) async -> [DomainItem]
+//    func getDomainWith(name: String) async throws -> DomainItem
+//    func getDomainsWith(names: Set<String>) async -> [DomainItem]
     func setDomainsOrder(using domains: [DomainDisplayInfo]) async
     func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo?
     func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool
@@ -30,8 +30,8 @@ protocol DataAggregatorServiceProtocol {
     func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
                             pendingProfiles: [DomainProfilePendingChanges]) async
     
-    func addListener(_ listener: DataAggregatorServiceListener)
-    func removeListener(_ listener: DataAggregatorServiceListener)
+//    func addListener(_ listener: DataAggregatorServiceListener)
+//    func removeListener(_ listener: DataAggregatorServiceListener)
     func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String?
 }
 

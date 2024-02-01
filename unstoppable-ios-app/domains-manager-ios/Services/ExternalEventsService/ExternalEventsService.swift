@@ -162,7 +162,7 @@ private extension ExternalEventsService {
                 throw EventsHandlingError.cantFindDomain
             }
             
-            let domainToUse = try await dataAggregatorService.getDomainWith(name: domainDisplayInfoToUse.name)
+            let domainToUse = domainDisplayInfoToUse.toDomainItem()
             let walletWithInfo = try await findWalletWithInfo(for: domainDisplayInfoToUse)
             let wallet = walletWithInfo.wallet
             let target = (wallet, domainToUse)

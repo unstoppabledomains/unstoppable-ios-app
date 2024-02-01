@@ -118,17 +118,12 @@ extension PublicProfileView {
         }
         
         func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            Task {
-                guard let domainItem = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
-                    error = PublicProfileError.failedToFindDomain
-                    return
-                }
-                viewingDomainImage = nil
-                isFollowing = nil
-                loadFollowingState()
-                viewingDomain = domainItem
-                loadViewingDomainData()
-            }
+            let domainItem = domain.toDomainItem()
+            viewingDomainImage = nil
+            isFollowing = nil
+            loadFollowingState()
+            viewingDomain = domainItem
+            loadViewingDomainData()
         }
         
         private func loadAllProfileData() {

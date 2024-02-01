@@ -203,12 +203,12 @@ private extension DomainProfileTopInfoSection {
             guard let controller,
                   let viewController = controller.viewController else { return }
             
-            guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain),
-                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: controller.generalData.domain.name) else {
+            guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain) else {
                 (viewController as BaseViewController).showAlertWith(error: PublicProfileView.PublicProfileError.failedToLoadFollowerInfo)
                 return
             }
             
+            let viewingDomain = controller.generalData.domain.toDomainItem()
             let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
                                                  name: follower.domain)
             await Task.sleep(seconds: 0.2)

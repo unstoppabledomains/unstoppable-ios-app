@@ -16,8 +16,9 @@ struct MessagingAPIServiceHelper {
     }
     
     static func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        let wallet = wallet.normalized
-        guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
+        let address = wallet.normalized
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(address),
+              let domain = wallet.domains.first?.toDomainItem() else {
             throw MessagingHelperError.noDomainForWallet
         }
         

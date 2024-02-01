@@ -296,11 +296,8 @@ private extension WalletDetailsViewPresenter {
     func showWalletDomains() {
         guard let view = self.view else { return }
         
-        let domains = wallet.domains
-        UDRouter().showWalletDomains(domains,
-                                     walletWithInfo: WalletWithInfo(wallet: wallet.udWallet,
-                                                                    displayInfo: wallet.displayInfo),
-                                           in: view)
+        UDRouter().showWalletDomains(wallet: wallet,
+                                     in: view)
     }
     
     func updateTitle() {
@@ -330,7 +327,7 @@ private extension WalletDetailsViewPresenter {
             guard let view = self.view else { return }
 
             do {
-                let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+                let domain = domainDisplayInfo.toDomainItem()
                 UDRouter().showReverseResolutionInProgressScreen(in: view,
                                                                  domain: domain,
                                                                  domainDisplayInfo: domainDisplayInfo,

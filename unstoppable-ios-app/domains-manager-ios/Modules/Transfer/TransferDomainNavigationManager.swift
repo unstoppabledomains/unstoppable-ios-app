@@ -63,7 +63,7 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
                 Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
                 return
             }
-            let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+            let domain = domainDisplayInfo.toDomainItem()
             try await appContext.domainTransferService.transferDomain(domain: domain,
                                                                       to: recipient.ownerAddress,
                                                                       configuration: configuration,

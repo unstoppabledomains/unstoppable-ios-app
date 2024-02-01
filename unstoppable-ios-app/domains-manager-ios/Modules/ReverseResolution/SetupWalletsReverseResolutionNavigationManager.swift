@@ -67,7 +67,7 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
                 Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
                 return
             }
-            let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+            let domain = domainDisplayInfo.toDomainItem()
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: topViewController)
             dismiss(result: .set(domain: domainDisplayInfo))

@@ -316,7 +316,7 @@ private extension DomainsCollectionRouter {
             self.navigationController?.updateStatusBar()
         }
           
-        return nil 
+        return nil
 //        func show(in viewToPresent: UIViewController) async -> CNavigationController? {
 //            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
 //        }
@@ -369,9 +369,8 @@ private extension DomainsCollectionRouter {
                             by domain: DomainDisplayInfo,
                             in topViewController: UIViewController?) {
         Task {
-            guard let topViewController,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
-            
+            guard let topViewController else { return }
+            let domain = domain.toDomainItem() 
             let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
                                                            name: btDomainInfo.domainName)
             showPublicDomainProfile(of: publicDomainInfo,

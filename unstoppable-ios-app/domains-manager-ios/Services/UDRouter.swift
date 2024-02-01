@@ -257,11 +257,9 @@ class UDRouter: DomainProfileSignatureValidator {
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
-    func showWalletDomains(_ domains: [DomainDisplayInfo],
-                           walletWithInfo: WalletWithInfo,
+    func showWalletDomains(wallet: WalletEntity,
                            in viewController: UIViewController) {
-        let vc = buildWalletDomainsListModule(domains: domains,
-                                              walletWithInfo: walletWithInfo)
+        let vc = buildWalletDomainsListModule(wallet: wallet)
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
@@ -884,12 +882,10 @@ private extension UDRouter {
         return vc
     }
     
-    func buildWalletDomainsListModule(domains: [DomainDisplayInfo],
-                                      walletWithInfo: WalletWithInfo) -> UIViewController {
+    func buildWalletDomainsListModule(wallet: WalletEntity) -> UIViewController {
         let vc = DomainsListViewController.nibInstance()
         let presenter = DomainsListPresenter(view: vc,
-                                             domains: domains,
-                                             walletWithInfo: walletWithInfo)
+                                             wallet: wallet)
         vc.presenter = presenter
         return vc
     }

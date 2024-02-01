@@ -192,8 +192,8 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
         }
     }
     
-    internal func getCurrentConnectionTarget() async -> (UDWallet, DomainItem)? {
-        guard let domain = try? await dataAggregatorService.getDomainWith(name: selectedWallet.rrDomain?.name ?? "") else { return nil }
+    internal func getCurrentConnectionTarget() -> (UDWallet, DomainItem)? {
+        guard let domain = selectedWallet.rrDomain?.toDomainItem() else { return nil }
         return (selectedWallet.udWallet, domain)
     }
     
@@ -245,7 +245,7 @@ private extension QRScannerViewPresenter {
     }
     
     func handleWCRequest(_ request: WCRequest) async throws {
-        guard let target = await getCurrentConnectionTarget() else {
+        guard let target = getCurrentConnectionTarget() else {
             throw WalletConnectRequestError.uiHandlerNotSet
         }
         

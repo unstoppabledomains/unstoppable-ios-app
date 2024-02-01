@@ -144,7 +144,7 @@ extension ViewPullUpCustomContentConfiguration {
                                                                                                               swipeToDismissEnabled: false,
                                                                                                               in: topViewController)
                                 
-                                let domain = try await appContext.dataAggregatorService.getDomainWith(name: newDomain.name)
+                                let domain = newDomain.toDomainItem()
                                 baseSignTransactionView?.setDomainInfo(domain, isSelectable: true)
                             }
                         }

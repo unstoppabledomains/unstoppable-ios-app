@@ -55,18 +55,15 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             view?.hideKeyboard()
             logAnalytic(event: .domainPressed, parameters: [.domainName : searchProfile.name,
                                                             .isUserDomain : String(true)])
-            Task {
-                guard let walletAddress = searchProfile.ownerAddress,
-                      let domainDisplayInfo = domains.first,
-                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name),
-                      let view else { return }
-                
-                let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
-                UDRouter().showPublicDomainProfile(of: domainPublicInfo, 
-                                                   viewingDomain: domain,
-                                                   preRequestedAction: nil,
-                                                   in: view)
-            }
+            guard let walletAddress = searchProfile.ownerAddress,
+                  let domainDisplayInfo = domains.first,
+                  let view else { return }
+            let domain = domainDisplayInfo.toDomainItem()
+            let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
+            UDRouter().showPublicDomainProfile(of: domainPublicInfo,
+                                               viewingDomain: domain,
+                                               preRequestedAction: nil,
+                                               in: view)
         }
     }
     
