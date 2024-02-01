@@ -315,37 +315,38 @@ private extension DomainsCollectionRouter {
         defer {
             self.navigationController?.updateStatusBar()
         }
-            
-        func show(in viewToPresent: UIViewController) async -> CNavigationController? {
-            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
-        }
-        
-        navigationController?.popToRootViewController(animated: false)
-
-        if let presentedViewController = viewController.presentedViewController {
-            presentedViewController.view.endEditing(true)
-            if let nav = presentedViewController as? EmptyRootCNavigationController,
-               let presentedProfileVC = nav.viewControllers.first as? DomainProfileViewController,
-               let presenter = presentedProfileVC.presenter as? DomainProfileViewPresenter {
-                presenter.replace(domain: domain,
-                                  wallet: wallet,
-                                  walletInfo: walletInfo)
-                nav.popToRootViewController(animated: true)
-                if presentedProfileVC.presentedViewController != nil {
-                    await presentedProfileVC.dismiss(animated: true)
-                }
-                return nav
-            } else {
-                if presentedViewController is UISearchController {
-                    return await show(in: presentedViewController)
-                } else {
-                    await presentedViewController.dismiss(animated: true)
-                    return await show(in: viewController)
-                }
-            }
-        } else {
-            return await show(in: viewController)
-        }
+          
+        return nil 
+//        func show(in viewToPresent: UIViewController) async -> CNavigationController? {
+//            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
+//        }
+//        
+//        navigationController?.popToRootViewController(animated: false)
+//
+//        if let presentedViewController = viewController.presentedViewController {
+//            presentedViewController.view.endEditing(true)
+//            if let nav = presentedViewController as? EmptyRootCNavigationController,
+//               let presentedProfileVC = nav.viewControllers.first as? DomainProfileViewController,
+//               let presenter = presentedProfileVC.presenter as? DomainProfileViewPresenter {
+//                presenter.replace(domain: domain,
+//                                  wallet: wallet,
+//                                  walletInfo: walletInfo)
+//                nav.popToRootViewController(animated: true)
+//                if presentedProfileVC.presentedViewController != nil {
+//                    await presentedProfileVC.dismiss(animated: true)
+//                }
+//                return nav
+//            } else {
+//                if presentedViewController is UISearchController {
+//                    return await show(in: presentedViewController)
+//                } else {
+//                    await presentedViewController.dismiss(animated: true)
+//                    return await show(in: viewController)
+//                }
+//            }
+//        } else {
+//            return await show(in: viewController)
+//        }
     }
     
     func awaitUIUpdated() async {

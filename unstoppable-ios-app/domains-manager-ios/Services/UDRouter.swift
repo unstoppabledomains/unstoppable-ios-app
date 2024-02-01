@@ -400,14 +400,12 @@ class UDRouter: DomainProfileSignatureValidator {
     @discardableResult
     func showDomainProfileScreen(in viewController: UIViewController,
                                  domain: DomainDisplayInfo,
-                                 wallet: UDWallet,
-                                 walletInfo: WalletDisplayInfo,
+                                 wallet: WalletEntity,
                                  preRequestedAction: PreRequestedProfileAction?,
                                  dismissCallback: EmptyCallback?) async -> CNavigationController? {
-        guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: walletInfo) else { return nil }
+        guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: wallet.displayInfo) else { return nil }
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
-                                          walletInfo: walletInfo,
                                           preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsCollection)
 
@@ -421,36 +419,28 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func pushDomainProfileScreen(in nav: CNavigationController,
                                  domain: DomainDisplayInfo,
-                                 wallet: UDWallet,
-                                 walletInfo: WalletDisplayInfo,
+                                 wallet: WalletEntity,
                                  preRequestedAction: PreRequestedProfileAction?) async {
-        guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: walletInfo) else { return }
+        guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: wallet.displayInfo) else { return }
 
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
-                                          walletInfo: walletInfo,
                                           preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsList)
         nav.pushViewController(vc, animated: true)
     }
     
     func buildDomainProfileModule(domain: DomainDisplayInfo,
-                                  wallet: UDWallet,
-                                  walletInfo: WalletDisplayInfo,
+                                  wallet: WalletEntity,
                                   preRequestedAction: PreRequestedProfileAction?,
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
-        let walletInfo = WalletDisplayInfo(wallet: wallet,
-                                           domainsCount: walletInfo.domainsCount,
-                                           udDomainsCount: walletInfo.udDomainsCount,
-                                           reverseResolutionDomain: walletInfo.reverseResolutionDomain) ?? walletInfo
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,
                                                    domain: domain,
                                                    wallet: wallet,
-                                                   walletInfo: walletInfo,
                                                    preRequestedAction: preRequestedAction,
                                                    sourceScreen: sourceScreen,
-                                                   dataAggregatorService: appContext.dataAggregatorService,
+                                                   walletsDataService: appContext.walletsDataService,
                                                    domainRecordsService: appContext.domainRecordsService,
                                                    domainTransactionsService: appContext.domainTransactionsService,
                                                    coinRecordsService: appContext.coinRecordsService,

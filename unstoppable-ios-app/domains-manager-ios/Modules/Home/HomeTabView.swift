@@ -59,8 +59,7 @@ struct HomeTabView: View {
         })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
-                                               wallet: presentationDetails.wallet.udWallet,
-                                               walletInfo: presentationDetails.wallet.displayInfo,
+                                               wallet: presentationDetails.wallet,
                                                preRequestedAction: presentationDetails.preRequestedProfileAction,
                                                sourceScreen: .domainsCollection,
                                                dismissCallback: presentationDetails.dismissCallback)
