@@ -419,11 +419,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     func didTapShowWalletDetailsButton() {
         Task { @MainActor in
             guard let navigation = view?.containerViewController?.cNavigationController,
-                  let walletWithInfo,
-                  let walletInfo = walletWithInfo.displayInfo else { return }
+                  let wallet = appContext.walletsDataService.wallets.findWithAddress(walletWithInfo?.address) else { return }
             
-            UDRouter().showWalletDetailsOf(wallet: walletWithInfo.wallet,
-                                           walletInfo: walletInfo,
+            UDRouter().showWalletDetailsOf(wallet: wallet,
                                            source: .domainsCollection,
                                            in: navigation)
         }

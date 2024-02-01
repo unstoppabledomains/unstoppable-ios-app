@@ -157,10 +157,10 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
             switch sourceScreen {
             case .domainsCollection:
                 await MainActor.run {
-                    guard let navigation = view?.cNavigationController else { return }
+                    guard let navigation = view?.cNavigationController,
+                          let wallet = appContext.walletsDataService.wallets.findWithAddress(dataHolder.wallet.address) else { return }
                     
-                    UDRouter().showWalletDetailsOf(wallet: dataHolder.wallet,
-                                                   walletInfo: dataHolder.walletInfo,
+                    UDRouter().showWalletDetailsOf(wallet: wallet,
                                                    source: .domainDetails,
                                                    in: navigation)
                     

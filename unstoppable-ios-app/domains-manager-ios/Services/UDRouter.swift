@@ -44,11 +44,10 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-    func showWalletDetailsOf(wallet: UDWallet,
-                             walletInfo: WalletDisplayInfo,
+    func showWalletDetailsOf(wallet: WalletEntity,
                              source: WalletDetailsSource,
                              in viewController: CNavigationController) {
-        let walletDetailsVC = buildWalletDetailsModuleFor(wallet: wallet, walletInfo: walletInfo, walletRemovedCallback: { [weak viewController] in
+        let walletDetailsVC = buildWalletDetailsModuleFor(wallet: wallet, walletRemovedCallback: { [weak viewController] in
             switch source {
             case .walletsList:
                 viewController?.popViewController(animated: true)
@@ -742,11 +741,10 @@ private extension UDRouter {
 
 // MARK: - Build methods
 private extension UDRouter {
-    func buildWalletDetailsModuleFor(wallet: UDWallet, walletInfo: WalletDisplayInfo, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
+    func buildWalletDetailsModuleFor(wallet: WalletEntity, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
         let vc = WalletDetailsViewController.nibInstance()
         let presenter = WalletDetailsViewPresenter(view: vc,
                                                    wallet: wallet,
-                                                   walletInfo: walletInfo,
                                                    dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,

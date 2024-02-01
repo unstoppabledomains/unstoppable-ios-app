@@ -72,12 +72,10 @@ extension WalletsDataService: UDWalletsServiceListener {
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
                 if let selectedWallet,
-                   let domainIndex = selectedWallet.domains.firstIndex(where: { $0.name == domainName }) {
-                    var domain = selectedWallet.domains[domainIndex]
+                   var domain = selectedWallet.domains.first(where: { $0.name == domainName }) {
                     domain.setState(.updatingRecords)
                     mutateWalletEntity(selectedWallet) { wallet in
-                        wallet.rrDomain = domain
-                        wallet.domains[domainIndex] = domain
+                        wallet.changeRRDomain(domain)
                     }
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
@@ -90,8 +88,8 @@ extension WalletsDataService: UDWalletsServiceListener {
     
     private func udWalletsUpdated() {
         ensureConsistencyWithUDWallets()
-        
-        if self.wallets.first(where: { $0.address == selectedWallet?.address }) == nil {
+        let updatedSelectedWallet = wallets.first(where: { $0.address == selectedWallet?.address })
+        if updatedSelectedWallet == nil {
             if self.wallets.isEmpty {
                 UserDefaults.selectedWalletAddress = nil
                 selectedWallet = nil
@@ -100,7 +98,9 @@ extension WalletsDataService: UDWalletsServiceListener {
             }
         } else if selectedWallet == nil,
                   let wallet = self.wallets.first {
-            setSelectedWallet(wallet)            
+            setSelectedWallet(wallet)
+        } else {
+            selectedWallet = updatedSelectedWallet
         }
     }
 }
@@ -158,8 +158,7 @@ private extension WalletsDataService {
                mintingDomainsNames.isEmpty,
                pendingPurchasedDomains.isEmpty {
                 mutateWalletEntity(wallet) { wallet in
-                    wallet.domains = []
-                    wallet.rrDomain = nil
+                    wallet.updateDomains([])
                 }
                 return
             }
@@ -275,8 +274,7 @@ private extension WalletsDataService {
         let finalDomainsWithDisplayInfo = domainsWithDisplayInfo + mintingDomainsWithDisplayInfoItems
         
         mutateWalletEntity(wallet) { wallet in
-            wallet.domains = finalDomainsWithDisplayInfo.map { $0.displayInfo }
-            wallet.rrDomain = finalDomainsWithDisplayInfo.first(where: { $0.displayInfo.isSetForRR })?.displayInfo
+            wallet.updateDomains(finalDomainsWithDisplayInfo.map({ $0.displayInfo }))
         }
         
         return finalDomainsWithDisplayInfo
@@ -457,28 +455,21 @@ private extension WalletsDataService {
         let udWallets = getUDWallets()
         
         /// Check removed wallets
-        let removedWallets = wallets.filter { walletEntity in
-            udWallets.first(where: { $0.address == walletEntity.address }) == nil
+        var wallets = wallets.filter { walletEntity in
+            udWallets.first(where: { $0.address == walletEntity.address }) != nil
         }
-        if !removedWallets.isEmpty {
-            wallets = wallets.filter { walletEntity in
-                removedWallets.first(where: { $0.address == walletEntity.address }) == nil
+        
+        /// Add or update wallets
+        for udWallet in udWallets {
+            if let i = wallets.firstIndex(where: { $0.address == udWallet.address }) {
+                wallets[i].udWalletUpdated(udWallet)
+            } else if let newWallet = createNewWalletEntityFor(udWallet: udWallet) {
+                wallets.append(newWallet)
             }
         }
         
-        /// Check missing wallets
-        let missingWallets = udWallets.filter { udWallet in
-            wallets.first(where: { $0.address == udWallet.address }) == nil
-        }
-        if !missingWallets.isEmpty {
-            let newWallets = missingWallets.compactMap { createNewWalletEntityFor(udWallet: $0) }
-            wallets.append(contentsOf: newWallets)
-        }
-        
-        let needToUpdateCache = !removedWallets.isEmpty || !missingWallets.isEmpty
-        if needToUpdateCache {
-            storage.cacheWallets(wallets)
-        }
+        storage.cacheWallets(wallets)
+        self.wallets = wallets
     }
     
     func createNewWalletEntityFor(udWallet: UDWallet) -> WalletEntity? {

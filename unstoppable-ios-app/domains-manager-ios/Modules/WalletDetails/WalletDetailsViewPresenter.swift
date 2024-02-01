@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 @MainActor
 protocol WalletDetailsViewPresenterProtocol: BasePresenterProtocol {
@@ -17,29 +18,31 @@ protocol WalletDetailsViewPresenterProtocol: BasePresenterProtocol {
 final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: WalletDetailsViewProtocol?
-    private var wallet: UDWallet
-    private var walletInfo: WalletDisplayInfo
+    private var wallet: WalletEntity
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
+    private var cancellables: Set<AnyCancellable> = []
+
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var walletRemovedCallback: EmptyCallback?
     
     init(view: WalletDetailsViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          dataAggregatorService: DataAggregatorServiceProtocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.wallet = wallet
-        self.walletInfo = walletInfo
         self.dataAggregatorService = dataAggregatorService
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
     }
 }
 
@@ -48,7 +51,6 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
     var walletAddress: String { wallet.address }
     
     func viewDidLoad() {
-        dataAggregatorService.addListener(self)
         networkReachabilityService?.addListener(self)
         showWalletDetails()
     }
@@ -82,19 +84,19 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
                         showBackupWalletScreenIfAvailable()
                     }
                 case .domains:
-                    await showWalletDomains()
+                    showWalletDomains()
                 case .reverseResolution(let state):
                     switch state {
                     case .notSet:
                         let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                                    for: wallet,
-                                                                                    walletInfo: walletInfo,
+                                                                                    for: wallet.udWallet,
+                                                                                    walletInfo: wallet.displayInfo,
                                                                                     mode: .chooseFirstDomain)
                         handleSetupReverseResolution(result: result)
                     case .setFor(let domain, _, _):
                         let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                                    for: wallet,
-                                                                                    walletInfo: walletInfo,
+                                                                                    for: wallet.udWallet,
+                                                                                    walletInfo: wallet.displayInfo,
                                                                                     mode: .changeDomain(currentDomain: domain))
                         handleSetupReverseResolution(result: result)
                     case .settingFor(let domainDisplayInfo):
@@ -104,27 +106,6 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
                     importExternalWallet()
                 }
             case .topInfo:
-                return
-            }
-        }
-    }
-}
-
-// MARK: - DataResolutionServiceListener
-extension WalletDetailsViewPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        if case .success(let resultType) = result {
-            switch resultType {
-            case .walletsListUpdated(let walletsWithInfo):
-                if let walletWithInfo = walletsWithInfo.first(where: { $0.wallet == wallet }),
-                   let walletInfo = walletWithInfo.displayInfo {
-                    self.wallet = walletWithInfo.wallet
-                    self.walletInfo = walletInfo
-                    showWalletDetails()
-                } else {
-                    Task { await MainActor.run { view?.cNavigationController?.popViewController(animated: true) } }
-                }
-            case .domainsUpdated, .primaryDomainChanged, .domainsPFPUpdated:
                 return
             }
         }
@@ -142,15 +123,23 @@ extension WalletDetailsViewPresenter: NetworkReachabilityServiceListener {
 
 // MARK: - Private functions
 private extension WalletDetailsViewPresenter {
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        if let wallet = wallets.first(where: { $0.address == wallet.address }) {
+            self.wallet = wallet
+            showWalletDetails()
+        } else {
+            Task { await MainActor.run { view?.cNavigationController?.popViewController(animated: true) } }
+        }
+    }
     func showWalletDetails() {
         Task {
             var snapshot = WalletDetailsSnapshot()
-            let isReverseResolutionChangeAllowed = await dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
+            let isReverseResolutionChangeAllowed = wallet.isReverseResolutionChangeAllowed()
             
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
-            let walletDomains = domains.filter({ $0.isOwned(by: [wallet] )})
+            let walletInfo = wallet.displayInfo
+            let walletDomains = wallet.domains
             let domainsAvailableForRR = walletDomains.availableForRRItems()
-            let rrDomain = await dataAggregatorService.reverseResolutionDomain(for: wallet)
+            let rrDomain = wallet.rrDomain
             var isRRSetupInProgress = false
             if let rrDomain = rrDomain {
                 isRRSetupInProgress = await dataAggregatorService.isReverseResolutionSetupInProgress(for: rrDomain.name)
@@ -177,7 +166,7 @@ private extension WalletDetailsViewPresenter {
                 snapshot.appendSections([.backUpAndRecovery])
                 snapshot.appendItems([.listItem(.backUp(state: walletInfo.backupState,
                                                         isOnline: isNetworkReachable))])
-                if let recoveryType = UDWallet.RecoveryType(walletType: wallet.type) {
+                if let recoveryType = UDWallet.RecoveryType(walletType: wallet.udWallet.type) {
                     snapshot.appendItems([.listItem(.recoveryPhrase(recoveryType: recoveryType))])
                 }
             }
@@ -229,7 +218,7 @@ private extension WalletDetailsViewPresenter {
         Task {
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                UDRouter().showRecoveryPhrase(of: wallet,
+                UDRouter().showRecoveryPhrase(of: wallet.udWallet,
                                               recoveryType: recoveryType,
                                               in: view,
                                               dismissCallback: {
@@ -243,7 +232,7 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
         Task {
             do {
-                try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: walletInfo)
+                try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: wallet.displayInfo)
                 await view.dismissPullUpMenu()
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
                 await removeWallet()
@@ -253,15 +242,15 @@ private extension WalletDetailsViewPresenter {
     }
     
     func indicateWalletRemoved() {
-        if wallet.walletState == .externalLinked {
+        if wallet.udWallet.walletState == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
         } else {
-            appContext.toastMessageService.showToast(.walletRemoved(walletName: walletInfo.walletSourceName), isSticky: false)
+            appContext.toastMessageService.showToast(.walletRemoved(walletName: wallet.displayInfo.walletSourceName), isSticky: false)
         }
     }
     
     func removeWallet() async {
-        udWalletsService.remove(wallet: wallet)
+        udWalletsService.remove(wallet: wallet.udWallet)
         // WC2 only
         await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
@@ -284,11 +273,9 @@ private extension WalletDetailsViewPresenter {
     func showRenameWalletScreen() {
         guard let view = self.view else { return }
 
-        UDRouter().showRenameWalletScreen(of: wallet,
-                                          walletDisplayInfo: walletInfo,
-                                          nameUpdatedCallback: { [weak self] updatedWallet in
-            self?.updateWalletData(updatedWallet)
-        },
+        UDRouter().showRenameWalletScreen(of: wallet.udWallet,
+                                          walletDisplayInfo: wallet.displayInfo,
+                                          nameUpdatedCallback: { _ in },
                                           in: view)
     }
     
@@ -300,34 +287,24 @@ private extension WalletDetailsViewPresenter {
             return
         }
         
-        UDRouter().showBackupWalletScreen(for: wallet, walletBackedUpCallback: { [weak self] updatedWallet in
-            self?.updateWalletData(updatedWallet)
+        UDRouter().showBackupWalletScreen(for: wallet.udWallet, walletBackedUpCallback: { [weak self] updatedWallet in
             self?.updateTitle()
             AppReviewService.shared.appReviewEventDidOccurs(event: .walletBackedUp)
         }, in: view)
     }
     
-    func updateWalletData(_ updatedWallet: UDWallet) {
-        Task {
-            guard let newWalletInfo = await dataAggregatorService.getWalletDisplayInfo(for: updatedWallet) else { return }
-            
-            self.wallet = updatedWallet
-            self.walletInfo = newWalletInfo
-            self.showWalletDetails()
-        }
-    }
-    
-    func showWalletDomains() async {
+    func showWalletDomains() {
         guard let view = self.view else { return }
         
-        let domains = await dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isOwned(by: wallet) })
+        let domains = wallet.domains
         UDRouter().showWalletDomains(domains,
-                                           walletWithInfo: WalletWithInfo(wallet: wallet, displayInfo: walletInfo),
+                                     walletWithInfo: WalletWithInfo(wallet: wallet.udWallet,
+                                                                    displayInfo: wallet.displayInfo),
                                            in: view)
     }
     
     func updateTitle() {
-        view?.set(title: walletInfo.displayName)
+        view?.set(title: wallet.displayName)
     }
     
     func handleSetupReverseResolution(result: SetupWalletsReverseResolutionNavigationManager.Result) {
@@ -343,18 +320,7 @@ private extension WalletDetailsViewPresenter {
         guard let view = self.view else { return }
         
         UDRouter().showImportExistingExternalWalletModule(in: view,
-                                                          externalWalletInfo: walletInfo) { [weak self] wallet in
-            self?.didImportExternalWallet(wallet)
-        }
-    }
-    
-    func didImportExternalWallet(_ wallet: UDWallet) {
-        self.view?.presentedViewController?.dismiss(animated: true)
-        self.wallet = wallet
-        self.walletInfo = WalletDisplayInfo(wallet: wallet,
-                                            domainsCount: self.walletInfo.domainsCount,
-                                            udDomainsCount: self.walletInfo.domainsCount) ?? self.walletInfo
-        showWalletDetails()
+                                                          externalWalletInfo: wallet.displayInfo) { _ in }
     }
     
     func showReverseResolutionInProgress(for domainDisplayInfo: DomainDisplayInfo) {
@@ -366,7 +332,7 @@ private extension WalletDetailsViewPresenter {
                 UDRouter().showReverseResolutionInProgressScreen(in: view,
                                                                  domain: domain,
                                                                  domainDisplayInfo: domainDisplayInfo,
-                                                                 walletInfo: walletInfo)
+                                                                 walletInfo: wallet.displayInfo)
             }
         }
     }

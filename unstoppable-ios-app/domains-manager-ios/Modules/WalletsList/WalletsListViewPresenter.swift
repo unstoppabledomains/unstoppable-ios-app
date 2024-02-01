@@ -199,10 +199,10 @@ private extension WalletsListViewPresenter {
     }
     
     func showDetailsOf(wallet: UDWallet, walletInfo: WalletDisplayInfo) {
-        guard let nav = view?.cNavigationController else { return }
+        guard let nav = view?.cNavigationController,
+            let wallet = wallets.first(where: { $0.address == wallet.address }) else { return }
         
         UDRouter().showWalletDetailsOf(wallet: wallet,
-                                       walletInfo: walletInfo,
                                        source: .walletsList,
                                        in: nav)
     }
