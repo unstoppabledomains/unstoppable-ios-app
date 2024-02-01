@@ -48,6 +48,15 @@ struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable, Identifiab
         self.order = order
         self.isSetForRR = isSetForRR
     }
+    
+    init(firebaseDomain: FirebaseDomainDisplayInfo,
+         order: Int? = nil) {
+        self.name = firebaseDomain.name
+        self.ownerWallet = firebaseDomain.ownerAddress
+        self.state = .parking(status: firebaseDomain.parkingStatus)
+        self.order = order
+        self.isSetForRR = false
+    }
 }
 
 // MARK: - Open methods

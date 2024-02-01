@@ -166,11 +166,11 @@ private extension HomeWebView {
             ForEach(domains, id: \.name) { domain in
                 Button {
                     UDVibration.buttonTap.vibrate()
-                    
+                    didSelectDomain(domain)
                 } label: {
                     HomeWebParkedDomainRowView(firebaseDomain: domain)
                 }
-//                .buttonStyle(.plain)
+                .buttonStyle(.plain)
             }
         }
         .padding(.vertical)
@@ -184,12 +184,29 @@ private extension HomeWebView {
         }
     }
     
+    func didSelectDomain(_ firebaseDomain: FirebaseDomainDisplayInfo) {
+        Task {
+            guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+
+            let domain = DomainDisplayInfo(firebaseDomain: firebaseDomain)
+            let action = await UDRouter().showDomainProfileParkedActionModule(in: topVC,
+                                                                              domain: domain,
+                                                                              imagesInfo: .init())
+            switch action {
+            case .claim:
+                runDefaultMintingFlow()
+            case .close:
+                return
+            }
+        }
+    }
+    
     func handleAction(_ action: WebAction) {
         switch action {
         case .addWallet:
             return
         case .claim:
-            tabRouter.runMintDomainsFlow(with: .default(email: user.email))
+            runDefaultMintingFlow()
         case .more:
             return
         }
@@ -212,6 +229,10 @@ private extension HomeWebView {
             appContext.firebaseParkedDomainsAuthenticationService.logout()
             appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
         }
+    }
+    
+    func runDefaultMintingFlow() {
+        tabRouter.runMintDomainsFlow(with: .default(email: user.email))
     }
 }
 
