@@ -11,6 +11,25 @@ protocol HomeViewSortingOption: Hashable, CaseIterable {
     var title: String { get }
 }
 
+protocol HomeWalletActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
+    associatedtype SubAction: HomeWalletSubActionItem
+    
+    var title: String { get }
+    var icon: Image { get }
+    var subActions: [SubAction] { get }
+}
+
+
+protocol HomeWalletSubActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
+    var title: String { get }
+    var icon: Image { get }
+    var isDestructive: Bool { get }
+}
+
+extension HomeWalletSubActionItem {
+    var isDestructive: Bool { false }
+}
+
 extension HomeWalletView {
     enum ContentType: String, CaseIterable {
         case tokens, collectibles, domains
@@ -27,7 +46,8 @@ extension HomeWalletView {
         }
     }
     
-    enum WalletAction: String, CaseIterable {
+    
+    enum WalletAction: String, CaseIterable, HomeWalletActionItem {
         case receive, profile, copy, more
         
         var title: String {
@@ -65,7 +85,9 @@ extension HomeWalletView {
             }
         }
     }
-    enum WalletSubAction: String, CaseIterable {
+    
+    enum WalletSubAction: String, CaseIterable, HomeWalletSubActionItem {
+        
         case connectedApps
         
         var title: String {

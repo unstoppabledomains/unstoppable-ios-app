@@ -18,8 +18,8 @@ struct HomeWebView: View {
     @State private var navigationState: NavigationStateManager?
     @State private var domains: [FirebaseDomainDisplayInfo] = []
     private let gridColumns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
+        GridItem(.flexible(), spacing: 32),
+        GridItem(.flexible(), spacing: 32)
     ]
     
     var body: some View {
@@ -29,9 +29,9 @@ struct HomeWebView: View {
                     .onAppearanceChange($isHeaderVisible)
                 headerInfoView()
                 HomeWalletActionsView(actionCallback: { action in
-//                    viewModel.walletActionPressed(action)
+                    handleAction(action)
                 }, subActionCallback: { subAction in
-//                    viewModel.walletSubActionPressed(subAction)
+                    handleSubAction(subAction)
                 })
                 domainsListView()
                     .listRowBackground(Color.clear)
@@ -94,6 +94,7 @@ private extension HomeWebView {
     }
     
     func setFiremaseDomains(_ firebaseDomains: [FirebaseDomain]) {
+        print(firebaseDomains.count)
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
 }
@@ -172,6 +173,7 @@ private extension HomeWebView {
 //                .buttonStyle(.plain)
             }
         }
+        .padding(.vertical)
     }
     
     @ViewBuilder
@@ -180,6 +182,72 @@ private extension HomeWebView {
             SettingsViewControllerWrapper()
                 .toolbar(.hidden, for: .navigationBar)
         }
+    }
+    
+    func handleAction(_ action: WebAction) {
+        
+    }
+    
+    func handleSubAction(_ action: WebSubAction) {
+        
+    }
+}
+
+// MARK: - Actions
+private extension HomeWebView {
+    enum WebAction: String, CaseIterable, HomeWalletActionItem  {
+        case addWallet, claim, more
+        
+        var title: String {
+            switch self {
+            case .addWallet:
+                return String.Constants.addWalletTitle.localized()
+            case .claim:
+                return String.Constants.claimDomain.localized()
+            case .more:
+                return String.Constants.more.localized()
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+            case .addWallet:
+                return .plusIconNav
+            case .claim:
+                return .wallet3Icon
+            case .more:
+                return .dotsIcon
+            }
+        }
+        
+        var subActions: [WebSubAction] {
+            switch self {
+            case .addWallet, .claim:
+                return []
+            case .more:
+                return [.logOut]
+            }
+        }
+    }
+    
+    enum WebSubAction: String, CaseIterable, HomeWalletSubActionItem  {
+        case logOut
+        
+        var title: String {
+            switch self {
+            case .logOut:
+                return String.Constants.logOut.localized()
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+            case .logOut:
+                return Image(systemName: "rectangle.portrait.and.arrow.right")
+            }
+        }
+        
+        var isDestructive: Bool { true }
     }
 }
 

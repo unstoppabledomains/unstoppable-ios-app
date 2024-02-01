@@ -16,9 +16,9 @@ struct HomeWebParkedDomainRowView: View {
             Image.domainSharePlaceholder
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
-            VStack {
+            VStack(alignment: .leading) {
                 cartLogoView()
-                    .offset(x: -6, y: -2)
+                    .offset(x: -2, y: -2)
                 Spacer()
                 VStack(alignment: .leading, spacing: 0) {
                     Text(firebaseDomain.name.getBelowTld() ?? "")

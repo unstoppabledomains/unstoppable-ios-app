@@ -122,7 +122,7 @@ extension MockEntitiesFabric {
                    parkingTrial: false,
                    domainId: 0,
                    blockchain: "MATIC",
-                   name: "oleg.x",
+                   name: "oleg_parked.x",
                    ownerAddress: "123"),
                 ///Parking trial
                 .init(claimStatus: "",
@@ -132,7 +132,7 @@ extension MockEntitiesFabric {
                       parkingTrial: true,
                       domainId: 0,
                       blockchain: "MATIC",
-                      name: "oleg.x",
+                      name: "oleg_on_trial.x",
                       ownerAddress: "123"),
                 ///Parking expired
                 .init(claimStatus: "",
@@ -142,7 +142,7 @@ extension MockEntitiesFabric {
                       parkingTrial: false,
                       domainId: 0,
                       blockchain: "MATIC",
-                      name: "oleg.x",
+                      name: "oleg_expired.x",
                       ownerAddress: "123")
             ]
             
