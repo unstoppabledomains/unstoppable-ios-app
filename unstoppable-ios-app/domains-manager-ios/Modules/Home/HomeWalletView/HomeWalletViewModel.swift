@@ -26,7 +26,7 @@ extension HomeWalletView {
         @Published var isSubdomainsVisible: Bool = false
         @Published var isNotMatchingTokensVisible: Bool = false
         
-        private var subscribers: Set<AnyCancellable> = []
+        private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
         
@@ -38,19 +38,25 @@ extension HomeWalletView {
             setSelectedWallet(selectedWallet)
             
             $selectedTokensSortingOption.sink { [weak self] sortOption in
-                self?.sortTokens(sortOption)
-            }.store(in: &subscribers)
+                withAnimation {
+                    self?.sortTokens(sortOption)
+                }
+            }.store(in: &cancellables)
             $selectedCollectiblesSortingOption.sink { [weak self] sortOption in
-                self?.sortCollectibles(sortOption)
-            }.store(in: &subscribers)
+                withAnimation {
+                    self?.sortCollectibles(sortOption)
+                }
+            }.store(in: &cancellables)
             $selectedDomainsSortingOption.sink { [weak self] sortOption in
-                self?.sortDomains(sortOption)
-            }.store(in: &subscribers)
+                withAnimation {
+                    self?.sortDomains(sortOption)
+                }
+            }.store(in: &cancellables)
             appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
                 if let selectedWallet {
                     self?.setSelectedWallet(selectedWallet)
                 }
-            }.store(in: &subscribers)
+            }.store(in: &cancellables)
         }
         
         func walletActionPressed(_ action: WalletAction) {
@@ -85,7 +91,6 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
         tokens = wallet.balance.map { HomeWalletView.TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
-        tokens.append(.createSkeletonEntity())
         domains = wallet.domains.filter({ !$0.isSubdomain })
         subdomains = wallet.domains.filter({ $0.isSubdomain })
         
@@ -133,9 +138,22 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     
     func sortCollectibles(_ sortOption: HomeWalletView.CollectiblesSortingOptions) {
         switch sortOption {
+        case .mostRecent:
+            nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
+                if lhs.lastSaleDate == nil && rhs.lastSaleDate == nil {
+                    return lhs.collectionName < rhs.collectionName /// Sort by name collections without sale date info
+                } else if let lhsDate = lhs.lastSaleDate,
+                          let rhsDate = rhs.lastSaleDate {
+                    return lhsDate > rhsDate
+                } else if lhs.lastSaleDate != nil {
+                    return true
+                } else {
+                    return false
+                }
+            })
         case .mostCollected:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
-                lhs.nfts.count > rhs.nfts.count
+                lhs.numberOfNFTs > rhs.numberOfNFTs
             })
         case .alphabetical:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
@@ -154,7 +172,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 lhs.name < rhs.name
             })
         case .salePrice:
-            domains = domains.shuffled()
+            domains = domains.sorted(by: { lhs, rhs in
+                lhs.name > rhs.name
+            })
         }
     }
     

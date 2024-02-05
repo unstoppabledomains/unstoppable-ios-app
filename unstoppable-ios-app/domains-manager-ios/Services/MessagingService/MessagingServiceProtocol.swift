@@ -19,8 +19,8 @@ protocol MessagingServiceProtocol {
     func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo?
     
     // User
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)

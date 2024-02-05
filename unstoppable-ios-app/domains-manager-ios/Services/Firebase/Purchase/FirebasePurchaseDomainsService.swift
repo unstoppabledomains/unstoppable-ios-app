@@ -395,7 +395,7 @@ private extension FirebasePurchaseDomainsService {
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)
-        let data = try await makeFirebaseAPIDataRequest(request)
+        try await makeFirebaseAPIDataRequest(request)
     }
     
     func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {

@@ -37,26 +37,26 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     var serviceIdentifier: MessagingServiceIdentifier { .push }
     
     // User profile
-    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
-        let wallet = try await domain.getAddress()
+    func getUserFor(wallet: WalletEntity) async throws -> MessagingChatUserProfile {
+        let walletAddress = wallet.ethFullAddress
         let env = getCurrentPushEnvironment()
         
-        guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
+        guard let pushUser = try await PushUser.get(account: walletAddress, env: env) else {
             throw PushMessagingAPIServiceError.failedToGetPushUser
         }
         
         let userProfile = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
-        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, wallet: wallet)
         return userProfile
     }
     
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
+    func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile {
         let env = getCurrentPushEnvironment()
         let pushUser = try await PushUser.create(options: .init(env: env,
-                                                                signer: domain,
+                                                                signer: wallet,
                                                                 version: .PGP_V3,
                                                                 progressHook: nil))
-        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, wallet: wallet)
         let chatUser = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
         
         return chatUser
@@ -357,8 +357,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws {
-        let env = getCurrentPushEnvironment()
-        
         switch chat.displayInfo.type {
         case .private(let details):
             let otherUserAddress = details.otherUser.wallet
@@ -372,8 +370,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                  in groupChat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws {
-        let env = getCurrentPushEnvironment()
-
         switch groupChat.displayInfo.type {
         case .private:
             return
@@ -634,14 +630,14 @@ private extension PushMessagingAPIService {
         return pushUser
     }
     
-    func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, domain: DomainItem) async throws {
-        let wallet = try await domain.getAddress()
-        guard KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) == nil else { return } // Already saved
+    func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, wallet: WalletEntity) async throws {
+        let walletAddress = wallet.ethFullAddress
+        guard KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: walletAddress) == nil else { return } // Already saved
         
         let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: pushUser.encryptedPrivateKey,
-                                                             signer: domain)
+                                                             signer: wallet)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey,
-                                                   forIdentifier: wallet)
+                                                   forIdentifier: walletAddress)
     }
     
     func getPGPPrivateKeyFor(user: MessagingChatUserProfile) async throws -> String {
@@ -762,17 +758,17 @@ extension PushMessagingAPIService {
     }
 }
 
-extension DomainItem: Push.Signer, Push.TypedSigner {
+extension WalletEntity: Push.Signer, Push.TypedSigner {
     func getEip191Signature(message: String) async throws -> String {
-        try await self.personalSign(message: message)
+        try await udWallet.getPersonalSignature(messageString: message)
     }
     
     func getEip712Signature(message: String) async throws -> String {
-        try await self.typedDataSign(message: message)
+        try await udWallet.getSignTypedData(dataString: message)
     }
     
     func getAddress() async throws -> String {
-        try getETHAddressThrowing()
+        ethFullAddress
     }
 }
 

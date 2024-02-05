@@ -20,9 +20,8 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let collectionLink: URL?
     let mint: String
     let traits: [Trait]
-    let floorPrice: String?
-    let lastSalePrice: String?
-    let lastSaleDate: Date?
+    var floorPriceDetails: FloorPriceDetails?
+    var lastSaleDetails: SaleDetails?
     var chain: NFTModelChain?
     var address: String?
     
@@ -35,7 +34,13 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         }
         return false
     }
-    
+    var lastSalePrice: String? {
+        guard let lastSaleDetails else { return nil }
+        
+        return "\(lastSaleDetails.valueNative) \(lastSaleDetails.symbol)"
+    }
+    var lastSaleDate: Date? { lastSaleDetails?.date }
+
     var displayName: String { name ?? "-" }
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
    
@@ -44,6 +49,18 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
         
         return await appContext.imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil),
                                                               downsampleDescription: .mid)
+    }
+    
+    struct SaleDetails: Codable, Hashable {
+        let date: Date
+        let symbol: String
+        let valueUsd: Double
+        let valueNative: Double
+    }
+    
+    struct FloorPriceDetails: Codable, Hashable {
+        let value: Double
+        let currency: String
     }
 }
 
@@ -62,9 +79,20 @@ extension NFTDisplayInfo {
         self.address = nftModel.address
         self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
         self.collectionLink = URL(string: nftModel.collectionLink ?? "")
-        self.lastSalePrice = nftModel.lastSalePrice
-        self.lastSaleDate = nftModel.lastSaleDate
-        self.floorPrice = nftModel.floorPriceValue
+        if let lastSaleDetails = nftModel.lastSaleTransaction {
+            let payment = lastSaleDetails.payment!
+            self.lastSaleDetails = SaleDetails(date: lastSaleDetails.date!,
+                                               symbol: payment.symbol!, valueUsd: payment.valueUsd!, valueNative: payment.valueNative!)
+        } else {
+            self.lastSaleDetails = nil
+        }
+        if let floorPrice = nftModel.floorPrice,
+           let currency = floorPrice.currency,
+           let value = floorPrice.value {
+            self.floorPriceDetails = FloorPriceDetails(value: value, currency: currency)
+        } else {
+            self.floorPriceDetails = nil
+        }
     }
 }
 

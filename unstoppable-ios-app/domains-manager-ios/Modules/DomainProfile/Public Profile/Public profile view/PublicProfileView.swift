@@ -236,6 +236,7 @@ private extension PublicProfileView {
             .background(.white.opacity(isFollowing ? 0.16 : 1.0))
             .clipShape(Capsule())
         }
+        .onButtonTap()
     }
     
     // Profile info

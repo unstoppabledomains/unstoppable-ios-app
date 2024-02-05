@@ -21,7 +21,7 @@ struct PushServiceHelper {
         }
         
         let userMetadata: PushEnvironment.UserProfileServiceMetadata = try MessagingAPIServiceHelper.decodeServiceMetadata(from: user.serviceMetadata)
-        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet)
+        let domain = try MessagingAPIServiceHelper.getWalletEntity(for: wallet)
         let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: userMetadata.encryptedPrivateKey, signer: domain)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
         return pgpPrivateKey

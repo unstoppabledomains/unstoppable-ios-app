@@ -55,7 +55,7 @@ struct HomeWalletView: View {
                     tabRouter.isTabBarVisible = !isOtherScreenPresented
                 }
             }
-            .animation(.default, value: UUID())
+            .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
             .clearListBackground()
             .background(Color.backgroundDefault)
@@ -167,6 +167,8 @@ private extension HomeWalletView {
     @ViewBuilder
     func tokensContentView() -> some View {
         tokensListView()
+        HomeWalletMoreTokensView()
+            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         notMatchingTokensListView()
     }
     
@@ -177,13 +179,7 @@ private extension HomeWalletView {
                 Button {
                   
                 } label: {
-                    ZStack {
-                        HomeWalletTokenRowView(token: token)
-                        if token.isSkeleton {
-                            HomeWalletMoreTokensView()
-                                .offset(y: 10)
-                        }
-                    }
+                    HomeWalletTokenRowView(token: token)
                 }
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }
@@ -268,6 +264,9 @@ private extension HomeWalletView {
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
         }
+        .onButtonTap {
+            
+        }
     }
     
     @ViewBuilder
@@ -277,6 +276,9 @@ private extension HomeWalletView {
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)
+        }
+        .onButtonTap {
+            
         }
     }
     

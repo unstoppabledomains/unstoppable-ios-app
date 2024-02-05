@@ -230,6 +230,8 @@
 		C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61002E92940936F00462983 /* UIGestureRecognizer.swift */; };
 		C6102FC02B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */; };
 		C6102FC12B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */; };
+		C6102FC32B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */; };
+		C6102FC42B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */; };
 		C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */; };
 		C6109E2F28E5AB310027D5D8 /* AuthentificationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2528E5AB310027D5D8 /* AuthentificationServiceProtocol.swift */; };
 		C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2628E5AB310027D5D8 /* AuthentificationService.swift */; };
@@ -2284,7 +2286,7 @@
 		C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */; };
 		C6E459072925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */; };
 		C6E69F8D288A93D3000A8346 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69F8C288A93D3000A8346 /* NotificationService.swift */; };
-		C6E69F91288A93D3000A8346 /* NotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C6E69F91288A93D3000A8346 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30472D8B2672435200B0D7A7 /* Debugger.swift */; };
 		C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = C6E69F98288AB6DC000A8346 /* Bugsnag */; };
 		C6E69FA1288AB813000A8346 /* UIImage+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */; };
@@ -2384,15 +2386,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C6E69F92288A93D3000A8346 /* Embed App Extensions */ = {
+		C6E69F92288A93D3000A8346 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C6E69F91288A93D3000A8346 /* NotificationServiceExtension.appex in Embed App Extensions */,
+				C6E69F91288A93D3000A8346 /* NotificationServiceExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -2625,6 +2627,7 @@
 		C610029F293E075300462983 /* DomainProfileDataToClipboardCopier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileDataToClipboardCopier.swift; sourceTree = "<group>"; };
 		C61002E92940936F00462983 /* UIGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizer.swift; sourceTree = "<group>"; };
 		C6102FBF2B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletExpandableSectionHeaderView.swift; sourceTree = "<group>"; };
+		C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnButtonTapModifier.swift; sourceTree = "<group>"; };
 		C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAuthentificationService.swift; sourceTree = "<group>"; };
 		C6109E2528E5AB310027D5D8 /* AuthentificationServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationServiceProtocol.swift; sourceTree = "<group>"; };
 		C6109E2628E5AB310027D5D8 /* AuthentificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationService.swift; sourceTree = "<group>"; };
@@ -6725,6 +6728,7 @@
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
 				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C617FDB22B5919CC00B93433 /* OnAppearanceChange.swift */,
+				C6102FC22B6A12010098AF75 /* OnButtonTapModifier.swift */,
 				C6289A462AAB06F9002C2DEC /* SquareFrame.swift */,
 				C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */,
 				C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */,
@@ -8073,7 +8077,7 @@
 				306486792527253700388026 /* Sources */,
 				3064867A2527253700388026 /* Frameworks */,
 				3064867B2527253700388026 /* Resources */,
-				C6E69F92288A93D3000A8346 /* Embed App Extensions */,
+				C6E69F92288A93D3000A8346 /* Embed Foundation Extensions */,
 				29D745AB2A9E2459007E1290 /* ShellScript */,
 			);
 			buildRules = (
@@ -8194,11 +8198,12 @@
 		306486752527253700388026 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				KnownAssetTags = (
 					ExcludeFromProduction,
 				);
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					3064867C2527253700388026 = {
 						CreatedOnToolsVersion = 12.0;
@@ -8963,7 +8968,6 @@
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DC928DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
 				296BB61F2A309DD90068EEEC /* Encrypting.swift in Sources */,
-				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C6526DED29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D6E4ED2817CA5C008C66BB /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
 				C673BA242A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */,
@@ -9499,6 +9503,7 @@
 				C60982512823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */,
+				C6102FC32B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */,
 				C63095D42B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift in Sources */,
 				C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
@@ -10597,6 +10602,7 @@
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,
 				C6D6467B2B1ED12100D724AC /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C6C8F8922B21829000A9834D /* AppearanceSettingsCell.swift in Sources */,
+				C6102FC42B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */,
 				C6D646872B1ED12D00D724AC /* DomainProfileBadgesSection.swift in Sources */,
 				C6C8F9532B21858200A9834D /* PreviewValet.swift in Sources */,
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,

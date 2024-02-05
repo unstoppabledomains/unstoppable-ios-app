@@ -99,10 +99,12 @@ extension HomeWalletView {
     }
     
     enum CollectiblesSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
-        case mostCollected, alphabetical
+        case mostRecent, mostCollected, alphabetical
         
         var title: String {
             switch self {
+            case .mostRecent:
+                return "Most Recent"
             case .mostCollected:
                 return "Most collected"
             case .alphabetical:
@@ -237,7 +239,23 @@ extension HomeWalletView {
         var id: String { collectionName }
 
         let collectionName: String
-        var nfts: [NFTDisplayInfo]
+        let nfts: [NFTDisplayInfo]
+        let numberOfNFTs: Int
+        let chainSymbol: String
+        let nftsNativeValue: Double
+        let nftsUsdValue: Double
+        let lastSaleDate: Date?
+        
+        init(collectionName: String, nfts: [NFTDisplayInfo]) {
+            self.collectionName = collectionName
+            self.nfts = nfts
+            self.numberOfNFTs = nfts.count 
+            chainSymbol = nfts.first?.chain?.rawValue ?? ""
+            let saleDetails = nfts.compactMap({ $0.lastSaleDetails })
+            nftsNativeValue = saleDetails.reduce(0.0, { $0 + $1.valueNative })
+            nftsUsdValue = saleDetails.reduce(0.0, { $0 + $1.valueUsd })
+            lastSaleDate = saleDetails.sorted(by: { $0.date > $1.date }).first?.date
+        }
         
         static func mock() -> [NFTsCollectionDescription] {
             let names = ["Azuki", "Mutant Ape Yacht Club", "DeGods", "Grunchy Tigers"]

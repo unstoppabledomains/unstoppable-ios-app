@@ -106,10 +106,10 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     subscribed: Bool,
                     by user: MessagingChatUserProfile) async throws {
         
-        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
+        let wallet = try MessagingAPIServiceHelper.getWalletEntity(for: user.normalizedWallet)
         let env = PushServiceHelper.getCurrentPushEnvironment()
         
-        let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
+        let subscribeOptions = Push.PushChannel.SubscribeOption(signer: wallet,
                                                                 channelAddress: channel.channel,
                                                                 env: env)
         if subscribed {

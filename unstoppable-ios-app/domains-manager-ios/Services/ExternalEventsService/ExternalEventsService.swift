@@ -193,9 +193,10 @@ private extension ExternalEventsService {
     }
     
     private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
-        let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
-        let profile = try await appContext.messagingService.getUserMessagingProfile(for: domainDisplayInfo)
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.isOwningDomain(domainName) }) else {
+            throw EventsHandlingError.walletNotFound
+        }
+        let profile = try await appContext.messagingService.getUserMessagingProfile(for: wallet)
         return profile
     }
     
@@ -253,6 +254,7 @@ private extension ExternalEventsService {
 extension ExternalEventsService {
     enum EventsHandlingError: String, LocalizedError {
         case cantFindDomain
+        case walletNotFound
         case invalidWCURL
         case cantFindWallet, walletWithoutDisplayInfo
         case cantFindConnectedApp

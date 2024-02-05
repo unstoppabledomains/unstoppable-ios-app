@@ -6,13 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
     
     func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode)
-    func didSelectWallet(_ wallet: WalletEntity)
     func actionButtonPressed()
     func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction)
     
@@ -23,7 +23,6 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
 }
 
 extension ChatsListViewPresenterProtocol {
-    func didSelectWallet(_ wallet: WalletEntity) { }
     func actionButtonPressed() { }
     func createCommunitiesProfileButtonPressed() { }
     func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) { }
@@ -46,6 +45,7 @@ final class ChatsListViewPresenter {
     private let messagingService: MessagingServiceProtocol
     private var presentOptions: ChatsList.PresentOptions
 
+    private var selectedWallet: WalletEntity
     private var wallets: [WalletEntity] = []
     private var profileWalletPairsCache: [ChatProfileWalletPair] = []
     private var selectedProfileWalletPair: ChatProfileWalletPair?
@@ -57,17 +57,25 @@ final class ChatsListViewPresenter {
     private var channels: [MessagingNewsChannel] = []
     private var searchData = SearchData()
     private let searchManager = ChatsList.SearchManager(debounce: 0.3)
-    
+    private var cancellables: Set<AnyCancellable> = []
+
     var analyticsName: Analytics.ViewName { .chatsHome }
     
     init(view: ChatsListViewProtocol,
          presentOptions: ChatsList.PresentOptions,
+         selectedWallet: WalletEntity,
          messagingService: MessagingServiceProtocol) {
         self.view = view
         self.presentOptions = presentOptions
+        self.selectedWallet = selectedWallet
         self.messagingService = messagingService
         appContext.udWalletsService.addListener(self)
         SceneDelegate.shared?.addListener(self)
+        appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+            if let selectedWallet {
+                self?.didSelectWallet(selectedWallet)
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -123,30 +131,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         }
     }
     
-    func didSelectWallet(_ wallet: WalletEntity) {
-        guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
-        
-        logButtonPressedAnalyticEvents(button: .messagingProfileInList, parameters: [.wallet: wallet.address])
-        runLoadingState()
-        Task {
-            if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
-                try await self.selectProfileWalletPair(cachedPair)
-            } else {
-                var profile: MessagingChatUserProfileDisplayInfo?
-                var isUDBlueEnabled = false
-                if let rrDomain = wallet.rrDomain {
-                    profile = try? await messagingService.getUserMessagingProfile(for: rrDomain)
-                    isUDBlueEnabled = await getUDBlueEnabledStatus(for: rrDomain)
-                }
-                let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-                try await selectProfileWalletPair(.init(wallet: wallet,
-                                                        profile: profile,
-                                                        isCommunitiesEnabled: isCommunitiesEnabled,
-                                                        isUDBlueEnabled: isUDBlueEnabled))
-            }
-        }
-    }
-
     func actionButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
@@ -156,12 +140,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
                 let wallet = selectedProfileWalletPair.wallet
-                if let rrDomain = wallet.rrDomain {
-                    createProfileFor(domain: rrDomain,
-                                     in: wallet)
-                } else {
-                    askToSetRRDomainAndCreateProfileFor(wallet: selectedProfileWalletPair.wallet)
-                }
+                createProfileFor(in: wallet)
             } catch { }
         }
     }
@@ -378,6 +357,26 @@ extension ChatsListViewPresenter: SceneActivationListener {
 
 // MARK: - Private functions
 private extension ChatsListViewPresenter {
+    func didSelectWallet(_ wallet: WalletEntity) {
+        guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
+        
+        self.selectedWallet = wallet
+        runLoadingState()
+        Task {
+            if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
+                try await self.selectProfileWalletPair(cachedPair)
+            } else {
+                let profile = try? await messagingService.getUserMessagingProfile(for: wallet)
+                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet)
+                let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+                try await selectProfileWalletPair(.init(wallet: wallet,
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: isCommunitiesEnabled,
+                                                        isUDBlueEnabled: isUDBlueEnabled))
+            }
+        }
+    }
+
     func runLoadingState() {
         chatsList.removeAll()
         channels.removeAll()
@@ -465,45 +464,14 @@ private extension ChatsListViewPresenter {
     }
     
     func resolveInitialProfileWith(wallets: [WalletEntity]) async throws {
-        if let profile = await messagingService.getLastUsedMessagingProfile(among: wallets),
-           let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
-            /// User already used chat with some profile, select last used.
-            let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-            let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet.rrDomain)
-
-            try await selectProfileWalletPair(.init(wallet: wallet,
-                                                    profile: profile,
-                                                    isCommunitiesEnabled: isCommunitiesEnabled,
-                                                    isUDBlueEnabled: isUDBlueEnabled))
-        } else {
-            for wallet in wallets {
-                guard let rrDomain = wallet.rrDomain else { continue }
-                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: rrDomain)
-                
-                if let profile = try? await messagingService.getUserMessagingProfile(for: rrDomain) {
-                    /// User open chats for the first time but there's existing profile, use it as default
-                    let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
-                    try await selectProfileWalletPair(.init(wallet: wallet,
-                                                            profile: profile,
-                                                            isCommunitiesEnabled: isCommunitiesEnabled,
-                                                            isUDBlueEnabled: isUDBlueEnabled))
-                    return
-                } else {
-                    profileWalletPairsCache.append(.init(wallet: wallet,
-                                                         profile: nil,
-                                                         isCommunitiesEnabled: false,
-                                                         isUDBlueEnabled: isUDBlueEnabled))
-                }
-            }
-            
-            /// No profile has found for existing RR domains
-            /// Select first wallet from sorted list
-            let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
-            try await selectProfileWalletPair(.init(wallet: firstWallet,
-                                                    profile: nil,
-                                                    isCommunitiesEnabled: false,
-                                                    isUDBlueEnabled: false))
-        }
+        let wallet = selectedWallet
+        let profile = try? await messagingService.getUserMessagingProfile(for: wallet)
+        let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+        let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet)
+        try await selectProfileWalletPair(.init(wallet: wallet,
+                                                profile: profile,
+                                                isCommunitiesEnabled: isCommunitiesEnabled,
+                                                isUDBlueEnabled: isUDBlueEnabled))
     }
     
     func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo,
@@ -956,18 +924,17 @@ private extension ChatsListViewPresenter {
             case .set(let domain):
                 var wallet = wallet
                 wallet.rrDomain = domain
-                createProfileFor(domain: domain, in: wallet)
+                createProfileFor(in: wallet)
             }
         }
     }
     
-    func createProfileFor(domain: DomainDisplayInfo,
-                          in wallet: WalletEntity) {
+    func createProfileFor(in wallet: WalletEntity) {
         Task {
             do {
-                let profile = try await messagingService.createUserMessagingProfile(for: domain)
+                let profile = try await messagingService.createUserMessagingProfile(for: wallet)
                 let isCommunitiesEnabled = await messagingService.isCommunitiesEnabled(for: profile)
-                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: domain)
+                let isUDBlueEnabled = await getUDBlueEnabledStatus(for: wallet)
                 try await selectProfileWalletPair(.init(wallet: wallet,
                                                         profile: profile,
                                                         isCommunitiesEnabled: isCommunitiesEnabled,
@@ -976,6 +943,10 @@ private extension ChatsListViewPresenter {
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
+    }
+ 
+    func getUDBlueEnabledStatus(for wallet: WalletEntity) async -> Bool {
+        await getUDBlueEnabledStatus(for: wallet.rrDomain ?? wallet.udDomains.first)
     }
     
     func getUDBlueEnabledStatus(for domain: DomainDisplayInfo?) async -> Bool {
