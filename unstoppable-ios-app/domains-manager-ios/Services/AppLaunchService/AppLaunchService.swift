@@ -11,17 +11,14 @@ final class AppLaunchService {
         
     private let maximumWaitingTime: TimeInterval = 1.0
     private var stateMachine = InitialMintingStateMachine()
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private var sceneDelegate: SceneDelegateProtocol?
     private var completion: EmptyAsyncCallback?
     private var listeners: [AppLaunchListenerHolder] = []
 
-    init(dataAggregatorService: DataAggregatorServiceProtocol,
-         coreAppCoordinator: CoreAppCoordinatorProtocol,
+    init(coreAppCoordinator: CoreAppCoordinatorProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
-        self.dataAggregatorService = dataAggregatorService
         self.coreAppCoordinator = coreAppCoordinator
         self.udWalletsService = udWalletsService
     }

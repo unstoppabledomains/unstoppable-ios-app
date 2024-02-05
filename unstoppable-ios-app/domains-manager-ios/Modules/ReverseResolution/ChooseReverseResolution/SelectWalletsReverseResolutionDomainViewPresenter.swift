@@ -24,12 +24,10 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
     init(view: ChooseReverseResolutionDomainViewProtocol,
          wallet: WalletEntity,
          useCase: UseCase,
-         setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager) {
         self.useCase = useCase
         super.init(view: view,
-                   wallet: wallet,
-                   dataAggregatorService: dataAggregatorService)
+                   wallet: wallet)
         self.setupWalletsReverseResolutionFlowManager = setupWalletsReverseResolutionFlowManager
     }
     

@@ -11,7 +11,7 @@ import Foundation
 final class MockContext: AppContextProtocol {
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
-                                                                                                       dataAggregatorService: dataAggregatorService,
+                                                                                                       walletsDataService: walletsDataService,
                                                                                                        udWalletsService: udWalletsService,
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,

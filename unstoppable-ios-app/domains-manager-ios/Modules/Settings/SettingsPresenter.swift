@@ -19,7 +19,6 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     private weak var view: SettingsViewProtocol?
     
     private let notificationsService: NotificationsServiceProtocol
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private var firebaseUser: FirebaseUser?
     private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
@@ -30,12 +29,10 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     init(view: SettingsViewProtocol,
          loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol) {
         self.view = view
         self.loginCallback = loginCallback
         self.notificationsService = notificationsService
-        self.dataAggregatorService = dataAggregatorService
         self.firebaseAuthenticationService = firebaseAuthenticationService
         appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.showSettings()

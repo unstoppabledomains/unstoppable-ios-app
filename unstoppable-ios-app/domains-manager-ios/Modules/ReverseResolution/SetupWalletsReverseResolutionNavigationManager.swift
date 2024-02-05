@@ -15,7 +15,6 @@ final class SetupWalletsReverseResolutionNavigationManager: CNavigationControlle
     
     typealias ReverseResolutionSetCallback = ((Result)->())
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private var mode: Mode = .chooseFirstDomain
     private var wallet: WalletEntity?
@@ -157,20 +156,17 @@ private extension SetupWalletsReverseResolutionNavigationManager {
                 presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
                                                                               useCase: .default,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             case .chooseFirstForMessaging:
                 presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
                                                                               useCase: .messaging,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             case .changeDomain(let currentDomain):
                 presenter = ChangeWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
                                                                               currentDomain: currentDomain,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             }
             
             vc.presenter = presenter

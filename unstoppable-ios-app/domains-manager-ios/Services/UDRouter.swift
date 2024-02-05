@@ -21,7 +21,6 @@ class UDRouter: DomainProfileSignatureValidator {
         let presenter = SettingsPresenter(view: vc,
                                           loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
-                                          dataAggregatorService: appContext.dataAggregatorService,
                                           firebaseAuthenticationService: appContext.firebaseParkedDomainsAuthenticationService)
         vc.presenter = presenter
         
@@ -285,7 +284,6 @@ class UDRouter: DomainProfileSignatureValidator {
 
         let presenter = QRScannerViewPresenter(view: vc,
                                                selectedWallet: selectedWallet,
-                                               dataAggregatorService: appContext.dataAggregatorService,
                                                walletConnectServiceV2: appContext.walletConnectServiceV2,
                                                networkReachabilityService: appContext.networkReachabilityService,
                                                udWalletsService: appContext.udWalletsService)
@@ -726,7 +724,6 @@ private extension UDRouter {
         let vc = WalletDetailsViewController.nibInstance()
         let presenter = WalletDetailsViewPresenter(view: vc,
                                                    wallet: wallet,
-                                                   dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,
                                                    walletConnectServiceV2: appContext.walletConnectServiceV2)
@@ -810,8 +807,7 @@ private extension UDRouter {
     func buildDomainDetailsModule(domain: DomainDisplayInfo) -> UIViewController {
         let vc = DomainDetailsViewController.nibInstance()
         let presenter = DomainDetailsViewPresenter(view: vc,
-                                                      domain: domain,
-                                                   dataAggregatorService: appContext.dataAggregatorService)
+                                                      domain: domain)
         vc.presenter = presenter
         return vc
     }
@@ -950,8 +946,7 @@ private extension UDRouter {
                                                                             domainDisplayInfo: domainDisplayInfo,
                                                                             walletInfo: walletInfo,
                                                                             transactionsService: appContext.domainTransactionsService,
-                                                                            notificationsService: appContext.notificationsService,
-                                                                            dataAggregatorService: appContext.dataAggregatorService)
+                                                                            notificationsService: appContext.notificationsService)
         vc.presenter = presenter
         return vc
     }

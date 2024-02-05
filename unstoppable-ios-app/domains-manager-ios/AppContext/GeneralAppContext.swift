@@ -44,8 +44,7 @@ final class GeneralAppContext: AppContextProtocol {
                          wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
-        AppLaunchService(dataAggregatorService: dataAggregatorService,
-                         coreAppCoordinator: coreAppCoordinator,
+        AppLaunchService(coreAppCoordinator: coreAppCoordinator,
                          udWalletsService: udWalletsService)
     }()
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
@@ -125,7 +124,7 @@ final class GeneralAppContext: AppContextProtocol {
         
         // External events
         externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
-                                                      dataAggregatorService: dataAggregatorService,
+                                                      walletsDataService: walletsDataService,
                                                       udWalletsService: udWalletsService,
                                                       walletConnectServiceV2: walletConnectServiceV2,
                                                       walletConnectRequestsHandlingService: wcRequestsHandlingService)

@@ -21,7 +21,6 @@ final class MintDomainsNavigationController: CNavigationController {
     private var mode: Mode = .default(email: User.instance.email)
     private var mintingData: MintingData = MintingData()
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let userDataService: UserDataServiceProtocol = appContext.userDataService
     private let domainsService: UDDomainsServiceProtocol = appContext.udDomainsService
     private let walletsService: UDWalletsServiceProtocol = appContext.udWalletsService

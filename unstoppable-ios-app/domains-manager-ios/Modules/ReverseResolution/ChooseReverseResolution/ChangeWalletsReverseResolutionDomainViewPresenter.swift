@@ -18,12 +18,10 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
     init(view: ChooseReverseResolutionDomainViewProtocol,
          wallet: WalletEntity,
          currentDomain: DomainDisplayInfo,
-         setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager) {
         self.currentDomain = currentDomain
         super.init(view: view,
-                   wallet: wallet,
-                   dataAggregatorService: dataAggregatorService)
+                   wallet: wallet)
         self.setupWalletsReverseResolutionFlowManager = setupWalletsReverseResolutionFlowManager
         self.selectedDomain = currentDomain
     }

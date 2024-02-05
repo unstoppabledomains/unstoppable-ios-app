@@ -10,7 +10,7 @@ import Foundation
 final class ExternalEventsService {
         
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
-    private let dataAggregatorService: DataAggregatorServiceProtocol
+    private let walletsDataService: WalletsDataServiceProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol
@@ -20,12 +20,12 @@ final class ExternalEventsService {
     private var listeners: [ExternalEventsListenerHolder] = []
     
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
+         walletsDataService: WalletsDataServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
-        self.dataAggregatorService = dataAggregatorService
+        self.walletsDataService = walletsDataService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletConnectRequestsHandlingService = walletConnectRequestsHandlingService
@@ -92,12 +92,12 @@ private extension ExternalEventsService {
         Task {
             switch event {
             case .recordsUpdated(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainTransferred(let domainName), .domainProfileUpdated(let domainName):
-                try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
+                try? await walletsDataService.refreshDataForWalletDomain(domainName)
                 AppGroupsBridgeService.shared.clearChanges(for: domainName)
             case .mintingFinished(let domainNames):
                 
                 for domainName in domainNames {
-                    try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
+                    try? await walletsDataService.refreshDataForWalletDomain(domainName)
                 }
             case .walletConnectRequest:
                 try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
@@ -136,8 +136,8 @@ private extension ExternalEventsService {
             }
             let wallet = try await findWalletEntity(for: domain)
 
-            Task.detached(priority: .high) { 
-                try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
+            Task.detached(priority: .high) { [weak self] in
+                try? await self?.walletsDataService.refreshDataForWalletDomain(domainName)
             }
             
             return .showDomainProfile(domain: domain, wallet: wallet)
@@ -156,7 +156,7 @@ private extension ExternalEventsService {
             }
         case .wcDeepLink(let wcDeepLink):
             let request = try WCRequest.connectWallet(resolveRequest(from: wcDeepLink))
-            let domains = appContext.walletsDataService.wallets.combinedDomains()
+            let domains = walletsDataService.wallets.combinedDomains()
             
             guard let domainDisplayInfoToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
                 Debugger.printWarning("Failed to find any domain to handle WC url")
@@ -194,7 +194,7 @@ private extension ExternalEventsService {
     }
     
     private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.isOwningDomain(domainName) }) else {
+        guard let wallet = walletsDataService.wallets.first(where: { $0.isOwningDomain(domainName) }) else {
             throw EventsHandlingError.walletNotFound
         }
         let profile = try await appContext.messagingService.getUserMessagingProfile(for: wallet)
@@ -214,7 +214,7 @@ private extension ExternalEventsService {
     }
     
     func findDomainsWith(domainNames: [String]) async throws -> [DomainDisplayInfo] {
-        let domains = appContext.walletsDataService.wallets.combinedDomains()
+        let domains = walletsDataService.wallets.combinedDomains()
         var searchedDomains = [DomainDisplayInfo]()
         for domainName in domainNames {
             if let domain = domains.first(where: { $0.name == domainName }) {
@@ -227,7 +227,7 @@ private extension ExternalEventsService {
     }
     
     func findWalletEntity(for domain: DomainDisplayInfo) async throws -> WalletEntity {
-        let wallets = appContext.walletsDataService.wallets
+        let wallets = walletsDataService.wallets
         
         guard let wallet = wallets.first(where: { domain.isOwned(by: $0.udWallet) }) else {
             Debugger.printFailure("Failed to find wallet for external event", critical: true)

@@ -21,7 +21,6 @@ class ChooseReverseResolutionDomainViewPresenter {
     private(set) weak var view: ChooseReverseResolutionDomainViewProtocol?
     
     let wallet: WalletEntity
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     var title: String { "" }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     private(set) var walletDomains = [DomainDisplayInfo]()
@@ -29,11 +28,9 @@ class ChooseReverseResolutionDomainViewPresenter {
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: ChooseReverseResolutionDomainViewProtocol,
-         wallet: WalletEntity,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         wallet: WalletEntity) {
         self.view = view
         self.wallet = wallet
-        self.dataAggregatorService = dataAggregatorService
     }
     
     func confirmButtonPressed() {

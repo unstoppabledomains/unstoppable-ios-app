@@ -22,7 +22,6 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
     private var isAcceptingQRCodes = true
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
@@ -33,13 +32,11 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     init(view: QRScannerViewProtocol,
          selectedWallet: WalletEntity,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.selectedWallet = selectedWallet
-        self.dataAggregatorService = dataAggregatorService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService

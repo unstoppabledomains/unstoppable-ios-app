@@ -33,8 +33,7 @@ final class DomainDetailsViewPresenter: NSObject, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .domainDetails }
     
     init(view: DomainDetailsViewProtocol,
-         domain: DomainDisplayInfo,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         domain: DomainDisplayInfo) {
         self.view = view
         self.domain = domain
         self.shareDomainHandler = ShareDomainHandler(domain: domain)

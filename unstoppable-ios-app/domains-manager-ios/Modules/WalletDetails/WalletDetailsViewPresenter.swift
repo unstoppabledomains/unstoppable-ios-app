@@ -19,7 +19,6 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: WalletDetailsViewProtocol?
     private var wallet: WalletEntity
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
@@ -30,13 +29,11 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     
     init(view: WalletDetailsViewProtocol,
          wallet: WalletEntity,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.wallet = wallet
-        self.dataAggregatorService = dataAggregatorService
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2

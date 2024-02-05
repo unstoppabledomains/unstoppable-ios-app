@@ -20,7 +20,6 @@ final class LoginFlowNavigationController: CNavigationController {
     
     private var mode: Mode = .default
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let userDataService: UserDataServiceProtocol = appContext.userDataService
     private let domainsService: UDDomainsServiceProtocol = appContext.udDomainsService
     private let walletsService: UDWalletsServiceProtocol = appContext.udWalletsService
