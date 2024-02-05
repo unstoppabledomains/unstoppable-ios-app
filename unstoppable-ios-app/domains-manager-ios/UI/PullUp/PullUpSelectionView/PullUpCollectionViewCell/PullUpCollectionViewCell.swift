@@ -70,6 +70,7 @@ final class PullUpCollectionViewCell: BaseListCollectionViewCell {
     @IBOutlet private weak var subtitleLabel: UILabel!
     @IBOutlet private weak var subtitleImageView: UIImageView!
     @IBOutlet private weak var chevronContainerView: UIView!
+    @IBOutlet private weak var trailingStackView: UIStackView!
     @IBOutlet private weak var containerHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var actionButton: UDConfigurableButton!
     
@@ -110,6 +111,8 @@ extension PullUpCollectionViewCell {
             actionButton.isHidden = true
             chevronImageView.image = pullUpItem.disclosureIndicatorStyle.icon
         }
+        trailingStackView.alignment = actionButton.isHidden ? .fill : .trailing
+        trailingStackView.isHidden = trailingStackView.arrangedSubviews.filter( { !$0.isHidden }).isEmpty
         
         Task {
             iconContainerView.image = await pullUpItem.icon
@@ -144,8 +147,10 @@ private extension PullUpCollectionViewCell {
 #Preview {
     let collectionView = PreviewCollectionViewCell<PullUpCollectionViewCell>(cellSize: CGSize(width: 390, height: 68),
                                                                                     configureCellCallback: { cell in
-        cell.setWith(pullUpItem: MessagingChatUserPullUpSelectionItem.init(userInfo: .init(wallet: "adasd"), isAdmin: false, isPending: false,
+        cell.setWith(pullUpItem: MessagingChatUserPullUpSelectionItem.init(userInfo: .init(wallet: "adasdsdf sd fsd fsdf sd fsd"), isAdmin: false, isPending: false,
                                                                            unblockCallback:  { }))
+//        cell.setWith(pullUpItem: WalletDetailsAddWalletAction.recoveryOrKey)
+//        cell.setWith(pullUpItem: ManageBackupsAction.restore)
     })
     
     return collectionView

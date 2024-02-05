@@ -14,6 +14,7 @@ final class DeepLinksService {
     private var listeners: [DeepLinkListenerHolder] = []
     private let deepLinkPath = "/mobile"
     private let wcScheme = "wc"
+    private let customURLScheme = "unstoppabledomains"
     private var isExpectingWCInteraction = false
     
     init(externalEventsService: ExternalEventsServiceProtocol,
@@ -156,12 +157,16 @@ private extension DeepLinksService {
     func isWCDeepLinkUrl(from components: NSURLComponents) -> Bool {
         (components.path == deepLinkPath) ||
         (components.path == (deepLinkPath + "/" + wcScheme)) ||
-        (components.scheme == wcScheme)
+        (components.scheme == wcScheme) || (components.scheme == customURLScheme)
     }
     
     func parseWalletConnectURL(from components: NSURLComponents, in url: URL) -> URL? {
-        if components.scheme == wcScheme {
+        if components.scheme == wcScheme{
             return url
+        } else if (components.scheme == customURLScheme),
+                  let query = components.query,
+                  let urlExtracted = query.deletingPrefix("uri=") {
+            return URL(string: urlExtracted)
         } else if isWCDeepLinkUrl(from: components),
                   let params = components.queryItems,
                   let uri = params.findValue(forDeepLinkKey: DeepLinksParameterKey.uri),
@@ -170,7 +175,7 @@ private extension DeepLinksService {
         }
         return nil
     }
-     
+    
     func handleWCDeepLink(_ incomingURL: URL, receivedState: ExternalEventReceivedState) {
         externalEventsService.receiveEvent(.wcDeepLink(incomingURL), receivedState: receivedState)
     }
