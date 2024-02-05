@@ -305,3 +305,13 @@ extension HomeWalletView {
         let ownerWallet: String
     }
 }
+
+
+extension HomeWalletView {
+    struct DomainsGroup: Hashable, Identifiable {
+        var id: String { tld }
+        
+        let domains: [DomainDisplayInfo]
+        let tld: String
+    }
+}

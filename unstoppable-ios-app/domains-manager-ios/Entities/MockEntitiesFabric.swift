@@ -92,21 +92,24 @@ extension MockEntitiesFabric {
         
         static func mockDomainDisplayInfo() -> [DomainDisplayInfo] {
             var domains = [DomainDisplayInfo]()
+            let tlds: [String] = ["x", "nft", "unstoppable"]
             
-            for i in 0..<5 {
-                let domain = DomainDisplayInfo(name: "oleg_\(i).x",
-                                               ownerWallet: "",
-                                               blockchain: .Matic,
-                                               isSetForRR: false)
-                domains.append(domain)
-            }
-            
-            for i in 0..<5 {
-                let domain = DomainDisplayInfo(name: "subdomain_\(i).oleg_0.x",
-                                               ownerWallet: "",
-                                               blockchain: .Matic,
-                                               isSetForRR: false)
-                domains.append(domain)
+            for tld in tlds {
+                for i in 0..<5 {
+                    let domain = DomainDisplayInfo(name: "oleg_\(i).\(tld)",
+                                                   ownerWallet: "",
+                                                   blockchain: .Matic,
+                                                   isSetForRR: false)
+                    domains.append(domain)
+                }
+                
+                for i in 0..<5 {
+                    let domain = DomainDisplayInfo(name: "subdomain_\(i).oleg_0.\(tld)",
+                                                   ownerWallet: "",
+                                                   blockchain: .Matic,
+                                                   isSetForRR: false)
+                    domains.append(domain)
+                }
             }
             
             return domains

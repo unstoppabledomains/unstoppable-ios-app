@@ -15,10 +15,11 @@ extension HomeWalletView {
         @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [TokenDescription] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = []
-        @Published private(set) var domains: [DomainDisplayInfo] = []
+        @Published private(set) var domainsGroups: [DomainsGroup] = []
         @Published private(set) var subdomains: [DomainDisplayInfo] = []
         @Published private(set) var chainsNotMatch: [HomeWalletView.NotMatchedRecordsDescription] = []
         @Published var nftsCollectionsExpandedIds: Set<String> = []
+        @Published var domainsTLDsExpandedList: Set<String> = []
         @Published var selectedContentType: ContentType = .tokens
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
@@ -91,7 +92,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
         tokens = wallet.balance.map { HomeWalletView.TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
-        domains = wallet.domains.filter({ !$0.isSubdomain })
+        let domains = wallet.domains.filter({ !$0.isSubdomain })
+        self.domainsGroups = [String : [DomainDisplayInfo]].init(grouping: domains, by: { $0.name.getTldName() ?? "" }).map { HomeWalletView.DomainsGroup(domains: $0.value, tld: $0.key) }
         subdomains = wallet.domains.filter({ $0.isSubdomain })
         
         let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
@@ -168,12 +170,12 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         })
         switch sortOption {
         case .alphabetical:
-            domains = domains.sorted(by: { lhs, rhs in
-                lhs.name < rhs.name
+            domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                lhs.tld < rhs.tld
             })
         case .salePrice:
-            domains = domains.sorted(by: { lhs, rhs in
-                lhs.name > rhs.name
+            domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                lhs.tld > rhs.tld
             })
         }
     }

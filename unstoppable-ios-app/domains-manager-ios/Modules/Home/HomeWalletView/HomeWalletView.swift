@@ -194,7 +194,7 @@ private extension HomeWalletView {
                 .stroke(lineWidth: 1)
                 .frame(height: 1)
                 .foregroundStyle(Color.foregroundSecondary)
-            HomeWalletExpandableSectionHeaderView(title: "Hidden",
+            HomeWalletExpandableSectionHeaderView(title: String.Constants.hidden.localized(),
                                                   isExpandable: true,
                                                   numberOfItemsInSection: viewModel.chainsNotMatch.count,
                                                   isExpanded: viewModel.isNotMatchingTokensVisible,
@@ -247,9 +247,11 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domains: viewModel.domains,
+        HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
                                       subdomains: viewModel.subdomains,
-                                      domainSelectedCallback: didSelectDomain, isSubdomainsVisible: $viewModel.isSubdomainsVisible)
+                                      domainSelectedCallback: didSelectDomain, 
+                                      isSubdomainsVisible: $viewModel.isSubdomainsVisible,
+                                      domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {

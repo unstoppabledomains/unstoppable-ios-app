@@ -9,10 +9,11 @@ import SwiftUI
 
 struct HomeWalletsDomainsSectionView: View {
     
-    let domains: [DomainDisplayInfo]
+    let domainsGroups: [HomeWalletView.DomainsGroup]
     let subdomains: [DomainDisplayInfo]
     let domainSelectedCallback: (DomainDisplayInfo)->()
     @Binding var isSubdomainsVisible: Bool
+    @Binding var domainsTLDsExpandedList: Set<String>
     private let minNumOfVisibleSubdomains = 2
 
     private let gridColumns = [
@@ -21,12 +22,19 @@ struct HomeWalletsDomainsSectionView: View {
     ]
     
     var body: some View {
-        LazyVStack {
-            gridWithDomains(domains)
+        LazyVStack(spacing: 20) {
+            ForEach(domainsGroups) { domainsGroup in
+                VStack {
+                    domainsGroupSectionHeader(domainsGroup)
+                    gridWithDomains(Array(domainsGroup.domains.prefix(numberOfDomainsVisible(in: domainsGroup))))
+                }
+            }
             if !subdomains.isEmpty {
-                subdomainsSectionHeader()
-                    .padding(.vertical)
-                gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
+                VStack {
+                    subdomainsSectionHeader()
+                        .padding(.vertical)
+                    gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
+                }
             }
         }
         .withoutAnimation()
@@ -36,6 +44,27 @@ struct HomeWalletsDomainsSectionView: View {
 
 // MARK: - Private methods
 private extension HomeWalletsDomainsSectionView {
+    @ViewBuilder
+    func domainsGroupSectionHeader(_ domainsGroup: HomeWalletView.DomainsGroup) -> some View {
+        HomeWalletExpandableSectionHeaderView(title: ".\(domainsGroup.tld)",
+                                              isExpandable: domainsGroup.domains.count > minNumOfVisibleSubdomains,
+                                              numberOfItemsInSection: domainsGroup.domains.count,
+                                              isExpanded: domainsTLDsExpandedList.contains(domainsGroup.tld),
+                                              actionCallback: {
+            let tld = domainsGroup.tld
+            if domainsTLDsExpandedList.contains(tld) {
+                domainsTLDsExpandedList.remove(tld)
+            } else {
+                domainsTLDsExpandedList.insert(tld)
+            }
+        })
+    }
+    
+    func numberOfDomainsVisible(in domainsGroup: HomeWalletView.DomainsGroup) -> Int {
+        let numberOfNFTs = domainsGroup.domains.count
+        return domainsTLDsExpandedList.contains(domainsGroup.tld) ? numberOfNFTs : min(numberOfNFTs, minNumOfVisibleSubdomains) //Take no more then 2 domains
+    }
+    
     @ViewBuilder
     func subdomainsSectionHeader() -> some View {
         HomeWalletExpandableSectionHeaderView(title: String.Constants.subdomains.localized(),
@@ -70,7 +99,9 @@ private extension HomeWalletsDomainsSectionView {
 }
 
 #Preview {
-    HomeWalletsDomainsSectionView(domains: [],
+    HomeWalletsDomainsSectionView(domainsGroups: [],
                                   subdomains: [],
-                                  domainSelectedCallback: { _ in }, isSubdomainsVisible: .constant(true))
+                                  domainSelectedCallback: { _ in }, 
+                                  isSubdomainsVisible: .constant(true),
+                                  domainsTLDsExpandedList: .constant([]))
 }
