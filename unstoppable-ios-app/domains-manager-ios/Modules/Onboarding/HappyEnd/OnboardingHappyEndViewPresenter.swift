@@ -30,9 +30,9 @@ final class OnboardingHappyEndViewPresenter: BaseHappyEndViewPresenter {
         
         ConfettiImageView.releaseAnimations()
         if let wallet = appContext.walletsDataService.selectedWallet {
-            appContext.coreAppCoordinator.showHome(accountState: .walletAdded(wallet))
+            appContext.coreAppCoordinator.showHome(profile: .wallet(wallet))
         } else if let user = appContext.firebaseParkedDomainsAuthenticationService.firebaseUser {
-            appContext.coreAppCoordinator.showHome(accountState: .webAccount(user))
+            appContext.coreAppCoordinator.showHome(profile: .webAccount(user))
         }
     }
 }

@@ -287,7 +287,7 @@ private extension HomeWebView {
 
 #Preview {
     let user = FirebaseUser.init(email: "oleg@unstoppabledomains.com")
-    let router = HomeTabRouter(accountState: .webAccount(user))
+    let router = HomeTabRouter(profile: .webAccount(user))
 
     return HomeWebView(user: user)
         .environmentObject(router)

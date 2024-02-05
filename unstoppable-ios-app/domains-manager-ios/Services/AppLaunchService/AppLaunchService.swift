@@ -189,9 +189,9 @@ private extension AppLaunchService {
             } else { // TODO: - Refactoring
                 switch sessionState {
                 case .walletAdded(let wallet):
-                    coreAppCoordinator.showHome(accountState: .walletAdded(wallet))
+                    coreAppCoordinator.showHome(profile: .wallet(wallet))
                 case .webAccountWithParkedDomains(let user):
-                    coreAppCoordinator.showHome(accountState: .webAccount(user))
+                    coreAppCoordinator.showHome(profile: .webAccount(user))
                 default:
                     Void()
                 }

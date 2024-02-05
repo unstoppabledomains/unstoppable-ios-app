@@ -272,7 +272,7 @@ private extension HomeWalletView {
 
 #Preview {
     NavigationView {
-        let router = HomeTabRouter(accountState: .walletAdded(MockEntitiesFabric.Wallet.mockEntities().first!))
+        let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
         
         return HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
                                                router: router))

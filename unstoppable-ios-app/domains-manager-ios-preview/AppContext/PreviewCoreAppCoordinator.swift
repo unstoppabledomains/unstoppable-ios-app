@@ -21,7 +21,7 @@ final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
-    func showHome(accountState: HomeAccountState) {
+    func showHome(profile: UserProfile) {
         
     }
     

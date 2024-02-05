@@ -41,9 +41,9 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         setOnboardingAsRoot(flow)
     }
     
-    func showHome(accountState: HomeAccountState) {
+    func showHome(profile: UserProfile) {
 //        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
-        setHomeScreenAsRoot(accountState: accountState) 
+        setHomeScreenAsRoot(profile: profile)
         if let event = pendingDeepLinkEvent {
             handleDeepLinkEvent(event)
         }
@@ -340,11 +340,11 @@ private extension CoreAppCoordinator {
         case .walletAdded, .webAccountWithParkedDomains:
             if case .home(let router) = currentRoot {
                 if case .walletAdded(let walletEntity) = sessionState,
-                   case .webAccount = router.accountState {
-                    router.accountState = .walletAdded(walletEntity)
+                   case .webAccount = router.profile {
+                    router.profile = .wallet(walletEntity)
                 } else if case .webAccountWithParkedDomains(let user) = sessionState,
-                          case .walletAdded = router.accountState {
-                    router.accountState = .webAccount(user)
+                          case .wallet = router.profile {
+                    router.profile = .webAccount(user)
                 }
             }
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
@@ -392,8 +392,8 @@ private extension CoreAppCoordinator {
         currentRoot = .domainsCollection(router: router)
     }
     
-    func setHomeScreenAsRoot(accountState: HomeAccountState) {
-        let router = HomeTabRouter(accountState: accountState)
+    func setHomeScreenAsRoot(profile: UserProfile) {
+        let router = HomeTabRouter(profile: profile)
         let view = HomeTabView(tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)

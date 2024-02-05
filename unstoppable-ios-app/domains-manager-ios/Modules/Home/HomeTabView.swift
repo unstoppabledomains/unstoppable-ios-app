@@ -103,8 +103,8 @@ private extension HomeTabView {
     
     @ViewBuilder
     func currentWalletView() -> some View {
-        switch router.accountState {
-        case .walletAdded(let wallet):
+        switch router.profile {
+        case .wallet(let wallet):
             HomeWalletView(viewModel: .init(selectedWallet: wallet,
                                             router: router))
         case .webAccount(let user):
@@ -113,11 +113,11 @@ private extension HomeTabView {
     }
 }
 
-enum HomeAccountState {
-    case walletAdded(WalletEntity) /// Pass selected wallet on app launch
+enum UserProfile {
+    case wallet(WalletEntity) /// Pass selected wallet on app launch
     case webAccount(FirebaseUser)
 }
 
 #Preview {
-    HomeTabView(tabRouter: HomeTabRouter(accountState: .walletAdded(MockEntitiesFabric.Wallet.mockEntities().first!)))
+    HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
 }
