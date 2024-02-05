@@ -41,7 +41,7 @@ struct HomeTabView: View {
             UDVibration.buttonTap.vibrate()
         })
         .viewPullUp(router.currentPullUp(id: id))
-        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectWalletPresented))
+        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectProfilePresented))
         .sheet(isPresented: $router.isConnectedAppsListPresented, content: {
             ConnectedAppsListViewControllerWrapper(scanCallback: {
                 router.showQRScanner()

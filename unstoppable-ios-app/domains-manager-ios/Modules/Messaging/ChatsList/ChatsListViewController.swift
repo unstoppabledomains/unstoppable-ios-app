@@ -11,7 +11,8 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(navigationState: ChatsListNavigationView.State)
+    func setNavigationWith(navigationState: ChatsListNavigationView.State,
+                           isSelectable: Bool)
     func stopSearching()
     func setActivityIndicator(active: Bool)
 }
@@ -127,8 +128,9 @@ extension ChatsListViewController: ChatsListViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
  
-    func setNavigationWith(navigationState: ChatsListNavigationView.State) {
-        navView?.setWithState(navigationState)
+    func setNavigationWith(navigationState: ChatsListNavigationView.State,
+                           isSelectable: Bool) {
+        navView?.setWithState(navigationState, isSelectable: isSelectable)
     }
     
     func stopSearching() {
@@ -300,7 +302,7 @@ private extension ChatsListViewController {
             if navView == nil {
                 navView = ChatsListNavigationView()
                 navView.pressedCallback = { [weak self] in
-                    self?.router?.isSelectWalletPresented = true
+                    self?.router?.isSelectProfilePresented = true
                     self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
                 }
                 navigationItem.titleView = navView

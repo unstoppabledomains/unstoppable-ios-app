@@ -142,11 +142,19 @@ private extension HomeWebView {
     @ViewBuilder
     func headerInfoView() -> some View {
         VStack(spacing: 8) {
-            Text(user.displayName)
-                .font(.currentFont(size: 16, weight: .medium))
-                .truncationMode(.middle)
-                .foregroundStyle(Color.foregroundSecondary)
-                .frame(height: 24)
+            Button {
+                UDVibration.buttonTap.vibrate()
+                tabRouter.isSelectProfilePresented = true
+            } label: {
+                HStack(spacing: 0) {
+                    Text(user.displayName)
+                        .truncationMode(.middle)
+                        .font(.currentFont(size: 16, weight: .medium))
+                    Image.chevronGrabberVertical
+                        .squareFrame(24)
+                }
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
             Text(String.Constants.pluralNDomains.localized(1, 1))
                 .font(.currentFont(size: 32, weight: .bold))
                 .truncationMode(.middle)

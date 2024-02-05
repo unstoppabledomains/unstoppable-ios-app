@@ -7170,6 +7170,7 @@
 				C64939F12B6357A600457363 /* HomeTabRouter.swift */,
 				C64939EE2B63579700457363 /* HomeTabPullUpHandlerModifier.swift */,
 				C617FDA92B590B6600B93433 /* NavigationViewWithCustomTitle.swift */,
+				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -7224,7 +7225,6 @@
 				C6B65F8F2B565C70006D1812 /* HomeWalletSortingSelectorView.swift */,
 				C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */,
 				C6B659232B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift */,
-				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";

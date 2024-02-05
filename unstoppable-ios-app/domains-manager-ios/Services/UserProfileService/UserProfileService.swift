@@ -36,8 +36,8 @@ extension UserProfileService: UserProfileServiceProtocol {
         switch profile {
         case .wallet(let walletEntity):
             walletsDataService.setSelectedWallet(walletEntity)
-        case .webAccount(let firebaseUser):
-            return
+        case .webAccount:
+            walletsDataService.setSelectedWallet(nil)
         }
     }
 }

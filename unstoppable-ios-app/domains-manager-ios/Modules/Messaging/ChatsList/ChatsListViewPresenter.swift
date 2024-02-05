@@ -71,9 +71,11 @@ final class ChatsListViewPresenter {
         self.messagingService = messagingService
         appContext.udWalletsService.addListener(self)
         SceneDelegate.shared?.addListener(self)
-        appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
-            if let selectedWallet {
+        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+            if case .wallet(let selectedWallet) = selectedProfile {
                 self?.didSelectWallet(selectedWallet)
+            } else {
+                self?.setNoWalletsState()
             }
         }.store(in: &cancellables)
     }
@@ -447,13 +449,19 @@ private extension ChatsListViewPresenter {
     func loadReadyForChattingWalletsOrClose() async throws -> [WalletEntity] {
         let wallets = messagingService.fetchWalletsAvailableForMessaging()
         guard !wallets.isEmpty else {
-            updateNavigationUI()
-            view?.setState(.noWallet)
-            showData()
+            setNoWalletsState()
             throw ChatsListError.noWalletsForChatting
         }
         
         return wallets
+    }
+    
+    func setNoWalletsState() {
+        selectedWallet = nil
+        selectedProfileWalletPair = nil 
+        updateNavigationUI()
+        view?.setState(.noWallet)
+        showData()
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo?) async -> Bool {
@@ -464,7 +472,10 @@ private extension ChatsListViewPresenter {
     }
     
     func resolveInitialProfileWith(wallets: [WalletEntity]) async throws {
-        guard let selectedWallet else { return }
+        guard let selectedWallet else {
+            setNoWalletsState()
+            return
+        }
         
         let profile = try? await messagingService.getUserMessagingProfile(for: selectedWallet)
         let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
@@ -562,20 +573,24 @@ private extension ChatsListViewPresenter {
     }
     
     func updateNavigationUI() {
-        guard let chatProfile = selectedProfileWalletPair else {
-            if let user = appContext.firebaseParkedDomainsAuthenticationService.firebaseUser {
-                view?.setNavigationWith(navigationState: .webAccount(user))
+        let isSelectable = appContext.userProfileService.profiles.count > 1
+        switch appContext.userProfileService.selectedProfile {
+        case .wallet:
+            guard let chatProfile = selectedProfileWalletPair else { return }
+
+            var isLoading = false
+            if let profile = chatProfile.profile {
+                isLoading = messagingService.isUpdatingUserData(profile)
             }
+            view?.setNavigationWith(navigationState: .wallet(.init(selectedWallet: chatProfile.wallet,
+                                                                   isLoading: isLoading)),
+                                    isSelectable: isSelectable)
+        case .webAccount(let firebaseUser):
+            view?.setNavigationWith(navigationState: .webAccount(firebaseUser),
+                                    isSelectable: isSelectable)
+        case .none:
             return
         }
-        
-        var isLoading = false
-        if let profile = chatProfile.profile {
-            isLoading = messagingService.isUpdatingUserData(profile)
-        }
-        view?.setNavigationWith(navigationState: .wallet(.init(selectedWallet: chatProfile.wallet,
-                                                               wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
-                                                               isLoading: isLoading)))
     }
     
     func unreadMessagesCountFor(wallet: WalletEntity) -> Int? {

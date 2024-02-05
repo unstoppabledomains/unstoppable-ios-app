@@ -82,7 +82,7 @@ extension HomeWalletView {
         }
         
         func domainNamePressed() {
-            router.isSelectWalletPresented = true
+            router.isSelectProfilePresented = true
         }
     }
 }
