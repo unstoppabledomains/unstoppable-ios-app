@@ -46,6 +46,7 @@ struct HomeWalletExpandableSectionHeaderView: View {
                     .foregroundStyle(Color.foregroundSecondary)
                 }
             }
+            .frame(height: 44)
         }
         .buttonStyle(.plain)
     }

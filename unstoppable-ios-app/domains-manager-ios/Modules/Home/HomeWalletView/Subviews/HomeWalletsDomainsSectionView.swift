@@ -22,22 +22,25 @@ struct HomeWalletsDomainsSectionView: View {
     ]
     
     var body: some View {
-        LazyVStack(spacing: 20) {
-            ForEach(domainsGroups) { domainsGroup in
-                VStack {
-                    domainsGroupSectionHeader(domainsGroup)
-                    gridWithDomains(Array(domainsGroup.domains.prefix(numberOfDomainsVisible(in: domainsGroup))))
-                }
-            }
-            if !subdomains.isEmpty {
-                VStack {
-                    subdomainsSectionHeader()
-                        .padding(.vertical)
-                    gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
-                }
+        ForEach(domainsGroups) { domainsGroup in
+            Section {
+                gridWithDomains(Array(domainsGroup.domains.prefix(numberOfDomainsVisible(in: domainsGroup))))
+            } header: {
+                domainsGroupSectionHeader(domainsGroup)
             }
         }
         .withoutAnimation()
+        if !subdomains.isEmpty {
+            Line()
+                .stroke(lineWidth: 1)
+                .foregroundStyle(Color.foregroundSecondary)
+                .offset(y: 50)
+            Section {
+                gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
+            } header: {
+                subdomainsSectionHeader()
+            }
+        }
     }
     
 }
@@ -95,6 +98,7 @@ private extension HomeWalletsDomainsSectionView {
                 .buttonStyle(.plain)
             }
         }
+        .padding(EdgeInsets(top: -14, leading: 0, bottom: -38, trailing: 0))
     }
 }
 
