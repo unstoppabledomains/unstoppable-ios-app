@@ -108,7 +108,9 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     }
     
     func refreshDataForWalletDomain(_ domainName: DomainName) async throws {
+        guard let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }) else { throw WalletsDataServiceError.walletNotFound }
         
+        try await refreshDataForWallet(wallet)
     }
 }
 
