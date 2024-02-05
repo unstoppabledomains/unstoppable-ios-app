@@ -472,7 +472,7 @@ private extension ChatsListViewController {
                         self?.presenter.createCommunitiesProfileButtonPressed()
                     case .noWalletAdded:
                         self?.logButtonPressedAnalyticEvents(button: .addWallet)
-                        self?.router?.runAddWalletFlow()
+                        self?.router?.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
                     }
                 })
                 

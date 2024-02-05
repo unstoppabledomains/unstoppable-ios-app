@@ -273,6 +273,8 @@ private extension WalletsListViewPresenter {
             return
         case .showImportWalletOptionsPullUp:
             showAddWalletPullUp(isImportOnly: isImportOnly)
+        case .showAllAddWalletOptionsPullUp:
+            showAddWalletPullUp(isImportOnly: false)
         case .importWallet:
             importNewWallet()
         case .connectWallet:
@@ -392,7 +394,9 @@ private extension WalletsListViewPresenter {
 // MARK: - WalletsListViewPresenter
 extension WalletsListViewPresenter {
     enum InitialAction {
-        case none, showImportWalletOptionsPullUp, importWallet, connectWallet, createNewWallet
+        case none
+        case importWallet, connectWallet, createNewWallet
+        case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
     }
     static let walletAddedNotification = Notification.Name(rawValue: "walletAddedNotification")
 }
