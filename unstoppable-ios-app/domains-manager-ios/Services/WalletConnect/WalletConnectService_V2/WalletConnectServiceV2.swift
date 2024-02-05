@@ -63,8 +63,11 @@ typealias AnyCodable = Commons.AnyCodable
 typealias EthereumTransaction = Boilertalk_Web3.EthereumTransaction
 
 
-class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
-    override init() {
+final class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
+    
+    static let shared = WCClientConnectionsV2()
+    
+    private override init() {
         super.init()
         storageKey = "CLIENT_CONNECTIONS_STORAGE_v2"
         q = DispatchQueue(label: "work-queue-client-connections_v2")
@@ -89,6 +92,13 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDat
         self.retrieveAll()
             .filter({ $0.session.topic == topic})
             .first
+    }
+    
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        self.retrieveAll()
+            .filter({ ($0.session.getWalletAddresses())
+                .contains(walletAddress.normalized) })
+            .map({$0.session})
     }
 }
 
@@ -131,7 +141,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
     
-    let walletStorageV2 = WCClientConnectionsV2()
+    let walletStorageV2 = WCClientConnectionsV2.shared
     var appsStorageV2: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
     
     private var publishers = [AnyCancellable]()
@@ -170,20 +180,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Settled pairings:\n\(pairings)")
         #endif
-        
-        // listen to the updates to domains, disconnect those dApps connected to gone domains
-        Task {
-            appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
-                self?.walletsUpdated(wallets)
-            }.store(in: &cancellables)
-        }
-    }
-    
-    private func walletsUpdated(_ wallets: [WalletEntity]) {
-        Task {
-            let domains = wallets.combinedDomains().map { $0.toDomainItem() }
-            disconnectAppsForAbsentDomains(from: domains)
-        }
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
@@ -208,10 +204,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
-        walletStorageV2.retrieveAll()
-            .filter({ ($0.session.getWalletAddresses())
-            .contains(walletAddress.normalized) })
-            .map({$0.session})
+        walletStorageV2.findSessions(by: walletAddress)
     }
         
     func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
