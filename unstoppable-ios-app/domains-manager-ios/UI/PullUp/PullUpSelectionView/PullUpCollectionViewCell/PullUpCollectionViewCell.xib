@@ -128,6 +128,7 @@
                 <outlet property="subtitleImageView" destination="EM1-AP-wbm" id="66c-l2-B1Y"/>
                 <outlet property="subtitleLabel" destination="LEY-Ba-zPc" id="FID-Ox-g2l"/>
                 <outlet property="titleLabel" destination="7JH-SK-m9W" id="D2D-88-0iL"/>
+                <outlet property="trailingStackView" destination="W9K-XZ-HCY" id="lrU-9f-FqG"/>
             </connections>
             <point key="canvasLocation" x="363.04347826086962" y="148.66071428571428"/>
         </collectionViewCell>

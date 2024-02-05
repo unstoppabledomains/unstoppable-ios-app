@@ -258,7 +258,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     private func configure() {
-        Networking.configure(projectId: AppIdentificators.wc2ProjectId,
+        Networking.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
+                             projectId: AppIdentificators.wc2ProjectId,
                              socketFactory: SocketFactory())
         
         let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),

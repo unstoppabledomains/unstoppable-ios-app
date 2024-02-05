@@ -118,3 +118,10 @@ extension String {
         return self
     }
 }
+
+extension String {
+    func deletingPrefix(_ prefix: String) -> String? {
+        guard self.hasPrefix(prefix) else { return nil }
+        return String(self.dropFirst(prefix.count))
+    }
+}
