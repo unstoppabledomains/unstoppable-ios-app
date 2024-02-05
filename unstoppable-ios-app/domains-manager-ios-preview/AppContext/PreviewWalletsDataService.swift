@@ -8,7 +8,17 @@
 import Foundation
 
 final class PreviewWalletsDataService: WalletsDataServiceProtocol {
-   
+    func refreshDataForWalletDomain(_ domainName: DomainName) async throws {
+        
+    }
+    
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain], pendingProfiles: [DomainProfilePendingChanges]) async {
+        
+    }
+    
+    func didMintDomainsWith(domainNames: [String], to wallet: WalletEntity) -> [MintingDomain] {
+        []
+    }
     
     @Published private(set) var wallets: [WalletEntity] = []
     var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }

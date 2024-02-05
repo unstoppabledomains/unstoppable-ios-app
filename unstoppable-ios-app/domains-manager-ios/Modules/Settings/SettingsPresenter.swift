@@ -167,7 +167,6 @@ private extension SettingsPresenter {
         firebaseAuthenticationService.logout()
         appContext.messagingService.logout()
         updateAppVersion()
-        Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         appContext.walletsDataService.didChangeEnvironment()
         notificationsService.updateTokenSubscriptions()
     }
@@ -235,7 +234,6 @@ private extension SettingsPresenter {
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
                         firebaseAuthenticationService.logout()
                         appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
-                        await dataAggregatorService.aggregateData(shouldRefreshPFP: true) 
                     }
                 } catch { }
             }

@@ -17,7 +17,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
-    @Environment(\.dataAggregatorService) private var dataAggregatorService
+    @Environment(\.walletsDataService) private var walletsDataService
     
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletEntity
@@ -512,10 +512,10 @@ private extension PurchaseDomainsCheckoutView {
                 PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
                 PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
                 
-                await dataAggregatorService.didPurchaseDomains([pendingPurchasedDomain],
-                                                               pendingProfiles: [profileChanges])
+                await walletsDataService.didPurchaseDomains([pendingPurchasedDomain],
+                                                            pendingProfiles: [profileChanges])
                 Task.detached { // Run in background
-                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                    try? await walletsDataService.refreshDataForWallet(selectedWallet)
                 }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {

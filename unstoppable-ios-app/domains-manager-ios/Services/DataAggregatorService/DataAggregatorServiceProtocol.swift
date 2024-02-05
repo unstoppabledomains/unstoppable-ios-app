@@ -8,7 +8,7 @@
 import Foundation
 
 protocol DataAggregatorServiceProtocol {
-    func aggregateData(shouldRefreshPFP: Bool) async
+//    func aggregateData(shouldRefreshPFP: Bool) async
 //    func getWalletsWithInfo() async -> [WalletWithInfo]
 //    func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
 //    func getDomainItems() async -> [DomainItem]
@@ -21,18 +21,18 @@ protocol DataAggregatorServiceProtocol {
 //    func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool
 //    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool
 //    func isReverseResolutionSet(for domainName: DomainName) async -> Bool
-    func mintDomains(_ domains: [String],
-                     paidDomains: [String],
-                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
-                     to wallet: UDWallet,
-                     userEmail: String,
-                     securityCode: String) async throws -> [MintingDomain]
-    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
-                            pendingProfiles: [DomainProfilePendingChanges]) async
+//    func mintDomains(_ domains: [String],
+//                     paidDomains: [String],
+//                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
+//                     to wallet: UDWallet,
+//                     userEmail: String,
+//                     securityCode: String) async throws -> [MintingDomain]
+//    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+//                            pendingProfiles: [DomainProfilePendingChanges]) async
     
 //    func addListener(_ listener: DataAggregatorServiceListener)
 //    func removeListener(_ listener: DataAggregatorServiceListener)
-    func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String?
+//    func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String?
 }
 
 typealias DataAggregationResult = Result<DataAggregationServiceResult, Error>

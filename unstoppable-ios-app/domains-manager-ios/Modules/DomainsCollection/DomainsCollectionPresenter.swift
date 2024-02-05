@@ -497,22 +497,22 @@ private extension DomainsCollectionPresenter {
     }
     
     func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainDisplayInfo]) async {
-        let walletsWithInfo = stateController.walletsWithInfo
-        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
-              router.isTopPresented(),
-              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
-              !preferableDomainForRR.isMinting,
-              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
-              let walletInfo = walletWithInfo.displayInfo else { return }
-        
-        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
-            UserDefaults.preferableDomainNameForRR = nil
-            return
-        }
-        
-        view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
-        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
-        UserDefaults.preferableDomainNameForRR = nil
+//        let walletsWithInfo = stateController.walletsWithInfo
+//        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
+//              router.isTopPresented(),
+//              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
+//              !preferableDomainForRR.isMinting,
+//              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
+//              let walletInfo = walletWithInfo.displayInfo else { return }
+//        
+//        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
+//            UserDefaults.preferableDomainNameForRR = nil
+//            return
+//        }
+//        
+//        view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
+//        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
+//        UserDefaults.preferableDomainNameForRR = nil
     }
     
     func askToSetReverseResolutionFor(domain: DomainDisplayInfo, in walletInfo: WalletDisplayInfo) async throws {
@@ -579,7 +579,7 @@ private extension DomainsCollectionPresenter {
         do {
             try await NetworkService().updatePendingDomainProfiles(with: requests)
             PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
-            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+//            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
         } catch {
             do {
                 try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)

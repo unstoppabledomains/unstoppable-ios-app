@@ -520,8 +520,9 @@ private extension DomainProfileViewPresenter {
                     await self?.fetchProfileData()
                     await self?.updateProfileFinished()
                 }
+                let domain = dataHolder.domain
                 Task.detached {
-                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+                    try? await appContext.walletsDataService.refreshDataForWalletDomain(domain.name)
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)

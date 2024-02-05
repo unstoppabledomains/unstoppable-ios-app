@@ -61,7 +61,7 @@ final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransaction
             if domainTransaction == nil {
                 dismiss()
                 if !isNotificationPermissionsGranted {
-                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                    await refreshDataForWalletWith(address: walletInfo.address)
                 }
             } else {
                 showData()

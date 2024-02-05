@@ -91,13 +91,14 @@ private extension ExternalEventsService {
     func handleInForeground(event: ExternalEvent) {
         Task {
             switch event {
-            case .recordsUpdated(let domainName):
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+            case .recordsUpdated(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainTransferred(let domainName), .domainProfileUpdated(let domainName):
+                try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
                 AppGroupsBridgeService.shared.clearChanges(for: domainName)
-            case .mintingFinished, .domainTransferred, .domainProfileUpdated:
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
-            case .reverseResolutionSet, .reverseResolutionRemoved:
-                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+            case .mintingFinished(let domainNames):
+                
+                for domainName in domainNames {
+                    try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
+                }
             case .walletConnectRequest:
                 try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
             case .wcDeepLink:
@@ -135,8 +136,8 @@ private extension ExternalEventsService {
             }
             let wallet = try await findWalletEntity(for: domain)
 
-            Task.detached(priority: .high) { [weak self] in
-                await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+            Task.detached(priority: .high) { 
+                try? await appContext.walletsDataService.refreshDataForWalletDomain(domainName)
             }
             
             return .showDomainProfile(domain: domain, wallet: wallet)

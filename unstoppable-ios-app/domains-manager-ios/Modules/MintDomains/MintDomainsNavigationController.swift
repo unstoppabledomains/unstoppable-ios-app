@@ -191,25 +191,15 @@ private extension MintDomainsNavigationController {
             return
         }
         
-        let domainsOrderInfoMap = domainsOrderInfoMap ?? createDomainsOrderInfoMap(for: domains)
-        let mintingDomains = try await dataAggregatorService.mintDomains(domains,
-                                                                         paidDomains: [],
-                                                                         domainsOrderInfoMap: domainsOrderInfoMap,
-                                                                         to: wallet.udWallet,
-                                                                         userEmail: email,
-                                                                         securityCode: code)
+        try await domainsService.mintDomains(domains,
+                                             paidDomains: [],
+                                             to: wallet.udWallet,
+                                             userEmail: email,
+                                             securityCode: code)
         
-        /// If user didn't set RR yet and mint multiple domains, ideally we would set RR automatically to domain user has selected as primary.
-        /// Since it is impossible to ensure which domain will be set for RR, we will save user's primary domain selection and when minting is done, check if domain set for RR is same as primary. If they won't match, we'll ask if user want to set RR for primary domain just once.
-        if let primaryDomainName = domainsOrderInfoMap.first(where: { $0.value == 0 })?.key,
-           domains.contains(primaryDomainName),
-           wallet.rrDomain == nil {
-            UserDefaults.preferableDomainNameForRR = primaryDomainName
-        } else if wallet.domains.isEmpty {
-            /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
-            UserDefaults.preferableDomainNameForRR = domains.first
-        }
-   
+        let mintingDomains = appContext.walletsDataService.didMintDomainsWith(domainNames: domains,
+                                                                              to: wallet)
+       
         await MainActor.run {
             if domains.count > 1 {
                 didSkipMinting()
