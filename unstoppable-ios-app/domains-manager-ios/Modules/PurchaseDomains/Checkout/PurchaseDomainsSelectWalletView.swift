@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-typealias PurchaseDomainSelectWalletCallback = (WalletWithInfo)->()
+typealias PurchaseDomainSelectWalletCallback = (WalletEntity)->()
 
 struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
     
     @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
 
-    @State var selectedWallet: WalletWithInfo
-    let wallets: [WalletWithInfo]
+    @State var selectedWallet: WalletEntity
+    let wallets: [WalletEntity]
     let selectedWalletCallback: PurchaseDomainSelectWalletCallback
     var analyticsName: Analytics.ViewName { analyticsViewName }
     
@@ -28,10 +28,8 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
                     .multilineTextAlignment(.center)
                 UDCollectionSectionBackgroundView {
                     LazyVStack {
-                        ForEach(wallets, id: \.wallet.address) { wallet in
-                            if let displayInfo = wallet.displayInfo {
-                                walletRowView(displayInfo)
-                            }
+                        ForEach(wallets, id: \.address) { wallet in
+                            walletRowView(wallet)
                         }
                     }
                     .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
@@ -45,9 +43,9 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension PurchaseDomainsSelectWalletView {
     @ViewBuilder
-    func walletRowView(_ wallet: WalletDisplayInfo) -> some View {
-        let walletDisplayInfo = WalletRowDisplayInfo(wallet: wallet,
-                                                     isSelected: wallet.address == selectedWallet.wallet.address)
+    func walletRowView(_ wallet: WalletEntity) -> some View {
+        let walletDisplayInfo = WalletRowDisplayInfo(wallet: wallet.displayInfo,
+                                                     isSelected: wallet.address == selectedWallet.address)
         
         UDCollectionListRowButton(content: {
             UDListItemView(title: walletDisplayInfo.title,
@@ -58,7 +56,7 @@ private extension PurchaseDomainsSelectWalletView {
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
 
-            guard let selectedWallet = wallets.first(where: { $0.wallet.address == wallet.address }) else { return }
+            let selectedWallet = wallet
             self.selectedWallet = selectedWallet
             selectedWalletCallback(selectedWallet)
             presentationMode.wrappedValue.dismiss()
@@ -100,5 +98,5 @@ private extension PurchaseDomainsSelectWalletView {
 }
 
 #Preview {
-    PurchaseDomainsSelectWalletView(selectedWallet: WalletWithInfo.mock[0], wallets: WalletWithInfo.mock, selectedWalletCallback: { _ in })
+    PurchaseDomainsSelectWalletView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0], wallets: MockEntitiesFabric.Wallet.mockEntities(), selectedWalletCallback: { _ in })
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 @MainActor
 protocol DomainDetailsViewPresenterProtocol: BasePresenterProtocol {
@@ -27,16 +28,19 @@ final class DomainDetailsViewPresenter: NSObject, ViewAnalyticsLogger {
     private var domain: DomainDisplayInfo
     private let shareDomainHandler: ShareDomainHandler
     private weak var view: DomainDetailsViewProtocol?
+    private var cancellables: Set<AnyCancellable> = []
+
     var analyticsName: Analytics.ViewName { .domainDetails }
     
     init(view: DomainDetailsViewProtocol,
-         domain: DomainDisplayInfo,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         domain: DomainDisplayInfo) {
         self.view = view
         self.domain = domain
         self.shareDomainHandler = ShareDomainHandler(domain: domain)
         super.init()
-        dataAggregatorService.addListener(self)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
     }
 }
 
@@ -63,34 +67,20 @@ extension DomainDetailsViewPresenter: DomainDetailsViewPresenterProtocol {
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension DomainDetailsViewPresenter: DataAggregatorServiceListener {
-    nonisolated
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task { @MainActor in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .walletsListUpdated(let walletsWithInfo):
-                    if walletsWithInfo.first(where: { domain.isOwned(by: [$0.wallet])}) == nil {
-                        await view?.dismiss(animated: true)
-                    }
-                case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    if let domain = domains.changed(domain: self.domain) {
-                        self.domain = domain
-                        loadDomainPFPAndQR()
-                    }
-                case .primaryDomainChanged: return 
-                }
-            case .failure:
-                return
-            }
-        }
-    }
-}
-
 // MARK: - Private functions
 private extension DomainDetailsViewPresenter {
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        guard let wallet = wallets.findWithAddress(domain.ownerWallet) else {
+            view?.dismiss(animated: true)
+            return
+        }
+        
+        if let domain = wallet.domains.changed(domain: self.domain) {
+            self.domain = domain
+            loadDomainPFPAndQR()
+        }
+    }
+    
     func loadDomainPFPAndQR() {
         let domain = self.domain
         Task.detached(priority: .high) { [weak self] in

@@ -38,7 +38,6 @@ final class WalletsDataService {
         wallets = storage.getCachedWallets()
         queue.async {
             self.ensureConsistencyWithUDWallets()
-            self.setCachedSelectedWalletAndRefresh()
         }
     }
     
@@ -46,10 +45,11 @@ final class WalletsDataService {
 
 // MARK: - WalletsDataServiceProtocol
 extension WalletsDataService: WalletsDataServiceProtocol {
-    func setSelectedWallet(_ wallet: WalletEntity) {
+    func setSelectedWallet(_ wallet: WalletEntity?) {
         selectedWallet = wallet
-        refreshDataForWalletAsync(wallet)
-        UserDefaults.selectedWalletAddress = wallet.address
+        if let wallet {
+            refreshDataForWalletAsync(wallet)
+        }
     }
     
     func refreshDataForWallet(_ wallet: WalletEntity) async throws  {
@@ -61,6 +61,57 @@ extension WalletsDataService: WalletsDataServiceProtocol {
             refreshDataForWalletAsync(wallet)
         }
     }
+    
+    func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
+                            pendingProfiles: [DomainProfilePendingChanges]) async {
+        guard !purchasedDomains.isEmpty,
+              let wallet = wallets.first(where: { $0.address == purchasedDomains[0].walletAddress }) else { return }
+        
+        var domains = wallet.domains
+        let purchasedDomainsDisplayInfo = await transformPendingPurchasedDomainToDomainsWithInfo(purchasedDomains,
+                                                                                                     pendingProfiles: pendingProfiles).map { $0.displayInfo }
+        domains.append(contentsOf: purchasedDomainsDisplayInfo)
+        mutateWalletEntity(wallet) { wallet in
+            wallet.updateDomains(domains)
+        }
+    }
+    
+    func didMintDomainsWith(domainNames: [String],
+                            to wallet: WalletEntity) -> [MintingDomain] {
+        guard !domainNames.isEmpty else { return [] }
+        
+        let transactions = domainNames.map { TransactionItem(id: 0,
+                                                         domainName: $0,
+                                                         isPending: true,
+                                                         type: .maticTx,
+                                                         operation: .mintDomain) }
+        transactionsService.cacheTransactions(transactions)
+        
+        let mintingDomains = domainNames.map { MintingDomain(name: $0,
+                                                         walletAddress: wallet.address,
+                                                         isPrimary: false,
+                                                         transactionHash: nil) }
+        
+        var currentMintingDomains = MintingDomainsStorage.retrieveMintingDomains()
+        currentMintingDomains.append(contentsOf: mintingDomains)
+        try? MintingDomainsStorage.save(mintingDomains: currentMintingDomains)
+        let newDomains = createDomainsFrom(mintingDomains: mintingDomains,
+                                        pfpInfo: [],
+                                        reverseResolutionDomainName: nil).map { $0.displayInfo }
+        var domains = wallet.domains
+        domains.append(contentsOf: newDomains)
+        mutateWalletEntity(wallet) { wallet in
+            wallet.updateDomains(domains)
+        }
+        
+        return mintingDomains
+    }
+    
+    func refreshDataForWalletDomain(_ domainName: DomainName) async throws {
+        guard let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }) else { throw WalletsDataServiceError.walletNotFound }
+        
+        try await refreshDataForWallet(wallet)
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -68,34 +119,31 @@ extension WalletsDataService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
             switch notification {
-            case .walletsUpdated, .walletRemoved:
+            case .walletsUpdated:
+                /// ATM put delay to fix issue when wallet's state is not external immediately after this notification trigerred
+                await Task.sleep(seconds: 0.2)
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
                 if let selectedWallet,
-                   let domainIndex = selectedWallet.domains.firstIndex(where: { $0.name == domainName }) {
-                    var domain = selectedWallet.domains[domainIndex]
+                   var domain = selectedWallet.domains.first(where: { $0.name == domainName }) {
                     domain.setState(.updatingRecords)
                     mutateWalletEntity(selectedWallet) { wallet in
-                        wallet.rrDomain = domain
-                        wallet.domains[domainIndex] = domain
+                        wallet.changeRRDomain(domain)
                     }
                     refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
+            case .walletRemoved:
+                return
             }
         }
     }
     
     private func udWalletsUpdated() {
         ensureConsistencyWithUDWallets()
-        
-        if self.wallets.first(where: { $0.address == selectedWallet?.address }) == nil {
-            if self.wallets.isEmpty {
-                UserDefaults.selectedWalletAddress = nil
-                selectedWallet = nil
-            } else {
-                setSelectedWallet(self.wallets.first!)
-            }
+        let updatedSelectedWallet = wallets.first(where: { $0.address == selectedWallet?.address })
+        if updatedSelectedWallet != nil {
+            selectedWallet = updatedSelectedWallet
         }
     }
 }
@@ -153,8 +201,7 @@ private extension WalletsDataService {
                mintingDomainsNames.isEmpty,
                pendingPurchasedDomains.isEmpty {
                 mutateWalletEntity(wallet) { wallet in
-                    wallet.domains = []
-                    wallet.rrDomain = nil
+                    wallet.updateDomains([])
                 }
                 return
             }
@@ -228,38 +275,12 @@ private extension WalletsDataService {
         let mintingDomainsNames = mintingTransactions.compactMap({ $0.domainName })
         var mintingDomainsWithDisplayInfoItems = [DomainWithDisplayInfo]()
         
-        func detectMintingDomains() -> [MintingDomain] {
-            let mintingStoredDomains = MintingDomainsStorage.retrieveMintingDomains().filter({ $0.walletAddress == wallet.address })
-            let mintingDomains: [MintingDomain] = mintingDomainsNames.compactMap({ (_ domainName: String) -> MintingDomain? in
-                guard let mintingDomain = mintingStoredDomains.first(where: { $0.name == domainName }) else { return nil }
-                
-                return MintingDomain(name: domainName,
-                                     walletAddress: mintingDomain.walletAddress,
-                                     isPrimary: false,
-                                     transactionHash: mintingDomain.transactionHash)
-            })
-            return mintingDomains
-        }
-        
         if !mintingDomainsNames.isEmpty {
-            let mintingDomains = detectMintingDomains()
-            mintingDomainsWithDisplayInfoItems = mintingDomains.map({
-                let domainName = $0.name
-                let domain = DomainItem(name: domainName,
-                                        ownerWallet: $0.walletAddress,
-                                        transactionHashes: [$0.transactionHash ?? ""])
-                let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domainName })
-                let order = SortDomainsManager.shared.orderFor(domainName: domainName)
-                
-                let displayInfo = DomainDisplayInfo(name: domainName,
-                                                    ownerWallet: $0.walletAddress,
-                                                    pfpInfo: domainPFPInfo,
-                                                    state: .minting,
-                                                    order: order,
-                                                    isSetForRR: reverseResolutionDomainName == domainName)
-                
-                return DomainWithDisplayInfo(domain: domain, displayInfo: displayInfo)
-            })
+            let mintingDomains = createMintingDomainsIn(walletAddress: wallet.address,
+                                                        mintingDomainsNames: mintingDomainsNames)
+            mintingDomainsWithDisplayInfoItems = createDomainsFrom(mintingDomains: mintingDomains,
+                                                                   pfpInfo: pfpInfo,
+                                                                   reverseResolutionDomainName: reverseResolutionDomainName)
             
             domainsWithDisplayInfo.remove(domains: mintingDomainsWithDisplayInfoItems)
             try? MintingDomainsStorage.save(mintingDomains: mintingDomains)
@@ -270,11 +291,46 @@ private extension WalletsDataService {
         let finalDomainsWithDisplayInfo = domainsWithDisplayInfo + mintingDomainsWithDisplayInfoItems
         
         mutateWalletEntity(wallet) { wallet in
-            wallet.domains = finalDomainsWithDisplayInfo.map { $0.displayInfo }
-            wallet.rrDomain = finalDomainsWithDisplayInfo.first(where: { $0.displayInfo.isSetForRR })?.displayInfo
+            wallet.updateDomains(finalDomainsWithDisplayInfo.map({ $0.displayInfo }))
         }
         
         return finalDomainsWithDisplayInfo
+    }
+    
+    func createDomainsFrom(mintingDomains: [MintingDomain],
+                           pfpInfo: [DomainPFPInfo],
+                           reverseResolutionDomainName: DomainName?) -> [DomainWithDisplayInfo] {
+        mintingDomains.map({
+            let domainName = $0.name
+            let domain = DomainItem(name: domainName,
+                                    ownerWallet: $0.walletAddress,
+                                    transactionHashes: [$0.transactionHash ?? ""])
+            let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domainName })
+            let order = SortDomainsManager.shared.orderFor(domainName: domainName)
+            
+            let displayInfo = DomainDisplayInfo(name: domainName,
+                                                ownerWallet: $0.walletAddress,
+                                                pfpInfo: domainPFPInfo,
+                                                state: .minting,
+                                                order: order,
+                                                isSetForRR: reverseResolutionDomainName == domainName)
+            
+            return DomainWithDisplayInfo(domain: domain, displayInfo: displayInfo)
+        })
+    }
+    
+    func createMintingDomainsIn(walletAddress: HexAddress,
+                                mintingDomainsNames: [String]) -> [MintingDomain] {
+        let mintingStoredDomains = MintingDomainsStorage.retrieveMintingDomains().filter({ $0.walletAddress == walletAddress })
+        let mintingDomains: [MintingDomain] = mintingDomainsNames.compactMap({ (_ domainName: String) -> MintingDomain? in
+            guard let mintingDomain = mintingStoredDomains.first(where: { $0.name == domainName }) else { return nil }
+            
+            return MintingDomain(name: domainName,
+                                 walletAddress: mintingDomain.walletAddress,
+                                 isPrimary: false,
+                                 transactionHash: mintingDomain.transactionHash)
+        })
+        return mintingDomains
     }
     
     func resolveDomainPFPInfo(for domainName: String,
@@ -329,6 +385,18 @@ private extension WalletsDataService {
                                                 displayInfo: domainDisplayInfo))
         }
         return domainsWithDisplayInfo
+    }
+    
+    func transformPendingPurchasedDomainToDomainsWithInfo(_ purchasedDomains: [PendingPurchasedDomain],
+                                                          pendingProfiles: [DomainProfilePendingChanges]) async -> [DomainWithDisplayInfo] {
+        let pendingPurchasedDomains = purchasedDomains.map {
+            DomainItem(name: $0.name,
+                       ownerWallet: $0.walletAddress,
+                       blockchain: .Matic)
+        }
+        return await transformPendingDomainItemsToDomainsWithInfo(pendingPurchasedDomains,
+                                                                  using: [],
+                                                                  pendingProfiles: pendingProfiles)
     }
     
     func loadDomainsPFPIfNotTooLarge(_ domains: [DomainItem]) async throws -> [DomainPFPInfo] {
@@ -438,42 +506,28 @@ private extension WalletsDataService {
 
 // MARK: - Setup methods
 private extension WalletsDataService {
-    func setCachedSelectedWalletAndRefresh() {
-        selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
-        if let selectedWallet {
-            refreshDataForWalletAsync(selectedWallet)
-        }
-        for wallet in wallets where wallet.address != selectedWallet?.address {
-            refreshDataForWalletAsync(wallet)
-        }
-    }
-    
     func ensureConsistencyWithUDWallets() {
         let udWallets = getUDWallets()
         
         /// Check removed wallets
-        let removedWallets = wallets.filter { walletEntity in
-            udWallets.first(where: { $0.address == walletEntity.address }) == nil
+        var wallets = wallets.filter { walletEntity in
+            udWallets.first(where: { $0.address == walletEntity.address }) != nil
         }
-        if !removedWallets.isEmpty {
-            wallets = wallets.filter { walletEntity in
-                removedWallets.first(where: { $0.address == walletEntity.address }) == nil
+        
+        /// Add or update wallets
+        var newWallets: [WalletEntity] = []
+        for udWallet in udWallets {
+            if let i = wallets.firstIndex(where: { $0.address == udWallet.address }) {
+                wallets[i].udWalletUpdated(udWallet)
+            } else if let newWallet = createNewWalletEntityFor(udWallet: udWallet) {
+                wallets.append(newWallet)
+                newWallets.append(newWallet)
             }
         }
         
-        /// Check missing wallets
-        let missingWallets = udWallets.filter { udWallet in
-            wallets.first(where: { $0.address == udWallet.address }) == nil
-        }
-        if !missingWallets.isEmpty {
-            let newWallets = missingWallets.compactMap { createNewWalletEntityFor(udWallet: $0) }
-            wallets.append(contentsOf: newWallets)
-        }
-        
-        let needToUpdateCache = !removedWallets.isEmpty || !missingWallets.isEmpty
-        if needToUpdateCache {
-            storage.cacheWallets(wallets)
-        }
+        storage.cacheWallets(wallets)
+        self.wallets = wallets
+        newWallets.forEach { refreshDataForWalletAsync($0) }
     }
     
     func createNewWalletEntityFor(udWallet: UDWallet) -> WalletEntity? {
@@ -485,5 +539,12 @@ private extension WalletsDataService {
                             nfts: [],
                             balance: [],
                             rrDomain: nil)
+    }
+}
+
+// MARK: - Private methods
+private extension WalletsDataService {
+    enum WalletsDataServiceError: String, LocalizedError {
+        case walletNotFound
     }
 }

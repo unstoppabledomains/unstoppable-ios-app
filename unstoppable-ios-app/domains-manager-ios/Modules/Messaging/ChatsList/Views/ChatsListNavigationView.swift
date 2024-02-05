@@ -76,64 +76,55 @@ final class ChatsListNavigationView: UIView {
 
 // MARK: - Open methods
 extension ChatsListNavigationView {
-    func setWithConfiguration(_ configuration: Configuration) {
-        setWithWallet(configuration.selectedWallet)
-        setButtonWith(configuration: configuration)
-        chevron.isHidden = configuration.wallets.count <= 1
-        titleButton.isUserInteractionEnabled = !chevron.isHidden
-        self.isLoading = configuration.isLoading
-        activityIndicator.startAnimating()
-        activityIndicator.isHidden = !isLoading
-        setNeedsLayout()
-        layoutIfNeeded()
+    func setWithState(_ state: State,
+                      isSelectable: Bool) {
+        switch state {
+        case .wallet(let configuration):
+            setWithConfiguration(configuration)
+        case .webAccount(let user):
+            setWithWebAccount(user)
+        }
+        chevron.isHidden = !isSelectable
+        titleButton.isUserInteractionEnabled = isSelectable
     }
 }
 
 // MARK: - Private methods
 private extension ChatsListNavigationView {
+    func setWithWebAccount(_ user: FirebaseUser) {
+        setTitle(user.displayName)
+        self.isLoading = false
+        activityIndicator.isHidden = true
+        imageView.isHidden = true
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
+    func setWithConfiguration(_ configuration: Configuration) {
+        setWithWallet(configuration.selectedWallet)
+        self.isLoading = configuration.isLoading
+        imageView.isHidden = false
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = !isLoading
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
     func setWithWallet(_ wallet: WalletEntity) {
         let title = getTitleFor(wallet: wallet)
+        setTitle(title)
+        Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
+    }
+    
+    func setTitle(_ title: String) {
         titleButton.setAttributedTextWith(text: title,
                                           font: titleFont,
                                           textColor: .foregroundDefault,
                                           lineBreakMode: .byTruncatingTail)
-        Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
     }
 
     func getTitleFor(wallet: WalletEntity) -> String {
         wallet.rrDomain?.name ?? wallet.displayName
-    }
-    
-    func setButtonWith(configuration: Configuration) {
-        titleButton.addAction(UIAction(handler: { [weak self]  _ in
-            UDVibration.buttonTap.vibrate()
-            self?.pressedCallback?()
-        }), for: .touchUpInside)
-    }
-    
-    func menuAction(for walletTitleInfo: WalletTitleInfo) async -> UIMenuElement {
-        let wallet = walletTitleInfo.wallet
-        let title = getTitleFor(wallet: wallet)
-        var subtitle: String
-        if wallet.rrDomain == nil {
-            subtitle = String.Constants.messagingSetPrimaryDomain.localized()
-        } else {
-            subtitle = wallet.displayName
-            if let number = walletTitleInfo.numberOfUnreadMessages,
-               number > 0 {
-                subtitle = String.Constants.newMessage.localized() + " · " + subtitle
-            }
-        }
-        
-        let avatar = await getAvatarImageFor(wallet: wallet)
-        let action = UIAction.createWith(title: title,
-                                         subtitle: subtitle,
-                                         image: avatar,
-                                         handler: { [weak self] _ in
-            UDVibration.buttonTap.vibrate()
-            self?.walletSelectedCallback?(wallet)
-        })
-        return action
     }
     
     func getAvatarImageFor(wallet: WalletEntity) async -> UIImage {
@@ -154,6 +145,7 @@ private extension ChatsListNavigationView {
     
     @objc func titleButtonPressed() {
         UDVibration.buttonTap.vibrate()
+        pressedCallback?()
     }
 }
 
@@ -204,9 +196,12 @@ private extension ChatsListNavigationView {
 extension ChatsListNavigationView {
     struct Configuration {
         let selectedWallet: WalletEntity
-        let wallets: [WalletTitleInfo]
         let isLoading: Bool
-        
+    }
+    
+    enum State {
+        case wallet(Configuration)
+        case webAccount(FirebaseUser)
     }
 
     struct WalletTitleInfo {
@@ -222,8 +217,6 @@ extension ChatsListNavigationView {
     let wallet = wallets[0]
     let wallet2 = wallets[1]
     view.setWithConfiguration(.init(selectedWallet: wallet,
-                                    wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
-                                              .init(wallet: wallet2, numberOfUnreadMessages: 0)],
                                     isLoading: false))
     return view 
 }

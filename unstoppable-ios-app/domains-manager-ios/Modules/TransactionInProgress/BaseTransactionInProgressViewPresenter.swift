@@ -93,6 +93,11 @@ extension BaseTransactionInProgressViewPresenter {
         
         view?.applySnapshot(snapshot, animated: true)
     }
+    
+    func refreshDataForWalletWith(address: String?) async {
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == address }) else { return }
+        try? await appContext.walletsDataService.refreshDataForWallet(wallet)
+    }
 }
 
 // MARK: - Private functions

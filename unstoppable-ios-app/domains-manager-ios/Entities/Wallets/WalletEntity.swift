@@ -11,9 +11,9 @@ struct WalletEntity: Codable {
     
     let address: String 
     let ethFullAddress: String
-    let udWallet: UDWallet
-    let displayInfo: WalletDisplayInfo
-    var domains: [DomainDisplayInfo]
+    private(set) var udWallet: UDWallet
+    private(set) var displayInfo: WalletDisplayInfo
+    private(set) var domains: [DomainDisplayInfo]
     var nfts: [NFTDisplayInfo]
     var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
@@ -27,6 +27,33 @@ struct WalletEntity: Codable {
         self.nfts = nfts
         self.balance = balance
         self.rrDomain = rrDomain
+    }
+    
+    mutating func udWalletUpdated(_ udWallet: UDWallet) {
+        self.udWallet = udWallet
+        if let displayInfo = WalletDisplayInfo(wallet: udWallet,
+                                               domainsCount: domains.count,
+                                               udDomainsCount: domains.lazy.filter { $0.isUDDomain }.count,
+                                               reverseResolutionDomain: rrDomain) {
+            self.displayInfo = displayInfo
+        }
+    }
+    
+    mutating func changeRRDomain(_ domain: DomainDisplayInfo) {
+        self.rrDomain = domain
+        if let domainIndex = domains.firstIndex(where: { $0.isSameEntity(domain) }) {
+            self.domains[domainIndex] = domain
+        }
+        displayInfo.reverseResolutionDomain = domain
+    }
+    
+    mutating func updateDomains(_ domains: [DomainDisplayInfo]) {
+        let rrDomain = domains.first(where: { $0.isSetForRR })
+        self.domains = domains
+        self.rrDomain = rrDomain
+        displayInfo.reverseResolutionDomain = rrDomain
+        displayInfo.domainsCount = domains.count
+        displayInfo.udDomainsCount = domains.lazy.filter { $0.isUDDomain }.count
     }
 }
 
@@ -73,5 +100,17 @@ extension WalletEntity: Hashable {
         hasher.combine(nfts)
         hasher.combine(balance)
         hasher.combine(rrDomain)
+    }
+}
+
+extension Array where Element == WalletEntity {
+    func findWithAddress(_ address: HexAddress?) -> Element? {
+        guard let address else { return nil }
+        
+        return first(where: { $0.address == address })
+    }
+    
+    func combinedDomains() -> [DomainDisplayInfo] {
+        reduce([DomainDisplayInfo](), { $0 + $1.domains })
     }
 }

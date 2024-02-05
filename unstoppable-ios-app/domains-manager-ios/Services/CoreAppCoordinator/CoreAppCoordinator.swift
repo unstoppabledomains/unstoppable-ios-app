@@ -41,9 +41,9 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         setOnboardingAsRoot(flow)
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity) {
+    func showHome(profile: UserProfile) {
 //        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
-        setHomeScreenAsRoot(wallet: wallet) // TODO: - Refactoring
+        setHomeScreenAsRoot(profile: profile)
         if let event = pendingDeepLinkEvent {
             handleDeepLinkEvent(event)
         }
@@ -170,8 +170,8 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         switch currentRoot {
         case .domainsCollection, .home:
-            func awaitPullUpDisappear() async throws {
-                try await Task.sleep(seconds: 0.2)
+            func awaitPullUpDisappear() async {
+                await Task.sleep(seconds: 0.2)
             }
             guard let topVC else { throw WalletConnectUIError.noControllerToPresent }
             do {
@@ -183,7 +183,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
-                try? await awaitPullUpDisappear()
+                await awaitPullUpDisappear()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
@@ -347,9 +347,9 @@ private extension CoreAppCoordinator {
         currentRoot = .domainsCollection(router: router)
     }
     
-    func setHomeScreenAsRoot(wallet: WalletEntity) {
-        let router = HomeTabRouter()
-        let view = HomeTabView(selectedWallet: wallet, tabRouter: router)
+    func setHomeScreenAsRoot(profile: UserProfile) {
+        let router = HomeTabRouter(profile: profile)
+        let view = HomeTabView(tabRouter: router)
         let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
         currentRoot = .home(router: router)

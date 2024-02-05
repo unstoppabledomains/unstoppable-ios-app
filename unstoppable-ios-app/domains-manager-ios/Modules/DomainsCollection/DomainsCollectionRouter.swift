@@ -135,29 +135,29 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
-        Task {
-            let domains = await dataAggregatorService.getDomainsDisplayInfo()
-            
-            let topPresentedViewController = navigationController?.topViewController
-            if let mintingNav = topPresentedViewController as? MintDomainsNavigationController {
-                mintingNav.setMode(mode)
-            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
-                // MARK: - Ignore minting request when add/import/connect wallet
-            } else if presenter?.isResolvingPrimaryDomain == false {
-                await resetNavigationToRoot()
-                guard let viewController = self.viewController,
-                      await isMintingAvailable(in: viewController) else { return }
-                
-                let mintedDomains = domains.interactableItems()
-                
-                runMintDomainsFlow(with: mode,
-                                   mintedDomains: mintedDomains,
-                                   domainsMintedCallback: { [weak self] result in
-                    self?.presenter?.didMintDomains(result: result)
-                },
-                                   in: viewController)
-            }
-        }
+//        Task {
+//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//            
+//            let topPresentedViewController = navigationController?.topViewController
+//            if let mintingNav = topPresentedViewController as? MintDomainsNavigationController {
+//                mintingNav.setMode(mode)
+//            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
+//                // MARK: - Ignore minting request when add/import/connect wallet
+//            } else if presenter?.isResolvingPrimaryDomain == false {
+//                await resetNavigationToRoot()
+//                guard let viewController = self.viewController,
+//                      await isMintingAvailable(in: viewController) else { return }
+//                
+//                let mintedDomains = domains.interactableItems()
+//                
+//                runMintDomainsFlow(with: mode,
+//                                   mintedDomains: mintedDomains,
+//                                   domainsMintedCallback: { [weak self] result in
+//                    self?.presenter?.didMintDomains(result: result)
+//                },
+//                                   in: viewController)
+//            }
+//        }
     }
     
     func showBuyDomainsWebView() {
@@ -315,43 +315,42 @@ private extension DomainsCollectionRouter {
         defer {
             self.navigationController?.updateStatusBar()
         }
-            
-        func show(in viewToPresent: UIViewController) async -> CNavigationController? {
-            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
-        }
-        
-        navigationController?.popToRootViewController(animated: false)
-
-        if let presentedViewController = viewController.presentedViewController {
-            presentedViewController.view.endEditing(true)
-            if let nav = presentedViewController as? EmptyRootCNavigationController,
-               let presentedProfileVC = nav.viewControllers.first as? DomainProfileViewController,
-               let presenter = presentedProfileVC.presenter as? DomainProfileViewPresenter {
-                presenter.replace(domain: domain,
-                                  wallet: wallet,
-                                  walletInfo: walletInfo)
-                nav.popToRootViewController(animated: true)
-                if presentedProfileVC.presentedViewController != nil {
-                    await presentedProfileVC.dismiss(animated: true)
-                }
-                return nav
-            } else {
-                if presentedViewController is UISearchController {
-                    return await show(in: presentedViewController)
-                } else {
-                    await presentedViewController.dismiss(animated: true)
-                    return await show(in: viewController)
-                }
-            }
-        } else {
-            return await show(in: viewController)
-        }
+          
+        return nil
+//        func show(in viewToPresent: UIViewController) async -> CNavigationController? {
+//            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
+//        }
+//        
+//        navigationController?.popToRootViewController(animated: false)
+//
+//        if let presentedViewController = viewController.presentedViewController {
+//            presentedViewController.view.endEditing(true)
+//            if let nav = presentedViewController as? EmptyRootCNavigationController,
+//               let presentedProfileVC = nav.viewControllers.first as? DomainProfileViewController,
+//               let presenter = presentedProfileVC.presenter as? DomainProfileViewPresenter {
+//                presenter.replace(domain: domain,
+//                                  wallet: wallet,
+//                                  walletInfo: walletInfo)
+//                nav.popToRootViewController(animated: true)
+//                if presentedProfileVC.presentedViewController != nil {
+//                    await presentedProfileVC.dismiss(animated: true)
+//                }
+//                return nav
+//            } else {
+//                if presentedViewController is UISearchController {
+//                    return await show(in: presentedViewController)
+//                } else {
+//                    await presentedViewController.dismiss(animated: true)
+//                    return await show(in: viewController)
+//                }
+//            }
+//        } else {
+//            return await show(in: viewController)
+//        }
     }
     
     func awaitUIUpdated() async {
-        let interval: TimeInterval = 0.5
-        let duration = UInt64(interval * 1_000_000_000)
-        try? await Task.sleep(nanoseconds: duration)
+        await Task.sleep(seconds: 0.5)
     }
     
     func showChatsListWith(options: ChatsList.PresentOptions) async {
@@ -370,9 +369,8 @@ private extension DomainsCollectionRouter {
                             by domain: DomainDisplayInfo,
                             in topViewController: UIViewController?) {
         Task {
-            guard let topViewController,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
-            
+            guard let topViewController else { return }
+            let domain = domain.toDomainItem() 
             let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
                                                            name: btDomainInfo.domainName)
             showPublicDomainProfile(of: publicDomainInfo,

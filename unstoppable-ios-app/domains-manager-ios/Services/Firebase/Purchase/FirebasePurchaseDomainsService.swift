@@ -315,7 +315,7 @@ private extension FirebasePurchaseDomainsService {
                    !domainsToPurchase.isEmpty {
                     refreshUserCartAsync()
                 }
-                try await Task.sleep(seconds: 60)
+                await Task.sleep(seconds: 60)
                 runRefreshTimer()
             } catch {
                 

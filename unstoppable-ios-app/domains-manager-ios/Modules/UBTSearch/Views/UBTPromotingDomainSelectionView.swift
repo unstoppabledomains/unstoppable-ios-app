@@ -39,10 +39,7 @@ struct UBTPromotingDomainSelectionView: View {
 // MARK: - Private methods
 private extension UBTPromotingDomainSelectionView {
     func onAppear() {
-        Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            domainsToSelectFrom = domains
-        }
+        domainsToSelectFrom = appContext.walletsDataService.wallets.combinedDomains()
     }
     
     func dismiss() {

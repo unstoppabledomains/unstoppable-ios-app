@@ -22,7 +22,6 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
     private var isAcceptingQRCodes = true
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
@@ -33,13 +32,11 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     init(view: QRScannerViewProtocol,
          selectedWallet: WalletEntity,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.selectedWallet = selectedWallet
-        self.dataAggregatorService = dataAggregatorService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
@@ -192,8 +189,8 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
         }
     }
     
-    internal func getCurrentConnectionTarget() async -> (UDWallet, DomainItem)? {
-        guard let domain = try? await dataAggregatorService.getDomainWith(name: selectedWallet.rrDomain?.name ?? "") else { return nil }
+    internal func getCurrentConnectionTarget() -> (UDWallet, DomainItem)? {
+        guard let domain = selectedWallet.rrDomain?.toDomainItem() else { return nil }
         return (selectedWallet.udWallet, domain)
     }
     
@@ -245,7 +242,7 @@ private extension QRScannerViewPresenter {
     }
     
     func handleWCRequest(_ request: WCRequest) async throws {
-        guard let target = await getCurrentConnectionTarget() else {
+        guard let target = getCurrentConnectionTarget() else {
             throw WalletConnectRequestError.uiHandlerNotSet
         }
         
@@ -260,7 +257,7 @@ private extension QRScannerViewPresenter {
     }
     
     func wait(for interval: TimeInterval) async throws {
-        try await Task.sleep(seconds: interval)
+        await Task.sleep(seconds: interval)
     }
 }
 

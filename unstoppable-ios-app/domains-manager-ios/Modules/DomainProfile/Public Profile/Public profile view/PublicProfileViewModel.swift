@@ -118,17 +118,12 @@ extension PublicProfileView {
         }
         
         func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            Task {
-                guard let domainItem = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
-                    error = PublicProfileError.failedToFindDomain
-                    return
-                }
-                viewingDomainImage = nil
-                isFollowing = nil
-                loadFollowingState()
-                viewingDomain = domainItem
-                loadViewingDomainData()
-            }
+            let domainItem = domain.toDomainItem()
+            viewingDomainImage = nil
+            isFollowing = nil
+            loadFollowingState()
+            viewingDomain = domainItem
+            loadViewingDomainData()
         }
         
         private func loadAllProfileData() {
@@ -159,7 +154,7 @@ extension PublicProfileView {
                 await performAsyncErrorCatchingBlock {
                     let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
                                                                                 fields: [.profile, .records, .socialAccounts])
-                    let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                    let domains = appContext.walletsDataService.wallets.combinedDomains()
                     await waitForAppear()
                     self.profile = profile
                     isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
@@ -188,7 +183,7 @@ extension PublicProfileView {
                     await waitForAppear()
                     self.isFollowing = isFollowing
                     // Hack for SwiftUI doesn't update button status 
-                    try? await Task.sleep(seconds: 0.1)
+                    await Task.sleep(seconds: 0.1)
                     self.isFollowing = isFollowing
                 }
             }
@@ -252,7 +247,7 @@ extension PublicProfileView {
         
         private func loadViewingDomainData() {
             Task {
-                let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                let domains = appContext.walletsDataService.wallets.combinedDomains()
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
                 let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
@@ -268,7 +263,7 @@ extension PublicProfileView {
             
             let dif = uiReadyTime - timeSinceViewAppear
             if dif > 0 {
-                try? await Task.sleep(seconds: dif)
+                await Task.sleep(seconds: dif)
             }
         }
         

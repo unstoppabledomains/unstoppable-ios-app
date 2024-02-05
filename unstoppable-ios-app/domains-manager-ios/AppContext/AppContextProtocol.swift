@@ -9,6 +9,7 @@ import Foundation
 
 protocol AppContextProtocol {
     
+    var userProfileService: UserProfileServiceProtocol { get }
     var notificationsService: NotificationsServiceProtocol { get }
     var permissionsService: PermissionsServiceProtocol { get }
     var pullUpViewService: PullUpViewServiceProtocol { get }

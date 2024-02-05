@@ -42,3 +42,27 @@ extension EnvironmentValues {
         set { self[ImageLoadingServiceKey.self] = newValue }
     }
 }
+
+// MARK: - Image loading service
+private struct FirebaseDomainsServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.firebaseParkedDomainsService
+}
+
+extension EnvironmentValues {
+    var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol {
+        get { self[FirebaseDomainsServiceKey.self] }
+        set { self[FirebaseDomainsServiceKey.self] = newValue }
+    }
+}
+
+// MARK: - User profile service
+private struct UserProfileServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.userProfileService
+}
+
+extension EnvironmentValues {
+    var userProfileService: UserProfileServiceProtocol {
+        get { self[UserProfileServiceKey.self] }
+        set { self[UserProfileServiceKey.self] = newValue }
+    }
+}

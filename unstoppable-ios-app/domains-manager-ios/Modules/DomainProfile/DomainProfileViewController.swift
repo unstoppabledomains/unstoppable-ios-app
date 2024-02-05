@@ -697,18 +697,16 @@ import SwiftUI
 struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
     
     let domain: DomainDisplayInfo
-    let wallet: UDWallet
-    let walletInfo: WalletDisplayInfo
+    let wallet: WalletEntity
     let preRequestedAction: PreRequestedProfileAction?
     let sourceScreen: DomainProfileViewPresenter.SourceScreen
     var dismissCallback: EmptyCallback?
     
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = UDRouter().buildDomainProfileModule(domain: domain,
-                                            wallet: wallet,
-                                            walletInfo: walletInfo,
-                                            preRequestedAction: preRequestedAction,
-                                            sourceScreen: sourceScreen)
+                                                     wallet: wallet,
+                                                     preRequestedAction: preRequestedAction,
+                                                     sourceScreen: sourceScreen)
         let nav = EmptyRootCNavigationController(rootViewController: vc)
         nav.isModalInPresentation = true
         nav.dismissCallback = dismissCallback

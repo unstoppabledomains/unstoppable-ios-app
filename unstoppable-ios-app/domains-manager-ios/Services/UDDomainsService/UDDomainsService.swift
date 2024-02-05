@@ -138,7 +138,7 @@ private extension UDDomainsService {
                                             with: userEmail,
                                             code: securityCode,
                                             stripeIntent: nil)
-            try? await Task.sleep(seconds: 0.1)
+            await Task.sleep(seconds: 0.1)
         } catch {
             let description = error.getTypedDescription()
             Debugger.printFailure(description)

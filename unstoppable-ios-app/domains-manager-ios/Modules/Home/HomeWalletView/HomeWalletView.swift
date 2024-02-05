@@ -14,6 +14,7 @@ struct HomeWalletView: View {
     @State private var isHeaderVisible: Bool = true
     @State private var isOtherScreenPresented: Bool = false
     @State private var navigationState: NavigationStateManager?
+    var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -44,15 +45,15 @@ struct HomeWalletView: View {
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = 
-                    !isOtherScreenPresented &&
+                    !isOtherScreenPushed &&
                     !isHeaderVisible &&
                     tabRouter.tabViewSelection == .wallets
                 }
             }
-            .onChange(of: isOtherScreenPresented) { newValue in
+            .onChange(of: tabRouter.walletViewNavPath) { _ in
                 withAnimation {
-                    navigationState?.isTitleVisible = !isOtherScreenPresented && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPresented
+                    navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
+                    tabRouter.isTabBarVisible = !isOtherScreenPushed
                 }
             }
             .animation(.default, value: viewModel.selectedWallet)
@@ -61,14 +62,13 @@ struct HomeWalletView: View {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                viewFor(navigationDestination: destination)
+            .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
+                HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                     .ignoresSafeArea()
-                    .onAppearanceChange($isOtherScreenPresented)
             }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
-                    settingsNavButtonView()
+                    HomeSettingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     qrNavButtonView()
@@ -257,21 +257,8 @@ private extension HomeWalletView {
     }
     
     @ViewBuilder
-    func settingsNavButtonView() -> some View {
-        NavigationLink(value: NavigationDestination.settings) {
-            Image.gearshape
-                .resizable()
-                .squareFrame(24)
-                .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            
-        }
-    }
-    
-    @ViewBuilder
     func qrNavButtonView() -> some View {
-        NavigationLink(value: NavigationDestination.qrScanner) {
+        NavigationLink(value: HomeWalletNavigationDestination.qrScanner(selectedWallet: viewModel.selectedWallet)) {
             Image.qrBarCodeIcon
                 .resizable()
                 .squareFrame(24)
@@ -281,78 +268,15 @@ private extension HomeWalletView {
             
         }
     }
-    
-    @ViewBuilder
-    func viewFor(navigationDestination: NavigationDestination) -> some View {
-        switch navigationDestination {
-        case .settings:
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
-        case .qrScanner:
-            QRScannerViewControllerWrapper(selectedWallet: viewModel.selectedWallet, qrRecognizedCallback: { })
-                .navigationTitle(String.Constants.scanQRCodeTitle.localized())
-                .navigationBarTitleDisplayMode(.inline)
-        case .minting(let mode, let mintedDomains, let domainsMintedCallback):
-            MintDomainsNavigationControllerWrapper(mode: mode,
-                                                   mintedDomains: mintedDomains,
-                                                   domainsMintedCallback: domainsMintedCallback,
-                                                   mintingNavProvider: { mintingNav in
-                tabRouter.mintingNav = mintingNav
-            })
-            .toolbar(.hidden, for: .navigationBar)
-        case .purchaseDomains(let callback):
-            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
-                .toolbar(.hidden, for: .navigationBar)
-        }
-    }
-}
-
-// MARK: - Open methods
-extension HomeWalletView {
-    enum NavigationDestination: Hashable {
-        case settings
-        case qrScanner
-        case minting(mode: MintDomainsNavigationController.Mode,
-                     mintedDomains: [DomainDisplayInfo],
-                     domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback)
-        case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
-        
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case (.settings, .settings):
-                return true
-            case (.qrScanner, .qrScanner):
-                return true
-            case (.minting, .minting):
-                return true
-            case (.purchaseDomains, .purchaseDomains):
-                return true
-            default:
-                return false
-            }
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            switch self {
-            case .settings:
-                hasher.combine(0)
-            case .qrScanner:
-                hasher.combine(1)
-            case .minting:
-                hasher.combine(2)
-            case .purchaseDomains:
-                hasher.combine(3)
-            }
-        }
-        
-    }
 }
 
 #Preview {
     NavigationView {
-        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
-                                        router: .init()))
-        .environmentObject(HomeTabRouter())
+        let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
+        
+        return HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
+                                               router: router))
+        .environmentObject(router)
     }
 }
 

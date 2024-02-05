@@ -55,18 +55,15 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             view?.hideKeyboard()
             logAnalytic(event: .domainPressed, parameters: [.domainName : searchProfile.name,
                                                             .isUserDomain : String(true)])
-            Task {
-                guard let walletAddress = searchProfile.ownerAddress,
-                      let domainDisplayInfo = domains.first,
-                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name),
-                      let view else { return }
-                
-                let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
-                UDRouter().showPublicDomainProfile(of: domainPublicInfo, 
-                                                   viewingDomain: domain,
-                                                   preRequestedAction: nil,
-                                                   in: view)
-            }
+            guard let walletAddress = searchProfile.ownerAddress,
+                  let domainDisplayInfo = domains.first,
+                  let view else { return }
+            let domain = domainDisplayInfo.toDomainItem()
+            let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
+            UDRouter().showPublicDomainProfile(of: domainPublicInfo,
+                                               viewingDomain: domain,
+                                               preRequestedAction: nil,
+                                               in: view)
         }
     }
     
@@ -95,7 +92,6 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             case .cancelled:
                 return
             case .domainsOrderSet(let domains):
-                await appContext.dataAggregatorService.setDomainsOrder(using: domains)
                 self.domains = domains
                 showDomains()
             case .domainsOrderAndReverseResolutionSet:
@@ -163,7 +159,7 @@ private extension DomainsListSearchPresenter {
         let debounce = self.debounce
         let task: SearchProfilesTask = Task.detached {
             do {
-                try await Task.sleep(seconds: debounce)
+                await Task.sleep(seconds: debounce)
                 try Task.checkCancellation()
                 
                 let profiles = try await self.searchForDomains(searchKey: searchKey)

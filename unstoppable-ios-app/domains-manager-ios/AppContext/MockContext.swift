@@ -9,9 +9,14 @@ import Foundation
 
 #if DEBUG
 final class MockContext: AppContextProtocol {
+    private(set) lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                                                             
+                                                                                              firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                                                              walletsDataService: walletsDataService)
+    
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
-                                                                                                       dataAggregatorService: dataAggregatorService,
+                                                                                                       walletsDataService: walletsDataService,
                                                                                                        udWalletsService: udWalletsService,
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -24,7 +29,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
-        AnalyticsService(dataAggregatorService: dataAggregatorService,
+        AnalyticsService(walletsDataService: walletsDataService,
                          wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = MockAppLaunchService(coreAppCoordinator: coreAppCoordinator,

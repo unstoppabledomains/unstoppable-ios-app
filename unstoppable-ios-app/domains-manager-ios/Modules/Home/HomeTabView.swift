@@ -15,13 +15,11 @@ enum HomeTab: Hashable {
 struct HomeTabView: View {
     
     @StateObject var router: HomeTabRouter
-    let selectedWallet: WalletEntity
     private let id: UUID
 
     var body: some View {
         TabView(selection: $router.tabViewSelection) {
-            HomeWalletView(viewModel: .init(selectedWallet: selectedWallet,
-                                            router: router))
+            currentWalletView()
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
@@ -43,7 +41,7 @@ struct HomeTabView: View {
             UDVibration.buttonTap.vibrate()
         })
         .viewPullUp(router.currentPullUp(id: id))
-        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectWalletPresented))
+        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectProfilePresented))
         .sheet(isPresented: $router.isConnectedAppsListPresented, content: {
             ConnectedAppsListViewControllerWrapper(scanCallback: {
                 router.showQRScanner()
@@ -61,8 +59,7 @@ struct HomeTabView: View {
         })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
-                                               wallet: presentationDetails.wallet.udWallet,
-                                               walletInfo: presentationDetails.wallet.displayInfo,
+                                               wallet: presentationDetails.wallet,
                                                preRequestedAction: presentationDetails.preRequestedProfileAction,
                                                sourceScreen: .domainsCollection,
                                                dismissCallback: presentationDetails.dismissCallback)
@@ -83,10 +80,8 @@ struct HomeTabView: View {
         .environmentObject(router)
     }
     
-    init(selectedWallet: WalletEntity,
-         tabRouter: HomeTabRouter) {
+    init(tabRouter: HomeTabRouter) {
         self._router = StateObject(wrappedValue: tabRouter)
-        self.selectedWallet = selectedWallet
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
     }
@@ -100,13 +95,24 @@ private extension HomeTabView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    HomeWalletWalletSelectionView()
+                    UserProfileSelectionView()
                         .adaptiveSheet()
                 })
+        }
+    }
+    
+    @ViewBuilder
+    func currentWalletView() -> some View {
+        switch router.profile {
+        case .wallet(let wallet):
+            HomeWalletView(viewModel: .init(selectedWallet: wallet,
+                                            router: router))
+        case .webAccount(let user):
+            HomeWebView(user: user)
         }
     }
 }
 
 #Preview {
-    HomeTabView(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!, tabRouter: HomeTabRouter())
+    HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
 }

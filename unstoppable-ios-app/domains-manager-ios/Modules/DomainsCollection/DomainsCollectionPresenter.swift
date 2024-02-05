@@ -47,7 +47,7 @@ final class DomainsCollectionPresenter: ViewAnalyticsLogger {
 extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     @MainActor
     func viewDidLoad() {
-        dataAggregatorService.addListener(self)
+//        dataAggregatorService.addListener(self)
         appContext.externalEventsService.addListener(self)
         appContext.messagingService.addListener(self)
         view?.setSettingsButtonHidden(false)
@@ -187,7 +187,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             AppReviewService.shared.appReviewEventDidOccurs(event: .didMintDomains)
         case .domainsPurchased(let details):
             Task {
-                try? await Task.sleep(seconds: 0.2)
+                await Task.sleep(seconds: 0.2)
                 router.runMintDomainsFlow(with: .domainsPurchased(details: details))
             }
         }
@@ -318,21 +318,21 @@ private extension DomainsCollectionPresenter {
     }
     
     func loadInitialData() async {
-        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
-        stateController.set(walletsWithInfo: walletsWithInfo)
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        setDomains(domains, shouldCheckPresentedDomains: true)
-        
-        if let _ = domains.first(where: { $0.isPrimary }) {
-            switch initialMintingState {
-            case .primaryDomainMinted:
-                view?.runConfettiAnimation()
-            case .default, .mintingPrimary:
-                return
-            }
-        } else {
-            await resolvePrimaryDomain(domains: domains)
-        }
+//        let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
+//        stateController.set(walletsWithInfo: walletsWithInfo)
+//        let domains = await dataAggregatorService.getDomainsDisplayInfo()
+//        setDomains(domains, shouldCheckPresentedDomains: true)
+//        
+//        if let _ = domains.first(where: { $0.isPrimary }) {
+//            switch initialMintingState {
+//            case .primaryDomainMinted:
+//                view?.runConfettiAnimation()
+//            case .default, .mintingPrimary:
+//                return
+//            }
+//        } else {
+//            await resolvePrimaryDomain(domains: domains)
+//        }
     }
     
     func isPrimaryDomainResolved(domains: [DomainDisplayInfo]) -> Bool {
@@ -399,22 +399,22 @@ private extension DomainsCollectionPresenter {
         if let walletWithoutRR = findWalletWithoutRRDomain(domains: domains),
            let walletInfo = walletWithoutRR.displayInfo,
            !isResolvingPrimaryDomain,
-           router.isTopPresented(),
-           await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: walletWithoutRR.wallet) {
-            guard let view = self.view else { return }
-            
-            self.isResolvingPrimaryDomain = true
-            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                                        for: walletWithoutRR.wallet,
-                                                                        walletInfo: walletInfo,
-                                                                        mode: .chooseFirstDomain)
-            self.isResolvingPrimaryDomain = false
-            switch result {
-            case .cancelled, .set:
-                await resolvePrimaryDomain(domains: domains)
-            case .failed:
-                Void()
-            }
+           router.isTopPresented() {
+//           await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: walletWithoutRR.wallet) {
+//            guard let view = self.view else { return }
+//            
+//            self.isResolvingPrimaryDomain = true
+//            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
+//                                                                        for: walletWithoutRR.wallet,
+//                                                                        walletInfo: walletInfo,
+//                                                                        mode: .chooseFirstDomain)
+//            self.isResolvingPrimaryDomain = false
+//            switch result {
+//            case .cancelled, .set:
+//                await resolvePrimaryDomain(domains: domains)
+//            case .failed:
+//                Void()
+//            }
         }
         
         if !domains.requirePNItems().isEmpty {
@@ -424,11 +424,11 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func updateDomainsListOrder(with domains: [DomainDisplayInfo], newIndex: Int?) async {
-        stateController.set(domains: domains)
-        if let newIndex {
-            setNewIndex(newIndex)
-        }
-        await dataAggregatorService.setDomainsOrder(using: domains)
+//        stateController.set(domains: domains)
+//        if let newIndex {
+//            setNewIndex(newIndex)
+//        }
+//        await dataAggregatorService.setDomainsOrder(using: domains)
     }
     
     @MainActor
@@ -471,48 +471,48 @@ private extension DomainsCollectionPresenter {
     }
     
     func showReverseResolutionPromptIfNeeded() async {
-        do {
-            let domains = stateController.domains
-            let walletsWithInfo = stateController.walletsWithInfo
-            guard let primary = domains.first(where: { $0.isPrimary }),
-                  primary.isAbleToSetAsRR,
-                  let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
-                  let walletInfo = walletWithInfo.displayInfo,
-                  walletInfo.reverseResolutionDomain == nil,
-                  (await dataAggregatorService.isReverseResolutionChangeAllowed(for: primary)) else {
-                return }
-            
-            if UserDefaults.setupRRPromptCounter == 0 ||
-                UserDefaults.setupRRPromptCounter >= Constants.setupRRPromptRepeatInterval {
-                try await askToSetReverseResolutionFor(domain: primary, in: walletInfo)
-                UserDefaults.setupRRPromptCounter = 0
-            } else {
-                UserDefaults.setupRRPromptCounter += 1
-            }
-        } catch AuthentificationError.cancelled {
-            await showReverseResolutionPromptIfNeeded()
-        } catch {
-            UserDefaults.setupRRPromptCounter = 1
-        }
+//        do {
+//            let domains = stateController.domains
+//            let walletsWithInfo = stateController.walletsWithInfo
+//            guard let primary = domains.first(where: { $0.isPrimary }),
+//                  primary.isAbleToSetAsRR,
+//                  let walletWithInfo = walletsWithInfo.first(where: { primary.isOwned(by: $0.wallet ) }),
+//                  let walletInfo = walletWithInfo.displayInfo,
+//                  walletInfo.reverseResolutionDomain == nil,
+//                  (await dataAggregatorService.isReverseResolutionChangeAllowed(for: primary)) else {
+//                return }
+//            
+//            if UserDefaults.setupRRPromptCounter == 0 ||
+//                UserDefaults.setupRRPromptCounter >= Constants.setupRRPromptRepeatInterval {
+//                try await askToSetReverseResolutionFor(domain: primary, in: walletInfo)
+//                UserDefaults.setupRRPromptCounter = 0
+//            } else {
+//                UserDefaults.setupRRPromptCounter += 1
+//            }
+//        } catch AuthentificationError.cancelled {
+//            await showReverseResolutionPromptIfNeeded()
+//        } catch {
+//            UserDefaults.setupRRPromptCounter = 1
+//        }
     }
     
     func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainDisplayInfo]) async {
-        let walletsWithInfo = stateController.walletsWithInfo
-        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
-              router.isTopPresented(),
-              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
-              !preferableDomainForRR.isMinting,
-              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
-              let walletInfo = walletWithInfo.displayInfo else { return }
-        
-        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
-            UserDefaults.preferableDomainNameForRR = nil
-            return
-        }
-        
-        view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
-        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
-        UserDefaults.preferableDomainNameForRR = nil
+//        let walletsWithInfo = stateController.walletsWithInfo
+//        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
+//              router.isTopPresented(),
+//              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
+//              !preferableDomainForRR.isMinting,
+//              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
+//              let walletInfo = walletWithInfo.displayInfo else { return }
+//        
+//        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
+//            UserDefaults.preferableDomainNameForRR = nil
+//            return
+//        }
+//        
+//        view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
+//        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
+//        UserDefaults.preferableDomainNameForRR = nil
     }
     
     func askToSetReverseResolutionFor(domain: DomainDisplayInfo, in walletInfo: WalletDisplayInfo) async throws {
@@ -523,7 +523,7 @@ private extension DomainsCollectionPresenter {
                                                                                   in: view)
         await view.dismissPullUpMenu()
         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-        let domain = try await dataAggregatorService.getDomainWith(name: domain.name)
+        let domain = domain.toDomainItem()
         do {
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: view)
@@ -537,23 +537,23 @@ private extension DomainsCollectionPresenter {
     }
     
     func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
-        guard let view else { return }
-        
-        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
-        if !profilesReadyToSubmit.isEmpty {
-            let domainItems = await dataAggregatorService.getDomainItems()
-            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
-                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
-                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
-                }
-                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
-                return nil
-            }
-            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
-                                                                            in: view)
-            await view.dismissPullUpMenu()
-            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
-        }
+//        guard let view else { return }
+//        
+//        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
+//        if !profilesReadyToSubmit.isEmpty {
+//            let domainItems = await dataAggregatorService.getDomainItems()
+//            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+//                if let domain = domainItems.first(where: { $0.name == profile.domainName }) {
+//                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain)
+//                }
+//                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+//                return nil
+//            }
+//            await appContext.pullUpViewService.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+//                                                                            in: view)
+//            await view.dismissPullUpMenu()
+//            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+//        }
     }
     
     func getPurchasedProfilesReadyToSubmit(domains: [DomainDisplayInfo]) -> [DomainProfilePendingChanges] {
@@ -579,7 +579,7 @@ private extension DomainsCollectionPresenter {
         do {
             try await NetworkService().updatePendingDomainProfiles(with: requests)
             PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
-            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+//            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
         } catch {
             do {
                 try await appContext.pullUpViewService.showFinishSetupProfileFailedPullUp(in: view)
@@ -822,12 +822,11 @@ private extension DomainsCollectionPresenter {
         Task {
             switch domain.usageType {
             case .newNonInteractable:
-                guard let walletAddress = domain.ownerWallet,
-                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                guard let walletAddress = domain.ownerWallet else {
                     Debugger.printInfo("No profile for a non-interactible domain")
                     self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
                     return }
-                
+                let domain = domain.toDomainItem()
                 let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
                 router.showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain)
             case .zil:
@@ -843,24 +842,25 @@ private extension DomainsCollectionPresenter {
                     topView.openLink(.deprecatedCoinTLDPage)
                 }
             case .normal:
-                guard !domain.isMinting else {
-                    showDomainMintingInProgress(domain)
-                    return }
-                guard !domain.isTransferring else {
-                    showDomainTransferringInProgress(domain)
-                    return }
-                
-                let walletsWithInfo = stateController.walletsWithInfo
-                guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
-                      let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
-                
-                await router.showDomainProfile(domain, 
-                                               wallet: domainWallet,
-                                               walletInfo: walletInfo, 
-                                               preRequestedAction: nil,
-                                               dismissCallback: { [weak self] in
-                    self?.didCloseDomainProfile(domain)
-                })
+                return
+//                guard !domain.isMinting else {
+//                    showDomainMintingInProgress(domain)
+//                    return }
+//                guard !domain.isTransferring else {
+//                    showDomainTransferringInProgress(domain)
+//                    return }
+//                
+//                let walletsWithInfo = stateController.walletsWithInfo
+//                guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
+//                      let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
+//                
+//                await router.showDomainProfile(domain, 
+//                                               wallet: domainWallet,
+//                                               walletInfo: walletInfo, 
+//                                               preRequestedAction: nil,
+//                                               dismissCallback: { [weak self] in
+//                    self?.didCloseDomainProfile(domain)
+//                })
             case .parked:
                 let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
                                                                                   domain: domain,
@@ -876,16 +876,16 @@ private extension DomainsCollectionPresenter {
     }
     
     func runDefaultMintingFlow() {
-        Task {
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            guard !wallets.isEmpty else {
-                showNoWalletsToClaimDomainPullUp()
-                return
-            }
-            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
-            let email = userProfile?.email ?? User.instance.email
-            router.runMintDomainsFlow(with: .default(email: email))
-        }
+//        Task {
+//            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+//            guard !wallets.isEmpty else {
+//                showNoWalletsToClaimDomainPullUp()
+//                return
+//            }
+//            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
+//            let email = userProfile?.email ?? User.instance.email
+//            router.runMintDomainsFlow(with: .default(email: email))
+//        }
     }
     func showNoWalletsToClaimDomainPullUp() {
         Task { @MainActor in

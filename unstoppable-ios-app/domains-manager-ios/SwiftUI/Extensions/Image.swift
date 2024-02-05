@@ -60,5 +60,8 @@ extension Image {
     static let squareInfo = Image("squareInfo")
     static let chainLinkIcon = Image("chainLinkIcon")
     static let timeIcon = Image("timeIcon24")
+    static let globeIcon = Image("globeIcon")
+    static let logOutIcon = Image("logOutIcon24")
+    static let wallet3Icon = Image("wallet3Icon")
     
 }

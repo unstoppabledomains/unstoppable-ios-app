@@ -13,7 +13,7 @@ protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEvent
     
     func startWith(window: UIWindow)
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
-    func showHome(mintingState: DomainsCollectionMintingState, wallet: WalletEntity)
+    func showHome(profile: UserProfile)
     func showAppUpdateRequired()
     func setKeyWindow()
     @discardableResult

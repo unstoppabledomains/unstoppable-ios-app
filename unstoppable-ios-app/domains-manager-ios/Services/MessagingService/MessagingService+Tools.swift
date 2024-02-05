@@ -8,15 +8,6 @@
 import Foundation
 
 extension MessagingService {
-    func getReverseResolutionDomainItem(for wallet: String) async throws -> DomainItem {
-        let walletsForMessaging = fetchWalletsAvailableForMessaging()
-        guard let wallet = walletsForMessaging.first(where: { $0.address == wallet.normalized }),
-              let domainInfo = wallet.rrDomain else {
-            throw MessagingServiceError.noRRDomainForProfile
-        }
-        return try await appContext.dataAggregatorService.getDomainWith(name: domainInfo.name)
-    }
-    
     func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
         guard let ethAddress = domain.getETHAddress() else { throw MessagingServiceError.domainWithoutWallet }
         return ethAddress

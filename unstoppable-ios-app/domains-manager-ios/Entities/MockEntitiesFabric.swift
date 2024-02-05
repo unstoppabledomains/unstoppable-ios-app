@@ -112,6 +112,42 @@ extension MockEntitiesFabric {
             return domains
         }
 
+        static func mockFirebaseDomains() -> [FirebaseDomain] {
+            [
+                /// Parking purchased
+                .init(claimStatus: "",
+                   internalCustody: true,
+                   purchasedAt: Date(),
+                   parkingExpiresAt: Date().addingTimeInterval(100000),
+                   parkingTrial: false,
+                   domainId: 0,
+                   blockchain: "MATIC",
+                   name: "oleg_parked.x",
+                   ownerAddress: "123"),
+                ///Parking trial
+                .init(claimStatus: "",
+                      internalCustody: true,
+                      purchasedAt: Date(),
+                      parkingExpiresAt: Date().addingTimeInterval(60 * 60 * 24),
+                      parkingTrial: true,
+                      domainId: 0,
+                      blockchain: "MATIC",
+                      name: "oleg_on_trial.x",
+                      ownerAddress: "123"),
+                ///Parking expired
+                .init(claimStatus: "",
+                      internalCustody: true,
+                      purchasedAt: Date(),
+                      parkingExpiresAt: Date().addingTimeInterval(-60 * 60 * 24),
+                      parkingTrial: false,
+                      domainId: 0,
+                      blockchain: "MATIC",
+                      name: "oleg_expired.x",
+                      ownerAddress: "123")
+            ]
+            
+        }
+        
     }
     
     enum NFTs {

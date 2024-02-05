@@ -62,7 +62,7 @@ extension MintDomainsConfigurationSelectionCell {
             domainNameImageView.image = cachedImage
         } else {
             Task.detached(priority: .background) { [weak self] in
-                try? await Task.sleep(seconds: 0.25)
+                await Task.sleep(seconds: 0.25)
                 let image = await appContext.imageLoadingService.loadImage(from: .initials(domain,
                                                                                        size: .default,
                                                                                        style: .accent),

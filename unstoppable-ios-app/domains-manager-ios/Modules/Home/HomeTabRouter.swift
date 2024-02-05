@@ -10,8 +10,9 @@ import Combine
 
 @MainActor
 final class HomeTabRouter: ObservableObject {
+    @Published var profile: UserProfile
     @Published var isTabBarVisible: Bool = true
-    @Published var isSelectWalletPresented: Bool = false
+    @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
@@ -24,14 +25,19 @@ final class HomeTabRouter: ObservableObject {
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
-    
     let id: UUID = UUID()
     private var topViews = 0
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    init(profile: UserProfile) {
+        self.profile = profile
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
+        }.store(in: &cancellables)
+        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+            if let selectedProfile {
+                self?.profile = selectedProfile
+            }
         }.store(in: &cancellables)
     }
   
@@ -54,7 +60,7 @@ extension HomeTabRouter {
     func runPurchaseFlow() {
         Task {
             await showHomeScreenList()
-            walletViewNavPath.append(HomeWalletView.NavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
+            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
         }
     }
     
@@ -118,7 +124,7 @@ extension HomeTabRouter {
     
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
         Task { @MainActor in
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            let domains = appContext.walletsDataService.wallets.combinedDomains()
             
             let topPresentedViewController = appContext.coreAppCoordinator.topVC
             if let mintingNav {
@@ -131,9 +137,11 @@ extension HomeTabRouter {
                 
                 let mintedDomains = domains.interactableItems()
                 
-                walletViewNavPath.append(HomeWalletView.NavigationDestination.minting(mode: mode, 
+                walletViewNavPath.append(HomeWalletNavigationDestination.minting(mode: mode,
                                                                                       mintedDomains: mintedDomains,
                                                                                       domainsMintedCallback: { result in
+                }, mintingNavProvider: { [weak self] mintingNav in
+                    self?.mintingNav = mintingNav
                 }))
             }
         }
@@ -151,7 +159,17 @@ extension HomeTabRouter {
     func showQRScanner() {
         Task {
             await popToRootAndWait()
-            walletViewNavPath.append(HomeWalletView.NavigationDestination.qrScanner)
+            guard let wallet = appContext.walletsDataService.selectedWallet else { return }
+            
+            walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
+        }
+    }
+    
+    func runAddWalletFlow(initialAction: WalletsListViewPresenter.InitialAction = .none) {
+        Task {
+            await popToRootAndWait()
+            tabViewSelection = .wallets
+            walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
         }
     }
 }
@@ -249,7 +267,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
 // MARK: - Private methods
 private extension HomeTabRouter {
     func popToRoot() {
-        isSelectWalletPresented = false
+        isSelectProfilePresented = false
         isConnectedAppsListPresented = false
         presentedNFT = nil
         presentedDomain = nil
@@ -297,15 +315,12 @@ private extension HomeTabRouter {
     
     func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
                             by domain: DomainDisplayInfo) {
-        Task {
-            guard let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
-            
-            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
-                                                           name: btDomainInfo.domainName)
-            showPublicDomainProfile(of: publicDomainInfo,
-                                    viewingDomain: domain,
-                                    preRequestedAction: nil)
-        }
+        let domain = domain.toDomainItem()
+        let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                       name: btDomainInfo.domainName)
+        showPublicDomainProfile(of: publicDomainInfo,
+                                viewingDomain: domain,
+                                preRequestedAction: nil)
     }
 }
 

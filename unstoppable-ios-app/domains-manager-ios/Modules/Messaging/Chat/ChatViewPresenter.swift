@@ -346,7 +346,7 @@ private extension ChatViewPresenter {
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
             } catch {
-                try? await Task.sleep(seconds: 5)
+                await Task.sleep(seconds: 5)
                 loadRemoteContentOfMessageAsync(message)
             }
         }
@@ -358,7 +358,7 @@ private extension ChatViewPresenter {
         
         let dif = uiReadyTime - timeSinceViewDidLoad
         if dif > 0 {
-            try? await Task.sleep(seconds: dif)
+            await Task.sleep(seconds: dif)
         }
     }
     
@@ -953,8 +953,7 @@ private extension ChatViewPresenter {
             case .showUserDomainProfile(let domain, let wallet, let action):
                 await UDRouter().showDomainProfileScreen(in: view,
                                                          domain: domain,
-                                                         wallet: wallet.udWallet,
-                                                         walletInfo: wallet.displayInfo,
+                                                         wallet: wallet,
                                                          preRequestedAction: action,
                                                          dismissCallback: nil)
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):

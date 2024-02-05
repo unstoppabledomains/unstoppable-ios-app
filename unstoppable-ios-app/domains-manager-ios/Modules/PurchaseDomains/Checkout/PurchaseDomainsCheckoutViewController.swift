@@ -14,8 +14,8 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
     private var domain: DomainToPurchase!
     private var profileChanges: DomainProfilePendingChanges!
-    private var selectedWallet: WalletWithInfo!
-    private var wallets: [WalletWithInfo]!
+    private var selectedWallet: WalletEntity!
+    private var wallets: [WalletEntity]!
     private var isLoading = false
     override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
@@ -27,8 +27,8 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     
     static func instantiate(domain: DomainToPurchase,
                             profileChanges: DomainProfilePendingChanges,
-                            selectedWallet: WalletWithInfo,
-                            wallets: [WalletWithInfo]) -> PurchaseDomainsCheckoutViewController {
+                            selectedWallet: WalletEntity,
+                            wallets: [WalletEntity]) -> PurchaseDomainsCheckoutViewController {
         let vc = PurchaseDomainsCheckoutViewController()
         vc.domain = domain
         vc.profileChanges = profileChanges

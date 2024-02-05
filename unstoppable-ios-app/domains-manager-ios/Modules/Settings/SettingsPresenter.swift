@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 @MainActor
 protocol SettingsPresenterProtocol: BasePresenterProtocol {
@@ -18,23 +19,24 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     private weak var view: SettingsViewProtocol?
     
     private let notificationsService: NotificationsServiceProtocol
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private var firebaseUser: FirebaseUser?
     private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
+    private var cancellables: Set<AnyCancellable> = []
+
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
          loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol) {
         self.view = view
         self.loginCallback = loginCallback
         self.notificationsService = notificationsService
-        self.dataAggregatorService = dataAggregatorService
         self.firebaseAuthenticationService = firebaseAuthenticationService
-        dataAggregatorService.addListener(self)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.showSettings()
+        }.store(in: &cancellables)
         firebaseAuthenticationService.addListener(self)
     }
     
@@ -45,12 +47,12 @@ extension SettingsPresenter: SettingsPresenterProtocol {
     func viewDidLoad() {
         Task {
             firebaseUser = try? await firebaseAuthenticationService.getUserProfile()
-            showSettingsAsync()
+            showSettings()
         }        
     }
     
     func viewWillAppear() {
-        showSettingsAsync()
+        showSettings()
     }
     
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem) {
@@ -85,77 +87,53 @@ extension SettingsPresenter: SettingsPresenterProtocol {
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension SettingsPresenter: DataAggregatorServiceListener {
-    nonisolated
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task { @MainActor in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .walletsListUpdated, .domainsUpdated, .primaryDomainChanged:
-                    showSettingsAsync()
-                case .domainsPFPUpdated:
-                    return
-                }
-            case .failure:
-                return
-            }
-        }
-    }
-}
-
 // MARK: - FirebaseInteractionServiceListener
 extension SettingsPresenter: FirebaseAuthenticationServiceListener {
     nonisolated
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         Task { @MainActor in
             self.firebaseUser = firebaseUser
-            showSettingsAsync()
+            showSettings()
         }
     }
 }
 
 // MARK: - Private methods
 private extension SettingsPresenter {
-    func showSettingsAsync() {
-        Task {
-            let wallets = await dataAggregatorService.getWalletsWithInfo()
-            var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
-            
-            snapshot.appendSections([.main(0)]) // empty header
-            
-            snapshot.appendSections([.main(1)])
-            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
-            if let primaryDomain = interactableDomains.first {
-                snapshot.appendItems([.homeScreen(primaryDomain.name)])
-            }
-            let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
-            snapshot.appendItems([.wallets("\(wallets.count)"),
-                                  .security(securityName),
-                                  .appearance(UserDefaults.appearanceStyle)])
-            #if TESTFLIGHT
-            snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
-            #endif
-            snapshot.appendItems([.websiteAccount(user: firebaseUser)])
-
-            
-            snapshot.appendSections([.main(2)])
-            if !interactableDomains.isEmpty {
-                snapshot.appendItems([.inviteFriends])
-            }
-            snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
-            
-            snapshot.appendSections([.main(3)])
-            
-            view?.applySnapshot(snapshot, animated: false)
+    func showSettings() {
+        let wallets = appContext.walletsDataService.wallets
+        var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
+        
+        snapshot.appendSections([.main(0)]) // empty header
+        
+        snapshot.appendSections([.main(1)])
+        let interactableDomains = wallets.combinedDomains().interactableItems()
+//        if let primaryDomain = interactableDomains.first {
+//            snapshot.appendItems([.homeScreen(primaryDomain.name)])
+//        }
+        let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
+        snapshot.appendItems([.wallets("\(wallets.count)"),
+                              .security(securityName),
+                              .appearance(UserDefaults.appearanceStyle)])
+#if TESTFLIGHT
+        snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
+#endif
+        snapshot.appendItems([.websiteAccount(user: firebaseUser)])
+        
+        
+        snapshot.appendSections([.main(2)])
+        if !interactableDomains.isEmpty {
+            snapshot.appendItems([.inviteFriends])
         }
+        snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
+        
+        snapshot.appendSections([.main(3)])
+        
+        view?.applySnapshot(snapshot, animated: false)
     }
     
     func showWalletsList() {
-        guard let nav = view?.cNavigationController else { return }
-        
-        UDRouter().showWalletsList(in: nav, initialAction: .none)
+        view?.openWalletsList(initialAction: .none)
     }
     
     func showLegalOptions() {
@@ -183,10 +161,9 @@ private extension SettingsPresenter {
         }
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
-        firebaseAuthenticationService.logout()
+        firebaseAuthenticationService.logOut()
         appContext.messagingService.logout()
         updateAppVersion()
-        Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         appContext.walletsDataService.didChangeEnvironment()
         notificationsService.updateTokenSubscriptions()
     }
@@ -207,28 +184,28 @@ private extension SettingsPresenter {
         appContext.pullUpViewService.showAppearanceStyleSelectionPullUp(in: view, selectedStyle: selectedStyle) { [weak self] newStyle in
             self?.logAnalytic(event: .didChangeTheme, parameters: [.theme: newStyle.analyticsName])
             SceneDelegate.shared?.setAppearanceStyle(newStyle)
-            self?.showSettingsAsync()
+            self?.showSettings()
         }
     }
     
     func showHomeScreenDomainSelection() {
-        guard let view = self.view else { return }
-
-        Task {
-            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
-            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
-                                                                              isFirstPrimaryDomain: false,
-                                                                              configuration: .init(canReverseResolutionETHDomain: false,
-                                                                                                   analyticsView: .sortDomainsFromSettings),
-                                                                              in: view)
-            switch result {
-            case .cancelled:
-                return
-            case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
-                await dataAggregatorService.setDomainsOrder(using: domains)
-                view.cNavigationController?.popToRootViewController(animated: true)
-            }
-        }
+//        guard let view = self.view else { return }
+//
+//        Task {
+//            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+//            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
+//                                                                              isFirstPrimaryDomain: false,
+//                                                                              configuration: .init(canReverseResolutionETHDomain: false,
+//                                                                                                   analyticsView: .sortDomainsFromSettings),
+//                                                                              in: view)
+//            switch result {
+//            case .cancelled:
+//                return
+//            case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
+//                await dataAggregatorService.setDomainsOrder(using: domains)
+//                view.cNavigationController?.popToRootViewController(animated: true)
+//            }
+//        }
     }
     
     func showLoginScreen() {
@@ -238,7 +215,7 @@ private extension SettingsPresenter {
             Task {
                 do {
                     guard let firebaseUser else {
-                        firebaseAuthenticationService.logout()
+                        firebaseAuthenticationService.logOut()
                         showLoginScreen()
                         Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
                         return
@@ -252,9 +229,8 @@ private extension SettingsPresenter {
                         try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
                         await view.dismissPullUpMenu()
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                        firebaseAuthenticationService.logout()
+                        firebaseAuthenticationService.logOut()
                         appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
-                        await dataAggregatorService.aggregateData(shouldRefreshPFP: true) 
                     }
                 } catch { }
             }
@@ -268,22 +244,18 @@ private extension SettingsPresenter {
     }
     
     func showInviteFriendsScreen() {
-        Task {
-            do {
-                guard let nav = view?.cNavigationController else { return }
-                
-                let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
-                guard let domainDisplayInfo = interactableDomains.first else { return }
-                
-                let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
-                
-                UDRouter().showInviteFriendsScreen(domain: domain,
-                                                   in: nav)
-            } catch {
-                Debugger.printFailure("Failed to get domain for referral code", critical: true)
-                view?.showAlertWith(error: error, handler: nil)
-            }
-        }
+        guard let nav = view?.cNavigationController else { return }
+
+        let interactableDomains = appContext.walletsDataService.wallets.combinedDomains().interactableItems()
+        
+        guard let domainDisplayInfo = interactableDomains.first else {
+            Debugger.printFailure("Failed to get domain for referral code", critical: true)
+            return }
+        
+        let domain = domainDisplayInfo.toDomainItem()
+        
+        UDRouter().showInviteFriendsScreen(domain: domain,
+                                           in: nav)
     }
 }
 

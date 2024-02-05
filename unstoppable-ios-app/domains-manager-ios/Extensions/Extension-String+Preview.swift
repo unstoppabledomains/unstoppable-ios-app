@@ -967,6 +967,8 @@ extension String {
         static let messagingCommunitiesListEnableTitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE"
         static let messagingCommunitiesListEnableSubtitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE"
         static let messagingCommunitiesListEnabled = "MESSAGING_COMMUNITIES_ENABLED"
+        static let messagingNoWalletsTitle = "MESSAGING_NO_WALLETS_TITLE"
+        static let messagingNoWalletsSubtitle = "MESSAGING_NO_WALLETS_SUBTITLE"
         
         // Public profile
         static let followers = "FOLLOWERS"
@@ -1083,6 +1085,8 @@ extension String {
         static let recordDoesNotMatchOwnersAddressPullUpMessage = "RECORD_DOES_NOT_MATCH_OWNERS_ADDRESS_PULL_UP_MESSAGE"
         static let updateRecords = "UPDATE_RECORDS"
         static let subdomains = "SUBDOMAINS"
+        static let profiles = "PROFILES"
+        static let noPrimaryDomain = "NO_PRIMARY_DOMAIN"
     }
     
     enum BlockChainIcons: String {

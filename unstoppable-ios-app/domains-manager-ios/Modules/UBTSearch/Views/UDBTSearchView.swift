@@ -116,7 +116,7 @@ private extension UDBTSearchView {
     func scheduleAddMock() {
         #if DEBUG
         Task {
-            try? await Task.sleep(seconds: 2)
+            await Task.sleep(seconds: 2)
             controller.addMock()
             scheduleAddMock()
         }
@@ -124,13 +124,11 @@ private extension UDBTSearchView {
     }
     
     func setInitialPromotingDomain() {
-        Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().availableForMessagingItems()
-            guard !domains.isEmpty else { return }
-            
-            setPromotingDomain(domains[0])
-            canChangePromotingDomain = domains.count > 1
-        }
+        let domains = appContext.walletsDataService.wallets.combinedDomains().availableForMessagingItems()
+        guard !domains.isEmpty else { return }
+        
+        setPromotingDomain(domains[0])
+        canChangePromotingDomain = domains.count > 1
     }
     
     func setPromotingDomain(_ domain: DomainDisplayInfo) {

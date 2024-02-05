@@ -69,7 +69,7 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
     func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo] { [] }
 
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
-        try await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.3)
         
 //        var domains = ["coolguy.coin"]
 //

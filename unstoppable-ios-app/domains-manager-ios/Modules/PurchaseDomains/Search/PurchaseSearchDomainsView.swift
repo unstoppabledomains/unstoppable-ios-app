@@ -295,7 +295,7 @@ private extension PurchaseSearchDomainsView {
         
         func waitAndTryAgain() {
             Task {
-                try? await Task.sleep(seconds: 5)
+                await Task.sleep(seconds: 5)
                 loadSuggestions()
             }
         }

@@ -52,7 +52,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     @MainActor
     func viewDidLoad() {
         appContext.wcRequestsHandlingService.addListener(self)
-        appContext.dataAggregatorService.addListener(self)
+//        appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
         appContext.hotFeatureSuggestionsService.addListener(self)
@@ -306,9 +306,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
            walletWithInfo.displayInfo?.address == domain.ownerWallet {
             vaultName = walletWithInfo.displayInfo?.walletSourceName
         } else {
-            let walletWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) })
-            self.walletWithInfo = walletWithInfo
-            vaultName = walletWithInfo?.displayInfo?.walletSourceName
+//            let walletWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) })
+//            self.walletWithInfo = walletWithInfo
+//            vaultName = walletWithInfo?.displayInfo?.walletSourceName
+            vaultName = nil
         }
         
         var actions: [CardAction] = [
@@ -331,13 +332,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
            domain.isAbleToSetAsRR,
            !domain.isUpdatingRecords,
            let wallet = walletWithInfo?.wallet {
-            let isEnabled = await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
-            
-            actions.append(.setUpRR(isEnabled: isEnabled,
-                                    callback: { [weak self] in
-                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution, parameters: [.domainName: domain.name])
-                self?.showSetupReverseResolutionModule()
-            }))
+//            let isEnabled = await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
+//            
+//            actions.append(.setUpRR(isEnabled: isEnabled,
+//                                    callback: { [weak self] in
+//                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution, parameters: [.domainName: domain.name])
+//                self?.showSetupReverseResolutionModule()
+//            }))
         }
         
         actions.append(.rearrange(callback: { [weak self] in
@@ -393,21 +394,21 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func showSetupReverseResolutionModule() {
-        guard case .domain(let domain) = mode else { return }
-        
-        guard let navigation = view?.containerViewController?.cNavigationController,
-              let walletWithInfo,
-              let walletInfo = walletWithInfo.displayInfo else { return }
-        
-        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
-                                                          wallet: walletWithInfo.wallet,
-                                                          walletInfo: walletInfo,
-                                                          domain: domain,
-                                                          resultCallback: {
-            Task { @MainActor in
-                self.didSetDomainForReverseResolution()
-            }
-        })
+//        guard case .domain(let domain) = mode else { return }
+//        
+//        guard let navigation = view?.containerViewController?.cNavigationController,
+//              let walletWithInfo,
+//              let walletInfo = walletWithInfo.displayInfo else { return }
+//        
+//        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+//                                                          wallet: walletWithInfo.wallet,
+//                                                          walletInfo: walletInfo,
+//                                                          domain: domain,
+//                                                          resultCallback: {
+//            Task { @MainActor in
+//                self.didSetDomainForReverseResolution()
+//            }
+//        })
     }
     
     func didSetDomainForReverseResolution() {
@@ -419,11 +420,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     func didTapShowWalletDetailsButton() {
         Task { @MainActor in
             guard let navigation = view?.containerViewController?.cNavigationController,
-                  let walletWithInfo,
-                  let walletInfo = walletWithInfo.displayInfo else { return }
+                  let wallet = appContext.walletsDataService.wallets.findWithAddress(walletWithInfo?.address) else { return }
             
-            UDRouter().showWalletDetailsOf(wallet: walletWithInfo.wallet,
-                                           walletInfo: walletInfo,
+            UDRouter().showWalletDetailsOf(wallet: wallet,
                                            source: .domainsCollection,
                                            in: navigation)
         }

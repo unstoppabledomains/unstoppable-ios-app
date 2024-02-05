@@ -10,8 +10,8 @@ import UIKit
 struct WalletDisplayInfo: Hashable, Equatable, Codable {
     let name: String
     let address: String
-    let domainsCount: Int
-    let udDomainsCount: Int
+    var domainsCount: Int
+    var udDomainsCount: Int
     let source: Source
     let isBackedUp: Bool
     var isWithPrivateKey: Bool = false

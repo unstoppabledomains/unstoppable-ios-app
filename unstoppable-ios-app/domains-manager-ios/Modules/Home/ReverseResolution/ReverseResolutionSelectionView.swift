@@ -159,7 +159,7 @@ private extension ReverseResolutionSelectionView {
             isSettingRRDomain = true
             do {
                 guard let selectedDomain else { return }
-                let domain = try await appContext.dataAggregatorService.getDomainWith(name: selectedDomain.name)
+                let domain = selectedDomain.toDomainItem()
                 
                 try await udWalletsService.setReverseResolution(to: domain,
                                                                 paymentConfirmationDelegate: paymentHandler)

@@ -28,7 +28,8 @@ public enum UserDefaultsKey: String {
     case viewedHotFeatureSuggestions
     case dismissedHotFeatureSuggestions
     case didMigrateXMTPConsentsListFromUD
-    case selectedWalletAddress
+    case selectedProfileId
+    case firebaseUser
     
     // Purchase domains
     case purchasedDomains
@@ -47,14 +48,13 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
     @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
-    @UserDefaultsOptionalValue(key: .preferableDomainNameForRR) static var preferableDomainNameForRR: String?
     @UserDefaultsValue(key: UserDefaultsKey.didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
     @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
     @UserDefaultsOptionalValue(key: .currentMessagingOwnerWallet) static var currentMessagingOwnerWallet: String?
-    @UserDefaultsOptionalValue(key: .selectedWalletAddress) static var selectedWalletAddress: String?
+    @UserDefaultsOptionalValue(key: .selectedProfileId) static var selectedProfileId: String?
 }
 
 // MARK: - Property Wrappers

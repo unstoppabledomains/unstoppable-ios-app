@@ -138,13 +138,13 @@ extension ViewPullUpCustomContentConfiguration {
                             do {
                                 guard let topViewController else { return }
                                 
-                                let isSetForRR = await appContext.dataAggregatorService.isReverseResolutionSet(for: domain.name)
+                                let isSetForRR = appContext.walletsDataService.wallets.first(where: { $0.rrDomain?.name == domain.name }) != nil
                                 let selectedDomain = DomainDisplayInfo(domainItem: domain, isSetForRR: isSetForRR)
                                 let newDomain = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
                                                                                                               swipeToDismissEnabled: false,
                                                                                                               in: topViewController)
                                 
-                                let domain = try await appContext.dataAggregatorService.getDomainWith(name: newDomain.name)
+                                let domain = newDomain.toDomainItem()
                                 baseSignTransactionView?.setDomainInfo(domain, isSelectable: true)
                             }
                         }

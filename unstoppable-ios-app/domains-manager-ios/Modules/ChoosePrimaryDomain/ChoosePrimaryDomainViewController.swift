@@ -132,7 +132,7 @@ extension ChoosePrimaryDomainViewController: ChoosePrimaryDomainViewProtocol {
         if let indexPath = dataSource.indexPath(for: item) {
             scrollToItemAt(indexPath: indexPath, atPosition: .centeredVertically, animated: true)
             Task {
-                try? await Task.sleep(seconds: 0.3)
+                await Task.sleep(seconds: 0.3)
                 if let cell = collectionView.cellForItem(at: indexPath) as? RearrangeDomainCell {
                     cell.blink(for: 2)
                 }

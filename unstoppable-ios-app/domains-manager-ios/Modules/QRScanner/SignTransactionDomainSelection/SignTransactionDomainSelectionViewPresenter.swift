@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol SignTransactionDomainSelectionViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: SignTransactionDomainSelectionViewController.Item)
@@ -20,7 +21,6 @@ typealias DomainWithBalanceSelectionCallback = (DomainDisplayInfo)->()
 final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: SignTransactionDomainSelectionViewProtocol?
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private var selectedDomain: DomainDisplayInfo
     private var domains: [DomainDisplayInfo] = []
     private var filteredDomains: [DomainDisplayInfo] = []
@@ -29,18 +29,26 @@ final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     private var isSearchActive = false
     private var searchKey = ""
     private var visibleWalletsAddresses: Set<HexAddress> = []
+    private var cancellables: Set<AnyCancellable> = []
+
     var domainSelectedCallback: DomainWithBalanceSelectionCallback?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: SignTransactionDomainSelectionViewProtocol,
          selectedDomain: DomainDisplayInfo,
          domainSelectedCallback: DomainWithBalanceSelectionCallback?,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol) {
         self.view = view
         self.selectedDomain = selectedDomain
         self.domainSelectedCallback = domainSelectedCallback
-        self.dataAggregatorService = dataAggregatorService
-        dataAggregatorService.addListener(self)
+        walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            let domains = wallets.combinedDomains()
+            let isDomainsChanged = self?.domains != domains
+            if isDomainsChanged {
+                self?.domains = domains
+                self?.didSearchWith(key: self?.searchKey ?? "")
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -104,34 +112,11 @@ extension SignTransactionDomainSelectionViewPresenter: SignTransactionDomainSele
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension SignTransactionDomainSelectionViewPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            switch result {
-            case .success(let resultType):
-                switch resultType {
-                case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    let isDomainsChanged = self.domains != domains
-                    if isDomainsChanged {
-                        self.domains = domains
-                        self.didSearchWith(key: searchKey)
-                    }
-                case .primaryDomainChanged, .walletsListUpdated:
-                    return
-                }
-            case .failure:
-                return
-            }
-        }
-    }
-}
-
 // MARK: - Private functions
 private extension SignTransactionDomainSelectionViewPresenter {
     func prepareData() {
         self.wallets = appContext.walletsDataService.wallets
-        domains = wallets.reduce([DomainDisplayInfo](), { $0 + $1.domains })
+        domains = wallets.combinedDomains()
         filteredDomains = domains
         domainsWithReverseResolution = wallets.compactMap({ $0.rrDomain })
     }

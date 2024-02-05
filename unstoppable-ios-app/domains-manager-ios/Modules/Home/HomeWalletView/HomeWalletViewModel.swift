@@ -62,7 +62,7 @@ extension HomeWalletView {
         func walletActionPressed(_ action: WalletAction) {
             switch action {
             case .receive:
-                return
+                router.runPurchaseFlow()
             case .profile:
                 guard let rrDomain = selectedWallet.rrDomain else { return }
                 
@@ -82,7 +82,7 @@ extension HomeWalletView {
         }
         
         func domainNamePressed() {
-            router.isSelectWalletPresented = true
+            router.isSelectProfilePresented = true
         }
     }
 }
@@ -181,7 +181,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func runSelectRRDomainInSelectedWalletIfNeeded() {
         Task {
             guard selectedWallet.rrDomain == nil else { return }
-            try? await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             
             if router.resolvingPrimaryDomainWallet == nil,
                selectedWallet.isReverseResolutionChangeAllowed() {

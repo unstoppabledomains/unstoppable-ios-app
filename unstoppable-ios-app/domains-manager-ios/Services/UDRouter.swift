@@ -21,7 +21,6 @@ class UDRouter: DomainProfileSignatureValidator {
         let presenter = SettingsPresenter(view: vc,
                                           loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
-                                          dataAggregatorService: appContext.dataAggregatorService,
                                           firebaseAuthenticationService: appContext.firebaseParkedDomainsAuthenticationService)
         vc.presenter = presenter
         
@@ -36,7 +35,6 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildWalletsListModule(initialAction: WalletsListViewPresenter.InitialAction) -> UIViewController {
         let vc = WalletsListViewController.nibInstance()
         let presenter = WalletsListViewPresenter(view: vc,
-                                                 dataAggregatorService: appContext.dataAggregatorService,
                                                  initialAction: initialAction,
                                                  networkReachabilityService: appContext.networkReachabilityService,
                                                  udWalletsService: appContext.udWalletsService)
@@ -45,11 +43,10 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-    func showWalletDetailsOf(wallet: UDWallet,
-                             walletInfo: WalletDisplayInfo,
+    func showWalletDetailsOf(wallet: WalletEntity,
                              source: WalletDetailsSource,
                              in viewController: CNavigationController) {
-        let walletDetailsVC = buildWalletDetailsModuleFor(wallet: wallet, walletInfo: walletInfo, walletRemovedCallback: { [weak viewController] in
+        let walletDetailsVC = buildWalletDetailsModuleFor(wallet: wallet, walletRemovedCallback: { [weak viewController] in
             switch source {
             case .walletsList:
                 viewController?.popViewController(animated: true)
@@ -206,8 +203,8 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(mintDomainsNavigationController, animated: true)
     }
     
-    func showWalletSelectionToMintDomainsScreen(selectedWallet: UDWallet?,
-                                                in viewController: UIViewController) async throws -> UDWallet {
+    func showWalletSelectionToMintDomainsScreen(selectedWallet: WalletEntity?,
+                                                in viewController: UIViewController) async throws -> WalletEntity {
         try await withSafeCheckedThrowingMainActorContinuation { completion in
             let vc = buildSelectWalletToMintModule(selectedWallet: selectedWallet,
                                                    walletSelectedCallback: { wallet in
@@ -259,11 +256,9 @@ class UDRouter: DomainProfileSignatureValidator {
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
-    func showWalletDomains(_ domains: [DomainDisplayInfo],
-                           walletWithInfo: WalletWithInfo,
+    func showWalletDomains(wallet: WalletEntity,
                            in viewController: UIViewController) {
-        let vc = buildWalletDomainsListModule(domains: domains,
-                                              walletWithInfo: walletWithInfo)
+        let vc = buildWalletDomainsListModule(wallet: wallet)
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
@@ -289,7 +284,6 @@ class UDRouter: DomainProfileSignatureValidator {
 
         let presenter = QRScannerViewPresenter(view: vc,
                                                selectedWallet: selectedWallet,
-                                               dataAggregatorService: appContext.dataAggregatorService,
                                                walletConnectServiceV2: appContext.walletConnectServiceV2,
                                                networkReachabilityService: appContext.networkReachabilityService,
                                                udWalletsService: appContext.udWalletsService)
@@ -322,7 +316,6 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildConnectedAppsModule(scanCallback: EmptyCallback? = nil) -> UIViewController {
         let vc = ConnectedAppsListViewController.nibInstance()
         let presenter = ConnectedAppsListViewPresenter(view: vc,
-                                                       dataAggregatorService: appContext.dataAggregatorService,
                                                        walletConnectServiceV2: appContext.walletConnectServiceV2)
         presenter.scanCallback = scanCallback
         vc.presenter = presenter
@@ -346,13 +339,11 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func showSetupNewReverseResolutionModule(in nav: CNavigationController,
-                                             wallet: UDWallet,
-                                             walletInfo: WalletDisplayInfo,
+                                             wallet: WalletEntity,
                                              domains: [DomainDisplayInfo],
                                              reverseResolutionDomain: DomainDisplayInfo,
                                              resultCallback: @escaping DomainItemSelectedCallback) {
         let vc = buildSetupReverseResolutionModule(wallet: wallet,
-                                                   walletInfo: walletInfo,
                                                    domains: domains,
                                                    reverseResolutionDomain: reverseResolutionDomain,
                                                    resultCallback: resultCallback)
@@ -361,12 +352,10 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func showSetupChangeReverseResolutionModule(in viewController: UIViewController,
-                                                wallet: UDWallet,
-                                                walletInfo: WalletDisplayInfo,
+                                                wallet: WalletEntity,
                                                 domain: DomainDisplayInfo,
                                                 resultCallback: @escaping MainActorAsyncCallback) {
         let vc = buildSetupChangeReverseResolutionModule(wallet: wallet,
-                                                         walletInfo: walletInfo,
                                                          domain: domain,
                                                          resultCallback: resultCallback)
         
@@ -374,13 +363,11 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func runSetupReverseResolutionFlow(in viewController: UIViewController,
-                                       for wallet: UDWallet,
-                                       walletInfo: WalletDisplayInfo,
+                                       for wallet: WalletEntity,
                                        mode: SetupWalletsReverseResolutionNavigationManager.Mode) async -> SetupWalletsReverseResolutionNavigationManager.Result {
         await withSafeCheckedMainActorContinuation { completion in
             let vc = buildSetupReverseResolutionFlowModule(mode: mode,
-                                                           wallet: wallet,
-                                                           walletInfo: walletInfo) { result in
+                                                           wallet: wallet) { result in
                 completion(result)
             }
             
@@ -402,14 +389,12 @@ class UDRouter: DomainProfileSignatureValidator {
     @discardableResult
     func showDomainProfileScreen(in viewController: UIViewController,
                                  domain: DomainDisplayInfo,
-                                 wallet: UDWallet,
-                                 walletInfo: WalletDisplayInfo,
+                                 wallet: WalletEntity,
                                  preRequestedAction: PreRequestedProfileAction?,
                                  dismissCallback: EmptyCallback?) async -> CNavigationController? {
-        guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: walletInfo) else { return nil }
+        guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: wallet.displayInfo) else { return nil }
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
-                                          walletInfo: walletInfo,
                                           preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsCollection)
 
@@ -423,36 +408,28 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func pushDomainProfileScreen(in nav: CNavigationController,
                                  domain: DomainDisplayInfo,
-                                 wallet: UDWallet,
-                                 walletInfo: WalletDisplayInfo,
+                                 wallet: WalletEntity,
                                  preRequestedAction: PreRequestedProfileAction?) async {
-        guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: walletInfo) else { return }
+        guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: wallet.displayInfo) else { return }
 
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
-                                          walletInfo: walletInfo,
                                           preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsList)
         nav.pushViewController(vc, animated: true)
     }
     
     func buildDomainProfileModule(domain: DomainDisplayInfo,
-                                  wallet: UDWallet,
-                                  walletInfo: WalletDisplayInfo,
+                                  wallet: WalletEntity,
                                   preRequestedAction: PreRequestedProfileAction?,
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
-        let walletInfo = WalletDisplayInfo(wallet: wallet,
-                                           domainsCount: walletInfo.domainsCount,
-                                           udDomainsCount: walletInfo.udDomainsCount,
-                                           reverseResolutionDomain: walletInfo.reverseResolutionDomain) ?? walletInfo
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,
                                                    domain: domain,
                                                    wallet: wallet,
-                                                   walletInfo: walletInfo,
                                                    preRequestedAction: preRequestedAction,
                                                    sourceScreen: sourceScreen,
-                                                   dataAggregatorService: appContext.dataAggregatorService,
+                                                   walletsDataService: appContext.walletsDataService,
                                                    domainRecordsService: appContext.domainRecordsService,
                                                    domainTransactionsService: appContext.domainTransactionsService,
                                                    coinRecordsService: appContext.coinRecordsService,
@@ -630,7 +607,7 @@ class UDRouter: DomainProfileSignatureValidator {
         let walletsService = appContext.walletsDataService
         let presenter = ChatsListViewPresenter(view: vc,
                                                presentOptions: presentOptions, 
-                                               selectedWallet: walletsService.selectedWallet ?? walletsService.wallets.first!,
+                                               selectedWallet: walletsService.selectedWallet,
                                                messagingService: appContext.messagingService)
         vc.presenter = presenter
         return vc
@@ -743,12 +720,10 @@ private extension UDRouter {
 
 // MARK: - Build methods
 private extension UDRouter {
-    func buildWalletDetailsModuleFor(wallet: UDWallet, walletInfo: WalletDisplayInfo, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
+    func buildWalletDetailsModuleFor(wallet: WalletEntity, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
         let vc = WalletDetailsViewController.nibInstance()
         let presenter = WalletDetailsViewPresenter(view: vc,
                                                    wallet: wallet,
-                                                   walletInfo: walletInfo,
-                                                   dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,
                                                    walletConnectServiceV2: appContext.walletConnectServiceV2)
@@ -832,8 +807,7 @@ private extension UDRouter {
     func buildDomainDetailsModule(domain: DomainDisplayInfo) -> UIViewController {
         let vc = DomainDetailsViewController.nibInstance()
         let presenter = DomainDetailsViewPresenter(view: vc,
-                                                      domain: domain,
-                                                   dataAggregatorService: appContext.dataAggregatorService)
+                                                      domain: domain)
         vc.presenter = presenter
         return vc
     }
@@ -861,10 +835,9 @@ private extension UDRouter {
         return vc
     }
     
-    func buildSelectWalletToMintModule(selectedWallet: UDWallet?, walletSelectedCallback: @escaping WalletSelectedCallback) -> UIViewController {
+    func buildSelectWalletToMintModule(selectedWallet: WalletEntity?, walletSelectedCallback: @escaping WalletSelectedCallback) -> UIViewController {
         let vc = WalletsListViewController.nibInstance()
         let presenter = WalletListSelectionToMintDomainsPresenter(view: vc,
-                                                                  dataAggregatorService: appContext.dataAggregatorService,
                                                                   udWalletsService: appContext.udWalletsService,
                                                                   selectedWallet: selectedWallet,
                                                                   networkReachabilityService: appContext.networkReachabilityService,
@@ -898,12 +871,10 @@ private extension UDRouter {
         return vc
     }
     
-    func buildWalletDomainsListModule(domains: [DomainDisplayInfo],
-                                      walletWithInfo: WalletWithInfo) -> UIViewController {
+    func buildWalletDomainsListModule(wallet: WalletEntity) -> UIViewController {
         let vc = DomainsListViewController.nibInstance()
         let presenter = DomainsListPresenter(view: vc,
-                                             domains: domains,
-                                             walletWithInfo: walletWithInfo)
+                                             wallet: wallet)
         vc.presenter = presenter
         return vc
     }
@@ -924,20 +895,18 @@ private extension UDRouter {
         let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
                                                                     selectedDomain: selectedDomain,
                                                                     domainSelectedCallback: domainSelectedCallback,
-                                                                    dataAggregatorService: appContext.dataAggregatorService)
+                                                                    walletsDataService: appContext.walletsDataService)
         vc.presenter = presenter
         return vc
     }
     
-    func buildSetupReverseResolutionModule(wallet: UDWallet,
-                                           walletInfo: WalletDisplayInfo,
+    func buildSetupReverseResolutionModule(wallet: WalletEntity,
                                            domains: [DomainDisplayInfo],
                                            reverseResolutionDomain: DomainDisplayInfo,
                                            resultCallback: @escaping DomainItemSelectedCallback) -> UIViewController {
         let vc = SetupReverseResolutionViewController.nibInstance()
         let presenter = SetupNewReverseResolutionDomainPresenter(view: vc,
                                                                  wallet: wallet,
-                                                                 walletInfo: walletInfo,
                                                                  domains: domains,
                                                                  reverseResolutionDomain: reverseResolutionDomain,
                                                                  udWalletsService: appContext.udWalletsService,
@@ -946,14 +915,12 @@ private extension UDRouter {
         return vc
     }
     
-    func buildSetupChangeReverseResolutionModule(wallet: UDWallet,
-                                                 walletInfo: WalletDisplayInfo,
+    func buildSetupChangeReverseResolutionModule(wallet: WalletEntity,
                                                  domain: DomainDisplayInfo,
                                                  resultCallback: @escaping MainActorAsyncCallback) -> UIViewController {
         let vc = SetupReverseResolutionViewController.nibInstance()
         let presenter = SetupChangeReverseResolutionDomainPresenter(view: vc,
                                                                     wallet: wallet,
-                                                                    walletInfo: walletInfo,
                                                                     domain: domain,
                                                                     udWalletsService: appContext.udWalletsService,
                                                                     resultCallback: resultCallback)
@@ -962,12 +929,10 @@ private extension UDRouter {
     }
     
     func buildSetupReverseResolutionFlowModule(mode: SetupWalletsReverseResolutionNavigationManager.Mode,
-                                               wallet: UDWallet,
-                                               walletInfo: WalletDisplayInfo,
+                                               wallet: WalletEntity,
                                                resultCallback: @escaping SetupWalletsReverseResolutionNavigationManager.ReverseResolutionSetCallback) -> UIViewController {
         let vc = SetupWalletsReverseResolutionNavigationManager(mode: mode,
-                                                                wallet: wallet,
-                                                                walletInfo: walletInfo)
+                                                                wallet: wallet)
         vc.reverseResolutionSetCallback = resultCallback
         return vc
     }
@@ -981,8 +946,7 @@ private extension UDRouter {
                                                                             domainDisplayInfo: domainDisplayInfo,
                                                                             walletInfo: walletInfo,
                                                                             transactionsService: appContext.domainTransactionsService,
-                                                                            notificationsService: appContext.notificationsService,
-                                                                            dataAggregatorService: appContext.dataAggregatorService)
+                                                                            notificationsService: appContext.notificationsService)
         vc.presenter = presenter
         return vc
     }

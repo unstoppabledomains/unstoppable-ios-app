@@ -122,7 +122,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
                      to wallet: UDWallet,
                      userEmail: String,
                      securityCode: String) async throws -> [MintingDomain] {
-        try await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.3)
 
         let transactions: [TransactionItem] = []
         let mintingDomains = domains.map({ domain in MintingDomain(name: domain,

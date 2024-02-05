@@ -15,20 +15,16 @@ final class SetupWalletsReverseResolutionNavigationManager: CNavigationControlle
     
     typealias ReverseResolutionSetCallback = ((Result)->())
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private var mode: Mode = .chooseFirstDomain
-    private var wallet: UDWallet?
-    private var walletInfo: WalletDisplayInfo?
+    private var wallet: WalletEntity?
     var reverseResolutionSetCallback: ReverseResolutionSetCallback?
     
     convenience init(mode: Mode,
-                     wallet: UDWallet,
-                     walletInfo: WalletDisplayInfo) {
+                     wallet: WalletEntity) {
         self.init()
         self.mode = mode
         self.wallet = wallet
-        self.walletInfo = walletInfo
     }
     
     override func viewDidLoad() {
@@ -67,7 +63,7 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
                 Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
                 return
             }
-            let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+            let domain = domainDisplayInfo.toDomainItem()
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: topViewController)
             dismiss(result: .set(domain: domainDisplayInfo))
@@ -137,8 +133,7 @@ private extension SetupWalletsReverseResolutionNavigationManager {
     }
     
     func createStep(_ step: Step) -> UIViewController? {
-        guard let wallet = self.wallet,
-              let walletInfo = self.walletInfo else {
+        guard let wallet = self.wallet else {
             Debugger.printFailure("Wallet is not set for RR setup", critical: true)
             return nil
         }
@@ -148,7 +143,6 @@ private extension SetupWalletsReverseResolutionNavigationManager {
             let vc = SetupReverseResolutionViewController.nibInstance()
             let presenter = SetupWalletsReverseResolutionPresenter(view: vc,
                                                                    wallet: wallet,
-                                                                   walletInfo: walletInfo,
                                                                    udWalletsService: udWalletsService,
                                                                    setupWalletsReverseResolutionFlowManager: self)
             vc.presenter = presenter
@@ -161,24 +155,18 @@ private extension SetupWalletsReverseResolutionNavigationManager {
             case .chooseFirstDomain:
                 presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
-                                                                              walletInfo: walletInfo,
                                                                               useCase: .default,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             case .chooseFirstForMessaging:
                 presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
-                                                                              walletInfo: walletInfo,
                                                                               useCase: .messaging,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             case .changeDomain(let currentDomain):
                 presenter = ChangeWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
-                                                                              walletInfo: walletInfo,
                                                                               currentDomain: currentDomain,
-                                                                              setupWalletsReverseResolutionFlowManager: self,
-                                                                              dataAggregatorService: dataAggregatorService)
+                                                                              setupWalletsReverseResolutionFlowManager: self)
             }
             
             vc.presenter = presenter

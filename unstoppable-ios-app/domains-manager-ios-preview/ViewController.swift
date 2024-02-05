@@ -34,8 +34,8 @@ class ViewController: UIViewController {
     
     func showPurchaseDomainsCheckout() {
         let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true),
-                                               selectedWallet: WalletWithInfo.mock[0],
-                                               wallets: WalletWithInfo.mock,
+                                               selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                                               wallets: MockEntitiesFabric.Wallet.mockEntities(),
                                                profileChanges: .init(domainName: "oleg.x"),
                                                delegate: nil)
         

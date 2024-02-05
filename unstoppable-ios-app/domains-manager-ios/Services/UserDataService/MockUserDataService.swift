@@ -34,7 +34,7 @@ extension MockUserDataService: UserDataServiceProtocol {
 // MARK: - Private methods
 private extension MockUserDataService {
     func waitABit() async throws {
-        try await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.3)
     }
     
     func appVersionWhenMintingDisabled() async throws -> AppVersionInfo {

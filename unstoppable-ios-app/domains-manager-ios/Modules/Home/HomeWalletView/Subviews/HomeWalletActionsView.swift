@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct HomeWalletActionsView: View {
+struct HomeWalletActionsView<Action: HomeWalletActionItem>: View {
     
-    let actionCallback: (HomeWalletView.WalletAction)->()
-    let subActionCallback: (HomeWalletView.WalletSubAction)->()
+    let actionCallback: (Action)->()
+    let subActionCallback: (Action.SubAction)->()
     
     var body: some View {
         HStack {
-            ForEach(HomeWalletView.WalletAction.allCases, id: \.self) { action in
+            ForEach(Array(Action.allCases), id: \.rawValue) { action in
                 walletActionView(for: action)
             }
         }
@@ -27,7 +27,7 @@ struct HomeWalletActionsView: View {
 private extension HomeWalletActionsView {
     
     @ViewBuilder
-    func walletActionView(for action: HomeWalletView.WalletAction) -> some View {
+    func walletActionView(for action: Action) -> some View {
         if action.subActions.isEmpty {
             walletActionButtonView(title: action.title,
                                    icon: action.icon) {
@@ -35,8 +35,8 @@ private extension HomeWalletActionsView {
             }
         } else {
             Menu {
-                ForEach(action.subActions, id: \.self) { subAction in
-                    Button {
+                ForEach(action.subActions, id: \.rawValue) { subAction in
+                    Button(role: subAction.isDestructive ? .destructive : .cancel) {
                         UDVibration.buttonTap.vibrate()
                         subActionCallback(subAction)
                     } label: {
@@ -45,6 +45,7 @@ private extension HomeWalletActionsView {
                             icon: { subAction.icon }
                         )
                     }
+                    
                 }
             } label: {
                 walletActionButtonView(title: action.title,
@@ -91,6 +92,6 @@ private extension HomeWalletActionsView {
 }
 
 #Preview {
-    HomeWalletActionsView(actionCallback: { _ in },
+    HomeWalletActionsView<HomeWalletView.WalletAction>(actionCallback: { _ in },
                           subActionCallback: { _ in })
 }
