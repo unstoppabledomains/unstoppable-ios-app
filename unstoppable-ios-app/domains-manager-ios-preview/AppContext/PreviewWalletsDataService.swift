@@ -30,7 +30,7 @@ final class PreviewWalletsDataService: WalletsDataServiceProtocol {
         selectedWallet = wallets.first
     }
     
-    func setSelectedWallet(_ wallet: WalletEntity) {
+    func setSelectedWallet(_ wallet: WalletEntity?) {
         selectedWallet = wallet
     }
     

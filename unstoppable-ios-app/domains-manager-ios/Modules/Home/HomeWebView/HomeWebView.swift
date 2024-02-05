@@ -80,7 +80,7 @@ struct HomeWebView: View {
 private extension HomeWebView {
     func onAppear() {
         let firebaseDomains = firebaseParkedDomainsService.getCachedDomains()
-        setFiremaseDomains(firebaseDomains)
+        setFirebaseDomains(firebaseDomains)
         Task {
             await loadParkedDomains()
         }
@@ -88,11 +88,11 @@ private extension HomeWebView {
     
     func loadParkedDomains() async {
         if let firebaseDomains = (try? await firebaseParkedDomainsService.getParkedDomains()) {
-            setFiremaseDomains(firebaseDomains)
+            setFirebaseDomains(firebaseDomains)
         }
     }
     
-    func setFiremaseDomains(_ firebaseDomains: [FirebaseDomain]) {
+    func setFirebaseDomains(_ firebaseDomains: [FirebaseDomain]) {
         print(firebaseDomains.count)
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }

@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct HomeWalletWalletSelectionView: View {
+struct UserProfileSelectionView: View {
     
-    @Environment(\.walletsDataService) private var walletsDataService
+    @Environment(\.userProfileService) private var userProfileService
     @Environment(\.presentationMode) private var presentationMode
 
-    @State private var wallets: [WalletEntity] = []
-    @State private var selectedWallet: WalletEntity? = nil
+    @State private var profiles: [UserProfile] = []
+    @State private var selectedProfile: UserProfile? = nil
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 titleView()
-                selectedWalletView()
-                walletsListView()
+                selectedProfileView()
+                profilesListView()
                 addWalletView()
             }
             .padding()
@@ -33,42 +33,42 @@ struct HomeWalletWalletSelectionView: View {
 }
 
 // MARK: - Private methods
-private extension HomeWalletWalletSelectionView {
+private extension UserProfileSelectionView {
     func onAppear() {
-        let wallets = walletsDataService.wallets
-        self.selectedWallet = walletsDataService.selectedWallet
-        self.wallets = wallets.filter({ $0.address != selectedWallet?.address })
+        let profiles = userProfileService.profiles
+        self.selectedProfile = userProfileService.selectedProfile
+        self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
     }
     
     @ViewBuilder
     func titleView() -> some View {
-        Text("Profiles")
+        Text(String.Constants.profiles.localized())
             .font(.currentFont(size: 22, weight: .bold))
             .foregroundStyle(Color.foregroundDefault)
             .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
     }
     
     @ViewBuilder
-    func selectedWalletView() -> some View {
-        if let selectedWallet {
+    func selectedProfileView() -> some View {
+        if let selectedProfile {
             UDCollectionSectionBackgroundView {
-                listViewFor(wallet: selectedWallet)
+                listViewFor(profile: selectedProfile)
             }
         }
     }
     
     @ViewBuilder
-    func walletsListView() -> some View {
-        if !wallets.isEmpty {
+    func profilesListView() -> some View {
+        if !profiles.isEmpty {
             UDCollectionSectionBackgroundView {
                 VStack(alignment: .center, spacing: 0) {
-                    ForEach(wallets, id: \.address) { wallet in
+                    ForEach(profiles, id: \.id) { profile in
                         Button {
                             UDVibration.buttonTap.vibrate()
                             presentationMode.wrappedValue.dismiss()
-                            walletsDataService.setSelectedWallet(wallet)
+                            userProfileService.setSelectedProfile(profile)
                         } label: {
-                            listViewFor(wallet: wallet)
+                            listViewFor(profile: profile)
                         }
                     }
                 }
@@ -77,12 +77,12 @@ private extension HomeWalletWalletSelectionView {
     }
     
     @ViewBuilder
-    func listViewFor(wallet: WalletEntity) -> some View {
-        HomeWalletWalletSelectionRowView(wallet: wallet, 
-                                         isSelected: wallet.address == selectedWallet?.address )
+    func listViewFor(profile: UserProfile) -> some View {
+        UserProfileSelectionRowView(profile: profile,
+                                    isSelected: profile.id == selectedProfile?.id)
         .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
- 
+    
     @ViewBuilder
     func addWalletView() -> some View {
         UDCollectionSectionBackgroundView {
@@ -107,5 +107,5 @@ private extension HomeWalletWalletSelectionView {
 }
 
 #Preview {
-    HomeWalletWalletSelectionView()
+    UserProfileSelectionView()
 }

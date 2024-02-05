@@ -38,7 +38,6 @@ final class WalletsDataService {
         wallets = storage.getCachedWallets()
         queue.async {
             self.ensureConsistencyWithUDWallets()
-            self.setCachedSelectedWalletAndRefresh()
         }
     }
     
@@ -46,10 +45,11 @@ final class WalletsDataService {
 
 // MARK: - WalletsDataServiceProtocol
 extension WalletsDataService: WalletsDataServiceProtocol {
-    func setSelectedWallet(_ wallet: WalletEntity) {
+    func setSelectedWallet(_ wallet: WalletEntity?) {
         selectedWallet = wallet
-        refreshDataForWalletAsync(wallet)
-        UserDefaults.selectedWalletAddress = wallet.address
+        if let wallet {
+            refreshDataForWalletAsync(wallet)
+        }
     }
     
     func refreshDataForWallet(_ wallet: WalletEntity) async throws  {
@@ -142,17 +142,7 @@ extension WalletsDataService: UDWalletsServiceListener {
     private func udWalletsUpdated() {
         ensureConsistencyWithUDWallets()
         let updatedSelectedWallet = wallets.first(where: { $0.address == selectedWallet?.address })
-        if updatedSelectedWallet == nil {
-            if self.wallets.isEmpty {
-                UserDefaults.selectedWalletAddress = nil
-                selectedWallet = nil
-            } else {
-                setSelectedWallet(self.wallets.first!)
-            }
-        } else if selectedWallet == nil,
-                  let wallet = self.wallets.first {
-            setSelectedWallet(wallet)
-        } else {
+        if updatedSelectedWallet != nil {
             selectedWallet = updatedSelectedWallet
         }
     }
@@ -516,16 +506,6 @@ private extension WalletsDataService {
 
 // MARK: - Setup methods
 private extension WalletsDataService {
-    func setCachedSelectedWalletAndRefresh() {
-        selectedWallet = wallets.first(where: { $0.address == UserDefaults.selectedWalletAddress }) ?? wallets.first
-        if let selectedWallet {
-            refreshDataForWalletAsync(selectedWallet)
-        }
-        for wallet in wallets where wallet.address != selectedWallet?.address {
-            refreshDataForWalletAsync(wallet)
-        }
-    }
-    
     func ensureConsistencyWithUDWallets() {
         let udWallets = getUDWallets()
         

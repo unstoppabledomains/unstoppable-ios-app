@@ -983,3 +983,5 @@
 "RECORD_DOES_NOT_MATCH_OWNERS_ADDRESS_PULL_UP_MESSAGE" = "Owner address: %@";
 "UPDATE_RECORDS" = "Update records";
 "SUBDOMAINS" = "Subdomains";
+"PROFILES" = "Profiles";
+"NO_PRIMARY_DOMAIN" = "No primary domain";

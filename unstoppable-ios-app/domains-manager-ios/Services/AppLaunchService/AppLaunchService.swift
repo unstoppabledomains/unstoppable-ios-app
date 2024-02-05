@@ -13,14 +13,17 @@ final class AppLaunchService {
     private var stateMachine = InitialMintingStateMachine()
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private let udWalletsService: UDWalletsServiceProtocol
+    private let userProfileService: UserProfileServiceProtocol
     private var sceneDelegate: SceneDelegateProtocol?
     private var completion: EmptyAsyncCallback?
     private var listeners: [AppLaunchListenerHolder] = []
 
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
-         udWalletsService: UDWalletsServiceProtocol) {
+         udWalletsService: UDWalletsServiceProtocol,
+         userProfileService: UserProfileServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.udWalletsService = udWalletsService
+        self.userProfileService = userProfileService
     }
     
 }
@@ -61,17 +64,11 @@ private extension AppLaunchService {
                 await appVersionUpdated(appVersion)
                 
                 let onboardingDone = User.instance.getSettings().onboardingDone ?? false
-                let shouldRunOnboarding: Bool
-                let sessionState = AppSessionInterpreter.shared.state()
-                switch sessionState {
-                case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
-                    shouldRunOnboarding = true
-                    appContext.firebaseParkedDomainsAuthenticationService.logout()
-                case .walletAdded, .webAccountWithParkedDomains:
-                    shouldRunOnboarding = false
-                }
-                
-                if shouldRunOnboarding || !onboardingDone {
+                if let profile = userProfileService.selectedProfile,
+                   onboardingDone {
+                    resolveInitialMintingState(startTime: startTime,
+                                               profile: profile)
+                } else {
                     let wallets = udWalletsService.getUserWallets()
                     let onboardingFlow: OnboardingNavigationController.OnboardingFlow
                     
@@ -86,9 +83,6 @@ private extension AppLaunchService {
                         try? await sceneDelegate?.authorizeUserOnAppOpening()
                     }
                     completion?()
-                } else {
-                    resolveInitialMintingState(startTime: startTime, 
-                                               sessionState: sessionState)
                 }
             } catch {
                 Debugger.printFailure("Failed to migrate legacy wallets", critical: true)
@@ -105,9 +99,7 @@ private extension AppLaunchService {
     }
      
     func resolveInitialMintingState(startTime: Date,
-                                    sessionState: AppSessionInterpreter.State) {
-        let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
-
+                                    profile: UserProfile) {
         Task.detached(priority: .medium) { [weak self] in
             guard let self else { return }
             
@@ -137,7 +129,7 @@ private extension AppLaunchService {
             guard let self else { return }
             try? await self.sceneDelegate?.authorizeUserOnAppOpening()
             await self.handleInitialState(await self.stateMachine.stateAfter(event: .didAuthorise),
-                                          sessionState: sessionState)
+                                          profile: profile)
         }
 
         Task {
@@ -145,7 +137,7 @@ private extension AppLaunchService {
 //            let domains = await dataAggregatorService.getDomainsDisplayInfo()
 //            let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: .default)),
-                                     sessionState: sessionState)
+                                     profile: profile)
         }
         
         Task {
@@ -156,7 +148,7 @@ private extension AppLaunchService {
 
 //            let mintingState = await mintingStateFor(domains: domains, mintingDomains: .default)
             await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: .default)),
-                                     sessionState: sessionState)
+                                     profile: profile)
         }
     }
     
@@ -176,7 +168,7 @@ private extension AppLaunchService {
     
     @MainActor
     func handleInitialState(_ state: InitialMintingStateMachine.State?,
-                            sessionState: AppSessionInterpreter.State) async {
+                            profile: UserProfile) async {
         guard let state = state else { return }
         
         switch state {
@@ -186,15 +178,8 @@ private extension AppLaunchService {
             if let newAppVersionInfo = await stateMachine.appVersionInfo,
                !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
-            } else { // TODO: - Refactoring
-                switch sessionState {
-                case .walletAdded(let wallet):
-                    coreAppCoordinator.showHome(profile: .wallet(wallet))
-                case .webAccountWithParkedDomains(let user):
-                    coreAppCoordinator.showHome(profile: .webAccount(user))
-                default:
-                    Void()
-                }
+            } else {
+                coreAppCoordinator.showHome(profile: profile)
             }
             completion?()
         case .dataLoadedLate:

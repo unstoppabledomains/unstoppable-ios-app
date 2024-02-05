@@ -1085,6 +1085,8 @@ extension String {
         static let recordDoesNotMatchOwnersAddressPullUpMessage = "RECORD_DOES_NOT_MATCH_OWNERS_ADDRESS_PULL_UP_MESSAGE"
         static let updateRecords = "UPDATE_RECORDS"
         static let subdomains = "SUBDOMAINS"
+        static let profiles = "PROFILES"
+        static let noPrimaryDomain = "NO_PRIMARY_DOMAIN"
     }
     
     enum BlockChainIcons: String {

@@ -294,15 +294,15 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
 private extension DataAggregatorService {
     @MainActor
     func checkAppSessionAndLogOutIfNeeded() {
-        let sessionState = AppSessionInterpreter.shared.state()
-        switch sessionState {
-        case .walletAdded, .webAccountWithParkedDomains:
-            return
-        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
-            SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
-            Task { await aggregateData(shouldRefreshPFP: false) }
-        }
+//        let sessionState = UserProfileService.shared.state()
+//        switch sessionState {
+//        case .walletAdded, .webAccountWithParkedDomains:
+//            return
+//        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+//            SceneDelegate.shared?.restartOnboarding()
+//            appContext.firebaseParkedDomainsAuthenticationService.logout()
+//            Task { await aggregateData(shouldRefreshPFP: false) }
+//        }
     }
     
     func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {

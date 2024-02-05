@@ -306,53 +306,8 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
 }
 
-// MARK: - FirebaseAuthenticationServiceListener
-extension CoreAppCoordinator: FirebaseAuthenticationServiceListener {
-    nonisolated
-    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        Task {
-            await checkAppSessionAndLogOutIfNeeded()
-        }
-    }
-}
-
-// MARK: - UDWalletsServiceListener
-extension CoreAppCoordinator: UDWalletsServiceListener {
-    nonisolated
-    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
-        Task {
-            switch notification {
-            case .walletsUpdated:
-                await checkAppSessionAndLogOutIfNeeded()
-            case .walletRemoved, .reverseResolutionDomainChanged:
-                return
-            }
-        }
-    }
-}
-
 // MARK: - Passing events
 private extension CoreAppCoordinator {
-    func checkAppSessionAndLogOutIfNeeded() async {
-        await Task.sleep(seconds: 0.1)
-        let sessionState = AppSessionInterpreter.shared.state()
-        switch sessionState {
-        case .walletAdded, .webAccountWithParkedDomains:
-            if case .home(let router) = currentRoot {
-                if case .walletAdded(let walletEntity) = sessionState,
-                   case .webAccount = router.profile {
-                    router.profile = .wallet(walletEntity)
-                } else if case .webAccountWithParkedDomains(let user) = sessionState,
-                          case .wallet = router.profile {
-                    router.profile = .webAccount(user)
-                }
-            }
-        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
-            SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
-        }
-    }
-    
     func handleDeepLinkEvent(_ event: DeepLinkEvent) {
         switch currentRoot {
         case .domainsCollection(let router):

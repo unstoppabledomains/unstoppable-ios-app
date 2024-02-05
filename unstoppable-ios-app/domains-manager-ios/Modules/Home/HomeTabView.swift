@@ -95,7 +95,7 @@ private extension HomeTabView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    HomeWalletWalletSelectionView()
+                    UserProfileSelectionView()
                         .adaptiveSheet()
                 })
         }
@@ -111,11 +111,6 @@ private extension HomeTabView {
             HomeWebView(user: user)
         }
     }
-}
-
-enum UserProfile {
-    case wallet(WalletEntity) /// Pass selected wallet on app launch
-    case webAccount(FirebaseUser)
 }
 
 #Preview {

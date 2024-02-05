@@ -34,6 +34,11 @@ final class HomeTabRouter: ObservableObject {
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)
+        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+            if let selectedProfile {
+                self?.profile = selectedProfile
+            }
+        }.store(in: &cancellables)
     }
   
 }

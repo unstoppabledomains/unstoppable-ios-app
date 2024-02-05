@@ -9,7 +9,11 @@ import Foundation
 
 let previewContext = AppContext()
 
-struct AppContext: AppContextProtocol {
+final class AppContext: AppContextProtocol {
+    lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                                            firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                                            walletsDataService: walletsDataService)
+    
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     
     var permissionsService: PermissionsServiceProtocol = PermissionsService()

@@ -54,3 +54,15 @@ extension EnvironmentValues {
         set { self[FirebaseDomainsServiceKey.self] = newValue }
     }
 }
+
+// MARK: - User profile service
+private struct UserProfileServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.userProfileService
+}
+
+extension EnvironmentValues {
+    var userProfileService: UserProfileServiceProtocol {
+        get { self[UserProfileServiceKey.self] }
+        set { self[UserProfileServiceKey.self] = newValue }
+    }
+}
