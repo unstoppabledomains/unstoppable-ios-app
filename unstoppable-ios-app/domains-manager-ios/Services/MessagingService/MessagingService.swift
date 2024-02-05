@@ -22,6 +22,7 @@ final class MessagingService {
     let decrypterService: MessagingContentDecrypterService
     let filesService: MessagingFilesServiceProtocol
     let unreadCountingService: MessagingUnreadCountingServiceProtocol
+    let walletsDataService: WalletsDataServiceProtocol
     
     let dataRefreshManager = MessagingServiceDataRefreshManager()
     /// By default and as primary service we use XMTP
@@ -39,7 +40,8 @@ final class MessagingService {
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
          unreadCountingService: MessagingUnreadCountingServiceProtocol,
-         udWalletsService: UDWalletsServiceProtocol) {
+         udWalletsService: UDWalletsServiceProtocol,
+         walletsDataService: WalletsDataServiceProtocol) {
         self.serviceProviders = serviceProviders
         self.channelsApiService = channelsApiService
         self.channelsWebSocketsService = channelsWebSocketsService
@@ -47,6 +49,7 @@ final class MessagingService {
         self.decrypterService = decrypterService
         self.filesService = filesService
         self.unreadCountingService = unreadCountingService
+        self.walletsDataService = walletsDataService
         udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
@@ -83,7 +86,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func fetchWalletsAvailableForMessaging() -> [WalletEntity] {
-        let wallets = appContext.walletsDataService.wallets
+        let wallets = walletsDataService.wallets
         return wallets
     }
     
@@ -691,13 +694,12 @@ private extension MessagingService {
     }
     
     func preloadLastUsedProfile() {
-//        DispatchQueue.global().asyncAfter(deadline: .now() + 2.5) {
-//            Task {
-//                if let lastUsedProfile = await self.getLastUsedMessagingProfile(among: nil) {
-//                    self.setCurrentUser(lastUsedProfile)
-//                }
-//            }
-//        }
+        Task {
+            await Task.sleep(seconds: 0.5)
+            if let lastUsedProfile = await getLastUsedMessagingProfile(among: nil) {
+                setCurrentUser(lastUsedProfile)
+            }
+        }
     }
 }
 

@@ -86,6 +86,7 @@ private extension UserProfileService {
     }
     
     func updateProfilesList() {
+        let currentProfilesList = self.profiles
         let currentSelectedProfile = self.selectedProfile
         self.profiles = getAvailableProfiles()
         let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
@@ -94,13 +95,23 @@ private extension UserProfileService {
         if profiles.isEmpty {
             Task {
                 await SceneDelegate.shared?.restartOnboarding()
-                appContext.firebaseParkedDomainsAuthenticationService.logOut()
+                firebaseParkedDomainsAuthenticationService.logOut()
             }
+            return
         }
         
         if currentSelectedProfile?.id != selectedProfile?.id,
            case .wallet(let wallet) = selectedProfile {
             walletsDataService.setSelectedWallet(wallet)
+        }
+        
+        if !currentProfilesList.isEmpty,
+           profiles.count > currentProfilesList.count,
+           let newProfile = profiles.first(where: { profile in
+               return currentProfilesList.first(where: { $0.id == profile.id }) == nil
+           }) {
+            /// New profile(s) added. Set as selected
+            setSelectedProfile(newProfile)
         }
     }
     
@@ -122,7 +133,7 @@ private extension UserProfileService {
         let wallets = walletsDataService.wallets
         profiles = wallets.map { UserProfile.wallet($0) }
         
-        if var user = firebaseParkedDomainsAuthenticationService.firebaseUser {
+        if let user = firebaseParkedDomainsAuthenticationService.firebaseUser {
             let parkedDomains = firebaseParkedDomainsService.getCachedDomains()
             if !parkedDomains.isEmpty {
                 profiles.append(.webAccount(user))

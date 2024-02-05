@@ -119,7 +119,8 @@ final class GeneralAppContext: AppContextProtocol {
                                                 decrypterService: messagingDecrypterService,
                                                 filesService: messagingFilesService,
                                                 unreadCountingService: messagingUnreadCountingService,
-                                                udWalletsService: udWalletsService)
+                                                udWalletsService: udWalletsService,
+                                                walletsDataService: walletsDataService)
         self.messagingService = messagingService
         
         // External events
