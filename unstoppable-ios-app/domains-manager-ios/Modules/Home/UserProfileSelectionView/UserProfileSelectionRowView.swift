@@ -10,6 +10,7 @@ import SwiftUI
 struct UserProfileSelectionRowView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
+    @Environment(\.firebaseParkedDomainsService) private var firebaseParkedDomainsService
 
     let profile: UserProfile
     let isSelected: Bool
@@ -74,8 +75,8 @@ private extension UserProfileSelectionRowView {
                 return String.Constants.noPrimaryDomain.localized()
             }
             return nil
-        case .webAccount(let user):
-            let numberOfDomains = user.numberOfDomains ?? 0
+        case .webAccount:
+            let numberOfDomains = firebaseParkedDomainsService.getCachedDomains().count
             return String.Constants.pluralNDomains.localized(numberOfDomains, numberOfDomains)
         }
     }
@@ -112,7 +113,7 @@ private extension UserProfileSelectionRowView {
     
     func imageStyleForProfile(_ profile: UserProfile) -> UDListItemView.ImageStyle {
         switch profile {
-        case .wallet(let wallet):
+        case .wallet:
             if domainAvatarImage != nil {
                 return .full
             }

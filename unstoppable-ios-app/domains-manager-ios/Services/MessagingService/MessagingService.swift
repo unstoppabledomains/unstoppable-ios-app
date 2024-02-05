@@ -691,12 +691,13 @@ private extension MessagingService {
     }
     
     func preloadLastUsedProfile() {
-        Task {
-            await Task.sleep(seconds: 0.5)
-            if let lastUsedProfile = await getLastUsedMessagingProfile(among: nil) {
-                setCurrentUser(lastUsedProfile)
-            }
-        }
+//        DispatchQueue.global().asyncAfter(deadline: .now() + 2.5) {
+//            Task {
+//                if let lastUsedProfile = await self.getLastUsedMessagingProfile(among: nil) {
+//                    self.setCurrentUser(lastUsedProfile)
+//                }
+//            }
+//        }
     }
 }
 

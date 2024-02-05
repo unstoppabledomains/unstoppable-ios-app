@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
 
     private(set) var firebaseUser: FirebaseUser?
@@ -22,10 +21,10 @@ final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
         self.isAuthorized = firebaseAuthService.isAuthorised
         super.init(firebaseAuthService: firebaseAuthService,
                    firebaseSigner: firebaseSigner)
-        refreshUserProfileAsync()
+        refreshSessionIfNeeded()
     }
     
-    func logout() {
+    func logOut() {
         Task {
             await super.logout()
         }
@@ -61,7 +60,40 @@ extension FirebaseAuthenticationService: FirebaseAuthenticationServiceProtocol {
     func getUserProfile() async throws -> FirebaseUser {
         if let firebaseUser {
             return firebaseUser
-        } else if let loadFirebaseUserTask {
+        } 
+        return try await fetchUserProfile()
+    }
+    
+    // Listeners
+    func addListener(_ listener: FirebaseAuthenticationServiceListener) {
+        if !listenerHolders.contains(where: { $0.listener === listener }) {
+            listenerHolders.append(.init(listener: listener))
+        }
+    }
+    
+    func removeListener(_ listener: FirebaseAuthenticationServiceListener) {
+        listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
+    }
+}
+
+// MARK: - Private methods
+private extension FirebaseAuthenticationService {
+    func refreshSessionIfNeeded() {
+        if let storedFirebaseUser {
+            firebaseUser = storedFirebaseUser
+            isAuthorized = true
+            Task {
+                do {
+                    _ = try await fetchUserProfile()
+                } catch {
+                    self.logOut()
+                }
+            }
+        }
+    }
+    
+    func fetchUserProfile() async throws -> FirebaseUser {
+        if let loadFirebaseUserTask {
             return try await loadFirebaseUserTask.value
         }
         
@@ -83,20 +115,6 @@ extension FirebaseAuthenticationService: FirebaseAuthenticationServiceProtocol {
         }
     }
     
-    // Listeners
-    func addListener(_ listener: FirebaseAuthenticationServiceListener) {
-        if !listenerHolders.contains(where: { $0.listener === listener }) {
-            listenerHolders.append(.init(listener: listener))
-        }
-    }
-    
-    func removeListener(_ listener: FirebaseAuthenticationServiceListener) {
-        listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
-    }
-}
-
-// MARK: - Private methods
-private extension FirebaseAuthenticationService {
     func setFirebaseUser(_ firebaseUser: FirebaseUser?) {
         let shouldNotifyListeners = firebaseUser != self.firebaseUser
         self.firebaseUser = firebaseUser
@@ -108,10 +126,11 @@ private extension FirebaseAuthenticationService {
             }
         }
     }
+    
     func refreshUserProfileAsync() {
         firebaseUser = storedFirebaseUser
         Task {
-            _ = try? await getUserProfile()
+            _ = try? await fetchUserProfile()
         }
     }
     

@@ -158,7 +158,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     var appDisconnectedCallback: WCAppDisconnectedCallback?
     var willHandleRequestCallback: EmptyCallback?
     private var connectionCompletion: WCConnectionResultCompletion?
-    private var cancellables: Set<AnyCancellable> = []
 
     init(udWalletsService: UDWalletsServiceProtocol) {
         self.udWalletsService = udWalletsService

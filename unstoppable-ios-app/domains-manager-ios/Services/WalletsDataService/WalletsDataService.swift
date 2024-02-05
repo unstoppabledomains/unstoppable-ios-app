@@ -515,16 +515,19 @@ private extension WalletsDataService {
         }
         
         /// Add or update wallets
+        var newWallets: [WalletEntity] = []
         for udWallet in udWallets {
             if let i = wallets.firstIndex(where: { $0.address == udWallet.address }) {
                 wallets[i].udWalletUpdated(udWallet)
             } else if let newWallet = createNewWalletEntityFor(udWallet: udWallet) {
                 wallets.append(newWallet)
+                newWallets.append(newWallet)
             }
         }
         
         storage.cacheWallets(wallets)
         self.wallets = wallets
+        newWallets.forEach { refreshDataForWalletAsync($0) }
     }
     
     func createNewWalletEntityFor(udWallet: UDWallet) -> WalletEntity? {

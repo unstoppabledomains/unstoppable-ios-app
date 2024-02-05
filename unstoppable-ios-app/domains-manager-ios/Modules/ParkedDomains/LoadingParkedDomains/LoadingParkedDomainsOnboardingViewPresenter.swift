@@ -70,7 +70,7 @@ extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingDataHandling {
 private extension LoadingParkedDomainsOnboardingViewPresenter {
     func failedToLoadParkedDomains() {
         Task { @MainActor in
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logOut()
             view?.cNavigationController?.popTo(LoginViewController.self)
         }
     }

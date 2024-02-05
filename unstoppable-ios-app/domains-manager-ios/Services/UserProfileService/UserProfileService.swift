@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 final class UserProfileService {
     
@@ -16,7 +17,8 @@ final class UserProfileService {
     @Published private(set) var profiles: [UserProfile] = []
     @Published private(set) var selectedProfile: UserProfile? = nil
     var selectedProfilePublisher: Published<UserProfile?>.Publisher { $selectedProfile }
-    
+    private var cancellables: Set<AnyCancellable> = []
+
     init(firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol,
          firebaseParkedDomainsService: FirebaseDomainsServiceProtocol,
          walletsDataService: WalletsDataServiceProtocol) {
@@ -24,8 +26,15 @@ final class UserProfileService {
         self.firebaseParkedDomainsService = firebaseParkedDomainsService
         self.walletsDataService = walletsDataService
         loadProfilesAndSetSelected()
+        firebaseParkedDomainsService.parkedDomainsPublisher.receive(on: DispatchQueue.main).sink { [weak self] parkedDomains in
+            if parkedDomains.isEmpty {
+                self?.removeWebProfileIfNeeded()
+            }
+        }.store(in: &cancellables)
+        walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.updateProfilesList()
+        }.store(in: &cancellables)
     }
-    
 }
 
 // MARK: - Open methods
@@ -45,7 +54,7 @@ extension UserProfileService: UserProfileServiceProtocol {
 // MARK: - FirebaseAuthenticationServiceListener
 extension UserProfileService: FirebaseAuthenticationServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        loadProfilesAndSetSelected()
+        updateProfilesList()
     }
 }
 
@@ -55,7 +64,7 @@ extension UserProfileService: UDWalletsServiceListener {
         Task {
             switch notification {
             case .walletsUpdated:
-                loadProfilesAndSetSelected()
+                updateProfilesList()
             case .walletRemoved, .reverseResolutionDomainChanged:
                 return
             }
@@ -66,16 +75,7 @@ extension UserProfileService: UDWalletsServiceListener {
 // MARK: - Private methods
 private extension UserProfileService {
     func loadProfilesAndSetSelected() {
-        self.profiles = getAvailableProfiles()
-        selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
-        UserDefaults.selectedProfileId = selectedProfile?.id
-        
-        if profiles.isEmpty {
-            Task {
-                await SceneDelegate.shared?.restartOnboarding()
-                appContext.firebaseParkedDomainsAuthenticationService.logout()
-            }
-        }
+        updateProfilesList()
         
         if case .wallet(let wallet) = selectedProfile {
             walletsDataService.setSelectedWallet(wallet)
@@ -83,6 +83,30 @@ private extension UserProfileService {
         } else {
             refreshWalletsAfterLaunchAsync(walletsDataService.wallets)
         }
+    }
+    
+    func updateProfilesList() {
+        let currentSelectedProfile = self.selectedProfile
+        self.profiles = getAvailableProfiles()
+        let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
+        setSelectedProfile(selectedProfile)
+        
+        if profiles.isEmpty {
+            Task {
+                await SceneDelegate.shared?.restartOnboarding()
+                appContext.firebaseParkedDomainsAuthenticationService.logOut()
+            }
+        }
+        
+        if currentSelectedProfile?.id != selectedProfile?.id,
+           case .wallet(let wallet) = selectedProfile {
+            walletsDataService.setSelectedWallet(wallet)
+        }
+    }
+    
+    func setSelectedProfile(_ profile: UserProfile?) {
+        selectedProfile = profile
+        UserDefaults.selectedProfileId = profile?.id
     }
     
     func refreshWalletsAfterLaunchAsync(_ wallets: [WalletEntity]) {
@@ -101,12 +125,19 @@ private extension UserProfileService {
         if var user = firebaseParkedDomainsAuthenticationService.firebaseUser {
             let parkedDomains = firebaseParkedDomainsService.getCachedDomains()
             if !parkedDomains.isEmpty {
-                user.numberOfDomains = parkedDomains.count
                 profiles.append(.webAccount(user))
             }
         }
         
         return profiles
+    }
+    
+    func removeWebProfileIfNeeded() {
+        for profile in self.profiles {
+            if case .webAccount = profile {
+                loadProfilesAndSetSelected()
+            }
+        }
     }
 }
 

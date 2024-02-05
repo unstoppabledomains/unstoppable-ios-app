@@ -138,6 +138,8 @@ private extension HomeWebView {
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
     }
+    
+    var numberOfDomains: Int { domains.count }
 
     @ViewBuilder
     func headerInfoView() -> some View {
@@ -155,7 +157,7 @@ private extension HomeWebView {
                 }
                     .foregroundStyle(Color.foregroundSecondary)
             }
-            Text(String.Constants.pluralNDomains.localized(1, 1))
+            Text(String.Constants.pluralNDomains.localized(numberOfDomains, numberOfDomains))
                 .font(.currentFont(size: 32, weight: .bold))
                 .truncationMode(.middle)
                 .foregroundStyle(Color.foregroundDefault)
@@ -225,7 +227,7 @@ private extension HomeWebView {
             await topVC.dismissPullUpMenu()
             try await appContext.authentificationService.verifyWith(uiHandler: topVC, purpose: .confirm)
             
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logOut()
             appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
         }
     }

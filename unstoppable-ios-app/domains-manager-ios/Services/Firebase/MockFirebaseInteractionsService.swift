@@ -65,7 +65,7 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
         .init(email: "qq@qq.qq")
     }
     
-    func logout() {
+    func logOut() {
         isAuthorized = false
     }
     

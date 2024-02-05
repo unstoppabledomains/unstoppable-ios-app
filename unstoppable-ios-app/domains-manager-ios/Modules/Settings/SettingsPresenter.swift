@@ -161,7 +161,7 @@ private extension SettingsPresenter {
         }
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
-        firebaseAuthenticationService.logout()
+        firebaseAuthenticationService.logOut()
         appContext.messagingService.logout()
         updateAppVersion()
         appContext.walletsDataService.didChangeEnvironment()
@@ -215,7 +215,7 @@ private extension SettingsPresenter {
             Task {
                 do {
                     guard let firebaseUser else {
-                        firebaseAuthenticationService.logout()
+                        firebaseAuthenticationService.logOut()
                         showLoginScreen()
                         Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
                         return
@@ -229,7 +229,7 @@ private extension SettingsPresenter {
                         try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
                         await view.dismissPullUpMenu()
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                        firebaseAuthenticationService.logout()
+                        firebaseAuthenticationService.logOut()
                         appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
                     }
                 } catch { }

@@ -39,7 +39,7 @@ protocol FirebaseAuthenticationServiceProtocol: ObservableObject {
     func authorizeWith(wallet: UDWallet) async throws
     func getUserProfile() async throws -> FirebaseUser
     
-    func logout()
+    func logOut()
     // Listeners
     func addListener(_ listener: FirebaseAuthenticationServiceListener)
     func removeListener(_ listener: FirebaseAuthenticationServiceListener)
@@ -49,7 +49,6 @@ struct FirebaseUser: Codable, Hashable {
     var email: String?
     
     var displayName: String { email ?? "-||-" }
-    var numberOfDomains: Int? = 0
 }
 
 
