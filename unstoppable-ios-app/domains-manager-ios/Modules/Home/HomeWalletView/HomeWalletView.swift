@@ -181,7 +181,6 @@ private extension HomeWalletView {
     func tokensContentView() -> some View {
         tokensListView()
         HomeWalletMoreTokensView()
-            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         notMatchingTokensListView()
     }
     
