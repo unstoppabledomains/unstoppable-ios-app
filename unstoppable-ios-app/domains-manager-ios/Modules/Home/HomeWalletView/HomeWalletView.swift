@@ -163,9 +163,11 @@ private extension HomeWalletView {
     func sortingOptionsForSelectedType() -> some View {
         switch viewModel.selectedContentType {
         case .tokens:
-            HomeWalletSortingSelectorView(sortingOptions: TokensSortingOptions.allCases, selectedOption: $viewModel.selectedTokensSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: TokensSortingOptions.allCases,
+                                          selectedOption: $viewModel.selectedTokensSortingOption)
         case .collectibles:
-            HomeWalletSortingSelectorView(sortingOptions: CollectiblesSortingOptions.allCases, selectedOption: $viewModel.selectedCollectiblesSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: CollectiblesSortingOptions.allCases,
+                                          selectedOption: $viewModel.selectedCollectiblesSortingOption)
         case .domains:
             HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
                                           selectedOption: $viewModel.selectedDomainsSortingOption,
@@ -261,6 +263,7 @@ private extension HomeWalletView {
         HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
                                       subdomains: viewModel.subdomains,
                                       domainSelectedCallback: didSelectDomain, 
+                                      buyDomainCallback: viewModel.buyDomainPressed,
                                       isSubdomainsVisible: $viewModel.isSubdomainsVisible,
                                       domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
     }
