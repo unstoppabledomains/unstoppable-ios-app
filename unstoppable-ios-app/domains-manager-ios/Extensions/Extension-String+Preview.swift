@@ -1088,6 +1088,7 @@ extension String {
         static let profiles = "PROFILES"
         static let noPrimaryDomain = "NO_PRIMARY_DOMAIN"
         static let hidden = "HIDDEN"
+        static let buy = "BUY"
     }
     
     enum BlockChainIcons: String {

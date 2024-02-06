@@ -14,7 +14,6 @@ struct HomeWalletHeaderRowView: View {
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     @State private var domainAvatar: UIImage?
-    @State private var rrDomainName: String?
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -30,7 +29,7 @@ struct HomeWalletHeaderRowView: View {
         }
         .frame(maxWidth: .infinity)
         .onChange(of: wallet, perform: { wallet in
-            loadAvatarIfNeeded(wallet: wallet)
+            loadAvatarFor(wallet: wallet)
         })
         .onAppear(perform: onAppear)
         .listRowBackground(Color.clear)
@@ -42,17 +41,15 @@ struct HomeWalletHeaderRowView: View {
 // MARK: - Private methods
 private extension HomeWalletHeaderRowView {
     func onAppear() {
-        loadAvatarIfNeeded(wallet: wallet)
+        loadAvatarFor(wallet: wallet)
     }
     
-    func loadAvatarIfNeeded(wallet: WalletEntity) {
+    func loadAvatarFor(wallet: WalletEntity) {
         Task {
-            if rrDomainName != wallet.rrDomain?.name {
-                self.domainAvatar = nil
-                if let domain = wallet.rrDomain,
-                   let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
-                    self.domainAvatar = image
-                }
+            self.domainAvatar = nil
+            if let domain = wallet.rrDomain,
+               let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
+                self.domainAvatar = image
             }
         }
     }
@@ -68,9 +65,9 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
-        Image(uiImage: domainAvatar ?? .domainSharePlaceholder)
-            .resizable()
-            .background(Color.clear)
+        UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
+                          width: 20,
+                          height: 20)
     }
     
     @ViewBuilder

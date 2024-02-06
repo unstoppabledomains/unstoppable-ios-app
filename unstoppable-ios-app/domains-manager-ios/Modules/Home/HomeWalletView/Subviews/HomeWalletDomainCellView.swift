@@ -11,22 +11,27 @@ struct HomeWalletDomainCellView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
-    @State var domain: DomainDisplayInfo
+    let domain: DomainDisplayInfo
     @State private var icon: UIImage?
 
     var body: some View {
         viewForCurrentDomain()
         .onAppear(perform: onAppear)
+        .onChange(of: domain, perform: { _ in
+            loadAvatar()
+        })
     }
 }
 
 // MARK: - Private methods
 private extension HomeWalletDomainCellView {
     func onAppear() {
-        if icon == nil {
-            Task {
-                icon = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid)
-            }
+        loadAvatar()
+    }
+    
+    func loadAvatar() {
+        Task {
+            icon = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid)
         }
     }
     
@@ -45,9 +50,8 @@ private extension HomeWalletDomainCellView {
     func viewForDomain() -> some View {
         ZStack(alignment: .leading) {
             domainAvatarView(cornerRadius: 12)
-            VStack {
+            VStack(alignment: .leading) {
                 cartLogoView()
-                    .offset(x: -12)
                 Spacer()
                 VStack(alignment: .leading, spacing: 0) {
                     Text(domain.name.getBelowTld() ?? "")

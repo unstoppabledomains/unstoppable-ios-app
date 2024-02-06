@@ -124,13 +124,13 @@ extension WalletsDataService: UDWalletsServiceListener {
                 await Task.sleep(seconds: 0.2)
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
-                if let selectedWallet,
-                   var domain = selectedWallet.domains.first(where: { $0.name == domainName }) {
-                    domain.setState(.updatingRecords)
-                    mutateWalletEntity(selectedWallet) { wallet in
+                if let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }),
+                   var domain = wallet.domains.first(where: { $0.name == domainName }) {
+                    domain.setState(.updatingReverseResolution)
+                    mutateWalletEntity(wallet) { wallet in
                         wallet.changeRRDomain(domain)
                     }
-                    refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
+                    refreshWalletDomainsAsync(wallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
             case .walletRemoved:
@@ -247,6 +247,8 @@ private extension WalletsDataService {
                 domainState = .transfer
             } else if pendingTransactions.containMintingInProgress(domain) {
                 domainState = .minting
+            } else if pendingTransactions.containReverseResolutionOperationProgress(domain) {
+                domainState = .updatingReverseResolution
             } else if pendingTransactions.containPending(domain) {
                 domainState = .updatingRecords
             }
@@ -408,7 +410,8 @@ private extension WalletsDataService {
     
     func loadWalletDomainsPFPIfTooLarge(_ wallet: WalletEntity) async {
         let walletDomains = wallet.domains
-        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+
         if walletDomains.count > numberOfDomainsToLoadPerTime {
             var domains = Array(walletDomains.lazy.sorted { lhs, rhs in
                 if lhs.isPrimary {
@@ -432,9 +435,13 @@ private extension WalletsDataService {
                         var domains = wallet.domains
                         
                         for pfpInfo in pfpInfoArray {
-                            if let i = domains.firstIndex(where: { $0.name == pfpInfo.domainName }),
+                            if pendingProfiles.first(where: { $0.domainName == pfpInfo.domainName })?.avatarData == nil,
+                               let i = domains.firstIndex(where: { $0.name == pfpInfo.domainName }),
                                domains[i].domainPFPInfo != pfpInfo {
                                 domains[i].setPFPInfo(pfpInfo)
+                                if domains[i].name == wallet.rrDomain?.name {
+                                    wallet.rrDomain = domains[i]
+                                }
                             }
                         }
                     }

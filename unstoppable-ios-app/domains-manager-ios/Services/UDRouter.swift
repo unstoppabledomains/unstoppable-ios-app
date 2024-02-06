@@ -64,6 +64,19 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
+    func buildWalletDetailsModuleFor(wallet: WalletEntity, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
+        let vc = WalletDetailsViewController.nibInstance()
+        let presenter = WalletDetailsViewPresenter(view: vc,
+                                                   wallet: wallet,
+                                                   networkReachabilityService: appContext.networkReachabilityService,
+                                                   udWalletsService: appContext.udWalletsService,
+                                                   walletConnectServiceV2: appContext.walletConnectServiceV2)
+        presenter.walletRemovedCallback = walletRemovedCallback
+        vc.presenter = presenter
+        
+        return vc
+    }
+    
     func showAddWalletScreenForAction(_ action: WalletDetailsAddWalletAction,
                                       in viewController: UIViewController,
                                       addedCallback: @escaping AddWalletNavigationController.WalletAddedCallback) {
@@ -720,19 +733,6 @@ private extension UDRouter {
 
 // MARK: - Build methods
 private extension UDRouter {
-    func buildWalletDetailsModuleFor(wallet: WalletEntity, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
-        let vc = WalletDetailsViewController.nibInstance()
-        let presenter = WalletDetailsViewPresenter(view: vc,
-                                                   wallet: wallet,
-                                                   networkReachabilityService: appContext.networkReachabilityService,
-                                                   udWalletsService: appContext.udWalletsService,
-                                                   walletConnectServiceV2: appContext.walletConnectServiceV2)
-        presenter.walletRemovedCallback = walletRemovedCallback
-        vc.presenter = presenter
-        
-        return vc
-    }
-    
     func buildRevealRecoveryPhraseModule(for wallet: UDWallet,
                                          recoveryType: UDWallet.RecoveryType) -> UIViewController {
         let vc = RecoveryPhraseViewController.nibInstance()

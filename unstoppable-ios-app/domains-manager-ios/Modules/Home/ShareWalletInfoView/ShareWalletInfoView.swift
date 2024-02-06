@@ -26,7 +26,7 @@ struct ShareWalletInfoView: View {
                 warningMessageView()
             }
             .onAppear(perform: onAppear)
-            .padding(EdgeInsets(top: 40, leading: 16, bottom: 0, trailing: 16))
+            .padding(EdgeInsets(top: 30, leading: 16, bottom: 0, trailing: 16))
 
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {

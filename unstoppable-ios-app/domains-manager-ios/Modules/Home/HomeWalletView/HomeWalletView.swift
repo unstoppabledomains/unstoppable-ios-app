@@ -163,11 +163,17 @@ private extension HomeWalletView {
     func sortingOptionsForSelectedType() -> some View {
         switch viewModel.selectedContentType {
         case .tokens:
-            HomeWalletSortingSelectorView(sortingOptions: TokensSortingOptions.allCases, selectedOption: $viewModel.selectedTokensSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: TokensSortingOptions.allCases,
+                                          selectedOption: $viewModel.selectedTokensSortingOption)
         case .collectibles:
-            HomeWalletSortingSelectorView(sortingOptions: CollectiblesSortingOptions.allCases, selectedOption: $viewModel.selectedCollectiblesSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: CollectiblesSortingOptions.allCases,
+                                          selectedOption: $viewModel.selectedCollectiblesSortingOption)
         case .domains:
-            HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, selectedOption: $viewModel.selectedDomainsSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
+                                          selectedOption: $viewModel.selectedDomainsSortingOption,
+                                          additionalAction: .init(title: String.Constants.buy.localized(),
+                                                                  icon: .plusIconNav,
+                                                                  callback: viewModel.buyDomainPressed))
         }
     }
     
@@ -175,7 +181,6 @@ private extension HomeWalletView {
     func tokensContentView() -> some View {
         tokensListView()
         HomeWalletMoreTokensView()
-            .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
         notMatchingTokensListView()
     }
     
@@ -257,12 +262,15 @@ private extension HomeWalletView {
         HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
                                       subdomains: viewModel.subdomains,
                                       domainSelectedCallback: didSelectDomain, 
+                                      buyDomainCallback: viewModel.buyDomainPressed,
                                       isSubdomainsVisible: $viewModel.isSubdomainsVisible,
                                       domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
-        tabRouter.presentedDomain = .init(domain: domain, wallet: viewModel.selectedWallet)
+        Task {
+            await tabRouter.showDomainProfile(domain, wallet: viewModel.selectedWallet, preRequestedAction: nil, dismissCallback: nil)
+        }
     }
     
     @ViewBuilder

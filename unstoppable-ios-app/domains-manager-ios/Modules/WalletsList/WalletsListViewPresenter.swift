@@ -70,12 +70,9 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
         refreshWallets()
     }
     
-    func viewWillAppear() {
-        Task {
-            await Task.sleep(seconds: 0.3)
-            checkIfCanAddWalletAndPerform(action: initialAction, isImportOnly: true)
-            initialAction = .none
-        }
+    func viewDidAppear() {
+        checkIfCanAddWalletAndPerform(action: initialAction, isImportOnly: true)
+        initialAction = .none
     }
     
     func didPressAddButton() {

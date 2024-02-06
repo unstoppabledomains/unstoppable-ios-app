@@ -10,8 +10,28 @@ import SwiftUI
 struct HomeWalletSortingSelectorView<S: HomeViewSortingOption>: View {
     var sortingOptions: [S]
     var selectedOption: Binding<S>
+    var additionalAction: ActionDescription? = nil
     
     var body: some View {
+        HStack(alignment: .center, spacing: 8) {
+            menuView()
+            if let additionalAction {
+                viewForAction(additionalAction)
+            }
+        }
+        .frame(height: 20)
+        .withoutAnimation()
+        .foregroundStyle(Color.foregroundSecondary)
+        .onButtonTap {
+            
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension HomeWalletSortingSelectorView {
+    @ViewBuilder
+    func menuView() -> some View {
         Menu {
             Picker("", selection: selectedOption) {
                 ForEach(sortingOptions,
@@ -30,12 +50,34 @@ struct HomeWalletSortingSelectorView<S: HomeViewSortingOption>: View {
                     .stroke(lineWidth: 1)
                     .offset(y: 10)
             }
-            .frame(height: 20)
         }
-        .withoutAnimation()
-        .foregroundStyle(Color.foregroundSecondary)
-        .onButtonTap {
-            
+    }
+    
+    @ViewBuilder
+    func viewForAction(_ action: ActionDescription) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            action.callback()
+        } label: {
+            HStack(alignment: .center, spacing: 8) {
+                Text(action.title)
+                    .font(.currentFont(size: 14, weight: .medium))
+                action.icon
+                    .resizable()
+                    .squareFrame(16)
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .padding(0)
         }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: -ActionDescription
+extension HomeWalletSortingSelectorView {
+    struct ActionDescription {
+        let title: String
+        let icon: Image
+        let callback: EmptyCallback
     }
 }

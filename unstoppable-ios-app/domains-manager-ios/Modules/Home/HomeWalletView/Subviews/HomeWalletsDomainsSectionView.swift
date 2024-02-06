@@ -12,6 +12,7 @@ struct HomeWalletsDomainsSectionView: View {
     let domainsGroups: [HomeWalletView.DomainsGroup]
     let subdomains: [DomainDisplayInfo]
     let domainSelectedCallback: (DomainDisplayInfo)->()
+    let buyDomainCallback: EmptyCallback
     @Binding var isSubdomainsVisible: Bool
     @Binding var domainsTLDsExpandedList: Set<String>
     private let minNumOfVisibleSubdomains = 2
@@ -22,13 +23,7 @@ struct HomeWalletsDomainsSectionView: View {
     ]
     
     var body: some View {
-        ForEach(domainsGroups) { domainsGroup in
-            Section {
-                gridWithDomains(Array(domainsGroup.domains.prefix(numberOfDomainsVisible(in: domainsGroup))))
-            } header: {
-                domainsGroupSectionHeader(domainsGroup)
-            }
-        }
+        domainsGroupsView()
         .withoutAnimation()
         if !subdomains.isEmpty {
             Line()
@@ -86,6 +81,21 @@ private extension HomeWalletsDomainsSectionView {
     }
     
     @ViewBuilder
+    func domainsGroupsView() -> some View {
+        if domainsGroups.isEmpty {
+            buyDomainView()
+        } else {
+            ForEach(domainsGroups) { domainsGroup in
+                Section {
+                    gridWithDomains(Array(domainsGroup.domains.prefix(numberOfDomainsVisible(in: domainsGroup))))
+                } header: {
+                    domainsGroupSectionHeader(domainsGroup)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
     func gridWithDomains(_ domains: [DomainDisplayInfo]) -> some View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(domains, id: \.name) { domain in
@@ -98,7 +108,31 @@ private extension HomeWalletsDomainsSectionView {
                 .buttonStyle(.plain)
             }
         }
-//        .padding(EdgeInsets(top: -14, leading: 0, bottom: -38, trailing: 0))
+    }
+    
+    @ViewBuilder
+    func buyDomainView() -> some View {
+        LazyVGrid(columns: gridColumns, spacing: 16) {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                buyDomainCallback()
+            } label: {
+                ZStack {
+                    Color.gray.opacity(0.2)
+                    VStack(spacing: 12) {
+                        Image.plusIconNav
+                            .resizable()
+                            .squareFrame(30)
+                        Text(String.Constants.buyDomain.localized())
+                    }
+                    .foregroundStyle(Color.foregroundSecondary)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .aspectRatio(1, contentMode: .fit)
+                .padding(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 
@@ -106,6 +140,7 @@ private extension HomeWalletsDomainsSectionView {
     HomeWalletsDomainsSectionView(domainsGroups: [],
                                   subdomains: [],
                                   domainSelectedCallback: { _ in }, 
+                                  buyDomainCallback: { },
                                   isSubdomainsVisible: .constant(true),
                                   domainsTLDsExpandedList: .constant([]))
 }

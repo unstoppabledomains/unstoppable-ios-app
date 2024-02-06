@@ -290,3 +290,20 @@ extension WalletDetailsViewController {
     }
     
 }
+
+@available(iOS 17.0, *)
+#Preview {
+    let walletWithInfo = WalletWithInfo.mock[0]
+    let domain = DomainDisplayInfo(name: "oleg.x",
+                                   ownerWallet: walletWithInfo.wallet.address,
+                                   blockchain: .Matic,
+                                   state: .default,
+                                   isSetForRR: false)
+    let wallet = WalletEntity(udWallet: walletWithInfo.wallet,
+                              displayInfo: walletWithInfo.displayInfo!,
+                              domains: [domain],
+                              nfts: [],
+                              balance: [],
+                              rrDomain: nil)
+    return UDRouter().buildWalletDetailsModuleFor(wallet: wallet, walletRemovedCallback: nil)
+}

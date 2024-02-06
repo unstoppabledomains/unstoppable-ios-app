@@ -11,6 +11,7 @@ struct UserProfileSelectionView: View {
     
     @Environment(\.userProfileService) private var userProfileService
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject private var tabRouter: HomeTabRouter
 
     @State private var profiles: [UserProfile] = []
     @State private var selectedProfile: UserProfile? = nil
@@ -88,6 +89,7 @@ private extension UserProfileSelectionView {
         UDCollectionSectionBackgroundView {
             Button {
                 UDVibration.buttonTap.vibrate()
+                tabRouter.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
             } label: {
                 HStack(spacing: 16) {
                     Image.plusIconNav

@@ -242,6 +242,11 @@ extension Array where Element == TransactionItem {
         }.first(where: { $0.domainName == domain.name }) != nil
     }
     
+    func containReverseResolutionOperationProgress(_ domain: DomainItem) -> Bool {
+        filterPending(extraCondition: { $0.operation?.isReverseResolutionOperation == true })
+            .first(where: { $0.domainName == domain.name }) != nil
+    }
+    
     func filterPending(extraCondition: ( (TransactionItem) -> Bool) = { _ in true }) -> Self {
         self.filter({ $0.isPending && extraCondition($0) })
     }
