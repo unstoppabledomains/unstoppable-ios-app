@@ -145,11 +145,11 @@ class APIRequestBuilder {
     
     private var paidDomainsQuantity: Int?
     
-    func users(email: String) throws -> APIRequestBuilder {
-        guard self.email == nil else { throw APIRequestError.emailAlreadyAssigned }
-        self.email = email
-        return self
-    }
+//    func users(email: String) throws -> APIRequestBuilder {
+//        guard self.email == nil else { throw APIRequestError.emailAlreadyAssigned }
+//        self.email = email
+//        return self
+//    }
     
     func operation(_ operation: DeepLinkOperation) throws -> APIRequestBuilder {
         guard self.operation == nil else { throw APIRequestError.operationAlreadyAssigned }

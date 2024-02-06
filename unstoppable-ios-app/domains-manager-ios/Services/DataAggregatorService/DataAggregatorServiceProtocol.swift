@@ -22,12 +22,12 @@ protocol DataAggregatorServiceProtocol {
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool
     func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool
     func isReverseResolutionSet(for domainName: DomainName) async -> Bool
-    func mintDomains(_ domains: [String],
-                     paidDomains: [String],
-                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
-                     to wallet: UDWallet,
-                     userEmail: String,
-                     securityCode: String) async throws -> [MintingDomain]
+//    func mintDomains(_ domains: [String],
+//                     paidDomains: [String],
+//                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
+//                     to wallet: UDWallet,
+//                     userEmail: String,
+//                     securityCode: String) async throws -> [MintingDomain]
     func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
                             pendingProfiles: [DomainProfilePendingChanges]) async
     

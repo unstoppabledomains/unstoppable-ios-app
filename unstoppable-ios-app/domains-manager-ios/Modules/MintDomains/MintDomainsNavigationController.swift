@@ -82,18 +82,20 @@ extension MintDomainsNavigationController: MintDomainsFlowManager {
         case .domainsPurchased(let details):
             dismiss(result: .domainsPurchased(details: details))
         case .didSelectDomainsToMint(let domains, let wallet):
-            self.mintingData.wallet = wallet
-            if domains.count == 1 {
-                if mintedDomains.isEmpty {
-                    try await startMinting(domains: domains, domainsOrderInfoMap: nil)
-                } else {
-                    moveToStep(.choosePrimaryDomain(domains: domains))
-                }
-            } else {
-                moveToStep(.choosePrimaryDomain(domains: domains))
-            }
+            Debugger.printFailure("should not get here")
+//            self.mintingData.wallet = wallet
+//            if domains.count == 1 {
+//                if mintedDomains.isEmpty {
+//                    try await startMinting(domains: domains, domainsOrderInfoMap: nil)
+//                } else {
+//                    moveToStep(.choosePrimaryDomain(domains: domains))
+//                }
+//            } else {
+//                moveToStep(.choosePrimaryDomain(domains: domains))
+//            }
         case .didConfirmDomainsToMint(let domains, let domainsOrderInfoMap):
-            try await startMinting(domains: domains, domainsOrderInfoMap: domainsOrderInfoMap)
+            Debugger.printFailure("should not get here")
+//            try await startMinting(domains: domains, domainsOrderInfoMap: domainsOrderInfoMap)
         case .mintingCompleted:
             didFinishMinting()
         case .skipMinting:
@@ -177,41 +179,41 @@ private extension MintDomainsNavigationController {
         }
     }
     
-    func startMinting(domains: [String], domainsOrderInfoMap: SortDomainsOrderInfoMap?) async throws {
-        guard let email = mintingData.email,
-              let code = mintingData.code,
-              let wallet = mintingData.wallet else {
-            Debugger.printFailure("No wallet to mint", critical: true)
-            return
-        }
-        
-        let domainsOrderInfoMap = domainsOrderInfoMap ?? createDomainsOrderInfoMap(for: domains)
-        let mintingDomains = try await dataAggregatorService.mintDomains(domains,
-                                                                         paidDomains: [],
-                                                                         domainsOrderInfoMap: domainsOrderInfoMap,
-                                                                         to: wallet,
-                                                                         userEmail: email,
-                                                                         securityCode: code)
-        
-        /// If user didn't set RR yet and mint multiple domains, ideally we would set RR automatically to domain user has selected as primary.
-        /// Since it is impossible to ensure which domain will be set for RR, we will save user's primary domain selection and when minting is done, check if domain set for RR is same as primary. If they won't match, we'll ask if user want to set RR for primary domain just once.
-        if let primaryDomainName = domainsOrderInfoMap.first(where: { $0.value == 0 })?.key,
-           domains.contains(primaryDomainName),
-           await dataAggregatorService.reverseResolutionDomain(for: wallet) == nil {
-            UserDefaults.preferableDomainNameForRR = primaryDomainName
-        } else if mintedDomains.filter({ wallet.owns(domain: $0) }).isEmpty {
-            /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
-            UserDefaults.preferableDomainNameForRR = domains.first
-        }
-   
-        await MainActor.run {
-            if domains.count > 1 {
-                didSkipMinting()
-            } else {
-                moveToStep(.mintingInProgress(domains: mintingDomains))
-            }
-        }
-    }
+//    func startMinting(domains: [String], domainsOrderInfoMap: SortDomainsOrderInfoMap?) async throws {
+//        guard let email = mintingData.email,
+//              let code = mintingData.code,
+//              let wallet = mintingData.wallet else {
+//            Debugger.printFailure("No wallet to mint", critical: true)
+//            return
+//        }
+//        
+//        let domainsOrderInfoMap = domainsOrderInfoMap ?? createDomainsOrderInfoMap(for: domains)
+//        let mintingDomains = try await dataAggregatorService.mintDomains(domains,
+//                                                                         paidDomains: [],
+//                                                                         domainsOrderInfoMap: domainsOrderInfoMap,
+//                                                                         to: wallet,
+//                                                                         userEmail: email,
+//                                                                         securityCode: code)
+//        
+//        /// If user didn't set RR yet and mint multiple domains, ideally we would set RR automatically to domain user has selected as primary.
+//        /// Since it is impossible to ensure which domain will be set for RR, we will save user's primary domain selection and when minting is done, check if domain set for RR is same as primary. If they won't match, we'll ask if user want to set RR for primary domain just once.
+//        if let primaryDomainName = domainsOrderInfoMap.first(where: { $0.value == 0 })?.key,
+//           domains.contains(primaryDomainName),
+//           await dataAggregatorService.reverseResolutionDomain(for: wallet) == nil {
+//            UserDefaults.preferableDomainNameForRR = primaryDomainName
+//        } else if mintedDomains.filter({ wallet.owns(domain: $0) }).isEmpty {
+//            /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
+//            UserDefaults.preferableDomainNameForRR = domains.first
+//        }
+//   
+//        await MainActor.run {
+//            if domains.count > 1 {
+//                didSkipMinting()
+//            } else {
+//                moveToStep(.mintingInProgress(domains: mintingDomains))
+//            }
+//        }
+//    }
     
     func createDomainsOrderInfoMap(for domains: [String]) -> SortDomainsOrderInfoMap {
         var map = SortDomainsOrderInfoMap()

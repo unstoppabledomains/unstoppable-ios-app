@@ -28,16 +28,16 @@ extension NetworkService: TxsFetcher {
 extension NetworkService {
     static var isBackendSimulated: Bool { false }
     
-    public func requestSecurityCode (for email: String, operation: DeepLinkOperation) async throws {
-        guard let request = try? APIRequestBuilder().users(email: email)
-            .operation(operation)
-            .authenticate()
-            .build() else {
-            Debugger.printFailure("Couldnt build url", critical: true)
-            throw NetworkLayerError.creatingURLFailed
-        }
-        _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
-    }
+//    public func requestSecurityCode (for email: String, operation: DeepLinkOperation) async throws {
+//        guard let request = try? APIRequestBuilder().users(email: email)
+//            .operation(operation)
+//            .authenticate()
+//            .build() else {
+//            Debugger.printFailure("Couldnt build url", critical: true)
+//            throw NetworkLayerError.creatingURLFailed
+//        }
+//        _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
+//    }
     
     func updatePushNotificationsInfo(info: PushNotificationsInfo) async throws {
         guard let request = try? APIRequestBuilder()
@@ -221,45 +221,45 @@ extension NetworkService {
         }
     }
     
-    public func getAllUnMintedDomains(for email: String, withAccessCode code: String) async throws -> DomainsInfo {
-        guard let request = try? APIRequestBuilder()
-                                    .users(email: email)
-                                    .secure(code: code)
-                                    .fetchAllUnMintedDomains()
-                                    .build() else {
-            Debugger.printFailure("Couldn't build the url", critical: true)
-            throw NetworkLayerError.creatingURLFailed
-        }
-        let data = try await fetchData(for: request.url,
-                                       method: .get,
-                                       extraHeaders: request.headers)
-        if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
-            let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
-                                   txCosts: response.txCosts)
-            return info
-        }
-        if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
-            throw NetworkLayerError.authorizationError
-        }
-        throw NetworkLayerError.parsingDomainsError
-    }
+//    public func getAllUnMintedDomains(for email: String, withAccessCode code: String) async throws -> DomainsInfo {
+//        guard let request = try? APIRequestBuilder()
+//                                    .users(email: email)
+//                                    .secure(code: code)
+//                                    .fetchAllUnMintedDomains()
+//                                    .build() else {
+//            Debugger.printFailure("Couldn't build the url", critical: true)
+//            throw NetworkLayerError.creatingURLFailed
+//        }
+//        let data = try await fetchData(for: request.url,
+//                                       method: .get,
+//                                       extraHeaders: request.headers)
+//        if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
+//            let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
+//                                   txCosts: response.txCosts)
+//            return info
+//        }
+//        if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
+//            throw NetworkLayerError.authorizationError
+//        }
+//        throw NetworkLayerError.parsingDomainsError
+//    }
 
-    public func mint(domains: [DomainItem],
-                      with email: String,
-                      code: String,
-                      stripeIntent: String?) async throws {
-        guard let request = try? APIRequestBuilder().users(email: email)
-            .secure(code: code)
-            .mint(domains, stripeIntent: stripeIntent)
-            .build() else {
-            Debugger.printFailure("Couldn't build the mint request", critical: true)
-            throw NetworkLayerError.creatingURLFailed
-        }
-        
-        let _ = try await fetchData(for: request.url,
-                                    body: request.body,
-                                    extraHeaders: request.headers)
-    }
+//    public func mint(domains: [DomainItem],
+//                      with email: String,
+//                      code: String,
+//                      stripeIntent: String?) async throws {
+//        guard let request = try? APIRequestBuilder().users(email: email)
+//            .secure(code: code)
+//            .mint(domains, stripeIntent: stripeIntent)
+//            .build() else {
+//            Debugger.printFailure("Couldn't build the mint request", critical: true)
+//            throw NetworkLayerError.creatingURLFailed
+//        }
+//        
+//        let _ = try await fetchData(for: request.url,
+//                                    body: request.body,
+//                                    extraHeaders: request.headers)
+//    }
 }
 
 extension NetworkService {

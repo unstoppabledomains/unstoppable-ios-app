@@ -53,32 +53,33 @@ final class EnterEmailVerificationCodeToMintDomainsPresenter: EnterEmailVerifica
     }
     
     override func resendCodeAction() {
-        Task {
-            try? await userDataService.sendUserEmailVerificationCode(to: email)
-        }
+        Debugger.printFailure("should not get here")
+//        Task {
+//            try? await userDataService.sendUserEmailVerificationCode(to: email)
+//        }
     }
     
-    override func validateCode(_ code: String) async throws {
-        do {
-            let freeDomainNames = try await domainsService.getAllUnMintedDomains(for: email,
-                                                                                 securityCode: code)
-            logAnalytic(event: .didEnterValidVerificationCode)
-            try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains(freeDomainNames,
-                                                                                         email: email,
-                                                                                         code: code))
-        } catch MintingError.noDomainsToMint {
-            logAnalytic(event: .didEnterValidVerificationCode)
-            try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains([],
-                                                                                         email: email,
-                                                                                         code: code))
-        } catch {
-            logAnalytic(event: .didEnterInvalidVerificationCode)
-            await MainActor.run {
-                view?.setLoading(false)
-                view?.setInvalidCode()
-            }
-        }
-    }
+//    override func validateCode(_ code: String) async throws {
+//        do {
+//            let freeDomainNames = try await domainsService.getAllUnMintedDomains(for: email,
+//                                                                                 securityCode: code)
+//            logAnalytic(event: .didEnterValidVerificationCode)
+//            try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains(freeDomainNames,
+//                                                                                         email: email,
+//                                                                                         code: code))
+//        } catch MintingError.noDomainsToMint {
+//            logAnalytic(event: .didEnterValidVerificationCode)
+//            try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains([],
+//                                                                                         email: email,
+//                                                                                         code: code))
+//        } catch {
+//            logAnalytic(event: .didEnterInvalidVerificationCode)
+//            await MainActor.run {
+//                view?.setLoading(false)
+//                view?.setInvalidCode()
+//            }
+//        }
+//    }
 }
 
 // MARK: - DeepLinkServiceListener

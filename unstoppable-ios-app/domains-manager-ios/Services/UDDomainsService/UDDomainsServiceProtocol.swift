@@ -13,13 +13,13 @@ protocol UDDomainsServiceProtocol {
     func getCachedDomainsPFPInfo() -> [DomainPFPInfo]
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo]
     func loadPFP(for domainName: DomainName) async -> DomainPFPInfo?
-    func getAllUnMintedDomains(for email: String,
-                               securityCode: String) async throws -> [String]
-    func mintDomains(_ domains: [String],
-                     paidDomains: [String],
-                     to wallet: UDWallet,
-                     userEmail: String,
-                     securityCode: String) async throws 
+//    func getAllUnMintedDomains(for email: String,
+//                               securityCode: String) async throws -> [String]
+//    func mintDomains(_ domains: [String],
+//                     paidDomains: [String],
+//                     to wallet: UDWallet,
+//                     userEmail: String,
+//                     securityCode: String) async throws 
     
     func findDomains(by domainNames: [String]) -> [DomainItem]
     func getAllDomains() -> [DomainItem]

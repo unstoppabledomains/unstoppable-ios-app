@@ -8,6 +8,6 @@
 import Foundation
 
 protocol UserDataServiceProtocol {
-    func sendUserEmailVerificationCode(to email: String) async throws
+//    func sendUserEmailVerificationCode(to email: String) async throws
     func getLatestAppVersion() async -> AppVersionInfo
 }

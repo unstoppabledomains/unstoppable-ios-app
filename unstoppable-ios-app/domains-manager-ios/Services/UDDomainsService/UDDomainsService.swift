@@ -80,26 +80,26 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         }
     }
     
-    func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
-        let domainsInfo = try await NetworkService().getAllUnMintedDomains(for: email, withAccessCode: securityCode)
-        let domainNames = domainsInfo.domainNames
-        guard !domainNames.isEmpty else {
-            throw MintingError.noDomainsToMint
-        }
-        return domainNames
-    }
-    
-    func mintDomains(_ domains: [String],
-                     paidDomains: [String],
-                     to wallet: UDWallet,
-                     userEmail: String,
-                     securityCode: String) async throws {
-        try await startMintingOfDomains(domains,
-                                        paidDomains: paidDomains,
-                                        to: wallet,
-                                        userEmail: userEmail,
-                                        securityCode: securityCode)
-    }
+//    func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
+//        let domainsInfo = try await NetworkService().getAllUnMintedDomains(for: email, withAccessCode: securityCode)
+//        let domainNames = domainsInfo.domainNames
+//        guard !domainNames.isEmpty else {
+//            throw MintingError.noDomainsToMint
+//        }
+//        return domainNames
+//    }
+//    
+//    func mintDomains(_ domains: [String],
+//                     paidDomains: [String],
+//                     to wallet: UDWallet,
+//                     userEmail: String,
+//                     securityCode: String) async throws {
+//        try await startMintingOfDomains(domains,
+//                                        paidDomains: paidDomains,
+//                                        to: wallet,
+//                                        userEmail: userEmail,
+//                                        securityCode: securityCode)
+//    }
     
     func getReferralCodeFor(domain: DomainItem) async throws -> String? {
         let profile = try await NetworkService().fetchPublicProfile(for: domain,
@@ -120,27 +120,27 @@ private extension UDDomainsService {
 
 // MARK: - Minting
 private extension UDDomainsService {
-    func startMintingOfDomains(_ domains: [String],
-                               paidDomains: [String],
-                               to wallet: UDWallet,
-                               userEmail: String,
-                               securityCode: String) async throws {
-        
-        let domainItems = createDomainItems(from: domains, for: wallet)
-        let _ = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
-        
-        do {
-            try await NetworkService().mint(domains: domainItems,
-                                            with: userEmail,
-                                            code: securityCode,
-                                            stripeIntent: nil)
-            try? await Task.sleep(seconds: 0.1)
-        } catch {
-            let description = error.getTypedDescription()
-            Debugger.printFailure(description)
-            throw error
-        }
-    }
+//    func startMintingOfDomains(_ domains: [String],
+//                               paidDomains: [String],
+//                               to wallet: UDWallet,
+//                               userEmail: String,
+//                               securityCode: String) async throws {
+//        
+//        let domainItems = createDomainItems(from: domains, for: wallet)
+//        let _ = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
+//        
+//        do {
+//            try await NetworkService().mint(domains: domainItems,
+//                                            with: userEmail,
+//                                            code: securityCode,
+//                                            stripeIntent: nil)
+//            try? await Task.sleep(seconds: 0.1)
+//        } catch {
+//            let description = error.getTypedDescription()
+//            Debugger.printFailure(description)
+//            throw error
+//        }
+//    }
     
     func createDomainItems(from domainNames: [String], for wallet: UDWallet) -> [DomainItem] {
         // For now ALL domains minted on polygon.

@@ -204,44 +204,44 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
     }
     
-    func mintDomains(_ domains: [String],
-                     paidDomains: [String],
-                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
-                     to wallet: UDWallet,
-                     userEmail: String,
-                     securityCode: String) async throws -> [MintingDomain] {
-        do {
-            await stopRefreshTimer()
-            try await domainsService.mintDomains(domains,
-                                                 paidDomains: paidDomains,
-                                                 to: wallet,
-                                                 userEmail: userEmail,
-                                                 securityCode: securityCode)
-            let transactions = domains.map { TransactionItem(id: 0,
-                                                             domainName: $0,
-                                                             isPending: true,
-                                                             type: .maticTx,
-                                                             operation: .mintDomain) }
-            transactionsService.cacheTransactions(transactions)
-            
-            let mintingDomains = domains.map { MintingDomain(name: $0,
-                                                             walletAddress: wallet.address,
-                                                             isPrimary: false,
-                                                             transactionHash: nil) }
-            
-            var currentMintingDomains = MintingDomainsStorage.retrieveMintingDomains()
-            currentMintingDomains.append(contentsOf: mintingDomains)
-            try MintingDomainsStorage.save(mintingDomains: currentMintingDomains)
-            SortDomainsManager.shared.saveDomainsOrderMap(domainsOrderInfoMap)
-            await reloadAndAggregateData(shouldRefreshPFP: false)
-            await startRefreshTimer()
-            
-            return mintingDomains
-        } catch {
-            await startRefreshTimer()
-            throw error
-        }
-    }
+//    func mintDomains(_ domains: [String],
+//                     paidDomains: [String],
+//                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
+//                     to wallet: UDWallet,
+//                     userEmail: String,
+//                     securityCode: String) async throws -> [MintingDomain] {
+//        do {
+//            await stopRefreshTimer()
+//            try await domainsService.mintDomains(domains,
+//                                                 paidDomains: paidDomains,
+//                                                 to: wallet,
+//                                                 userEmail: userEmail,
+//                                                 securityCode: securityCode)
+//            let transactions = domains.map { TransactionItem(id: 0,
+//                                                             domainName: $0,
+//                                                             isPending: true,
+//                                                             type: .maticTx,
+//                                                             operation: .mintDomain) }
+//            transactionsService.cacheTransactions(transactions)
+//            
+//            let mintingDomains = domains.map { MintingDomain(name: $0,
+//                                                             walletAddress: wallet.address,
+//                                                             isPrimary: false,
+//                                                             transactionHash: nil) }
+//            
+//            var currentMintingDomains = MintingDomainsStorage.retrieveMintingDomains()
+//            currentMintingDomains.append(contentsOf: mintingDomains)
+//            try MintingDomainsStorage.save(mintingDomains: currentMintingDomains)
+//            SortDomainsManager.shared.saveDomainsOrderMap(domainsOrderInfoMap)
+//            await reloadAndAggregateData(shouldRefreshPFP: false)
+//            await startRefreshTimer()
+//            
+//            return mintingDomains
+//        } catch {
+//            await startRefreshTimer()
+//            throw error
+//        }
+//    }
     
     func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
                             pendingProfiles: [DomainProfilePendingChanges]) async {

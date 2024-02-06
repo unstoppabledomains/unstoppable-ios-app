@@ -55,28 +55,29 @@ extension NoDomainsToMintViewPresenter: NoDomainsToMintViewPresenterProtocol {
 // MARK: - Private functions
 private extension NoDomainsToMintViewPresenter {
     func didPurchaseDomainsWith(details: DomainsPurchasedDetails) {
-        Task {
-            if details.email == self.email {
-                await checkPurchasedDomains(details: details)
-            } else {
-                try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
-            }
-        }
+        Debugger.printFailure("should not get here")
+//        Task {
+//            if details.email == self.email {
+//                await checkPurchasedDomains(details: details)
+//            } else {
+//                try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
+//            }
+//        }
     }
     
-    func checkPurchasedDomains(details: DomainsPurchasedDetails) async {
-        do {
-            let freeDomainNames = try await domainsService.getAllUnMintedDomains(for: email,
-                                                                                 securityCode: code)
-            if freeDomainNames.isEmpty {
-                try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
-            } else {
-                try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains(freeDomainNames,
-                                                                                             email: email,
-                                                                                             code: code))
-            }
-        } catch {
-            try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
-        }
-    }
+//    func checkPurchasedDomains(details: DomainsPurchasedDetails) async {
+//        do {
+//            let freeDomainNames = try await domainsService.getAllUnMintedDomains(for: email,
+//                                                                                 securityCode: code)
+//            if freeDomainNames.isEmpty {
+//                try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
+//            } else {
+//                try? await mintDomainsFlowManager?.handle(action: .didReceiveUnMintedDomains(freeDomainNames,
+//                                                                                             email: email,
+//                                                                                             code: code))
+//            }
+//        } catch {
+//            try? await self.mintDomainsFlowManager?.handle(action: .domainsPurchased(details: details))
+//        }
+//    }
 }

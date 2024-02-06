@@ -11,9 +11,9 @@ final class UserDataService { }
 
 // MARK: - UserDataServiceProtocol
 extension UserDataService: UserDataServiceProtocol {
-    func sendUserEmailVerificationCode(to email: String) async throws {
-        try await NetworkService().requestSecurityCode(for: email, operation: .mintDomains)
-    }
+//    func sendUserEmailVerificationCode(to email: String) async throws {
+//        try await NetworkService().requestSecurityCode(for: email, operation: .mintDomains)
+//    }
         
     @discardableResult
     func getLatestAppVersion() async -> AppVersionInfo {

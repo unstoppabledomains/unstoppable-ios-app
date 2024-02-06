@@ -41,31 +41,32 @@ class EnterEmailViewPresenter {
 // MARK: - EnterEmailViewPresenterProtocol
 extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
     func continueButtonPressed() {
-        Task {
-            guard let email = view?.email else { return }
-            
-            view?.setLoadingIndicator(active: true)
-            do {
-                try await userDataService.sendUserEmailVerificationCode(to: email)
-                view?.setLoadingIndicator(active: false)
-                didSendVerificationCode(on: email)
-            } catch {
-                view?.setLoadingIndicator(active: false)
-                if let networkError = error as? NetworkLayerError,
-                   case .badResponseOrStatusCode(_, let message) = networkError,
-                   let message,
-                   let specificError = SpecificError.allCases.first(where: { message.contains($0.rawValue) }) {
-                    switch specificError {
-                    case .unableToCreateAccount:
-                        showUnableToCreateAccountAlert()
-                    case .unableToFindAccount:
-                        showAccountNotFoundAlert()
-                    }
-                } else {
-                    view?.showAlertWith(error: error, handler: nil)
-                }
-            }
-        }
+        Debugger.printFailure("should not get here")
+//        Task {
+//            guard let email = view?.email else { return }
+//            
+//            view?.setLoadingIndicator(active: true)
+//            do {
+//                try await userDataService.sendUserEmailVerificationCode(to: email)
+//                view?.setLoadingIndicator(active: false)
+//                didSendVerificationCode(on: email)
+//            } catch {
+//                view?.setLoadingIndicator(active: false)
+//                if let networkError = error as? NetworkLayerError,
+//                   case .badResponseOrStatusCode(_, let message) = networkError,
+//                   let message,
+//                   let specificError = SpecificError.allCases.first(where: { message.contains($0.rawValue) }) {
+//                    switch specificError {
+//                    case .unableToCreateAccount:
+//                        showUnableToCreateAccountAlert()
+//                    case .unableToFindAccount:
+//                        showAccountNotFoundAlert()
+//                    }
+//                } else {
+//                    view?.showAlertWith(error: error, handler: nil)
+//                }
+//            }
+//        }
     }
 }
 
