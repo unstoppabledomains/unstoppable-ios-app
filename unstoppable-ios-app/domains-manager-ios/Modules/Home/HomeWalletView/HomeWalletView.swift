@@ -26,7 +26,7 @@ struct HomeWalletView: View {
                 .listRowSeparator(.hidden)
                 .onAppearanceChange($isHeaderVisible)
                 .unstoppableListRowInset()
-
+                
                 HomeWalletActionsView(actionCallback: { action in
                     viewModel.walletActionPressed(action)
                 }, subActionCallback: { subAction in
@@ -306,4 +306,3 @@ private extension HomeWalletView {
         .environmentObject(router)
     }
 }
-
