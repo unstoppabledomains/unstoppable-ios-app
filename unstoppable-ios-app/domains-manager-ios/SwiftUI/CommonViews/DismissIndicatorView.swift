@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct DismissIndicatorView: View {
+    
+    var color: Color = .backgroundSubtle
+    
     var body: some View {
         HStack {
             Spacer()
             RoundedRectangle(cornerRadius: 2)
-                .foregroundStyle(Color.backgroundSubtle)
+                .foregroundStyle(color)
                 .frame(width: 40, height: 4)
             Spacer()
         }

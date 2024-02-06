@@ -53,6 +53,10 @@ struct HomeTabView: View {
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
         })
+        .sheet(item: $router.showingWalletInfo, content: {
+            ShareWalletInfoView(wallet: $0)
+                .presentationDetents([.large])
+        })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { wallet in
             ReverseResolutionSelectionView(wallet: wallet)
                 .interactiveDismissDisabled(true)
