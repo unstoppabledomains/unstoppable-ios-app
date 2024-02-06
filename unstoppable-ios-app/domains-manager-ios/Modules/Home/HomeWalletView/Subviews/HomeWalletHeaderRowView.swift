@@ -65,9 +65,9 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
-        Image(uiImage: domainAvatar ?? .domainSharePlaceholder)
-            .resizable()
-            .background(Color.clear)
+        UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
+                          width: 20,
+                          height: 20)
     }
     
     @ViewBuilder
