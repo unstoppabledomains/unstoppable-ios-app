@@ -13,27 +13,23 @@ struct HomeWalletHeaderRowView: View {
 
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
+    let domainNamePressedCallback: MainActorCallback
+
     @State private var domainAvatar: UIImage?
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            getAvatarView()
-                .squareFrame(80)
-                .clipShape(Circle())
-                .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
-                .overlay {
-                    Circle()
-                        .stroke(lineWidth: 2)
-                        .foregroundStyle(Color.backgroundDefault)
-                }
+        VStack(alignment: .center, spacing: 16) {
+            avatarView()
+            VStack(alignment: .center, spacing: 8) {
+                profileSelectionView()
+                totalBalanceView()
+            }
         }
         .frame(maxWidth: .infinity)
         .onChange(of: wallet, perform: { wallet in
             loadAvatarFor(wallet: wallet)
         })
         .onAppear(perform: onAppear)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
 }
@@ -52,6 +48,19 @@ private extension HomeWalletHeaderRowView {
                 self.domainAvatar = image
             }
         }
+    }
+    
+    @ViewBuilder
+    func avatarView() -> some View {
+        getAvatarView()
+            .squareFrame(80)
+            .clipShape(Circle())
+            .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
+            .overlay {
+                Circle()
+                    .stroke(lineWidth: 2)
+                    .foregroundStyle(Color.backgroundDefault)
+            }
     }
     
     @ViewBuilder
@@ -93,8 +102,40 @@ private extension HomeWalletHeaderRowView {
         }
         .buttonStyle(.plain)
     }
+    
+    func getProfileSelectionTitle() -> String {
+        if let rrDomain = wallet.rrDomain {
+            return rrDomain.name
+        }
+        return wallet.displayName
+    }
+    
+    @ViewBuilder
+    func profileSelectionView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            domainNamePressedCallback()
+        } label: {
+            HStack(spacing: 0) {
+                Text(getProfileSelectionTitle())
+                    .font(.currentFont(size: 16, weight: .medium))
+                Image.chevronGrabberVertical
+                    .squareFrame(24)
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func totalBalanceView() -> some View {
+        Text("$\(wallet.totalBalance.formatted(toMaxNumberAfterComa: 2))")
+            .titleText()
+    }
 }
 
 #Preview {
-    HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!)
+    HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
+                            domainNamePressedCallback: { })
 }

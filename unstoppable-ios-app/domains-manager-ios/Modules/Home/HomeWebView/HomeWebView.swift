@@ -14,6 +14,7 @@ struct HomeWebView: View {
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var isHeaderVisible: Bool = true
+    @State private var scrollOffset: CGPoint = .zero
     @State private var navigationState: NavigationStateManager?
     @State private var domains: [FirebaseDomainDisplayInfo] = []
     private let gridColumns = [
@@ -24,7 +25,7 @@ struct HomeWebView: View {
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            List {
+            OffsetObservingListView(offset: $scrollOffset) {
                 headerIconRowView()
                     .onAppearanceChange($isHeaderVisible)
                 headerInfoView()
@@ -37,19 +38,12 @@ struct HomeWebView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             }
-            .onChange(of: isHeaderVisible) { newValue in
-                withAnimation {
-                    navigationState?.isTitleVisible =
-                    !isOtherScreenPushed &&
-                    !isHeaderVisible &&
-                    tabRouter.tabViewSelection == .wallets
-                }
-            }
-            .onChange(of: tabRouter.walletViewNavPath) { newValue in
-                withAnimation {
-                    navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
-                }
+            .onChange(of: tabRouter.walletViewNavPath) { _ in
+                updateNavTitleVisibility()
                 tabRouter.isTabBarVisible = !isOtherScreenPushed
+            }
+            .onChange(of: scrollOffset) { point in
+                updateNavTitleVisibility()
             }
             .listStyle(.plain)
             .clearListBackground()
@@ -95,6 +89,19 @@ private extension HomeWebView {
     func setFirebaseDomains(_ firebaseDomains: [FirebaseDomain]) {
         print(firebaseDomains.count)
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
+    }
+    
+    var isNavTitleVisible: Bool {
+        (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+        !isOtherScreenPushed &&
+        tabRouter.tabViewSelection == .wallets
+    }
+    
+    
+    func updateNavTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = isNavTitleVisible
+        }
     }
 }
 

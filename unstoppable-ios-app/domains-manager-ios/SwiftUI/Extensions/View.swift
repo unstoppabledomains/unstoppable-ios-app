@@ -9,6 +9,10 @@ import SwiftUI
 
 @MainActor
 extension View {
+    var safeAreaInset: UIEdgeInsets {
+        SceneDelegate.shared?.window?.safeAreaInsets ?? .zero
+    }
+    
     @inlinable
     public func reverseMask<Mask: View>(
         alignment: Alignment = .center,
