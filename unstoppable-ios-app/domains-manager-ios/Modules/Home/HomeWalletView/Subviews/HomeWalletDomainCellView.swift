@@ -50,9 +50,8 @@ private extension HomeWalletDomainCellView {
     func viewForDomain() -> some View {
         ZStack(alignment: .leading) {
             domainAvatarView(cornerRadius: 12)
-            VStack {
+            VStack(alignment: .leading) {
                 cartLogoView()
-                    .offset(x: -12)
                 Spacer()
                 VStack(alignment: .leading, spacing: 0) {
                     Text(domain.name.getBelowTld() ?? "")
