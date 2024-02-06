@@ -460,7 +460,7 @@ private extension WalletsDataService {
     }
 }
 
-// MARK: - Load balance temp
+// MARK: - Load balance
 private extension WalletsDataService {
     func refreshWalletBalancesAsync(_ wallet: WalletEntity) {
         Task {
@@ -482,7 +482,7 @@ private extension WalletsDataService {
     }
 }
 
-// MARK: - Load NFTs temp
+// MARK: - Load NFTs
 private extension WalletsDataService {
     func refreshWalletNFTsAsync(_ wallet: WalletEntity) {
         Task {

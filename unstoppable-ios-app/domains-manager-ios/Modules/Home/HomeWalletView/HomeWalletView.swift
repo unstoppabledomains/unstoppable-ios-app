@@ -30,18 +30,24 @@ struct HomeWalletView: View {
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
                 })
-               
+                .unstoppableListRowInset()
+                
                 contentTypeSelector()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .padding(.vertical)
+                    .unstoppableListRowInset()
+                
                 sortingOptionsForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
+                
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-            }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = 
@@ -58,6 +64,7 @@ struct HomeWalletView: View {
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
+            .listRowSpacing(0)
             .clearListBackground()
             .background(Color.backgroundDefault)
             .navigationTitle("")

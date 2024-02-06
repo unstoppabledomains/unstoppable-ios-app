@@ -34,7 +34,7 @@ struct HomeWalletsDomainsSectionView: View {
             Line()
                 .stroke(lineWidth: 1)
                 .foregroundStyle(Color.foregroundSecondary)
-                .offset(y: 50)
+                .offset(y: 36)
             Section {
                 gridWithDomains(Array(subdomains.prefix(numberOfVisibleSubdomains)))
             } header: {
@@ -98,7 +98,7 @@ private extension HomeWalletsDomainsSectionView {
                 .buttonStyle(.plain)
             }
         }
-        .padding(EdgeInsets(top: -14, leading: 0, bottom: -38, trailing: 0))
+//        .padding(EdgeInsets(top: -14, leading: 0, bottom: -38, trailing: 0))
     }
 }
 
