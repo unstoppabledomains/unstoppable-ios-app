@@ -48,7 +48,10 @@ extension HomeWalletView {
     
     
     enum WalletAction: String, CaseIterable, HomeWalletActionItem {
-        case receive, profile, copy, more
+        case buy
+        case receive
+        case profile
+        case more
         
         var title: String {
             switch self {
@@ -56,8 +59,8 @@ extension HomeWalletView {
                 return String.Constants.receive.localized()
             case .profile:
                 return String.Constants.profile.localized()
-            case .copy:
-                return String.Constants.copy.localized()
+            case .buy:
+                return String.Constants.buy.localized()
             case .more:
                 return String.Constants.more.localized()
             }
@@ -69,8 +72,8 @@ extension HomeWalletView {
                 return .arrowBottom
             case .profile:
                 return .personIcon
-            case .copy:
-                return .squareBehindSquareIcon
+            case .buy:
+                return .creditCard2Icon
             case .more:
                 return .dotsIcon
             }
@@ -78,7 +81,7 @@ extension HomeWalletView {
         
         var subActions: [WalletSubAction] {
             switch self {
-            case .receive, .profile, .copy:
+            case .receive, .profile, .buy:
                 return []
             case .more:
                 return [.connectedApps]

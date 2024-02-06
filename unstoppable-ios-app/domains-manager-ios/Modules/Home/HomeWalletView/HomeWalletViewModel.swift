@@ -68,8 +68,8 @@ extension HomeWalletView {
                 guard let rrDomain = selectedWallet.rrDomain else { return }
                 
                 router.presentedDomain = .init(domain: rrDomain, wallet: selectedWallet)
-            case .copy:
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
+            case .buy:
+                router.runPurchaseFlow()
             case .more:
                 return
             }
