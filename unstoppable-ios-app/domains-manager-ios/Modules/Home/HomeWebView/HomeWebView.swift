@@ -205,7 +205,7 @@ private extension HomeWebView {
     func handleAction(_ action: WebAction) {
         switch action {
         case .addWallet:
-            return
+            tabRouter.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
         case .claim:
             runDefaultMintingFlow()
         case .more:
