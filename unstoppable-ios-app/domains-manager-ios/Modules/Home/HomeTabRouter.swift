@@ -22,6 +22,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: WalletEntity?
+    @Published var showingWalletInfo: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     
@@ -273,6 +274,7 @@ private extension HomeTabRouter {
         presentedDomain = nil
         presentedPublicDomain = nil
         resolvingPrimaryDomainWallet = nil
+        showingWalletInfo = nil
         walletViewNavPath = .init()
         chatsListCoordinator?.popToChatsList()
     }
