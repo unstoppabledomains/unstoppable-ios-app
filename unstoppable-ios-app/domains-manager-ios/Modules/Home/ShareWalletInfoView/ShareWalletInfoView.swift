@@ -30,8 +30,11 @@ struct ShareWalletInfoView: View {
 
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    UDButtonView(text: "Share address", style: .large(.raisedTertiaryWhite)) {
-                        
+                    UDButtonView(text: String.Constants.shareAddress.localized(),
+                                 style: .large(.raisedTertiaryWhite)) {
+                        shareItems([wallet.ethFullAddress]) { success in
+                            
+                        }
                     }
                 }
             }
@@ -114,7 +117,7 @@ private extension ShareWalletInfoView {
     
     @ViewBuilder
     func warningMessageView() -> some View {
-        Text("You can use this address to receive ETH and other Ethereum based tokens such as USDC. Sending other assets may result in permanent loss.")
+        Text(String.Constants.shareWalletAddressInfoMessage.localized())
             .font(.currentFont(size: 13))
             .multilineTextAlignment(.center)
             .foregroundColor(Color.white.opacity(0.32))

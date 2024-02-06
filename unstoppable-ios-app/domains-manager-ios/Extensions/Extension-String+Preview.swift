@@ -1089,6 +1089,8 @@ extension String {
         static let noPrimaryDomain = "NO_PRIMARY_DOMAIN"
         static let hidden = "HIDDEN"
         static let buy = "BUY"
+        static let shareAddress = "SHARE_ADDRESS"
+        static let shareWalletAddressInfoMessage = "SHARE_WALLET_ADDRESS_INFO_MESSAGE"
     }
     
     enum BlockChainIcons: String {

@@ -987,3 +987,5 @@
 "NO_PRIMARY_DOMAIN" = "No primary domain";
 "HIDDEN" = "Hidden";
 "BUY" = "Buy";
+"SHARE_ADDRESS" = "Share address";
+"SHARE_WALLET_ADDRESS_INFO_MESSAGE" = "You can use this address to receive ETH and other Ethereum based tokens such as USDC. Sending other assets may result in permanent loss.";
