@@ -410,7 +410,8 @@ private extension WalletsDataService {
     
     func loadWalletDomainsPFPIfTooLarge(_ wallet: WalletEntity) async {
         let walletDomains = wallet.domains
-        
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+
         if walletDomains.count > numberOfDomainsToLoadPerTime {
             var domains = Array(walletDomains.lazy.sorted { lhs, rhs in
                 if lhs.isPrimary {
@@ -434,9 +435,13 @@ private extension WalletsDataService {
                         var domains = wallet.domains
                         
                         for pfpInfo in pfpInfoArray {
-                            if let i = domains.firstIndex(where: { $0.name == pfpInfo.domainName }),
+                            if pendingProfiles.first(where: { $0.domainName == pfpInfo.domainName })?.avatarData == nil,
+                               let i = domains.firstIndex(where: { $0.name == pfpInfo.domainName }),
                                domains[i].domainPFPInfo != pfpInfo {
                                 domains[i].setPFPInfo(pfpInfo)
+                                if domains[i].name == wallet.rrDomain?.name {
+                                    wallet.rrDomain = domains[i]
+                                }
                             }
                         }
                     }

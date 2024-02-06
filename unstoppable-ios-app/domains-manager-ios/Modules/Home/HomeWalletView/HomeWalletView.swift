@@ -269,7 +269,9 @@ private extension HomeWalletView {
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
-        tabRouter.presentedDomain = .init(domain: domain, wallet: viewModel.selectedWallet)
+        Task {
+            await tabRouter.showDomainProfile(domain, wallet: viewModel.selectedWallet, preRequestedAction: nil, dismissCallback: nil)
+        }
     }
     
     @ViewBuilder

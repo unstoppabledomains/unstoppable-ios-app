@@ -67,7 +67,9 @@ extension HomeWalletView {
             case .profile:
                 guard let rrDomain = selectedWallet.rrDomain else { return }
                 
-                router.presentedDomain = .init(domain: rrDomain, wallet: selectedWallet)
+                Task {
+                    await router.showDomainProfile(rrDomain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
+                }
             case .buy:
                 router.runPurchaseFlow()
             case .more:
@@ -114,6 +116,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         sortTokens(selectedTokensSortingOption)
         runSelectRRDomainInSelectedWalletIfNeeded()
         ensureRRDomainRecordsMatchOwnerWallet()
+        Task {
+            await router.askToFinishSetupPurchasedProfileIfNeeded(domains: selectedWallet.domains)
+        }
     }
     
     func sortTokens(_ sortOption: HomeWalletView.TokensSortingOptions) {
@@ -190,7 +195,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             await Task.sleep(seconds: 0.5)
             
             if router.resolvingPrimaryDomainWallet == nil,
-               selectedWallet.isReverseResolutionChangeAllowed() {
+               selectedWallet.isReverseResolutionChangeAllowed(),
+               !router.isUpdatingPurchasedProfiles {
                 router.resolvingPrimaryDomainWallet = selectedWallet
             }
         }

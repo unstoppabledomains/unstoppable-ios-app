@@ -241,7 +241,7 @@ extension ViewPullUpDefaultConfiguration {
 extension ViewPullUpDefaultConfiguration {
     static func wcConnectionFailed(dismissCallback: EmptyCallback? = nil) -> ViewPullUpDefaultConfiguration {
         .init(icon: .init(icon: .grimaseIcon,
-                          size: .small), 
+                          size: .small),
               title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
               subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
               cancelButton: .gotItButton(),
@@ -301,16 +301,62 @@ extension ViewPullUpDefaultConfiguration {
                                  size: .large),
                      title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(chain.fullName)),
                      subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnersAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
-                                                      highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
+                                                             highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
                      actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
                                                         analyticsName: .gotIt,
                                                         action: nil)),
                      extraButton: .primaryGhost(content: .init(title: String.Constants.updateRecords.localized(),
-                                                                analyticsName: .aboutProfile,
-                                                                action: updateRecordsCallback)),
-              analyticName: .wcRequestNotSupported,
-              dismissCallback: nil)
+                                                               analyticsName: .aboutProfile,
+                                                               action: updateRecordsCallback)),
+                     analyticName: .wcRequestNotSupported,
+                     dismissCallback: nil)
     }
+    
+    static func showFinishSetupProfilePullUp(pendingProfile: DomainProfilePendingChanges, 
+                                      signCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        let domainName = pendingProfile.domainName
+
+        return .init(icon: .init(icon: .infoIcon,
+                                 size: .large),
+                     title: .highlightedText(.init(text: String.Constants.finishSetupProfilePullUpTitle.localized(String(domainName.prefix(40))),
+                                                   highlightedText: [.init(highlightedText: domainName, highlightedColor: .foregroundSecondary)],
+                                                   analyticsActionName: nil,
+                                                   action: nil)),
+                     subtitle: .label(.text(String.Constants.finishSetupProfilePullUpSubtitle.localized())),
+                     actionButton: .main(content: .init(title: String.Constants.signTransaction.localized(),
+                                                        analyticsName: .confirm,
+                                                        action: signCallback)),
+                     dismissAble: false,
+                     analyticName: .finishProfileForPurchasedDomains,
+                     dismissCallback: nil)
+    }
+    
+    static func showFinishSetupProfileFailedPullUp(completion: @escaping ((Result<Void, Error>)->())) -> ViewPullUpDefaultConfiguration  {
+        
+        let title = String.Constants.finishSetupProfileFailedPullUpTitle.localized()
+        
+        
+        return .init(icon: .init(icon: .grimaseIcon,
+                                 size: .small),
+                     title: .text(title),
+                     subtitle: .label(.text(String.Constants.finishSetupProfilePullUpSubtitle.localized())),
+                     actionButton: .main(content: .init(title: String.Constants.tryAgain.localized(),
+                                                        analyticsName: .tryAgain,
+                                                        action: { completion(.success(Void())) })),
+                     cancelButton: .secondary(content: .init(title: String.Constants.cancelSetup.localized(),
+                                                             icon: nil,
+                                                             analyticsName: .cancel,
+                                                             action: { completion(.failure(PullUpError.dismissed)) })),
+                     analyticName: .failedToFinishProfileForPurchasedDomains,
+                     dismissCallback: nil)
+    }
+    
     
 }
 
+// MARK: - Open methods
+extension ViewPullUpDefaultConfiguration {
+    enum PullUpError: Error {
+        case dismissed
+    }
+}

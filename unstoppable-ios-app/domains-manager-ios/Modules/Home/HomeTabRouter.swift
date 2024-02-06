@@ -29,6 +29,7 @@ final class HomeTabRouter: ObservableObject {
     let id: UUID = UUID()
     private var topViews = 0
     private var cancellables: Set<AnyCancellable> = []
+    private(set) var isUpdatingPurchasedProfiles = false
     
     init(profile: UserProfile) {
         self.profile = profile
@@ -99,10 +100,54 @@ extension HomeTabRouter {
                            dismissCallback: EmptyCallback?) async {
         await popToRootAndWait()
         tabViewSelection = .wallets
-        presentedDomain = .init(domain: domain,
-                                wallet: wallet,
-                                preRequestedProfileAction: preRequestedAction,
-                                dismissCallback: dismissCallback)
+        await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
+        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+
+        
+        switch domain.usageType {
+        case .newNonInteractable:
+            guard let walletAddress = domain.ownerWallet else {
+                Debugger.printInfo("No profile for a non-interactible domain")
+                return
+            }
+            let domain = domain.toDomainItem()
+            let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
+            showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain, preRequestedAction: nil)
+        case .zil:
+            do {
+                try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topVC)
+                await topVC.dismissPullUpMenu()
+                UDRouter().showUpgradeToPolygonTutorialScreen(in: topVC)
+            } catch { }
+        case .deprecated(let tld):
+            do {
+                try await appContext.pullUpViewService.showDomainTLDDeprecatedPullUp(tld: tld, in: topVC)
+                await topVC.dismissPullUpMenu()
+                topVC.openLink(.deprecatedCoinTLDPage)
+            } catch { }
+        case .normal:
+            guard !domain.isMinting else {
+                showDomainMintingInProgress(domain)
+                return }
+            guard !domain.isTransferring else {
+                showDomainTransferringInProgress(domain)
+                return }
+            
+            presentedDomain = .init(domain: domain,
+                                    wallet: wallet,
+                                    preRequestedProfileAction: preRequestedAction,
+                                    dismissCallback: dismissCallback)
+        case .parked:
+            let action = await UDRouter().showDomainProfileParkedActionModule(in: topVC,
+                                                                              domain: domain,
+                                                                              imagesInfo: .init())
+            switch action {
+            case .claim:
+                runMintDomainsFlow(with: .default(email: appContext.firebaseParkedDomainsAuthenticationService.firebaseUser?.email))
+            case .close:
+                return
+            }
+        }
     }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
@@ -171,6 +216,29 @@ extension HomeTabRouter {
             await popToRootAndWait()
             tabViewSelection = .wallets
             walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
+        }
+    }
+    
+    func askToFinishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo]) async {
+        let profilesReadyToSubmit = getPurchasedProfilesReadyToSubmit(domains: domains)
+        if !profilesReadyToSubmit.isEmpty,
+           !isUpdatingPurchasedProfiles {
+            isUpdatingPurchasedProfiles = true
+            let requests = profilesReadyToSubmit.compactMap { profile -> UpdateProfilePendingChangesRequest? in
+                if let domain = domains.first(where: { $0.name == profile.domainName }) {
+                    return UpdateProfilePendingChangesRequest(pendingChanges: profile, domain: domain.toDomainItem())
+                }
+                Debugger.printFailure("Failed to find domain item for pending profile update", critical: true)
+                return nil
+            }
+            await withSafeCheckedMainActorContinuation { completion in
+                pullUp = .default(.showFinishSetupProfilePullUp(pendingProfile: profilesReadyToSubmit[0],
+                                                                signCallback: {
+                    completion(Void())
+                }))
+            }
+            //await view.dismissPullUpMenu()
+            await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
         }
     }
 }
@@ -263,6 +331,28 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         
         topVC.openLink(.domainProfilePage(domainName: domainName))
     }
+    
+    func showDomainMintingInProgress(_ domain: DomainDisplayInfo) {
+        guard domain.isMinting,
+              let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
+        
+        guard let mintingDomain = mintingDomains.first(where: { $0.name == domain.name }) else { return }
+        
+        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(mintingDomain: mintingDomain,
+                                                                        displayInfo: domain)
+        UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: [mintingDomainWithDisplayInfo],
+                                                      mintingDomainSelectedCallback: { _ in },
+                                                      in: topVC)
+    }
+    
+    func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
+        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: topVC)
+    }
+    
 }
 
 // MARK: - Private methods
@@ -323,6 +413,50 @@ private extension HomeTabRouter {
         showPublicDomainProfile(of: publicDomainInfo,
                                 viewingDomain: domain,
                                 preRequestedAction: nil)
+    }
+    
+    func getPurchasedProfilesReadyToSubmit(domains: [DomainDisplayInfo]) -> [DomainProfilePendingChanges] {
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        return pendingProfiles.filter { profile in
+            if let domain = domains.first(where: { $0.name == profile.domainName }),
+               domain.state == .default {
+                return true
+            }
+            return false
+        }
+    }
+    
+    func finishSetupPurchasedProfileIfNeeded(domains: [DomainDisplayInfo],
+                                             requests: [UpdateProfilePendingChangesRequest]) async {
+        let pendingProfiles = PurchasedDomainsStorage.retrievePendingProfiles()
+        let pendingProfilesLeft = pendingProfiles.filter { profile in
+            requests.first(where: { $0.pendingChanges.domainName == profile.domainName }) == nil
+        }
+        
+        do {
+            try await NetworkService().updatePendingDomainProfiles(with: requests)
+            PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            await Task.sleep(seconds: 0.3)
+            try? await appContext.walletsDataService.refreshDataForWalletDomain(domains[0].name)
+        } catch {
+            do {
+                try await withSafeCheckedThrowingMainActorContinuation { completion in
+                    pullUp = .default(.showFinishSetupProfileFailedPullUp(completion: { result in
+                        switch result {
+                        case .success:
+                            completion(.success(Void()))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }))
+                }
+                //                await view.dismissPullUpMenu()
+                await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
+            } catch {
+                PurchasedDomainsStorage.setPendingNonEmptyProfiles(pendingProfilesLeft)
+            }
+        }
+        isUpdatingPurchasedProfiles = false
     }
 }
 

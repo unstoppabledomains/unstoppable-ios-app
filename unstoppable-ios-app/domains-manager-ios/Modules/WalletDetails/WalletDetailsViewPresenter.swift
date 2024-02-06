@@ -155,6 +155,7 @@ private extension WalletDetailsViewPresenter {
                                                  copyButtonPressed: { [weak self] in self?.copyAddressButtonPressed() },
                                                  externalBadgePressed: { [weak self] in self?.externalBadgePressed() }))])
             let isNetworkReachable = networkReachabilityService?.isReachable == true
+            
             // Backup and recovery phrase
             if !isExternalWallet {
                 snapshot.appendSections([.backUpAndRecovery])
