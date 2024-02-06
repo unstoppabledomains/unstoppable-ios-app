@@ -196,7 +196,10 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         Task {
             let walletAddress = selectedWallet.address
             guard lastVerifiedRecordsWalletAddress != selectedWallet.address,
-                  let rrDomain = selectedWallet.rrDomain else { return }
+                  let rrDomain = selectedWallet.rrDomain else {
+                chainsNotMatch = []
+                return
+            }
             
             do {
                 let profile = try await NetworkService().fetchPublicProfile(for: rrDomain.name,
@@ -222,6 +225,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 }
                 
                 lastVerifiedRecordsWalletAddress = selectedWallet.address
+            } catch {
+                chainsNotMatch = []
             }
         }
     }

@@ -191,7 +191,7 @@ private extension HomeWalletView {
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }
         }
-        .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+        .padding(EdgeInsets(top: 30, leading: 0, bottom: 12, trailing: 0))
     }
     
     @ViewBuilder
