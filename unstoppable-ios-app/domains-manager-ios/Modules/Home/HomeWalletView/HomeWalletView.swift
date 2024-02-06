@@ -167,7 +167,11 @@ private extension HomeWalletView {
         case .collectibles:
             HomeWalletSortingSelectorView(sortingOptions: CollectiblesSortingOptions.allCases, selectedOption: $viewModel.selectedCollectiblesSortingOption)
         case .domains:
-            HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, selectedOption: $viewModel.selectedDomainsSortingOption)
+            HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
+                                          selectedOption: $viewModel.selectedDomainsSortingOption,
+                                          additionalAction: .init(title: String.Constants.buy.localized(),
+                                                                  icon: .plusIconNav,
+                                                                  callback: viewModel.buyDomainPressed))
         }
     }
     

@@ -85,6 +85,10 @@ extension HomeWalletView {
         func domainNamePressed() {
             router.isSelectProfilePresented = true
         }
+        
+        func buyDomainPressed() {
+            router.runPurchaseFlow()
+        }
     }
 }
 
