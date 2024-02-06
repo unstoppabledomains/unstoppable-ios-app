@@ -48,8 +48,8 @@ struct HomeWebView: View {
             .onChange(of: tabRouter.walletViewNavPath) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPushed
                 }
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
             }
             .listStyle(.plain)
             .clearListBackground()

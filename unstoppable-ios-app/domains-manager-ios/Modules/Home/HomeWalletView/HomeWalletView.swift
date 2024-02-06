@@ -59,8 +59,8 @@ struct HomeWalletView: View {
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 withAnimation {
                     navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPushed
                 }
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
