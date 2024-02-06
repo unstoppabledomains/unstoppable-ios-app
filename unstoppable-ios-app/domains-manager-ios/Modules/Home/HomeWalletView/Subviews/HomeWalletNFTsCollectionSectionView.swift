@@ -20,8 +20,7 @@ struct HomeWalletNFTsCollectionSectionView: View {
     ]
     
     var body: some View {
-        VStack {
-            sectionHeaderView()
+        Section {
             LazyVGrid(columns: gridColumns, spacing: 16) {
                 ForEach(0..<numberOfNFTsVisible, id: \.self) { i in
                     nftCellView(collection.nfts[i])
@@ -32,6 +31,8 @@ struct HomeWalletNFTsCollectionSectionView: View {
                         }
                 }
             }
+        } header: {
+            sectionHeaderView()
         }
         .withoutAnimation()
     }

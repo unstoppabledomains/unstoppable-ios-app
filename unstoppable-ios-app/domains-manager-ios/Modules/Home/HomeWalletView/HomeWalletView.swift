@@ -30,18 +30,24 @@ struct HomeWalletView: View {
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
                 })
-               
+                .unstoppableListRowInset()
+                
                 contentTypeSelector()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .padding(.vertical)
+                    .unstoppableListRowInset()
+                
                 sortingOptionsForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
+                
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-            }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: isHeaderVisible) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = 
@@ -58,6 +64,7 @@ struct HomeWalletView: View {
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
+            .listRowSpacing(0)
             .clearListBackground()
             .background(Color.backgroundDefault)
             .navigationTitle("")
@@ -184,7 +191,7 @@ private extension HomeWalletView {
                 .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
             }
         }
-        .padding(EdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+        .padding(EdgeInsets(top: 30, leading: 0, bottom: 12, trailing: 0))
     }
     
     @ViewBuilder
@@ -194,7 +201,7 @@ private extension HomeWalletView {
                 .stroke(lineWidth: 1)
                 .frame(height: 1)
                 .foregroundStyle(Color.foregroundSecondary)
-            HomeWalletExpandableSectionHeaderView(title: "Hidden",
+            HomeWalletExpandableSectionHeaderView(title: String.Constants.hidden.localized(),
                                                   isExpandable: true,
                                                   numberOfItemsInSection: viewModel.chainsNotMatch.count,
                                                   isExpanded: viewModel.isNotMatchingTokensVisible,
@@ -247,9 +254,11 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domains: viewModel.domains,
+        HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
                                       subdomains: viewModel.subdomains,
-                                      domainSelectedCallback: didSelectDomain, isSubdomainsVisible: $viewModel.isSubdomainsVisible)
+                                      domainSelectedCallback: didSelectDomain, 
+                                      isSubdomainsVisible: $viewModel.isSubdomainsVisible,
+                                      domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
@@ -274,7 +283,7 @@ private extension HomeWalletView {
     NavigationView {
         let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
         
-        return HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
+        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
                                                router: router))
         .environmentObject(router)
     }
