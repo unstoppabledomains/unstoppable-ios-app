@@ -197,7 +197,7 @@ private extension DomainsCollectionCarouselCardCell {
             case .parked:
                 Debugger.printFailure("Parked domain should not have default state", critical: true)
             }
-        case .updatingRecords:
+        case .updatingRecords, .updatingReverseResolution:
             setIndicatorStyle(.updatingRecords)
             setStatusMessageComponent(.electricUpdatingRecords)
         case .minting:

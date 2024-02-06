@@ -65,7 +65,7 @@ extension DomainDisplayInfo {
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
     var isUpdatingRecords: Bool {
         switch state {
-        case .minting, .updatingRecords, .transfer:
+        case .minting, .updatingRecords, .transfer, .updatingReverseResolution:
             return true
         case .default, .parking:
             return false
@@ -103,6 +103,7 @@ extension DomainDisplayInfo {
 extension DomainDisplayInfo {
     enum State: Hashable, Codable {
         case `default`, minting, updatingRecords, parking(status: DomainParkingStatus), transfer
+        case updatingReverseResolution
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
@@ -115,6 +116,8 @@ extension DomainDisplayInfo {
             case (.parking, .parking):
                 return true
             case (.transfer, .transfer):
+                return true
+            case (.updatingReverseResolution, .updatingReverseResolution):
                 return true
             default:
                 return false

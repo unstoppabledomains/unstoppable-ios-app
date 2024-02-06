@@ -124,13 +124,13 @@ extension WalletsDataService: UDWalletsServiceListener {
                 await Task.sleep(seconds: 0.2)
                 udWalletsUpdated()
             case .reverseResolutionDomainChanged(let domainName, _):
-                if let selectedWallet,
-                   var domain = selectedWallet.domains.first(where: { $0.name == domainName }) {
-                    domain.setState(.updatingRecords)
-                    mutateWalletEntity(selectedWallet) { wallet in
+                if let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }),
+                   var domain = wallet.domains.first(where: { $0.name == domainName }) {
+                    domain.setState(.updatingReverseResolution)
+                    mutateWalletEntity(wallet) { wallet in
                         wallet.changeRRDomain(domain)
                     }
-                    refreshWalletDomainsAsync(selectedWallet, shouldRefreshPFP: false)
+                    refreshWalletDomainsAsync(wallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
             case .walletRemoved:
@@ -247,6 +247,8 @@ private extension WalletsDataService {
                 domainState = .transfer
             } else if pendingTransactions.containMintingInProgress(domain) {
                 domainState = .minting
+            } else if pendingTransactions.containReverseResolutionOperationProgress(domain) {
+                domainState = .updatingReverseResolution
             } else if pendingTransactions.containPending(domain) {
                 domainState = .updatingRecords
             }

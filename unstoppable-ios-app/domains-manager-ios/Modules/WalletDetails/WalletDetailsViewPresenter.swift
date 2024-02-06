@@ -135,7 +135,9 @@ private extension WalletDetailsViewPresenter {
             let walletDomains = wallet.domains
             let domainsAvailableForRR = walletDomains.availableForRRItems()
             let rrDomain = wallet.rrDomain
-            let isRRSetupInProgress = !isReverseResolutionChangeAllowed
+            
+            let isUpdatingRecords = wallet.domains.first(where: { $0.isUpdatingRecords }) == nil
+            let isRRSetupInProgress = wallet.rrDomain?.state == .updatingReverseResolution
             
             let isExternalWallet: Bool
             switch walletInfo.source {
@@ -149,7 +151,7 @@ private extension WalletDetailsViewPresenter {
             snapshot.appendSections([.topInfo])
             snapshot.appendItems([.topInfo(.init(walletInfo: walletInfo,
                                                  domain: rrDomain,
-                                                 isUpdating: isRRSetupInProgress,
+                                                 isUpdating: isUpdatingRecords,
                                                  copyButtonPressed: { [weak self] in self?.copyAddressButtonPressed() },
                                                  externalBadgePressed: { [weak self] in self?.externalBadgePressed() }))])
             let isNetworkReachable = networkReachabilityService?.isReachable == true
@@ -187,7 +189,7 @@ private extension WalletDetailsViewPresenter {
             }
             
             if !walletDomains.isEmpty {
-                snapshot.appendItems([.listItem(.domains(domainsCount: walletInfo.domainsCount,
+                snapshot.appendItems([.listItem(.domains(domainsCount: walletDomains.count,
                                                          walletName: walletInfo.walletSourceName))])
             }
             
