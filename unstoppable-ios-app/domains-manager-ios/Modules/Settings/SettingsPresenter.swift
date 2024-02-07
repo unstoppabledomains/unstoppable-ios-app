@@ -109,8 +109,7 @@ private extension SettingsPresenter {
 
         let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
         snapshot.appendItems([.wallets("\(wallets.count)"),
-                              .security(securityName),
-                              .appearance(UserDefaults.appearanceStyle)])
+                              .security(securityName)])
 #if TESTFLIGHT
         snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
 #endif
