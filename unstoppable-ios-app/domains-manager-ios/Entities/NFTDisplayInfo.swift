@@ -14,7 +14,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let description: String?
     let imageUrl: URL?
     var videoUrl: URL? = nil
-    let link: String
+    var link: URL? = nil
     let tags: [String]
     let collection: String
     let collectionLink: URL?
@@ -74,7 +74,7 @@ extension NFTDisplayInfo {
         self.description = nftModel.description
         self.imageUrl = URL(string: nftModel.imageUrl ?? "")
         self.videoUrl = nil
-        self.link = nftModel.link
+        self.link = URL(string: nftModel.link)
         self.tags = nftModel.tags ?? []
         self.collection = nftModel.collection
         self.mint = nftModel.mint
@@ -152,7 +152,7 @@ extension NFTDisplayInfo {
         case .collectionID:
             return collectionLink?.absoluteString
         case .tokenID:
-            return mint.components(separatedBy: "/").last
+            return link?.lastPathComponent
         case .chain:
             return chain?.fullName
         case .lastSaleDate:

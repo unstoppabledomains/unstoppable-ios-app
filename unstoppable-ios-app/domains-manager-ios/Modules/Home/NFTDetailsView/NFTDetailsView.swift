@@ -260,7 +260,7 @@ private extension NFTDetailsView {
             guard let url = URL(string: value) else { return nil }
             return { openLink(.direct(url: url)) }
         case .tokenID:
-            guard let url = nft.collectionLink else { return nil }
+            guard let url = nft.link else { return nil }
             
             return { openLink(.direct(url: url)) }
         case .chain, .lastSaleDate, .rarity, .holdDays:

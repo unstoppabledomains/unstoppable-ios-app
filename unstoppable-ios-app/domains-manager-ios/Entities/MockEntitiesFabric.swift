@@ -158,7 +158,7 @@ extension MockEntitiesFabric {
             .init(name: "NFT Name",
                   description: "The MUTANT APE YACHT CLUB is a collection of up to 20,000 Mutant Apes that can only be created by exposing an existing Bored Ape to a vial of MUTANT SERUM or by minting a Mutant Ape in the public sale.",
                   imageUrl: URL(string: "https://google.com"),
-                  link: "https://google.com",
+                  link: URL(string: "https://google.com"),
                   tags: [],
                   collection: "Collection name with long name",
                   collectionLink: URL(string: "https://google.com"),
