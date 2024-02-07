@@ -20,9 +20,11 @@ struct HomeWalletHeaderRowView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack {
-//                WalletBalanceGradientChartView()
-//                    .padding(EdgeInsets(top: 0, leading: -50,
-//                                        bottom: 0, trailing: -50))
+                if wallet.portfolioRecords.count >= 4 {
+                    WalletBalanceGradientChartView(chartData: wallet.portfolioRecords)
+                        .padding(EdgeInsets(top: 0, leading: -50,
+                                            bottom: 0, trailing: -50))
+                }
                 avatarView()
             }
                 VStack(alignment: .center, spacing: 8) {
@@ -150,23 +152,13 @@ import Charts
 
 private struct WalletBalanceGradientChartView: View {
     struct ChartData: Hashable {
-        let x: Double
-        let y: Double
+        let timestamp: Double
+        let value: Double
     }
 
     
-    let chartData: [ChartData] = [ChartData(x: 2016, y: 6.8),
-                                ChartData(x: 2018, y: 5.2),
-                                ChartData(x: 2020, y: 22.9),
-                                ChartData(x: 2022, y: 22.2),
-                                ChartData(x: 2024, y: 27.9),
-                                ChartData(x: 2026, y: 23.2),
-                                ChartData(x: 2028, y: 37.2),
-                                ChartData(x: 2030, y: 32.9),
-                                ChartData(x: 2032, y: 35.2),
-                                ChartData(x: 2034, y: 32.9),
-                                ChartData(x: 2036, y: 39.2)]
-    let linearGradient = LinearGradient(stops: [
+    let chartData: [WalletPortfolioRecord]
+    private let linearGradient = LinearGradient(stops: [
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0.32), location: 0.00),
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0), location: 1.00),
     ],
@@ -175,23 +167,23 @@ private struct WalletBalanceGradientChartView: View {
     var body: some View {
         Chart {
             ForEach(chartData, id: \.self) { data in
-                LineMark(x: .value("Year", data.x),
-                         y: .value("Population", data.y))
+                LineMark(x: .value("", data.timestamp),
+                         y: .value("", data.value))
             }
             .interpolationMethod(.cardinal(tension: 0.4))
+            .foregroundStyle(Color.foregroundAccent)
             
             ForEach(chartData, id: \.self) { data in
-                AreaMark(x: .value("Year", data.x),
-                         y: .value("Population", data.y))
+                AreaMark(x: .value("", data.timestamp),
+                         y: .value("", data.value))
             }
             .interpolationMethod(.cardinal(tension: 0.4))
             .foregroundStyle(linearGradient)
         }
-        .chartXScale(domain: chartData.first!.x...chartData.last!.x)
+        .chartXScale(domain: chartData.first!.timestamp...chartData.last!.timestamp)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
-        .background(Color.clear)
         .frame(maxWidth: .infinity)
     }
 }

@@ -17,8 +17,9 @@ struct WalletEntity: Codable {
     var nfts: [NFTDisplayInfo]
     var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
+    var portfolioRecords: [WalletPortfolioRecord]
     
-    init(udWallet: UDWallet, displayInfo: WalletDisplayInfo, domains: [DomainDisplayInfo], nfts: [NFTDisplayInfo], balance: [WalletTokenPortfolio], rrDomain: DomainDisplayInfo? = nil) {
+    init(udWallet: UDWallet, displayInfo: WalletDisplayInfo, domains: [DomainDisplayInfo], nfts: [NFTDisplayInfo], balance: [WalletTokenPortfolio], rrDomain: DomainDisplayInfo? = nil, portfolioRecords: [WalletPortfolioRecord] = []) {
         self.address = udWallet.address
         self.ethFullAddress = address.ethChecksumAddress()
         self.udWallet = udWallet
@@ -27,6 +28,7 @@ struct WalletEntity: Codable {
         self.nfts = nfts
         self.balance = balance
         self.rrDomain = rrDomain
+        self.portfolioRecords = portfolioRecords
     }
     
     mutating func udWalletUpdated(_ udWallet: UDWallet) {
@@ -113,4 +115,17 @@ extension Array where Element == WalletEntity {
     func combinedDomains() -> [DomainDisplayInfo] {
         reduce([DomainDisplayInfo](), { $0 + $1.domains })
     }
+}
+
+struct WalletPortfolioRecord: Hashable, Codable {
+    let date: Date
+    let value: Double
+    let timestamp: Double
+
+    init(date: Date, value: Double) {
+        self.date = date
+        self.value = value
+        self.timestamp = date.timeIntervalSince1970
+    }
+    
 }

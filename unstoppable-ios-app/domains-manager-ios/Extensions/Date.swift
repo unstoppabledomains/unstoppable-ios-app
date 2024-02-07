@@ -75,4 +75,8 @@ extension Date {
     func dateDifferenceBetween(date: Date) -> DateComponents {
         Date.isoCalendar.dateComponents([.day, .month, .year], from: (date > self ? self : date).dayStart, to: (date < self ? self : date).dayStart)
     }
+    
+    func adding(days: Int) -> Date {
+        Date.isoCalendar.date(byAdding: .day, value: days, to: self) ?? Date()
+    }
 }
