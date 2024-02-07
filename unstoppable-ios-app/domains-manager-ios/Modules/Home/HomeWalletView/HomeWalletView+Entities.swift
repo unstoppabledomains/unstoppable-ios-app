@@ -162,6 +162,7 @@ extension HomeWalletView {
         let balanceUsd: Double
         var marketUsd: Double?
         var parentSymbol: String?
+        var logoURL: URL?
         private(set) var isSkeleton: Bool = false
        
         static let iconSize: InitialsView.InitialsSize = .default
@@ -190,11 +191,12 @@ extension HomeWalletView {
             self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
             self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
             self.parentSymbol = parentSymbol
+            self.logoURL = URL(string: walletToken.logoUrl ?? "")
         }
         
         static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
-            let subTokenDescriptions = walletBalance.tokens?.map { TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) } ?? []
+            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) }).filter({ $0.balanceUsd >= 1 }) ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
