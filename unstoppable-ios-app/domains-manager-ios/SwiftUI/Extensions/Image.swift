@@ -65,5 +65,7 @@ extension Image {
     static let wallet3Icon = Image("wallet3Icon")
     static let copyToClipboardIcon = Image("copyIcon")
     static let creditCard2Icon = Image("creditCard2Icon")
+    static let shareFlatIcon = Image("shareFlatIcon")
+    static let shareIcon = Image("shareIcon")
 
 }
