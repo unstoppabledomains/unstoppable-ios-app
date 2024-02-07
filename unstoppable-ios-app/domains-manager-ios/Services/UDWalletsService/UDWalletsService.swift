@@ -52,7 +52,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     func createNewUDWallet() async throws -> UDWallet {
         try checkIfAbleToAddNewWallet()
         
-        let namePrefix = "Vault"
+        let namePrefix = "Wallet"
         let newName = UDWalletsStorage.instance.getLowestIndexedName(startingWith: namePrefix)
         let waitAtLeast: TimeInterval = 3
        

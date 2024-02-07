@@ -49,12 +49,12 @@
 
 "CREATION_FAILED" = "Creation failed";
 "CONNECTION_FAILED" = "Connection failed";
-"FAILED_TO_CREATE_NEW_WALLET" = "Failed to create a new vault, error: %@";
+"FAILED_TO_CREATE_NEW_WALLET" = "Failed to create a new wallet, error: %@";
 "AUTHENTICATION_FAILED" = "Authentication failed";
 "BIOMETRICS_NOT_AVAILABLE" = "Biometrics is not available";
 "SAVE_TO_ICLOUD_FAILED_TITLE" = "iCloud failed";
-"SAVE_TO_ICLOUD_FAILED_MESSAGE" = "At least some of the vaults failed to back up in iCloud.";
-"BACKUP_TO_ICLOUD_FAILED_MESSAGE" = "The vaults failed to back up in iCloud. Please try again";
+"SAVE_TO_ICLOUD_FAILED_MESSAGE" = "At least some of the wallets failed to back up in iCloud.";
+"BACKUP_TO_ICLOUD_FAILED_MESSAGE" = "The wallet failed to back up in iCloud. Please try again";
 "NO_WALLETS_FOUND_IN_ICLOUD_TITLE" = "No wallets found";
 "NO_WALLETS_FOUND_IN_ICLOUD_MESSAGE" = "No wallets found in iCloud to import";
 "RESTORE_FROM_ICLOUD_FAILED_TITLE" = "Restoration failed";
@@ -104,7 +104,6 @@
 "SAVE" = "Save";
 "SAVED" = "Saved";
 "WALLET" = "Wallet";
-"VAULT" = "Vault";
 "CURRENT" = "Current";
 "LATER" = "Later";
 "PENDING" = "Pending";
@@ -169,22 +168,17 @@
 /* ONBOARDING */
 // Tutorial screens
 "ALREADY_MINTED_DOMAIN" = "Import minted domains";
-"CREATE_DOMAIN_VAULT" = "Create domain vault";
 "MINT_YOUR_DOMAIN" = "Mint your domains";
 "BUY_DOMAIN" = "Buy domain";
 
-"TUTORIAL_SCREEN_1_NAME" = "Your identity and\nlogin for Web3";
-"TUTORIAL_SCREEN_2_NAME" = "A name to pay\nand get paid";
-"TUTORIAL_SCREEN_3_NAME" = "Manage any way\nyou want";
-
-"TUTORIAL_SCREEN_1_DESCRIPTION" = "Securely managed\nat your fingertips.";
-"TUTORIAL_SCREEN_2_DESCRIPTION" = "Route up to 275+ crypto addresses with your domain name.";
-"TUTORIAL_SCREEN_3_DESCRIPTION" = "Connect your favorite wallet to seamlessly manage your Web3 identity.";
+"TUTORIAL_SCREEN_1_NAME" = "Manage NFTs and domains";
+"TUTORIAL_SCREEN_2_NAME" = "Track your crypto assets";
+"TUTORIAL_SCREEN_3_NAME" = "Connect to Web3 apps";
 
 // Creating wallet
-"CREATING_WALLET" = "Creating vault";
-"CREATE_NEW_VAULT_TITLE" = "Create new vault";
-"CREATE_NEW_VAULT_SUBTITLE" = "A domain vault is a cryptocurrency address used to store your Web3 domains. Once setup, you’ll need to import your domains to manage them on the Unstoppable app.";
+"CREATING_WALLET" = "Creating wallet";
+"CREATE_NEW_VAULT_TITLE" = "Create new wallet";
+"CREATE_NEW_VAULT_SUBTITLE" = "A wallet is a cryptocurrency address for your Web3 identity.\nUse your wallet to track your crypto assets including NFTs, manage domains and connect to Web3 apps.";
 
 // Protect screen
 "USE_FACE_ID" = "Use Face ID";
@@ -209,7 +203,7 @@
 
 // Backup screen
 "BACK_UP_YOUR_WALLET" = "Back up your %@";
-"BACK_UP_YOUR_WALLET_DESCRIPTION" = "You will be shown a 12 word recovery phrase. Keep your recovery phrase safe as it is required to access your vault and manage your Web3 domains if your phone is lost, stolen, or inaccessible.";
+"BACK_UP_YOUR_WALLET_DESCRIPTION" = "You will be shown a 12 word recovery phrase. Keep your recovery phrase safe as it is required to access your wallet and manage your Web3 domains if your phone is lost, stolen, or inaccessible.";
 "BACK_UP_YOUR_EXISTING_WALLET_DESCRIPTION" = "Save an encrypted copy of your recovery phrase on iCloud.";
 "BACK_UP_TO_ICLOUD" = "Back up to iCloud";
 "BACK_UP_MANUALLY" = "Back up manually";
@@ -228,7 +222,7 @@
 "PASSWORD_RULE_RANGE" = "Password must contain between 8-30 characters";
 "PASSWORD_RULE_MATCH" = "Passwords do not match";
 "CREATE_PASSWORD_HELP_TITLE" = "Why do I need a backup password?";
-"CREATE_PASSWORD_HELP_TEXT" = "When backing up your vault or wallet to iCloud, you’ll be asked to set a password that will be used to to encrypt your vault or wallet backup. This password will also be required to manage your existing and new iCloud backups. Similar to a recovery phrase, you’ll want to keep this backup password safe as it is necessary to recover your vault or wallet using the iCloud backup option.\n\nAlthough backing up your vault or wallet to iCloud is a convenient way to protect your domains, you should still write down and secure your vault or wallet recovery phrase. In the event that you lose or forget your iCloud backup password, your recovery phrase will allow you to restore your vault or wallets and access your domains.\n\nNote: Unstoppable Domains cannot recover your backup password for you.";
+"CREATE_PASSWORD_HELP_TEXT" = "When backing up your wallet to iCloud, you’ll be asked to set a password that will be used to to encrypt your wallet backup. This password will also be required to manage your existing and new iCloud backups. Similar to a recovery phrase, you’ll want to keep this backup password safe as it is necessary to recover your wallet using the iCloud backup option.\n\nAlthough backing up your wallet to iCloud is a convenient way to protect your domains, you should still write down and secure your wallet recovery phrase. In the event that you lose or forget your iCloud backup password, your recovery phrase will allow you to restore your wallets and access your domains.\n\nNote: Unstoppable Domains cannot recover your backup password for you.";
 "CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your backup password for you.";
 
 // Recovery phrase screen
@@ -242,7 +236,7 @@
 "I_VE_SAVED_THIS_WORDS" = "I’ve saved these words";
 "BACKED_UP_TO_ICLOUD" = "Backed up to iCloud";
 "RECOVERY_PHRASE_HELP_TITLE" = "What is a recovery phrase?";
-"RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your vault or wallet private key — the unique, secret passcode used to authenticate and encrypt your vault or wallet access. This phrase allows you to sign transactions, confirm ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
+"RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your wallet private key — the unique, secret passcode used to authenticate and encrypt your wallet access. This phrase allows you to sign transactions, confirm ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
 "RECOVERY_PHRASE_HELP_TEXT_BULLETS" = "•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.";
 
@@ -271,7 +265,7 @@
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
 "CONNECT_WALLET_EXTERNAL" = "External wallet";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
-"CONNECT_WALLET_CREATE_NEW" = "Create a new domain vault";
+"CONNECT_WALLET_CREATE_NEW" = "Create a new wallet";
 
 // Add wallet
 "ADD_WALLET_TITLE" = "Add wallet";
@@ -294,7 +288,7 @@
 "EXTERNAL_WALLET_CONNECTED_SUBTITLE" = "You can now manage your domains on the Unstoppable App.";
 
 // Existing users tutorial
-"EXISTING_USERS_TUTORIAL_TITLE" = "Complete a few steps to better protect your domain vault";
+"EXISTING_USERS_TUTORIAL_TITLE" = "Complete a few steps to better protect your wallet";
 "EXISTING_USERS_TUTORIAL_SUBTITLE" = "It only takes a minute.";
 
 // iCloud not enabled
@@ -319,7 +313,7 @@
 
 // Settings
 "SETTINGS_ITEM" = "Settings";
-"SETTINGS_WALLETS" = "Domain vault";
+"SETTINGS_WALLETS" = "Wallets";
 "SETTINGS_SECURITY" = "Security";
 "SETTINGS_APPEARANCE" = "Appearance";
 "SETTINGS_HOME_SCREEN" = "Home screen";
@@ -350,11 +344,11 @@
 "DELETE_ICLOUD_BACKUPS_CONFIRMATION_MESSAGE" = "Are you sure you want to delete all iCloud backups?";
 "RESTORE_FROM_ICLOUD_BACKUP_DESCRIPTION" = "Make sure you save and have access to your recovery phrases and private keys before restoring from another iCloud backup.\nLearn more";
 "RESTORE_FROM_ICLOUD_HELP_TITLE" = "Restore from iCloud backup";
-"RESTORE_FROM_ICLOUD_HELP_TEXT" = "When restoring from an iCloud backup, you’ll be asked to enter the password used to create the iCloud backup. Before performing this action, make sure you save and have access to your vault or wallet recovery phrases and/or private keys. If you lose or forget your iCloud backup password, your recovery phrases and private keys will enable you to restore your vault or wallet that hold your Web3 domains.\n\nWhen creating a brand new iCloud backup, using the same recovery password as an older iCloud backup will result in the two backups being grouped as your most recent backup. Entering your recovery password in this situation will result in all of your vaults or wallets across both backups being restored with a single iCloud backup password.\n\nNote: Unstoppable Domains cannot recover your backup password, recovery phrases or private keys for you.";
+"RESTORE_FROM_ICLOUD_HELP_TEXT" = "When restoring from an iCloud backup, you’ll be asked to enter the password used to create the iCloud backup. Before performing this action, make sure you save and have access to your wallet recovery phrases and/or private keys. If you lose or forget your iCloud backup password, your recovery phrases and private keys will enable you to restore your wallet that hold your Web3 domains.\n\nWhen creating a brand new iCloud backup, using the same recovery password as an older iCloud backup will result in the two backups being grouped as your most recent backup. Entering your recovery password in this situation will result in all of your wallets across both backups being restored with a single iCloud backup password.\n\nNote: Unstoppable Domains cannot recover your backup password, recovery phrases or private keys for you.";
 "RESTORE_FROM_ICLOUD_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your backup password, recovery phrases or private keys for you.";
 "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE" = "Save an encrypted copy of your recovery phrase on iCloud.";
 "ADD_TO_CURRENT_BACKUP_NEW_WALLET_TITLE" = "Enter current backup password";
-"CREATE_VAULT" = "Create vault";
+"CREATE_VAULT" = "Create wallet";
 "WALLETS_LIST_EMPTY_TITLE" = "No wallets";
 "WALLETS_LIST_EMPTY_SUBTITLE" = "Create or import your wallet by clicking «+» icon at the top right corner.";
 "WALLETS_LIMIT_REACHED_PULL_UP_TITLE" = "Wallets limit reached";
@@ -605,7 +599,7 @@
 "SET_REVERSE_RESOLUTION" = "Set reverse resolution";
 "SHOW_N_MORE" = "Show %i more";
 "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING" = "Unavailable while records are updating";
-"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Essential for receiving messages to your vault's associated domain.";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Essential for receiving messages to your wallet's associated domain.";
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
@@ -936,7 +930,7 @@
 "GO_TO_DOMAINS" = "Go to domains";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE" = "You have 1 or more unpaid vaults for your domain, please go to the website";
 "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED" = "go to the website";
-"PURCHASE_WALLET_AUTH_ERROR_TITLE" = "Vault (%@) is not authorized for minting";
+"PURCHASE_WALLET_AUTH_ERROR_TITLE" = "Wallet (%@) is not authorized for minting";
 "PURCHASE_WALLET_AUTH_ERROR_SUBTITLE" = "Select another wallet or try again.";
 "SELECT_ANOTHER_WALLET" = "Select another wallet";
 "PURCHASE_WALLET_CALCULATIONS_ERROR_TITLE" = "There seems to be an issue with calculating your order's total";

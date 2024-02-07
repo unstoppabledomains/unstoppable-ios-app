@@ -42,24 +42,6 @@ class ViewController: UIViewController {
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
     }
-    
-    func showDomainsCollection() {
-        let router = DomainsCollectionRouter()
-        let vc = router.configureViewController(mintingState: .default)
-        vc.modalTransitionStyle = .crossDissolve
-        vc.modalPresentationStyle = .fullScreen
-        
-        present(vc, animated: false)
-        
-//        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
-//        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
-//        domainsCollectionVC.presenter = presenter
-//        let nav = CNavigationController(rootViewController: domainsCollectionVC)
-//        nav.modalTransitionStyle = .crossDissolve
-//        nav.modalPresentationStyle = .fullScreen
-//
-//        present(nav, animated: false)
-    }
 
     func showDomainProfile() {
         let domain = DomainToPurchase(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true)

@@ -22,7 +22,6 @@ protocol PullUpViewServiceProtocol {
     func showAppearanceStyleSelectionPullUp(in viewController: UIViewController,
                                             selectedStyle: UIUserInterfaceStyle,
                                             styleChangedCallback: @escaping AppearanceStyleChangedCallback)
-    func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction
     
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: PullUpViewService.UnavailableOfflineFeature) async

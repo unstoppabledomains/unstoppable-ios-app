@@ -11,8 +11,8 @@ final class TutorialStepViewController: BaseViewController {
     
     @IBOutlet private weak var stepImageView: UIImageView!
     @IBOutlet private weak var stepNameLabel: UDTitleLabel!
-    @IBOutlet private weak var stepDescriptionLabel: UDSubtitleLabel!
     @IBOutlet private weak var labelsStackView: UIStackView!
+    @IBOutlet private weak var contentTopConstraint: NSLayoutConstraint!
 
     override var analyticsName: Analytics.ViewName { .onboardingTutorialStep }
     
@@ -28,8 +28,11 @@ final class TutorialStepViewController: BaseViewController {
 extension TutorialStepViewController {
     func configureWith(screenType: TutorialViewController.TutorialScreenType) {
         stepImageView.image = screenType.image
-        stepNameLabel.setTitle(screenType.name)
-        stepDescriptionLabel.setSubtitle(screenType.description)
+        let fontSize: CGFloat = deviceSize == .i4_7Inch ? 32 : 44
+        contentTopConstraint.constant = deviceSize == .i4_7Inch ? 50 : 90
+        stepNameLabel.setAttributedTextWith(text: screenType.name,
+                                            font: .currentFont(withSize: fontSize, weight: .bold),
+                                            textColor: .foregroundDefault)
         
         if deviceSize == .i4Inch {
             labelsStackView.spacing = 8

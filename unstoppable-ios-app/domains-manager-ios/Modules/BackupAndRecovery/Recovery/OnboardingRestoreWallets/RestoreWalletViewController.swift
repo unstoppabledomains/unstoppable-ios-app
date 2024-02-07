@@ -140,10 +140,7 @@ private extension RestoreWalletViewController {
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
-        if backedUpWallets.containUDVault() {
-            return String.Constants.pluralVaults.localized(backedUpWallets.count)
-        }
-        return String.Constants.pluralWallets.localized(backedUpWallets.count)
+        String.Constants.pluralWallets.localized(backedUpWallets.count)
     }
     
     func setupTableView() {

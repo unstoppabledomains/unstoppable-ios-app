@@ -21,8 +21,11 @@ final class TutorialViewController: UIPageViewController {
         ]
     }()
     
-    private var pageControl = UIPageControl()
     private var createNewWalletButton = MainButton()
+    private var progressView = DashesProgressView()
+    private var currentPage = 0
+    private var progress: Double = 0.0
+    private var displayLink: CADisplayLink?
     var presenter: TutorialViewPresenterProtocol!
     
     var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
@@ -42,9 +45,15 @@ final class TutorialViewController: UIPageViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        DispatchQueue.main.async { [weak self] in 
+        DispatchQueue.main.async { [weak self] in
             self?.navigationItem.rightBarButtonItem?.customView?.semanticContentAttribute = .forceRightToLeft
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        stopDisplayLink()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -52,6 +61,7 @@ final class TutorialViewController: UIPageViewController {
         
         presenter.viewDidAppear()
         appContext.analyticsService.log(event: .viewDidAppear, withParameters: [.viewName: Analytics.ViewName.onboardingTutorial.rawValue])
+        setupDisplayLink()
     }
     
     override func viewDidLayoutSubviews() {
@@ -73,7 +83,9 @@ extension TutorialViewController: TutorialViewControllerProtocol { }
 extension TutorialViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         let pageContentViewController = pageViewController.viewControllers![0]
-        self.pageControl.currentPage = orderedViewControllers.firstIndex(of: pageContentViewController)!
+        currentPage = orderedViewControllers.firstIndex(of: pageContentViewController)!
+        progress = (Double(currentPage)) / Double(orderedViewControllers.count)
+        self.progressView.setProgress(progress)
         logTutorialSwipe()
     }
 }
@@ -134,17 +146,6 @@ extension TutorialViewController: UIPageViewControllerDataSource {
 
 // MARK: - Actions
 private extension TutorialViewController {
-    @objc func didTapPageControl(_ pageControl: UIPageControl) {
-        guard let firstViewController = viewControllers?.first,
-              let firstViewControllerIndex = orderedViewControllers.firstIndex(of: firstViewController) else {
-            return
-        }
-        
-        let direction: UIPageViewController.NavigationDirection = pageControl.currentPage > firstViewControllerIndex ? .forward : .reverse
-        setViewControllers([orderedViewControllers[pageControl.currentPage]], direction: direction, animated: true)
-        logTutorialSwipe()
-    }
-    
     @objc func didPressCreateNewWalletButton(_ sender: UITapGestureRecognizer) {
         logButtonPressedAnalyticEvents(button: .getStarted)
         presenter?.didPressCreateNewWalletButton()
@@ -162,8 +163,12 @@ private extension TutorialViewController {
         setupView()
         setupDelegates()
         setupCreateNewWalletButton()
-        configurePageControl()
         setupNavigationBar()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.setupNavProgressView()
+            self.setupWelcomeMessage()
+            self.setupDisplayLink()
+        }
     }
     
     func setupView() {
@@ -182,31 +187,6 @@ private extension TutorialViewController {
         createNewWalletButton.addTarget(self, action: #selector(didPressCreateNewWalletButton(_:)), for: .touchUpInside)
     }
     
-    func configurePageControl() {
-        self.view.addSubview(pageControl)
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
-        let distanceToNewWalletButton: CGFloat
-        switch deviceSize {
-        case .i4Inch:
-            distanceToNewWalletButton = 8
-        case .i4_7Inch:
-            distanceToNewWalletButton = 22
-        default:
-            distanceToNewWalletButton = 32
-        }
-        createNewWalletButton.topAnchor.constraint(equalTo: pageControl.bottomAnchor,
-                                                   constant: distanceToNewWalletButton).isActive = true
-        pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        
-        self.pageControl.numberOfPages = orderedViewControllers.count
-        self.pageControl.currentPage = 0
-        self.pageControl.tintColor = .foregroundDefault
-        self.pageControl.pageIndicatorTintColor = .foregroundSubtle
-        self.pageControl.currentPageIndicatorTintColor = .foregroundDefault
-        self.pageControl.addTarget(self, action: #selector(didTapPageControl), for: .valueChanged)
-    }
-    
     func setFirstTutorialScreen() {
         if let firstViewController = orderedViewControllers.first {
             setViewControllers([firstViewController],
@@ -214,6 +194,42 @@ private extension TutorialViewController {
                                animated: true,
                                completion: nil)
         }
+    }
+    
+    func setupWelcomeMessage() {
+        guard deviceSize != .i4_7Inch,
+              let navBar = cNavigationBar else { return }
+
+        let imageViewContainer = UIView()
+        imageViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        imageViewContainer.backgroundColor = .foregroundAccent
+        imageViewContainer.layer.cornerRadius = 6
+        
+        let imageView = UIImageView(image: UIImage(named: "udLogo"))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageViewContainer.addSubview(imageView)
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.setAttributedTextWith(text: "Welcome to Unstoppable",
+                                    font: .currentFont(withSize: 16, weight: .semibold),
+                                    textColor: .foregroundDefault)
+        
+        let stack = UIStackView(arrangedSubviews: [imageViewContainer, label])
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.spacing = 8
+        stack.alignment = .center
+        
+        view.addSubview(stack)
+        
+        NSLayoutConstraint.activate([imageViewContainer.widthAnchor.constraint(equalToConstant: 24),
+                                     imageViewContainer.widthAnchor.constraint(equalTo: imageViewContainer.heightAnchor),
+                                     imageView.widthAnchor.constraint(equalToConstant: 18),
+                                     imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
+                                     imageView.centerXAnchor.constraint(equalTo: imageViewContainer.centerXAnchor),
+                                     imageView.centerYAnchor.constraint(equalTo: imageViewContainer.centerYAnchor),
+                                     stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                     stack.topAnchor.constraint(equalTo: view.topAnchor, constant: navBar.bounds.height + 4)])
     }
     
     func newTutorialViewController(type: TutorialScreenType) -> UIViewController {
@@ -226,18 +242,52 @@ private extension TutorialViewController {
     }
     
     func setupNavigationBar() {
-        let logoImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 150, height: 40))
-        logoImageView.image = #imageLiteral(resourceName: "unstoppableDomainsLogo")
-        navigationItem.titleView = logoImageView
-        
-        /* Disabled 'Buy Domain' button
-        let buyButton = LinkButton()
-        buyButton.setTitle(String.Constants.buyDomain.localized(), image: nil)
-        buyButton.semanticContentAttribute = .forceRightToLeft
-        buyButton.addTarget(self, action: #selector(didPressBuyDomain), for: .touchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: buyButton)
-         */
+        let offset: CGFloat = 16
+        progressView.frame = CGRect(x: offset, y: 60, width: UIScreen.main.bounds.width - (offset * 2), height: 4)
+        progressView.setWith(configuration: .white(numberOfDashes: 3))
         customiseNavigationBackButton()
+    }
+    
+    func setupNavProgressView() {
+        guard let navBar = cNavigationBar else { return }
+        
+        progressView.frame.origin.y = navBar.bounds.height - (navBar.navBarContentView.bounds.height / 2) - (progressView.frame.height / 2)
+        view?.addSubview(progressView)
+    }
+    
+    func setupDisplayLink() {
+        stopDisplayLink()
+        displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink))
+        displayLink?.add(to: .main, forMode: .default)
+    }
+    
+    func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+    
+    @objc func handleDisplayLink(_ displayLink: CADisplayLink) {
+        let animationDurationOfStep: Double = 3
+        let numberOfSteps = orderedViewControllers.count
+        let totalAnimationDuration = animationDurationOfStep * Double(numberOfSteps)
+        let tickDuration = displayLink.duration / totalAnimationDuration
+        progress += tickDuration
+        if progress >= 1 {
+            progress = 0
+        }
+        
+        let oneStepProgress: Double = 1/3
+        let currentStep = Int(progress / oneStepProgress)
+        if currentStep != self.currentPage {
+            let vc = orderedViewControllers[currentStep]
+            let isForward = currentStep > self.currentPage
+            setViewControllers([vc],
+                               direction: isForward ? .forward : .reverse,
+                               animated: true,
+                               completion: nil)
+            self.currentPage = currentStep
+        }
+        progressView.setProgress(progress)
     }
     
     func logButtonPressedAnalyticEvents(button: Analytics.Button) {
@@ -246,7 +296,7 @@ private extension TutorialViewController {
     }
     
     func logTutorialSwipe() {
-        appContext.analyticsService.log(event: .didSwipeTutorialPage, withParameters: [.pageNum : String(pageControl.currentPage + 1),
+        appContext.analyticsService.log(event: .didSwipeTutorialPage, withParameters: [.pageNum : String(currentPage + 1),
                                                                                    .viewName: Analytics.ViewName.onboardingTutorial.rawValue])
     }
 }
@@ -273,13 +323,12 @@ extension TutorialViewController {
             case .tutorialScreen3: return String.Constants.tutorialScreen3Name.localized()
             }
         }
-        
-        var description: String {
-            switch self {
-            case .tutorialScreen1: return String.Constants.tutorialScreen1Description.localized()
-            case .tutorialScreen2: return String.Constants.tutorialScreen2Description.localized()
-            case .tutorialScreen3: return String.Constants.tutorialScreen3Description.localized()
-            }
-        }
     }
+}
+
+@available(iOS 17, *)
+#Preview {
+    UserDefaults.onboardingNavigationInfo = nil
+    
+    return OnboardingNavigationController.instantiate(flow: .newUser(subFlow: nil))
 }

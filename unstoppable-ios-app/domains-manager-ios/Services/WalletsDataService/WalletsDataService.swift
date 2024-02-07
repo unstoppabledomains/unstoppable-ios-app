@@ -477,9 +477,9 @@ private extension WalletsDataService {
     
     func refreshWalletBalancesSync(_ wallet: WalletEntity) async {
         do {
-            let walletBalances = try await loadBalanceFor(wallet: wallet)
+            let walletBalance = try await loadBalanceFor(wallet: wallet)
             mutateWalletEntity(wallet) { wallet in
-                wallet.balance = walletBalances ?? []
+                wallet.updateBalance(walletBalance ?? [])
             }
         } catch { }
     }

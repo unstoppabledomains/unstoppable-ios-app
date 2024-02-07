@@ -25,13 +25,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         window.makeKeyAndVisible()
         self.window = window
         
-        
         let view = HomeTabView(tabRouter: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!)))
-        
         let vc = UIHostingController(rootView: view)
+        
         window.rootViewController = vc
         
         
+        window.overrideUserInterfaceStyle = .dark
 //        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
 //        let nav = CNavigationController(rootViewController: vc)
 //        window.rootViewController = nav

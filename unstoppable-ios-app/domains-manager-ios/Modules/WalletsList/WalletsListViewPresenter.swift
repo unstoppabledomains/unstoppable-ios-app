@@ -246,7 +246,7 @@ private extension WalletsListViewPresenter {
         case .cancelled, .failedToAdd:
             return
         case .created(let wallet), .createdAndBackedUp(let wallet):
-            var walletName = String.Constants.vault.localized()
+            var walletName = String.Constants.wallet.localized()
             if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
                 walletName = displayInfo.walletSourceName
             }
