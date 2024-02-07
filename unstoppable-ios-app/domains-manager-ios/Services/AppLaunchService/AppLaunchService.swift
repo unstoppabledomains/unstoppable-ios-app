@@ -133,36 +133,17 @@ private extension AppLaunchService {
         }
 
         Task {
-//            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
-//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
-//            let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
-            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: .default)),
+            await handleInitialState(await stateMachine.stateAfter(event: .didLoadData),
                                      profile: profile)
         }
         
         Task {
-//            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let timePassed = Date().timeIntervalSince(startTime)
             let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
             await Task.sleep(seconds: timeLeft)
 
-//            let mintingState = await mintingStateFor(domains: domains, mintingDomains: .default)
-            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime(preliminaryMintingState: .default)),
+            await handleInitialState(await stateMachine.stateAfter(event: .didPassMaxWaitingTime),
                                      profile: profile)
-        }
-    }
-    
-    func mintingStateFor(domains: [DomainDisplayInfo], mintingDomains: [MintingDomain]) async -> DomainsCollectionMintingState {
-        if domains.first(where: { $0.isPrimary })?.state == .minting {
-            await ConfettiImageView.prepareAnimationsAsync()
-            return .mintingPrimary
-        } else {
-            if mintingDomains.first(where: { $0.isPrimary }) == nil {
-                return .default
-            } else {
-                await ConfettiImageView.prepareAnimationsAsync()
-                return .primaryDomainMinted
-            }
         }
     }
     
@@ -174,7 +155,7 @@ private extension AppLaunchService {
         switch state {
         case .loading:
             return
-        case .maxIntervalPassed(let mintingState), .dataLoadedInTime(let mintingState):
+        case .maxIntervalPassed, .dataLoadedInTime:
             if let newAppVersionInfo = await stateMachine.appVersionInfo,
                !isAppVersionSupported(info: newAppVersionInfo) {
                 coreAppCoordinator.showAppUpdateRequired()
@@ -246,20 +227,20 @@ private extension AppLaunchService {
     actor InitialMintingStateMachine {
         enum State {
             case loading
-            case maxIntervalPassed(_ mintingState: DomainsCollectionMintingState)
-            case dataLoadedInTime(_ mintingState: DomainsCollectionMintingState)
-            case dataLoadedLate(_ mintingState: DomainsCollectionMintingState)
+            case maxIntervalPassed
+            case dataLoadedInTime
+            case dataLoadedLate
         }
 
         enum Event {
             case didAuthorise
-            case didPassMaxWaitingTime(preliminaryMintingState: DomainsCollectionMintingState)
-            case didLoadData(mintingState: DomainsCollectionMintingState)
+            case didPassMaxWaitingTime
+            case didLoadData
         }
         
         private var didAuthorise: Bool = false
-        private var preliminaryMintingState: DomainsCollectionMintingState? = nil
-        private var loadedMintingState: DomainsCollectionMintingState? = nil
+        private var didLoadData: Bool = false
+        private var didPassMaxWaitingTime: Bool = false
         private(set) var state: State = .loading
         private(set) var appVersionInfo: AppVersionInfo? = nil
 
@@ -267,28 +248,27 @@ private extension AppLaunchService {
             switch (state, event) {
             case (.loading, .didAuthorise):
                 self.didAuthorise = true
-                if let mintingState = loadedMintingState {
-                    state = .dataLoadedInTime(mintingState)
+                if didLoadData {
+                    state = .dataLoadedInTime
                     return state
-                } else if let mintingState = preliminaryMintingState {
-                    state = .maxIntervalPassed(mintingState)
+                } else if didPassMaxWaitingTime {
+                    state = .maxIntervalPassed
                     return state
                 }
-            case (.loading, .didPassMaxWaitingTime(let preliminaryMintingState)):
-                self.preliminaryMintingState = preliminaryMintingState
+            case (.loading, .didPassMaxWaitingTime):
+                self.didPassMaxWaitingTime = true
                 if didAuthorise {
-                    state = .maxIntervalPassed(preliminaryMintingState)
+                    state = .maxIntervalPassed
                     return state
                 }
-            case (.loading, .didLoadData(let initialMintingState)):
-                self.loadedMintingState = initialMintingState
+            case (.loading, .didLoadData):
+                self.didLoadData = true
                 if didAuthorise {
-                    state = .dataLoadedInTime(initialMintingState)
+                    state = .dataLoadedInTime
                     return state
                 }
-            case (.maxIntervalPassed, .didLoadData(let loadedMintingState)):
-                self.loadedMintingState = loadedMintingState
-                state = .dataLoadedLate(loadedMintingState)
+            case (.maxIntervalPassed, .didLoadData):
+                state = .dataLoadedLate
                 return state
             default:
                 return nil

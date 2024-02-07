@@ -241,6 +241,19 @@ extension HomeTabRouter {
             await finishSetupPurchasedProfileIfNeeded(domains: domains, requests: requests)
         }
     }
+    
+    func isChatOpenedWith(chatId: String) -> Bool {
+        guard let openedChatId = chatsListCoordinator?.chatId else { return false }
+        
+        return openedChatId.lowercased().contains(chatId.lowercased())
+    }
+    
+    func isChannelOpenedWith(channelId: String) -> Bool {
+        guard let openedChannelId = chatsListCoordinator?.channelId else { return false }
+        
+        return openedChannelId.normalized.contains(channelId.normalized)
+    }
+    
 }
 
 // MARK: - Pull up related
