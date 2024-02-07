@@ -24,6 +24,8 @@ final class TutorialViewController: UIPageViewController {
     private var createNewWalletButton = MainButton()
     private var progressView = DashesProgressView()
     private var currentPage = 0
+    private var progress: Double = 0.0
+    private var displayLink: CADisplayLink?
     var presenter: TutorialViewPresenterProtocol!
     
     var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
@@ -48,11 +50,18 @@ final class TutorialViewController: UIPageViewController {
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        stopDisplayLink()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         presenter.viewDidAppear()
         appContext.analyticsService.log(event: .viewDidAppear, withParameters: [.viewName: Analytics.ViewName.onboardingTutorial.rawValue])
+        setupDisplayLink()
     }
     
     override func viewDidLayoutSubviews() {
@@ -75,10 +84,8 @@ extension TutorialViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         let pageContentViewController = pageViewController.viewControllers![0]
         currentPage = orderedViewControllers.firstIndex(of: pageContentViewController)!
-        let progress = (Double(currentPage) + 0.5) / Double(orderedViewControllers.count)
-        UIView.animate(withDuration: 0.25) {
-            self.progressView.setProgress(progress)
-        }
+        progress = (Double(currentPage)) / Double(orderedViewControllers.count)
+        self.progressView.setProgress(progress)
         logTutorialSwipe()
     }
 }
@@ -160,6 +167,7 @@ private extension TutorialViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.setupNavProgressView()
             self.setupWelcomeMessage()
+            self.setupDisplayLink()
         }
     }
     
@@ -244,8 +252,42 @@ private extension TutorialViewController {
         guard let navBar = cNavigationBar else { return }
         
         progressView.frame.origin.y = navBar.bounds.height - (navBar.navBarContentView.bounds.height / 2) - (progressView.frame.height / 2)
-        progressView.setProgress(0.1666)
         view?.addSubview(progressView)
+    }
+    
+    func setupDisplayLink() {
+        stopDisplayLink()
+        displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink))
+        displayLink?.add(to: .main, forMode: .default)
+    }
+    
+    func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+    
+    @objc func handleDisplayLink(_ displayLink: CADisplayLink) {
+        let animationDurationOfStep: Double = 3
+        let numberOfSteps = orderedViewControllers.count
+        let totalAnimationDuration = animationDurationOfStep * Double(numberOfSteps)
+        let tickDuration = displayLink.duration / totalAnimationDuration
+        progress += tickDuration
+        if progress >= 1 {
+            progress = 0
+        }
+        
+        let oneStepProgress: Double = 1/3
+        let currentStep = Int(progress / oneStepProgress)
+        if currentStep != self.currentPage {
+            let vc = orderedViewControllers[currentStep]
+            let isForward = currentStep > self.currentPage
+            setViewControllers([vc],
+                               direction: isForward ? .forward : .reverse,
+                               animated: true,
+                               completion: nil)
+            self.currentPage = currentStep
+        }
+        progressView.setProgress(progress)
     }
     
     func logButtonPressedAnalyticEvents(button: Analytics.Button) {
