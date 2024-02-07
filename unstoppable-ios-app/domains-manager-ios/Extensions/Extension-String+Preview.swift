@@ -231,10 +231,6 @@ extension String {
         static let tutorialScreen2Name = "TUTORIAL_SCREEN_2_NAME"
         static let tutorialScreen3Name = "TUTORIAL_SCREEN_3_NAME"
         
-        static let tutorialScreen1Description = "TUTORIAL_SCREEN_1_DESCRIPTION"
-        static let tutorialScreen2Description = "TUTORIAL_SCREEN_2_DESCRIPTION"
-        static let tutorialScreen3Description = "TUTORIAL_SCREEN_3_DESCRIPTION"
-        
         static let creatingWallet = "CREATING_WALLET"
         static let createNewVaultTitle = "CREATE_NEW_VAULT_TITLE"
         static let createNewVaultSubtitle = "CREATE_NEW_VAULT_SUBTITLE"
