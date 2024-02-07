@@ -607,7 +607,7 @@
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FF2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */; };
-		C63393002B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */; };
+		C63393032B73734500941C9D /* PreviewWalletPortfolioRecordsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63393012B73734500941C9D /* PreviewWalletPortfolioRecordsStorage.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
 		C63414DE2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -2883,6 +2883,7 @@
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
+		C63393012B73734500941C9D /* PreviewWalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewWalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
 		C635193628D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewController.swift; sourceTree = "<group>"; };
@@ -4865,6 +4866,7 @@
 				C6960C392B19976E00B79E28 /* PreviewUser.swift */,
 				C6C8F9512B21858200A9834D /* PreviewValet.swift */,
 				C6C8F98A2B21895A00A9834D /* PreviewWCConnectedAppsStorageV2.swift */,
+				C63393012B73734500941C9D /* PreviewWalletPortfolioRecordsStorage.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -9810,7 +9812,6 @@
 				C61807F92B19A7DF0032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,
 				C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
-				C63393002B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */,
 				C6D645BC2B1DBCE400D724AC /* ScrollViewOffsetListener.swift in Sources */,
 				C6C8F8352B217E9600A9834D /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C6D645E82B1DBE6B00D724AC /* RaisedTertiaryButton.swift in Sources */,
@@ -9980,6 +9981,7 @@
 				C6D647862B1EE26400D724AC /* ExternalEventUIFlow.swift in Sources */,
 				C6C8F9592B2185F800A9834D /* KeychainKey.swift in Sources */,
 				C6D645E72B1DBE6500D724AC /* SmallRaisedTertiaryButton.swift in Sources */,
+				C63393032B73734500941C9D /* PreviewWalletPortfolioRecordsStorage.swift in Sources */,
 				C6C8F89D2B2182A200A9834D /* WalletsListCell.swift in Sources */,
 				C61808332B19AEDC0032E543 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6D647872B1EE30F00D724AC /* UIImage+Colors.swift in Sources */,
