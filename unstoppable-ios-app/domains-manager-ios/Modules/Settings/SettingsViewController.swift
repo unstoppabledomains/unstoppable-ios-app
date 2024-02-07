@@ -204,7 +204,7 @@ extension SettingsViewController {
             return items
         }
 
-        case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
+        case wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
         case websiteAccount(user: FirebaseUser?)
@@ -230,8 +230,6 @@ extension SettingsViewController {
                 return String.Constants.settingsLegal.localized()
             case .testnet:
                 return "Testnet"
-            case .homeScreen:
-                return String.Constants.settingsHomeScreen.localized()
             case .websiteAccount:
                 return String.Constants.viewVaultedDomains.localized()
             case .inviteFriends:
@@ -241,7 +239,7 @@ extension SettingsViewController {
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .inviteFriends:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .inviteFriends:
                 return nil
             case .websiteAccount:
                 return String.Constants.protectedByUD.localized()
@@ -268,8 +266,6 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconLegal")!
             case .testnet:
                 return UIImage(named: "settingsIconTestnet")!
-            case .homeScreen:
-                return .domainsProfileIcon
             case .websiteAccount:
                 return .domainsProfileIcon
             case .inviteFriends:
@@ -293,8 +289,6 @@ extension SettingsViewController {
                 return .brandSkyBlue
             case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
                 return .backgroundMuted2
-            case .homeScreen:
-                return .brandDeepPurple
             case .websiteAccount:
                 return .brandDeepBlue
             }
@@ -302,7 +296,7 @@ extension SettingsViewController {
         
         var controlType: ControlType {
             switch self {
-            case .wallets(let value), .security(let value), .homeScreen(let value):
+            case .wallets(let value), .security(let value):
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
@@ -320,7 +314,7 @@ extension SettingsViewController {
         
         var isPrimary: Bool {
             switch self {
-            case .wallets, .security, .homeScreen, .appearance, .testnet, .websiteAccount:
+            case .wallets, .security, .appearance, .testnet, .websiteAccount:
                 return true
             default:
                 return false
@@ -333,8 +327,6 @@ extension SettingsViewController {
         
         var analyticsName: Analytics.Button {
             switch self {
-            case .homeScreen:
-                return .settingsHomeScreen
             case .wallets:
                 return .settingsWallets
             case .security:
