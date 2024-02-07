@@ -30,22 +30,18 @@ extension MockEntitiesFabric {
                 let domains = Domains.mockDomainDisplayInfo()
                 let numOfNFTs = Int(arc4random_uniform(10) + 1)
                 let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
-                let portfolioRecords: [WalletPortfolioRecord] = [.init(date: Date().adding(days: -10), value: 6.8),
-                                                                .init(date: Date().adding(days: -9), value: 5.2),
-                                                                .init(date: Date().adding(days: -8), value: 22.9),
-                                                                .init(date: Date().adding(days: -7), value: 22.2),
-                                                                .init(date: Date().adding(days: -6), value: 27.9),
-                                                                .init(date: Date().adding(days: -5), value: 23.2),
-                                                                .init(date: Date().adding(days: -4), value: 37.2),
-                                                                .init(date: Date().adding(days: -3), value: 32.9),
-                                                                .init(date: Date().adding(days: -2), value: 35.2),
-                                                                .init(date: Date().adding(days: -1), value: 32.9),
-                                                                .init(date: Date(), value: 39.2)]
-                
-                
-                    
-                
-                
+                let addr = $0.wallet.address
+                let portfolioRecords: [WalletPortfolioRecord] = [.init(wallet: addr, date: Date().adding(days: -10), value: 6.8),
+                                                                 .init(wallet: addr, date: Date().adding(days: -9), value: 5.2),
+                                                                 .init(wallet: addr, date: Date().adding(days: -8), value: 22.9),
+                                                                 .init(wallet: addr, date: Date().adding(days: -7), value: 22.2),
+                                                                 .init(wallet: addr, date: Date().adding(days: -6), value: 27.9),
+                                                                 .init(wallet: addr, date: Date().adding(days: -5), value: 23.2),
+                                                                 .init(wallet: addr, date: Date().adding(days: -4), value: 37.2),
+                                                                 .init(wallet: addr, date: Date().adding(days: -3), value: 32.9),
+                                                                 .init(wallet: addr, date: Date().adding(days: -2), value: 35.2),
+                                                                 .init(wallet: addr, date: Date().adding(days: -1), value: 32.9),
+                                                                 .init(wallet: addr, date: Date(), value: 39.2)]
                 
                 let balance: [WalletTokenPortfolio] = [.init(address: $0.address,
                                                              symbol: "ETH",

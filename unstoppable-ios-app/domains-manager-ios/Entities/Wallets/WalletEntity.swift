@@ -15,7 +15,7 @@ struct WalletEntity: Codable {
     private(set) var displayInfo: WalletDisplayInfo
     private(set) var domains: [DomainDisplayInfo]
     var nfts: [NFTDisplayInfo]
-    var balance: [WalletTokenPortfolio]
+    private(set) var balance: [WalletTokenPortfolio]
     var rrDomain: DomainDisplayInfo?
     var portfolioRecords: [WalletPortfolioRecord]
     
@@ -56,6 +56,34 @@ struct WalletEntity: Codable {
         displayInfo.reverseResolutionDomain = rrDomain
         displayInfo.domainsCount = domains.count
         displayInfo.udDomainsCount = domains.lazy.filter { $0.isUDDomain }.count
+    }
+    
+    mutating func updateBalance(_ balance: [WalletTokenPortfolio]) {
+        self.balance = balance
+        trackBalanceRecords()
+    }
+    
+    private mutating func trackBalanceRecords() {
+        let currentValue = totalBalance
+        let currentRecord = WalletPortfolioRecord(wallet: address, date: Date(), value: currentValue)
+        
+        var records = WalletPortfolioRecordsStorage.instance.getRecords(for: address)
+        
+        if let previousRecord = records.last {
+            if previousRecord.date.isSameDayAs(currentRecord.date) {
+                /// Replace latest record if from same date (today)
+                records[records.count - 1] = currentRecord
+            } else {
+                records.append(currentRecord)
+            }
+        } else {
+            records = [currentRecord]
+        }
+        
+        records = records.filter { $0.date.dateDifferenceBetween(date: Date()).day ?? 0 <= 30 }
+        
+        self.portfolioRecords = records
+        WalletPortfolioRecordsStorage.instance.saveRecords(records, for: address)
     }
 }
 
@@ -118,11 +146,15 @@ extension Array where Element == WalletEntity {
 }
 
 struct WalletPortfolioRecord: Hashable, Codable {
+    let wallet: String
     let date: Date
     let value: Double
     let timestamp: Double
 
-    init(date: Date, value: Double) {
+    init(wallet: String,
+         date: Date,
+         value: Double) {
+        self.wallet = wallet
         self.date = date
         self.value = value
         self.timestamp = date.timeIntervalSince1970

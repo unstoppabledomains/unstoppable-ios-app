@@ -20,7 +20,7 @@ struct HomeWalletHeaderRowView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack {
-                if wallet.portfolioRecords.count >= 4 {
+                if wallet.portfolioRecords.count >= 2 {
                     WalletBalanceGradientChartView(chartData: wallet.portfolioRecords)
                         .padding(EdgeInsets(top: 0, leading: -50,
                                             bottom: 0, trailing: -50))
@@ -164,6 +164,7 @@ private struct WalletBalanceGradientChartView: View {
     ],
                                         startPoint: UnitPoint(x: 0.5, y: 0),
                                         endPoint: UnitPoint(x: 0.5, y: 1))
+    
     var body: some View {
         Chart {
             ForEach(chartData, id: \.self) { data in

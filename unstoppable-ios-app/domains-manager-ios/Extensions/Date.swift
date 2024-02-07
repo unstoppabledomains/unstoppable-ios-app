@@ -79,4 +79,8 @@ extension Date {
     func adding(days: Int) -> Date {
         Date.isoCalendar.date(byAdding: .day, value: days, to: self) ?? Date()
     }
+    
+    func isSameDayAs(_ date: Date) -> Bool {
+        Date.isoCalendar.isDate(self, inSameDayAs: date)
+    }
 }
