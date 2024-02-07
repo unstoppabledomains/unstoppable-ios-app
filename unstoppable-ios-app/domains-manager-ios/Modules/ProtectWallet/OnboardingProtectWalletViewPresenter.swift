@@ -32,24 +32,13 @@ final class OnboardingProtectWalletViewPresenter {
 // MARK: - ProtectWalletViewPresenterProtocol
 extension OnboardingProtectWalletViewPresenter: ProtectWalletViewPresenterProtocol {
     func viewDidLoad() {
-        var vaultsPlural: String = String.Constants.vault.localized().lowercased()
+        var vaultsPlural: String = String.Constants.wallet.localized().lowercased()
         switch onboardingFlowManager?.onboardingFlow {
         case .existingUser:
             let wallets = udWalletsService.getUserWallets()
-            if wallets.first(where: { $0.type == .generatedLocally || $0.type == .defaultGeneratedLocally }) != nil {
-                vaultsPlural = String.Constants.pluralVaults.localized(wallets.count)
-            } else {
-                vaultsPlural = String.Constants.pluralWallets.localized(wallets.count)
-            }
+            vaultsPlural = String.Constants.pluralWallets.localized(wallets.count)
         case .newUser(let subFlow), .sameUserWithoutWallets(let subFlow):
-            switch subFlow {
-            case .create, .webAccount:
-                vaultsPlural = String.Constants.vault.localized().lowercased()
-            case .restore:
-                vaultsPlural = String.Constants.wallet.localized().lowercased()
-            case .none:
-                Debugger.printFailure("Onboarding sub flow not assigned", critical: true)
-            }
+            vaultsPlural = String.Constants.wallet.localized().lowercased()
         case .none:
             Debugger.printFailure("Onboarding flow manager not assigned", critical: true)
         }

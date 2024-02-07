@@ -18,11 +18,7 @@ struct ICloudBackupDisplayInfo: Equatable {
         self.isCurrent = isCurrent
         
         let walletsCount = backedUpWallets.count
-        if backedUpWallets.containUDVault() {
-            subtitleMessage = String.Constants.pluralNVaults.localized(walletsCount, walletsCount)
-        } else {
-            subtitleMessage = String.Constants.pluralNWallets.localized(walletsCount, walletsCount)            
-        }
+        subtitleMessage = String.Constants.pluralNWallets.localized(walletsCount, walletsCount)
     }
     
 }

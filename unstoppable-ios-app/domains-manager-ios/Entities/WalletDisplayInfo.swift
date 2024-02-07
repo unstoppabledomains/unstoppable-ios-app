@@ -54,12 +54,7 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
     }
     
     var walletSourceName: String {
-        switch source {
-        case .locallyGenerated:
-            return String.Constants.vault.localized()
-        case .imported, .external:
-            return String.Constants.wallet.localized()
-        }
+        String.Constants.wallet.localized()
     }
 }
 

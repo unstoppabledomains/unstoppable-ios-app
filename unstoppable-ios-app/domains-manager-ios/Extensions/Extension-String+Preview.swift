@@ -161,7 +161,6 @@ extension String {
         static let save = "SAVE"
         static let saved = "SAVED"
         static let wallet = "WALLET"
-        static let vault = "VAULT"
         static let current = "CURRENT"
         static let later = "LATER"
         static let pending = "PENDING"
@@ -225,7 +224,6 @@ extension String {
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
-        static let createDomainVault = "CREATE_DOMAIN_VAULT"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
         static let buyDomain = "BUY_DOMAIN"
         
@@ -346,9 +344,7 @@ extension String {
         
         // Plural
         static let pluralWallets = "SDICT:WALLETS"
-        static let pluralVaults = "SDICT:VAULTS"
         static let pluralNWallets = "SDICT:N_WALLETS"
-        static let pluralNVaults = "SDICT:N_VAULTS"
         static let pluralNDomains = "SDICT:N_DOMAINS"
         static let pluralDomains = "SDICT:DOMAINS"
         static let pluralMintDomains = "SDICT:MINT_DOMAINS"

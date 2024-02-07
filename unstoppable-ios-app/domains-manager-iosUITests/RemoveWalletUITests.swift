@@ -10,7 +10,7 @@ import Foundation
 final class SuccessRemoveWalletUITest: BaseXCTestCase {
     
     private lazy var walletsToUse: [TestsEnvironment.TestWalletDescription] = {
-        [.init(type: "generatedLocally", name: "Vault", hasBeenBackedUp: true, isExternal: false),
+        [.init(type: "generatedLocally", name: "Wallet", hasBeenBackedUp: true, isExternal: false),
          .init(type: "mnemonicsEntered", name: nil, hasBeenBackedUp: true, isExternal: false),
          .init(type: "privateKeyEntered", name: nil, hasBeenBackedUp: false, isExternal: false),
          .init(type: "importedUnverified", name: "Rainbow", hasBeenBackedUp: false, isExternal: true)]
@@ -30,7 +30,7 @@ final class SuccessRemoveWalletUITest: BaseXCTestCase {
         
         WalletsListRobot(app)
             .ensureNumberOfCells(walletsToUse.count - 1)
-            .ensureCell(with: "Vault", visible: false)
+            .ensureCell(with: "Wallet", visible: false)
     }
     
 }
@@ -77,7 +77,7 @@ final class FailRemoveWalletUITest: BaseXCTestCase {
         WalletsListRobot(app)
             .back()
             .ensureNumberOfCells(walletsToUse.count)
-            .ensureCell(with: "Vault", visible: true)
+            .ensureCell(with: "Wallet", visible: true)
     }
     
 }
