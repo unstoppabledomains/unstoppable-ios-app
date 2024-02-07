@@ -31,6 +31,7 @@ struct ShareWalletInfoView: View {
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     UDButtonView(text: String.Constants.shareAddress.localized(),
+                                 icon: .shareFlatIcon,
                                  style: .large(.raisedTertiaryWhite)) {
                         shareItems([wallet.ethFullAddress]) { success in
                             
