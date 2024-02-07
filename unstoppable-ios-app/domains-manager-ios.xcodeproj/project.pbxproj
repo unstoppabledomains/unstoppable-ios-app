@@ -2531,7 +2531,6 @@
 		C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeServiceProtocol.swift; sourceTree = "<group>"; };
 		C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilePendingChanges.swift; sourceTree = "<group>"; };
 		C60CB4EF2B2020DD007FD3CF /* UIImage+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Preview.swift"; sourceTree = "<group>"; };
-		C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionUICache.swift; sourceTree = "<group>"; };
 		C60D2716295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppsBackgroundColorCache.swift; sourceTree = "<group>"; };
 		C60DCEE1282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableRoundedWalletImageView.swift; sourceTree = "<group>"; };
 		C60DCEE8282D13F800F71C13 /* RenameWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameWalletViewPresenter.swift; sourceTree = "<group>"; };
@@ -2753,8 +2752,6 @@
 		C629A4662A3FF4A600A528A1 /* ChatImageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatImageCell.xib; sourceTree = "<group>"; };
 		C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBaseCell.swift; sourceTree = "<group>"; };
 		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
-		C62BD9702B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionGetDomainCardCell.swift; sourceTree = "<group>"; };
-		C62BD9712B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionGetDomainCardCell.xib; sourceTree = "<group>"; };
 		C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingBlockUserInChatType.swift; sourceTree = "<group>"; };
 		C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResendCodeButton.swift; sourceTree = "<group>"; };
 		C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
@@ -2843,8 +2840,6 @@
 		C63A352A28F017A90057D34B /* DomainProfileEmptySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileEmptySection.swift; sourceTree = "<group>"; };
 		C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTertiaryWhiteButton.swift; sourceTree = "<group>"; };
 		C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64DataTransformer.swift; sourceTree = "<group>"; };
-		C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSuggestionCell.swift; sourceTree = "<group>"; };
-		C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSuggestionCell.xib; sourceTree = "<group>"; };
 		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
 		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C63DD36029C89FEC002D45B2 /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
@@ -2890,7 +2885,6 @@
 		C64939FB2B637DDB00457363 /* ReverseResolutionSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionSelectionView.swift; sourceTree = "<group>"; };
 		C64939FE2B6399EA00457363 /* ReverseResolutionSelectionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionSelectionRowView.swift; sourceTree = "<group>"; };
 		C6493A012B63A8B700457363 /* TrackingPressingStateModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingPressingStateModifier.swift; sourceTree = "<group>"; };
-		C64ABCCF2B0F242600C8420E /* BaseDomainsCollectionCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDomainsCollectionCardCell.swift; sourceTree = "<group>"; };
 		C64BCB702A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingWebSocketsService.swift; sourceTree = "<group>"; };
 		C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceHelper.swift; sourceTree = "<group>"; };
 		C64BCB7A2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageDataTypeDisplayInfo.swift; sourceTree = "<group>"; };
@@ -3000,8 +2994,6 @@
 		C66435BC288E57550098E1B8 /* NotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		C66435C0288E58E90098E1B8 /* AppGroupsBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsBridgeService.swift; sourceTree = "<group>"; };
 		C66435CE288ECC370098E1B8 /* PushNotificationsInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsInfo.swift; sourceTree = "<group>"; };
-		C66435DE288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyListCell.swift; sourceTree = "<group>"; };
-		C66435DF288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionEmptyListCell.xib; sourceTree = "<group>"; };
 		C664B6422913A6A400A76154 /* CollectionTextFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextFooterReusableView.swift; sourceTree = "<group>"; };
 		C664B6482914BE3D00A76154 /* DomainProfileMetadataSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileMetadataSection.swift; sourceTree = "<group>"; };
 		C664B64E2914C0F000A76154 /* DomainProfileMetadataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileMetadataCell.swift; sourceTree = "<group>"; };
@@ -3098,7 +3090,6 @@
 		C671E3E32902817000A2B3A0 /* DomainProfileGeneralInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileGeneralInfoCell.xib; sourceTree = "<group>"; };
 		C671E3ED2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDashesHeaderReusableView.swift; sourceTree = "<group>"; };
 		C672FD74286061E300D27078 /* WalletBackUpPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBackUpPassword.swift; sourceTree = "<group>"; };
-		C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionRouter.swift; sourceTree = "<group>"; };
 		C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingUnreadCountingService.swift; sourceTree = "<group>"; };
 		C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingUnreadCountingServiceProtocol.swift; sourceTree = "<group>"; };
 		C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceSharedHelper.swift; sourceTree = "<group>"; };
@@ -3162,7 +3153,6 @@
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
 		C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnencryptedMessageInfoPullUpView.swift; sourceTree = "<group>"; };
 		C686BF2B2A6135570036C7C1 /* ChatsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsList.swift; sourceTree = "<group>"; };
-		C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionMessagingBarButton.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -3466,7 +3456,6 @@
 		C6D5DAF32837866800379C38 /* SecondaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryDangerButton.swift; sourceTree = "<group>"; };
 		C6D645792B1D7C2F00D724AC /* PullUpError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpError.swift; sourceTree = "<group>"; };
 		C6D645B12B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewConnectedAppsImageCache.swift; sourceTree = "<group>"; };
-		C6D645F72B1DBF4800D724AC /* DomainsCollectionPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionPresenterProtocol.swift; sourceTree = "<group>"; };
 		C6D645FB2B1DBF8C00D724AC /* MintDomainsResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsResult.swift; sourceTree = "<group>"; };
 		C6D646022B1DBFEF00D724AC /* WalletConnectServiceConnectionListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceConnectionListener.swift; sourceTree = "<group>"; };
 		C6D646102B1DC0DB00D724AC /* UnifiedConnectedAppInfoHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedConnectedAppInfoHolder.swift; sourceTree = "<group>"; };
@@ -3484,7 +3473,6 @@
 		C6D646EA2B1ED55F00D724AC /* NFCService+Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCService+Entities.swift"; sourceTree = "<group>"; };
 		C6D646F32B1ED65200D724AC /* Extension-String+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String+Common.swift"; sourceTree = "<group>"; };
 		C6D6471A2B1ED85C00D724AC /* WalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletError.swift; sourceTree = "<group>"; };
-		C6D6472F2B1ED9B900D724AC /* AddDomainPullUpAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDomainPullUpAction.swift; sourceTree = "<group>"; };
 		C6D647332B1ED9D600D724AC /* WCRequestUIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestUIConfiguration.swift; sourceTree = "<group>"; };
 		C6D6473F2B1EDA1900D724AC /* WalletConnectServiceV2+Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletConnectServiceV2+Entities.swift"; sourceTree = "<group>"; };
 		C6D647432B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignPaymentTransactionUIConfiguration.swift; sourceTree = "<group>"; };
@@ -3520,9 +3508,6 @@
 		C6D6E53A28193822008C66BB /* BaseCollectionViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewControllerProtocol.swift; sourceTree = "<group>"; };
 		C6D6E53F28193851008C66BB /* UITableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCell.swift; sourceTree = "<group>"; };
 		C6D6E5442819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewPresenterProtocol.swift; sourceTree = "<group>"; };
-		C6D6E55228193A35008C66BB /* DomainsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionViewController.swift; sourceTree = "<group>"; };
-		C6D6E55328193A35008C66BB /* DomainsCollectionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionViewController.xib; sourceTree = "<group>"; };
-		C6D6E55C28193A41008C66BB /* DomainsCollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionPresenter.swift; sourceTree = "<group>"; };
 		C6D6E58428193ED9008C66BB /* DomainsCollectionListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionListCell.swift; sourceTree = "<group>"; };
 		C6D6E58528193ED9008C66BB /* DomainsCollectionListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionListCell.xib; sourceTree = "<group>"; };
 		C6D6E58E281946A6008C66BB /* BorderedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedView.swift; sourceTree = "<group>"; };
@@ -3562,32 +3547,15 @@
 		C6DF9865290F81D40098733A /* WebsiteURLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteURLValidator.swift; sourceTree = "<group>"; };
 		C6DF9878290F832A0098733A /* WebsiteURLValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteURLValidatorTests.swift; sourceTree = "<group>"; };
 		C6DF987A290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGenericChangeDescription.swift; sourceTree = "<group>"; };
-		C6E0413F295051CA0080F8E3 /* DomainsCollectionPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionPageViewController.swift; sourceTree = "<group>"; };
-		C6E04144295051F10080F8E3 /* DomainsCollectionCarouselItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselItemViewController.swift; sourceTree = "<group>"; };
-		C6E0414A295052180080F8E3 /* CarouselCellVisibilityLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCellVisibilityLevel.swift; sourceTree = "<group>"; };
-		C6E04150295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselCardCell.swift; sourceTree = "<group>"; };
-		C6E04151295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionCarouselCardCell.xib; sourceTree = "<group>"; };
 		C6E0415A295053DC0080F8E3 /* UIScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollView.swift; sourceTree = "<group>"; };
-		C6E041602950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionRecentActivityCell.swift; sourceTree = "<group>"; };
-		C6E041612950541D0080F8E3 /* DomainsCollectionRecentActivityCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionRecentActivityCell.xib; sourceTree = "<group>"; };
 		C6E0417B295057FE0080F8E3 /* DomainsListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListViewPresenter.swift; sourceTree = "<group>"; };
 		C6E0417C295057FE0080F8E3 /* DomainsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListViewController.swift; sourceTree = "<group>"; };
 		C6E0417D295057FE0080F8E3 /* DomainsListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsListViewController.xib; sourceTree = "<group>"; };
-		C6E0418B29515BD10080F8E3 /* DomainsCollectionEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyStateView.swift; sourceTree = "<group>"; };
-		C6E04193295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionNoRecentActivitiesCell.swift; sourceTree = "<group>"; };
-		C6E04194295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionNoRecentActivitiesCell.xib; sourceTree = "<group>"; };
-		C6E0419E2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSectionHeader.swift; sourceTree = "<group>"; };
 		C6E041A32951A8C20080F8E3 /* ConnectedAppImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppImageView.swift; sourceTree = "<group>"; };
-		C6E041A82951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionSectionFooter.swift; sourceTree = "<group>"; };
-		C6E041AD2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselItemViewPresenter.swift; sourceTree = "<group>"; };
-		C6E041B329546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselViewController.swift; sourceTree = "<group>"; };
 		C6E041B829548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallRaisedTertiaryButton.swift; sourceTree = "<group>"; };
-		C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionTitleView.swift; sourceTree = "<group>"; };
-		C6E041C8295545CE0080F8E3 /* DomainCollectionUnderCardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainCollectionUnderCardControl.swift; sourceTree = "<group>"; };
 		C6E041CD29554C370080F8E3 /* GhostTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTertiaryButton.swift; sourceTree = "<group>"; };
 		C6E041D2295553B40080F8E3 /* UDButtonConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDButtonConfiguration.swift; sourceTree = "<group>"; };
 		C6E041D7295588C90080F8E3 /* UDPageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPageControl.swift; sourceTree = "<group>"; };
-		C6E041DC2955EC5B0080F8E3 /* CarouselCardState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCardState.swift; sourceTree = "<group>"; };
 		C6E0D66C2A4AC2AE009431AF /* ChatUserMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUserMessageCell.swift; sourceTree = "<group>"; };
 		C6E0DC5C2B71E2410069E100 /* ShareWalletInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareWalletInfoView.swift; sourceTree = "<group>"; };
 		C6E1188228F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectPushNotificationsSubscribeInfo.swift; sourceTree = "<group>"; };
@@ -3598,8 +3566,6 @@
 		C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryWhiteButton.swift; sourceTree = "<group>"; };
 		C6E28F3D2B33486700026E6C /* PreviewDomainProfileActionCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainProfileActionCover.swift; sourceTree = "<group>"; };
 		C6E385FC2849D66E00C91293 /* DomainsListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListPresenter.swift; sourceTree = "<group>"; };
-		C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyTopInfoCell.swift; sourceTree = "<group>"; };
-		C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionEmptyTopInfoCell.xib; sourceTree = "<group>"; };
 		C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6E69F8C288A93D3000A8346 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		C6E69F8E288A93D3000A8346 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3623,11 +3589,6 @@
 		C6ECBF9528D2E06800E94309 /* GenericBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericBadgeView.swift; sourceTree = "<group>"; };
 		C6ECBF9A28D2E06C00E94309 /* GenericBadgeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GenericBadgeView.xib; sourceTree = "<group>"; };
 		C6ED31E2295BF8DF00BC6919 /* Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Equatable.swift; sourceTree = "<group>"; };
-		C6ED31E7295C16C100BC6919 /* DomainsCollectionItemScrollingCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionItemScrollingCalculator.swift; sourceTree = "<group>"; };
-		C6ED31F5295D372800BC6919 /* DomainsCollectionDashesSwipeTutorialHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionDashesSwipeTutorialHeader.swift; sourceTree = "<group>"; };
-		C6ED31FD295D433D00BC6919 /* DomainsCollectionTitleDomainInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionTitleDomainInfoView.swift; sourceTree = "<group>"; };
-		C6ED3202295D451700BC6919 /* DomainsCollectionTitleSwipeTutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionTitleSwipeTutorialView.swift; sourceTree = "<group>"; };
-		C6ED3207295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionTitleMintingProgressView.swift; sourceTree = "<group>"; };
 		C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonEmptyArray.swift; sourceTree = "<group>"; };
 		C6EECE962833A3E400978ED5 /* CoinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRecord.swift; sourceTree = "<group>"; };
 		C6EECE9C2833A42600978ED5 /* CoinRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRecordsService.swift; sourceTree = "<group>"; };
@@ -5007,15 +4968,6 @@
 			path = ChatImageCell;
 			sourceTree = "<group>";
 		};
-		C62BD96F2B0F2A74004F58F2 /* DomainsCollectionGetDomainCardCell */ = {
-			isa = PBXGroup;
-			children = (
-				C62BD9702B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.swift */,
-				C62BD9712B0F2A8E004F58F2 /* DomainsCollectionGetDomainCardCell.xib */,
-			);
-			path = DomainsCollectionGetDomainCardCell;
-			sourceTree = "<group>";
-		};
 		C62C3F94283F35730094FC93 /* CodeVerificationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -5306,15 +5258,6 @@
 				C6124CD52923510A005E6537 /* Changes */,
 			);
 			path = Entities;
-			sourceTree = "<group>";
-		};
-		C63B68522B047570005D4046 /* DomainsCollectionSuggestionCell */ = {
-			isa = PBXGroup;
-			children = (
-				C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */,
-				C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */,
-			);
-			path = DomainsCollectionSuggestionCell;
 			sourceTree = "<group>";
 		};
 		C63DD35D29C89FCB002D45B2 /* LoginViewController */ = {
@@ -5817,15 +5760,6 @@
 				C664310B28D8BEB600A9C734 /* ConnectExternalWalletCell.xib */,
 			);
 			path = ConnectExternalWalletCell;
-			sourceTree = "<group>";
-		};
-		C66435DD288F8EDC0098E1B8 /* DomainsCollectionEmptyListCell */ = {
-			isa = PBXGroup;
-			children = (
-				C66435DE288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift */,
-				C66435DF288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib */,
-			);
-			path = DomainsCollectionEmptyListCell;
 			sourceTree = "<group>";
 		};
 		C664B64D2914C0D200A76154 /* DomainProfileMetadataCell */ = {
@@ -7516,7 +7450,6 @@
 				C6F6AF6728A4D1D200A7B571 /* CustomScrollingBehaviourProtocols */,
 				C60CA26228324E7C00AB1B36 /* DomainDetails */,
 				C6E0417A295057E00080F8E3 /* DomainsList */,
-				C6D6E55128193A1F008C66BB /* DomainsCollection */,
 				C63A350828F006FB0057D34B /* DomainProfile */,
 				C669C3642912196300837F21 /* EnterValue */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
@@ -7546,39 +7479,6 @@
 				C674598D280E9C560074CBE5 /* WebViewController */,
 			);
 			path = Modules;
-			sourceTree = "<group>";
-		};
-		C6D6E55128193A1F008C66BB /* DomainsCollection */ = {
-			isa = PBXGroup;
-			children = (
-				C6E041B329546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift */,
-				C6E0413F295051CA0080F8E3 /* DomainsCollectionPageViewController.swift */,
-				C6D645F72B1DBF4800D724AC /* DomainsCollectionPresenterProtocol.swift */,
-				C6D6E55C28193A41008C66BB /* DomainsCollectionPresenter.swift */,
-				C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */,
-				C6D6E55228193A35008C66BB /* DomainsCollectionViewController.swift */,
-				C6D6E55328193A35008C66BB /* DomainsCollectionViewController.xib */,
-				C6D6E56128193D00008C66BB /* Cells */,
-				C6E0419D2951A4CE0080F8E3 /* CollectionReusableViews */,
-				C6E041B2295468A30080F8E3 /* DomainsCollectionCarouselItemViewController */,
-				C6E04190295160BE0080F8E3 /* EmptyState */,
-				C6E04149295052120080F8E3 /* Entities */,
-				C6E041C2295498F00080F8E3 /* Views */,
-			);
-			path = DomainsCollection;
-			sourceTree = "<group>";
-		};
-		C6D6E56128193D00008C66BB /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C63B68522B047570005D4046 /* DomainsCollectionSuggestionCell */,
-				C64ABCCF2B0F242600C8420E /* BaseDomainsCollectionCardCell.swift */,
-				C62BD96F2B0F2A74004F58F2 /* DomainsCollectionGetDomainCardCell */,
-				C6E041922951701C0080F8E3 /* DomainsCollectionNoRecentActivitiesCell */,
-				C6E0415F295054130080F8E3 /* DomainsCollectionRecentActivityCell */,
-				C6E0414F295052E10080F8E3 /* DomainsCollectionCarouselCardCell */,
-			);
-			path = Cells;
 			sourceTree = "<group>";
 		};
 		C6D6E56A28193EAC008C66BB /* DomainsCollectionListCell */ = {
@@ -7655,36 +7555,6 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
-		C6E04149295052120080F8E3 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				C6D6472F2B1ED9B900D724AC /* AddDomainPullUpAction.swift */,
-				C6E0414A295052180080F8E3 /* CarouselCellVisibilityLevel.swift */,
-				C6E041DC2955EC5B0080F8E3 /* CarouselCardState.swift */,
-				C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */,
-				C6ED31E7295C16C100BC6919 /* DomainsCollectionItemScrollingCalculator.swift */,
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
-		C6E0414F295052E10080F8E3 /* DomainsCollectionCarouselCardCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6E04150295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift */,
-				C6E04151295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib */,
-			);
-			path = DomainsCollectionCarouselCardCell;
-			sourceTree = "<group>";
-		};
-		C6E0415F295054130080F8E3 /* DomainsCollectionRecentActivityCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6E041602950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift */,
-				C6E041612950541D0080F8E3 /* DomainsCollectionRecentActivityCell.xib */,
-			);
-			path = DomainsCollectionRecentActivityCell;
-			sourceTree = "<group>";
-		};
 		C6E0417A295057E00080F8E3 /* DomainsList */ = {
 			isa = PBXGroup;
 			children = (
@@ -7707,62 +7577,6 @@
 				C6D6E56A28193EAC008C66BB /* DomainsCollectionListCell */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		C6E04190295160BE0080F8E3 /* EmptyState */ = {
-			isa = PBXGroup;
-			children = (
-				C6E0418B29515BD10080F8E3 /* DomainsCollectionEmptyStateView.swift */,
-				C6E04191295160EB0080F8E3 /* Cells */,
-			);
-			path = EmptyState;
-			sourceTree = "<group>";
-		};
-		C6E04191295160EB0080F8E3 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C6E459002925F06E00751742 /* DomainsCollectionEmptyTopInfoCell */,
-				C66435DD288F8EDC0098E1B8 /* DomainsCollectionEmptyListCell */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		C6E041922951701C0080F8E3 /* DomainsCollectionNoRecentActivitiesCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6E04193295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift */,
-				C6E04194295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib */,
-			);
-			path = DomainsCollectionNoRecentActivitiesCell;
-			sourceTree = "<group>";
-		};
-		C6E0419D2951A4CE0080F8E3 /* CollectionReusableViews */ = {
-			isa = PBXGroup;
-			children = (
-				C6E0419E2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift */,
-				C6ED31F5295D372800BC6919 /* DomainsCollectionDashesSwipeTutorialHeader.swift */,
-				C6E041A82951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift */,
-			);
-			path = CollectionReusableViews;
-			sourceTree = "<group>";
-		};
-		C6E041B2295468A30080F8E3 /* DomainsCollectionCarouselItemViewController */ = {
-			isa = PBXGroup;
-			children = (
-				C6E041AD2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift */,
-				C6E04144295051F10080F8E3 /* DomainsCollectionCarouselItemViewController.swift */,
-			);
-			path = DomainsCollectionCarouselItemViewController;
-			sourceTree = "<group>";
-		};
-		C6E041C2295498F00080F8E3 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				C6E041C8295545CE0080F8E3 /* DomainCollectionUnderCardControl.swift */,
-				C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */,
-				C6ED31FC295D431300BC6919 /* TitleView */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		C6E0DC5B2B71E20C0069E100 /* ShareWalletInfoView */ = {
@@ -7822,15 +7636,6 @@
 			path = PreviewDomainProfileActionCover;
 			sourceTree = "<group>";
 		};
-		C6E459002925F06E00751742 /* DomainsCollectionEmptyTopInfoCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6E459012925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift */,
-				C6E459022925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib */,
-			);
-			path = DomainsCollectionEmptyTopInfoCell;
-			sourceTree = "<group>";
-		};
 		C6E69F8B288A93D3000A8346 /* NotificationServiceExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -7878,17 +7683,6 @@
 				C6ECBF9A28D2E06C00E94309 /* GenericBadgeView.xib */,
 			);
 			path = DomainBadgeView;
-			sourceTree = "<group>";
-		};
-		C6ED31FC295D431300BC6919 /* TitleView */ = {
-			isa = PBXGroup;
-			children = (
-				C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */,
-				C6ED31FD295D433D00BC6919 /* DomainsCollectionTitleDomainInfoView.swift */,
-				C6ED3202295D451700BC6919 /* DomainsCollectionTitleSwipeTutorialView.swift */,
-				C6ED3207295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift */,
-			);
-			path = TitleView;
 			sourceTree = "<group>";
 		};
 		C6EECE952833A2F700978ED5 /* DomainRecordsService */ = {
