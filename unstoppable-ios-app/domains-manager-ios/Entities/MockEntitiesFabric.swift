@@ -169,6 +169,8 @@ extension MockEntitiesFabric {
                                          symbol: "MATIC",
                                          valueUsd: 2.01,
                                          valueNative: 2.31),
+                  rarity: "167 / 373",
+                  acquiredDate: Date().addingTimeInterval(-86400),
                   chain: .MATIC)
         }
         

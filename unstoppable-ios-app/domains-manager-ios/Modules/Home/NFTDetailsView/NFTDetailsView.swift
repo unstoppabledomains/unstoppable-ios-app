@@ -257,7 +257,11 @@ private extension NFTDetailsView {
         case .collectionID:
             guard let url = URL(string: value) else { return nil }
             return { openLink(.direct(url: url)) }
-        case .chain, .lastSaleDate:
+        case .tokenID:
+            guard let url = nft.collectionLink else { return nil }
+            
+            return { openLink(.direct(url: url)) }
+        case .chain, .lastSaleDate, .rarity, .holdDays:
             return nil
         }
     }
@@ -371,7 +375,7 @@ private extension NFTDetailsView {
             case .savePhoto:
                 return Image(systemName: "square.and.arrow.down")
             case .refresh:
-                return .appleIcon
+                return Image(systemName: "arrow.clockwise")
             case .viewMarketPlace:
                 return Image(systemName: "arrow.up.right")
             }

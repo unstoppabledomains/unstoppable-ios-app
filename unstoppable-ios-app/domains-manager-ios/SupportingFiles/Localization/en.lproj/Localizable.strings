@@ -989,3 +989,17 @@
 "BUY" = "Buy";
 "SHARE_ADDRESS" = "Share address";
 "SHARE_WALLET_ADDRESS_INFO_MESSAGE" = "You can use this address to receive ETH and other Ethereum based tokens such as USDC. Sending other assets may result in permanent loss.";
+"SORT_HIGHEST_VALUE" = "Highest Value";
+"SORT_MARKET_CAP" = "Market Cap";
+"SORT_ALPHABETICAL" = "Alphabetical";
+"SORT_MOST_RECENT" = "Most Recent";
+"SORT_MOST_COLLECTED" = "Most collected";
+"SORT_ALPHABETICAL_AZ" = "Alphabetical A-Z";
+"SORT_ALPHABETICAL_ZA" = "Alphabetical Z-A";
+"COLLECTION_ID" = "Collection ID";
+"TOKEN_ID" = "Token ID";
+"CHAIN" = "Chain";
+"LAST_UPDATED" = "ChaiLast Updatedn";
+"RARITY" = "Rarity";
+"HOLD_DAYS" = "Hold Days";
+

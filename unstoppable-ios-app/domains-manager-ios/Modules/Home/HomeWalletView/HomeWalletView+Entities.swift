@@ -114,11 +114,11 @@ extension HomeWalletView {
         var title: String {
             switch self {
             case .highestValue:
-                return "Highest Value"
+                return String.Constants.sortHighestValue.localized()
             case .marketCap:
-                return "Market Cap"
+                return String.Constants.sortMarketCap.localized()
             case .alphabetical:
-                return "Alphabetical"
+                return String.Constants.sortAlphabetical.localized()
             }
         }
     }
@@ -129,24 +129,24 @@ extension HomeWalletView {
         var title: String {
             switch self {
             case .mostRecent:
-                return "Most Recent"
+                return String.Constants.sortMostRecent.localized()
             case .mostCollected:
-                return "Most collected"
+                return String.Constants.sortMostCollected.localized()
             case .alphabetical:
-                return "Alphabetical"
+                return String.Constants.sortAlphabetical.localized()
             }
         }
     }
     
     enum DomainsSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
-        case salePrice, alphabetical
+        case alphabeticalAZ, alphabeticalZA
         
         var title: String {
             switch self {
-            case .salePrice:
-                return "Highest Sale Price"
-            case .alphabetical:
-                return "Alphabetical"
+            case .alphabeticalAZ:
+                return String.Constants.sortAlphabeticalAZ.localized()
+            case .alphabeticalZA:
+                return String.Constants.sortAlphabeticalZA.localized()
             }
         }
     }
@@ -316,5 +316,12 @@ extension HomeWalletView {
         
         let domains: [DomainDisplayInfo]
         let tld: String
+        
+        init(domains: [DomainDisplayInfo], tld: String) {
+            self.domains = domains.sorted(by: { lhs, rhs in
+                lhs.name < rhs.name
+            })
+            self.tld = tld
+        }
     }
 }

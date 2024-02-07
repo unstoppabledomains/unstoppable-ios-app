@@ -17,18 +17,19 @@ struct NFTModel: Codable, Hashable {
     let description: String?
     let imageUrl: String?
     let tags: [String]?
-    let createdDate: String?
-    let acquiredDate: String?
+    let createdDate: Date?
+    let acquiredDate: Date?
     let saleDetails: SaleDetails?
     let floorPrice: FloorPrice?
     let traits: [String : String]?
     let supply: Int?
+    let rarity: Rarity?
     let isPublic: Bool
     var chain: NFTModelChain?
     var address: String?
     
     enum CodingKeys: String, CodingKey {
-        case mint, link, collection, collectionOwners, collectionLink, name, description, tags, createdDate, acquiredDate, saleDetails, floorPrice, traits, supply
+        case mint, link, collection, collectionOwners, collectionLink, name, description, tags, createdDate, acquiredDate, saleDetails, floorPrice, traits, supply, rarity
         case imageUrl = "image_url"
         case isPublic = "public"
     }
@@ -67,6 +68,11 @@ extension NFTModel {
     struct FloorPrice: Codable, Hashable {
         let currency: String?
         let value: Double?
+    }
+    
+    struct Rarity: Codable, Hashable {
+        let rank: Int?
+        let score: Double?
     }
 }
 

@@ -23,7 +23,7 @@ extension HomeWalletView {
         @Published var selectedContentType: ContentType = .tokens
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
-        @Published var selectedDomainsSortingOption: DomainsSortingOptions = .salePrice
+        @Published var selectedDomainsSortingOption: DomainsSortingOptions = .alphabeticalAZ
         @Published var isSubdomainsVisible: Bool = false
         @Published var isNotMatchingTokensVisible: Bool = false
         
@@ -125,24 +125,15 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         switch sortOption {
         case .alphabetical:
             tokens = tokens.sorted(by: { lhs, rhs in
-                if lhs.isSkeleton {
-                    return false
-                }
-                return lhs.symbol < rhs.symbol
+                lhs.symbol < rhs.symbol
             })
         case .highestValue:
             tokens = tokens.sorted(by: { lhs, rhs in
-                if lhs.isSkeleton {
-                    return false
-                }
-                return lhs.balanceUsd > rhs.balanceUsd
+                lhs.balanceUsd > rhs.balanceUsd
             })
         case .marketCap:
             tokens = tokens.sorted(by: { lhs, rhs in
-                if lhs.isSkeleton {
-                    return false
-                }
-                return lhs.balance > rhs.balance
+                (lhs.marketUsd ?? 0) > (rhs.marketUsd ?? 0)
             })
         }
     }
@@ -178,11 +169,11 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             lhs.name < rhs.name
         })
         switch sortOption {
-        case .alphabetical:
+        case .alphabeticalAZ:
             domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
                 lhs.tld < rhs.tld
             })
-        case .salePrice:
+        case .alphabeticalZA:
             domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
                 lhs.tld > rhs.tld
             })
