@@ -7,6 +7,15 @@
 
 import Foundation
 
+typealias DomainItemSelectedCallback = (SetNewHomeDomainResult)->()
+
+enum SetNewHomeDomainResult {
+    case cancelled
+    case domainsOrderSet(_ domains: [DomainDisplayInfo])
+    case domainsOrderAndReverseResolutionSet(_ domains: [DomainDisplayInfo], reverseResolutionDomain: DomainDisplayInfo)
+}
+
+
 final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionViewPresenter {
     
     var resultCallback: DomainItemSelectedCallback?

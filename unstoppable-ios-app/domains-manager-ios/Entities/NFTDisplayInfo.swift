@@ -14,14 +14,17 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let description: String?
     let imageUrl: URL?
     var videoUrl: URL? = nil
-    let link: String
+    var link: URL? = nil
     let tags: [String]
     let collection: String
     let collectionLink: URL?
     let mint: String
     let traits: [Trait]
-    var floorPriceDetails: FloorPriceDetails?
-    var lastSaleDetails: SaleDetails?
+    var floorPriceDetails: FloorPriceDetails? = nil
+    var lastSaleDetails: SaleDetails? = nil
+    var rarity: String?
+    var acquiredDate: Date?
+
     var chain: NFTModelChain?
     var address: String?
     
@@ -71,7 +74,7 @@ extension NFTDisplayInfo {
         self.description = nftModel.description
         self.imageUrl = URL(string: nftModel.imageUrl ?? "")
         self.videoUrl = nil
-        self.link = nftModel.link
+        self.link = URL(string: nftModel.link)
         self.tags = nftModel.tags ?? []
         self.collection = nftModel.collection
         self.mint = nftModel.mint
@@ -83,16 +86,17 @@ extension NFTDisplayInfo {
             let payment = lastSaleDetails.payment!
             self.lastSaleDetails = SaleDetails(date: lastSaleDetails.date!,
                                                symbol: payment.symbol!, valueUsd: payment.valueUsd!, valueNative: payment.valueNative!)
-        } else {
-            self.lastSaleDetails = nil
         }
         if let floorPrice = nftModel.floorPrice,
            let currency = floorPrice.currency,
            let value = floorPrice.value {
             self.floorPriceDetails = FloorPriceDetails(value: value, currency: currency)
-        } else {
-            self.floorPriceDetails = nil
         }
+        if let rank = nftModel.rarity?.rank,
+           let supply = nftModel.supply {
+            self.rarity = "\(rank) / \(supply)"
+        }
+        self.acquiredDate = nftModel.acquiredDate
     }
 }
 
@@ -100,28 +104,45 @@ extension NFTDisplayInfo {
 extension NFTDisplayInfo {
     enum DetailType: CaseIterable {
         case collectionID
+        case tokenID
         case chain
+        case rarity
         case lastSaleDate
+        case holdDays
         
         var title: String {
             switch self {
             case .collectionID:
-                return "Collection ID"
+                return String.Constants.collectionID.localized()
+            case .tokenID:
+                return String.Constants.tokenID.localized()
             case .chain:
-                return "Chain"
+                return String.Constants.chain.localized()
             case .lastSaleDate:
-                return "Last Updated"
+                return String.Constants.lastUpdated.localized()
+            case .rarity:
+                return String.Constants.rarity.localized()
+            case .holdDays:
+                return String.Constants.holdDays.localized()
             }
         }
         
         var icon: Image {
             switch self {
             case .collectionID:
-                return .appleIcon
+                return Image(systemName: "number")
+            case .tokenID:
+                return Image(systemName: "number")
             case .chain:
-                return .chainLinkIcon
+                return Image(systemName: "link")
+//                return .chainLinkIcon
             case .lastSaleDate:
-                return .timeIcon
+                return Image(systemName: "clock")
+//                return .timeIcon
+            case .rarity:
+                return Image(systemName: "sparkles")
+            case .holdDays:
+                return Image(systemName: "calendar")
             }
         }
     }
@@ -130,6 +151,8 @@ extension NFTDisplayInfo {
         switch detailType {
         case .collectionID:
             return collectionLink?.absoluteString
+        case .tokenID:
+            return link?.lastPathComponent
         case .chain:
             return chain?.fullName
         case .lastSaleDate:
@@ -140,7 +163,15 @@ extension NFTDisplayInfo {
                 return formatter.localizedString(for: lastSaleDate, relativeTo: Date()).capitalizedFirstCharacter
             }
             return nil
+        case .rarity:
+            return rarity
+        case .holdDays:
+            if let acquiredDate,
+            let days = Calendar.current.dateComponents([.day], from: acquiredDate, to: Date()).day {
+                return String(days)
+            }
         }
+        return nil
     }
 }
 

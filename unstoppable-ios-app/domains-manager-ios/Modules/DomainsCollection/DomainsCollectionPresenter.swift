@@ -373,23 +373,23 @@ private extension DomainsCollectionPresenter {
                 domains[0].setOrder(0)
                 await updateDomainsListOrder(with: domains, newIndex: 0)
             } else {
-                updateUI()
-                let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
-                                                                                  isFirstPrimaryDomain: true,
-                                                                                  configuration: .init(canReverseResolutionETHDomain: false,
-                                                                                                       analyticsView: .sortDomainsForTheFirstTime),
-                                                                                  in: view)
-                switch result {
-                case .cancelled:
-                    Debugger.printFailure("Should not be able to dismiss initial home domain selection screen", critical: true)
-                case .domainsOrderSet(let domains):
-                    await updateDomainsListOrder(with: domains, newIndex: 0)
-                case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
-                    await updateDomainsListOrder(with: domains, newIndex: 0)
-                    stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
-                }
-                domains = stateController.domains
-                UserDefaults.setupRRPromptCounter = 1
+//                updateUI()
+//                let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
+//                                                                                  isFirstPrimaryDomain: true,
+//                                                                                  configuration: .init(canReverseResolutionETHDomain: false,
+//                                                                                                       analyticsView: .sortDomainsForTheFirstTime),
+//                                                                                  in: view)
+//                switch result {
+//                case .cancelled:
+//                    Debugger.printFailure("Should not be able to dismiss initial home domain selection screen", critical: true)
+//                case .domainsOrderSet(let domains):
+//                    await updateDomainsListOrder(with: domains, newIndex: 0)
+//                case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
+//                    await updateDomainsListOrder(with: domains, newIndex: 0)
+//                    stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
+//                }
+//                domains = stateController.domains
+//                UserDefaults.setupRRPromptCounter = 1
             }
             updateUI()
             self.isResolvingPrimaryDomain = false
@@ -443,31 +443,31 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func rearrangeDomains() {
-        Task {
-            guard let view else { return }
-            
-            let domains = stateController.domains
-            func updateDomains(_ updatedDomains: [DomainDisplayInfo]) async {
-                let currentDomain = await domains[self.currentIndex]
-                let newIndex = updatedDomains.firstIndex(where: { $0.isSameEntity(currentDomain) })
-                await updateDomainsListOrder(with: updatedDomains, newIndex: newIndex)
-            }
-            
-            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
-                                                                              isFirstPrimaryDomain: false,
-                                                                              configuration: .init(canReverseResolutionETHDomain: false,
-                                                                                                   analyticsView: .sortDomainsFromHome),
-                                                                              in: view)
-            switch result {
-            case .cancelled:
-                return
-            case .domainsOrderSet(let domains):
-                await updateDomains(domains)
-            case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
-                stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
-                await updateDomains(domains)
-            }
-        }
+//        Task {
+//            guard let view else { return }
+//            
+//            let domains = stateController.domains
+//            func updateDomains(_ updatedDomains: [DomainDisplayInfo]) async {
+//                let currentDomain = await domains[self.currentIndex]
+//                let newIndex = updatedDomains.firstIndex(where: { $0.isSameEntity(currentDomain) })
+//                await updateDomainsListOrder(with: updatedDomains, newIndex: newIndex)
+//            }
+//            
+//            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
+//                                                                              isFirstPrimaryDomain: false,
+//                                                                              configuration: .init(canReverseResolutionETHDomain: false,
+//                                                                                                   analyticsView: .sortDomainsFromHome),
+//                                                                              in: view)
+//            switch result {
+//            case .cancelled:
+//                return
+//            case .domainsOrderSet(let domains):
+//                await updateDomains(domains)
+//            case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
+//                stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
+//                await updateDomains(domains)
+//            }
+//        }
     }
     
     func showReverseResolutionPromptIfNeeded() async {

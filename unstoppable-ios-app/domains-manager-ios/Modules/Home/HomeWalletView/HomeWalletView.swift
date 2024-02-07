@@ -12,24 +12,28 @@ struct HomeWalletView: View {
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
     @State private var isHeaderVisible: Bool = true
+    @State private var scrollOffset: CGPoint = .zero
     @State private var isOtherScreenPresented: Bool = false
     @State private var navigationState: NavigationStateManager?
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            List {
-                HomeWalletHeaderRowView(wallet: viewModel.selectedWallet)
-                    .onAppearanceChange($isHeaderVisible)
-                HomeWalletProfileSelectionView(wallet: viewModel.selectedWallet,
-                                               domainNamePressedCallback: viewModel.domainNamePressed)
-                HomeWalletTotalBalanceView(wallet: viewModel.selectedWallet)
+            OffsetObservingListView(offset: $scrollOffset) {
+                HomeWalletHeaderRowView(wallet: viewModel.selectedWallet,
+                                        domainNamePressedCallback: viewModel.domainNamePressed)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .onAppearanceChange($isHeaderVisible)
+                .unstoppableListRowInset()
                 
                 HomeWalletActionsView(actionCallback: { action in
                     viewModel.walletActionPressed(action)
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
                 })
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
                 
                 contentTypeSelector()
@@ -48,19 +52,12 @@ struct HomeWalletView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             }.environment(\.defaultMinListRowHeight, 28)
-            .onChange(of: isHeaderVisible) { newValue in
-                withAnimation {
-                    navigationState?.isTitleVisible = 
-                    !isOtherScreenPushed &&
-                    !isHeaderVisible &&
-                    tabRouter.tabViewSelection == .wallets
-                }
-            }
             .onChange(of: tabRouter.walletViewNavPath) { _ in
-                withAnimation {
-                    navigationState?.isTitleVisible = !isOtherScreenPushed && !isHeaderVisible
-                    tabRouter.isTabBarVisible = !isOtherScreenPushed
-                }
+                updateNavTitleVisibility()
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
+            }
+            .onChange(of: scrollOffset) { point in
+                updateNavTitleVisibility()
             }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
@@ -139,6 +136,19 @@ private extension HomeWalletView {
                     .lineLimit(1)
                     .frame(height: 20)
             }
+        }
+    }
+    
+    var isNavTitleVisible: Bool {
+        (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+        !isOtherScreenPushed &&
+        tabRouter.tabViewSelection == .wallets
+    }
+    
+    
+    func updateNavTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = isNavTitleVisible
         }
     }
     
@@ -296,4 +306,3 @@ private extension HomeWalletView {
         .environmentObject(router)
     }
 }
-

@@ -227,38 +227,6 @@ class UDRouter: DomainProfileSignatureValidator {
             presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
         }
     }
-
-    func showNewPrimaryDomainSelectionScreen(domains: [DomainDisplayInfo],
-                                             isFirstPrimaryDomain: Bool,
-                                             shouldPresentModally: Bool = true,
-                                             configuration: ChooseNewPrimaryDomainPresenter.Configuration,
-                                             in viewController: UIViewController) async -> SetNewHomeDomainResult {
-        await withSafeCheckedMainActorContinuation { completion in
-            let vc = buildSelectNewPrimaryDomainModule(domains: domains,
-                                                       configuration: configuration,
-                                                       resultCallback: { result in
-                completion(result)
-            })
-            
-            if shouldPresentModally {
-                let nav: UIViewController
-                if isFirstPrimaryDomain {
-                    nav = CNavigationController(rootViewController: vc)
-                } else {
-                    let emptyRootNav = EmptyRootCNavigationController(rootViewController: vc)
-                    emptyRootNav.dismissCallback = {
-                        completion(.cancelled)
-                    }
-                    nav = emptyRootNav
-                }
-                
-                nav.isModalInPresentation = isFirstPrimaryDomain
-                viewController.present(nav, animated: true)
-            } else {
-                (viewController as? CNavigationController)?.pushViewController(vc, animated: true)
-            }
-        }
-    }
     
     func showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: [MintingDomainWithDisplayInfo],
                                             mintingDomainSelectedCallback: MintingDomainSelectedCallback?,
@@ -842,19 +810,6 @@ private extension UDRouter {
                                                                   selectedWallet: selectedWallet,
                                                                   networkReachabilityService: appContext.networkReachabilityService,
                                                                   walletSelectedCallback: walletSelectedCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildSelectNewPrimaryDomainModule(domains: [DomainDisplayInfo],
-                                           configuration: ChooseNewPrimaryDomainPresenter.Configuration,
-                                           resultCallback: @escaping DomainItemSelectedCallback) -> UIViewController {
-        let vc = ChoosePrimaryDomainViewController.nibInstance()
-        let presenter = ChooseNewPrimaryDomainPresenter(view: vc,
-                                                        domains: domains,
-                                                        configuration: configuration,
-                                                        dataAggregatorService: appContext.dataAggregatorService,
-                                                        resultCallback: resultCallback)
         vc.presenter = presenter
         return vc
     }

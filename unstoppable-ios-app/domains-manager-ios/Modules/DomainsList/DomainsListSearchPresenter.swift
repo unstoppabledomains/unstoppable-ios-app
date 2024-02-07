@@ -77,27 +77,27 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
     
     @MainActor
     override func rearrangeButtonPressed() {
-        Task {
-            guard let view = view?.cNavigationController else { return }
-         
-            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
-                                                                              isFirstPrimaryDomain: false,
-                                                                              shouldPresentModally: false,
-                                                                              configuration: .init(shouldAskToSetReverseResolutionIfNotSetYet: false,
-                                                                                                   canReverseResolutionETHDomain: false,
-                                                                                                   analyticsView: .sortDomainsFromHomeSearch,
-                                                                                                   shouldDismissWhenFinished: false),
-                                                                              in: view)
-            switch result {
-            case .cancelled:
-                return
-            case .domainsOrderSet(let domains):
-                self.domains = domains
-                showDomains()
-            case .domainsOrderAndReverseResolutionSet:
-                Debugger.printFailure("Should not be available to set RR from this screen", critical: true)
-            }
-        }
+//        Task {
+//            guard let view = view?.cNavigationController else { return }
+//         
+//            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
+//                                                                              isFirstPrimaryDomain: false,
+//                                                                              shouldPresentModally: false,
+//                                                                              configuration: .init(shouldAskToSetReverseResolutionIfNotSetYet: false,
+//                                                                                                   canReverseResolutionETHDomain: false,
+//                                                                                                   analyticsView: .sortDomainsFromHomeSearch,
+//                                                                                                   shouldDismissWhenFinished: false),
+//                                                                              in: view)
+//            switch result {
+//            case .cancelled:
+//                return
+//            case .domainsOrderSet(let domains):
+//                self.domains = domains
+//                showDomains()
+//            case .domainsOrderAndReverseResolutionSet:
+//                Debugger.printFailure("Should not be available to set RR from this screen", critical: true)
+//            }
+//        }
     }
 }
 

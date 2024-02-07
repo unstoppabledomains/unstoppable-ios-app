@@ -1089,6 +1089,21 @@ extension String {
         static let noPrimaryDomain = "NO_PRIMARY_DOMAIN"
         static let hidden = "HIDDEN"
         static let buy = "BUY"
+        static let shareAddress = "SHARE_ADDRESS"
+        static let shareWalletAddressInfoMessage = "SHARE_WALLET_ADDRESS_INFO_MESSAGE"
+        static let sortHighestValue = "SORT_HIGHEST_VALUE"
+        static let sortMarketCap = "SORT_MARKET_CAP"
+        static let sortAlphabetical = "SORT_ALPHABETICAL"
+        static let sortMostRecent = "SORT_MOST_RECENT"
+        static let sortMostCollected = "SORT_MOST_COLLECTED"
+        static let sortAlphabeticalAZ = "SORT_ALPHABETICAL_AZ"
+        static let sortAlphabeticalZA = "SORT_ALPHABETICAL_ZA"
+        static let collectionID = "COLLECTION_ID"
+        static let tokenID = "TOKEN_ID"
+        static let chain = "CHAIN"
+        static let lastUpdated = "LAST_UPDATED"
+        static let rarity = "RARITY"
+        static let holdDays = "HOLD_DAYS"
     }
     
     enum BlockChainIcons: String {

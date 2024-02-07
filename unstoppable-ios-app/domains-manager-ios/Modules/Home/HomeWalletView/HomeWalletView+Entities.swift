@@ -114,11 +114,11 @@ extension HomeWalletView {
         var title: String {
             switch self {
             case .highestValue:
-                return "Highest Value"
+                return String.Constants.sortHighestValue.localized()
             case .marketCap:
-                return "Market Cap"
+                return String.Constants.sortMarketCap.localized()
             case .alphabetical:
-                return "Alphabetical"
+                return String.Constants.sortAlphabetical.localized()
             }
         }
     }
@@ -129,24 +129,24 @@ extension HomeWalletView {
         var title: String {
             switch self {
             case .mostRecent:
-                return "Most Recent"
+                return String.Constants.sortMostRecent.localized()
             case .mostCollected:
-                return "Most collected"
+                return String.Constants.sortMostCollected.localized()
             case .alphabetical:
-                return "Alphabetical"
+                return String.Constants.sortAlphabetical.localized()
             }
         }
     }
     
     enum DomainsSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
-        case salePrice, alphabetical
+        case alphabeticalAZ, alphabeticalZA
         
         var title: String {
             switch self {
-            case .salePrice:
-                return "Highest Sale Price"
-            case .alphabetical:
-                return "Alphabetical"
+            case .alphabeticalAZ:
+                return String.Constants.sortAlphabeticalAZ.localized()
+            case .alphabeticalZA:
+                return String.Constants.sortAlphabeticalZA.localized()
             }
         }
     }
@@ -162,6 +162,7 @@ extension HomeWalletView {
         let balanceUsd: Double
         var marketUsd: Double?
         var parentSymbol: String?
+        var logoURL: URL?
         private(set) var isSkeleton: Bool = false
        
         static let iconSize: InitialsView.InitialsSize = .default
@@ -190,11 +191,12 @@ extension HomeWalletView {
             self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
             self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
             self.parentSymbol = parentSymbol
+            self.logoURL = URL(string: walletToken.logoUrl ?? "")
         }
         
         static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
-            let subTokenDescriptions = walletBalance.tokens?.map { TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) } ?? []
+            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) }).filter({ $0.balanceUsd >= 1 }) ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
@@ -316,5 +318,12 @@ extension HomeWalletView {
         
         let domains: [DomainDisplayInfo]
         let tld: String
+        
+        init(domains: [DomainDisplayInfo], tld: String) {
+            self.domains = domains.sorted(by: { lhs, rhs in
+                lhs.name < rhs.name
+            })
+            self.tld = tld
+        }
     }
 }

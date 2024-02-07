@@ -13,18 +13,21 @@ struct HomeWalletHeaderRowView: View {
 
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
+    let domainNamePressedCallback: MainActorCallback
+
     @State private var domainAvatar: UIImage?
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            getAvatarView()
-                .squareFrame(80)
-                .clipShape(Circle())
-                .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
-                .overlay {
-                    Circle()
-                        .stroke(lineWidth: 2)
-                        .foregroundStyle(Color.backgroundDefault)
+        VStack(alignment: .center, spacing: 16) {
+            ZStack {
+//                WalletBalanceGradientChartView()
+//                    .padding(EdgeInsets(top: 0, leading: -50,
+//                                        bottom: 0, trailing: -50))
+                avatarView()
+            }
+                VStack(alignment: .center, spacing: 8) {
+                    profileSelectionView()
+                    totalBalanceView()
                 }
         }
         .frame(maxWidth: .infinity)
@@ -32,8 +35,6 @@ struct HomeWalletHeaderRowView: View {
             loadAvatarFor(wallet: wallet)
         })
         .onAppear(perform: onAppear)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
 }
@@ -52,6 +53,19 @@ private extension HomeWalletHeaderRowView {
                 self.domainAvatar = image
             }
         }
+    }
+    
+    @ViewBuilder
+    func avatarView() -> some View {
+        getAvatarView()
+            .squareFrame(80)
+            .clipShape(Circle())
+            .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
+            .overlay {
+                Circle()
+                    .stroke(lineWidth: 2)
+                    .foregroundStyle(Color.backgroundDefault)
+            }
     }
     
     @ViewBuilder
@@ -93,8 +107,91 @@ private extension HomeWalletHeaderRowView {
         }
         .buttonStyle(.plain)
     }
+    
+    func getProfileSelectionTitle() -> String {
+        if let rrDomain = wallet.rrDomain {
+            return rrDomain.name
+        }
+        return wallet.displayName
+    }
+    
+    @ViewBuilder
+    func profileSelectionView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            domainNamePressedCallback()
+        } label: {
+            HStack(spacing: 0) {
+                Text(getProfileSelectionTitle())
+                    .font(.currentFont(size: 16, weight: .medium))
+                Image.chevronGrabberVertical
+                    .squareFrame(24)
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func totalBalanceView() -> some View {
+        Text("$\(wallet.totalBalance.formatted(toMaxNumberAfterComa: 2))")
+            .titleText()
+    }
 }
 
 #Preview {
-    HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!)
+    HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
+                            domainNamePressedCallback: { })
+}
+
+
+import Charts
+
+private struct WalletBalanceGradientChartView: View {
+    struct ChartData: Hashable {
+        let x: Double
+        let y: Double
+    }
+
+    
+    let chartData: [ChartData] = [ChartData(x: 2016, y: 6.8),
+                                ChartData(x: 2018, y: 5.2),
+                                ChartData(x: 2020, y: 22.9),
+                                ChartData(x: 2022, y: 22.2),
+                                ChartData(x: 2024, y: 27.9),
+                                ChartData(x: 2026, y: 23.2),
+                                ChartData(x: 2028, y: 37.2),
+                                ChartData(x: 2030, y: 32.9),
+                                ChartData(x: 2032, y: 35.2),
+                                ChartData(x: 2034, y: 32.9),
+                                ChartData(x: 2036, y: 39.2)]
+    let linearGradient = LinearGradient(stops: [
+        Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0.32), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0), location: 1.00),
+    ],
+                                        startPoint: UnitPoint(x: 0.5, y: 0),
+                                        endPoint: UnitPoint(x: 0.5, y: 1))
+    var body: some View {
+        Chart {
+            ForEach(chartData, id: \.self) { data in
+                LineMark(x: .value("Year", data.x),
+                         y: .value("Population", data.y))
+            }
+            .interpolationMethod(.cardinal(tension: 0.4))
+            
+            ForEach(chartData, id: \.self) { data in
+                AreaMark(x: .value("Year", data.x),
+                         y: .value("Population", data.y))
+            }
+            .interpolationMethod(.cardinal(tension: 0.4))
+            .foregroundStyle(linearGradient)
+        }
+        .chartXScale(domain: chartData.first!.x...chartData.last!.x)
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .background(Color.clear)
+        .frame(maxWidth: .infinity)
+    }
 }

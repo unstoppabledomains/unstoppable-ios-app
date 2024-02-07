@@ -85,15 +85,7 @@ extension MintDomainsNavigationController: MintDomainsFlowManager {
             dismiss(result: .domainsPurchased(details: details))
         case .didSelectDomainsToMint(let domains, let wallet):
             self.mintingData.wallet = wallet
-            if domains.count == 1 {
-                if mintedDomains.isEmpty {
-                    try await startMinting(domains: domains, domainsOrderInfoMap: nil)
-                } else {
-                    moveToStep(.choosePrimaryDomain(domains: domains))
-                }
-            } else {
-                moveToStep(.choosePrimaryDomain(domains: domains))
-            }
+            try await startMinting(domains: domains, domainsOrderInfoMap: nil)
         case .didConfirmDomainsToMint(let domains, let domainsOrderInfoMap):
             try await startMinting(domains: domains, domainsOrderInfoMap: domainsOrderInfoMap)
         case .mintingCompleted:
@@ -299,14 +291,14 @@ private extension MintDomainsNavigationController {
                                                                   walletsService: walletsService)
             vc.presenter = presenter
             return vc
-        case .choosePrimaryDomain(let domains):
-            let vc = ChoosePrimaryDomainViewController.nibInstance()
-            let presenter = ChoosePrimaryDomainDuringMintingPresenter(view: vc,
-                                                                      mintDomainsFlowManager: self,
-                                                                      domainsToMint: domains,
-                                                                      mintedDomains: self.mintedDomains)
-            vc.presenter = presenter
-            return vc
+//        case .choosePrimaryDomain(let domains):
+//            let vc = ChoosePrimaryDomainViewController.nibInstance()
+//            let presenter = ChoosePrimaryDomainDuringMintingPresenter(view: vc,
+//                                                                      mintDomainsFlowManager: self,
+//                                                                      domainsToMint: domains,
+//                                                                      mintedDomains: self.mintedDomains)
+//            vc.presenter = presenter
+//            return vc
         case .mintingInProgress(let domains):
             let vc = TransactionInProgressViewController.nibInstance()
             let presenter = MintingInProgressViewPresenter(view: vc,
@@ -342,7 +334,7 @@ extension MintDomainsNavigationController {
         case enterEmailVerificationCode(email: String, code: String?)
         case noDomainsToMint(email: String, code: String)
         case selectDomainsToMint(domains: [String])
-        case choosePrimaryDomain(domains: [String])
+//        case choosePrimaryDomain(domains: [String])
         case mintingInProgress(domains: [MintingDomain])
     }
     

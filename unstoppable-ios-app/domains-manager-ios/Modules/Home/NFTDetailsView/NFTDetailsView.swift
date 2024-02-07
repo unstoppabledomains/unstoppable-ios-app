@@ -73,8 +73,9 @@ private extension NFTDetailsView {
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
                     if let nftImage {
-                        Image(uiImage: nftImage)
-                            .resizable()
+                        UIImageBridgeView(image: nftImage,
+                                          width: 20,
+                                          height: 20)
                             .squareFrame(20)
                             .clipShape(Circle())
                     }
@@ -100,11 +101,12 @@ private extension NFTDetailsView {
     @ViewBuilder
     func nftImageView() -> some View {
         ZStack {
-            Image(uiImage: nftImage ?? .init())
-                .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .background(Color.backgroundSubtle)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+            UIImageBridgeView(image: nftImage ?? .init(),
+                              width: 20,
+                              height: 20)
+            .aspectRatio(1, contentMode: .fill)
+            .background(Color.backgroundSubtle)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             if nftImage == nil {
                 ProgressView()
             }
@@ -257,7 +259,11 @@ private extension NFTDetailsView {
         case .collectionID:
             guard let url = URL(string: value) else { return nil }
             return { openLink(.direct(url: url)) }
-        case .chain, .lastSaleDate:
+        case .tokenID:
+            guard let url = nft.link else { return nil }
+            
+            return { openLink(.direct(url: url)) }
+        case .chain, .lastSaleDate, .rarity, .holdDays:
             return nil
         }
     }
@@ -305,26 +311,28 @@ private extension NFTDetailsView {
     
     @ViewBuilder
     func navActionsView() -> some View {
-        Menu {
-            ForEach(availableNFTActions(), id: \.self) { action in
-                Button {
-                    UDVibration.buttonTap.vibrate()
-                    handleAction(action)
-                } label: {
-                    Label(
-                        title: { Text(action.title) },
-                        icon: { action.icon.bold() }
-                    )
+        if !availableNFTActions().isEmpty {
+            Menu {
+                ForEach(availableNFTActions(), id: \.self) { action in
+                    Button {
+                        UDVibration.buttonTap.vibrate()
+                        handleAction(action)
+                    } label: {
+                        Label(
+                            title: { Text(action.title) },
+                            icon: { action.icon.bold() }
+                        )
+                    }
                 }
+            } label: {
+                Image.dotsIcon
+                    .resizable()
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundDefault)
             }
-        } label: {
-            Image.dotsIcon
-                .resizable()
-                .squareFrame(24)
-                .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            
+            .onButtonTap {
+                
+            }
         }
     }
     
@@ -345,7 +353,7 @@ private extension NFTDetailsView {
         if let nftImage {
             actions.append(.savePhoto(nftImage))
         }
-        actions.append(.refresh)
+//        actions.append(.refresh)
         
         return actions
     }
@@ -371,7 +379,7 @@ private extension NFTDetailsView {
             case .savePhoto:
                 return Image(systemName: "square.and.arrow.down")
             case .refresh:
-                return .appleIcon
+                return Image(systemName: "arrow.clockwise")
             case .viewMarketPlace:
                 return Image(systemName: "arrow.up.right")
             }
