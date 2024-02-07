@@ -22,8 +22,8 @@ struct HomeWalletHeaderRowView: View {
             ZStack {
                 if wallet.portfolioRecords.count >= 2 {
                     WalletBalanceGradientChartView(chartData: wallet.portfolioRecords)
-                        .padding(EdgeInsets(top: 0, leading: -50,
-                                            bottom: 0, trailing: -50))
+                        .padding(EdgeInsets(top: 0, leading: -16,
+                                            bottom: 0, trailing: -16))
                 }
                 avatarView()
             }
