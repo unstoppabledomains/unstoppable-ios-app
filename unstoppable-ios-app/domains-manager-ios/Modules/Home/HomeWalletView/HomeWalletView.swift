@@ -14,11 +14,12 @@ struct HomeWalletView: View {
     @State private var isHeaderVisible: Bool = true
     @State private var scrollOffset: CGPoint = .zero
     @State private var isOtherScreenPresented: Bool = false
-    @State private var navigationState: NavigationStateManager?
+    let navigationState: NavigationStateManager?
+    @Binding var isNavTitleVisible: Bool
+    @Binding var isTabBarVisible: Bool
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
-        NavigationViewWithCustomTitle(content: {
             OffsetObservingListView(offset: $scrollOffset) {
                 HomeWalletHeaderRowView(wallet: viewModel.selectedWallet,
                                         domainNamePressedCallback: viewModel.domainNamePressed)
@@ -54,7 +55,7 @@ struct HomeWalletView: View {
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
-                tabRouter.isTabBarVisible = !isOtherScreenPushed
+                isTabBarVisible = !isOtherScreenPushed
             }
             .onChange(of: scrollOffset) { point in
                 updateNavTitleVisibility()
@@ -66,10 +67,6 @@ struct HomeWalletView: View {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
-                HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
-                    .ignoresSafeArea()
-            }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     HomeSettingsNavButtonView()
@@ -81,10 +78,9 @@ struct HomeWalletView: View {
             .refreshable {
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
-        }, navigationStateProvider: { state in
-            self.navigationState = state
-            state.customTitle = { NavigationTitleView(wallet: viewModel.selectedWallet) }
-        }, path: $tabRouter.walletViewNavPath)
+            .onAppear {
+                self.navigationState?.customTitle = { NavigationTitleView(wallet: viewModel.selectedWallet) }
+            }
     }
 }
 
@@ -139,17 +135,10 @@ private extension HomeWalletView {
         }
     }
     
-    var isNavTitleVisible: Bool {
-        (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+    func updateNavTitleVisibility() {
+        isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
         !isOtherScreenPushed &&
         tabRouter.tabViewSelection == .wallets
-    }
-    
-    
-    func updateNavTitleVisibility() {
-        withAnimation {
-            navigationState?.isTitleVisible = isNavTitleVisible
-        }
     }
     
     @ViewBuilder
@@ -294,15 +283,5 @@ private extension HomeWalletView {
         .onButtonTap {
             
         }
-    }
-}
-
-#Preview {
-    NavigationView {
-        let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
-        
-        HomeWalletView(viewModel: .init(selectedWallet: MockEntitiesFabric.Wallet.mockEntities().first!,
-                                               router: router))
-        .environmentObject(router)
     }
 }

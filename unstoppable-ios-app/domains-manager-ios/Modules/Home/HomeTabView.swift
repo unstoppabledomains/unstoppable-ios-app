@@ -19,7 +19,7 @@ struct HomeTabView: View {
 
     var body: some View {
         TabView(selection: $router.tabViewSelection) {
-            currentWalletView()
+            HomeView()
             .tabItem {
                 Label(title: { Text(String.Constants.home.localized()) },
                       icon: { Image.homeLineIcon })
@@ -102,17 +102,6 @@ private extension HomeTabView {
                     UserProfileSelectionView()
                         .adaptiveSheet()
                 })
-        }
-    }
-    
-    @ViewBuilder
-    func currentWalletView() -> some View {
-        switch router.profile {
-        case .wallet(let wallet):
-            HomeWalletView(viewModel: .init(selectedWallet: wallet,
-                                            router: router))
-        case .webAccount(let user):
-            HomeWebView(user: user)
         }
     }
 }

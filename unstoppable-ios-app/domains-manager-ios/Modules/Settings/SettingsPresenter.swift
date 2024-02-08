@@ -116,7 +116,9 @@ private extension SettingsPresenter {
     }
     
     func showWalletsList() {
-        view?.openWalletsList(initialAction: .none)
+        guard let nav = view?.cNavigationController else { return }
+        
+        UDRouter().showWalletsList(in: nav, initialAction: .none)
     }
     
     func showLegalOptions() {
@@ -195,6 +197,7 @@ private extension SettingsPresenter {
             UDRouter().runLoginFlow(with: .default,
                                     loggedInCallback: { [weak self] result in
                 self?.loginCallback?(result)
+                self?.view?.navigationController?.popToRootViewController(animated: true)
             },
                                     in: view)
         }

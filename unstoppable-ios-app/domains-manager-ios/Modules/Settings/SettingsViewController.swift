@@ -12,7 +12,6 @@ import MessageUI
 protocol SettingsViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: SettingsSnapshot, animated: Bool)
     func openFeedbackMailForm()
-    func openWalletsList(initialAction: WalletsListViewPresenter.InitialAction)
 }
 
 typealias SettingsDataSource = UICollectionViewDiffableDataSource<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>
@@ -62,10 +61,6 @@ extension SettingsViewController: SettingsViewProtocol {
         mail.setSubject("Unstoppable Domains App Feedback - iOS (\(UserDefaults.buildVersion))")
         
         self.present(mail, animated: true)
-    }
-    
-    func openWalletsList(initialAction: WalletsListViewPresenter.InitialAction) {
-        router?.walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
     }
 }
 

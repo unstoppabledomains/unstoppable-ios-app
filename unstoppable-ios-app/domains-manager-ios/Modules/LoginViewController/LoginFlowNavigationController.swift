@@ -256,3 +256,18 @@ extension LoginFlowNavigationController {
     }
 }
 
+
+import SwiftUI
+struct LoginFlowNavigationControllerWrapper: UIViewControllerRepresentable {
+    
+    let mode: LoginFlowNavigationController.Mode
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = LoginFlowNavigationController(mode: mode)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+}

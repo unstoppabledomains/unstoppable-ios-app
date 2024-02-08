@@ -15,6 +15,10 @@ struct HomeWalletLinkNavigationDestination {
         case .settings:
             SettingsViewControllerWrapper()
                 .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: SettingsNavigationDestination.self) { destination in
+                    SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
+                        .ignoresSafeArea()
+                }
         case .qrScanner(let selectedWallet):
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
