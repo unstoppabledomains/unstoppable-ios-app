@@ -125,6 +125,13 @@ extension Analytics {
         case profileId 
         case homeContentType
         case sortType
+        case expand
+        case ticker
+        case chain
+        case collectionName
+        case nftName
+        case tld
+        case numberOfItemsInSection
     }
 }
 
@@ -360,6 +367,10 @@ extension Analytics {
         case rrDomainAvatar, purchaseDomainAvatar
         case homeContentTypeSelected
         case sort, sortType
+        case notMatchingToken, notMatchingTokensSectionHeader
+        case collectibleTile, collectiblesSectionHeader
+        case buyDomainTile, domainTile, buyDomainsSectionHeader
+        case subdomainsSectionHeader, domainsSectionHeader
     }
 }
 

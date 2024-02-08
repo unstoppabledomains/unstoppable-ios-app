@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletNFTsCollectionSectionView: View {
+struct HomeWalletNFTsCollectionSectionView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     let collection: HomeWalletView.NFTsCollectionDescription
     @Binding var nftsCollectionsExpandedIds: Set<String>
@@ -63,6 +66,10 @@ private extension HomeWalletNFTsCollectionSectionView {
                                               numberOfItemsInSection: collection.numberOfNFTs,
                                               isExpanded: isExpanded,
                                               actionCallback: {
+            logButtonPressedAnalyticEvents(button: .collectiblesSectionHeader,
+                                           parameters: [.expand : String(!isExpanded),
+                                                        .collectionName : collection.collectionName,
+                                                        .numberOfItemsInSection: String(collection.numberOfNFTs)])
             let id = collection.id
             if isExpanded {
                 nftsCollectionsExpandedIds.remove(id)
@@ -77,6 +84,9 @@ private extension HomeWalletNFTsCollectionSectionView {
         Button {
             UDVibration.buttonTap.vibrate()
             nftSelectedCallback(nft)
+            logButtonPressedAnalyticEvents(button: .collectibleTile,
+                                           parameters: [.collectionName : collection.collectionName,
+                                                        .nftName : nft.displayName])
         } label: {
             HomeWalletNFTCellView(nft: nft)
         }

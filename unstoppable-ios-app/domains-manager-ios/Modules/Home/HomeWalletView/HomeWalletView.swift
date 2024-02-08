@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletView: View {
+struct HomeWalletView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
@@ -183,7 +186,8 @@ private extension HomeWalletView {
             HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
                                           selectedOption: $viewModel.selectedDomainsSortingOption,
                                           additionalAction: .init(title: String.Constants.buy.localized(),
-                                                                  icon: .plusIconNav, analyticName: .buy,
+                                                                  icon: .plusIconNav,
+                                                                  analyticName: .buyDomainsSectionHeader,
                                                                   callback: viewModel.buyDomainPressed))
         }
     }
@@ -223,6 +227,9 @@ private extension HomeWalletView {
                                                   isExpanded: viewModel.isNotMatchingTokensVisible,
                                                   actionCallback: {
                 viewModel.isNotMatchingTokensVisible.toggle()
+                logButtonPressedAnalyticEvents(button: .notMatchingTokensSectionHeader,
+                                               parameters: [.expand : String(viewModel.isNotMatchingTokensVisible),
+                                                            .numberOfItemsInSection: String(viewModel.chainsNotMatch.count)])
             })
             if viewModel.isNotMatchingTokensVisible {
                 LazyVStack(spacing: 20) {
@@ -230,6 +237,8 @@ private extension HomeWalletView {
                         Button {
                             UDVibration.buttonTap.vibrate()
                             didSelectNotMatchingTokenDescription(description)
+                            logButtonPressedAnalyticEvents(button: .notMatchingToken, 
+                                                           parameters: [.chain: description.chain.rawValue])
                         } label: {
                             HomeWalletTokenNotMatchingRowView(description: description)
                         }

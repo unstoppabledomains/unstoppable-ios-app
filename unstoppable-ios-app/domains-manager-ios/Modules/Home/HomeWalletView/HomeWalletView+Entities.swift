@@ -319,12 +319,14 @@ extension HomeWalletView {
         
         let domains: [DomainDisplayInfo]
         let tld: String
+        let numberOfDomains: Int
         
         init(domains: [DomainDisplayInfo], tld: String) {
             self.domains = domains.sorted(by: { lhs, rhs in
                 lhs.name < rhs.name
             })
             self.tld = tld
+            numberOfDomains = domains.count
         }
     }
 }
