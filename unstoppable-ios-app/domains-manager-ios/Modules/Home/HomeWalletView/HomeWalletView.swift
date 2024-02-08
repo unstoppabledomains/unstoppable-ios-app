@@ -270,16 +270,10 @@ private extension HomeWalletView {
     func domainsContentView() -> some View {
         HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
                                       subdomains: viewModel.subdomains,
-                                      domainSelectedCallback: didSelectDomain, 
+                                      domainSelectedCallback: viewModel.didSelectDomain,
                                       buyDomainCallback: viewModel.buyDomainPressed,
                                       isSubdomainsVisible: $viewModel.isSubdomainsVisible,
                                       domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
-    }
-    
-    func didSelectDomain(_ domain: DomainDisplayInfo) {
-        Task {
-            await tabRouter.showDomainProfile(domain, wallet: viewModel.selectedWallet, preRequestedAction: nil, dismissCallback: nil)
-        }
     }
     
     @ViewBuilder
