@@ -100,5 +100,9 @@ private extension HomeWalletTokenRowView {
 }
 
 #Preview {
-    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!)
+    HomeWalletTokenRowView(token: .init(symbol: "ETH",
+                                        name: "ETH",
+                                        balance: 1,
+                                        balanceUsd: 1,
+                                        marketUsd: 1))
 }

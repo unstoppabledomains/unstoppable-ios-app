@@ -74,7 +74,7 @@ private extension HomeWalletDomainCellView {
     @ViewBuilder
     func viewForSubdomain() -> some View {
         ZStack(alignment: .topLeading) {
-            Color(hex: "#EDEDEE")
+            Color.white
             GridView(rows: 10,
                      cols: 10,
                      gridColor: LinearGradient(

@@ -85,7 +85,10 @@ private extension HomeWalletNFTsCollectionSectionView {
 }
 
 #Preview {
-    HomeWalletNFTsCollectionSectionView(collection: HomeWalletView.NFTsCollectionDescription.mock().first!,
+    let nfts = (0...10).map { _ in  MockEntitiesFabric.NFTs.mockDisplayInfo() }
+    
+    return HomeWalletNFTsCollectionSectionView(collection: .init(collectionName: "Mutant Ape Yacht Club",
+                                                                 nfts: nfts),
                                         nftsCollectionsExpandedIds: .constant([]),
                                         nftSelectedCallback: { _ in })
 }

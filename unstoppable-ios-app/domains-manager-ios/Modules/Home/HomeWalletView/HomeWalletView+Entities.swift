@@ -245,26 +245,6 @@ extension HomeWalletView {
                 }
             }
         }
-       
-        static func mock() -> [TokenDescription] {
-            let tickers = ["ETH", "MATIC"]
-            //            var tickers = ["ETH", "MATIC", "USDC", "1INCH",
-            //                           "SOL", "USDT", "DOGE", "DAI"]
-            //            tickers += ["AAVE", "ADA", "AKT", "APT", "ARK", "CETH"]
-            var tokens = [TokenDescription]()
-            for ticker in tickers {
-                let value = Double(arc4random_uniform(10000))
-                let token = TokenDescription(symbol: ticker,
-                                             name: ticker,
-                                             balance: value, 
-                                             balanceUsd: value,
-                                             marketUsd: value)
-                tokens.append(token)
-                
-            }
-            
-            return tokens
-        }
     }
 }
 
@@ -289,20 +269,6 @@ extension HomeWalletView {
             nftsNativeValue = saleDetails.reduce(0.0, { $0 + $1.valueNative })
             nftsUsdValue = saleDetails.reduce(0.0, { $0 + $1.valueUsd })
             lastSaleDate = saleDetails.sorted(by: { $0.date > $1.date }).first?.date
-        }
-        
-        static func mock() -> [NFTsCollectionDescription] {
-            let names = ["Azuki", "Mutant Ape Yacht Club", "DeGods", "Grunchy Tigers"]
-            var collections = [NFTsCollectionDescription]()
-            
-            for name in names {
-                let numOfNFTs = Int(arc4random_uniform(10) + 1)
-                let nfts = (0...numOfNFTs).map { _ in  MockEntitiesFabric.NFTs.mockDisplayInfo() }
-                let collection = NFTsCollectionDescription(collectionName: name, nfts: nfts)
-                collections.append(collection)
-            }
-            
-            return collections
         }
     }
     
