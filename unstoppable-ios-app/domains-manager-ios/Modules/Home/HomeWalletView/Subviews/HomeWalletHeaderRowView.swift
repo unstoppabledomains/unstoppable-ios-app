@@ -96,6 +96,7 @@ private extension HomeWalletHeaderRowView {
             ZStack {
                 Circle()
                     .foregroundStyle(Color.backgroundWarning)
+                    .background(.ultraThinMaterial)
                 VStack(spacing: 4) {
                     Image.plusIconNav
                         .resizable()
