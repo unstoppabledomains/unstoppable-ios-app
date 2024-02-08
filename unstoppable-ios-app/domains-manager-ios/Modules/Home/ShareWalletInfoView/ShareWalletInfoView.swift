@@ -85,6 +85,14 @@ private extension ShareWalletInfoView {
     }
     
     @ViewBuilder
+    func nameView(_ name: String) -> some View {
+        Text(name)
+            .font(.currentFont(size: 22, weight: .bold))
+            .foregroundStyle(Color.white)
+            .lineLimit(1)
+    }
+    
+    @ViewBuilder
     func walletDetailsView() -> some View {
         HStack(spacing: 12) {
             if let rrDomain = wallet.rrDomain {
@@ -93,12 +101,12 @@ private extension ShareWalletInfoView {
                         .resizable()
                         .squareFrame(24)
                         .clipShape(Circle())
-                    Text(rrDomain.name)
-                        .font(.currentFont(size: 22, weight: .bold))
-                        .foregroundStyle(Color.white)
-                        .lineLimit(1)
+                    nameView(rrDomain.name)
                 }
+            } else if wallet.displayInfo.isNameSet {
+                nameView(wallet.displayName)
             }
+            
             Spacer()
             Button {
                 UDVibration.buttonTap.vibrate()
