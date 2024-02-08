@@ -49,10 +49,11 @@ private extension HomeWalletHeaderRowView {
     
     func loadAvatarFor(wallet: WalletEntity) {
         Task {
-            self.domainAvatar = nil
             if let domain = wallet.rrDomain,
                let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
                 self.domainAvatar = image
+            } else {
+                self.domainAvatar = nil
             }
         }
     }

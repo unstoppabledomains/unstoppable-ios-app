@@ -80,7 +80,7 @@ struct HomeWebAccountView: View {
 // MARK: - Private methods
 private extension HomeWebAccountView {
     func onAppear() {
-        navigationState?.customTitle = { titleView() }
+        setTitleViewIfNeeded()
         let firebaseDomains = firebaseParkedDomainsService.getCachedDomains()
         setFirebaseDomains(firebaseDomains)
         Task {
@@ -95,14 +95,26 @@ private extension HomeWebAccountView {
     }
     
     func setFirebaseDomains(_ firebaseDomains: [FirebaseDomain]) {
-        print(firebaseDomains.count)
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
     
     func updateNavTitleVisibility() {
-        isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+        let isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
         !isOtherScreenPushed &&
         tabRouter.tabViewSelection == .wallets
+        
+        if self.isNavTitleVisible != isNavTitleVisible {
+            setTitleViewIfNeeded()
+            self.isNavTitleVisible = isNavTitleVisible
+        }
+    }
+    
+    func setTitleViewIfNeeded() {
+        let id = user.displayName
+        if navigationState?.customViewID != id {
+            navigationState?.setCustomTitle(customTitle: { titleView() },
+                                            id: id)
+        }
     }
 }
 

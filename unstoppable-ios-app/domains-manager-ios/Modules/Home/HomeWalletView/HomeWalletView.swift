@@ -78,9 +78,7 @@ struct HomeWalletView: View {
             .refreshable {
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
-            .onAppear {
-                self.navigationState?.customTitle = { NavigationTitleView(wallet: viewModel.selectedWallet) }
-            }
+            .onAppear(perform: setTitleViewIfNeeded)
     }
 }
 
@@ -136,9 +134,21 @@ private extension HomeWalletView {
     }
     
     func updateNavTitleVisibility() {
-        isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+        let isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
         !isOtherScreenPushed &&
         tabRouter.tabViewSelection == .wallets
+        if self.isNavTitleVisible != isNavTitleVisible {
+            setTitleViewIfNeeded()
+            self.isNavTitleVisible = isNavTitleVisible
+        }
+    }
+    
+    func setTitleViewIfNeeded() {
+        let id = viewModel.selectedWallet.id
+        if navigationState?.customViewID != id {
+            navigationState?.setCustomTitle(customTitle: { NavigationTitleView(wallet: viewModel.selectedWallet) },
+                                            id: id)
+        }
     }
     
     @ViewBuilder

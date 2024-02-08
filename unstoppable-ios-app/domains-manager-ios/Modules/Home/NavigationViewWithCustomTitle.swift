@@ -50,7 +50,14 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     }, navigationStateProvider: { _ in }, path: .constant(.init()))
 }
 
-class NavigationStateManager: ObservableObject {
+final class NavigationStateManager: ObservableObject {
     @Published var isTitleVisible: Bool = false
-    @Published var customTitle: (() -> any View)?
+    @Published private(set) var customTitle: (() -> any View)?
+    private(set) var customViewID: String?
+    
+    func setCustomTitle(customTitle: (() -> any View)?,
+                        id: String) {
+        self.customTitle = customTitle
+        customViewID = id
+    }
 }
