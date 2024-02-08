@@ -122,6 +122,7 @@ extension Analytics {
         case searchType
         case walletType
         case chatId
+        case profileId 
     }
 }
 
@@ -202,7 +203,7 @@ extension Analytics {
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
         
-        case shareWalletInfo, nftDetails
+        case shareWalletInfo, nftDetails, profileSelection
     }
 }
 
@@ -353,6 +354,7 @@ extension Analytics {
         
         case buy, receive, profile, more
         case connectedApps
+        case profileSelected
     }
 }
 
