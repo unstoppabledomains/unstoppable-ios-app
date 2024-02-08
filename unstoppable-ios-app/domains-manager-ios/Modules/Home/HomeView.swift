@@ -57,8 +57,7 @@ private extension HomeView {
 }
 
 #Preview {
-    let router = HomeTabRouter(profile: .webAccount(.init(email: "qq@qq.qq")))
-//    let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
+    let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
     return HomeView()
         .environmentObject(router)
 }

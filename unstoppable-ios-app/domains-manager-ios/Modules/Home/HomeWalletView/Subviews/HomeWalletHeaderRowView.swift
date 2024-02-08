@@ -19,11 +19,12 @@ struct HomeWalletHeaderRowView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
-            ZStack {
+            ZStack(alignment: .center) {
                 if wallet.portfolioRecords.count >= 2 {
                     WalletBalanceGradientChartView(chartData: wallet.portfolioRecords)
                         .padding(EdgeInsets(top: 0, leading: -16,
                                             bottom: 0, trailing: -16))
+                        .frame(height: 92)
                 }
                 avatarView()
             }
@@ -184,6 +185,7 @@ private struct WalletBalanceGradientChartView: View {
             .foregroundStyle(linearGradient)
         }
         .chartXScale(domain: chartData.first!.timestamp...chartData.last!.timestamp)
+        .chartYScale(domain: chartData.first!.value...chartData.last!.value)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
