@@ -37,7 +37,7 @@ extension OnboardingProtectWalletViewPresenter: ProtectWalletViewPresenterProtoc
         case .existingUser:
             let wallets = udWalletsService.getUserWallets()
             vaultsPlural = String.Constants.pluralWallets.localized(wallets.count)
-        case .newUser(let subFlow), .sameUserWithoutWallets(let subFlow):
+        case .newUser, .sameUserWithoutWallets:
             vaultsPlural = String.Constants.wallet.localized().lowercased()
         case .none:
             Debugger.printFailure("Onboarding flow manager not assigned", critical: true)

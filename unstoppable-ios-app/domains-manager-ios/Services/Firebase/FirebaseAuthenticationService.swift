@@ -97,7 +97,6 @@ private extension FirebaseAuthenticationService {
     }
     
     func setFirebaseUser(_ firebaseUser: FirebaseUser?) {
-        let shouldNotifyListeners = firebaseUser != self.firebaseUser
         self.firebaseUser = firebaseUser
         self.storedFirebaseUser = firebaseUser
     }

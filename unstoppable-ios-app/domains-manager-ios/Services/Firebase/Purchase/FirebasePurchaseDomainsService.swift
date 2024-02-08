@@ -310,16 +310,12 @@ private extension FirebasePurchaseDomainsService {
     
     func runRefreshTimer() {
         Task {
-            do {
-                if !isAutoRefreshCartSuspended,
-                   !domainsToPurchase.isEmpty {
-                    refreshUserCartAsync()
-                }
-                await Task.sleep(seconds: 60)
-                runRefreshTimer()
-            } catch {
-                
+            if !isAutoRefreshCartSuspended,
+               !domainsToPurchase.isEmpty {
+                refreshUserCartAsync()
             }
+            await Task.sleep(seconds: 60)
+            runRefreshTimer()
         }
     }
     
