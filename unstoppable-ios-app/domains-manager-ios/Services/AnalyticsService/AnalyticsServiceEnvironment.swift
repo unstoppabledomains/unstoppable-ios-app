@@ -350,6 +350,9 @@ extension Analytics {
         case inspire, cancelInspire
         
         case addWallet
+        
+        case buy, receive, profile, more
+        case connectedApps
     }
 }
 

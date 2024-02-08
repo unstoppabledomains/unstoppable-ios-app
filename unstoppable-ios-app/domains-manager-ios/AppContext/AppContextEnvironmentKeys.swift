@@ -31,6 +31,19 @@ extension EnvironmentValues {
     }
 }
 
+
+// MARK: - Analytics View Name
+private struct AnalyticsAdditionalPropertiesKey: EnvironmentKey {
+    static let defaultValue = Analytics.EventParameters()
+}
+
+extension EnvironmentValues {
+    var analyticsAdditionalProperties: Analytics.EventParameters {
+        get { self[AnalyticsAdditionalPropertiesKey.self] }
+        set { self[AnalyticsAdditionalPropertiesKey.self] = newValue }
+    }
+}
+
 // MARK: - Image loading service
 private struct ImageLoadingServiceKey: EnvironmentKey {
     static let defaultValue = appContext.imageLoadingService

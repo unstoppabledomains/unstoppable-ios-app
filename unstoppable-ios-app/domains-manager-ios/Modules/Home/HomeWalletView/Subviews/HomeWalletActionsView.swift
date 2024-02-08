@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletActionsView<Action: HomeWalletActionItem>: View {
-    
+struct HomeWalletActionsView<Action: HomeWalletActionItem>: View, ViewAnalyticsLogger {
+   
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     let actionCallback: (Action)->()
     let subActionCallback: (Action.SubAction)->()
     
@@ -29,6 +31,7 @@ private extension HomeWalletActionsView {
         if action.subActions.isEmpty {
             walletActionButtonView(title: action.title,
                                    icon: action.icon) {
+                logButtonPressedAnalyticEvents(button: action.analyticButton)
                 actionCallback(action)
             }
         } else {
@@ -37,6 +40,7 @@ private extension HomeWalletActionsView {
                     Button(role: subAction.isDestructive ? .destructive : .cancel) {
                         UDVibration.buttonTap.vibrate()
                         subActionCallback(subAction)
+                        logButtonPressedAnalyticEvents(button: subAction.analyticButton)
                     } label: {
                         Label(
                             title: { Text(subAction.title) },
@@ -50,7 +54,7 @@ private extension HomeWalletActionsView {
                                        icon: action.icon)
             }
             .onButtonTap {
-                
+                logButtonPressedAnalyticEvents(button: action.analyticButton)
             }
         }
     }

@@ -32,6 +32,9 @@ struct HomeView: View, ViewAnalyticsLogger {
                         .ignoresSafeArea()
                 }
                 .trackAppearanceAnalytics(analyticsLogger: self)
+                .environment(\.analyticsViewName, analyticsName)
+                .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
+
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.walletViewNavPath)

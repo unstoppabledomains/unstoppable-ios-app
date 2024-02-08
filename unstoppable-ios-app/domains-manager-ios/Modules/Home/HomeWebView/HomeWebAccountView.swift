@@ -289,6 +289,17 @@ private extension HomeWebAccountView {
                 return [.logOut]
             }
         }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .addWallet:
+                return .addWallet
+            case .claim:
+                return .transfer
+            case .more:
+                return .more
+            }
+        }
     }
     
     enum WebSubAction: String, CaseIterable, HomeWalletSubActionItem  {
@@ -309,5 +320,12 @@ private extension HomeWebAccountView {
         }
         
         var isDestructive: Bool { true }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .logOut:
+                return .logOut
+            }
+        }
     }
 }

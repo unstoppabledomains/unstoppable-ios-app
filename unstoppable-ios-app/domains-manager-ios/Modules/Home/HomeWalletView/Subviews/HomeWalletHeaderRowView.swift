@@ -14,7 +14,7 @@ struct HomeWalletHeaderRowView: View {
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
-    let didSelectDomainCallback: (DomainDisplayInfo)->()
+    let didSelectDomainCallback: @MainActor (DomainDisplayInfo)->()
 
     @State private var domainAvatar: UIImage?
     

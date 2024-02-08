@@ -16,6 +16,7 @@ protocol HomeWalletActionItem: RawRepresentable, CaseIterable, Hashable where Ra
     
     var title: String { get }
     var icon: Image { get }
+    var analyticButton: Analytics.Button { get }
     var subActions: [SubAction] { get }
 }
 
@@ -24,6 +25,7 @@ protocol HomeWalletSubActionItem: RawRepresentable, CaseIterable, Hashable where
     var title: String { get }
     var icon: Image { get }
     var isDestructive: Bool { get }
+    var analyticButton: Analytics.Button { get }
 }
 
 extension HomeWalletSubActionItem {
@@ -87,6 +89,19 @@ extension HomeWalletView {
                 return [.connectedApps]
             }
         }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .buy:
+                return .buy
+            case .receive:
+                return .receive
+            case .profile:
+                return .profile
+            case .more:
+                return .more
+            }
+        }
     }
     
     enum WalletSubAction: String, CaseIterable, HomeWalletSubActionItem {
@@ -104,6 +119,13 @@ extension HomeWalletView {
             switch self {
             case .connectedApps:
                 return Image(systemName: "app.badge.checkmark")
+            }
+        }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .connectedApps:
+                return .connectedApps
             }
         }
     }
