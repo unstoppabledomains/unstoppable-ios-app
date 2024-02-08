@@ -27,16 +27,29 @@ struct HomeWebView: View {
         NavigationViewWithCustomTitle(content: {
             OffsetObservingListView(offset: $scrollOffset) {
                 headerIconRowView()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                     .onAppearanceChange($isHeaderVisible)
+                    .unstoppableListRowInset()
+
                 headerInfoView()
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .unstoppableListRowInset()
+                
                 HomeWalletActionsView(actionCallback: { action in
                     handleAction(action)
                 }, subActionCallback: { subAction in
                     handleSubAction(subAction)
                 })
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 24, leading: 16, bottom: 16, trailing: 16))
+
                 domainsListView()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+                    .unstoppableListRowInset()
             }
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
@@ -142,8 +155,6 @@ private extension HomeWebView {
                 .foregroundStyle(Color.backgroundDefault)
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
     var numberOfDomains: Int { domains.count }
@@ -163,17 +174,16 @@ private extension HomeWebView {
                         .squareFrame(24)
                 }
                     .foregroundStyle(Color.foregroundSecondary)
+                    .frame(height: 24)
             }
             Text(String.Constants.pluralNDomains.localized(numberOfDomains, numberOfDomains))
                 .font(.currentFont(size: 32, weight: .bold))
                 .truncationMode(.middle)
                 .foregroundStyle(Color.foregroundDefault)
-                .frame(height: 24)
+                .frame(height: 40)
         }
         .lineLimit(1)
         .frame(maxWidth: .infinity)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
     @ViewBuilder
