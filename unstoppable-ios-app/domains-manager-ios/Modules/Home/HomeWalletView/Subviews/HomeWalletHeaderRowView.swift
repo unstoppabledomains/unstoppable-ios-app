@@ -169,6 +169,7 @@ private struct WalletBalanceGradientChartView: View {
 
     
     let chartData: [WalletPortfolioRecord]
+    var values: [Double] { chartData.map { $0.value } }
     private let linearGradient = LinearGradient(stops: [
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0.32), location: 0.00),
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0), location: 1.00),
@@ -193,7 +194,7 @@ private struct WalletBalanceGradientChartView: View {
             .foregroundStyle(linearGradient)
         }
         .chartXScale(domain: chartData.first!.timestamp...chartData.last!.timestamp)
-        .chartYScale(domain: chartData.first!.value...chartData.last!.value)
+        .chartYScale(domain: values.min()!...values.max()!)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
