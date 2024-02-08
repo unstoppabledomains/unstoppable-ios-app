@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WalletEntity: Codable {
+struct WalletEntity: Codable, Hashable {
     
     let address: String 
     let ethFullAddress: String
@@ -115,24 +115,6 @@ extension WalletEntity: Identifiable {
     var id: String { address }
 }
 
-extension WalletEntity: Hashable {
-    static func == (lhs: WalletEntity, rhs: WalletEntity) -> Bool {
-        lhs.displayInfo == rhs.displayInfo &&
-        lhs.domains == rhs.domains &&
-        lhs.nfts == rhs.nfts &&
-        lhs.balance == rhs.balance &&
-        lhs.rrDomain == rhs.rrDomain
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(displayInfo)
-        hasher.combine(domains)
-        hasher.combine(nfts)
-        hasher.combine(balance)
-        hasher.combine(rrDomain)
-    }
-}
-
 extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
         guard let address else { return nil }
@@ -159,5 +141,4 @@ struct WalletPortfolioRecord: Hashable, Codable {
         self.value = value
         self.timestamp = date.timeIntervalSince1970
     }
-    
 }
