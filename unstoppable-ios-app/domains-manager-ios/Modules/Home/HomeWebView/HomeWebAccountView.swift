@@ -194,7 +194,7 @@ private extension HomeWebAccountView {
                     UDVibration.buttonTap.vibrate()
                     didSelectDomain(domain)
                 } label: {
-                    HomeWebParkedDomainRowView(firebaseDomain: domain)
+                    HomeWebAccountParkedDomainRowView(firebaseDomain: domain)
                 }
                 .buttonStyle(.plain)
             }
