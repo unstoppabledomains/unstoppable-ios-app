@@ -19,6 +19,9 @@ final class FirebaseDomainsService: BaseFirebaseInteractionService {
         super.init(firebaseAuthService: firebaseAuthService, firebaseSigner: firebaseSigner)
         
         setDomains(storage.getFirebaseDomains())
+        firebaseAuthService.logoutCallback = { [weak self] in
+            self?.clearParkedDomains()
+        }
     }
     
 }
@@ -46,10 +49,6 @@ extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
         
         return result
     }
-    
-    func clearParkedDomains() {
-        storage.saveFirebaseDomains([])
-    }
 }
 
 // MARK: - Private methods
@@ -75,6 +74,10 @@ private extension FirebaseDomainsService {
     
     func setDomains(_ domains: [FirebaseDomain]) {
         self.parkedDomains = domains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
+    }
+    
+    func clearParkedDomains() {
+        storage.saveFirebaseDomains([])
     }
 }
 

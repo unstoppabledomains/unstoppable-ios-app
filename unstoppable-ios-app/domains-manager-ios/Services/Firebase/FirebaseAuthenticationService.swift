@@ -9,27 +9,20 @@ import UIKit
 
 final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
 
-    private(set) var firebaseUser: FirebaseUser?
-    private var listenerHolders: [FirebaseAuthenticationServiceListenerHolder] = []
-    private var loadFirebaseUserTask: Task<FirebaseUser, Error>?
-    @Published var isAuthorized: Bool
-    var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
     @UserDefaultsCodableValue(key: .firebaseUser) private var storedFirebaseUser: FirebaseUser?
+    private var loadFirebaseUserTask: Task<FirebaseUser, Error>?
+    @Published var firebaseUser: FirebaseUser?
+    var authorizedUserPublisher: Published<FirebaseUser?>.Publisher { $firebaseUser }
 
     override init(firebaseAuthService: FirebaseAuthService,
                   firebaseSigner: UDFirebaseSigner) {
-        self.isAuthorized = firebaseAuthService.isAuthorised
         super.init(firebaseAuthService: firebaseAuthService,
                    firebaseSigner: firebaseSigner)
+        self.firebaseUser = storedFirebaseUser
         refreshSessionIfNeeded()
-    }
-    
-    func logOut() {
-        Task {
-            await super.logout()
+        firebaseAuthService.logoutCallback = { [weak self] in
+            self?.clearData()
         }
-        setFirebaseUser(nil)
-        isAuthorized = false
     }
 }
 
@@ -37,54 +30,41 @@ final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
 extension FirebaseAuthenticationService: FirebaseAuthenticationServiceProtocol {
     func authorizeWith(email: String, password: String) async throws {
         try await firebaseAuthService.authorizeWith(email: email, password: password)
-        userAuthorized()
+        try await userAuthorized()
     }
     
     @MainActor
     func authorizeWithGoogle(in viewController: UIWindow) async throws {
         try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: viewController)
-        userAuthorized()
+        try await userAuthorized()
     }
     
     @MainActor
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
         try await firebaseAuthService.authorizeWithTwitterCustomToken(in: viewController)
-        userAuthorized()
+        try await userAuthorized()
     }
     
     func authorizeWith(wallet: UDWallet) async throws {
         try await firebaseAuthService.authorizeWith(wallet: wallet)
-        userAuthorized()
+        try await userAuthorized()
     }
     
-    func getUserProfile() async throws -> FirebaseUser {
-        if let firebaseUser {
-            return firebaseUser
-        } 
-        return try await fetchUserProfile()
-    }
-    
-    // Listeners
-    func addListener(_ listener: FirebaseAuthenticationServiceListener) {
-        if !listenerHolders.contains(where: { $0.listener === listener }) {
-            listenerHolders.append(.init(listener: listener))
+    func logOut() {
+        Task {
+            await super.logout()
         }
-    }
-    
-    func removeListener(_ listener: FirebaseAuthenticationServiceListener) {
-        listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
+        clearData()
     }
 }
 
 // MARK: - Private methods
 private extension FirebaseAuthenticationService {
     func refreshSessionIfNeeded() {
-        if let storedFirebaseUser {
-            firebaseUser = storedFirebaseUser
-            isAuthorized = true
+        if firebaseUser != nil {
             Task {
                 do {
-                    _ = try await fetchUserProfile()
+                    try await fetchUserProfile()
                 } catch {
                     self.logOut()
                 }
@@ -92,6 +72,7 @@ private extension FirebaseAuthenticationService {
         }
     }
     
+    @discardableResult
     func fetchUserProfile() async throws -> FirebaseUser {
         if let loadFirebaseUserTask {
             return try await loadFirebaseUserTask.value
@@ -119,31 +100,19 @@ private extension FirebaseAuthenticationService {
         let shouldNotifyListeners = firebaseUser != self.firebaseUser
         self.firebaseUser = firebaseUser
         self.storedFirebaseUser = firebaseUser
-        
-        if shouldNotifyListeners  {
-            listenerHolders.forEach { holder in
-                holder.listener?.firebaseUserUpdated(firebaseUser: firebaseUser)
-            }
-        }
     }
     
-    func refreshUserProfileAsync() {
-        firebaseUser = storedFirebaseUser
-        Task {
-            _ = try? await fetchUserProfile()
-        }
+    func userAuthorized() async throws {
+        try await fetchUserProfile()
     }
     
-    func userAuthorized() {
-        isAuthorized = true
-        refreshUserProfileAsync()
+    func clearData() {
+        setFirebaseUser(nil)
     }
 }
 
 // MARK: - Private methods
 private extension FirebaseAuthenticationService {
-  
-    
   
 }
 

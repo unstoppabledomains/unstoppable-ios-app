@@ -10,9 +10,8 @@ import Combine
 
 final class MockFirebaseInteractionsService {
     
-    @Published var isAuthorized: Bool = true
-    var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
-    var firebaseUser: FirebaseUser?
+    @Published var firebaseUser: FirebaseUser?
+    var authorizedUserPublisher: Published<FirebaseUser?>.Publisher { $firebaseUser }
     
     private var cart: PurchaseDomainsCart = .empty {
         didSet {
@@ -61,17 +60,9 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
         try await authorize()
     }
     
-    func getUserProfile() async throws -> FirebaseUser {
-        .init(email: "qq@qq.qq")
-    }
-    
     func logOut() {
-        isAuthorized = false
+        firebaseUser = nil
     }
-    
-    // Listeners
-    func addListener(_ listener: FirebaseAuthenticationServiceListener) { }
-    func removeListener(_ listener: FirebaseAuthenticationServiceListener) { }
 }
 
 // MARK: - PurchaseDomainsServiceProtocol
@@ -140,16 +131,13 @@ extension MockFirebaseInteractionsService: FirebaseDomainsServiceProtocol {
     func getParkedDomains() async throws -> [FirebaseDomain] {
         MockEntitiesFabric.Domains.mockFirebaseDomains()
     }
-    func clearParkedDomains() {
-        
-    }
 }
 
 // MARK: - Private methods
 private extension MockFirebaseInteractionsService {
     func authorize() async throws {
         await Task.sleep(seconds: 0.4)
-        isAuthorized = true
+        firebaseUser = .init(email: "qq@qq.qq")
     }
     
     func loadUserCryptoWallets() async throws -> [FirebasePurchaseDomainsService.UDUserAccountCryptWallet] {
