@@ -45,6 +45,7 @@ struct HomeWalletView: View {
                     .unstoppableListRowInset()
                 
                 sortingOptionsForSelectedType()
+                    .environment(\.analyticsAdditionalProperties, [.homeContentType : viewModel.selectedContentType.rawValue])
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
@@ -182,7 +183,7 @@ private extension HomeWalletView {
             HomeWalletSortingSelectorView(sortingOptions: DomainsSortingOptions.allCases, 
                                           selectedOption: $viewModel.selectedDomainsSortingOption,
                                           additionalAction: .init(title: String.Constants.buy.localized(),
-                                                                  icon: .plusIconNav,
+                                                                  icon: .plusIconNav, analyticName: .buy,
                                                                   callback: viewModel.buyDomainPressed))
         }
     }

@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct HomeWalletHeaderRowView: View {
+struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
-
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
@@ -87,6 +89,7 @@ private extension HomeWalletHeaderRowView {
         Button {
             UDVibration.buttonTap.vibrate()
             didSelectDomainCallback(domain)
+            logButtonPressedAnalyticEvents(button: .rrDomainAvatar)
         } label: {
             UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
                               width: 20,
@@ -100,6 +103,7 @@ private extension HomeWalletHeaderRowView {
         Button {
             UDVibration.buttonTap.vibrate()
             tabRouter.runPurchaseFlow()
+            logButtonPressedAnalyticEvents(button: .purchaseDomainAvatar)
         } label: {
             ZStack {
                 Circle()
@@ -132,6 +136,7 @@ private extension HomeWalletHeaderRowView {
         Button {
             UDVibration.buttonTap.vibrate()
             domainNamePressedCallback()
+            logButtonPressedAnalyticEvents(button: .selectProfile)
         } label: {
             HStack(spacing: 0) {
                 Text(getProfileSelectionTitle())

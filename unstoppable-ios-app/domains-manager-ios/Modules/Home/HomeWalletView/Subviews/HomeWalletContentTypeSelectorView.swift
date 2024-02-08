@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletContentTypeSelectorView: View {
+struct HomeWalletContentTypeSelectorView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @Binding var selectedContentType: HomeWalletView.ContentType
     
@@ -28,6 +31,7 @@ private extension HomeWalletContentTypeSelectorView {
         Button {
             UDVibration.buttonTap.vibrate()
             selectedContentType = contentType
+            logButtonPressedAnalyticEvents(button: .homeContentTypeSelected, parameters: [.homeContentType : contentType.rawValue])
         } label: {
             Text(contentType.title)
                 .foregroundStyle(getTintColorFor(isSelected: contentType == selectedContentType))

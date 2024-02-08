@@ -123,6 +123,8 @@ extension Analytics {
         case walletType
         case chatId
         case profileId 
+        case homeContentType
+        case sortType
     }
 }
 
@@ -354,7 +356,10 @@ extension Analytics {
         
         case buy, receive, profile, more
         case connectedApps
-        case profileSelected
+        case selectProfile, profileSelected
+        case rrDomainAvatar, purchaseDomainAvatar
+        case homeContentTypeSelected
+        case sort, sortType
     }
 }
 

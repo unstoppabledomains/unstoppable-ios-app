@@ -9,6 +9,7 @@ import SwiftUI
 
 protocol HomeViewSortingOption: Hashable, CaseIterable {
     var title: String { get }
+    var analyticName: String { get }
 }
 
 protocol HomeWalletActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
@@ -130,7 +131,8 @@ extension HomeWalletView {
         }
     }
     
-    enum TokensSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+    enum TokensSortingOptions: String, Hashable, CaseIterable, HomeViewSortingOption {
+        
         case highestValue, marketCap, alphabetical
         
         var title: String {
@@ -143,9 +145,10 @@ extension HomeWalletView {
                 return String.Constants.sortAlphabetical.localized()
             }
         }
+        var analyticName: String { rawValue }
     }
     
-    enum CollectiblesSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+    enum CollectiblesSortingOptions: String, Hashable, CaseIterable, HomeViewSortingOption {
         case mostRecent, mostCollected, alphabetical
         
         var title: String {
@@ -158,9 +161,10 @@ extension HomeWalletView {
                 return String.Constants.sortAlphabetical.localized()
             }
         }
+        var analyticName: String { rawValue }
     }
     
-    enum DomainsSortingOptions: Hashable, CaseIterable, HomeViewSortingOption {
+    enum DomainsSortingOptions: String, Hashable, CaseIterable, HomeViewSortingOption {
         case alphabeticalAZ, alphabeticalZA
         
         var title: String {
@@ -171,6 +175,8 @@ extension HomeWalletView {
                 return String.Constants.sortAlphabeticalZA.localized()
             }
         }
+        
+        var analyticName: String { rawValue }
     }
 }
 
