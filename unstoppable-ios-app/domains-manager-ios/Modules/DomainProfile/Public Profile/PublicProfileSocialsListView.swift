@@ -56,6 +56,7 @@ private extension PublicProfileSocialsListView {
         presentationMode.wrappedValue.dismiss()
     }
     
+    @MainActor
     func didSelectSocial(_ social: SocialDescription?) {
         selectedSocial = nil
 

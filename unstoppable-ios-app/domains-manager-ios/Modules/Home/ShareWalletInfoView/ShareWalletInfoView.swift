@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ShareWalletInfoView: View {
+struct ShareWalletInfoView: View, ViewAnalyticsLogger {
         
     @Environment(\.imageLoadingService) var imageLoadingService
     
@@ -15,6 +15,7 @@ struct ShareWalletInfoView: View {
     
     @State private var domainAvatarImage: UIImage?
     @State private var qrImage: UIImage?
+    var analyticsName: Analytics.ViewName { .shareWalletInfo }
     
     var body: some View {
         NavigationStack {
@@ -40,6 +41,7 @@ struct ShareWalletInfoView: View {
                 }
             }
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 

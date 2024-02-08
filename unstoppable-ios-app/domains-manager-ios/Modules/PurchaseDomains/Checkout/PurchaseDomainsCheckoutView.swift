@@ -122,7 +122,9 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func topWarningViewWith(message: TopMessageDescription, callback: @escaping MainActorCallback) -> some View {
         Button {
-            callback()
+            Task { @MainActor in
+                callback()
+            }
         } label: {
             HStack(spacing: 8) {
                 Image.infoIcon

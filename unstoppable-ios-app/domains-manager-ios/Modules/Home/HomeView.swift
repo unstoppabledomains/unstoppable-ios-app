@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
     @State private var isNavTitleVisible: Bool = true
     @State private var isTabBarVisible: Bool = true
+    var analyticsName: Analytics.ViewName { .home }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -29,6 +31,7 @@ struct HomeView: View {
                     HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
                         .ignoresSafeArea()
                 }
+                .trackAppearanceAnalytics(analyticsLogger: self)
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.walletViewNavPath)

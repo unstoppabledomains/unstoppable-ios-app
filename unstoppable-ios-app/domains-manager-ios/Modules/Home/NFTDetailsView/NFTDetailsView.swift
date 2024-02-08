@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NFTDetailsView: View {
+struct NFTDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.presentationMode) private var presentationMode
 
@@ -15,6 +15,7 @@ struct NFTDetailsView: View {
     @State private var nftImage: UIImage?
     @State private var navigationState: NavigationStateManager?
     @State private var scrollOffset: CGPoint = .zero
+    var analyticsName: Analytics.ViewName { .nftDetails }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -53,6 +54,7 @@ struct NFTDetailsView: View {
             self.navigationState = navigationState
             navigationState.setCustomTitle(customTitle: { NavigationTitleView(nft: nft) }, id: nft.id)
         }, path: .constant(.init()))
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 

@@ -201,6 +201,8 @@ extension Analytics {
         case shakeToFind
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
+        
+        case shareWalletInfo, nftDetails
     }
 }
 
