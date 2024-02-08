@@ -23,7 +23,7 @@ struct WalletPortfolioRecordsStorage {
     }
     
     func saveRecords(_ records: [WalletPortfolioRecord], for wallet: String) {
-        var currentRecords = getAllRecords().filter({ $0.wallet == wallet })
+        var currentRecords = getAllRecords().filter({ $0.wallet != wallet })
         currentRecords.append(contentsOf: records)
         setRecords(currentRecords)
     }
