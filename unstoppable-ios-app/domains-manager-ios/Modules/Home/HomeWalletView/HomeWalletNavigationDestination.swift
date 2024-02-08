@@ -37,15 +37,15 @@ enum HomeWalletNavigationDestination: Hashable {
     func hash(into hasher: inout Hasher) {
         switch self {
         case .settings:
-            hasher.combine(0)
+            hasher.combine("settings")
         case .qrScanner:
-            hasher.combine(1)
+            hasher.combine("qrScanner")
         case .minting:
-            hasher.combine(2)
+            hasher.combine("minting")
         case .purchaseDomains:
-            hasher.combine(3)
+            hasher.combine("purchaseDomains")
         case .walletsList:
-            hasher.combine(4)
+            hasher.combine("walletsList")
         }
     }
     

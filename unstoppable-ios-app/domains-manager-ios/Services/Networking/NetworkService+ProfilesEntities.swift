@@ -642,7 +642,6 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let firstTx: Date?
     let lastTx: Date?
     let blockchainScanUrl: String
-    let balance: String
     let balanceAmt: Double
     let tokens: [Token]?
     let stats: Stats?
@@ -696,7 +695,6 @@ struct WalletTokenPortfolio: Codable, Hashable {
         let address: String
         let symbol: String
         let logoUrl: String?
-        let balance: String
         let balanceAmt: Double
         let value: WalletTokenPortfolio.Value?
     }

@@ -61,7 +61,7 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
         }
     }
     
-    func cachedImage(for source: ImageSource) -> UIImage? {
+    func cachedImage(for source: ImageSource, downsampleDescription: DownsampleDescription?) -> UIImage? {
         nil
     }
     

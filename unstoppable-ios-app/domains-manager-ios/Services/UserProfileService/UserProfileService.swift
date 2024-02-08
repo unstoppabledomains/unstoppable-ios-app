@@ -34,6 +34,22 @@ final class UserProfileService {
         walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.updateProfilesList()
         }.store(in: &cancellables)
+        firebaseParkedDomainsAuthenticationService.authorizedUserPublisher.receive(on: DispatchQueue.main).sink { [weak self] userProfile in
+            if let userProfile {
+                self?.loadParkedDomainsAndCheckProfile()
+            } else {
+                self?.updateProfilesList()
+            }
+        }.store(in: &cancellables)
+    }
+    
+    func loadParkedDomainsAndCheckProfile() {
+        Task {
+            let domains = (try? await firebaseParkedDomainsService.getParkedDomains()) ?? []
+            if !domains.isEmpty {
+                updateProfilesList()
+            }
+        }
     }
 }
 
@@ -48,13 +64,6 @@ extension UserProfileService: UserProfileServiceProtocol {
         case .webAccount:
             walletsDataService.setSelectedWallet(nil)
         }
-    }
-}
-
-// MARK: - FirebaseAuthenticationServiceListener
-extension UserProfileService: FirebaseAuthenticationServiceListener {
-    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        updateProfilesList()
     }
 }
 

@@ -58,7 +58,8 @@ extension MintDomainsConfigurationSelectionCell {
         
         if let cachedImage = appContext.imageLoadingService.cachedImage(for: .initials(domain,
                                                                                    size: .default,
-                                                                                   style: .accent)) {
+                                                                                   style: .accent),
+                                                                        downsampleDescription: .icon) {
             domainNameImageView.image = cachedImage
         } else {
             Task.detached(priority: .background) { [weak self] in

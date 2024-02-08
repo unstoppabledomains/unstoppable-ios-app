@@ -215,7 +215,7 @@ extension ChatsListNavigationView {
     let view =  ChatsListNavigationView(frame: CGRect(x: 0, y: 0, width: 390, height: 40))
     let wallets = MockEntitiesFabric.Wallet.mockEntities()
     let wallet = wallets[0]
-    let wallet2 = wallets[1]
+//    let wallet2 = wallets[1]
     view.setWithConfiguration(.init(selectedWallet: wallet,
                                     isLoading: false))
     return view 

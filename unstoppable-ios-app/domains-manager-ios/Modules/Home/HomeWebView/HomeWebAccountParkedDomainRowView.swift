@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeWebParkedDomainRowView: View {
+struct HomeWebAccountParkedDomainRowView: View {
     
     let firebaseDomain: FirebaseDomainDisplayInfo
     
@@ -37,7 +37,7 @@ struct HomeWebParkedDomainRowView: View {
 }
 
 // MARK: - Private methods
-private extension HomeWebParkedDomainRowView {
+private extension HomeWebAccountParkedDomainRowView {
     var tldName: String { firebaseDomain.name.getTldName() ?? "" }
 
     @ViewBuilder
@@ -50,5 +50,5 @@ private extension HomeWebParkedDomainRowView {
 }
 
 #Preview {
-    HomeWebParkedDomainRowView(firebaseDomain: .init(firebaseDomain: MockEntitiesFabric.Domains.mockFirebaseDomains()[0]))
+    HomeWebAccountParkedDomainRowView(firebaseDomain: .init(firebaseDomain: MockEntitiesFabric.Domains.mockFirebaseDomains()[0]))
 }

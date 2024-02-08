@@ -47,12 +47,6 @@ class WalletsListViewPresenter {
         appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
             self?.walletsUpdated(wallets)
         }.store(in: &cancellables)
-        NotificationCenter.default.publisher(for: Self.walletAddedNotification).sink { [weak self] notification in
-            if self?.view != nil,
-               let result = notification.object as? AddWalletNavigationController.Result {
-                self?.handleWalletAddedResult(result)
-            }
-        }.store(in: &cancellables)
     }
     
     func didSelectWallet(_ wallet: WalletEntity, walletInfo: WalletDisplayInfo) async {
@@ -238,10 +232,6 @@ private extension WalletsListViewPresenter {
     }
     
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
-        guard view != nil else {
-            NotificationCenter.default.post(name: Self.walletAddedNotification, object: result)
-            return
-        }
         switch result {
         case .cancelled, .failedToAdd:
             return
@@ -395,5 +385,4 @@ extension WalletsListViewPresenter {
         case importWallet, connectWallet, createNewWallet
         case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
     }
-    static let walletAddedNotification = Notification.Name(rawValue: "walletAddedNotification")
 }

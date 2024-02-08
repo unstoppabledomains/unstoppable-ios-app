@@ -51,7 +51,7 @@ struct NFTDetailsView: View {
             })
         }, navigationStateProvider: { navigationState in
             self.navigationState = navigationState
-            navigationState.customTitle = { NavigationTitleView(nft: nft) }
+            navigationState.setCustomTitle(customTitle: { NavigationTitleView(nft: nft) }, id: nft.id)
         }, path: .constant(.init()))
     }
 }

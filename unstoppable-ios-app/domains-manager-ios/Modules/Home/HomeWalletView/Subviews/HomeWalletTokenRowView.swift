@@ -85,23 +85,24 @@ private extension HomeWalletTokenRowView {
     }
     
     func loadIconFor(token: HomeWalletView.TokenDescription) {
-        icon = nil
-        parentIcon = nil
-        guard !token.isSkeleton else { return }
+        guard !token.isSkeleton else {
+            icon = nil
+            parentIcon = nil
+            return }
         
         token.loadTokenIcon { image in
-            DispatchQueue.main.async {
-                self.icon = image
-            }
+            self.icon = image
         }
         token.loadParentIcon { image in
-            DispatchQueue.main.async {
-                self.parentIcon = image
-            }
+            self.parentIcon = image
         }
     }
 }
 
 #Preview {
-    HomeWalletTokenRowView(token: HomeWalletView.TokenDescription.mock().first!)
+    HomeWalletTokenRowView(token: .init(symbol: "ETH",
+                                        name: "ETH",
+                                        balance: 1,
+                                        balanceUsd: 1,
+                                        marketUsd: 1))
 }

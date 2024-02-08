@@ -68,7 +68,7 @@ extension AnalyticsService: WalletConnectServiceConnectionListener {
     
     private func setNumberOfConnectedApps() {
         Task {
-            let appsConnected = await appContext.walletConnectServiceV2.getConnectedApps()
+            let appsConnected = appContext.walletConnectServiceV2.getConnectedApps()
             set(userProperties: [.numberOfConnectedDApps: String(appsConnected.count)])
         }
     }

@@ -20,6 +20,7 @@ final class FirebaseAuthService {
     private let firebaseSigner: UDFirebaseSigner
 
     private var tokenData: FirebaseTokenData?
+    var logoutCallback: EmptyCallback?
 
     init(firebaseSigner: UDFirebaseSigner,
          refreshTokenStorage: FirebaseAuthRefreshTokenStorageProtocol) {
@@ -73,6 +74,7 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     func logout() {
         refreshToken = nil 
         tokenData = nil
+        logoutCallback?()
     }
     
     func getIdToken() async throws -> String {

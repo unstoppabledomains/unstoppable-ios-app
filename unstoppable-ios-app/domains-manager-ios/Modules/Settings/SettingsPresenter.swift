@@ -20,7 +20,6 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     
     private let notificationsService: NotificationsServiceProtocol
     private let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
-    private var firebaseUser: FirebaseUser?
     private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
     private var cancellables: Set<AnyCancellable> = []
 
@@ -37,7 +36,9 @@ final class SettingsPresenter: ViewAnalyticsLogger {
         appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
             self?.showSettings()
         }.store(in: &cancellables)
-        firebaseAuthenticationService.addListener(self)
+        firebaseAuthenticationService.authorizedUserPublisher.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.showSettings()
+        }.store(in: &cancellables)
     }
     
 }
@@ -45,10 +46,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
 // MARK: - SettingsPresenterProtocol
 extension SettingsPresenter: SettingsPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            firebaseUser = try? await firebaseAuthenticationService.getUserProfile()
-            showSettings()
-        }        
+        showSettings()
     }
     
     func viewWillAppear() {
@@ -85,17 +83,6 @@ extension SettingsPresenter: SettingsPresenterProtocol {
     }
 }
 
-// MARK: - FirebaseInteractionServiceListener
-extension SettingsPresenter: FirebaseAuthenticationServiceListener {
-    nonisolated
-    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        Task { @MainActor in
-            self.firebaseUser = firebaseUser
-            showSettings()
-        }
-    }
-}
-
 // MARK: - Private methods
 private extension SettingsPresenter {
     func showSettings() {
@@ -113,6 +100,7 @@ private extension SettingsPresenter {
 #if TESTFLIGHT
         snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
 #endif
+        let firebaseUser = firebaseAuthenticationService.firebaseUser
         snapshot.appendItems([.websiteAccount(user: firebaseUser)])
         
         
@@ -128,7 +116,9 @@ private extension SettingsPresenter {
     }
     
     func showWalletsList() {
-        view?.openWalletsList(initialAction: .none)
+        guard let nav = view?.cNavigationController else { return }
+        
+        UDRouter().showWalletsList(in: nav, initialAction: .none)
     }
     
     func showLegalOptions() {
@@ -186,15 +176,9 @@ private extension SettingsPresenter {
     func showLoginScreen() {
         guard let view else { return }
         
-        if firebaseAuthenticationService.isAuthorized {
+        if let firebaseUser = firebaseAuthenticationService.firebaseUser {
             Task {
                 do {
-                    guard let firebaseUser else {
-                        firebaseAuthenticationService.logOut()
-                        showLoginScreen()
-                        Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
-                        return
-                    }
                     let domainsCount = appContext.firebaseParkedDomainsService.getCachedDomains().count
                     let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
                                                                                                      domainsCount: domainsCount,
@@ -213,6 +197,7 @@ private extension SettingsPresenter {
             UDRouter().runLoginFlow(with: .default,
                                     loggedInCallback: { [weak self] result in
                 self?.loginCallback?(result)
+                self?.view?.navigationController?.popToRootViewController(animated: true)
             },
                                     in: view)
         }

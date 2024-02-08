@@ -14,16 +14,18 @@ struct HomeWalletHeaderRowView: View {
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
+    let didSelectDomainCallback: (DomainDisplayInfo)->()
 
     @State private var domainAvatar: UIImage?
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
-            ZStack {
+            ZStack(alignment: .center) {
                 if wallet.portfolioRecords.count >= 2 {
                     WalletBalanceGradientChartView(chartData: wallet.portfolioRecords)
                         .padding(EdgeInsets(top: 0, leading: -16,
                                             bottom: 0, trailing: -16))
+                        .frame(height: 92)
                 }
                 avatarView()
             }
@@ -49,10 +51,11 @@ private extension HomeWalletHeaderRowView {
     
     func loadAvatarFor(wallet: WalletEntity) {
         Task {
-            self.domainAvatar = nil
             if let domain = wallet.rrDomain,
                let image = await imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: .mid) {
                 self.domainAvatar = image
+            } else {
+                self.domainAvatar = nil
             }
         }
     }
@@ -81,9 +84,15 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
-        UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
-                          width: 20,
-                          height: 20)
+        Button {
+            UDVibration.buttonTap.vibrate()
+            didSelectDomainCallback(domain)
+        } label: {
+            UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
+                              width: 20,
+                              height: 20)
+        }
+        .buttonStyle(.plain)
     }
     
     @ViewBuilder
@@ -95,6 +104,7 @@ private extension HomeWalletHeaderRowView {
             ZStack {
                 Circle()
                     .foregroundStyle(Color.backgroundWarning)
+                    .background(.ultraThinMaterial)
                 VStack(spacing: 4) {
                     Image.plusIconNav
                         .resizable()
@@ -144,7 +154,8 @@ private extension HomeWalletHeaderRowView {
 
 #Preview {
     HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
-                            domainNamePressedCallback: { })
+                            domainNamePressedCallback: { }, 
+                            didSelectDomainCallback: { _ in })
 }
 
 
@@ -158,6 +169,11 @@ private struct WalletBalanceGradientChartView: View {
 
     
     let chartData: [WalletPortfolioRecord]
+    
+    private let minX: Double
+    private let maxX: Double
+    private let maxY: Double
+    
     private let linearGradient = LinearGradient(stops: [
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0.32), location: 0.00),
         Gradient.Stop(color: Color(red: 0.2, green: 0.5, blue: 1).opacity(0), location: 1.00),
@@ -181,10 +197,21 @@ private struct WalletBalanceGradientChartView: View {
             .interpolationMethod(.cardinal(tension: 0.4))
             .foregroundStyle(linearGradient)
         }
-        .chartXScale(domain: chartData.first!.timestamp...chartData.last!.timestamp)
+        .chartXScale(domain: minX...maxX)
+        .chartYScale(domain: 0...maxY)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
         .frame(maxWidth: .infinity)
     }
+    
+    init(chartData: [WalletPortfolioRecord]) {
+        self.chartData = chartData
+        minX = chartData.first!.timestamp
+        maxX = chartData.last!.timestamp
+        
+        let values = chartData.map { $0.value }
+        maxY = values.max()!
+    }
 }
+

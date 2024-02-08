@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeWebView: View {
+struct HomeWebAccountView: View {
     
     @Environment(\.firebaseParkedDomainsService) var firebaseParkedDomainsService
     
@@ -15,7 +15,10 @@ struct HomeWebView: View {
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var isHeaderVisible: Bool = true
     @State private var scrollOffset: CGPoint = .zero
-    @State private var navigationState: NavigationStateManager?
+    let navigationState: NavigationStateManager?
+    @Binding var isNavTitleVisible: Bool
+    @Binding var isTabBarVisible: Bool
+    
     @State private var domains: [FirebaseDomainDisplayInfo] = []
     private let gridColumns = [
         GridItem(.flexible(), spacing: 32),
@@ -24,55 +27,60 @@ struct HomeWebView: View {
     private var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
 
     var body: some View {
-        NavigationViewWithCustomTitle(content: {
-            OffsetObservingListView(offset: $scrollOffset) {
-                headerIconRowView()
-                    .onAppearanceChange($isHeaderVisible)
-                headerInfoView()
-                HomeWalletActionsView(actionCallback: { action in
-                    handleAction(action)
-                }, subActionCallback: { subAction in
-                    handleSubAction(subAction)
-                })
-                domainsListView()
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-            }
-            .onChange(of: tabRouter.walletViewNavPath) { _ in
-                updateNavTitleVisibility()
-                tabRouter.isTabBarVisible = !isOtherScreenPushed
-            }
-            .onChange(of: scrollOffset) { point in
-                updateNavTitleVisibility()
-            }
-            .listStyle(.plain)
-            .clearListBackground()
-            .background(Color.backgroundDefault)
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
-                HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
-                    .ignoresSafeArea()
-            }
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarLeading) {
-                    HomeSettingsNavButtonView()
-                }
+        OffsetObservingListView(offset: $scrollOffset) {
+            headerIconRowView()
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .onAppearanceChange($isHeaderVisible)
+                .unstoppableListRowInset()
+            
+            headerInfoView()
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .unstoppableListRowInset()
+            
+            HomeWalletActionsView(actionCallback: { action in
+                handleAction(action)
+            }, subActionCallback: { subAction in
+                handleSubAction(subAction)
             })
-            .refreshable {
-                await loadParkedDomains()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 24, leading: 16, bottom: 16, trailing: 16))
+            
+            domainsListView()
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .unstoppableListRowInset()
+        }
+        .onChange(of: tabRouter.walletViewNavPath) { _ in
+            updateNavTitleVisibility()
+            isTabBarVisible = !isOtherScreenPushed
+        }
+        .onChange(of: scrollOffset) { point in
+            updateNavTitleVisibility()
+        }
+        .listStyle(.plain)
+        .clearListBackground()
+        .background(Color.backgroundDefault)
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarLeading) {
+                HomeSettingsNavButtonView()
             }
-            .onAppear(perform: onAppear)
-        }, navigationStateProvider: { state in
-            self.navigationState = state
-            state.customTitle = { titleView() }
-        }, path: $tabRouter.walletViewNavPath)
+        })
+        .refreshable {
+            await loadParkedDomains()
+        }
+        .onAppear(perform: onAppear)
     }
 }
 
 // MARK: - Private methods
-private extension HomeWebView {
+private extension HomeWebAccountView {
     func onAppear() {
+        setTitleViewIfNeeded()
         let firebaseDomains = firebaseParkedDomainsService.getCachedDomains()
         setFirebaseDomains(firebaseDomains)
         Task {
@@ -87,26 +95,31 @@ private extension HomeWebView {
     }
     
     func setFirebaseDomains(_ firebaseDomains: [FirebaseDomain]) {
-        print(firebaseDomains.count)
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
     
-    var isNavTitleVisible: Bool {
-        (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
+    func updateNavTitleVisibility() {
+        let isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
         !isOtherScreenPushed &&
         tabRouter.tabViewSelection == .wallets
+        
+        if self.isNavTitleVisible != isNavTitleVisible {
+            setTitleViewIfNeeded()
+            self.isNavTitleVisible = isNavTitleVisible
+        }
     }
     
-    
-    func updateNavTitleVisibility() {
-        withAnimation {
-            navigationState?.isTitleVisible = isNavTitleVisible
+    func setTitleViewIfNeeded() {
+        let id = user.displayName
+        if navigationState?.customViewID != id {
+            navigationState?.setCustomTitle(customTitle: { titleView() },
+                                            id: id)
         }
     }
 }
 
 // MARK: - Private methods
-private extension HomeWebView {
+private extension HomeWebAccountView {
     @ViewBuilder
     func titleView() -> some View {
         HStack {
@@ -142,8 +155,6 @@ private extension HomeWebView {
                 .foregroundStyle(Color.backgroundDefault)
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
     var numberOfDomains: Int { domains.count }
@@ -163,17 +174,16 @@ private extension HomeWebView {
                         .squareFrame(24)
                 }
                     .foregroundStyle(Color.foregroundSecondary)
+                    .frame(height: 24)
             }
             Text(String.Constants.pluralNDomains.localized(numberOfDomains, numberOfDomains))
                 .font(.currentFont(size: 32, weight: .bold))
                 .truncationMode(.middle)
                 .foregroundStyle(Color.foregroundDefault)
-                .frame(height: 24)
+                .frame(height: 40)
         }
         .lineLimit(1)
         .frame(maxWidth: .infinity)
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
     
     @ViewBuilder
@@ -184,7 +194,7 @@ private extension HomeWebView {
                     UDVibration.buttonTap.vibrate()
                     didSelectDomain(domain)
                 } label: {
-                    HomeWebParkedDomainRowView(firebaseDomain: domain)
+                    HomeWebAccountParkedDomainRowView(firebaseDomain: domain)
                 }
                 .buttonStyle(.plain)
             }
@@ -245,7 +255,7 @@ private extension HomeWebView {
 }
 
 // MARK: - Actions
-private extension HomeWebView {
+private extension HomeWebAccountView {
     enum WebAction: String, CaseIterable, HomeWalletActionItem  {
         case addWallet, claim, more
         
@@ -300,12 +310,4 @@ private extension HomeWebView {
         
         var isDestructive: Bool { true }
     }
-}
-
-#Preview {
-    let user = FirebaseUser.init(email: "oleg@unstoppabledomains.com")
-    let router = HomeTabRouter(profile: .webAccount(user))
-
-    return HomeWebView(user: user)
-        .environmentObject(router)
 }

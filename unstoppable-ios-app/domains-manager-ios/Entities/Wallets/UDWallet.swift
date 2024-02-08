@@ -479,3 +479,13 @@ extension UDWallet: Equatable {
         return resultEth || resultZil
     }
 }
+
+extension UDWallet: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(extractEthWallet()?.address)
+        hasher.combine(extractZilWallet()?.address)
+        hasher.combine(aliasName)
+        hasher.combine(hasBeenBackedUp)
+        hasher.combine(walletState)
+    }
+}

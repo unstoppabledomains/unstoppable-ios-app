@@ -67,13 +67,21 @@ extension HomeWalletView {
             case .profile:
                 guard let rrDomain = selectedWallet.rrDomain else { return }
                 
-                Task {
-                    await router.showDomainProfile(rrDomain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
-                }
+                showProfile(of: rrDomain)
             case .buy:
                 router.runPurchaseFlow()
             case .more:
                 return
+            }
+        }
+        
+        func didSelectDomain(_ domain: DomainDisplayInfo) {
+            showProfile(of: domain)
+        }
+        
+        private func showProfile(of domain: DomainDisplayInfo) {
+            Task {
+                await router.showDomainProfile(domain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
             }
         }
         
@@ -187,7 +195,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             
             if router.resolvingPrimaryDomainWallet == nil,
                selectedWallet.isReverseResolutionChangeAllowed(),
-               !router.isUpdatingPurchasedProfiles {
+               !router.isUpdatingPurchasedProfiles,
+               router.walletViewNavPath.isEmpty {
                 router.resolvingPrimaryDomainWallet = selectedWallet
             }
         }

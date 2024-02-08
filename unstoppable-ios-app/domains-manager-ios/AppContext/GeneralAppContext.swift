@@ -162,7 +162,6 @@ final class GeneralAppContext: AppContextProtocol {
                                                 walletsDataService: walletsDataService)
         self.userProfileService = userProfileService
         udWalletsService.addListener(userProfileService)
-        firebaseParkedDomainsAuthenticationService.addListener(userProfileService)
 
         LocalNotificationsService.shared.setWith(firebaseDomainsService: firebaseParkedDomainsService)
         

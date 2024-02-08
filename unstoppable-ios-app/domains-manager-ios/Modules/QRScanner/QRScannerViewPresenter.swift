@@ -136,7 +136,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         Task {
             view.stopCaptureSession()
             await UDRouter().showConnectedAppsListScreen(in: view)
-            await showNumberOfAppsConnected()
+            showNumberOfAppsConnected()
             view.startCaptureSession()
         }
     }
@@ -172,20 +172,25 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
 
 // MARK: - WalletConnectServiceListener
 extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
+    nonisolated
     func didConnect(to app: UnifiedConnectAppInfo) {
-        Task {
-            await showNumberOfAppsConnected()
+        Task { @MainActor in
+            showNumberOfAppsConnected()
+            waitAndResumeAcceptingQRCodes()
         }
-        waitAndResumeAcceptingQRCodes()
     }
     
+    nonisolated
     func didCompleteConnectionAttempt() {
-        waitAndResumeAcceptingQRCodes()
+        Task { @MainActor in
+            waitAndResumeAcceptingQRCodes()
+        }
     }
     
+    nonisolated
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        Task {
-            await showNumberOfAppsConnected()
+        Task { @MainActor in
+            showNumberOfAppsConnected()
         }
     }
     
@@ -223,8 +228,8 @@ private extension QRScannerViewPresenter {
         }
     }
 
-    func showNumberOfAppsConnected() async {
-        let appsConnected = await walletConnectServiceV2.getConnectedApps()
+    func showNumberOfAppsConnected() {
+        let appsConnected = walletConnectServiceV2.getConnectedApps()
         view?.setWith(appsConnected: appsConnected.count)
     }
     
