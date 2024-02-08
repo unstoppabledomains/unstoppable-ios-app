@@ -84,8 +84,8 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
     }
     
     nonisolated
-    func cachedImage(for source: ImageSource) -> UIImage? {
-        cacheStorage.getCachedImage(for: source.key)
+    func cachedImage(for source: ImageSource, downsampleDescription: DownsampleDescription?) -> UIImage? {
+        cacheStorage.getCachedImage(for: source.keyFor(downsampleDescription: downsampleDescription))
     }
    
     func getStoredImage(for source: ImageSource) async -> UIImage? {
@@ -187,6 +187,8 @@ fileprivate extension ImageLoadingService {
         case .currencyTicker(let ticker, let size, let style):
             if let url = URL(string: NetworkConfig.currencyIconUrl(for: ticker)),
                let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
+                cacheStorage.cache(image: image, forKey: source.keyFor(downsampleDescription: downsampleDescription))
+                await storeImage(image, for: source)
                 return image
             }
             return await fetchImageFor(source: .initials(ticker, size: size, style: style), downsampleDescription: downsampleDescription)

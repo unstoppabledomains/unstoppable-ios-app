@@ -14,6 +14,7 @@ final class CurrencyImageLoader {
     private(set) var ticker: String?
     private(set) var initialsSize: InitialsView.InitialsSize
     private(set) var initialsStyle: InitialsView.Style
+    private let downsampleDescription: DownsampleDescription = .icon
 
     nonisolated
     init(currencyImageView: UIImageView,
@@ -30,12 +31,14 @@ final class CurrencyImageLoader {
         
         if let cachedImage = appContext.imageLoadingService.cachedImage(for: .currency(currency,
                                                                                        size: initialsSize,
-                                                                                       style: initialsStyle)) {
+                                                                                       style: initialsStyle),
+                                                                        downsampleDescription: downsampleDescription) {
             set(currencyImage: cachedImage)
         } else {
             if let cachedImage = appContext.imageLoadingService.cachedImage(for: .initials(currency.ticker,
                                                                                        size: initialsSize,
-                                                                                       style: initialsStyle)) {
+                                                                                           style: initialsStyle),
+                                                                            downsampleDescription: downsampleDescription) {
                 set(currencyImage: cachedImage)
                 Task {
                     await loadIcon(for: currency)
@@ -54,7 +57,7 @@ final class CurrencyImageLoader {
         let ticker = currency.ticker
         let initialsImage = await appContext.imageLoadingService.loadImage(from: .initials(currency.ticker,
                                                                                        size: initialsSize,
-                                                                                       style: initialsStyle), downsampleDescription: nil)
+                                                                                       style: initialsStyle), downsampleDescription: downsampleDescription)
         if ticker == self.ticker {
             set(currencyImage: initialsImage)
         }
@@ -64,7 +67,7 @@ final class CurrencyImageLoader {
         let ticker = currency.ticker
         let image = await appContext.imageLoadingService.loadImage(from: .currency(currency,
                                                                                    size: initialsSize,
-                                                                                   style: initialsStyle), downsampleDescription: nil)
+                                                                                   style: initialsStyle), downsampleDescription: downsampleDescription)
         if ticker == self.ticker {
             set(currencyImage: image)
         }

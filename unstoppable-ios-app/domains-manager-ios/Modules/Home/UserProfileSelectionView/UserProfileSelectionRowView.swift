@@ -36,7 +36,8 @@ private extension UserProfileSelectionRowView {
             domainAvatarImage = nil
             return }
         
-        if let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain)) {
+        if let avatar = appContext.imageLoadingService.cachedImage(for: .domain(rrDomain),
+                                                                   downsampleDescription: .icon) {
             self.domainAvatarImage = avatar
         } else {
             Task {

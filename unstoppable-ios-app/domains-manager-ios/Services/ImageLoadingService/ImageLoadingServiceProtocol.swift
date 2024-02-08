@@ -9,7 +9,7 @@ import UIKit
 
 protocol ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage?
-    func cachedImage(for source: ImageSource) -> UIImage?
+    func cachedImage(for source: ImageSource, downsampleDescription: DownsampleDescription?) -> UIImage?
     func downsample(image: UIImage, downsampleDescription: DownsampleDescription) -> UIImage?
     func storeImage(_ image: UIImage, for source: ImageSource) async
     func getStoredImage(for source: ImageSource) async -> UIImage?

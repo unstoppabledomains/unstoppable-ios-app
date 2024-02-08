@@ -220,9 +220,16 @@ extension HomeWalletView {
         }
         
         static func loadIconFor(ticker: String, iconUpdated: @escaping (UIImage?)->()) {
-            Task {
-                let size = TokenDescription.iconSize
-                let style = TokenDescription.iconStyle
+            let size = TokenDescription.iconSize
+            let style = TokenDescription.iconStyle
+            if let cachedImage = appContext.imageLoadingService.cachedImage(for: .currencyTicker(ticker,
+                                                                                                 size: size,
+                                                                                                 style: style),
+                                                                            downsampleDescription: .icon) {
+                iconUpdated(cachedImage)
+                return
+            }
+            Task { @MainActor in
                 let initials = await appContext.imageLoadingService.loadImage(from: .initials(ticker,
                                                                                               size: size,
                                                                                               style: style),
