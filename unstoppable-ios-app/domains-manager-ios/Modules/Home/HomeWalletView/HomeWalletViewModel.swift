@@ -187,7 +187,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             
             if router.resolvingPrimaryDomainWallet == nil,
                selectedWallet.isReverseResolutionChangeAllowed(),
-               !router.isUpdatingPurchasedProfiles {
+               !router.isUpdatingPurchasedProfiles,
+               router.walletViewNavPath.isEmpty {
                 router.resolvingPrimaryDomainWallet = selectedWallet
             }
         }
