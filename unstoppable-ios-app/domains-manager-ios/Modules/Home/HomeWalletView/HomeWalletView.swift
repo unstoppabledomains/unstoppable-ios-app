@@ -296,7 +296,7 @@ private extension HomeWalletView {
                 .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
-            
+            logButtonPressedAnalyticEvents(button: .qrCode)
         }
     }
 }

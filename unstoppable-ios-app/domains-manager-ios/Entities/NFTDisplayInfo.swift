@@ -102,7 +102,7 @@ extension NFTDisplayInfo {
 
 // MARK: - Open methods
 extension NFTDisplayInfo {
-    enum DetailType: CaseIterable {
+    enum DetailType: String, CaseIterable {
         case collectionID
         case tokenID
         case chain

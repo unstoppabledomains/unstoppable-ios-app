@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct HomeWebAccountView: View {
+struct HomeWebAccountView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     @Environment(\.firebaseParkedDomainsService) var firebaseParkedDomainsService
     
     let user: FirebaseUser
@@ -191,6 +193,8 @@ private extension HomeWebAccountView {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(domains, id: \.name) { domain in
                 Button {
+                    logButtonPressedAnalyticEvents(button: .parkedDomainTile,
+                                                   parameters: [.domainName : domain.name])
                     UDVibration.buttonTap.vibrate()
                     didSelectDomain(domain)
                 } label: {

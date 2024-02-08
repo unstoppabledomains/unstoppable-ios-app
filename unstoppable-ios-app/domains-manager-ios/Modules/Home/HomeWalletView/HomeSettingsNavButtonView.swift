@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct HomeSettingsNavButtonView: View {
+struct HomeSettingsNavButtonView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     var body: some View {
         NavigationLink(value: HomeWalletNavigationDestination.settings) {
             Image.gearshape
@@ -16,7 +20,7 @@ struct HomeSettingsNavButtonView: View {
                 .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
-            
+            logButtonPressedAnalyticEvents(button: .settings)
         }
     }
 }

@@ -72,6 +72,8 @@ extension Analytics {
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
         case didSelectNotSupportedDomainForPurchaseInSearch
+        
+        case shareResult, didSelectHomeTab
     }
 }
 
@@ -132,6 +134,8 @@ extension Analytics {
         case nftName
         case tld
         case numberOfItemsInSection
+        case success
+        case tab
     }
 }
 
@@ -369,8 +373,9 @@ extension Analytics {
         case sort, sortType
         case notMatchingToken, notMatchingTokensSectionHeader
         case collectibleTile, collectiblesSectionHeader
-        case buyDomainTile, domainTile, buyDomainsSectionHeader
+        case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
         case subdomainsSectionHeader, domainsSectionHeader
+        case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
     }
 }
 

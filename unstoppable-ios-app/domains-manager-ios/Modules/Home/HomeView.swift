@@ -14,7 +14,7 @@ struct HomeView: View, ViewAnalyticsLogger {
     @State private var isNavTitleVisible: Bool = true
     @State private var isTabBarVisible: Bool = true
     var analyticsName: Analytics.ViewName { .home }
-    var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.profileId: tabRouter.profile.id] }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {

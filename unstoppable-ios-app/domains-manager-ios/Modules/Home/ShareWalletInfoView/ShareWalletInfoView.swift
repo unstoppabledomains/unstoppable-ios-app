@@ -34,8 +34,10 @@ struct ShareWalletInfoView: View, ViewAnalyticsLogger {
                     UDButtonView(text: String.Constants.shareAddress.localized(),
                                  icon: .shareFlatIcon,
                                  style: .large(.raisedPrimary)) {
+                        logButtonPressedAnalyticEvents(button: .share)
                         shareItems([wallet.ethFullAddress]) { success in
-                            
+                            logAnalytic(event: .shareResult, 
+                                        parameters: [.success: String(success)])
                         }
                     }
                 }
@@ -111,6 +113,7 @@ private extension ShareWalletInfoView {
             
             Spacer()
             Button {
+                logButtonPressedAnalyticEvents(button: .copyToClipboard)
                 UDVibration.buttonTap.vibrate()
                 CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: "ETH")
             } label: {
