@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 protocol SignTransactionDomainSelectionViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: SignTransactionDomainSelectionViewController.Item)
     func didSearchWith(key: String)
@@ -18,6 +19,7 @@ protocol SignTransactionDomainSelectionViewPresenterProtocol: BasePresenterProto
 
 typealias DomainWithBalanceSelectionCallback = (DomainDisplayInfo)->()
 
+@MainActor
 final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: SignTransactionDomainSelectionViewProtocol?

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NFTDetailsView: View {
+struct NFTDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.presentationMode) private var presentationMode
 
@@ -15,6 +15,7 @@ struct NFTDetailsView: View {
     @State private var nftImage: UIImage?
     @State private var navigationState: NavigationStateManager?
     @State private var scrollOffset: CGPoint = .zero
+    var analyticsName: Analytics.ViewName { .nftDetails }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -41,6 +42,7 @@ struct NFTDetailsView: View {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
                         UDVibration.buttonTap.vibrate()
                         presentationMode.wrappedValue.dismiss()
                     }
@@ -53,6 +55,7 @@ struct NFTDetailsView: View {
             self.navigationState = navigationState
             navigationState.setCustomTitle(customTitle: { NavigationTitleView(nft: nft) }, id: nft.id)
         }, path: .constant(.init()))
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 
@@ -242,6 +245,7 @@ private extension NFTDetailsView {
                             nftOtherDetailsRowView(icon: detailType.icon,
                                                    title: detailType.title,
                                                    value: value,
+                                                   analyticsName: detailType.rawValue,
                                                    pressedCallback: detailTypeActionHandler(detailType, value: value))
                         }
                     }
@@ -272,6 +276,7 @@ private extension NFTDetailsView {
     func nftOtherDetailsRowView(icon: Image, 
                                 title: String,
                                 value: String,
+                                analyticsName: String,
                                 pressedCallback: MainActorCallback?) -> some View {
         HStack {
             HStack(spacing: 8) {
@@ -287,6 +292,8 @@ private extension NFTDetailsView {
             
             Button {
                 Task { @MainActor in
+                    logButtonPressedAnalyticEvents(button: .nftDetailItem,
+                                                   parameters: [.value : analyticsName])
                     UDVibration.buttonTap.vibrate()
                     pressedCallback?()
                 }
@@ -315,6 +322,7 @@ private extension NFTDetailsView {
             Menu {
                 ForEach(availableNFTActions(), id: \.self) { action in
                     Button {
+                        logButtonPressedAnalyticEvents(button: action.analyticsName)
                         UDVibration.buttonTap.vibrate()
                         handleAction(action)
                     } label: {
@@ -331,7 +339,7 @@ private extension NFTDetailsView {
                     .foregroundStyle(Color.foregroundDefault)
             }
             .onButtonTap {
-                
+                logButtonPressedAnalyticEvents(button: .nftDetailsActions)
             }
         }
     }
@@ -382,6 +390,17 @@ private extension NFTDetailsView {
                 return Image(systemName: "arrow.clockwise")
             case .viewMarketPlace:
                 return Image(systemName: "arrow.up.right")
+            }
+        }
+        
+        var analyticsName: Analytics.Button {
+            switch self {
+            case .savePhoto(let uIImage):
+                return .savePhoto
+            case .refresh:
+                return .refresh
+            case .viewMarketPlace:
+                return .viewMarketPlace
             }
         }
     }

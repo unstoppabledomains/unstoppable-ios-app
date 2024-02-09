@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserProfileSelectionView: View {
+struct UserProfileSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.userProfileService) private var userProfileService
     @Environment(\.presentationMode) private var presentationMode
@@ -15,7 +15,8 @@ struct UserProfileSelectionView: View {
 
     @State private var profiles: [UserProfile] = []
     @State private var selectedProfile: UserProfile? = nil
-    
+    var analyticsName: Analytics.ViewName { .profileSelection }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -28,6 +29,7 @@ struct UserProfileSelectionView: View {
         }
         .background(Color.backgroundDefault)
         .onAppear(perform: onAppear)
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
     
     
@@ -68,6 +70,7 @@ private extension UserProfileSelectionView {
                             UDVibration.buttonTap.vibrate()
                             presentationMode.wrappedValue.dismiss()
                             userProfileService.setSelectedProfile(profile)
+                            logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
                         } label: {
                             listViewFor(profile: profile)
                         }
@@ -90,6 +93,7 @@ private extension UserProfileSelectionView {
             Button {
                 UDVibration.buttonTap.vibrate()
                 tabRouter.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
+                logButtonPressedAnalyticEvents(button: .addWallet)
             } label: {
                 HStack(spacing: 16) {
                     Image.plusIconNav

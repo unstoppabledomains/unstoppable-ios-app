@@ -7,9 +7,13 @@
 
 import SwiftUI
 
-struct HomeWalletSortingSelectorView<S: HomeViewSortingOption>: View {
+struct HomeWalletSortingSelectorView<S: HomeViewSortingOption>: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     var sortingOptions: [S]
-    var selectedOption: Binding<S>
+    @Binding var selectedOption: S
     var additionalAction: ActionDescription? = nil
     
     var body: some View {
@@ -19,12 +23,14 @@ struct HomeWalletSortingSelectorView<S: HomeViewSortingOption>: View {
                 viewForAction(additionalAction)
             }
         }
+        .onChange(of: selectedOption, perform: { option in
+            logButtonPressedAnalyticEvents(button: .sortType,
+                                           parameters: [.sortType : option.analyticName])
+            UDVibration.buttonTap.vibrate()
+        })
         .frame(height: 20)
         .withoutAnimation()
         .foregroundStyle(Color.foregroundSecondary)
-        .onButtonTap {
-            
-        }
     }
 }
 
@@ -33,7 +39,7 @@ private extension HomeWalletSortingSelectorView {
     @ViewBuilder
     func menuView() -> some View {
         Menu {
-            Picker("", selection: selectedOption) {
+            Picker("", selection: $selectedOption) {
                 ForEach(sortingOptions,
                         id: \.self) { option in
                     Text(option.title)
@@ -44,12 +50,15 @@ private extension HomeWalletSortingSelectorView {
                 Image.filterIcon
                     .resizable()
                     .squareFrame(16)
-                Text(selectedOption.wrappedValue.title)
+                Text(selectedOption.title)
                     .font(.currentFont(size: 14, weight: .medium))
                 Line()
                     .stroke(lineWidth: 1)
                     .offset(y: 10)
             }
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: .sort)
         }
     }
     
@@ -57,6 +66,7 @@ private extension HomeWalletSortingSelectorView {
     func viewForAction(_ action: ActionDescription) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: action.analyticName)
             action.callback()
         } label: {
             HStack(alignment: .center, spacing: 8) {
@@ -78,6 +88,7 @@ extension HomeWalletSortingSelectorView {
     struct ActionDescription {
         let title: String
         let icon: Image
+        let analyticName: Analytics.Button
         let callback: EmptyCallback
     }
 }

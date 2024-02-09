@@ -60,6 +60,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                 setAvailableDomains()
             }
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ShareWalletInfoView: View {
+struct ShareWalletInfoView: View, ViewAnalyticsLogger {
         
     @Environment(\.imageLoadingService) var imageLoadingService
     
@@ -15,6 +15,7 @@ struct ShareWalletInfoView: View {
     
     @State private var domainAvatarImage: UIImage?
     @State private var qrImage: UIImage?
+    var analyticsName: Analytics.ViewName { .shareWalletInfo }
     
     var body: some View {
         NavigationStack {
@@ -33,13 +34,16 @@ struct ShareWalletInfoView: View {
                     UDButtonView(text: String.Constants.shareAddress.localized(),
                                  icon: .shareFlatIcon,
                                  style: .large(.raisedPrimary)) {
+                        logButtonPressedAnalyticEvents(button: .share)
                         shareItems([wallet.ethFullAddress]) { success in
-                            
+                            logAnalytic(event: .shareResult, 
+                                        parameters: [.success: String(success)])
                         }
                     }
                 }
             }
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 
@@ -109,6 +113,7 @@ private extension ShareWalletInfoView {
             
             Spacer()
             Button {
+                logButtonPressedAnalyticEvents(button: .copyToClipboard)
                 UDVibration.buttonTap.vibrate()
                 CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: "ETH")
             } label: {

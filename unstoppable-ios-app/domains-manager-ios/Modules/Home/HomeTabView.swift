@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum HomeTab: Hashable {
+enum HomeTab: String, Hashable {
     case wallets
     case messaging
 }
@@ -37,8 +37,10 @@ struct HomeTabView: View {
             .tabBarVisible(router.isTabBarVisible)
         }
         .tint(.foregroundDefault)
-        .onChange(of: router.tabViewSelection, perform: { _ in
+        .onChange(of: router.tabViewSelection, perform: { selectedTab in
             UDVibration.buttonTap.vibrate()
+            appContext.analyticsService.log(event: .didSelectHomeTab,
+                                            withParameters: [.tab : selectedTab.rawValue])
         })
         .viewPullUp(router.currentPullUp(id: id))
         .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectProfilePresented))

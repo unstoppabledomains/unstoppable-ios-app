@@ -72,6 +72,8 @@ extension Analytics {
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
         case didSelectNotSupportedDomainForPurchaseInSearch
+        
+        case shareResult, didSelectHomeTab
     }
 }
 
@@ -122,6 +124,18 @@ extension Analytics {
         case searchType
         case walletType
         case chatId
+        case profileId 
+        case homeContentType
+        case sortType
+        case expand
+        case ticker
+        case chain
+        case collectionName
+        case nftName
+        case tld
+        case numberOfItemsInSection
+        case success
+        case tab
     }
 }
 
@@ -201,6 +215,8 @@ extension Analytics {
         case shakeToFind
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
+        
+        case shareWalletInfo, nftDetails, profileSelection
     }
 }
 
@@ -348,6 +364,18 @@ extension Analytics {
         case inspire, cancelInspire
         
         case addWallet
+        
+        case buy, receive, profile, more
+        case connectedApps
+        case selectProfile, profileSelected
+        case rrDomainAvatar, purchaseDomainAvatar
+        case homeContentTypeSelected
+        case sort, sortType
+        case notMatchingToken, notMatchingTokensSectionHeader
+        case collectibleTile, collectiblesSectionHeader
+        case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
+        case subdomainsSectionHeader, domainsSectionHeader
+        case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
     }
 }
 

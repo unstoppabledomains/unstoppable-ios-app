@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct HomeWebAccountView: View {
+struct HomeWebAccountView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     @Environment(\.firebaseParkedDomainsService) var firebaseParkedDomainsService
     
     let user: FirebaseUser
@@ -191,6 +193,8 @@ private extension HomeWebAccountView {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(domains, id: \.name) { domain in
                 Button {
+                    logButtonPressedAnalyticEvents(button: .parkedDomainTile,
+                                                   parameters: [.domainName : domain.name])
                     UDVibration.buttonTap.vibrate()
                     didSelectDomain(domain)
                 } label: {
@@ -289,6 +293,17 @@ private extension HomeWebAccountView {
                 return [.logOut]
             }
         }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .addWallet:
+                return .addWallet
+            case .claim:
+                return .transfer
+            case .more:
+                return .more
+            }
+        }
     }
     
     enum WebSubAction: String, CaseIterable, HomeWalletSubActionItem  {
@@ -309,5 +324,12 @@ private extension HomeWebAccountView {
         }
         
         var isDestructive: Bool { true }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .logOut:
+                return .logOut
+            }
+        }
     }
 }

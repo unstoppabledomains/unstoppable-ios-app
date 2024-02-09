@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletsDomainsSectionView: View {
+struct HomeWalletsDomainsSectionView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     let domainsGroups: [HomeWalletView.DomainsGroup]
     let subdomains: [DomainDisplayInfo]
@@ -45,12 +48,17 @@ private extension HomeWalletsDomainsSectionView {
     @ViewBuilder
     func domainsGroupSectionHeader(_ domainsGroup: HomeWalletView.DomainsGroup) -> some View {
         HomeWalletExpandableSectionHeaderView(title: ".\(domainsGroup.tld)",
-                                              isExpandable: domainsGroup.domains.count > minNumOfVisibleSubdomains,
-                                              numberOfItemsInSection: domainsGroup.domains.count,
+                                              isExpandable: domainsGroup.numberOfDomains > minNumOfVisibleSubdomains,
+                                              numberOfItemsInSection: domainsGroup.numberOfDomains,
                                               isExpanded: domainsTLDsExpandedList.contains(domainsGroup.tld),
                                               actionCallback: {
             let tld = domainsGroup.tld
-            if domainsTLDsExpandedList.contains(tld) {
+            let isExpanded = domainsTLDsExpandedList.contains(tld)
+            logButtonPressedAnalyticEvents(button: .domainsSectionHeader,
+                                           parameters: [.expand : String(!isExpanded),
+                                                        .tld : tld,
+                                                        .numberOfItemsInSection: String(domainsGroup.numberOfDomains)])
+            if isExpanded {
                 domainsTLDsExpandedList.remove(tld)
             } else {
                 domainsTLDsExpandedList.insert(tld)
@@ -59,7 +67,7 @@ private extension HomeWalletsDomainsSectionView {
     }
     
     func numberOfDomainsVisible(in domainsGroup: HomeWalletView.DomainsGroup) -> Int {
-        let numberOfNFTs = domainsGroup.domains.count
+        let numberOfNFTs = domainsGroup.numberOfDomains
         return domainsTLDsExpandedList.contains(domainsGroup.tld) ? numberOfNFTs : min(numberOfNFTs, minNumOfVisibleSubdomains) //Take no more then 2 domains
     }
     
@@ -71,6 +79,9 @@ private extension HomeWalletsDomainsSectionView {
                                               isExpanded: isSubdomainsVisible,
                                               actionCallback: {
             isSubdomainsVisible.toggle()
+            logButtonPressedAnalyticEvents(button: .subdomainsSectionHeader,
+                                           parameters: [.expand : String(!isSubdomainsVisible),
+                                                        .numberOfItemsInSection: String(subdomains.count)])
         })
     }
     
@@ -101,6 +112,8 @@ private extension HomeWalletsDomainsSectionView {
             ForEach(domains, id: \.name) { domain in
                 Button {
                     UDVibration.buttonTap.vibrate()
+                    logButtonPressedAnalyticEvents(button: .domainTile,
+                                                   parameters: [.domainName : domain.name])
                     domainSelectedCallback(domain)
                 } label: {
                     HomeWalletDomainCellView(domain: domain)
@@ -114,6 +127,7 @@ private extension HomeWalletsDomainsSectionView {
     func buyDomainView() -> some View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             Button {
+                logButtonPressedAnalyticEvents(button: .buyDomainTile)
                 UDVibration.buttonTap.vibrate()
                 buyDomainCallback()
             } label: {

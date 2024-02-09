@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct HomeWalletView: View {
+struct HomeWalletView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
@@ -45,6 +48,7 @@ struct HomeWalletView: View {
                     .unstoppableListRowInset()
                 
                 sortingOptionsForSelectedType()
+                    .environment(\.analyticsAdditionalProperties, [.homeContentType : viewModel.selectedContentType.rawValue])
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 0, trailing: 16))
@@ -183,6 +187,7 @@ private extension HomeWalletView {
                                           selectedOption: $viewModel.selectedDomainsSortingOption,
                                           additionalAction: .init(title: String.Constants.buy.localized(),
                                                                   icon: .plusIconNav,
+                                                                  analyticName: .buyDomainsSectionHeader,
                                                                   callback: viewModel.buyDomainPressed))
         }
     }
@@ -222,6 +227,9 @@ private extension HomeWalletView {
                                                   isExpanded: viewModel.isNotMatchingTokensVisible,
                                                   actionCallback: {
                 viewModel.isNotMatchingTokensVisible.toggle()
+                logButtonPressedAnalyticEvents(button: .notMatchingTokensSectionHeader,
+                                               parameters: [.expand : String(viewModel.isNotMatchingTokensVisible),
+                                                            .numberOfItemsInSection: String(viewModel.chainsNotMatch.count)])
             })
             if viewModel.isNotMatchingTokensVisible {
                 LazyVStack(spacing: 20) {
@@ -229,6 +237,8 @@ private extension HomeWalletView {
                         Button {
                             UDVibration.buttonTap.vibrate()
                             didSelectNotMatchingTokenDescription(description)
+                            logButtonPressedAnalyticEvents(button: .notMatchingToken, 
+                                                           parameters: [.chain: description.chain.rawValue])
                         } label: {
                             HomeWalletTokenNotMatchingRowView(description: description)
                         }
@@ -286,7 +296,7 @@ private extension HomeWalletView {
                 .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
-            
+            logButtonPressedAnalyticEvents(button: .qrCode)
         }
     }
 }
