@@ -133,14 +133,14 @@ extension HomeWalletView {
     
     enum TokensSortingOptions: String, Hashable, CaseIterable, HomeViewSortingOption {
         
-        case highestValue, marketCap, alphabetical
+        case highestValue, marketValue, alphabetical
         
         var title: String {
             switch self {
             case .highestValue:
                 return String.Constants.sortHighestValue.localized()
-            case .marketCap:
-                return String.Constants.sortMarketCap.localized()
+            case .marketValue:
+                return String.Constants.sortMarketValue.localized()
             case .alphabetical:
                 return String.Constants.sortAlphabetical.localized()
             }

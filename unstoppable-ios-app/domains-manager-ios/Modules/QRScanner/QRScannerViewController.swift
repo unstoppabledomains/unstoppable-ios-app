@@ -317,6 +317,7 @@ extension QRScannerViewController {
 }
 
 import SwiftUI
+
 struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
     
     var selectedWallet: WalletEntity
