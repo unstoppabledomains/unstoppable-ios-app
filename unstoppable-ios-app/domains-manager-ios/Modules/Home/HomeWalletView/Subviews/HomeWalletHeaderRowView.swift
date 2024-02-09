@@ -208,6 +208,7 @@ private struct WalletBalanceGradientChartView: View {
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
         .frame(maxWidth: .infinity)
+        .withoutAnimation()
     }
     
     init(chartData: [WalletPortfolioRecord]) {
