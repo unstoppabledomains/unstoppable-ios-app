@@ -56,6 +56,8 @@ final class ImageLoadingService: ImageLoadingServiceProtocol {
             } catch {
                 return nil
             }
+        case .wcApp:
+            return UIImage.Preview.previewSquare
         default:
             return nil
         }

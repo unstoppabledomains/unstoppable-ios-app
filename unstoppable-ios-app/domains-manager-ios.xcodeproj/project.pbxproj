@@ -1148,6 +1148,7 @@
 		C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */; };
 		C6A474E829D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */; };
 		C6A474ED29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */; };
+		C6A5CB1F2B75DC7000E41D12 /* PreviewWCRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A5CB1E2B75DC7000E41D12 /* PreviewWCRequests.swift */; };
 		C6A7E1DB2B6A44DF009154F7 /* HomeWebAccountParkedDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A7E1DA2B6A44DF009154F7 /* HomeWebAccountParkedDomainRowView.swift */; };
 		C6A7E1DC2B6A44DF009154F7 /* HomeWebAccountParkedDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A7E1DA2B6A44DF009154F7 /* HomeWebAccountParkedDomainRowView.swift */; };
 		C6A7E1DE2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A7E1DD2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift */; };
@@ -3285,6 +3286,7 @@
 		C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsViewController.swift; sourceTree = "<group>"; };
 		C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingParkedDomainsViewController.xib; sourceTree = "<group>"; };
 		C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileParkedActionCoverViewPresenter.swift; sourceTree = "<group>"; };
+		C6A5CB1E2B75DC7000E41D12 /* PreviewWCRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewWCRequests.swift; sourceTree = "<group>"; };
 		C6A7E1DA2B6A44DF009154F7 /* HomeWebAccountParkedDomainRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWebAccountParkedDomainRowView.swift; sourceTree = "<group>"; };
 		C6A7E1DD2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletLinkNavigationDestination.swift; sourceTree = "<group>"; };
 		C6A89C472B315B35008AB043 /* HotFeatureSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotFeatureSuggestion.swift; sourceTree = "<group>"; };
@@ -6875,6 +6877,14 @@
 			path = LoadingParkedDomains;
 			sourceTree = "<group>";
 		};
+		C6A5CB1D2B75DC5F00E41D12 /* PreviewWCRequests */ = {
+			isa = PBXGroup;
+			children = (
+				C6A5CB1E2B75DC7000E41D12 /* PreviewWCRequests.swift */,
+			);
+			path = PreviewWCRequests;
+			sourceTree = "<group>";
+		};
 		C6A89C4A2B315B6B008AB043 /* HotFeatureSuggestionsService */ = {
 			isa = PBXGroup;
 			children = (
@@ -7383,6 +7393,7 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C6A5CB1D2B75DC5F00E41D12 /* PreviewWCRequests */,
 				C60C59B02B47F97100A2522C /* PreviewLoginViewController */,
 				C66812002B47E3BB00BDABB0 /* PreviewChatListViewController */,
 				C60A31652B464F7A00C806A5 /* PreviewChatViewController */,
@@ -10305,6 +10316,7 @@
 				C6C8F80E2B217C8F00A9834D /* NSLayoutHelper.swift in Sources */,
 				C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */,
 				C6D646D92B1ED31100D724AC /* DomainProfileBadgeDisplayInfo.swift in Sources */,
+				C6A5CB1F2B75DC7000E41D12 /* PreviewWCRequests.swift in Sources */,
 				C6C8F8482B217E9600A9834D /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6D6476F2B1EE06B00D724AC /* MintingDomainListCell.swift in Sources */,
 				C6A89C492B315B3D008AB043 /* HotFeatureSuggestion.swift in Sources */,

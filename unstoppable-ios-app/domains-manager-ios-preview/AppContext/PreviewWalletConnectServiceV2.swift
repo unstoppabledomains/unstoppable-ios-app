@@ -77,22 +77,22 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     struct WCServiceAppInfo: Hashable {
         var isTrusted: Bool { true }
         func getDisplayName() -> String {
-            ""
+            "Display name"
         }
         func getDappName() -> String {
-        ""
+            "Dapp name"
         }
         func getDappHostName() -> String {
-        ""
+            "Dapp host name"
         }
         func getChainIds() -> [Int] {
-         [8001]
+            [8001]
         }
         func getDappHostDisplayName() -> String {
-            ""
+            "Dapp host displayName"
         }
         func getIconURL() -> URL? {
-            nil
+            URL(string: "https://google.com")
         }
     }
 }
