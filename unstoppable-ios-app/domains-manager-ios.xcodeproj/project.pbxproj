@@ -1659,10 +1659,6 @@
 		C6C9959A289D313D00367362 /* CNavigationControllerChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9956D289D313D00367362 /* CNavigationControllerChild.swift */; };
 		C6C9959E289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9956E289D313D00367362 /* CInteractiveTransitioningController.swift */; };
 		C6C995A2289D313D00367362 /* CNavigationControllerChildTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9956F289D313D00367362 /* CNavigationControllerChildTransitioning.swift */; };
-		C6C995A6289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99572289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift */; };
-		C6C995AA289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99573289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift */; };
-		C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99574289D313D00367362 /* CNavigationBarSlidePopAnimation.swift */; };
-		C6C995B2289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99575289D313D00367362 /* CNavigationBarSlidePushAnimation.swift */; };
 		C6C995B6289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99577289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift */; };
 		C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99578289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift */; };
 		C6C995BE289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99579289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift */; };
@@ -1758,10 +1754,6 @@
 		C6D645CE2B1DBD4100D724AC /* DashesProgressNavBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */; };
 		C6D645CF2B1DBD4100D724AC /* DashesProgressNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */; };
 		C6D645D02B1DBD4100D724AC /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
-		C6D645D12B1DBD4600D724AC /* CNavigationBarSlidePushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99575289D313D00367362 /* CNavigationBarSlidePushAnimation.swift */; };
-		C6D645D22B1DBD4600D724AC /* CNavigationControllerSlidePopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99573289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift */; };
-		C6D645D32B1DBD4600D724AC /* CNavigationBarSlidePopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99574289D313D00367362 /* CNavigationBarSlidePopAnimation.swift */; };
-		C6D645D42B1DBD4600D724AC /* CNavigationControllerSlidePushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99572289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift */; };
 		C6D645D52B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99577289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift */; };
 		C6D645D62B1DBD4900D724AC /* CBaseTransitioningAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */; };
 		C6D645D72B1DBD4900D724AC /* CNavigationControllerDefaultPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99579289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift */; };
@@ -3419,10 +3411,6 @@
 		C6C9956D289D313D00367362 /* CNavigationControllerChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerChild.swift; sourceTree = "<group>"; };
 		C6C9956E289D313D00367362 /* CInteractiveTransitioningController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CInteractiveTransitioningController.swift; sourceTree = "<group>"; };
 		C6C9956F289D313D00367362 /* CNavigationControllerChildTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerChildTransitioning.swift; sourceTree = "<group>"; };
-		C6C99572289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerSlidePushAnimation.swift; sourceTree = "<group>"; };
-		C6C99573289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerSlidePopAnimation.swift; sourceTree = "<group>"; };
-		C6C99574289D313D00367362 /* CNavigationBarSlidePopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationBarSlidePopAnimation.swift; sourceTree = "<group>"; };
-		C6C99575289D313D00367362 /* CNavigationBarSlidePushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationBarSlidePushAnimation.swift; sourceTree = "<group>"; };
 		C6C99577289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultNavigationBarPushAnimation.swift; sourceTree = "<group>"; };
 		C6C99578289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultPushAnimation.swift; sourceTree = "<group>"; };
 		C6C99579289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultPopAnimation.swift; sourceTree = "<group>"; };
@@ -7230,23 +7218,11 @@
 			isa = PBXGroup;
 			children = (
 				C6F6AF5728A24D3100A7B571 /* Custom */,
-				C6C99571289D313D00367362 /* Slide */,
 				C6C99576289D313D00367362 /* Default */,
 				C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */,
 				C6B366CB2A1BA19A00DE512B /* Transition */,
 			);
 			path = Animations;
-			sourceTree = "<group>";
-		};
-		C6C99571289D313D00367362 /* Slide */ = {
-			isa = PBXGroup;
-			children = (
-				C6C99572289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift */,
-				C6C99573289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift */,
-				C6C99574289D313D00367362 /* CNavigationBarSlidePopAnimation.swift */,
-				C6C99575289D313D00367362 /* CNavigationBarSlidePushAnimation.swift */,
-			);
-			path = Slide;
 			sourceTree = "<group>";
 		};
 		C6C99576289D313D00367362 /* Default */ = {
@@ -8408,7 +8384,6 @@
 				C6D645FC2B1DBF8C00D724AC /* MintDomainsResult.swift in Sources */,
 				C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C655CAA62B16E82800FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */,
-				C6C995AA289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C623E2052A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
@@ -8625,7 +8600,6 @@
 				C6C9959A289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
 				C6D6E58F281946A6008C66BB /* BorderedView.swift in Sources */,
 				C6DF9866290F81D40098733A /* WebsiteURLValidator.swift in Sources */,
-				C6C995A6289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				C65DEA3E29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */,
 				C617370029D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C62396862A288A9E00363F60 /* MessagingChatMessage.swift in Sources */,
@@ -8782,7 +8756,6 @@
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
 				C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
-				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
 				C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
@@ -8923,7 +8896,6 @@
 				C61807F82B19A7D80032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
 				C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */,
 				C6A2D528284DC45B00327C47 /* PermissionsService.swift in Sources */,
-				C6C995B2289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				C666E09029CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
 				C6A474ED29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */,
 				30784C8927F455100034FA4A /* UDTextView.swift in Sources */,
@@ -9879,14 +9851,12 @@
 				C64939F62B6373C700457363 /* UIWindow.swift in Sources */,
 				C6D645CE2B1DBD4100D724AC /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6C8F9452B2184CD00A9834D /* MainWindow.swift in Sources */,
-				C6D645D32B1DBD4600D724AC /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6B65FA22B57912F006D1812 /* HomeWalletsDomainsSectionView.swift in Sources */,
 				C6C8F8ED2B21836D00A9834D /* ChatViewPresenter.swift in Sources */,
 				C618081B2B19AAFB0032E543 /* PurchaseDomainsServiceProtocol.swift in Sources */,
 				C6D646C32B1ED22400D724AC /* NetworkService+ProfilesEntities.swift in Sources */,
 				C6C8F9202B2183B700A9834D /* DigitalKeyboardViewController.swift in Sources */,
 				C6C8F8E62B21836400A9834D /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
-				C6D645D22B1DBD4600D724AC /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6D647642B1EDEDA00D724AC /* ResizableRoundedWalletImageView.swift in Sources */,
 				C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */,
 				C6C8F8702B21822700A9834D /* TutorialViewPresenter.swift in Sources */,
@@ -10152,7 +10122,6 @@
 				C61807D02B19A4040032E543 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C6C8F87E2B21827700A9834D /* LoginWithEmailViewController.swift in Sources */,
 				C6C8F8672B21814200A9834D /* SecureHashStorage.swift in Sources */,
-				C6D645D42B1DBD4600D724AC /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				C6C8F8F62B21837200A9834D /* ChatTextView.swift in Sources */,
 				C6C8F8332B217E9600A9834D /* CreatePasswordViewController.swift in Sources */,
 				C6D6461E2B1DC23600D724AC /* BlockChainItem.swift in Sources */,
@@ -10244,7 +10213,6 @@
 				C618086A2B19BC050032E543 /* UDButtonStyle.swift in Sources */,
 				C618082B2B19AD6C0032E543 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C6C8F9712B2188C000A9834D /* WalletConnectServiceProtocol.swift in Sources */,
-				C6D645D12B1DBD4600D724AC /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				C61808202B19AB1B0032E543 /* PurchaseDomainsCheckoutData.swift in Sources */,
 				C6C8F89A2B2182A200A9834D /* WalletsListViewPresenter.swift in Sources */,
 				C6C8F8952B2182A200A9834D /* WalletsListViewController.swift in Sources */,
