@@ -10,7 +10,7 @@ import Foundation
 final class NFTsAPIRequestBuilder {
     
     func nftsFor(wallet: String, limit: Int, cursor: String?, chains: [NFTModelChain]?) -> APIRequest {
-        var url = nftsURLFor(wallet: wallet) + "?limit=\(limit)"
+        var url = nftsURLFor(wallet: wallet) + "?limit=\(limit)&excludeDomains=true"
     
         if let cursor {
            url += "&cursor=\(cursor)"
