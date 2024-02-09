@@ -190,9 +190,8 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
         }
     }
     
-    internal func getCurrentConnectionTarget() -> (UDWallet, DomainItem)? {
-        guard let domain = selectedWallet.rrDomain?.toDomainItem() else { return nil }
-        return (selectedWallet.udWallet, domain)
+    internal func getCurrentConnectionTarget() -> UDWallet? {
+        selectedWallet.udWallet
     }
     
     private func resumeAcceptingQRCodes() {

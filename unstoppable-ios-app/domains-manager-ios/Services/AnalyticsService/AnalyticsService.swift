@@ -62,7 +62,6 @@ extension AnalyticsService: WalletConnectServiceConnectionListener {
     private func getAnalyticParametersFrom(app: UnifiedConnectAppInfo) -> Analytics.EventParameters {
         [.appName : app.appName,
          .wallet: app.walletAddress,
-         .domainName: app.domain.name,
          .hostURL: app.appUrlString]
     }
     

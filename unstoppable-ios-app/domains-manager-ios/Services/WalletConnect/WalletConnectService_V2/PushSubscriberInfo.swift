@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: - Fix domain name
 struct PushSubscriberInfo {
     let dAppName: String
     let peerId: String
@@ -19,7 +20,7 @@ struct PushSubscriberInfo {
         self.dAppName = appV2.appName
         self.peerId = appV2.sessionProxy.peer.description  // TODO: correlate to V1 info
         self.bridgeUrl = url                             // TODO: correlate to V1 info
-        self.domainName = appV2.domain.name
+        self.domainName = appContext.walletsDataService.wallets.first(where: { $0.address == appV2.walletAddress.normalized })?.rrDomain?.name ?? appV2.walletAddress.walletAddressTruncated
         let clientData = WalletConnectServiceV2.ClientDataV2(appMetaData: appV2.sessionProxy.peer,
                                                            proposalNamespace: appV2.proposalNamespace)
         self.appInfo = WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: clientData,

@@ -145,6 +145,7 @@ extension WalletsDataService: UDWalletsServiceListener {
         if updatedSelectedWallet != nil {
             selectedWallet = updatedSelectedWallet
         }
+        walletConnectServiceV2.disconnectAppsForAbsentWallets(from: wallets)
     }
 }
 
@@ -210,13 +211,11 @@ private extension WalletsDataService {
             async let domainsPFPInfoTask = loadDomainsPFPIfNotTooLarge(domains)
             let (transactions, domainsPFPInfo) = try await (transactionsTask, domainsPFPInfoTask)
             
-            let finalDomains = await buildWalletDomainsDisplayInfoData(wallet: wallet,
-                                                                       domains: domains,
-                                                                       pfpInfo: domainsPFPInfo,
-                                                                       withTransactions: transactions,
-                                                                       reverseResolutionDomainName: reverseResolutionDomainName)
-            
-            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
+            await buildWalletDomainsDisplayInfoData(wallet: wallet,
+                                                    domains: domains,
+                                                    pfpInfo: domainsPFPInfo,
+                                                    withTransactions: transactions,
+                                                    reverseResolutionDomainName: reverseResolutionDomainName)
             
             if shouldRefreshPFP {
                 await loadWalletDomainsPFPIfTooLarge(wallet)
@@ -224,11 +223,12 @@ private extension WalletsDataService {
         } catch { }
     }
     
+    // TODO: - Fix check if DomainItem needed
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
                                            domains: [DomainItem],
                                            pfpInfo: [DomainPFPInfo],
                                            withTransactions pendingTransactions: [TransactionItem],
-                                           reverseResolutionDomainName: DomainName?) async -> [DomainWithDisplayInfo] {
+                                           reverseResolutionDomainName: DomainName?) async {
         
         var reverseResolutionDomainName = reverseResolutionDomainName
         if let setRRTransaction = pendingTransactions.filterPending(extraCondition: { $0.operation == .setReverseResolution }).first {
@@ -295,8 +295,6 @@ private extension WalletsDataService {
         mutateWalletEntity(wallet) { wallet in
             wallet.updateDomains(finalDomainsWithDisplayInfo.map({ $0.displayInfo }))
         }
-        
-        return finalDomainsWithDisplayInfo
     }
     
     func createDomainsFrom(mintingDomains: [MintingDomain],

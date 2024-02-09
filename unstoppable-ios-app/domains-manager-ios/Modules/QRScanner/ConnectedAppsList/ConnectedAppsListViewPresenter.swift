@@ -82,16 +82,9 @@ private extension ConnectedAppsListViewPresenter {
                 guard let displayInfo = walletsDisplayInfo.first(where: { $0.address == apps[0].walletAddress }) else { continue }
                 
                 var items: [ConnectedAppsListViewController.Item] = apps.map({ app in
-                    let domainItem = app.domain
-                    let domainDisplayInfo: DomainDisplayInfo
-                    if let _domain = domains.first(where: { $0.isSameEntity(domainItem) }) {
-                        domainDisplayInfo = _domain
-                    } else {
-                        Debugger.printFailure("Forced to display a domain that has been disconnected, \(app.domain.name)", critical: true)
-                        domainDisplayInfo = DomainDisplayInfo(domainItem: domainItem,
-                                                   pfpInfo: nil,
-                                                   isSetForRR: false)
-                    }
+                    // TODO: - Fix
+                    let walletAddress = app.walletAddress
+                    let domainDisplayInfo: DomainDisplayInfo = displayInfo.reverseResolutionDomain ?? .init(name: "toRemove", ownerWallet: "after design", isSetForRR: true)
                     
                     var blockchainTypesArray: [BlockchainType] = app.chainIds.compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
                     if blockchainTypesArray.isEmpty {

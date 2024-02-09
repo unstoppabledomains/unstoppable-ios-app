@@ -25,7 +25,7 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     }
     
-    func disconnectAppsForAbsentDomains(from: [DomainItem]) {
+    func disconnectAppsForAbsentWallets(from: [WalletEntity]) {
         
     }
     

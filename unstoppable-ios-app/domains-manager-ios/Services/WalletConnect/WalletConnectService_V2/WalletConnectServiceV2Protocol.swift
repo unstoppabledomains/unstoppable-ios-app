@@ -15,7 +15,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
-    func disconnectAppsForAbsentDomains(from: [DomainItem])
+    func disconnectAppsForAbsentWallets(from: [WalletEntity])
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
     

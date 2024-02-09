@@ -8,7 +8,7 @@
 import Foundation
 
 final class WCRequestsHandlingService: WCRequestsHandlingServiceProtocol, WalletConnectExternalWalletHandlerProtocol {
-    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
+    func handleWCRequest(_ request: WCRequest, target: UDWallet) async throws {
         
     }
     func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler) { }
