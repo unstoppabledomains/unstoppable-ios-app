@@ -131,7 +131,7 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
     func didTapAddButton() {
         Task {
             do {
-                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: .init(name: "oleg.x", ownerWallet: "", isSetForRR: false),
+                let result = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: .init(name: "oleg.x", ownerWallet: "", isSetForRR: false),
                                                                                            swipeToDismissEnabled: true,
                                                                                            in: view!)
                 

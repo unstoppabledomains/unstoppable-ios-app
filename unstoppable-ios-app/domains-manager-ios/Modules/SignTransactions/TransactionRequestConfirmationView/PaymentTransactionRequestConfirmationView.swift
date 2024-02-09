@@ -34,7 +34,7 @@ final class PaymentTransactionRequestConfirmationView: BaseSignTransactionView {
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundDefault)
         addCostContainerView()
-        addDomainInfo()
+        addWalletInfo()
         addLowBalanceStack()
     }
     
@@ -45,9 +45,9 @@ extension PaymentTransactionRequestConfirmationView {
     func configureWith(_ configuration: SignPaymentTransactionUIConfiguration) {
         self.configuration = configuration
         addCostView(configuration: configuration)
-        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo, domain: configuration.connectionConfig.domain)
+        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo)
         setWith(appInfo: configuration.connectionConfig.appInfo)
-        setDomainInfo(configuration.connectionConfig.domain, isSelectable: false)
+        setWalletInfo(configuration.connectionConfig.wallet, isSelectable: false)
         balanceValueWarningIndicator?.isHidden = true
         costView?.set(isLoading: true)
         self.cancelButton.isEnabled = false
@@ -145,11 +145,11 @@ private extension PaymentTransactionRequestConfirmationView {
         self.costView = costView
     }
     
-    func addDomainInfo() {
-        let domainStack = buildDomainInfoView()
-        domainStack.axis = .vertical
-        domainStack.alignment = .leading
-        domainStack.spacing = 6
+    func addWalletInfo() {
+        let walletStack = buildWalletInfoView()
+        walletStack.axis = .vertical
+        walletStack.alignment = .leading
+        walletStack.spacing = 6
 
         let balanceLabel = UILabel()
         balanceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -193,7 +193,7 @@ private extension PaymentTransactionRequestConfirmationView {
         balanceStack.alignment = .trailing
         balanceStack.spacing = 6
         
-        let bottomStack = UIStackView(arrangedSubviews: [domainStack, balanceStack])
+        let bottomStack = UIStackView(arrangedSubviews: [walletStack, balanceStack])
         bottomStack.axis = .horizontal
         bottomStack.alignment = .center
         bottomStack.distribution = .fillEqually

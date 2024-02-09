@@ -274,17 +274,28 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-    func showSignTransactionDomainSelectionScreen(selectedDomain: DomainDisplayInfo,
+    func showSignTransactionWalletSelectionScreen(selectedWallet: WalletEntity, // TODO: - Fix
                                                   swipeToDismissEnabled: Bool,
-                                                  in viewController: UIViewController) async throws -> (DomainDisplayInfo) {
+                                                  in viewController: UIViewController) async throws -> (WalletEntity) {
         try await withSafeCheckedThrowingMainActorContinuation { completion in
-            let vc = buildSignTransactionDomainSelectionModule(selectedDomain: selectedDomain,
-                                                               domainSelectedCallback: { (domain) in
-                completion(.success((domain)))
+            let vc = buildSignTransactionWalletSelectionModule(selectedWallet: selectedWallet,
+                                                               domainSelectedCallback: { (wallet) in
+                completion(.success((wallet)))
             })
             vc.isModalInPresentation = !swipeToDismissEnabled
             presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
         }
+    }
+    
+    func buildSignTransactionWalletSelectionModule(selectedWallet: WalletEntity,
+                                                   domainSelectedCallback: @escaping WalletSelectionCallback) -> UIViewController {
+        let vc = SignTransactionDomainSelectionViewController.nibInstance()
+        let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
+                                                                    selectedWallet: selectedWallet,
+                                                                    domainSelectedCallback: domainSelectedCallback,
+                                                                    walletsDataService: appContext.walletsDataService)
+        vc.presenter = presenter
+        return vc
     }
     
     func showConnectedAppsListScreen(in viewController: UIViewController) async {
@@ -843,18 +854,7 @@ private extension UDRouter {
         vc.presenter = presenter
         return vc
     }
-    
-    func buildSignTransactionDomainSelectionModule(selectedDomain: DomainDisplayInfo,
-                                                   domainSelectedCallback: @escaping DomainWithBalanceSelectionCallback) -> UIViewController {
-        let vc = SignTransactionDomainSelectionViewController.nibInstance()
-        let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
-                                                                    selectedDomain: selectedDomain,
-                                                                    domainSelectedCallback: domainSelectedCallback,
-                                                                    walletsDataService: appContext.walletsDataService)
-        vc.presenter = presenter
-        return vc
-    }
-    
+   
     func buildSetupReverseResolutionModule(wallet: WalletEntity,
                                            domains: [DomainDisplayInfo],
                                            reverseResolutionDomain: DomainDisplayInfo,

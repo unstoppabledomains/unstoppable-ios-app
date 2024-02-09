@@ -147,14 +147,10 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             guard let view = self.view else { return }
             view.stopCaptureSession()
             do {
-                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedWallet.rrDomain!,
+                let result = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: selectedWallet,
                                                                                            swipeToDismissEnabled: true,
                                                                                            in: view)
-                if let wallet = appContext.walletsDataService.wallets.first(where: { wallet in
-                    wallet.domains.first(where: { $0.isSameEntity(result) }) != nil
-                }) {
-                    setSelected(wallet: wallet)
-                }
+                setSelected(wallet: result)
             } catch { }
             view.startCaptureSession()
         }

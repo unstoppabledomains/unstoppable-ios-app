@@ -26,13 +26,14 @@ import SwiftUI
     return vc
 }
 
+private var walletToConnect: WalletEntity { appContext.walletsDataService.wallets[0] }
 
 private func createConnectConfiguration() -> WCRequestUIConfiguration {
     .connectWallet(createWalletConnectConfig())
 }
 
 private func createWalletConnectConfig() -> WalletConnectServiceV2.ConnectionConfig {
-    .init(domain: connectionDomain(), appInfo: connectedAppInfo())
+    .init(wallet: walletToConnect, appInfo: connectedAppInfo())
 }
 
 private func createSignConfiguration() -> WCRequestUIConfiguration {
@@ -49,7 +50,7 @@ private func createPaymentConfiguration() -> WCRequestUIConfiguration {
 
 private func createSignPaymentTransactionUIConfiguration() -> SignPaymentTransactionUIConfiguration {
     .init(connectionConfig: createWalletConnectConfig(),
-          walletAddress: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+          walletAddress: walletToConnect.address,
           chainId: 1,
           cost: createTxDisplayDetails())
 }

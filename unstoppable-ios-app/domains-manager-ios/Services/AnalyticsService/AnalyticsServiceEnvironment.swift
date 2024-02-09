@@ -299,7 +299,7 @@ extension Analytics {
         case connectedAppDomain, connectedAppSupportedNetworks
         
         // Wallet connect
-        case wcDAppName, wcDomainName, wcSelectNetwork, wcEstimatedFee
+        case wcDAppName, wcWallet, wcSelectNetwork, wcEstimatedFee
         
         // Pull up
         case viewWallet, restoreFromICloud

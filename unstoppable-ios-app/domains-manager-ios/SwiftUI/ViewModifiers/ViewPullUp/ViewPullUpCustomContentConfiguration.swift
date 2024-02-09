@@ -133,19 +133,15 @@ extension ViewPullUpCustomContentConfiguration {
                             }
                         }
                     }
-                    baseSignTransactionView.domainButtonCallback = { [weak baseSignTransactionView, weak topViewController] domain in
+                    baseSignTransactionView.walletButtonCallback = { [weak baseSignTransactionView, weak topViewController] wallet in
                         Task {
                             do {
                                 guard let topViewController else { return }
-                                
-                                let isSetForRR = appContext.walletsDataService.wallets.first(where: { $0.rrDomain?.name == domain.name }) != nil
-                                let selectedDomain = DomainDisplayInfo(domainItem: domain, isSetForRR: isSetForRR)
-                                let newDomain = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
+                                let newWallet = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: wallet,
                                                                                                               swipeToDismissEnabled: false,
                                                                                                               in: topViewController)
                                 
-                                let domain = newDomain.toDomainItem()
-                                baseSignTransactionView?.setDomainInfo(domain, isSelectable: true)
+                                baseSignTransactionView?.setWalletInfo(newWallet, isSelectable: true)
                             }
                         }
                     }

@@ -11,13 +11,13 @@ final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
     
     private var networkSelectorButton: SelectorButton?
     private var networkIndicator: UIImageView?
-    private var domainInfoStackView: UIStackView?
+    private var walletInfoStackView: UIStackView?
     private var networkFullStackView: UIStackView?
     private var bottomStackView: UIStackView?
     private var supportedChains: [BlockchainType] = []
     
     override func additionalSetup() {
-        addDomainInfo()
+        addWalletInfo()
     }
 }
 
@@ -30,33 +30,26 @@ extension ConnectServerRequestConfirmationView {
         titleLabel.updateAttributesOf(text: connectionConfig.appInfo.getDisplayName(),
                                       withFont: .currentFont(withSize: 22, weight: .bold),
                                       textColor: .foregroundDefault)
-        setNetworkFrom(appInfo: connectionConfig.appInfo, domain: connectionConfig.domain)
+        setNetworkFrom(appInfo: connectionConfig.appInfo)
         setWith(appInfo: connectionConfig.appInfo)
-        setDomainInfo(connectionConfig.domain, isSelectable: false)
-        Task {
-//            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            await MainActor.run {
-                setDomainInfo(connectionConfig.domain, isSelectable: true)
-            }
-        }
-        
+        setWalletInfo(connectionConfig.wallet, isSelectable: appContext.walletsDataService.wallets.count > 1)
         networkFullStackView?.isHidden = true
         bottomStackView?.axis = .vertical
-        domainInfoStackView?.axis = .horizontal
+        walletInfoStackView?.axis = .horizontal
 
-        let blockchainType = getChainFromAppInfo(connectionConfig.appInfo, domain: connectionConfig.domain)
+        let blockchainType = getChainFromAppInfo(connectionConfig.appInfo)
         set(selectedChain: blockchainType)
     }
 }
 
 // MARK: - Private methods
 private extension ConnectServerRequestConfirmationView {
-    func addDomainInfo() {
-        let domainStack = buildDomainInfoView()
-        domainStack.axis = .vertical
-        domainStack.alignment = .leading
-        domainStack.spacing = 6
-        self.domainInfoStackView = domainStack
+    func addWalletInfo() {
+        let walletStack = buildWalletInfoView()
+        walletStack.axis = .vertical
+        walletStack.alignment = .leading
+        walletStack.spacing = 6
+        self.walletInfoStackView = walletStack
         
         let networkTitleLabel = UILabel()
         networkTitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -83,7 +76,7 @@ private extension ConnectServerRequestConfirmationView {
         networkFullStack.spacing = 6
         self.networkFullStackView = networkFullStack
         
-        let bottomStack = UIStackView(arrangedSubviews: [domainStack, networkFullStack])
+        let bottomStack = UIStackView(arrangedSubviews: [walletStack, networkFullStack])
         bottomStack.spacing = 16
         bottomStack.axis = .horizontal
         bottomStack.alignment = .center

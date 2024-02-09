@@ -27,7 +27,7 @@ extension MockEntitiesFabric {
     enum Wallet {
         static func mockEntities() -> [WalletEntity] {
             WalletWithInfo.mock.map {
-                let domains = Domains.mockDomainDisplayInfo()
+                let domains = Domains.mockDomainDisplayInfo(ownerWallet: $0.wallet.address)
                 let numOfNFTs = Int(arc4random_uniform(10) + 1)
                 let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
                 let addr = $0.wallet.address
@@ -42,6 +42,7 @@ extension MockEntitiesFabric {
                                                                  .init(wallet: addr, date: Date().adding(days: -2), value: 35.2),
                                                                  .init(wallet: addr, date: Date().adding(days: -1), value: 32.9),
                                                                  .init(wallet: addr, date: Date(), value: 39.2)]
+               
                 
                 let balance: [WalletTokenPortfolio] = [.init(address: $0.address,
                                                              symbol: "ETH",
@@ -84,13 +85,14 @@ extension MockEntitiesFabric {
                                                                           walletUsdAmt: 0.71),
                                                              totalValueUsdAmt: 0.71,
                                                              totalValueUsd: "$0.71")]
+                let hasRRDomain = [true, false].randomElement()!
                 
                 return WalletEntity(udWallet: $0.wallet,
                                     displayInfo: $0.displayInfo!,
                                     domains: domains,
                                     nfts: nfts,
                                     balance: balance,
-                                    rrDomain: domains.randomElement(),
+                                    rrDomain: hasRRDomain ? domains.randomElement() : nil,
                                     portfolioRecords: portfolioRecords)
                 
             }
@@ -99,14 +101,14 @@ extension MockEntitiesFabric {
     
     enum Domains {
         
-        static func mockDomainDisplayInfo() -> [DomainDisplayInfo] {
+        static func mockDomainDisplayInfo(ownerWallet: String) -> [DomainDisplayInfo] {
             var domains = [DomainDisplayInfo]()
             let tlds: [String] = ["x", "nft", "unstoppable"]
             
             for tld in tlds {
                 for i in 0..<5 {
                     let domain = DomainDisplayInfo(name: "oleg_\(i).\(tld)",
-                                                   ownerWallet: "",
+                                                   ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
                                                    isSetForRR: false)
                     domains.append(domain)
@@ -114,7 +116,7 @@ extension MockEntitiesFabric {
                 
                 for i in 0..<5 {
                     let domain = DomainDisplayInfo(name: "subdomain_\(i).oleg_0.\(tld)",
-                                                   ownerWallet: "",
+                                                   ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
                                                    isSetForRR: false)
                     domains.append(domain)

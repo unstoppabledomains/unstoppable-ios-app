@@ -282,3 +282,12 @@ extension SignTransactionDomainSelectionViewController {
         case hide(walletAddress: HexAddress)
     }
 }
+
+@available(iOS 17.0, *)
+#Preview {
+    let vc = UDRouter().buildSignTransactionWalletSelectionModule(selectedWallet: appContext.walletsDataService.wallets[0],
+                                                                  domainSelectedCallback: { _ in })
+    let nav = CNavigationController(rootViewController: vc)
+    
+    return nav
+}
