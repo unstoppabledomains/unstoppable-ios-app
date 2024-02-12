@@ -22,10 +22,15 @@ struct HomeWebAccountParkedDomainRowView: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 0) {
                     Text(firebaseDomain.name.getBelowTld() ?? "")
+                        .font(.currentFont(size: 20, weight: .medium))
+                        .lineLimit(1)
                     Text("." + tldName)
                         .offset(x: -4)
+                        .font(.currentFont(size: 20, weight: .medium))
+                    Text(firebaseDomain.parkingStatus.title ?? "")
+                        .font(.currentFont(size: 12))
+                        .opacity(0.7)
                 }
-                .font(.currentFont(size: 20, weight: .medium))
             }
             .foregroundStyle(Color.white)
             .padding(EdgeInsets(top: 8, leading: 8,
@@ -51,4 +56,6 @@ private extension HomeWebAccountParkedDomainRowView {
 
 #Preview {
     HomeWebAccountParkedDomainRowView(firebaseDomain: .init(firebaseDomain: MockEntitiesFabric.Domains.mockFirebaseDomains()[0]))
+        .aspectRatio(1, contentMode: .fit)
+        .squareFrame(150)
 }

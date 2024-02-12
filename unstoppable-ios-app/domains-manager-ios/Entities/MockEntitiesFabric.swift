@@ -132,12 +132,22 @@ extension MockEntitiesFabric {
                 .init(claimStatus: "",
                    internalCustody: true,
                    purchasedAt: Date(),
-                   parkingExpiresAt: Date().addingTimeInterval(100000),
+                   parkingExpiresAt: Date().adding(days: 40),
                    parkingTrial: false,
                    domainId: 0,
                    blockchain: "MATIC",
-                   name: "oleg_parked.x",
+                   name: "parked.x",
                    ownerAddress: "123"),
+                /// Parking expires soon
+                .init(claimStatus: "",
+                      internalCustody: true,
+                      purchasedAt: Date(),
+                      parkingExpiresAt: Date().adding(days: 10),
+                      parkingTrial: false,
+                      domainId: 0,
+                      blockchain: "MATIC",
+                      name: "parking_exp_soon.x",
+                      ownerAddress: "123"),
                 ///Parking trial
                 .init(claimStatus: "",
                       internalCustody: true,
@@ -146,7 +156,7 @@ extension MockEntitiesFabric {
                       parkingTrial: true,
                       domainId: 0,
                       blockchain: "MATIC",
-                      name: "oleg_on_trial.x",
+                      name: "on_trial.x",
                       ownerAddress: "123"),
                 ///Parking expired
                 .init(claimStatus: "",
@@ -156,7 +166,17 @@ extension MockEntitiesFabric {
                       parkingTrial: false,
                       domainId: 0,
                       blockchain: "MATIC",
-                      name: "oleg_expired.x",
+                      name: "expired.x",
+                      ownerAddress: "123"),
+                ///Free parking
+                .init(claimStatus: "",
+                      internalCustody: true,
+                      purchasedAt: Date(),
+                      parkingExpiresAt: nil,
+                      parkingTrial: false,
+                      domainId: 0,
+                      blockchain: "MATIC",
+                      name: "free.x",
                       ownerAddress: "123")
             ]
             
