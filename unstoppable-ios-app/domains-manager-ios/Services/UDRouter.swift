@@ -243,14 +243,6 @@ class UDRouter: DomainProfileSignatureValidator {
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
-    func showDomainsSearch(_ domains: [DomainDisplayInfo],
-                           searchCallback: @escaping DomainsListSearchCallback,
-                           in viewController: UIViewController) {
-        let vc = buildDomainsListSearchModule(domains: domains,
-                                              searchCallback: searchCallback)
-        presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
     func showQRScanner(in viewController: CNavigationController,
                        selectedWallet: WalletEntity,
                        qrRecognizedCallback: @escaping EmptyAsyncCallback) {
@@ -618,10 +610,12 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
-                                 viewingDomain: DomainItem,
+                                 by wallet: WalletEntity,
+                                 viewingDomain: DomainItem?,
                                  preRequestedAction: PreRequestedProfileAction?,
                                  in viewController: UIViewController) {
         let vc = PublicProfileView.instantiate(domain: domain,
+                                               wallet: wallet,
                                                viewingDomain: viewingDomain,
                                                preRequestedAction: preRequestedAction,
                                                delegate: viewController)
@@ -830,16 +824,6 @@ private extension UDRouter {
         return vc
     }
     
-    func buildDomainsListSearchModule(domains: [DomainDisplayInfo],
-                                      searchCallback: @escaping DomainsListSearchCallback) -> UIViewController {
-        let vc = DomainsListViewController.nibInstance()
-        let presenter = DomainsListSearchPresenter(view: vc,
-                                                   domains: domains,
-                                                   searchCallback: searchCallback)
-        vc.presenter = presenter
-        return vc
-    }
-   
     func buildSetupReverseResolutionModule(wallet: WalletEntity,
                                            domains: [DomainDisplayInfo],
                                            reverseResolutionDomain: DomainDisplayInfo,

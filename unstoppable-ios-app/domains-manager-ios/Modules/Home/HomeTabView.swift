@@ -43,7 +43,7 @@ struct HomeTabView: View {
                                             withParameters: [.tab : selectedTab.rawValue])
         })
         .viewPullUp(router.currentPullUp(id: id))
-        .modifier(ShowingWalletSelection(isSelectWalletPresented: $router.isSelectProfilePresented))
+        .modifier(ShowingWalletSelectionModifier(isSelectWalletPresented: $router.isSelectProfilePresented))
         .sheet(isPresented: $router.isConnectedAppsListPresented, content: {
             ConnectedAppsListViewControllerWrapper(scanCallback: {
                 router.showQRScanner()
@@ -77,6 +77,7 @@ struct HomeTabView: View {
         })
         .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
             PublicProfileView(domain: presentationDetails.domain,
+                              wallet: presentationDetails.wallet,
                               viewingDomain: presentationDetails.viewingDomain,
                               preRequestedAction: presentationDetails.preRequestedAction,
                               delegate: presentationDetails.delegate)
@@ -93,21 +94,6 @@ struct HomeTabView: View {
         self._router = StateObject(wrappedValue: tabRouter)
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
-    }
-}
-
-// MARK: - Private methods
-private extension HomeTabView {
-    struct ShowingWalletSelection: ViewModifier {
-        @Binding var isSelectWalletPresented: Bool
-        
-        func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isSelectWalletPresented, content: {
-                    UserProfileSelectionView()
-                        .adaptiveSheet()
-                })
-        }
     }
 }
 

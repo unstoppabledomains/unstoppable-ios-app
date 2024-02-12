@@ -648,10 +648,11 @@ private extension ChatViewPresenter {
                                          walletAddress: String) {
         Task {
             guard let view,
-                  let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
+                let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
-                                               viewingDomain: viewingDomain,
+                                               by: wallet,
+                                               viewingDomain: nil,
                                                preRequestedAction: nil,
                                                in: view)
         }
@@ -956,9 +957,10 @@ private extension ChatViewPresenter {
                                                          wallet: wallet,
                                                          preRequestedAction: action,
                                                          dismissCallback: nil)
-            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
                 UDRouter().showPublicDomainProfile(of: publicDomainDisplayInfo,
-                                                   viewingDomain: viewingDomain,
+                                                   by: wallet,
+                                                   viewingDomain: nil,
                                                    preRequestedAction: action,
                                                    in: view)
             }

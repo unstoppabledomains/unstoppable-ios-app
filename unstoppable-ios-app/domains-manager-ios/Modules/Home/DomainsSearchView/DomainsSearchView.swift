@@ -8,21 +8,24 @@
 import SwiftUI
 import Combine
 
-struct DomainsSearchView: View {
+struct DomainsSearchView: View, ViewAnalyticsLogger {
     
     @Environment(\.walletsDataService) var walletsDataService
+    @Environment(\.presentationMode) private var presentationMode
 
     typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
     
-    private let debounce: TimeInterval = 0.3
+    @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var currentTask: SearchProfilesTask?
     @State private var globalProfiles: [SearchDomainProfile] = []
     @State private var isLoadingGlobalProfiles = false
     @State private var searchText: String = ""
     @State private var searchKey: String = ""
-    private let searchTextPublisher = PassthroughSubject<String, Never>()
     @State private var userDomains: [DomainDisplayInfo] = []
     @State private var domainsToShow: [DomainDisplayInfo] = []
+    private let searchTextPublisher = PassthroughSubject<String, Never>()
+
+    var analyticsName: Analytics.ViewName { .domainsSearch }
     
     var body: some View {
         NavigationStack {
@@ -61,6 +64,7 @@ struct DomainsSearchView: View {
                     .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             ) { debouncedSearchText in
                 self.searchKey = debouncedSearchText.trimmedSpaces.lowercased()
+                logAnalytic(event: .didSearch, parameters: [.value : searchKey])
                 didSearchDomains()
             }
             .onAppear(perform: onAppear)
@@ -97,6 +101,18 @@ private extension DomainsSearchView {
             DomainSearchResultDomainRowView(domain: domain)
         }, callback: {
             UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
+            
+            guard let wallet = walletsDataService.wallets.findOwningDomain(domain.name) else { return }
+            
+            Task {
+                presentationMode.wrappedValue.dismiss()
+                await Task.sleep(seconds: 0.3)
+                await tabRouter.showDomainProfile(domain,
+                                            wallet: wallet,
+                                            preRequestedAction: nil,
+                                            dismissCallback: nil)
+            }
         })
     }
     
@@ -121,6 +137,14 @@ private extension DomainsSearchView {
             DomainSearchResultProfileRowView(profile: profile)
         }, callback: {
             UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])
+            
+            guard let walletAddress = profile.ownerAddress,
+                  let selectedWallet = walletsDataService.selectedWallet else { return }
+            presentationMode.wrappedValue.dismiss()
+
+            let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: profile.name)
+            tabRouter.showPublicDomainProfile(of: domainPublicInfo, by: selectedWallet, preRequestedAction: nil)
         })
     }
     
@@ -206,10 +230,8 @@ private extension DomainsSearchView {
         // Cancel previous search task if it exists
         currentTask?.cancel()
         
-        let debounce = self.debounce
         let task: SearchProfilesTask = Task.detached {
             do {
-                await Task.sleep(seconds: debounce)
                 try Task.checkCancellation()
                 
                 let profiles = try await self.searchForDomains(searchKey: searchKey)
