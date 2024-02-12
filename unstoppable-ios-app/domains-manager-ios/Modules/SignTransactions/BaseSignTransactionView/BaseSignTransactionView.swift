@@ -67,17 +67,19 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
         
         let walletInfoStack = UIStackView(arrangedSubviews: [walletImageView, walletNameButton])
         walletInfoStack.axis = .horizontal
-        walletInfoStack.spacing = 8
+        walletInfoStack.spacing = -2
         walletInfoStack.alignment = .center
 
         let walletLabel = UILabel()
         walletLabel.translatesAutoresizingMaskIntoConstraints = false
-        walletLabel.setAttributedTextWith(text: String.Constants.wallet.localized(),
+        walletLabel.setAttributedTextWith(text: String.Constants.profile.localized(),
                                           font: .currentFont(withSize: 14, weight: .medium),
                                           textColor: .foregroundSecondary)
         
         let stack = UIStackView(arrangedSubviews: [walletLabel, walletInfoStack])
-        
+        stack.spacing = 16
+        stack.alignment = .center
+
         return stack
     }
 }
@@ -143,12 +145,11 @@ extension BaseSignTransactionView {
                     let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainDisplayInfo, size: .full),
                                                                                downsampleDescription: .icon)
                     walletImageView.image = image
-                } else {
-                    walletImageView.image = wallet.displayInfo.source.displayIcon
                 }
+                walletImageView.isHidden = wallet.rrDomain == nil
             }
         }
-        walletNameButton?.setTitle(wallet.displayName, image: isSelectable ? .chevronDown : nil)
+        walletNameButton?.setTitle(wallet.domainOrDisplayName, image: isSelectable ? .chevronDown : nil)
         walletNameButton?.setSelectorEnabled(isSelectable)
     }
     
