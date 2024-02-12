@@ -32,22 +32,23 @@ struct DomainsSearchView: View {
                         emptyStateFor(type: .noResult)
                     }
                 } else {
-//                    VStack(spacing: 48) {
-                        if !domainsToShow.isEmpty {
-                            domainsSection(domainsToShow)
-                                .listRowSeparator(.hidden)
-                        }
-                        if !globalProfiles.isEmpty {
-                            discoveredProfilesSection(globalProfiles)
-                                .listRowSeparator(.hidden)
-                        }
-//                    }
+                    if !domainsToShow.isEmpty {
+                        domainsSection(domainsToShow)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                    }
+                    if !globalProfiles.isEmpty {
+                        discoveredProfilesSection(globalProfiles)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                    }
                 }
             }
             .listStyle(.plain)
             .listRowSpacing(0)
             .clearListBackground()
             .background(Color.black)
+            .animation(.default, value: UUID())
             .navigationTitle(String.Constants.allDomains.localized())
             .navigationBarTitleDisplayMode(.inline)
             .onAppear(perform: onAppear)
@@ -72,7 +73,7 @@ private extension DomainsSearchView {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeaderViewWith(title: String.Constants.yourDomains.localized())
             UDListSectionView {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     ForEach(domains) { domain in
                         domainsRowView(domain)
                     }
@@ -95,14 +96,12 @@ private extension DomainsSearchView {
     func discoveredProfilesSection(_ profiles: [SearchDomainProfile]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeaderViewWith(title: String.Constants.globalSearch.localized())
-            
             UDListSectionView {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     ForEach(profiles, id: \.name) { profile in
                         discoveredProfileRowView(profile)
                     }
                 }
-                .frame(height: UDListItemView.height * CGFloat(profiles.count))
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             }
         }
@@ -143,6 +142,7 @@ private extension DomainsSearchView {
         .frame(maxWidth: .infinity)
         .frame(height: 300)
         .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
     
     enum EmptyStateType {
