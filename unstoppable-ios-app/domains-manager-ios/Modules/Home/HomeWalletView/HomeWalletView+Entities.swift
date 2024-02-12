@@ -12,11 +12,12 @@ protocol HomeViewSortingOption: Hashable, CaseIterable {
     var analyticName: String { get }
 }
 
-protocol HomeWalletActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
+protocol HomeWalletActionItem: Identifiable, Hashable {
     associatedtype SubAction: HomeWalletSubActionItem
     
     var title: String { get }
     var icon: Image { get }
+    var isDimmed: Bool { get }
     var analyticButton: Analytics.Button { get }
     var subActions: [SubAction] { get }
 }
@@ -50,10 +51,24 @@ extension HomeWalletView {
     }
     
     
-    enum WalletAction: String, CaseIterable, HomeWalletActionItem {
+    enum WalletAction: HomeWalletActionItem {
+        
+        var id: String {
+            switch self {
+            case .buy:
+                return "buy"
+            case .receive:
+                return "receive"
+            case .profile(let enabled):
+                return "profile_\(enabled)"
+            case .more:
+                return "more"
+            }
+        }
+        
         case buy
         case receive
-        case profile
+        case profile(enabled: Bool)
         case more
         
         var title: String {
@@ -101,6 +116,15 @@ extension HomeWalletView {
                 return .profile
             case .more:
                 return .more
+            }
+        }
+        
+        var isDimmed: Bool {
+            switch self {
+            case .buy, .receive, .more:
+                return false
+            case .profile(let enabled):
+                return !enabled
             }
         }
     }

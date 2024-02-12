@@ -32,7 +32,8 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 .onAppearanceChange($isHeaderVisible)
                 .unstoppableListRowInset()
                 
-                HomeWalletActionsView(actionCallback: { action in
+                HomeWalletActionsView(actions: walletActions(),
+                                      actionCallback: { action in
                     viewModel.walletActionPressed(action)
                 }, subActionCallback: { subAction in
                     viewModel.walletSubActionPressed(subAction)
@@ -140,6 +141,10 @@ private extension HomeWalletView {
                     .frame(height: 20)
             }
         }
+    }
+    
+    func walletActions() -> [WalletAction] {
+        [.buy, .receive, .profile(enabled: viewModel.selectedWallet.rrDomain != nil), .more]
     }
     
     func updateNavTitleVisibility() {
@@ -258,7 +263,7 @@ private extension HomeWalletView {
         Task {
             let pullUpConfig = await ViewPullUpDefaultConfiguration.recordDoesNotMatchOwner(chain: description.chain,
                                                                                             ownerAddress: description.ownerWallet, updateRecordsCallback: {
-                viewModel.walletActionPressed(.profile)
+                viewModel.walletActionPressed(.profile(enabled: true))
             })
             tabRouter.pullUp = .default(pullUpConfig)
         }
