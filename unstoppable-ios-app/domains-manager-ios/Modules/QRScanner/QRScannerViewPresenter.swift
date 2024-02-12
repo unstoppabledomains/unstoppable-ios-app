@@ -25,9 +25,9 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     private var isAcceptingQRCodes = true
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
-    private let udWalletsService: UDWalletsServiceProtocol
+    private let walletsDataService: WalletsDataServiceProtocol
     private var selectedWallet: WalletEntity
-    private var blockchainType: BlockchainType = UserDefaults.selectedBlockchainType
+    private var blockchainType: BlockchainType = .Ethereum // UserDefaults.selectedBlockchainType
     private var cancellables: Set<AnyCancellable> = []
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var qrRecognizedCallback: MainActorAsyncCallback?
@@ -36,13 +36,13 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
          selectedWallet: WalletEntity,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
-         udWalletsService: UDWalletsServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol) {
         self.view = view
         self.selectedWallet = selectedWallet
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
-        self.udWalletsService = udWalletsService
-        appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+        self.walletsDataService = walletsDataService
+        walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
             if let selectedWallet {
                 self?.setSelected(wallet: selectedWallet)
             }
@@ -206,14 +206,14 @@ private extension QRScannerViewPresenter {
     
     func setSelected(wallet: WalletEntity) {
         let displayInfo = wallet.displayInfo
-        let domains = wallet.domains
+        let wallets = walletsDataService.wallets
         self.selectedWallet = wallet
         let balance = wallet.balanceFor(blockchainType: blockchainType)
         
         view?.setWith(selectedDomain: wallet.rrDomain,
                       wallet: displayInfo,
                       balance: balance,
-                      isSelectable: domains.count > 1)
+                      isSelectable: wallets.count > 1)
     }
     
     func setSelectedWalletInfo() {

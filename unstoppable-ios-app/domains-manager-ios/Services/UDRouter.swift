@@ -267,7 +267,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                                selectedWallet: selectedWallet,
                                                walletConnectServiceV2: appContext.walletConnectServiceV2,
                                                networkReachabilityService: appContext.networkReachabilityService,
-                                               udWalletsService: appContext.udWalletsService)
+                                               walletsDataService: appContext.walletsDataService)
         presenter.qrRecognizedCallback = qrRecognizedCallback
         vc.presenter = presenter
         vc.hidesBottomBarWhenPushed = true

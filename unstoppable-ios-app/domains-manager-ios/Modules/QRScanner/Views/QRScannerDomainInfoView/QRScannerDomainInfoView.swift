@@ -54,34 +54,49 @@ final class QRScannerDomainInfoView: UIControl, SelfNameable, NibInstantiateable
 // MARK: - Open methods
 extension QRScannerDomainInfoView {
     func setWith(domain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool) {
-        guard let domain else { return }
-        // TODO: - Handle no domain
-        Task {
-            iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .default),
-                                                                                 downsampleDescription: nil)
-            let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
-                                                                       downsampleDescription: .icon)
-            iconImageView.image = image
-        }
         
         reverseResolutionIndicator.isHidden = true
-        if let reverseResolutionDomain = wallet.reverseResolutionDomain ,
-           domain.name == reverseResolutionDomain.name {
-            reverseResolutionIndicator.isHidden = false
+        let title: String
+        let subtitle: String
+        if let domain {
+            title = domain.name
+            subtitle = wallet.displayName
+            if let reverseResolutionDomain = wallet.reverseResolutionDomain ,
+               domain.name == reverseResolutionDomain.name {
+                reverseResolutionIndicator.isHidden = false
+            }
+        
+            Task {
+                iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .default),
+                                                                                     downsampleDescription: nil)
+                let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
+                                                                           downsampleDescription: .icon)
+                iconImageView.image = image
+            }
+        } else {
+            if wallet.isNameSet {
+                title = wallet.displayName
+                subtitle = wallet.address.walletAddressTruncated
+            } else {
+                title = wallet.address.walletAddressTruncated
+                subtitle = ""
+            }
+            iconImageView.image = wallet.source.displayIcon
         }
         
-        isUserInteractionEnabled = isSelectable
-        chevronImageView.isHidden = !isSelectable
-        domainInfoLabel.setAttributedTextWith(text: domain.name,
+        domainInfoLabel.setAttributedTextWith(text: title,
                                               font: .currentFont(withSize: 16, weight: .medium),
                                               textColor: .brandWhite)
         
+        isUserInteractionEnabled = isSelectable
+        chevronImageView.isHidden = !isSelectable
         walletLoadingView.isHidden = balance != nil
+        let subtitleText = subtitle.isEmpty ? "" : "\(subtitle) · "
         let walletInfo: String
         if let balance = balance {
-            walletInfo = "\(wallet.displayName) · \(balance.value.walletUsd)"
+            walletInfo = "\(subtitleText)\(balance.value.walletUsd)"
         } else {
-            walletInfo = "\(wallet.displayName) · "
+            walletInfo = subtitleText
         }
         walletInfoLabel.setAttributedTextWith(text: walletInfo,
                                               font: .currentFont(withSize: 14, weight: .regular),
