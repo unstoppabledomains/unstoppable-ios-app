@@ -73,6 +73,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
             }
         })
         .refreshable {
+            logAnalytic(event: .didPullToRefresh)
             await loadParkedDomains()
         }
         .onAppear(perform: onAppear)

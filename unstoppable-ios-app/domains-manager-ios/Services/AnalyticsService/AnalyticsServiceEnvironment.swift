@@ -75,6 +75,7 @@ extension Analytics {
         case didSelectNotSupportedDomainForPurchaseInSearch
         
         case shareResult, didSelectHomeTab
+        case didPullToRefresh
     }
 }
 

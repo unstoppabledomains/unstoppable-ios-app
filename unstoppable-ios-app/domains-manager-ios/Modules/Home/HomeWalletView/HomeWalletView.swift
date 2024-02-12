@@ -84,6 +84,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 }
             })
             .refreshable {
+                logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
             .onAppear(perform: setTitleViewIfNeeded)
