@@ -286,7 +286,7 @@ class UDRouter: DomainProfileSignatureValidator {
     func showConnectedAppsListScreen(in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation { completion in
             let vc = buildConnectedAppsModule()
-            presentInEmptyRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
+            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
         }
     }
     

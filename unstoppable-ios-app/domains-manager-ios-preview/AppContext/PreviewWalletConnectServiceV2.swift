@@ -66,10 +66,16 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     
-    static var connectedAppsToUse: [UnifiedConnectAppInfo] = []
+    static var connectedAppsToUse: [UnifiedConnectAppInfo] = [.init(name: "Foundation", walletAddress: "123")]
     
     func getConnectedApps() -> [UnifiedConnectAppInfo] {
-        WalletConnectServiceV2.connectedAppsToUse
+        let wallets = MockEntitiesFabric.Wallet.mockEntities()
+        
+        let apps: [UnifiedConnectAppInfo] = [.init(name: "Foundation", walletAddress: wallets[0].address),
+                                             .init(name: "OpenSea", walletAddress: wallets[0].address),
+                                             .init(name: "LensFrens", walletAddress: wallets[1].address)]
+        
+        return apps
     }
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
         
@@ -99,7 +105,6 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 
 protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable, Sendable {
     var walletAddress: HexAddress { get }
-    var domain: DomainItem { get }
     var appIconUrls: [String] { get }
     
     var appName: String { get }

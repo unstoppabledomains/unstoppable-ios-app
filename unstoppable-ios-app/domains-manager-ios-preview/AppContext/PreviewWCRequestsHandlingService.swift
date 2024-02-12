@@ -28,7 +28,6 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     var walletAddress: HexAddress
     var appName: String
     var displayName: String
-    let domain: DomainItem
     
     var appIconUrls: [String] = []
     var appUrlString: String = ""
@@ -38,12 +37,10 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     var chainIds: [Int] = []
 
     init(name: String = "Uniswap",
-              walletAddress: String = "",
-              domainName: String = "oleg.x") {
+              walletAddress: String = "") {
         self.walletAddress = walletAddress
         self.appName = name
         self.displayName = name
-        self.domain = .init(name: domainName)
     }
     
 }
