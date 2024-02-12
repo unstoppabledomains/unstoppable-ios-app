@@ -63,7 +63,7 @@ private extension HomeWalletTokenNotMatchingRowView {
     func loadIconFor(description: HomeWalletView.NotMatchedRecordsDescription) {
         icon = nil
        
-        HomeWalletView.TokenDescription.loadIconFor(ticker: description.chain.rawValue) { image in
+        HomeWalletView.TokenDescription.loadIconFor(ticker: description.chain.rawValue, logoURL: nil) { image in
             DispatchQueue.main.async {
                 self.icon = image
             }

@@ -223,7 +223,6 @@ private extension WalletsDataService {
         } catch { }
     }
     
-    // TODO: - Fix check if DomainItem needed
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
                                            domains: [DomainItem],
                                            pfpInfo: [DomainPFPInfo],

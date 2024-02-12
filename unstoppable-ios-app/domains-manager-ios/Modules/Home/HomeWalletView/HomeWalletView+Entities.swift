@@ -215,6 +215,7 @@ extension HomeWalletView {
         var marketUsd: Double?
         var parentSymbol: String?
         var logoURL: URL?
+        var parentLogoURL: URL?
         private(set) var isSkeleton: Bool = false
        
         static let iconSize: InitialsView.InitialsSize = .default
@@ -236,7 +237,7 @@ extension HomeWalletView {
             self.marketUsd = marketUsd
         }
         
-        init(walletToken: WalletTokenPortfolio.Token, parentSymbol: String) {
+        init(walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
             self.symbol = walletToken.symbol
             self.name = walletToken.name
             self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
@@ -248,7 +249,9 @@ extension HomeWalletView {
         
         static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
-            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(walletToken: $0, parentSymbol: walletBalance.symbol) }).filter({ $0.balanceUsd >= 1 }) ?? []
+            let parentSymbol = walletBalance.symbol
+            let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
+            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(walletToken: $0, parentSymbol: parentSymbol, parentLogoURL: parentLogoURL) }).filter({ $0.balanceUsd >= 1 }) ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
@@ -260,18 +263,24 @@ extension HomeWalletView {
         }
         
         func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
-            TokenDescription.loadIconFor(ticker: symbol, iconUpdated: iconUpdated)
+            TokenDescription.loadIconFor(ticker: symbol, logoURL: logoURL, iconUpdated: iconUpdated)
         }
         
         func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
             if let parentSymbol {
-                TokenDescription.loadIconFor(ticker: parentSymbol, iconUpdated: iconUpdated)
+                TokenDescription.loadIconFor(ticker: parentSymbol, logoURL: parentLogoURL, iconUpdated: iconUpdated)
             } else {
                 iconUpdated(nil)
             }
         }
         
-        static func loadIconFor(ticker: String, iconUpdated: @escaping (UIImage?)->()) {
+        static func loadIconFor(ticker: String, logoURL: URL?, iconUpdated: @escaping (UIImage?)->()) {
+            if let logoURL,
+               let cachedImage = appContext.imageLoadingService.cachedImage(for: .url(logoURL, maxSize: nil), downsampleDescription: .icon) {
+                iconUpdated(cachedImage)
+                return
+            }
+            
             let size = TokenDescription.iconSize
             let style = TokenDescription.iconStyle
             if let cachedImage = appContext.imageLoadingService.cachedImage(for: .currencyTicker(ticker,
@@ -293,6 +302,11 @@ extension HomeWalletView {
                                                                                                    size: size,
                                                                                                    style: style),
                                                                              downsampleDescription: .icon) {
+                    iconUpdated(icon)
+                } else if let logoURL,
+                          let icon = await appContext.imageLoadingService.loadImage(from: .url(logoURL,
+                                                                                               maxSize: nil),
+                                                                                    downsampleDescription: .icon) {
                     iconUpdated(icon)
                 }
             }
