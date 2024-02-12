@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct DomainsSearchView: View {
     
@@ -19,6 +20,7 @@ struct DomainsSearchView: View {
     @State private var isLoadingGlobalProfiles = false
     @State private var searchText: String = ""
     @State private var searchKey: String = ""
+    private let searchTextPublisher = PassthroughSubject<String, Never>()
     @State private var userDomains: [DomainDisplayInfo] = []
     @State private var domainsToShow: [DomainDisplayInfo] = []
     
@@ -51,11 +53,17 @@ struct DomainsSearchView: View {
             .animation(.default, value: UUID())
             .navigationTitle(String.Constants.allDomains.localized())
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear(perform: onAppear)
-            .onChange(of: searchText) { newValue in
-                self.searchKey = newValue.trimmedSpaces.lowercased()
+            .onChange(of: searchText) { searchText in
+                searchTextPublisher.send(searchText)
+            }
+            .onReceive(
+                searchTextPublisher
+                    .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            ) { debouncedSearchText in
+                self.searchKey = debouncedSearchText.trimmedSpaces.lowercased()
                 didSearchDomains()
             }
+            .onAppear(perform: onAppear)
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
     }
