@@ -76,7 +76,7 @@ struct DomainsSearchView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension DomainsSearchView {
     func onAppear() {
-        userDomains = walletsDataService.wallets.combinedDomains()
+        userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         domainsToShow = userDomains
     }
     
