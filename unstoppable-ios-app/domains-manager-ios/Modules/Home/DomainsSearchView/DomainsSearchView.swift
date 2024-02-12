@@ -24,7 +24,26 @@ struct DomainsSearchView: View {
     
     var body: some View {
         NavigationStack {
-            List/*@START_MENU_TOKEN@*/Text("Placeholder")/*@END_MENU_TOKEN@*/
+            List {
+                if domainsToShow.isEmpty && globalProfiles.isEmpty && !isLoadingGlobalProfiles {
+                    if userDomains.isEmpty {
+                        emptyStateFor(type: .noDomains)
+                    } else {
+                        emptyStateFor(type: .noResult)
+                    }
+                } else {
+//                    VStack(spacing: 48) {
+                        if !domainsToShow.isEmpty {
+                            domainsSection(domainsToShow)
+                                .listRowSeparator(.hidden)
+                        }
+                        if !globalProfiles.isEmpty {
+                            discoveredProfilesSection(globalProfiles)
+                                .listRowSeparator(.hidden)
+                        }
+//                    }
+                }
+            }
             .listStyle(.plain)
             .listRowSpacing(0)
             .clearListBackground()
