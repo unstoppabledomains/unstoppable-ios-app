@@ -297,16 +297,15 @@ extension HomeWalletView {
                                                                               downsampleDescription: nil)
                 iconUpdated(initials)
                 
-                
-                if let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
+                if let logoURL,
+                   let icon = await appContext.imageLoadingService.loadImage(from: .url(logoURL,
+                                                                                        maxSize: nil),
+                                                                             downsampleDescription: .icon) {
+                    iconUpdated(icon)
+                } else if let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
                                                                                                    size: size,
                                                                                                    style: style),
                                                                              downsampleDescription: .icon) {
-                    iconUpdated(icon)
-                } else if let logoURL,
-                          let icon = await appContext.imageLoadingService.loadImage(from: .url(logoURL,
-                                                                                               maxSize: nil),
-                                                                                    downsampleDescription: .icon) {
                     iconUpdated(icon)
                 }
             }
