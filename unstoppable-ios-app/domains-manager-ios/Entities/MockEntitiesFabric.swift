@@ -85,7 +85,7 @@ extension MockEntitiesFabric {
                                                                           walletUsdAmt: 0.71),
                                                              totalValueUsdAmt: 0.71,
                                                              totalValueUsd: "$0.71")]
-                let hasRRDomain = [true, false].randomElement()!
+                let hasRRDomain = true // [true, false].randomElement()!
                 
                 return WalletEntity(udWallet: $0.wallet,
                                     displayInfo: $0.displayInfo!,

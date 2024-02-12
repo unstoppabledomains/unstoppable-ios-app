@@ -14,6 +14,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
+    @Published var isSearchingDomains: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
@@ -373,6 +374,7 @@ private extension HomeTabRouter {
     func popToRoot() {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
+        isSearchingDomains = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

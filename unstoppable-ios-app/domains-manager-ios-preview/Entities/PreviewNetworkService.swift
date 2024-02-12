@@ -227,7 +227,7 @@ extension NetworkService {
 extension NetworkService {
     public func searchForDomainsWith(name: String,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
-        []
+        [.init(name: "\(name).x", ownerAddress: "123", imagePath: nil, imageType: nil)]
     }
     
     func isDomain(_ followerDomain: String, following followingDomain: String) async throws -> Bool {

@@ -63,6 +63,9 @@ struct HomeTabView: View {
             ReverseResolutionSelectionView(wallet: wallet)
                 .interactiveDismissDisabled(true)
         })
+        .sheet(isPresented: $router.isSearchingDomains, content: {
+            DomainsSearchView()
+        })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
                                                wallet: presentationDetails.wallet,
