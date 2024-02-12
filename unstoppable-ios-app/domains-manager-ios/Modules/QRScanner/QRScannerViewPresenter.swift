@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
@@ -27,9 +28,10 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     private let udWalletsService: UDWalletsServiceProtocol
     private var selectedWallet: WalletEntity
     private var blockchainType: BlockchainType = UserDefaults.selectedBlockchainType
+    private var cancellables: Set<AnyCancellable> = []
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var qrRecognizedCallback: MainActorAsyncCallback?
-    
+
     init(view: QRScannerViewProtocol,
          selectedWallet: WalletEntity,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
@@ -40,6 +42,11 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
+        appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+            if let selectedWallet {
+                self?.setSelected(wallet: selectedWallet)
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -143,17 +150,9 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     
     func didTapDomainInfoView() {
         UDVibration.buttonTap.vibrate()
-        Task {
-            guard let view = self.view else { return }
-            view.stopCaptureSession()
-            do {
-                let result = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: selectedWallet,
-                                                                                           swipeToDismissEnabled: true,
-                                                                                           in: view)
-                setSelected(wallet: result)
-            } catch { }
-            view.startCaptureSession()
-        }
+        guard let view = self.view else { return }
+        UDRouter().showProfileSelectionScreen(selectedWallet: selectedWallet,
+                                              in: view)
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {

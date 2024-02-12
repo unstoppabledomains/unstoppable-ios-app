@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
     
@@ -15,9 +16,15 @@ final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
     private var networkFullStackView: UIStackView?
     private var bottomStackView: UIStackView?
     private var supportedChains: [BlockchainType] = []
-    
+    private var cancellables: Set<AnyCancellable> = []
+
     override func additionalSetup() {
         addWalletInfo()
+        appContext.walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+            if let selectedWallet {
+                self?.setWithWallet(selectedWallet)
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -32,7 +39,7 @@ extension ConnectServerRequestConfirmationView {
                                       textColor: .foregroundDefault)
         setNetworkFrom(appInfo: connectionConfig.appInfo)
         setWith(appInfo: connectionConfig.appInfo)
-        setWalletInfo(connectionConfig.wallet, isSelectable: appContext.walletsDataService.wallets.count > 1)
+        setWithWallet(connectionConfig.wallet)
         networkFullStackView?.isHidden = true
         bottomStackView?.axis = .vertical
         walletInfoStackView?.axis = .horizontal
@@ -44,6 +51,10 @@ extension ConnectServerRequestConfirmationView {
 
 // MARK: - Private methods
 private extension ConnectServerRequestConfirmationView {
+    func setWithWallet(_ wallet: WalletEntity) {
+        setWalletInfo(wallet, isSelectable: appContext.walletsDataService.wallets.count > 1)
+    }
+    
     func addWalletInfo() {
         let walletStack = buildWalletInfoView()
         walletStack.axis = .vertical

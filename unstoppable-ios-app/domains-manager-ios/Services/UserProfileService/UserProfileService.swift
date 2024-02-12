@@ -183,4 +183,13 @@ enum UserProfile {
             return user.displayName
         }
     }
+    
+    var isWalletProfile: Bool {
+        switch self {
+        case .wallet(let wallet):
+            return true
+        case .webAccount(let user):
+            return false
+        }
+    }
 }

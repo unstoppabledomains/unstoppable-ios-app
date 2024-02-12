@@ -87,15 +87,13 @@ extension PullUpViewService {
                 }
             }
             
-            signTransactionView.walletButtonCallback = { [weak pullUpView, weak signTransactionView] wallet in
+            signTransactionView.walletButtonCallback = { [weak pullUpView] wallet in
                 Task {
                     do {
                         guard let pullUpView = pullUpView else { return }
-                        let newWallet = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: wallet,
-                                                                                                      swipeToDismissEnabled: false,
-                                                                                                      in: pullUpView)
                         
-                        signTransactionView?.setWalletInfo(newWallet, isSelectable: true)
+                        UDRouter().showProfileSelectionScreen(selectedWallet: wallet,
+                                                              in: pullUpView)
                     }
                 }
             }

@@ -133,15 +133,13 @@ extension ViewPullUpCustomContentConfiguration {
                             }
                         }
                     }
-                    baseSignTransactionView.walletButtonCallback = { [weak baseSignTransactionView, weak topViewController] wallet in
+                    baseSignTransactionView.walletButtonCallback = { [weak topViewController] wallet in
                         Task {
                             do {
                                 guard let topViewController else { return }
-                                let newWallet = try await UDRouter().showSignTransactionWalletSelectionScreen(selectedWallet: wallet,
-                                                                                                              swipeToDismissEnabled: false,
-                                                                                                              in: topViewController)
                                 
-                                baseSignTransactionView?.setWalletInfo(newWallet, isSelectable: true)
+                                UDRouter().showProfileSelectionScreen(selectedWallet: wallet,
+                                                                      in: topViewController)
                             }
                         }
                     }

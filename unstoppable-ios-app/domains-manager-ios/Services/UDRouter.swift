@@ -274,28 +274,13 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-    func showSignTransactionWalletSelectionScreen(selectedWallet: WalletEntity, // TODO: - Fix
-                                                  swipeToDismissEnabled: Bool,
-                                                  in viewController: UIViewController) async throws -> (WalletEntity) {
-        try await withSafeCheckedThrowingMainActorContinuation { completion in
-            let vc = buildSignTransactionWalletSelectionModule(selectedWallet: selectedWallet,
-                                                               domainSelectedCallback: { (wallet) in
-                completion(.success((wallet)))
-            })
-            vc.isModalInPresentation = !swipeToDismissEnabled
-            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
+    func showProfileSelectionScreen(selectedWallet: WalletEntity,
+                                    in viewController: UIViewController) {
+        let vc = UserProfileSelectionView.viewController(mode: .walletProfileSelection(selectedWallet: selectedWallet))
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
         }
-    }
-    
-    func buildSignTransactionWalletSelectionModule(selectedWallet: WalletEntity,
-                                                   domainSelectedCallback: @escaping WalletSelectionCallback) -> UIViewController {
-        let vc = SignTransactionDomainSelectionViewController.nibInstance()
-        let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
-                                                                    selectedWallet: selectedWallet,
-                                                                    domainSelectedCallback: domainSelectedCallback,
-                                                                    walletsDataService: appContext.walletsDataService)
-        vc.presenter = presenter
-        return vc
+        viewController.present(vc, animated: true)
     }
     
     func showConnectedAppsListScreen(in viewController: UIViewController) async {
