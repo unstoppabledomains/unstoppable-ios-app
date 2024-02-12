@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
@@ -24,22 +25,28 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     private var isAcceptingQRCodes = true
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
-    private let udWalletsService: UDWalletsServiceProtocol
+    private let walletsDataService: WalletsDataServiceProtocol
     private var selectedWallet: WalletEntity
-    private var blockchainType: BlockchainType = UserDefaults.selectedBlockchainType
+    private var blockchainType: BlockchainType = .Ethereum // UserDefaults.selectedBlockchainType
+    private var cancellables: Set<AnyCancellable> = []
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var qrRecognizedCallback: MainActorAsyncCallback?
-    
+
     init(view: QRScannerViewProtocol,
          selectedWallet: WalletEntity,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
-         udWalletsService: UDWalletsServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol) {
         self.view = view
         self.selectedWallet = selectedWallet
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
-        self.udWalletsService = udWalletsService
+        self.walletsDataService = walletsDataService
+        walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+            if let selectedWallet {
+                self?.setSelected(wallet: selectedWallet)
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -143,21 +150,9 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     
     func didTapDomainInfoView() {
         UDVibration.buttonTap.vibrate()
-        Task {
-            guard let view = self.view else { return }
-            view.stopCaptureSession()
-            do {
-                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedWallet.rrDomain!,
-                                                                                           swipeToDismissEnabled: true,
-                                                                                           in: view)
-                if let wallet = appContext.walletsDataService.wallets.first(where: { wallet in
-                    wallet.domains.first(where: { $0.isSameEntity(result) }) != nil
-                }) {
-                    setSelected(wallet: wallet)
-                }
-            } catch { }
-            view.startCaptureSession()
-        }
+        guard let view = self.view else { return }
+        UDRouter().showProfileSelectionScreen(selectedWallet: selectedWallet,
+                                              in: view)
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
@@ -194,9 +189,8 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
         }
     }
     
-    internal func getCurrentConnectionTarget() -> (UDWallet, DomainItem)? {
-        guard let domain = selectedWallet.rrDomain?.toDomainItem() else { return nil }
-        return (selectedWallet.udWallet, domain)
+    internal func getCurrentConnectionTarget() -> UDWallet? {
+        selectedWallet.udWallet
     }
     
     private func resumeAcceptingQRCodes() {
@@ -212,14 +206,14 @@ private extension QRScannerViewPresenter {
     
     func setSelected(wallet: WalletEntity) {
         let displayInfo = wallet.displayInfo
-        let domains = wallet.domains
+        let wallets = walletsDataService.wallets
         self.selectedWallet = wallet
         let balance = wallet.balanceFor(blockchainType: blockchainType)
         
         view?.setWith(selectedDomain: wallet.rrDomain,
                       wallet: displayInfo,
                       balance: balance,
-                      isSelectable: domains.count > 1)
+                      isSelectable: wallets.count > 1)
     }
     
     func setSelectedWalletInfo() {

@@ -91,6 +91,7 @@ struct WalletEntity: Codable, Hashable {
 extension WalletEntity {
     
     var displayName: String { displayInfo.displayName }
+    var domainOrDisplayName: String { rrDomain == nil ? displayName : rrDomain!.name }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
     

@@ -139,7 +139,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             tokens = tokens.sorted(by: { lhs, rhs in
                 lhs.balanceUsd > rhs.balanceUsd
             })
-        case .marketCap:
+        case .marketValue:
             tokens = tokens.sorted(by: { lhs, rhs in
                 (lhs.marketUsd ?? 0) > (rhs.marketUsd ?? 0)
             })

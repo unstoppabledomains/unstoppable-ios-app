@@ -16,7 +16,7 @@ typealias ConnectedAppsListDataSource = UICollectionViewDiffableDataSource<Conne
 typealias ConnectedAppsListSnapshot = NSDiffableDataSourceSnapshot<ConnectedAppsListViewController.Section, ConnectedAppsListViewController.Item>
 
 @MainActor
-final class ConnectedAppsListViewController: BaseViewController {
+final class ConnectedAppsListViewController: BaseViewController, BlurVisibilityAfterLimitNavBarScrollingBehaviour {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [ConnectedAppCell.self,
@@ -24,7 +24,9 @@ final class ConnectedAppsListViewController: BaseViewController {
     var presenter: ConnectedAppsListViewPresenterProtocol!
     private var dataSource: ConnectedAppsListDataSource!
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
+    
     override var analyticsName: Analytics.ViewName { .wcConnectedAppsList }
+    override var scrollableContentYOffset: CGFloat? { 20 }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,13 @@ final class ConnectedAppsListViewController: BaseViewController {
         presenter.viewDidLoad()
     }
   
+    override func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? {
+        { [weak self, weak navBar] in
+            guard let navBar = navBar else { return }
+            
+            self?.updateBlurVisibility(for: yOffset, in: navBar)
+        }
+    }
 }
 
 // MARK: - ConnectedAppsListViewProtocol
@@ -49,6 +58,10 @@ extension ConnectedAppsListViewController: UICollectionViewDelegate {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         
         presenter.didSelectItem(item)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
     }
 }
 
@@ -67,7 +80,7 @@ private extension ConnectedAppsListViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 16
+        collectionView.contentInset.top = 46
         collectionView.register(CollectionTextHeaderReusableView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier)
@@ -205,17 +218,14 @@ extension ConnectedAppsListViewController {
     
     struct AppItemDisplayInfo: Hashable, Sendable {
         private let appHolder: UnifiedConnectedAppInfoHolder
-        let domain: DomainDisplayInfo
         let blockchainTypes: NonEmptyArray<BlockchainType>
         let actions: [ItemAction]
         var app: any UnifiedConnectAppInfoProtocol { appHolder.app }
         
         init(app: any UnifiedConnectAppInfoProtocol,
-             domain: DomainDisplayInfo,
              blockchainTypes: NonEmptyArray<BlockchainType>,
              actions: [ConnectedAppsListViewController.ItemAction]) {
             self.appHolder = .init(app: app)
-            self.domain = domain
             self.blockchainTypes = blockchainTypes
             self.actions = actions
         }

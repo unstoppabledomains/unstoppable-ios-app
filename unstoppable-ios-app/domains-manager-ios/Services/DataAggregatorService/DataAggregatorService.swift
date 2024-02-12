@@ -384,7 +384,7 @@ private extension DataAggregatorService {
             let finalDomains = await dataHolder.domainsWithDisplayInfo
             notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: finalDomains))))
             
-            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
+//            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
             Debugger.printTimeSensitiveInfo(topic: .DataAggregation,
                                             "to aggregate data for \(finalDomains.count) domains",
                                             startDate: startTime,

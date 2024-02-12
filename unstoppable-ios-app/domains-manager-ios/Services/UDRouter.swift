@@ -267,30 +267,26 @@ class UDRouter: DomainProfileSignatureValidator {
                                                selectedWallet: selectedWallet,
                                                walletConnectServiceV2: appContext.walletConnectServiceV2,
                                                networkReachabilityService: appContext.networkReachabilityService,
-                                               udWalletsService: appContext.udWalletsService)
+                                               walletsDataService: appContext.walletsDataService)
         presenter.qrRecognizedCallback = qrRecognizedCallback
         vc.presenter = presenter
         vc.hidesBottomBarWhenPushed = true
         return vc
     }
     
-    func showSignTransactionDomainSelectionScreen(selectedDomain: DomainDisplayInfo,
-                                                  swipeToDismissEnabled: Bool,
-                                                  in viewController: UIViewController) async throws -> (DomainDisplayInfo) {
-        try await withSafeCheckedThrowingMainActorContinuation { completion in
-            let vc = buildSignTransactionDomainSelectionModule(selectedDomain: selectedDomain,
-                                                               domainSelectedCallback: { (domain) in
-                completion(.success((domain)))
-            })
-            vc.isModalInPresentation = !swipeToDismissEnabled
-            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
+    func showProfileSelectionScreen(selectedWallet: WalletEntity,
+                                    in viewController: UIViewController) {
+        let vc = UserProfileSelectionView.viewController(mode: .walletProfileSelection(selectedWallet: selectedWallet))
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
         }
+        viewController.present(vc, animated: true)
     }
     
     func showConnectedAppsListScreen(in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation { completion in
             let vc = buildConnectedAppsModule()
-            presentInEmptyRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
+            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(Void()) })
         }
     }
     
@@ -843,18 +839,7 @@ private extension UDRouter {
         vc.presenter = presenter
         return vc
     }
-    
-    func buildSignTransactionDomainSelectionModule(selectedDomain: DomainDisplayInfo,
-                                                   domainSelectedCallback: @escaping DomainWithBalanceSelectionCallback) -> UIViewController {
-        let vc = SignTransactionDomainSelectionViewController.nibInstance()
-        let presenter = SignTransactionDomainSelectionViewPresenter(view: vc,
-                                                                    selectedDomain: selectedDomain,
-                                                                    domainSelectedCallback: domainSelectedCallback,
-                                                                    walletsDataService: appContext.walletsDataService)
-        vc.presenter = presenter
-        return vc
-    }
-    
+   
     func buildSetupReverseResolutionModule(wallet: WalletEntity,
                                            domains: [DomainDisplayInfo],
                                            reverseResolutionDomain: DomainDisplayInfo,

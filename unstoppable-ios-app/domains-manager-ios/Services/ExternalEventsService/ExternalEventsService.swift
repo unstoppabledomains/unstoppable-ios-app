@@ -156,18 +156,15 @@ private extension ExternalEventsService {
             }
         case .wcDeepLink(let wcDeepLink):
             let request = try WCRequest.connectWallet(resolveRequest(from: wcDeepLink))
-            let domains = walletsDataService.wallets.combinedDomains()
+            let wallet = appContext.walletsDataService.selectedWallet ?? appContext.walletsDataService.wallets.first
             
-            guard let domainDisplayInfoToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
-                Debugger.printWarning("Failed to find any domain to handle WC url")
+            guard let wallet else {
+                Debugger.printWarning("Failed to find any wallet to handle WC url")
                 throw EventsHandlingError.cantFindDomain
             }
             
-            let domainToUse = domainDisplayInfoToUse.toDomainItem()
-            let wallet = try await findWalletEntity(for: domainDisplayInfoToUse)
             let udWallet = wallet.udWallet
-            let target = (udWallet, domainToUse)
-            try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)
+            try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: udWallet)
             
             return .showPullUpLoading
         case .walletConnectRequest:

@@ -1084,7 +1084,7 @@ extension String {
         static let shareAddress = "SHARE_ADDRESS"
         static let shareWalletAddressInfoMessage = "SHARE_WALLET_ADDRESS_INFO_MESSAGE"
         static let sortHighestValue = "SORT_HIGHEST_VALUE"
-        static let sortMarketCap = "SORT_MARKET_CAP"
+        static let sortMarketValue = "SORT_MARKET_VALUE"
         static let sortAlphabetical = "SORT_ALPHABETICAL"
         static let sortMostRecent = "SORT_MOST_RECENT"
         static let sortMostCollected = "SORT_MOST_COLLECTED"

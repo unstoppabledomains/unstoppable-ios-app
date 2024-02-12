@@ -9,12 +9,21 @@ import SwiftUI
 
 struct UserProfileSelectionView: View, ViewAnalyticsLogger {
     
+    @MainActor
+    static func viewController(mode: UserProfileSelectionView.Mode) -> UIViewController {
+        let view = UserProfileSelectionView(mode: mode)
+            .adaptiveSheet()
+        let vc = UIHostingController(rootView: view)
+        return vc
+    }
+    
     @Environment(\.userProfileService) private var userProfileService
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var tabRouter: HomeTabRouter
 
     @State private var profiles: [UserProfile] = []
     @State private var selectedProfile: UserProfile? = nil
+    var mode: Mode = .default
     var analyticsName: Analytics.ViewName { .profileSelection }
 
     var body: some View {
@@ -32,6 +41,9 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
     
+    enum Mode {
+        case `default`, walletProfileSelection(selectedWallet: WalletEntity)
+    }
     
 }
 
@@ -39,8 +51,14 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
 private extension UserProfileSelectionView {
     func onAppear() {
         let profiles = userProfileService.profiles
-        self.selectedProfile = userProfileService.selectedProfile
-        self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
+        switch mode {
+        case .default:
+            self.selectedProfile = userProfileService.selectedProfile
+            self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
+        case .walletProfileSelection(let selectedWallet):
+            self.selectedProfile = .wallet(selectedWallet)
+            self.profiles = profiles.filter({ $0.isWalletProfile && $0.id != selectedProfile?.id })
+        }
     }
     
     @ViewBuilder
@@ -89,24 +107,26 @@ private extension UserProfileSelectionView {
     
     @ViewBuilder
     func addWalletView() -> some View {
-        UDCollectionSectionBackgroundView {
-            Button {
-                UDVibration.buttonTap.vibrate()
-                tabRouter.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
-                logButtonPressedAnalyticEvents(button: .addWallet)
-            } label: {
-                HStack(spacing: 16) {
-                    Image.plusIconNav
-                        .resizable()
-                        .squareFrame(20)
-                    
-                    Text(String.Constants.add.localized())
-                        .font(.currentFont(size: 16, weight: .medium))
-                    Spacer()
+        if case .default = mode {
+            UDCollectionSectionBackgroundView {
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    tabRouter.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
+                    logButtonPressedAnalyticEvents(button: .addWallet)
+                } label: {
+                    HStack(spacing: 16) {
+                        Image.plusIconNav
+                            .resizable()
+                            .squareFrame(20)
+                        
+                        Text(String.Constants.add.localized())
+                            .font(.currentFont(size: 16, weight: .medium))
+                        Spacer()
+                    }
+                    .foregroundStyle(Color.foregroundAccent)
+                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
+                    .frame(height: 56)
                 }
-                .foregroundStyle(Color.foregroundAccent)
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0))
-                .frame(height: 56)
             }
         }
     }

@@ -69,10 +69,6 @@ final class QRScannerViewController: BaseViewController {
     override var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundOnEmphasis,
                                                                      .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
     
-    override var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
-        .init(backArrowIcon: .navArrowLeft, tintColor: .foregroundOnEmphasis, backTitleVisible: false)
-    }
-    
     func previousInteractiveTransitionStartThreshold() -> CGFloat? { 1 }
 }
 
@@ -160,25 +156,10 @@ extension QRScannerViewController: QRScannerViewProtocol {
         rightItem.tintColor = .foregroundOnEmphasis
         
         navigationItem.rightBarButtonItem = rightItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.cNavigationController?.updateNavigationBar()
-        }
     }
     
     func removeBlockchainTypeSelection() {
         navigationItem.rightBarButtonItem = nil
-    }
-}
-
-// MARK: - InteractivePushNavigation
-extension QRScannerViewController: CNavigationControllerChildTransitioning {
-    func popAnimatedTransitioning(to viewController: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        logAnalytic(event: .swipeToHome)
-        return CNavigationControllerSlidePopAnimation()
-    }
-    
-    func popNavBarAnimatedTransitioning(to viewController: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        CNavigationBarSlidePopAnimation()
     }
 }
 
@@ -336,6 +317,7 @@ extension QRScannerViewController {
 }
 
 import SwiftUI
+
 struct QRScannerViewControllerWrapper: UIViewControllerRepresentable {
     
     var selectedWallet: WalletEntity
