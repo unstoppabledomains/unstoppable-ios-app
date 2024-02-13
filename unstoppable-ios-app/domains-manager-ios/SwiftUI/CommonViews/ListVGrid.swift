@@ -26,7 +26,6 @@ struct ListVGrid<Element: Identifiable, Row: View>: View {
         }
     }
     
-    
     @ViewBuilder
     private func rowView(column: Int) -> some View {
         HStack(spacing: horizontalSpacing) {

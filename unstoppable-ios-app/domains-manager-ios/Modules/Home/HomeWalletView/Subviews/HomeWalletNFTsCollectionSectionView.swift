@@ -24,15 +24,13 @@ struct HomeWalletNFTsCollectionSectionView: View, ViewAnalyticsLogger {
     
     var body: some View {
         Section {
-            LazyVGrid(columns: gridColumns, spacing: 16) {
-                ForEach(0..<numberOfNFTsVisible, id: \.self) { i in
-                    nftCellView(collection.nfts[i])
-                        .transaction { transaction in
-                            if i <= 1 {
-                                transaction.animation = nil
-                            }
+            ListVGrid(data: Array(collection.nfts.prefix(numberOfNFTsVisible)), verticalSpacing: 16, horizontalSpacing: 16) { nft in
+                nftCellView(nft)
+                    .transaction { transaction in
+                        if nft.id != collection.nfts.first?.id {
+                            transaction.animation = nil
                         }
-                }
+                    }
             }
         } header: {
             sectionHeaderView()
