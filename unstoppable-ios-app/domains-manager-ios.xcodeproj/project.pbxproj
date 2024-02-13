@@ -2150,6 +2150,8 @@
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
 		C6D9E29928535E3E002CDAC2 /* ShareDomainImagePullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */; };
+		C6DA0B722B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
+		C6DA0B732B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
 		C6DDF24D2B147F1A006D1F0B /* UDCollectionSectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */; };
 		C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */; };
 		C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */; };
@@ -3514,6 +3516,7 @@
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
 		C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareDomainImagePullUpView.xib; sourceTree = "<group>"; };
 		C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsDecodingTests.swift; sourceTree = "<group>"; };
+		C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListVGrid.swift; sourceTree = "<group>"; };
 		C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionSectionBackgroundView.swift; sourceTree = "<group>"; };
 		C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowLayoutView.swift; sourceTree = "<group>"; };
 		C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionListRowButton.swift; sourceTree = "<group>"; };
@@ -6541,6 +6544,7 @@
 				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
 				C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */,
 				C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */,
+				C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */,
 				C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */,
 				C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */,
 				C6170EC02B79E8E9008E9C93 /* UDListSectionView.swift */,
@@ -9187,6 +9191,7 @@
 				C6A2D5BC2850848500327C47 /* PaymentTransactionRequestConfirmationView.swift in Sources */,
 				C658D44E2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift in Sources */,
 				3018AED227EE45B400E8C37D /* CreatePasswordViewController.swift in Sources */,
+				C6DA0B722B7BC1C1009920B5 /* ListVGrid.swift in Sources */,
 				C629A4672A3FF4A600A528A1 /* ChatImageCell.swift in Sources */,
 				C63A351028F0071B0057D34B /* DomainProfileViewController.swift in Sources */,
 				C6AE670D2AA1CA260061D87D /* Debug-Tools-Dev.swift in Sources */,
@@ -10149,6 +10154,7 @@
 				C6D646E62B1ED4EE00D724AC /* UserDataValidator.swift in Sources */,
 				C6C8F84F2B217E9600A9834D /* ConfirmWordsViewController.swift in Sources */,
 				C6D645AD2B1DBB6200D724AC /* ConnectedAppImageView.swift in Sources */,
+				C6DA0B732B7BC1C1009920B5 /* ListVGrid.swift in Sources */,
 				C618086A2B19BC050032E543 /* UDButtonStyle.swift in Sources */,
 				C618082B2B19AD6C0032E543 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C6C8F9712B2188C000A9834D /* WalletConnectServiceProtocol.swift in Sources */,

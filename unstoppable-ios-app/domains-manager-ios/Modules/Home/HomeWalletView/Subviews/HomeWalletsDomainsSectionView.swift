@@ -108,18 +108,18 @@ private extension HomeWalletsDomainsSectionView {
     
     @ViewBuilder
     func gridWithDomains(_ domains: [DomainDisplayInfo]) -> some View {
-        LazyVGrid(columns: gridColumns, spacing: 16) {
-            ForEach(domains, id: \.name) { domain in
-                Button {
-                    UDVibration.buttonTap.vibrate()
-                    logButtonPressedAnalyticEvents(button: .domainTile,
-                                                   parameters: [.domainName : domain.name])
-                    domainSelectedCallback(domain)
-                } label: {
-                    HomeWalletDomainCellView(domain: domain)
-                }
-                .buttonStyle(.plain)
+        ListVGrid(data: domains, 
+                  verticalSpacing: 16,
+                  horizontalSpacing: 16) { domain in
+            Button {
+                UDVibration.buttonTap.vibrate()
+                logButtonPressedAnalyticEvents(button: .domainTile,
+                                               parameters: [.domainName : domain.name])
+                domainSelectedCallback(domain)
+            } label: {
+                HomeWalletDomainCellView(domain: domain)
             }
+            .buttonStyle(.plain)
         }
     }
     
@@ -151,10 +151,13 @@ private extension HomeWalletsDomainsSectionView {
 }
 
 #Preview {
-    HomeWalletsDomainsSectionView(domainsGroups: [],
-                                  subdomains: [],
-                                  domainSelectedCallback: { _ in }, 
+    HomeWalletsDomainsSectionView(domainsGroups: [.init(domains: [.init(name: "oleg.x", ownerWallet: "123", isSetForRR: false)],
+                                                        tld: "x")],
+                                  subdomains: [.init(name: "oleg.oleg.x", ownerWallet: "123", isSetForRR: false)],
+                                  domainSelectedCallback: { _ in },
                                   buyDomainCallback: { },
                                   isSubdomainsVisible: .constant(true),
                                   domainsTLDsExpandedList: .constant([]))
+    .frame(width: 390)
+    .padding()
 }
