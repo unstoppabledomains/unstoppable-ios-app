@@ -429,6 +429,7 @@ extension Analytics {
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
         case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         case searchPurchaseDomainNotSupported
+        case createYourProfile
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

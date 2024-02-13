@@ -65,7 +65,11 @@ extension HomeWalletView {
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:
-                guard let rrDomain = selectedWallet.rrDomain else { return }
+                guard let rrDomain = selectedWallet.rrDomain else {
+                    router.pullUp = .default(.showCreateYourProfilePullUp(buyCallback: { [weak self] in
+                        self?.router.runPurchaseFlow()
+                    }))
+                    return }
                 
                 showProfile(of: rrDomain)
             case .buy:

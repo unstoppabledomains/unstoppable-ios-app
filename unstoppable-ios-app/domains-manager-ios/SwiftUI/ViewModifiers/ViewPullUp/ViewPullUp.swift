@@ -248,10 +248,19 @@ private extension ViewPullUp {
     
     @ViewBuilder
     func viewForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
-        Image(uiImage: iconContent.icon)
-            .resizable()
-            .squareFrame(iconContent.iconSize)
-            .foregroundStyle(Color(uiColor: iconContent.tintColor))
+        switch iconContent.size {
+        case .large, .largeCentered, .small:
+            Image(uiImage: iconContent.icon)
+                .resizable()
+                .squareFrame(iconContent.iconSize)
+                .foregroundStyle(Color(uiColor: iconContent.tintColor))
+        case .fixedHeight(let height):
+            Image(uiImage: iconContent.icon)
+                .resizable()
+                .frame(height: height)
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(Color(uiColor: iconContent.tintColor))
+        }
     }
 }
 
