@@ -18,6 +18,7 @@ struct NFTDisplayInfo: Hashable, Identifiable, Codable {
     let tags: [String]
     let collection: String
     let collectionLink: URL?
+    let collectionImageUrl: URL?
     let mint: String
     let traits: [Trait]
     var floorPriceDetails: FloorPriceDetails? = nil
@@ -82,6 +83,7 @@ extension NFTDisplayInfo {
         self.address = nftModel.address
         self.traits = (nftModel.traits ?? [:]).map { .init(name: $0.key, value: $0.value) }
         self.collectionLink = URL(string: nftModel.collectionLink ?? "")
+        self.collectionImageUrl = URL(string: nftModel.collectionImageUrl ?? "")
         if let lastSaleDetails = nftModel.lastSaleTransaction {
             let payment = lastSaleDetails.payment!
             self.lastSaleDetails = SaleDetails(date: lastSaleDetails.date!,

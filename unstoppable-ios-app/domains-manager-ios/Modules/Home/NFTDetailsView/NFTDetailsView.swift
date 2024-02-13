@@ -10,9 +10,11 @@ import SwiftUI
 struct NFTDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.imageLoadingService) private var imageLoadingService
 
     let nft: NFTDisplayInfo
     @State private var nftImage: UIImage?
+    @State private var collectionImage: UIImage?
     @State private var navigationState: NavigationStateManager?
     @State private var scrollOffset: CGPoint = .zero
     var analyticsName: Analytics.ViewName { .nftDetails }
@@ -64,6 +66,12 @@ private extension NFTDetailsView {
     func onAppear() {
         Task {
             nftImage = await nft.loadIcon()
+        }
+        if let url = nft.collectionImageUrl {
+            Task {
+                collectionImage = await imageLoadingService.loadImage(from: .url(url, maxSize: nil),
+                                                                      downsampleDescription: .icon)
+            }
         }
     }
     
@@ -135,9 +143,20 @@ private extension NFTDetailsView {
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()
             }
-            Text(collectionName)
-                .font(.currentFont(size: 16, weight: .medium))
-                .foregroundStyle(Color.foregroundDefault)
+            HStack(spacing: 8) {
+                if let collectionImage {
+                    UIImageBridgeView(image: collectionImage,
+                                      width: 20,
+                                      height: 20)
+                    .aspectRatio(1, contentMode: .fill)
+                    .squareFrame(24)
+                    .background(Color.backgroundSubtle)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                Text(collectionName)
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .foregroundStyle(Color.foregroundDefault)
+            }
         }
     }
     
