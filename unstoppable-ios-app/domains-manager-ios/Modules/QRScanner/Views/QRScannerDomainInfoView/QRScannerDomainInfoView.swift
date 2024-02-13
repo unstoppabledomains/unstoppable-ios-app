@@ -53,19 +53,15 @@ final class QRScannerDomainInfoView: UIControl, SelfNameable, NibInstantiateable
 
 // MARK: - Open methods
 extension QRScannerDomainInfoView {
-    func setWith(domain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool) {
-        
+    func setWith(wallet: WalletEntity, isSelectable: Bool) {
         reverseResolutionIndicator.isHidden = true
         let title: String
         let subtitle: String
-        if let domain {
+        if let domain = wallet.rrDomain {
             title = domain.name
             subtitle = wallet.displayName
-            if let reverseResolutionDomain = wallet.reverseResolutionDomain ,
-               domain.name == reverseResolutionDomain.name {
-                reverseResolutionIndicator.isHidden = false
-            }
-        
+            reverseResolutionIndicator.isHidden = false
+            
             Task {
                 iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .default),
                                                                                      downsampleDescription: nil)
@@ -74,14 +70,14 @@ extension QRScannerDomainInfoView {
                 iconImageView.image = image
             }
         } else {
-            if wallet.isNameSet {
+            if wallet.displayInfo.isNameSet {
                 title = wallet.displayName
                 subtitle = wallet.address.walletAddressTruncated
             } else {
                 title = wallet.address.walletAddressTruncated
                 subtitle = ""
             }
-            iconImageView.image = wallet.source.displayIcon
+            iconImageView.image = wallet.displayInfo.source.displayIcon
         }
         
         domainInfoLabel.setAttributedTextWith(text: title,
@@ -90,14 +86,11 @@ extension QRScannerDomainInfoView {
         
         isUserInteractionEnabled = isSelectable
         chevronImageView.isHidden = !isSelectable
-        walletLoadingView.isHidden = balance != nil
-        let subtitleText = subtitle.isEmpty ? "" : "\(subtitle) · "
-        let walletInfo: String
-        if let balance = balance {
-            walletInfo = "\(subtitleText)\(balance.value.walletUsd)"
-        } else {
-            walletInfo = subtitleText
-        }
+        walletLoadingView.isHidden = true
+        let subtitleText = subtitle.isEmpty ? "" : "· \(subtitle)"
+        let balance = wallet.totalBalance
+        let walletInfo = "$\(balance.rounded(toDecimalPlaces: 2)) \(subtitleText)"
+        
         walletInfoLabel.setAttributedTextWith(text: walletInfo,
                                               font: .currentFont(withSize: 14, weight: .regular),
                                               textColor: .brandWhite.withAlphaComponent(0.56))
