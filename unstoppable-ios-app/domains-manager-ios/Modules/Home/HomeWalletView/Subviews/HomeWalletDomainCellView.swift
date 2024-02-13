@@ -53,15 +53,52 @@ private extension HomeWalletDomainCellView {
             VStack(alignment: .leading) {
                 cartLogoView()
                 Spacer()
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(domain.name.getBelowTld() ?? "")
-                    Text("." + tldName)
-                        .offset(x: -4)
+                VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(domain.name.getBelowTld() ?? "")
+                            .frame(height: 24)
+                        Text("." + tldName)
+                            .offset(x: -4)
+                            .frame(height: 20)
+                    }
+                    .font(.currentFont(size: 20, weight: .medium))
+                    domainStatusView()
                 }
-                .font(.currentFont(size: 20, weight: .medium))
             }
             .foregroundStyle(Color.white)
             .padding(EdgeInsets(top: 4, leading: 8, bottom: 8, trailing: 4))
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    @ViewBuilder
+    func domainStatusView() -> some View {
+        if let indicator = resolveIndicatorStyle() {
+            CarouselViewBridgeView(style: .transfer, sideGradientHidden: true)
+                .frame(height: 24)
+                .padding(EdgeInsets(top: 4, leading: -8, bottom: -8, trailing: -4))
+        }
+    }
+    
+    func resolveIndicatorStyle() -> CarouselViewBridgeView.DomainIndicatorStyle? {
+        switch domain.state {
+        case .default:
+            switch domain.usageType {
+            case .normal, .newNonInteractable, .parked:
+                return nil
+            case .deprecated(let tld):
+                return .deprecated(tld: tld)
+            case .zil:
+                return .deprecated(tld: "zil")
+            }
+        case .updatingRecords, .updatingReverseResolution:
+            return .updatingRecords
+        case .minting:
+            return .minting
+        case .parking(let status):
+            return .parked(status: status)
+        case .transfer:
+            return .transfer
         }
     }
     
