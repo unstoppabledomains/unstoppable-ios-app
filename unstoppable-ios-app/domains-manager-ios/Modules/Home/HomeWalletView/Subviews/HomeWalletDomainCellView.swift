@@ -229,6 +229,15 @@ private extension HomeWalletDomainCellView {
     enum DomainIndicatorStyle: CarouselViewItem {
         case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
         
+        var isRotating: Bool {
+            switch self {
+            case .updatingRecords, .minting, .transfer:
+                return true
+            default:
+                return false
+            }
+        }
+        
         var containerBackgroundColor: UIColor {
             switch self {
             case .updatingRecords, .minting:
