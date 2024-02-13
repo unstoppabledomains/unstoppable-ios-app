@@ -25,9 +25,3 @@ struct PublicDomainDisplayInfo: Hashable {
     let walletAddress: String
     let name: String
 }
-
-extension DomainItem {
-    static func getViewingDomainFor(messagingProfile: MessagingChatUserProfileDisplayInfo) async -> DomainItem? {
-        nil
-    }
-}

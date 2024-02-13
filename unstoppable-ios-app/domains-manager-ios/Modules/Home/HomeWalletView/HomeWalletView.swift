@@ -77,10 +77,14 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                     HomeSettingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
+                    searchButtonView()
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     qrNavButtonView()
                 }
             })
             .refreshable {
+                logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
             .onAppear(perform: setTitleViewIfNeeded)
@@ -297,6 +301,19 @@ private extension HomeWalletView {
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: .qrCode)
+        }
+    }
+    
+    @ViewBuilder
+    func searchButtonView() -> some View {
+        Button {
+            logButtonPressedAnalyticEvents(button: .searchDomains)
+            tabRouter.isSearchingDomains = true
+        } label: {
+            Image.searchIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(Color.foregroundDefault)
         }
     }
 }

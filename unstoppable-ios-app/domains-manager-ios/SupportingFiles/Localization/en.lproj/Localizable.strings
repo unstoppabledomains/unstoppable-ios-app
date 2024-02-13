@@ -743,8 +743,8 @@
 "PARKED_DOMAIN" = "Domain in Unstoppable Vault";
 "PARKED_DOMAINS" = "Domains in Unstoppable Vault";
 "PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";
-"PARKING_EXPIRES_ON" = "Storage in Unstoppable Vault expires on %@";
-"PARKING_EXPIRED" = "Storage in Unstoppable Vault expired";
+"PARKING_EXPIRES_ON" = "Expires on %@";
+"PARKING_EXPIRED" = "Unstoppable Vault expired";
 "PARKED_DOMAINS_FOUND_TITLE" = "We found %@";
 "NO_PARKED_DOMAINS_TITLE" = "There’s no domains yet in Unstoppable Vault";
 "SYNCING" = "Syncing";

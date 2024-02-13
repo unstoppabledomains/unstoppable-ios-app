@@ -11,10 +11,12 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
-                            viewingDomain: DomainItem,
+                            wallet: WalletEntity,
+                            viewingDomain: DomainItem?,
                             preRequestedAction: PreRequestedProfileAction?,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
         let view = PublicProfileView(domain: domain,
+                                     wallet: wallet,
                                      viewingDomain: viewingDomain,
                                      preRequestedAction: preRequestedAction,
                                      delegate: delegate)
@@ -67,17 +69,22 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
                                      domainSelectionCallback: domainSelected,
                                      profileDomain: viewModel.domain.name,
-                                     currentDomainName: viewModel.viewingDomain.name))
+                                     currentDomainName: viewModel.viewingDomain?.name))
         .onAppear(perform: {
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
         })
     }
     
     init(domain: PublicDomainDisplayInfo,
-         viewingDomain: DomainItem,
+         wallet: WalletEntity,
+         viewingDomain: DomainItem?,
          preRequestedAction: PreRequestedProfileAction?,
          delegate: PublicProfileViewDelegate? = nil) {
-        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain, preRequestedAction: preRequestedAction, delegate: delegate))
+        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, 
+                                                                      wallet: wallet,
+                                                                      viewingDomain: viewingDomain,
+                                                                      preRequestedAction: preRequestedAction,
+                                                                      delegate: delegate))
         self.delegate = delegate
     }
 }
@@ -134,10 +141,11 @@ private extension PublicProfileView {
                                          callback: {
                             logButtonPressedAnalyticEvents(button: .messaging)
                             presentationMode.wrappedValue.dismiss()
-                            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
+                            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.wallet)
                         })
-                        if let isFollowing = viewModel.isFollowing,
-                           viewModel.domain.name != viewModel.viewingDomain.name { // Can't follow myself
+                        if let viewingDomain = viewModel.viewingDomain,
+                           let isFollowing = viewModel.isFollowing,
+                           viewModel.domain.name != viewingDomain.name { // Can't follow myself
                             followButton(isFollowing: isFollowing)
                         }
                     }
@@ -199,18 +207,20 @@ private extension PublicProfileView {
                 Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
             }
             Divider()
-            Button(role: isFollowing ? .destructive : .cancel) {
-                UDVibration.buttonTap.vibrate()
-                viewModel.followButtonPressed()
-                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
-            } label: {
-                if isFollowing {
-                    Text(String.Constants.unfollowAsDomain.localized(viewModel.viewingDomain.name))
-                } else {
-                    Text(String.Constants.followAsDomain.localized(viewModel.viewingDomain.name))
-                }
-                if let viewingDomainImage = viewModel.viewingDomainImage {
-                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
+            if let viewingDomain = viewModel.viewingDomain {
+                Button(role: isFollowing ? .destructive : .cancel) {
+                    UDVibration.buttonTap.vibrate()
+                    viewModel.followButtonPressed()
+                    logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+                } label: {
+                    if isFollowing {
+                        Text(String.Constants.unfollowAsDomain.localized(viewingDomain.name))
+                    } else {
+                        Text(String.Constants.followAsDomain.localized(viewingDomain.name))
+                    }
+                    if let viewingDomainImage = viewModel.viewingDomainImage {
+                        Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
+                    }
                 }
             }
         } label: {
@@ -757,16 +767,20 @@ private extension PublicProfileView {
         @Binding var isDomainsListPresented: Bool
         let domainSelectionCallback: PublicProfileDomainSelectionCallback
         let profileDomain: DomainName
-        let currentDomainName: DomainName
+        let currentDomainName: DomainName?
         
         func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isDomainsListPresented, content: {
-                    PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                     profileDomain: profileDomain,
-                                                     currentDomainName: currentDomainName)
-                    .adaptiveSheet()
-                })
+            if let currentDomainName {
+                content
+                    .sheet(isPresented: $isDomainsListPresented, content: {
+                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                         profileDomain: profileDomain,
+                                                         currentDomainName: currentDomainName)
+                        .adaptiveSheet()
+                    })
+            } else {
+                content
+            }
         }
     }
 }
@@ -774,6 +788,7 @@ private extension PublicProfileView {
 @available(iOS 17, *)
 #Preview {
     PublicProfileView(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
+                      wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
                       viewingDomain: .init(name: "oleg.x"),
                       preRequestedAction: nil)
 }

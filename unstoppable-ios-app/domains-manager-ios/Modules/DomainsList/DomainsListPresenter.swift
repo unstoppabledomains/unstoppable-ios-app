@@ -142,7 +142,8 @@ private extension DomainsListPresenter {
             
             let domain = domain.toDomainItem()
             let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
-            UDRouter().showPublicDomainProfile(of: domainPublicInfo, 
+            UDRouter().showPublicDomainProfile(of: domainPublicInfo,
+                                               by: wallet,
                                                viewingDomain: domain,
                                                preRequestedAction: nil,
                                                in: view)

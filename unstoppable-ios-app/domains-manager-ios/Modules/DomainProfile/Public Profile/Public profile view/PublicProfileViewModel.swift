@@ -35,7 +35,8 @@ extension PublicProfileView {
         
         private weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
-        private(set) var viewingDomain: DomainItem
+        private(set) var wallet: WalletEntity
+        private(set) var viewingDomain: DomainItem?
         @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
@@ -55,11 +56,13 @@ extension PublicProfileView {
         private var preRequestedAction: PreRequestedProfileAction?
         
         init(domain: PublicDomainDisplayInfo,
-             viewingDomain: DomainItem,
+             wallet: WalletEntity,
+             viewingDomain: DomainItem?,
              preRequestedAction: PreRequestedProfileAction?,
              delegate: PublicProfileViewDelegate?) {
             self.domain = domain
-            self.viewingDomain = viewingDomain
+            self.wallet = wallet
+            self.viewingDomain = viewingDomain ?? wallet.getDomainToViewPublicProfile()?.toDomainItem()
             self.preRequestedAction = preRequestedAction
             self.delegate = delegate
             self.appearTime = Date()
@@ -89,7 +92,8 @@ extension PublicProfileView {
         }
         
         func followButtonPressed() {
-            guard let isFollowing else { return }
+            guard let viewingDomain,
+                let isFollowing else { return }
             
             Task {
                 await performAsyncErrorCatchingBlock {
@@ -177,6 +181,8 @@ extension PublicProfileView {
         }
         
         private func loadFollowingState() {
+            guard let viewingDomain else { return }
+            
             Task {
                 await performAsyncErrorCatchingBlock {
                     let isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
@@ -246,6 +252,8 @@ extension PublicProfileView {
         }
         
         private func loadViewingDomainData() {
+            guard let viewingDomain else { return }
+            
             Task {
                 let domains = appContext.walletsDataService.wallets.combinedDomains()
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }

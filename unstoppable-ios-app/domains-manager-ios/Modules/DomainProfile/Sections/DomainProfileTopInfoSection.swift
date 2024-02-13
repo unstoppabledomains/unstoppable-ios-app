@@ -201,7 +201,8 @@ private extension DomainProfileTopInfoSection {
     func didSelectFollower(_ follower: DomainProfileFollowerDisplayInfo) {
         Task {
             guard let controller,
-                  let viewController = controller.viewController else { return }
+                  let viewController = controller.viewController,
+                let wallet = controller.generalData.domainWallet else { return }
             
             guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain) else {
                 (viewController as BaseViewController).showAlertWith(error: PublicProfileView.PublicProfileError.failedToLoadFollowerInfo)
@@ -213,6 +214,7 @@ private extension DomainProfileTopInfoSection {
                                                  name: follower.domain)
             await Task.sleep(seconds: 0.2)
             UDRouter().showPublicDomainProfile(of: domain,
+                                               by: wallet,
                                                viewingDomain: viewingDomain,
                                                preRequestedAction: nil,
                                                in: viewController)

@@ -14,6 +14,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
+    @Published var isSearchingDomains: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: NavigationPath = NavigationPath()
@@ -112,7 +113,7 @@ extension HomeTabRouter {
             }
             let domain = domain.toDomainItem()
             let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
-            showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain, preRequestedAction: nil)
+            showPublicDomainProfile(of: domainPublicInfo, by: wallet, preRequestedAction: nil)
         case .zil:
             do {
                 try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topVC)
@@ -151,20 +152,22 @@ extension HomeTabRouter {
     }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
-                                 viewingDomain: DomainItem,
+                                 by wallet: WalletEntity,
+                                 viewingDomain: DomainItem? = nil,
                                  preRequestedAction: PreRequestedProfileAction?) {
         presentedPublicDomain = .init(domain: domain,
+                                      wallet: wallet,
                                       viewingDomain: viewingDomain,
                                       preRequestedAction: preRequestedAction,
                                       delegate: self)
     }
     
     func showPublicDomainProfileFromDeepLink(of domain: PublicDomainDisplayInfo,
-                                             viewingDomain: DomainItem,
+                                             by wallet: WalletEntity,
                                              preRequestedAction: PreRequestedProfileAction?) async {
         await popToRootAndWait()
         showPublicDomainProfile(of: domain,
-                                viewingDomain: viewingDomain,
+                                by: wallet,
                                 preRequestedAction: preRequestedAction)
     }
     
@@ -302,11 +305,10 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         topVC.shareDomainProfile(domainName: profile, isUserDomain: false)
     }
     
-    func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem) {
+    func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by wallet: WalletEntity) {
         Task {
             var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == userDomain.ownerWallet }),
-               let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
                 messagingProfile = profile
             } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
                 messagingProfile = profile
@@ -373,6 +375,7 @@ private extension HomeTabRouter {
     func popToRoot() {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
+        isSearchingDomains = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil
@@ -419,12 +422,11 @@ private extension HomeTabRouter {
     }
     
     func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
-                            by domain: DomainDisplayInfo) {
-        let domain = domain.toDomainItem()
+                            by wallet: WalletEntity) {
         let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
                                                        name: btDomainInfo.domainName)
         showPublicDomainProfile(of: publicDomainInfo,
-                                viewingDomain: domain,
+                                by: wallet,
                                 preRequestedAction: nil)
     }
     
@@ -488,7 +490,8 @@ extension HomeTabRouter {
         var id: String { domain.name }
         
         let domain: PublicDomainDisplayInfo
-        let viewingDomain: DomainItem
+        let wallet: WalletEntity
+        let viewingDomain: DomainItem?
         var preRequestedAction: PreRequestedProfileAction? = nil
         var delegate: PublicProfileViewDelegate
     }

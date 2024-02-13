@@ -159,16 +159,6 @@ extension Array where Element == DomainItem {
 }
 
 extension DomainItem {
-    static func getViewingDomainFor(messagingProfile: MessagingChatUserProfileDisplayInfo) async -> DomainItem? {
-        let wallet = appContext.walletsDataService.wallets.findWithAddress(messagingProfile.wallet.normalized)
-        let viewingDomainDisplayInfo = wallet?.rrDomain ?? wallet?.domains.first
-        guard let viewingDomain = viewingDomainDisplayInfo?.toDomainItem() else { return nil }
-        
-        return viewingDomain
-    }
-}
-
-extension DomainItem {
     /// This method puts a rule whether or not the domains requires payment for a critical trnasaction.
     /// True means that the app will launch Apple Pay flow and will depend on the backend
     /// - Returns: Bool

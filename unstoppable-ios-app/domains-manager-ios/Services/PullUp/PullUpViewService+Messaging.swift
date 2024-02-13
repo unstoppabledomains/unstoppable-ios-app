@@ -253,11 +253,13 @@ private extension PullUpViewService {
             Task {
                 guard let pullUpVC,
                       let domainName = item.userInfo.domainName,
-                    let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: messagingProfile) else { return }
+                    let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == messagingProfile.wallet.normalized }) else { return }
                 
+                let viewingDomain = wallet.getDomainToViewPublicProfile()?.toDomainItem()
                 let walletAddress = item.userInfo.wallet
                 UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                              name: domainName),
+                                                   by: wallet,
                                                    viewingDomain: viewingDomain,
                                                    preRequestedAction: nil,
                                                    in: pullUpVC)

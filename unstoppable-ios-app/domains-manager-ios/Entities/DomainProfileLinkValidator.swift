@@ -52,18 +52,17 @@ struct DomainProfileLinkValidator {
         }
         
         let wallets = appContext.walletsDataService.wallets
-        if let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }),
+        if let wallet = wallets.findOwningDomain(domainName),
            let domain = wallet.domains.first(where: { $0.name == domainName }) {
             return .showUserDomainProfile(domain: domain,
                                           wallet: wallet,
                                           action: preRequestedAction)
-        } else if let userDomainDisplayInfo = wallets.combinedDomains().first,
+        } else if let selectedWallet = appContext.walletsDataService.selectedWallet ?? appContext.walletsDataService.wallets.first,
                   let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
-            let viewingDomain = userDomainDisplayInfo.toDomainItem()
             let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,
                                                                   name: domainName)
             return .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,
-                                            viewingDomain: viewingDomain,
+                                            wallet: selectedWallet,
                                             action: preRequestedAction)
         }
         
@@ -73,7 +72,7 @@ struct DomainProfileLinkValidator {
     enum ShowDomainProfileResult {
         case none
         case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
-        case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)
+        case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     }
 }
 

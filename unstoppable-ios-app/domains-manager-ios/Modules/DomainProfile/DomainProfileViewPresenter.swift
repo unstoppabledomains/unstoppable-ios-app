@@ -1172,6 +1172,7 @@ private extension DomainProfileViewPresenter {
       
         var domain: DomainDisplayInfo
         var wallet: WalletEntity
+        var domainWallet: WalletEntity? { wallet }
         var transactions: [TransactionItem] = []
         var recordsData: DomainRecordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
         var currencies: [CoinRecord] = []

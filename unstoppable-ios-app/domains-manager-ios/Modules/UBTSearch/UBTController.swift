@@ -35,7 +35,7 @@ struct BTDomainUIInfo: Hashable, Identifiable {
 
 final class UBTController: NSObject, ObservableObject {
     
-    private(set) var promotingDomain: DomainDisplayInfo?
+    private(set) var promotingWallet: WalletEntity?
     private let serviceId = CBUUID(string: Constants.shakeToFindServiceId)
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
@@ -78,11 +78,11 @@ extension UBTController {
         #endif
     }
     
-    func setPromotingDomainInfo(_ domain: DomainDisplayInfo) {
+    func setPromotingWalletInfo(_ wallet: WalletEntity) {
         do {
-            self.promotingDomain = domain
+            self.promotingWallet = wallet
             peripheralManager.removeAllServices()
-            try setCharacteristicsWith(domainName: domain.name, walletAddress: domain.ownerWallet ?? "")
+            try setCharacteristicsWith(domainName: wallet.domainOrDisplayName, walletAddress: wallet.ethFullAddress)
             peripheralManager.add(peripheralService)
         } catch {
             btState = .setupFailed

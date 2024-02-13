@@ -110,6 +110,10 @@ extension WalletEntity {
     func isOwningDomain(_ domainName: DomainName) -> Bool {
         domains.first(where: { $0.name == domainName }) != nil
     }
+    
+    func getDomainToViewPublicProfile() -> DomainDisplayInfo? {
+        rrDomain ?? domains.interactableItems().first
+    }
 }
 
 extension WalletEntity: Identifiable {
@@ -125,6 +129,10 @@ extension Array where Element == WalletEntity {
     
     func combinedDomains() -> [DomainDisplayInfo] {
         reduce([DomainDisplayInfo](), { $0 + $1.domains })
+    }
+    
+    func findOwningDomain(_ domainName: DomainName) -> Element? {
+        first(where: { $0.isOwningDomain(domainName) })
     }
 }
 

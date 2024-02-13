@@ -44,6 +44,7 @@ extension Analytics {
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
+        case searchProfilePressed
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -74,6 +75,7 @@ extension Analytics {
         case didSelectNotSupportedDomainForPurchaseInSearch
         
         case shareResult, didSelectHomeTab
+        case didPullToRefresh
     }
 }
 
@@ -175,7 +177,7 @@ extension Analytics {
         case newExternalWalletConnected, onboardingExternalWalletConnected
         case connectNewExternalWalletSelection, onboardingConnectExternalWalletSelection
         case importNewWallet, onboardingImportWallet, importExistingExternalWallet
-        case home, homeDomainsSearch, domainsList
+        case home, homeDomainsSearch, domainsList, domainsSearch
         case scanning, wcConnectedAppsList, signWCTransactionDomainSelection
         case upgradeToPolygonTutorial
         case webView, buyDomainsWebView
