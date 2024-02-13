@@ -94,6 +94,7 @@ extension UIImage {
     static let web3ProfileIllustration = UIImage(named: "web3ProfileIllustration")!
     static let web3ProfileIllustrationLarge = UIImage(named: "web3ProfileIllustrationLarge")!
     static let web3ProfileIllustrationLargeiPhoneSE = UIImage(named: "web3ProfileIllustrationLargeiPhoneSE")!
+    static let createProfilePullUpIllustration = UIImage(named: "createProfilePullUpIllustration")!
     static let profileAccessIllustration = UIImage(named: "profileAccessIllustration")!
     static let profileAccessIllustrationLarge = UIImage(named: "profileAccessIllustrationLarge")!
     static let profileAccessIllustrationLargeiPhoneSE = UIImage(named: "profileAccessIllustrationLargeiPhoneSE")!

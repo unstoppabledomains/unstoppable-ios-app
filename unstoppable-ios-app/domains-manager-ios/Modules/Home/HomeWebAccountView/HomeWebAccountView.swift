@@ -41,7 +41,8 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
             
-            HomeWalletActionsView(actionCallback: { action in
+            HomeWalletActionsView(actions: WebAction.allCases,
+                                  actionCallback: { action in
                 handleAction(action)
             }, subActionCallback: { subAction in
                 handleSubAction(subAction)
@@ -262,6 +263,8 @@ private extension HomeWebAccountView {
 // MARK: - Actions
 private extension HomeWebAccountView {
     enum WebAction: String, CaseIterable, HomeWalletActionItem  {
+        var id: String { rawValue }
+        
         case addWallet, claim, more
         
         var title: String {
@@ -305,6 +308,7 @@ private extension HomeWebAccountView {
                 return .more
             }
         }
+        var isDimmed: Bool { false }
     }
     
     enum WebSubAction: String, CaseIterable, HomeWalletSubActionItem  {

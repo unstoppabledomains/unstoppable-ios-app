@@ -67,5 +67,6 @@ extension Image {
     static let creditCard2Icon = Image("creditCard2Icon")
     static let shareFlatIcon = Image("shareFlatIcon")
     static let shareIcon = Image("shareIcon")
+    static let web3ProfileIllustration = Image("web3ProfileIllustration")
 
 }

@@ -31,9 +31,9 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
     let searchResultCallback: UDBTSearchResultCallback
     private(set) var btState: UBTControllerState = .notReady
     @State private var promotingWallet: WalletEntity?
-    @State private var promotingDomainImage: UIImage?
-    @State private var canChangePromotingDomain: Bool = false
-    @State private var isDomainsListPresented = false
+    @State private var promotingWalletImage: UIImage?
+    @State private var canChangePromotingWallet: Bool = false
+    @State private var isProfilesListPresented = false
     var analyticsName: Analytics.ViewName { .shakeToFind }
 
     var body: some View {
@@ -59,11 +59,11 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                     if let promotingWallet {
                         Spacer()
                         Spacer()
-                        domainSelectionView(wallet: promotingWallet)
+                        walletSelectionView(wallet: promotingWallet)
                         Spacer()
                         Spacer()
                         Spacer()
-                        HStack { } // Placeholder to center domain selection
+                        HStack { } // Placeholder to center wallet selection
                             .squareFrame(24)
                     }
                 }
@@ -76,16 +76,16 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                 controller.startScanning()
             }
         })
-        .onChange(of: walletsDataService.selectedWallet) { selectedWallet in
+        .onReceive(walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main)) { selectedWallet in
             if let selectedWallet {
                 setPromotingWallet(selectedWallet)
             }
         }
         .onAppear {
             logAnalytic(event: .viewDidAppear)
-            setInitialPromotingDomain()
+            setInitialPromotingWallet()
         }
-        .modifier(ShowingWalletSelectionModifier(isSelectWalletPresented: $isDomainsListPresented))
+        .modifier(ShowingWalletSelectionModifier(isSelectWalletPresented: $isProfilesListPresented))
     }
     
     init(controller: UBTController,
@@ -127,26 +127,28 @@ private extension UDBTSearchView {
         #endif
     }
     
-    func setInitialPromotingDomain() {
+    func setInitialPromotingWallet() {
         guard let wallet = walletsDataService.selectedWallet ?? walletsDataService.wallets.first else { return }
         
         setPromotingWallet(wallet)
-        canChangePromotingDomain = walletsDataService.wallets.count > 1
+        canChangePromotingWallet = walletsDataService.wallets.count > 1
     }
     
     func setPromotingWallet(_ wallet: WalletEntity) {
         promotingWallet = wallet
         Task {
             if let domain = wallet.getDomainToViewPublicProfile() {
-                promotingDomainImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
+                promotingWalletImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
                                                                                       downsampleDescription: .icon)
+            } else {
+                promotingWalletImage = nil
             }
         }
         controller.setPromotingWalletInfo(wallet)
     }
     
-    func showDomainsSelection() {
-        isDomainsListPresented = true
+    func showProfilesSelection() {
+        isProfilesListPresented = true
     }
     
     func dismiss() {
@@ -168,13 +170,13 @@ private extension UDBTSearchView {
     }
     
     @ViewBuilder
-    func domainSelectionView(wallet: WalletEntity) -> some View {
+    func walletSelectionView(wallet: WalletEntity) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            showDomainsSelection()
+            showProfilesSelection()
         } label: {
             HStack(spacing: 8) {
-                Image(uiImage: promotingDomainImage ?? .domainSharePlaceholder)
+                Image(uiImage: promotingWalletImage ?? .domainSharePlaceholder)
                     .resizable()
                     .scaledToFill()
                     .squareFrame(20)
@@ -185,7 +187,7 @@ private extension UDBTSearchView {
                     .font(.currentFont(size: 16, weight: .semibold))
                     .lineLimit(1)
                 
-                if canChangePromotingDomain{
+                if canChangePromotingWallet{
                     Image.chevronDown
                         .resizable()
                         .scaledToFill()
@@ -194,7 +196,7 @@ private extension UDBTSearchView {
                         .clipShape(Circle())
                 }
             }
-        }.disabled(!canChangePromotingDomain)
+        }.disabled(!canChangePromotingWallet)
     }
     
     @ViewBuilder

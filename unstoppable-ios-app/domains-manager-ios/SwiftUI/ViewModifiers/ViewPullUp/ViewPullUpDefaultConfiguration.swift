@@ -63,6 +63,7 @@ struct ViewPullUpDefaultConfiguration {
     // Icon
     enum IconSize {
         case largeCentered, large, small
+        case fixedHeight(CGFloat)
         
         var size: CGFloat {
             switch self {
@@ -70,6 +71,8 @@ struct ViewPullUpDefaultConfiguration {
                 return 56
             case .small:
                 return 40
+            case .fixedHeight(let height):
+                return height
             }
         }
     }
@@ -343,7 +346,7 @@ extension ViewPullUpDefaultConfiguration {
                      actionButton: .main(content: .init(title: String.Constants.tryAgain.localized(),
                                                         analyticsName: .tryAgain,
                                                         action: { completion(.success(Void())) })),
-                     cancelButton: .secondary(content: .init(title: String.Constants.cancelSetup.localized(),
+                     cancelButton: .primaryGhost(content: .init(title: String.Constants.cancelSetup.localized(),
                                                              icon: nil,
                                                              analyticsName: .cancel,
                                                              action: { completion(.failure(PullUpError.dismissed)) })),
@@ -351,6 +354,23 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
+    static func showCreateYourProfilePullUp(buyCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .createProfilePullUpIllustration,
+                                 size: .fixedHeight(132)),
+                     title: .text(String.Constants.createYourProfilePullUpTitle.localized()),
+                     subtitle: .label(.text(String.Constants.createYourProfilePullUpSubtitle.localized())),
+                     actionButton: .main(content: .init(title: String.Constants.buyDomain.localized(),
+                                                        analyticsName: .buyDomains,
+                                                        action: buyCallback)),
+                     cancelButton: .secondary(content: .init(title: String.Constants.gotIt.localized(),
+                                                             analyticsName: .gotIt,
+                                                             action: nil)),
+                     dismissAble: true,
+                     analyticName: .createYourProfile,
+                     dismissCallback: nil)
+    }
+    
+
     
 }
 

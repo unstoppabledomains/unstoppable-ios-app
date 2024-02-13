@@ -1096,6 +1096,8 @@ extension String {
         static let lastUpdated = "LAST_UPDATED"
         static let rarity = "RARITY"
         static let holdDays = "HOLD_DAYS"
+        static let createYourProfilePullUpTitle = "CREATE_YOUR_PROFILE_PULL_UP_TITLE"
+        static let createYourProfilePullUpSubtitle = "CREATE_YOUR_PROFILE_PULL_UP_SUBTITLE"
     }
     
     enum BlockChainIcons: String {

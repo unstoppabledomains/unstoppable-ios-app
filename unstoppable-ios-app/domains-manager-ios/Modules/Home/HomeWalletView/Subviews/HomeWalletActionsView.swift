@@ -11,12 +11,13 @@ struct HomeWalletActionsView<Action: HomeWalletActionItem>: View, ViewAnalyticsL
    
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    let actions: [Action]
     let actionCallback: (Action)->()
     let subActionCallback: (Action.SubAction)->()
     
     var body: some View {
         HStack {
-            ForEach(Array(Action.allCases), id: \.rawValue) { action in
+            ForEach(Array(actions)) { action in
                 walletActionView(for: action)
             }
         }
@@ -30,7 +31,8 @@ private extension HomeWalletActionsView {
     func walletActionView(for action: Action) -> some View {
         if action.subActions.isEmpty {
             walletActionButtonView(title: action.title,
-                                   icon: action.icon) {
+                                   icon: action.icon,
+                                   isDimmed: action.isDimmed) {
                 logButtonPressedAnalyticEvents(button: action.analyticButton)
                 actionCallback(action)
             }
@@ -51,7 +53,8 @@ private extension HomeWalletActionsView {
                 }
             } label: {
                 walletActionButtonView(title: action.title,
-                                       icon: action.icon)
+                                       icon: action.icon,
+                                       isDimmed: false)
             }
             .onButtonTap {
                 logButtonPressedAnalyticEvents(button: action.analyticButton)
@@ -62,6 +65,7 @@ private extension HomeWalletActionsView {
     @ViewBuilder
     func walletActionButtonView(title: String,
                                 icon: Image,
+                                isDimmed: Bool,
                                 callback: EmptyCallback? = nil) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
@@ -76,7 +80,7 @@ private extension HomeWalletActionsView {
                     .font(.currentFont(size: 13, weight: .medium))
                     .frame(height: 20)
             }
-            .foregroundColor(.foregroundAccent)
+            .foregroundColor(isDimmed ? .foregroundMuted : .foregroundAccent)
             .frame(height: 72)
             .frame(minWidth: 0, maxWidth: .infinity)
             .background(Color.backgroundOverlay)
@@ -94,6 +98,7 @@ private extension HomeWalletActionsView {
 }
 
 #Preview {
-    HomeWalletActionsView<HomeWalletView.WalletAction>(actionCallback: { _ in },
+    HomeWalletActionsView<HomeWalletView.WalletAction>(actions: [],
+                                                       actionCallback: { _ in },
                           subActionCallback: { _ in })
 }

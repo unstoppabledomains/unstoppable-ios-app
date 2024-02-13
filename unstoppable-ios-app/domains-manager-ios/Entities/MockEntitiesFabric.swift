@@ -59,7 +59,8 @@ extension MockEntitiesFabric {
                                                                           walletUsd: "$2,206.70",
                                                                           walletUsdAmt: 2206.7),
                                                              totalValueUsdAmt: 2206.7,
-                                                             totalValueUsd: "$2,206.70"),
+                                                             totalValueUsd: "$2,206.70",
+                                                             logoUrl: nil),
                                                        .init(address: $0.address,
                                                              symbol: "MATIC",
                                                              name: "Polygon",
@@ -84,8 +85,9 @@ extension MockEntitiesFabric {
                                                                           walletUsd: "$0.71",
                                                                           walletUsdAmt: 0.71),
                                                              totalValueUsdAmt: 0.71,
-                                                             totalValueUsd: "$0.71")]
-                let hasRRDomain = true // [true, false].randomElement()!
+                                                             totalValueUsd: "$0.71",
+                                                             logoUrl: nil)]
+                let hasRRDomain = [true, false].randomElement()!
                 
                 return WalletEntity(udWallet: $0.wallet,
                                     displayInfo: $0.displayInfo!,
