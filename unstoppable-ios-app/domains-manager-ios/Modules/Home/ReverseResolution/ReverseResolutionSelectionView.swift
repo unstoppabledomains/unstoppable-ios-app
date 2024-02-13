@@ -18,6 +18,12 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .setupReverseResolution }
     
     @State var wallet: WalletEntity
+    let mode: Mode
+    
+    enum Mode {
+        case selectFirst
+        case change
+    }
     
     @State private var error: Error?
     @State private var isSettingRRDomain = false
@@ -30,6 +36,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 16) {
                         headerView()
+                        selectedDomainView()
                         domainsListView()
                         buyDomainView()
                     }
@@ -50,14 +57,19 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             })
             .onAppear(perform: { setAvailableDomains() })
             .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
-                guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
-                      wallet.rrDomain == nil,
-                      wallet.isReverseResolutionChangeAllowed() else {
-                    dismiss()
+                switch mode {
+                case .selectFirst:
+                    guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
+                          wallet.rrDomain == nil,
+                          wallet.isReverseResolutionChangeAllowed() else {
+                        dismiss()
+                        return
+                    }
+                    self.wallet = wallet
+                    setAvailableDomains()
+                case .change:
                     return
                 }
-                self.wallet = wallet
-                setAvailableDomains()
             }
         }
         .trackAppearanceAnalytics(analyticsLogger: self)
@@ -67,7 +79,13 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension ReverseResolutionSelectionView {
     func setAvailableDomains() {
-        domains = wallet.domains.availableForRRItems()
+        switch mode {
+        case .selectFirst:
+            domains = wallet.domains.availableForRRItems()
+        case .change:
+            selectedDomain = wallet.rrDomain
+            domains = wallet.domains.availableForRRItems().filter({ $0.name != selectedDomain?.name })
+        }
     }
     
     @ViewBuilder
@@ -99,9 +117,29 @@ private extension ReverseResolutionSelectionView {
         .padding()
     }
     
+    
+    @ViewBuilder
+    func domainsSectionBackground(@ViewBuilder content: @escaping ()->some View) -> some View {
+        UDCollectionSectionBackgroundView {
+            content()
+        }
+        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+    }
+    
+    @ViewBuilder
+    func selectedDomainView() -> some View {
+        if case .change = mode,
+           let rrDomain = wallet.rrDomain {
+            domainsSectionBackground {
+                domainsRowView(rrDomain)
+                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+            }
+        }
+    }
+    
     @ViewBuilder
     func domainsListView() -> some View {
-        UDCollectionSectionBackgroundView {
+        domainsSectionBackground {
             LazyVStack(spacing: 0) {
                 ForEach(domains) { domain in
                     domainsRowView(domain)
@@ -109,7 +147,6 @@ private extension ReverseResolutionSelectionView {
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
-        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
     }
     
     @ViewBuilder
@@ -178,5 +215,6 @@ private extension ReverseResolutionSelectionView {
 }
 
 #Preview {
-    ReverseResolutionSelectionView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
+    ReverseResolutionSelectionView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0], 
+                                   mode: .change)
 }

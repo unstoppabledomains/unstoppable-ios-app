@@ -12,6 +12,7 @@ struct UDCarouselFeature: CarouselViewItem {
     let text: String
     var tintColor: UIColor { .foregroundSecondary }
     var backgroundColor: UIColor { .backgroundSubtle }
+    var isRotating: Bool { false }
 
     static let ProfileInfoFeatures: [UDCarouselFeature] = [.init(icon: .rocketIcon20,
                                                                  text: String.Constants.profileInfoCarouselItemPortableIdentity.localized()),

@@ -53,15 +53,54 @@ private extension HomeWalletDomainCellView {
             VStack(alignment: .leading) {
                 cartLogoView()
                 Spacer()
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(domain.name.getBelowTld() ?? "")
-                    Text("." + tldName)
-                        .offset(x: -4)
+                VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(domain.name.getBelowTld() ?? "")
+                            .frame(height: 24)
+                        Text("." + tldName)
+                            .offset(x: -4)
+                            .frame(height: 20)
+                    }
+                    .font(.currentFont(size: 20, weight: .medium))
+                    domainStatusView()
                 }
-                .font(.currentFont(size: 20, weight: .medium))
             }
             .foregroundStyle(Color.white)
             .padding(EdgeInsets(top: 4, leading: 8, bottom: 8, trailing: 4))
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    @ViewBuilder
+    func domainStatusView() -> some View {
+        if let indicator = resolveIndicatorStyle() {
+            CarouselViewBridgeView(data: [indicator],
+                                   backgroundColor: indicator.containerBackgroundColor,
+                                   sideGradientHidden: true)
+                .frame(height: 24)
+                .padding(EdgeInsets(top: 4, leading: -8, bottom: -8, trailing: -4))
+        }
+    }
+    
+    func resolveIndicatorStyle() -> DomainIndicatorStyle? {
+        switch domain.state {
+        case .default:
+            switch domain.usageType {
+            case .normal, .newNonInteractable, .parked:
+                return nil
+            case .deprecated(let tld):
+                return .deprecated(tld: tld)
+            case .zil:
+                return .deprecated(tld: "zil")
+            }
+        case .updatingRecords, .updatingReverseResolution:
+            return .updatingRecords
+        case .minting:
+            return .minting
+        case .parking(let status):
+            return .parked(status: status)
+        case .transfer:
+            return .transfer
         }
     }
     
@@ -75,18 +114,7 @@ private extension HomeWalletDomainCellView {
     func viewForSubdomain() -> some View {
         ZStack(alignment: .topLeading) {
             Color.white
-            GridView(rows: 10,
-                     cols: 10,
-                     gridColor: LinearGradient(
-                stops: [
-                    Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                    Gradient.Stop(color: .black.opacity(0.08), location: 0.14),
-                    Gradient.Stop(color: .black.opacity(0.08), location: 0.86),
-                    Gradient.Stop(color: .black.opacity(0), location: 1.00),
-                ],
-                startPoint: UnitPoint(x: 0, y: 0.08),
-                endPoint: UnitPoint(x: 1, y: 0.08)
-            ), lineWidth: 0.2)
+            Image.subdomainGridBackground
             cartLogoView()
                 .foregroundStyle(Color.black)
                 .padding(EdgeInsets(top: 8, leading: 8, bottom: 0, trailing: 0))
@@ -149,40 +177,74 @@ private extension HomeWalletDomainCellView {
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
-    
-    struct GridView<S : ShapeStyle>: View {
+}
+
+// MARK: - Private methods
+private extension HomeWalletDomainCellView {
+    enum DomainIndicatorStyle: CarouselViewItem {
+        case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
         
-        let rows: CGFloat
-        let cols: CGFloat
-        let gridColor: S
-        let lineWidth: CGFloat
+        var isRotating: Bool {
+            switch self {
+            case .updatingRecords, .minting, .transfer:
+                return true
+            default:
+                return false
+            }
+        }
         
-        var body: some View {
-            
-            GeometryReader { geometry in
-                
-                let width = geometry.size.width
-                let height = geometry.size.height
-                let xSpacing = width / cols
-                let ySpacing = height / rows
-                
-                Path { path in
-                    for index in 0...Int(cols) {
-                        let vOffset: CGFloat = CGFloat(index) * xSpacing
-                        path.move(to: CGPoint(x: vOffset, y: 0))
-                        path.addLine(to: CGPoint(x: vOffset, y: height))
-                    }
-                    for index in 0...Int(rows) {
-                        let hOffset: CGFloat = CGFloat(index) * ySpacing
-                        path.move(to: CGPoint(x: 0, y: hOffset))
-                        path.addLine(to: CGPoint(x: width, y: hOffset))
-                    }
-                }
-                .stroke(gridColor, lineWidth: lineWidth)
+        var containerBackgroundColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting:
+                return .brandElectricYellow
+            case .transfer:
+                return .brandElectricGreen
+            case .deprecated, .parked:
+                return .brandOrange
+            }
+        }
+        
+        /// CarouselViewItem properties
+        var icon: UIImage {
+            switch self {
+            case .updatingRecords, .minting, .transfer:
+                return .refreshIcon
+            case .deprecated:
+                return .warningIconLarge
+            case .parked:
+                return .parkingIcon24
+            }
+        }
+        
+        var text: String {
+            switch self {
+            case .updatingRecords:
+                return String.Constants.updatingRecords.localized()
+            case .minting:
+                return String.Constants.mintingDomain.localized()
+            case .deprecated(let tld):
+                return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .parked(let status):
+                return status.title ?? String.Constants.parked.localized()
+            case .transfer:
+                return String.Constants.transferInProgress.localized()
+            }
+        }
+        
+        var tintColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
+                return .black
+            }
+        }
+        
+        var backgroundColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
+                return .clear
             }
         }
     }
-
 }
 
 #Preview {

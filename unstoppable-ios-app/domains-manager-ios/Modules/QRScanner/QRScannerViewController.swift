@@ -13,7 +13,7 @@ protocol QRScannerViewProtocol: BaseViewControllerProtocol {
     func startCaptureSession()
     func stopCaptureSession()
     func setState(_ state: QRScannerViewController.State)
-    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool)
+    func setWith(wallet: WalletEntity, isSelectable: Bool)
     func setWith(appsConnected: Int)
     func setBlockchainTypeSelectionWith(availableTypes: [BlockchainType], selectedType: BlockchainType)
     func removeBlockchainTypeSelection()
@@ -113,8 +113,8 @@ extension QRScannerViewController: QRScannerViewProtocol {
         }
     }
     
-    func setWith(selectedDomain: DomainDisplayInfo?, wallet: WalletDisplayInfo, balance: WalletTokenPortfolio?, isSelectable: Bool) {
-        selectedDomainItemView.setWith(domain: selectedDomain, wallet: wallet, balance: balance, isSelectable: isSelectable)
+    func setWith(wallet: WalletEntity, isSelectable: Bool) {
+        selectedDomainItemView.setWith(wallet: wallet, isSelectable: isSelectable)
     }
     
     func setWith(appsConnected: Int) {

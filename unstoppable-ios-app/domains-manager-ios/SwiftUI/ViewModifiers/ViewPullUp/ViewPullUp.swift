@@ -19,13 +19,6 @@ struct ViewPullUp: ViewModifier {
     @State private var tag = 0
     @State private var dismissAnalyticParameters = Analytics.EventParameters()
     @State private var dismissCallback: EmptyCallback?
-    var isPresented: Binding<Bool> {
-        Binding {
-            type != nil
-        } set: { _ in
-            type = nil
-        }
-    }
     
     func body(content: Content) -> some View {
         content

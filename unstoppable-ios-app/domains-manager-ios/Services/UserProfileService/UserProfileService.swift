@@ -186,9 +186,9 @@ enum UserProfile {
     
     var isWalletProfile: Bool {
         switch self {
-        case .wallet(let wallet):
+        case .wallet:
             return true
-        case .webAccount(let user):
+        case .webAccount:
             return false
         }
     }

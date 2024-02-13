@@ -13,6 +13,7 @@ struct NFTModel: Codable, Hashable {
     let collection: String
     let collectionOwners: Int?
     let collectionLink: String?
+    let collectionImageUrl: String?
     let name: String?
     let description: String?
     let imageUrl: String?
@@ -29,7 +30,7 @@ struct NFTModel: Codable, Hashable {
     var address: String?
     
     enum CodingKeys: String, CodingKey {
-        case mint, link, collection, collectionOwners, collectionLink, name, description, tags, createdDate, acquiredDate, saleDetails, floorPrice, traits, supply, rarity
+        case mint, link, collection, collectionOwners, collectionLink, name, description, tags, createdDate, acquiredDate, saleDetails, floorPrice, traits, supply, rarity, collectionImageUrl
         case imageUrl = "image_url"
         case isPublic = "public"
     }

@@ -195,6 +195,7 @@ extension MockEntitiesFabric {
                   tags: [],
                   collection: "Collection name with long name",
                   collectionLink: URL(string: "https://google.com"),
+                  collectionImageUrl: nil,
                   mint: UUID().uuidString,
                   traits: [.init(name: "Background", value: "M1 Orange")],
                   floorPriceDetails: .init(value: 5.32, currency: "USD"),

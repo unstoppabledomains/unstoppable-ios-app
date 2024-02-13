@@ -55,6 +55,8 @@ private extension HomeWalletSortingSelectorView {
                 Line()
                     .stroke(lineWidth: 1)
                     .offset(y: 10)
+                    .foregroundStyle(Color.white.opacity(0.08))
+                    .shadow(color: .black, radius: 0, x: 0, y: -1)
             }
         }
         .onButtonTap {

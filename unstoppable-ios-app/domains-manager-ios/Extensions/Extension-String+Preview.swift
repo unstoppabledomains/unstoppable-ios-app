@@ -1098,6 +1098,9 @@ extension String {
         static let holdDays = "HOLD_DAYS"
         static let createYourProfilePullUpTitle = "CREATE_YOUR_PROFILE_PULL_UP_TITLE"
         static let createYourProfilePullUpSubtitle = "CREATE_YOUR_PROFILE_PULL_UP_SUBTITLE"
+        static let updating = "UPDATING"
+        static let transferring = "TRANSFERRING"
+        static let copyWalletAddress = "COPY_WALLET_ADDRESS"
     }
     
     enum BlockChainIcons: String {

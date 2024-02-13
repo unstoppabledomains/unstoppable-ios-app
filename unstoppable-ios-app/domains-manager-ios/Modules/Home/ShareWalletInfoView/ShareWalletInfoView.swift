@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct ShareWalletInfoView: View, ViewAnalyticsLogger {
         
@@ -15,6 +16,7 @@ struct ShareWalletInfoView: View, ViewAnalyticsLogger {
     
     @State private var domainAvatarImage: UIImage?
     @State private var qrImage: UIImage?
+    @State private var showingHint = false
     var analyticsName: Analytics.ViewName { .shareWalletInfo }
     
     var body: some View {
@@ -28,16 +30,22 @@ struct ShareWalletInfoView: View, ViewAnalyticsLogger {
             }
             .onAppear(perform: onAppear)
             .padding(EdgeInsets(top: 30, leading: 16, bottom: 0, trailing: 16))
-
+            .task {
+                if #available(iOS 17.0, *) {
+                    try? Tips.configure(
+                        [.displayFrequency(.immediate),
+                         .datastoreLocation(.applicationDefault)])
+                }
+                showingHint = true
+            }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    UDButtonView(text: String.Constants.shareAddress.localized(),
-                                 icon: .shareFlatIcon,
-                                 style: .large(.raisedPrimary)) {
-                        logButtonPressedAnalyticEvents(button: .share)
-                        shareItems([wallet.ethFullAddress]) { success in
-                            logAnalytic(event: .shareResult, 
-                                        parameters: [.success: String(success)])
+                    if wallet.rrDomain == nil {
+                        shareButtonView()
+                    } else {
+                        HStack {
+                            copyAddressLargeButtonView()
+                            shareButtonView()
                         }
                     }
                 }
@@ -101,31 +109,35 @@ private extension ShareWalletInfoView {
         HStack(spacing: 12) {
             if let rrDomain = wallet.rrDomain {
                 HStack(spacing: 12) {
+                    copyDomainNameButtonWithTipView(domain: rrDomain)
+                    nameView(rrDomain.name)
+                    Spacer()
                     Image(uiImage: domainAvatarImage ?? .domainSharePlaceholder)
                         .resizable()
                         .squareFrame(24)
                         .clipShape(Circle())
-                    nameView(rrDomain.name)
                 }
-            } else if wallet.displayInfo.isNameSet {
-                nameView(wallet.displayName)
+            } else {
+                if wallet.displayInfo.isNameSet {
+                    nameView(wallet.displayName)
+                }
+                Spacer()
+                Button {
+                    logButtonPressedAnalyticEvents(button: .copyToClipboard)
+                    UDVibration.buttonTap.vibrate()
+                    CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: "ETH")
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(wallet.address.walletAddressTruncated)
+                            .font(.currentFont(size: 16, weight: .medium))
+                        Image.copyToClipboardIcon
+                            .resizable()
+                            .squareFrame(20)
+                    }
+                    .foregroundStyle(Color.white.opacity(0.48))
+                }
             }
             
-            Spacer()
-            Button {
-                logButtonPressedAnalyticEvents(button: .copyToClipboard)
-                UDVibration.buttonTap.vibrate()
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: "ETH")
-            } label: {
-                HStack(spacing: 8) {
-                    Text(wallet.address.walletAddressTruncated)
-                        .font(.currentFont(size: 16, weight: .medium))
-                    Image.copyToClipboardIcon
-                        .resizable()
-                        .squareFrame(20)
-                }
-                .foregroundStyle(Color.white.opacity(0.48))
-            }
         }
     }
     
@@ -137,6 +149,58 @@ private extension ShareWalletInfoView {
             .foregroundColor(Color.white.opacity(0.32))
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0))
             .frame(maxWidth: .infinity, alignment: .top)
+    }
+    
+    @ViewBuilder
+    func shareButtonView() -> some View {
+        UDButtonView(text: String.Constants.shareAddress.localized(),
+                     icon: wallet.rrDomain != nil ? nil : .shareFlatIcon,
+                     style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .share)
+            shareItems([wallet.ethFullAddress]) { success in
+                logAnalytic(event: .shareResult,
+                            parameters: [.success: String(success)])
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func copyAddressLargeButtonView() -> some View {
+        UDButtonView(text: String.Constants.copyAddress.localized(),
+                     style: .large(.raisedTertiaryWhite)) {
+            logButtonPressedAnalyticEvents(button: .copyToClipboard)
+            UDVibration.buttonTap.vibrate()
+            CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: "ETH")
+        }
+    }
+    
+    @ViewBuilder
+    func copyDomainNameButtonWithTipView(domain: DomainDisplayInfo) -> some View {
+        if #available(iOS 17.0, *) {
+            copyDomainNameButtonView(domain: domain)
+                .popoverTip(UseDomainNameTip())
+        } else {
+            copyDomainNameButtonView(domain: domain)
+        }
+    }
+    
+    @ViewBuilder
+    func copyDomainNameButtonView(domain: DomainDisplayInfo) -> some View {
+        UDIconButtonView(icon: .squareBehindSquareIcon,
+                         style: .circle(size: .small,
+                                        style: .raisedTertiaryWhite),
+                         callback: {
+            logButtonPressedAnalyticEvents(button: .copyToClipboard)
+            UDVibration.buttonTap.vibrate()
+            UIPasteboard.general.string = domain.name
+            appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
+            showingHint.toggle()
+        })
+    }
+    
+    struct UseDomainNameTip: Tip {
+        let id: String = "tip"
+        let title: Text = Text("Use your domain name instead of long wallet address in the supported apps")
     }
 }
 

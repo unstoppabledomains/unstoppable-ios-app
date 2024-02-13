@@ -16,7 +16,7 @@ struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
-    let didSelectDomainCallback: @MainActor (DomainDisplayInfo)->()
+    let didSelectDomainCallback: MainActorCallback
 
     @State private var domainAvatar: UIImage?
     
@@ -64,17 +64,56 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func avatarView() -> some View {
-        getAvatarView()
-            .squareFrame(80)
-            .clipShape(Circle())
-            .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
-            .overlay {
-                Circle()
-                    .stroke(lineWidth: 2)
-                    .foregroundStyle(Color.backgroundDefault)
-            }
+        ZStack(alignment: .bottom) {
+            getAvatarView()
+                .squareFrame(80)
+                .clipShape(Circle())
+                .shadow(color: Color.backgroundDefault, radius: 24, x: 0, y: 0)
+                .overlay {
+                    Circle()
+                        .stroke(lineWidth: 2)
+                        .foregroundStyle(Color.backgroundDefault)
+                }
+                .overlay {
+                    if let state = resolveDomainState() {
+                        Circle()
+                            .trim(from: 0.0, to: 0.8)
+                            .stroke(lineWidth: 2)
+                            .rotationEffect(.degrees(130))
+                            .padding(EdgeInsets(top: -2, leading: -2, bottom: -2, trailing: -2))
+                            .foregroundStyle(state.tintColor)
+                            .withoutAnimation()
+                    }
+                }
+            getStatusView()
+        }
     }
     
+    @ViewBuilder
+    func getStatusView() -> some View {
+        if let state = resolveDomainState() {
+            HStack(spacing: 4) {
+                Image.refreshIcon
+                    .resizable()
+                    .squareFrame(16)
+                    .infiniteRotation(duration: 5, angle: -360)
+                Text(state.title)
+                    .font(.currentFont(size: 12, weight: .medium))
+            }
+            .foregroundStyle(Color.black)
+            .frame(height: 20)
+            .padding(EdgeInsets(top: 2, leading: 4,
+                                bottom: 2, trailing: 4))
+            .overlay {
+                Capsule()
+                    .stroke(lineWidth: 3)
+                    .foregroundStyle(Color.backgroundDefault)
+            }
+            .background(state.tintColor)
+            .clipShape(Capsule())
+        }
+    }
+ 
     @ViewBuilder
     func getAvatarView() -> some View {
         if let domain = wallet.rrDomain {
@@ -88,7 +127,7 @@ private extension HomeWalletHeaderRowView {
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            didSelectDomainCallback(domain)
+            didSelectDomainCallback()
             logButtonPressedAnalyticEvents(button: .rrDomainAvatar)
         } label: {
             UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
@@ -157,10 +196,47 @@ private extension HomeWalletHeaderRowView {
     }
 }
 
+// MARK: - Private methods
+private extension HomeWalletHeaderRowView {
+    enum DomainUpdatingState {
+        case updating, transfer
+        
+        var tintColor: Color {
+            switch self {
+            case .updating:
+                return .brandElectricYellow
+            case .transfer:
+                return .brandElectricGreen
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .updating:
+                return String.Constants.updating.localized()
+            case .transfer:
+                return String.Constants.transferring.localized()
+            }
+        }
+    }
+    
+    func resolveDomainState() -> DomainUpdatingState? {
+        guard let domain = wallet.rrDomain else { return nil }
+        switch domain.state {
+        case .minting, .transfer:
+            return .transfer
+        case .updatingRecords, .updatingReverseResolution:
+            return .updating
+        default:
+            return nil
+        }
+    }
+}
+
 #Preview {
     HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
                             domainNamePressedCallback: { }, 
-                            didSelectDomainCallback: { _ in })
+                            didSelectDomainCallback: { })
 }
 
 

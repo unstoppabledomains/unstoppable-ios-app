@@ -16,8 +16,10 @@ struct PullUpError: ViewModifier {
                 return .default(createPullUpConfigurationFor(error: error))
             }
             return nil
-        } set: { _ in
-            error = nil
+        } set: { val in
+            if val == nil {
+                error = nil
+            }
         }
     }
     

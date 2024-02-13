@@ -266,6 +266,10 @@ extension UIView {
         let rotationAnimation = CABasicAnimation.infiniteRotateAnimation(duration: 5, clockwise: clockwise)
         layer.add(rotationAnimation, forKey: "updatingRecordsAnimation")
     }
+    
+    func stopUpdatingRecordsAnimation() {
+        layer.removeAllAnimations()
+    }
 }
 
 extension UIView {

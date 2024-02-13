@@ -607,6 +607,8 @@
 		C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */; };
 		C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */; };
 		C630BC812B1847F800E29318 /* PendingPurchasedDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */; };
+		C631DFA12B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
+		C631DFA22B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -2795,6 +2797,7 @@
 		C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContextEnvironmentKeys.swift; sourceTree = "<group>"; };
 		C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedDomainsStorage.swift; sourceTree = "<group>"; };
 		C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPurchasedDomain.swift; sourceTree = "<group>"; };
+		C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteRotationModifier.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -6582,6 +6585,7 @@
 				C64939F72B6373EC00457363 /* DeviceShakeViewModifier.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
 				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
+				C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */,
 				C6493A012B63A8B700457363 /* TrackingPressingStateModifier.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
 				C69F99182A9F1264004B1958 /* SideInsets.swift */,
@@ -9167,6 +9171,7 @@
 				C6526DE829D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6EECE9D2833A42600978ED5 /* CoinRecordsService.swift in Sources */,
+				C631DFA12B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */,
 				C6D5DAEF2837682300379C38 /* RecordChangeType.swift in Sources */,
 				C6A89C542B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */,
 				C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
@@ -9541,6 +9546,7 @@
 				C6D6473C2B1ED9EF00D724AC /* PaymentTransactionCostView.swift in Sources */,
 				C6D6461D2B1DC1F900D724AC /* PreviewStripePaymentHelper.swift in Sources */,
 				C6C8F81B2B217CC000A9834D /* BaseCreateWalletPresenter.swift in Sources */,
+				C631DFA22B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */,
 				C61808222B19AB210032E543 /* DomainToPurchaseSuggestion.swift in Sources */,
 				C61807F32B19A7960032E543 /* PreviewWalletConnectServiceV2.swift in Sources */,
 				C6D6467F2B1ED12900D724AC /* DomainProfileSectionChangeUIDescription.swift in Sources */,

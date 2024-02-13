@@ -205,14 +205,10 @@ private extension QRScannerViewPresenter {
     }
     
     func setSelected(wallet: WalletEntity) {
-        let displayInfo = wallet.displayInfo
         let wallets = walletsDataService.wallets
         self.selectedWallet = wallet
-        let balance = wallet.balanceFor(blockchainType: blockchainType)
         
-        view?.setWith(selectedDomain: wallet.rrDomain,
-                      wallet: displayInfo,
-                      balance: balance,
+        view?.setWith(wallet: wallet,
                       isSelectable: wallets.count > 1)
     }
     

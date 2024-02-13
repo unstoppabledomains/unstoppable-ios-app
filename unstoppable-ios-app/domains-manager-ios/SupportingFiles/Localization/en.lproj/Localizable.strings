@@ -998,4 +998,7 @@
 "HOLD_DAYS" = "Hold Days";
 "CREATE_YOUR_PROFILE_PULL_UP_TITLE" = "Create your profile";
 "CREATE_YOUR_PROFILE_PULL_UP_SUBTITLE" = "Your domain is your self-sovereign identity. You control what information you share across apps, metaverse, and games.";
+"UPDATING" = "Updating";
+"TRANSFERRING" = "Transferring";
+"COPY_WALLET_ADDRESS" = "Copy wallet address";
 

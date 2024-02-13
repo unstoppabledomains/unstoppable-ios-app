@@ -59,9 +59,10 @@ struct HomeTabView: View {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])
         })
-        .sheet(item: $router.resolvingPrimaryDomainWallet, content: { wallet in
-            ReverseResolutionSelectionView(wallet: wallet)
-                .interactiveDismissDisabled(true)
+        .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
+            ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
+                                           mode: presentationDetails.mode)
+            .interactiveDismissDisabled(presentationDetails.mode == .selectFirst)
         })
         .sheet(isPresented: $router.isSearchingDomains, content: {
             DomainsSearchView()
