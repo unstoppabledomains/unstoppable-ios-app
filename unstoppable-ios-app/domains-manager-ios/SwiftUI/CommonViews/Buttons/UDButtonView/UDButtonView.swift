@@ -18,7 +18,7 @@ struct UDButtonView: View {
     let style: UDButtonStyle
     var isLoading = false
     var isSuccess = false
-    let callback: EmptyCallback
+    let callback: MainActorCallback
     
     var body: some View {
         Button {
