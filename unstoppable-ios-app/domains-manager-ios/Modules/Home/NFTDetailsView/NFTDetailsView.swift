@@ -122,7 +122,8 @@ private extension NFTDetailsView {
         Line(direction: direction)
             .stroke(style: StrokeStyle(lineWidth: 1, 
                                        dash: dashed ? [5] : []))
-            .foregroundStyle(Color.foregroundSecondary)
+            .foregroundStyle(Color.white.opacity(0.08))
+            .shadow(color: .black, radius: 0, x: 0, y: -1)
     }
     
     @ViewBuilder
