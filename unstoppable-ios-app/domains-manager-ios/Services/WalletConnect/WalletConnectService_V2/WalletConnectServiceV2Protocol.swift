@@ -35,7 +35,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     
     func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
                               chainId: Int,
-                              txParams: AnyCodable,
+                              txParams: WCAnyCodable,
                               in wallet: UDWallet) async throws -> ResponseV2
 }
 

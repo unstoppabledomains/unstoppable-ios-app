@@ -46,7 +46,7 @@ enum PushEnvironment {
     
     struct PushMessageMetaContent: Codable {
         let content: String
-        let info: [String : String]
+        let info: [String : AnyCodable]
     }
     
     struct PushMessageMediaEmbeddedContent: Codable {

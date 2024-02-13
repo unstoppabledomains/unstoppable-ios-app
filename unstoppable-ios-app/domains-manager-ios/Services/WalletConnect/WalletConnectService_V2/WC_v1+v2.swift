@@ -23,7 +23,7 @@ extension UDWallet {
                                                                                                                         chainId: chainId,
                                                                                                                         txParams: request.params,
                                                                                                                         in: self)
-            let respCodable = AnyCodable(response)
+            let respCodable = WCAnyCodable(response)
             return .response(respCodable)
         }
         

@@ -59,7 +59,7 @@ typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
 typealias WCAppDisconnectedCallback = ((UnifiedConnectAppInfo)->())
 typealias WalletConnectURI = WalletConnectUtils.WalletConnectURI
-typealias AnyCodable = Commons.AnyCodable
+typealias WCAnyCodable = Commons.AnyCodable
 typealias EthereumTransaction = Boilertalk_Web3.EthereumTransaction
 
 
@@ -641,10 +641,10 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                          request: request,
                                                                          messageString: messageString.convertedIntoReadableMessage)
         
-        let sig: AnyCodable
+        let sig: WCAnyCodable
         do {
             let sigTyped = try await udWallet.getPersonalSignature(messageString: messageString)
-            sig = AnyCodable(sigTyped)
+            sig = WCAnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
             throw WalletConnectRequestError.failedToSignMessage
@@ -668,10 +668,10 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                          request: request,
                                                                          messageString: messageString)
         
-        let sig: AnyCodable
+        let sig: WCAnyCodable
         do {
             let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
-            sig = AnyCodable(sigTyped)
+            sig = WCAnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
             throw WalletConnectRequestError.failedToSignMessage
@@ -701,7 +701,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                   txParams: request.params,
                                                                   in: udWallet)
                 let sigString = try handle(response: response)
-                let sig = AnyCodable(sigString)
+                let sig = WCAnyCodable(sigString)
                 Debugger.printInfo(topic: .WalletConnectV2, "Successfully signed TX via external wallet: \(udWallet.address)")
                 return .response(sig)
             }
@@ -719,7 +719,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
             let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
             
-            return .response(AnyCodable(signature))
+            return .response(WCAnyCodable(signature))
         }
         
         guard let transactionsToSign = try? request.params.getTransactions() else {
@@ -757,7 +757,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let hash = try await sendTx(transaction: completedTx,
                                         udWallet: udWallet,
                                         chainIdInt: chainIdInt)
-            let hashCodable = AnyCodable(hash)
+            let hashCodable = WCAnyCodable(hash)
             Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
             return .response(hashCodable)
         }
@@ -806,14 +806,14 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                          request: request,
                                                                          messageString: typedDataString)
         
-        let sig: AnyCodable
+        let sig: WCAnyCodable
         do {
             let sigTyped: String
             switch version {
             case .standard: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
             case .v4: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
             }
-            sig = AnyCodable(sigTyped)
+            sig = WCAnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign typed data: \(typedDataString) by wallet:\(address), error: \(error)", critical: false)
             throw WalletConnectRequestError.failedToSignMessage
@@ -1089,7 +1089,7 @@ extension WalletConnectServiceV2 {
     
     func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
                                       chainId: Int,
-                                      txParams: AnyCodable,
+                                      txParams: WCAnyCodable,
                                       in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         let onlyActive = pickOnlyActiveSessions(from: sessions)
         guard let sessionSettled = onlyActive.first else {
@@ -1103,7 +1103,7 @@ extension WalletConnectServiceV2 {
     }
 }
 
-extension AnyCodable {
+extension WCAnyCodable {
     func getTransactions() throws -> [EthereumTransaction] {
         
         guard let dictArray = self.value as? [[String: Any]] else {
@@ -1289,7 +1289,7 @@ extension WalletConnectServiceV2 {
     private func sendRequest(method: WalletConnectRequestType,
                              session: SessionV2Proxy,
                              chainId: Int,
-                             requestParams: AnyCodable,
+                             requestParams: WCAnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         try await appContext.walletConnectExternalWalletHandler.sendWC2Request(method: method,
                                                                                session: session,
@@ -1326,7 +1326,7 @@ extension WalletConnectServiceV2 {
     
     private func signTxViaWalletConnectV2(sessions: [SessionV2Proxy],
                                           chainId: Int,
-                                          txParams: AnyCodable,
+                                          txParams: WCAnyCodable,
                                           in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectRequestError.noWCSessionFound
@@ -1430,16 +1430,16 @@ extension WalletConnectServiceV2 {
         }
     }
     
-    static func getParamsSignTx(tx: TransactionV2) -> AnyCodable {
-        AnyCodable(tx)
+    static func getParamsSignTx(tx: TransactionV2) -> WCAnyCodable {
+        WCAnyCodable(tx)
     }
     
-    static func getParamsPersonalSign(message: String, address: HexAddress) -> AnyCodable {
-        AnyCodable([message, address])
+    static func getParamsPersonalSign(message: String, address: HexAddress) -> WCAnyCodable {
+        WCAnyCodable([message, address])
     }
     
-    static func getParamsEthSign(message: String, address: HexAddress) -> AnyCodable {
-        AnyCodable([address, message])
+    static func getParamsEthSign(message: String, address: HexAddress) -> WCAnyCodable {
+        WCAnyCodable([address, message])
     }
 }
 
@@ -1516,7 +1516,7 @@ extension WalletConnectServiceV2 {
 }
 
 extension EthereumTransaction {
-    func convertToAnyCodable() -> AnyCodable {
+    func convertToAnyCodable() -> WCAnyCodable {
         var accum: [String: String] = [String: String]()
         
         if let from = self.from {
@@ -1542,7 +1542,7 @@ extension EthereumTransaction {
         
         
         
-        return AnyCodable([accum])
+        return WCAnyCodable([accum])
     }
 }
 
