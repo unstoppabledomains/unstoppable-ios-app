@@ -83,6 +83,10 @@ extension HomeWalletView {
             showProfile(of: domain)
         }
         
+        func didSelectChangeRR() {
+            router.resolvingPrimaryDomainWallet = .init(wallet: selectedWallet, mode: .change)
+        }
+        
         private func showProfile(of domain: DomainDisplayInfo) {
             Task {
                 await router.showDomainProfile(domain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
@@ -201,7 +205,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                selectedWallet.isReverseResolutionChangeAllowed(),
                !router.isUpdatingPurchasedProfiles,
                router.walletViewNavPath.isEmpty {
-                router.resolvingPrimaryDomainWallet = selectedWallet
+                router.resolvingPrimaryDomainWallet = .init(wallet: selectedWallet, mode: .selectFirst)
             }
         }
     }

@@ -16,7 +16,7 @@ struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
-    let didSelectDomainCallback: @MainActor (DomainDisplayInfo)->()
+    let didSelectDomainCallback: MainActorCallback
 
     @State private var domainAvatar: UIImage?
     
@@ -127,7 +127,7 @@ private extension HomeWalletHeaderRowView {
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            didSelectDomainCallback(domain)
+            didSelectDomainCallback()
             logButtonPressedAnalyticEvents(button: .rrDomainAvatar)
         } label: {
             UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
@@ -236,7 +236,7 @@ private extension HomeWalletHeaderRowView {
 #Preview {
     HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
                             domainNamePressedCallback: { }, 
-                            didSelectDomainCallback: { _ in })
+                            didSelectDomainCallback: { })
 }
 
 

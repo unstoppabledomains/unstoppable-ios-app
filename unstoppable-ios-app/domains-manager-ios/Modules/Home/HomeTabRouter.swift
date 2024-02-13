@@ -22,7 +22,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
-    @Published var resolvingPrimaryDomainWallet: WalletEntity?
+    @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
@@ -499,5 +499,12 @@ extension HomeTabRouter {
     struct UBTSearchPresentationDetails: Identifiable {
         let id = UUID()
         let searchResultCallback: UDBTSearchResultCallback
+    }
+    
+    struct SelectRRPresentationDetails: Identifiable {
+        var id: String { wallet.id }
+        
+        let wallet: WalletEntity
+        let mode: ReverseResolutionSelectionView.Mode
     }
 }
