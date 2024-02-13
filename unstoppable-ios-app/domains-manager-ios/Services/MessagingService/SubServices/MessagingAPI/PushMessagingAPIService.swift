@@ -628,7 +628,7 @@ private extension PushMessagingAPIService {
     
     func getLinkFrom(message: MessagingChatMessage) -> String? {
         let messageMetadata: PushEnvironment.MessageServiceMetadata? = try? decodeServiceMetadata(from: message.serviceMetadata)
-        return messageMetadata?.link
+        return messageMetadata?.link?.replacingOccurrences(of: "previous:", with: "")
     }
 }
 
@@ -668,12 +668,14 @@ private extension PushMessagingAPIService {
         let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
         let pushMessageType = try getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let reference = getPushMessageReferenceFrom(displayType: messageType)
         
         let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
                                                     messageType: pushMessageType.rawValue,
                                                     receiverAddress: receiver,
                                                     account: user.wallet,
                                                     pgpPrivateKey: pgpPrivateKey,
+                                                    refrence: reference,
                                                     env: env)
         return sendOptions
     }
@@ -699,8 +701,19 @@ private extension PushMessagingAPIService {
             let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
             let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
             return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
+        case .reaction(let details):
+            return details.content
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
+        }
+    }
+    
+    func getPushMessageReferenceFrom(displayType: MessagingChatMessageDisplayType) -> String? {
+        switch displayType {
+        case .reaction(let details):
+            return details.messageId
+        case .text, .imageBase64, .imageData, .unknown, .remoteContent:
+            return nil
         }
     }
     
@@ -708,6 +721,8 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .text:
             return .text
+        case .reaction:
+            return .reaction
         case .imageBase64, .imageData:
             return .image
         case .unknown, .remoteContent:

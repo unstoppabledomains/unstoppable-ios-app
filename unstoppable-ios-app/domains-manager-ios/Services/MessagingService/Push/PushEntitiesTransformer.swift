@@ -244,8 +244,8 @@ struct PushEntitiesTransformer {
         case .reaction:
             guard let messageObj,
                   let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { return nil }
-            
-            return nil
+            let messageId = contentInfo.reference.replacingOccurrences(of: "previous:", with: "") /// Push prefix
+            return .reaction(.init(content: contentInfo.content, messageId: messageId))
         case .meta:
             guard let messageObj,
                   let contentInfo = PushEnvironment.PushMessageMetaContent.objectFromJSONString(messageObj) else { return nil }

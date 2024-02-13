@@ -107,6 +107,17 @@ extension Encodable {
                   dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) -> Data? {
         try? jsonDataThrowing(using: keyEncodingStrategy, dateEncodingStrategy: dateEncodingStrategy)
     }
+  
+    func jsonStringThrowing(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                    dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601,
+                    encoding: String.Encoding = .utf8) throws -> String {
+        guard let jsonString = jsonString(using: keyEncodingStrategy,
+                                          dateEncodingStrategy: dateEncodingStrategy,
+                                          encoding: encoding) else {
+            throw CodableError.failedToCreateJSONString
+        }
+        return jsonString
+    }
     
     func jsonString(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
                     dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601,
@@ -146,6 +157,14 @@ extension JSONDecoder.DateDecodingStrategy {
             
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
         }
+    }
+}
+
+enum CodableError: String, LocalizedError {
+    case failedToCreateJSONString
+    
+    public var errorDescription: String? {
+        return rawValue
     }
 }
 

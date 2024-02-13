@@ -140,6 +140,8 @@ private extension ChatListCell {
             return String.Constants.messageNotSupported.localized()
         case .remoteContent:
             return String.Constants.messagingRemoteContent.localized()
+        case .reaction(let info):
+            return info.content
         }
     }
     

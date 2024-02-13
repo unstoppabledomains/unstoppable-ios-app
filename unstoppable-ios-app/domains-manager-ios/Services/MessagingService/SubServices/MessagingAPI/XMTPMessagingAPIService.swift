@@ -329,7 +329,7 @@ private extension XMTPMessagingAPIService {
                                                       in: conversation,
                                                       client: client,
                                                       by: senderWallet)
-        case .unknown, .remoteContent:
+        case .unknown, .remoteContent, .reaction:
             throw XMTPServiceError.unsupportedAction
         }
         

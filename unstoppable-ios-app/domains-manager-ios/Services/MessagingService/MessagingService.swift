@@ -345,7 +345,7 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
 
         switch chatMessage.displayInfo.type {
-        case .text, .imageData, .imageBase64, .unknown:
+        case .text, .imageData, .imageBase64, .unknown, .reaction:
             return message
         case .remoteContent(let info):
             let loadedType = try await apiService.loadRemoteContentFor(chatMessage,

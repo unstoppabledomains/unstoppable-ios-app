@@ -55,6 +55,8 @@ final class ChatViewPresenter {
     private var isChannelEncrypted: Bool = true
     private var isAbleToContactUser: Bool = true
     private var didLoadTime = Date()
+    private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
+    private var messagesToReactions: [String : Set<MessagingChatMessageReactionTypeDisplayInfo>] = [:]
     
     var analyticsName: Analytics.ViewName { .chatDialog }
 
@@ -401,7 +403,7 @@ private extension ChatViewPresenter {
                 let messages = groupedMessages[date] ?? []
                 let title = MessageDateFormatter.formatMessagesSectionDate(date)
                 snapshot.appendSections([.messages(title: title)])
-                snapshot.appendItems(sortMessagesToDisplay(messages).map({ createSnapshotItemFrom(message: $0) }))
+                snapshot.appendItems(sortMessagesToDisplay(messages).compactMap({ createSnapshotItemFrom(message: $0) }))
             }
         }
         
@@ -420,8 +422,9 @@ private extension ChatViewPresenter {
         })
     }
     
-    func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
+    func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item? {
         let isGroupChatMessage = conversationState.isGroupConversation
+        let messageReactions = serialQueue.sync { messagesToReactions[message.id] ?? [] }
         
         switch message.type {
         case .text(let textMessageDisplayInfo):
@@ -462,6 +465,12 @@ private extension ChatViewPresenter {
                                                               pressedCallback: {
                 
             }))
+        case .reaction(let info):
+            serialQueue.sync {
+                
+                _ = messagesToReactions[info.messageId, default: []].insert(info)
+            }
+            return nil
         }
     }
     
