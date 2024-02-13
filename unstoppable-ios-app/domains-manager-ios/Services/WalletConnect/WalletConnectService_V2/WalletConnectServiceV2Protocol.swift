@@ -45,7 +45,3 @@ protocol WalletConnectDelegate: AnyObject {
     func didConnect(to walletAddress: HexAddress?, with wcRegistryWallet: WCRegistryWalletProxy?, successfullyAddedCallback: (()->Void)?)
     func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?)
 }
-
-struct WCAnyCodable: Codable {
-    
-}

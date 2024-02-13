@@ -117,3 +117,7 @@ public struct WalletConnectURI: Equatable {
     var symKey: String
     var absoluteString: String
 }
+
+struct WCAnyCodable: Codable {
+    
+}
