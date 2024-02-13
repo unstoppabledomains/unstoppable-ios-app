@@ -17,5 +17,6 @@ enum PushMessageType: String, Codable {
     case mediaEmbed = "MediaEmbed"
     case meta = "Meta"
     case reply = "Reply"
+    case reaction = "Reaction"
     case unknown
 }

@@ -39,6 +39,20 @@ enum PushEnvironment {
         var size: Int?
     }
     
+    struct PushMessageReactionContent: Codable {
+        let content: String
+        let reference: String
+    }
+    
+    struct PushMessageMetaContent: Codable {
+        let content: String
+        let info: [String : String]
+    }
+    
+    struct PushMessageMediaEmbeddedContent: Codable {
+        let content: URL
+    }
+    
     struct ChatPublicKeysHolder: Codable {
         let chatId: String
         let publicKeys: [String]

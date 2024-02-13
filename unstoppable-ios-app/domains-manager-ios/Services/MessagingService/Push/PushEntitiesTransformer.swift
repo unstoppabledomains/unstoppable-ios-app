@@ -241,6 +241,24 @@ struct PushEntitiesTransformer {
             let base64Image = contentInfo.content
             let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
             type = .imageBase64(imageBase64DisplayInfo)
+        case .reaction:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { return nil }
+            
+            return nil
+        case .meta:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMetaContent.objectFromJSONString(messageObj) else { return nil }
+            
+            return nil
+        case .mediaEmbed:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMediaEmbeddedContent.objectFromJSONString(messageObj),
+                  let serviceData = try? contentInfo.jsonDataThrowing() else { return nil }
+            
+            
+            let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
+            return .remoteContent(displayInfo)
         default:
             guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
             guard let data = contentInfo.content.data(using: .utf8) else { return nil }

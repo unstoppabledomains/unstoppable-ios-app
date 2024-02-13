@@ -289,10 +289,10 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         
         return try await XMTPEntitiesTransformer.loadRemoteContentFrom(data: serviceData,
-                                                                messageId: message.displayInfo.id,
-                                                                userId: message.userId,
-                                                                client: client,
-                                                                filesService: filesService)
+                                                                       messageId: message.displayInfo.id,
+                                                                       userId: message.userId,
+                                                                       client: client,
+                                                                       filesService: filesService)
     }
     
     func joinCommunityChat(_ communityChat: MessagingChat,

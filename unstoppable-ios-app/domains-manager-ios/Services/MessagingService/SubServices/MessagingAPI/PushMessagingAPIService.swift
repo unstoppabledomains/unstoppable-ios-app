@@ -446,6 +446,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                               user: MessagingChatUserProfile,
                               serviceData: Data,
                               filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        let embeddedMediaContent = try PushEnvironment.PushMessageMediaEmbeddedContent.objectFromDataThrowing(serviceData)
+        let url = embeddedMediaContent.content
+        if let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: nil),
+                                                                      downsampleDescription: .max) {
+            let data = try image.gifDataRepresentation()
+            let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: data,
+                                                                                image: image)
+            return .imageData(imageDisplayInfo)
+        }
         throw PushMessagingAPIServiceError.actionNotSupported
     }
     
@@ -721,21 +730,6 @@ private extension PushMessagingAPIService {
                                             pgpPrivateKey: pgpPrivateKey,
                                             env: env)
         }
-    }
-}
-
-// MARK: - Private methods
-private extension PushMessagingAPIService {
-    enum PushMessageType: String {
-        case text = "Text"
-        case image = "Image"
-        case video = "Video"
-        case audio = "Audio"
-        case file = "File"
-        case gif = "GIF" // Deprecated, use mediaEmbed
-        case mediaEmbed = "MediaEmbed"
-        case meta = "Meta"
-        case reply = "Reply"
     }
 }
 
