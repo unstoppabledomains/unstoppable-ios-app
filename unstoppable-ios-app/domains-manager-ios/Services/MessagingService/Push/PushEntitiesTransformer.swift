@@ -226,9 +226,9 @@ struct PushEntitiesTransformer {
                                                filesService: MessagingFilesServiceProtocol,
                                                env: Push.ENV) async throws -> MessagingChatMessageDisplayType? {
         let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-        guard let decryptedContent = try? await Push.PushChat.decryptMessage(message: pushMessage,
-                                                                             privateKeyArmored: pgpKey,
-                                                                             env: env) else { return nil }
+        guard let (decryptedContent, messageObj) = try? await Push.PushChat.decryptMessage(message: pushMessage,
+                                                                                           privateKeyArmored: pgpKey,
+                                                                                           env: env) else { return nil }
         
         let type: MessagingChatMessageDisplayType
         
