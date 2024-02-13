@@ -84,7 +84,11 @@ extension HomeWalletView {
         }
         
         func didSelectChangeRR() {
-            router.resolvingPrimaryDomainWallet = .init(wallet: selectedWallet, mode: .change)
+            if selectedWallet.isReverseResolutionChangeAllowed() {
+                router.resolvingPrimaryDomainWallet = .init(wallet: selectedWallet, mode: .change)
+            } else if let domain = selectedWallet.rrDomain {
+                showProfile(of: domain)
+            }
         }
         
         private func showProfile(of domain: DomainDisplayInfo) {
@@ -95,6 +99,8 @@ extension HomeWalletView {
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
             switch subAction {
+            case .copyWalletAddress:
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
             }

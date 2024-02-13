@@ -102,7 +102,7 @@ extension HomeWalletView {
             case .receive, .profile, .buy:
                 return []
             case .more:
-                return [.connectedApps]
+                return WalletSubAction.allCases
             }
         }
         
@@ -131,10 +131,13 @@ extension HomeWalletView {
     
     enum WalletSubAction: String, CaseIterable, HomeWalletSubActionItem {
         
+        case copyWalletAddress
         case connectedApps
         
         var title: String {
             switch self {
+            case .copyWalletAddress:
+                return String.Constants.copyWalletAddress.localized()
             case .connectedApps:
                 return String.Constants.connectedAppsTitle.localized()
             }
@@ -142,13 +145,17 @@ extension HomeWalletView {
         
         var icon: Image {
             switch self {
+            case .copyWalletAddress:
+                return Image.systemDocOnDoc
             case .connectedApps:
-                return Image(systemName: "app.badge.checkmark")
+                return Image.systemAppBadgeCheckmark
             }
         }
         
         var analyticButton: Analytics.Button {
             switch self {
+            case .copyWalletAddress:
+                return .copyWalletAddress
             case .connectedApps:
                 return .connectedApps
             }
