@@ -61,7 +61,7 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         ""
     }
     
-    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy], chainId: Int, txParams: AnyCodable, in wallet: UDWallet) async throws -> ResponseV2 {
+    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy], chainId: Int, txParams: WCAnyCodable, in wallet: UDWallet) async throws -> ResponseV2 {
         throw NSError()
     }
     

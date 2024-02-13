@@ -114,6 +114,16 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
                                                               pressedCallback: {
                 
             }))
+        case .reaction(let info):
+            return .textMessage(configuration: .init(message: message,
+                                                     textMessageDisplayInfo: .init(text: info.content),
+                                                     isGroupChatMessage: isGroupChatMessage,
+                                                     actionCallback: {  action in
+                
+            },
+                                                     externalLinkHandleCallback: {  url in
+                
+            }))
         }
     }
     
