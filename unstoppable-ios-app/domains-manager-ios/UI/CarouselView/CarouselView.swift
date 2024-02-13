@@ -167,73 +167,18 @@ private extension CarouselView {
 
 struct CarouselViewBridgeView: UIViewRepresentable {
     
-    let style: DomainIndicatorStyle
+    let data: [CarouselViewItem]
+    let backgroundColor: UIColor
     var sideGradientHidden: Bool = true
     
     func makeUIView(context: Context) -> UIView {
         let view = CarouselView()
-        view.set(data: [style])
-        view.backgroundColor = style.containerBackgroundColor
+        view.set(data: data)
+        view.backgroundColor = backgroundColor
         view.setSideGradient(hidden: sideGradientHidden)
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-    }
-    
-    enum DomainIndicatorStyle: CarouselViewItem {
-        case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
-        
-        var containerBackgroundColor: UIColor {
-            switch self {
-            case .updatingRecords, .minting:
-                return .brandElectricYellow
-            case .transfer:
-                return .brandElectricGreen
-            case .deprecated, .parked:
-                return .brandOrange
-            }
-        }
-        
-        /// CarouselViewItem properties
-        var icon: UIImage {
-            switch self {
-            case .updatingRecords, .minting, .transfer:
-                return .refreshIcon
-            case .deprecated:
-                return .warningIconLarge
-            case .parked:
-                return .parkingIcon24
-            }
-        }
-        
-        var text: String {
-            switch self {
-            case .updatingRecords:
-                return String.Constants.updatingRecords.localized()
-            case .minting:
-                return String.Constants.mintingDomain.localized()
-            case .deprecated(let tld):
-                return String.Constants.tldHasBeenDeprecated.localized(tld)
-            case .parked(let status):
-                return status.title ?? String.Constants.parked.localized()
-            case .transfer:
-                return String.Constants.transferInProgress.localized()
-            }
-        }
-        
-        var tintColor: UIColor {
-            switch self {
-            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
-                return .black
-            }
-        }
-        
-        var backgroundColor: UIColor {
-            switch self {
-            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
-                return .clear
-            }
-        }
     }
 }

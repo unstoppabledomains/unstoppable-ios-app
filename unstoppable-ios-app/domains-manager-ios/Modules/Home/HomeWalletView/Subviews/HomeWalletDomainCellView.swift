@@ -74,13 +74,15 @@ private extension HomeWalletDomainCellView {
     @ViewBuilder
     func domainStatusView() -> some View {
         if let indicator = resolveIndicatorStyle() {
-            CarouselViewBridgeView(style: .transfer, sideGradientHidden: true)
+            CarouselViewBridgeView(data: [indicator],
+                                   backgroundColor: indicator.containerBackgroundColor,
+                                   sideGradientHidden: true)
                 .frame(height: 24)
                 .padding(EdgeInsets(top: 4, leading: -8, bottom: -8, trailing: -4))
         }
     }
     
-    func resolveIndicatorStyle() -> CarouselViewBridgeView.DomainIndicatorStyle? {
+    func resolveIndicatorStyle() -> DomainIndicatorStyle? {
         switch domain.state {
         case .default:
             switch domain.usageType {
@@ -220,6 +222,65 @@ private extension HomeWalletDomainCellView {
         }
     }
 
+}
+
+// MARK: - Private methods
+private extension HomeWalletDomainCellView {
+    enum DomainIndicatorStyle: CarouselViewItem {
+        case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
+        
+        var containerBackgroundColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting:
+                return .brandElectricYellow
+            case .transfer:
+                return .brandElectricGreen
+            case .deprecated, .parked:
+                return .brandOrange
+            }
+        }
+        
+        /// CarouselViewItem properties
+        var icon: UIImage {
+            switch self {
+            case .updatingRecords, .minting, .transfer:
+                return .refreshIcon
+            case .deprecated:
+                return .warningIconLarge
+            case .parked:
+                return .parkingIcon24
+            }
+        }
+        
+        var text: String {
+            switch self {
+            case .updatingRecords:
+                return String.Constants.updatingRecords.localized()
+            case .minting:
+                return String.Constants.mintingDomain.localized()
+            case .deprecated(let tld):
+                return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .parked(let status):
+                return status.title ?? String.Constants.parked.localized()
+            case .transfer:
+                return String.Constants.transferInProgress.localized()
+            }
+        }
+        
+        var tintColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
+                return .black
+            }
+        }
+        
+        var backgroundColor: UIColor {
+            switch self {
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
+                return .clear
+            }
+        }
+    }
 }
 
 #Preview {
