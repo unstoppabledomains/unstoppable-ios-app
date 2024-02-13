@@ -56,7 +56,7 @@ final class ChatViewPresenter {
     private var isAbleToContactUser: Bool = true
     private var didLoadTime = Date()
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
-    private var messagesToReactions: [String : Set<MessagingChatMessageReactionTypeDisplayInfo>] = [:]
+    private var messagesToReactions: [String : Set<ReactionCounter>] = [:]
     
     var analyticsName: Analytics.ViewName { .chatDialog }
 
@@ -333,6 +333,17 @@ private extension ChatViewPresenter {
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
+        if messages.first(where: { message in
+            if case .reaction = message.type {
+                return false
+            }
+            return true
+        }) == nil,
+           let lastMessage = messages.last {
+            DispatchQueue.main.async {
+                self.loadMoreMessagesBefore(message: lastMessage)
+            }
+        }
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
@@ -424,7 +435,9 @@ private extension ChatViewPresenter {
     
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item? {
         let isGroupChatMessage = conversationState.isGroupConversation
+        var message = message
         let messageReactions = serialQueue.sync { messagesToReactions[message.id] ?? [] }
+        message.reactions = Array(messageReactions)
         
         switch message.type {
         case .text(let textMessageDisplayInfo):
@@ -467,8 +480,10 @@ private extension ChatViewPresenter {
             }))
         case .reaction(let info):
             serialQueue.sync {
-                
-                _ = messagesToReactions[info.messageId, default: []].insert(info)
+                let counter = ReactionCounter(content: info.content,
+                                              messageId: message.id,
+                                              referenceMessageId: info.messageId)
+                _ = messagesToReactions[info.messageId, default: []].insert(counter)
             }
             return nil
         }
@@ -1048,4 +1063,10 @@ private extension ChatViewPresenter {
             throw error
         }
     }
+}
+
+struct ReactionCounter: Hashable {
+    let content: String
+    let messageId: String
+    let referenceMessageId: String
 }

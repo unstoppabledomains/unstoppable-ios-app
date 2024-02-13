@@ -8,6 +8,8 @@
 import UIKit
 
 final class ChatUserMessageReactionCell: UICollectionViewCell {
+    
+    static let counterFont: UIFont = .currentFont(withSize: 12, weight: .medium)
 
     @IBOutlet private weak var backgroundContainer: UIView!
     @IBOutlet private weak var contentLabel: UILabel!
@@ -29,8 +31,8 @@ final class ChatUserMessageReactionCell: UICollectionViewCell {
 
     func setWith(reaction: ReactionUIDescription) {
         contentLabel.text = reaction.content
-        counterLabel.setAttributedTextWith(text: String(reaction.count) + "+",
-                                           font: .currentFont(withSize: 12, weight: .medium),
+        counterLabel.setAttributedTextWith(text: String(reaction.count),
+                                           font: Self.counterFont,
                                            textColor: .foregroundAccent)
     }
     

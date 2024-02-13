@@ -19,19 +19,19 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="45P-u8-NPT">
-                        <rect key="frame" x="4" y="4" width="147" height="75"/>
+                        <rect key="frame" x="0.0" y="0.0" width="155" height="83"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NoC-zu-vgR">
-                                <rect key="frame" x="8" y="4" width="131" height="67"/>
+                                <rect key="frame" x="8" y="4" width="139" height="75"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AxH-BK-2en">
-                                        <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="67"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="😝" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AxH-BK-2en">
+                                        <rect key="frame" x="0.0" y="0.0" width="23" height="75"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A04-ti-Ra9">
-                                        <rect key="frame" x="45.333333333333336" y="0.0" width="85.666666666666657" height="67"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="754" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A04-ti-Ra9">
+                                        <rect key="frame" x="27" y="0.0" width="112" height="75"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -51,10 +51,10 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="45P-u8-NPT" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="4" id="Fd7-9z-Ro6"/>
-                <constraint firstAttribute="bottom" secondItem="45P-u8-NPT" secondAttribute="bottom" constant="4" id="Kd2-vd-ovT"/>
-                <constraint firstItem="45P-u8-NPT" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="4" id="w4X-3q-SFY"/>
-                <constraint firstAttribute="trailing" secondItem="45P-u8-NPT" secondAttribute="trailing" constant="4" id="wsi-Yu-PDZ"/>
+                <constraint firstItem="45P-u8-NPT" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Fd7-9z-Ro6"/>
+                <constraint firstAttribute="bottom" secondItem="45P-u8-NPT" secondAttribute="bottom" id="Kd2-vd-ovT"/>
+                <constraint firstItem="45P-u8-NPT" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="w4X-3q-SFY"/>
+                <constraint firstAttribute="trailing" secondItem="45P-u8-NPT" secondAttribute="trailing" id="wsi-Yu-PDZ"/>
             </constraints>
             <size key="customSize" width="155" height="83"/>
             <connections>

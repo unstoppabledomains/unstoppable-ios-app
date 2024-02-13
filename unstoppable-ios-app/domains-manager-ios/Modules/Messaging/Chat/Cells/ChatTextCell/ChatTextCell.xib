@@ -22,21 +22,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="407" height="159"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="hvG-hs-MLu">
-                                <rect key="frame" x="0.0" y="0.0" width="407" height="109"/>
+                                <rect key="frame" x="0.0" y="0.0" width="407" height="159"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0of-wM-QUa">
-                                        <rect key="frame" x="0.0" y="29.666666666666671" width="359" height="50"/>
+                                        <rect key="frame" x="0.0" y="30.999999999999993" width="359" height="97.333333333333314"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="gZV-Vy-nuP">
-                                                <rect key="frame" x="12" y="5.9999999999999964" width="335" height="38"/>
+                                                <rect key="frame" x="12" y="6" width="335" height="85.333333333333329"/>
                                                 <subviews>
                                                     <textView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="999" horizontalCompressionResistancePriority="1000" scrollEnabled="NO" editable="NO" text="sdlkfj sdlfj sdlfkj sldkjf " textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hCe-Sg-oz6">
-                                                        <rect key="frame" x="0.0" y="0.0" width="335" height="38"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="335" height="35.333333333333336"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <color key="textColor" systemColor="labelColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
+                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="cyl-nz-4zM">
+                                                        <rect key="frame" x="0.0" y="35.333333333333329" width="335" height="50"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Qgu-bJ-RGO">
+                                                            <size key="itemSize" width="128" height="128"/>
+                                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        </collectionViewFlowLayout>
+                                                    </collectionView>
                                                 </subviews>
                                             </stackView>
                                         </subviews>
@@ -49,7 +59,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pmx-cq-e97" customClass="FABRaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                        <rect key="frame" x="375" y="38.666666666666664" width="32" height="31.999999999999993"/>
+                                        <rect key="frame" x="375" y="63.666666666666657" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="32" id="Bkp-0d-NbW"/>
                                             <constraint firstAttribute="width" secondItem="Pmx-cq-e97" secondAttribute="height" id="vfv-mM-5rK"/>
@@ -63,16 +73,6 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </stackView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="cyl-nz-4zM">
-                                <rect key="frame" x="0.0" y="109" width="407" height="50"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Qgu-bJ-RGO">
-                                    <size key="itemSize" width="128" height="128"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </stackView>

@@ -79,12 +79,12 @@ extension ChatTextCell {
 @available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text ")
-    let reactions: [MessagingChatMessageReactionTypeDisplayInfo] = [.init(content: "😜", messageId: "1"),
-                                                                    .init(content: "🧐", messageId: "1"),
-                                                                    .init(content: "🥳", messageId: "1"),
-                                                                    .init(content: "😨", messageId: "1"),
-                                                                    .init(content: "🥳", messageId: "1")]
+    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text unas ljahs")
+    let reactions: [ReactionCounter] = [.init(content: "😜", messageId: "1", referenceMessageId: "1"),
+                                        .init(content: "🧐", messageId: "1", referenceMessageId: "1"),
+                                        .init(content: "🤓", messageId: "1", referenceMessageId: "1"),
+                                        .init(content: "🥳", messageId: "1", referenceMessageId: "1"),
+                                        .init(content: "🥳", messageId: "1", referenceMessageId: "1")]
     
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
@@ -112,17 +112,30 @@ extension ChatTextCell {
     cell.backgroundColor = .backgroundDefault
     return cell
 }
-
-// MARK: - UICollectionViewDelegate
-extension ChatUserMessageCell: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 80, height: collectionView.bounds.height)
+// MARK: - Private methods
+extension ChatUserMessageCell {
+   
+    func calculateReactionsHeight() {
+        guard let reactionsCollection,
+            !reactionsCollection.isHidden else { return }
+        
+        let spacingsTotalWidth = CGFloat(reactions.count - 1) * 8
+        let reactionsTotalWidth = reactions.reduce(CGFloat(0), { $0 + widthForReaction($1) })
+        let collectionWidth = reactionsCollection.bounds.width
+        
+        let numberOfVerticalRows = ceil((spacingsTotalWidth + reactionsTotalWidth) / collectionWidth)
+        let requiredHeight = numberOfVerticalRows * 29 + (numberOfVerticalRows - 1) * 8
+        if reactionsCollectionHeightConstraint?.constant != requiredHeight {
+            reactionsCollectionHeightConstraint?.constant = requiredHeight
+            invalidateIntrinsicContentSize()
+        }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        0
+    func widthForReaction(_ reaction: ReactionUIDescription) -> CGFloat {
+        let counterWidth = String(reaction.count).width(withConstrainedHeight: 40,
+                                                        font: ChatUserMessageReactionCell.counterFont)
+        
+        return counterWidth + 43
     }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        0
-    }
+    
 }

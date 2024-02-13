@@ -13,14 +13,15 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var timeStackView: UIStackView!
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
     @IBOutlet private weak var contentHStackView: UIStackView!
-    @IBOutlet private weak var reactionsCollection: UICollectionView?
+    @IBOutlet private(set) weak var reactionsCollection: UICollectionView?
+    var reactionsCollectionHeightConstraint: NSLayoutConstraint?
 
     private var otherUserAvatarView: UIImageView?
     private var otherUserInfo: MessagingChatUserDisplayInfo?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     private(set) var isGroupChatMessage = false
-    private var reactions: [ReactionUIDescription] = []
+    private(set) var reactions: [ReactionUIDescription] = []
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
@@ -45,7 +46,15 @@ class ChatUserMessageCell: ChatBaseCell {
             timeStackView.alignment = .leading
         }
     }
- 
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        DispatchQueue.main.async {
+            self.calculateReactionsHeight()
+        }
+    }
+    
     func setWith(message: MessagingChatMessageDisplayInfo,
                  isGroupChatMessage: Bool) {
         self.isGroupChatMessage = isGroupChatMessage
@@ -161,6 +170,9 @@ extension ChatUserMessageCell {
         self.reactions = reactions
         reactionsCollection?.isHidden = reactions.isEmpty
         reactionsCollection?.reloadData()
+        DispatchQueue.main.async {
+            self.calculateReactionsHeight()
+        }
     }
 }
 
@@ -169,15 +181,17 @@ private extension ChatUserMessageCell {
     func setupReactionsCollection() {
         guard let reactionsCollection else { return }
         
-        print("Did set reactions collection")
         reactionsCollection.registerCellNibOfType(ChatUserMessageReactionCell.self)
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
+        layout.estimatedItemSize = CGSize(width: 60, height: 40)
         reactionsCollection.collectionViewLayout = layout
         reactionsCollection.dataSource = self
         reactionsCollection.delegate = self
         reactionsCollection.backgroundColor = .clear
-        reactionsCollection.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        reactionsCollectionHeightConstraint = reactionsCollection.heightAnchor.constraint(equalToConstant: 40)
+        reactionsCollectionHeightConstraint?.isActive = true
+        
         reactionsCollection.showsHorizontalScrollIndicator = false
     }
     
@@ -196,8 +210,8 @@ private extension ChatUserMessageCell {
         actionCallback?(.viewSenderProfile(sender))
     }
     
-    func buildReactionsUIDescription(from reactions: [MessagingChatMessageReactionTypeDisplayInfo]) -> [ReactionUIDescription] {
-        let groupedByContent = [String : [MessagingChatMessageReactionTypeDisplayInfo]].init(grouping: reactions, by: { $0.content })
+    func buildReactionsUIDescription(from reactions: [ReactionCounter]) -> [ReactionUIDescription] {
+        let groupedByContent = [String : [ReactionCounter]].init(grouping: reactions, by: { $0.content })
         
         return groupedByContent.map { .init(content: $0.key, count: $0.value.count) }
     }
@@ -220,6 +234,17 @@ extension ChatUserMessageCell: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension ChatUserMessageCell: UICollectionViewDelegate {
  
+}
+
+// MARK: - UICollectionViewDelegate
+extension ChatUserMessageCell: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        8
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        8
+    }
 }
 
 struct ReactionUIDescription {
