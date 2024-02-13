@@ -79,7 +79,12 @@ extension ChatTextCell {
 @available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message")
+    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text ")
+    let reactions: [MessagingChatMessageReactionTypeDisplayInfo] = [.init(content: "😜", messageId: "1"),
+                                                                    .init(content: "🧐", messageId: "1"),
+                                                                    .init(content: "🥳", messageId: "1"),
+                                                                    .init(content: "😨", messageId: "1"),
+                                                                    .init(content: "🥳", messageId: "1")]
     
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
@@ -89,8 +94,9 @@ extension ChatTextCell {
                                                   type: .text(textDetails),
                                                   isRead: false,
                                                   isFirstInChat: true,
-                                                  deliveryState: .failedToSend,
-                                                  isEncrypted: false)
+                                                  deliveryState: .delivered,
+                                                  isEncrypted: false,
+                                                  reactions: reactions)
     
     let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
     collection.registerCellNibOfType(ChatTextCell.self)
@@ -103,6 +109,20 @@ extension ChatTextCell {
                                       isGroupChatMessage: true,
                                       actionCallback: { _ in },
                                       externalLinkHandleCallback: { _ in }))
-    
+    cell.backgroundColor = .backgroundDefault
     return cell
+}
+
+// MARK: - UICollectionViewDelegate
+extension ChatUserMessageCell: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: 80, height: collectionView.bounds.height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
 }

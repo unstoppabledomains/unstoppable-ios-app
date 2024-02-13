@@ -589,6 +589,10 @@
 		C631DFA52B7B4F4800040221 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA32B7B4F4800040221 /* AnyCodable.swift */; };
 		C631DFA72B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */; };
 		C631DFA82B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */; };
+		C631DFAB2B7B621800040221 /* ChatUserMessageReactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */; };
+		C631DFAC2B7B621800040221 /* ChatUserMessageReactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */; };
+		C631DFAD2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */; };
+		C631DFAE2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -2771,6 +2775,8 @@
 		C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPurchasedDomain.swift; sourceTree = "<group>"; };
 		C631DFA32B7B4F4800040221 /* AnyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
 		C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReactionTypeDisplayInfo.swift; sourceTree = "<group>"; };
+		C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUserMessageReactionCell.swift; sourceTree = "<group>"; };
+		C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatUserMessageReactionCell.xib; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -5032,6 +5038,15 @@
 			path = Stripe;
 			sourceTree = "<group>";
 		};
+		C631DFAF2B7B621C00040221 /* ChatUserMessageReactionCell */ = {
+			isa = PBXGroup;
+			children = (
+				C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */,
+				C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */,
+			);
+			path = ChatUserMessageReactionCell;
+			sourceTree = "<group>";
+		};
 		C635193328D03F1600FC6AF8 /* SetupReverseResolution */ = {
 			isa = PBXGroup;
 			children = (
@@ -5522,6 +5537,7 @@
 			children = (
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
 				C6E0D66C2A4AC2AE009431AF /* ChatUserMessageCell.swift */,
+				C631DFAF2B7B621C00040221 /* ChatUserMessageReactionCell */,
 				C603D7A92A56FC2300CEC696 /* ChatUserBubbledMessageCell.swift */,
 				C6157B022A7113BD00081574 /* ChatRemoteContentCell */,
 				C603D79E2A56B6FF00CEC696 /* ChatUnsupportedMessageCell */,
@@ -8015,6 +8031,7 @@
 				C692C32E282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.xib in Resources */,
 				C628E32327FDA3270044E408 /* Inter-Light.ttf in Resources */,
 				C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */,
+				C631DFAD2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */,
 				C60981F528225B9100546392 /* WalletDetailsListCell.xib in Resources */,
 				304C928E25752626007A9F01 /* apple-app-site-association in Resources */,
 				C628E33727FDA3270044E408 /* Inter-Regular.ttf in Resources */,
@@ -8244,6 +8261,7 @@
 				C6960C4E2B19987C00B79E28 /* allDoneConfettiAnimation.gif in Resources */,
 				C6960C4B2B19986E00B79E28 /* Inter-Black.ttf in Resources */,
 				C6C8F8EC2B21836D00A9834D /* ChatViewController.xib in Resources */,
+				C631DFAE2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */,
 				C6C8F9812B2188FA00A9834D /* DomainSelectionCell.xib in Resources */,
 				C6C8F92B2B2183C700A9834D /* DomainsCollectionMintingInProgressCell.xib in Resources */,
 				C6C8F9132B21839100A9834D /* ChatListRequestsCell.xib in Resources */,
@@ -9179,6 +9197,7 @@
 				C65272662A15DEB9001A084C /* KeyboardService.swift in Sources */,
 				C6A2D51E284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
 				C69F99272A9F1264004B1958 /* AvatarStyleClipped.swift in Sources */,
+				C631DFAB2B7B621800040221 /* ChatUserMessageReactionCell.swift in Sources */,
 				C61C50052820FC5E00D1110A /* UISearchBar.swift in Sources */,
 				C628E36827FDDB230044E408 /* UIButton.swift in Sources */,
 				C696989A2ACBCE640000738C /* PushMessagingWebSocketsService.swift in Sources */,
@@ -9531,6 +9550,7 @@
 				C6C8F8CD2B21832F00A9834D /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */,
 				C6C8F8592B217F8200A9834D /* PreviewiCloudPrivateKeyStorage.swift in Sources */,
 				C6D6468B2B1ED12D00D724AC /* DomainProfileCryptoSection.swift in Sources */,
+				C631DFAC2B7B621800040221 /* ChatUserMessageReactionCell.swift in Sources */,
 				C6D646EC2B1ED55F00D724AC /* NFCService+Entities.swift in Sources */,
 				C6D647252B1ED91F00D724AC /* PullUpViewService+Messaging.swift in Sources */,
 				C6D646952B1ED14400D724AC /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */,

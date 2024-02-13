@@ -13,12 +13,14 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var timeStackView: UIStackView!
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
     @IBOutlet private weak var contentHStackView: UIStackView!
+    @IBOutlet private weak var reactionsCollection: UICollectionView?
 
     private var otherUserAvatarView: UIImageView?
     private var otherUserInfo: MessagingChatUserDisplayInfo?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     private(set) var isGroupChatMessage = false
+    private var reactions: [ReactionUIDescription] = []
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
@@ -31,6 +33,7 @@ class ChatUserMessageCell: ChatBaseCell {
         self.timeLabelTapGesture = timeLabelTapGesture
         deleteButton?.setTitle(nil, image: .trashIcon16)
         deleteButton?.tintColor = .foregroundDefault
+        setupReactionsCollection()
     }
     
     override func setWith(sender: MessagingChatSender) {
@@ -93,9 +96,8 @@ class ChatUserMessageCell: ChatBaseCell {
         setWith(sender: message.senderType)
         setupOtherUserAvatarViewIf(isGroupChatMessage: isGroupChatMessage,
                                    senderType: message.senderType)
+        setReactions(buildReactionsUIDescription(from: message.reactions))
     }
-    
- 
 }
 
 // MARK: - Other user avatar
@@ -154,10 +156,31 @@ extension ChatUserMessageCell {
             }
         }
     }
+    
+    func setReactions(_ reactions: [ReactionUIDescription]) {
+        self.reactions = reactions
+        reactionsCollection?.isHidden = reactions.isEmpty
+        reactionsCollection?.reloadData()
+    }
 }
 
 // MARK: - Private methods
 private extension ChatUserMessageCell {
+    func setupReactionsCollection() {
+        guard let reactionsCollection else { return }
+        
+        print("Did set reactions collection")
+        reactionsCollection.registerCellNibOfType(ChatUserMessageReactionCell.self)
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        reactionsCollection.collectionViewLayout = layout
+        reactionsCollection.dataSource = self
+        reactionsCollection.delegate = self
+        reactionsCollection.backgroundColor = .clear
+        reactionsCollection.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        reactionsCollection.showsHorizontalScrollIndicator = false
+    }
+    
     @objc func didTapTimeLabel() {
         UDVibration.buttonTap.vibrate()
         actionCallback?(timeLabelAction)
@@ -172,4 +195,34 @@ private extension ChatUserMessageCell {
         
         actionCallback?(.viewSenderProfile(sender))
     }
+    
+    func buildReactionsUIDescription(from reactions: [MessagingChatMessageReactionTypeDisplayInfo]) -> [ReactionUIDescription] {
+        let groupedByContent = [String : [MessagingChatMessageReactionTypeDisplayInfo]].init(grouping: reactions, by: { $0.content })
+        
+        return groupedByContent.map { .init(content: $0.key, count: $0.value.count) }
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ChatUserMessageCell: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        reactions.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueCellOfType(ChatUserMessageReactionCell.self, forIndexPath: indexPath)
+        let reaction = reactions[indexPath.row]
+        cell.setWith(reaction: reaction)
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ChatUserMessageCell: UICollectionViewDelegate {
+ 
+}
+
+struct ReactionUIDescription {
+    let content: String
+    let count: Int
 }
