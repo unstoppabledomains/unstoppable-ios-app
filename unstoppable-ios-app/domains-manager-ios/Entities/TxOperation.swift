@@ -50,4 +50,17 @@ enum TxOperation: String, Codable {
         }
         self = txOp
     }
+    
+    
+}
+
+extension TxOperation {
+    var isReverseResolutionOperation: Bool {
+        switch self {
+        case .setReverseResolution, .removeReverseResolution, .reverseResolutionBackfill:
+            return true
+        default:
+            return false
+        }
+    }
 }

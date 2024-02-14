@@ -26,11 +26,10 @@ final class CoreDataMessagingStorageService: CoreDataService {
 // MARK: - MessagingStorageServiceProtocol
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     // User Profile
-    func getUserProfileFor(domain: DomainItem,
+    func getUserProfileFor(wallet: String,
                            serviceIdentifier: MessagingServiceIdentifier) throws -> MessagingChatUserProfile {
         try coreDataQueue.sync {
-            guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
-            let walletPredicate = NSPredicate(format: "normalizedWallet == %@", wallet)
+            let walletPredicate = NSPredicate(format: "normalizedWallet == %@", wallet.normalized)
             let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier.rawValue)
             
             if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(andPredicates: [walletPredicate, servicePredicate]) {

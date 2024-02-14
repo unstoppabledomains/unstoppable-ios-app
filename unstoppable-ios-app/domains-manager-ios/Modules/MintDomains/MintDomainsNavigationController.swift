@@ -21,7 +21,6 @@ final class MintDomainsNavigationController: CNavigationController {
     private var mode: Mode = .default(email: User.instance.email)
     private var mintingData: MintingData = MintingData()
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let userDataService: UserDataServiceProtocol = appContext.userDataService
     private let domainsService: UDDomainsServiceProtocol = appContext.udDomainsService
     private let walletsService: UDWalletsServiceProtocol = appContext.udWalletsService
@@ -49,6 +48,9 @@ final class MintDomainsNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
+            if let navigationController {
+                return navigationController.popViewController(animated: true)
+            }
             return cNavigationController?.popViewController(animated: true)
         } else if topViewController is MintDomainsConfigurationViewController {
             return super.popTo(EnterEmailViewController.self)
@@ -83,15 +85,7 @@ extension MintDomainsNavigationController: MintDomainsFlowManager {
             dismiss(result: .domainsPurchased(details: details))
         case .didSelectDomainsToMint(let domains, let wallet):
             self.mintingData.wallet = wallet
-            if domains.count == 1 {
-                if mintedDomains.isEmpty {
-                    try await startMinting(domains: domains, domainsOrderInfoMap: nil)
-                } else {
-                    moveToStep(.choosePrimaryDomain(domains: domains))
-                }
-            } else {
-                moveToStep(.choosePrimaryDomain(domains: domains))
-            }
+            try await startMinting(domains: domains, domainsOrderInfoMap: nil)
         case .didConfirmDomainsToMint(let domains, let domainsOrderInfoMap):
             try await startMinting(domains: domains, domainsOrderInfoMap: domainsOrderInfoMap)
         case .mintingCompleted:
@@ -161,6 +155,9 @@ private extension MintDomainsNavigationController {
         cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let domainsMintedCallback = self.domainsMintedCallback
         self.cNavigationController?.popViewController(animated: true) {
+        }
+        navigationController?.popViewController(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             domainsMintedCallback?(result)
         }
     }
@@ -185,25 +182,15 @@ private extension MintDomainsNavigationController {
             return
         }
         
-        let domainsOrderInfoMap = domainsOrderInfoMap ?? createDomainsOrderInfoMap(for: domains)
-        let mintingDomains = try await dataAggregatorService.mintDomains(domains,
-                                                                         paidDomains: [],
-                                                                         domainsOrderInfoMap: domainsOrderInfoMap,
-                                                                         to: wallet,
-                                                                         userEmail: email,
-                                                                         securityCode: code)
+        try await domainsService.mintDomains(domains,
+                                             paidDomains: [],
+                                             to: wallet.udWallet,
+                                             userEmail: email,
+                                             securityCode: code)
         
-        /// If user didn't set RR yet and mint multiple domains, ideally we would set RR automatically to domain user has selected as primary.
-        /// Since it is impossible to ensure which domain will be set for RR, we will save user's primary domain selection and when minting is done, check if domain set for RR is same as primary. If they won't match, we'll ask if user want to set RR for primary domain just once.
-        if let primaryDomainName = domainsOrderInfoMap.first(where: { $0.value == 0 })?.key,
-           domains.contains(primaryDomainName),
-           await dataAggregatorService.reverseResolutionDomain(for: wallet) == nil {
-            UserDefaults.preferableDomainNameForRR = primaryDomainName
-        } else if mintedDomains.filter({ wallet.owns(domain: $0) }).isEmpty {
-            /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
-            UserDefaults.preferableDomainNameForRR = domains.first
-        }
-   
+        let mintingDomains = appContext.walletsDataService.didMintDomainsWith(domainNames: domains,
+                                                                              to: wallet)
+       
         await MainActor.run {
             if domains.count > 1 {
                 didSkipMinting()
@@ -304,14 +291,14 @@ private extension MintDomainsNavigationController {
                                                                   walletsService: walletsService)
             vc.presenter = presenter
             return vc
-        case .choosePrimaryDomain(let domains):
-            let vc = ChoosePrimaryDomainViewController.nibInstance()
-            let presenter = ChoosePrimaryDomainDuringMintingPresenter(view: vc,
-                                                                      mintDomainsFlowManager: self,
-                                                                      domainsToMint: domains,
-                                                                      mintedDomains: self.mintedDomains)
-            vc.presenter = presenter
-            return vc
+//        case .choosePrimaryDomain(let domains):
+//            let vc = ChoosePrimaryDomainViewController.nibInstance()
+//            let presenter = ChoosePrimaryDomainDuringMintingPresenter(view: vc,
+//                                                                      mintDomainsFlowManager: self,
+//                                                                      domainsToMint: domains,
+//                                                                      mintedDomains: self.mintedDomains)
+//            vc.presenter = presenter
+//            return vc
         case .mintingInProgress(let domains):
             let vc = TransactionInProgressViewController.nibInstance()
             let presenter = MintingInProgressViewPresenter(view: vc,
@@ -330,7 +317,7 @@ private extension MintDomainsNavigationController {
     struct MintingData {
         var email: String? = nil
         var code: String? = nil
-        var wallet: UDWallet? = nil
+        var wallet: WalletEntity? = nil
     }
 }
 
@@ -347,7 +334,7 @@ extension MintDomainsNavigationController {
         case enterEmailVerificationCode(email: String, code: String?)
         case noDomainsToMint(email: String, code: String)
         case selectDomainsToMint(domains: [String])
-        case choosePrimaryDomain(domains: [String])
+//        case choosePrimaryDomain(domains: [String])
         case mintingInProgress(domains: [MintingDomain])
     }
     
@@ -357,10 +344,30 @@ extension MintDomainsNavigationController {
         case noDomainsGotItPressed
         case noDomainsImportWalletPressed
         case domainsPurchased(details: DomainsPurchasedDetails)
-        case didSelectDomainsToMint(_ domains: [String], wallet: UDWallet)
+        case didSelectDomainsToMint(_ domains: [String], wallet: WalletEntity)
         case didConfirmDomainsToMint(_ domains: [String], domainsOrderInfoMap: SortDomainsOrderInfoMap)
         case mintingCompleted
         case skipMinting
     }
 }
 
+
+import SwiftUI
+struct MintDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
+    
+    let mode: MintDomainsNavigationController.Mode
+    let mintedDomains: [DomainDisplayInfo]
+    let domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback
+    var mintingNavProvider: (MintDomainsNavigationController)->()
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let mintDomainsNavigationController = MintDomainsNavigationController(mode: mode, 
+                                                                              mintedDomains: mintedDomains)
+        mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
+        mintingNavProvider(mintDomainsNavigationController)
+        return mintDomainsNavigationController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+}

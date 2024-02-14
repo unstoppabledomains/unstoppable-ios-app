@@ -7,11 +7,11 @@
 
 import UIKit
 
-struct WalletDisplayInfo: Hashable, Equatable {
+struct WalletDisplayInfo: Hashable, Equatable, Codable {
     let name: String
     let address: String
-    let domainsCount: Int
-    let udDomainsCount: Int
+    var domainsCount: Int
+    var udDomainsCount: Int
     let source: Source
     let isBackedUp: Bool
     var isWithPrivateKey: Bool = false
@@ -54,12 +54,7 @@ struct WalletDisplayInfo: Hashable, Equatable {
     }
     
     var walletSourceName: String {
-        switch source {
-        case .locallyGenerated:
-            return String.Constants.vault.localized()
-        case .imported, .external:
-            return String.Constants.wallet.localized()
-        }
+        String.Constants.wallet.localized()
     }
 }
 
@@ -123,7 +118,7 @@ extension WalletDisplayInfo {
 
 // MARK: - Source
 extension WalletDisplayInfo {
-    enum Source: Hashable {
+    enum Source: Hashable, Codable {
         case locallyGenerated, imported, external(_ name: String, _ walletMake: ExternalWalletMake)
         
         var displayIcon: UIImage {

@@ -13,6 +13,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let referralCode: String?
     let social: DomainProfileSocialInfo?
     let records: [String : String]?
+    let walletBalances: [ProfileWalletBalance]?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -619,4 +620,83 @@ struct SocialAccount: Hashable, Encodable {
 struct UpdateProfilePendingChangesRequest {
     let pendingChanges: DomainProfilePendingChanges
     let domain: DomainItem
+}
+
+struct ProfileWalletBalance: Codable, Hashable {
+    let symbol: String
+    let name: String
+    let balance: String
+    var value: Value?
+    
+    struct Value: Codable, Hashable {
+        let marketUsd: String?
+        let walletUsd: String?
+    }
+}
+
+struct WalletTokenPortfolio: Codable, Hashable {
+    let address: String
+    let symbol: String
+    let name: String
+    let type: String
+    let firstTx: Date?
+    let lastTx: Date?
+    let blockchainScanUrl: String
+    let balanceAmt: Double
+    let tokens: [Token]?
+    let stats: Stats?
+//    let nfts: [NFT]?
+    let value: Value
+    let totalValueUsdAmt: Double?
+    let totalValueUsd: String?
+    let logoUrl: String?
+    
+    var totalTokensBalance: Double {
+        value.walletUsdAmt + (tokens?.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) }) ?? 0)
+    }
+    
+    struct NFT: Codable, Hashable {
+        let name: String
+        let description: String?
+        let category: String?
+        let ownedCount: Int
+        let totalOwners: Int
+        let totalSupply: Int
+        let latestAcquiredDate: String
+        let contractAddresses: [String]
+        let nftIds: [String]?
+        let floorPrice: [FloorPrice]?
+        let totalValueUsdAmt: Double?
+        let totalValueUsd: String?
+    }
+    
+    struct FloorPrice: Codable, Hashable {
+        let marketPlaceName: String
+        let valueUsdAmt: Double
+        let valueUsd: String
+    }
+    
+    struct Value: Codable, Hashable {
+        let marketUsd: String?
+        let marketUsdAmt: Double?
+        let walletUsd: String
+        let walletUsdAmt: Double
+    }
+    
+    struct Stats: Codable, Hashable {
+        let nfts: String
+        let collections: String
+        let transactions: String
+        let transfers: String
+    }
+    
+    struct Token: Codable, Hashable {
+        let type: String
+        let name: String
+        let address: String
+        let symbol: String
+        let logoUrl: String?
+        let balanceAmt: Double
+        let value: WalletTokenPortfolio.Value?
+    }
 }

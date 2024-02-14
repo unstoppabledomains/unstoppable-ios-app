@@ -26,30 +26,6 @@
 			<string>wallets</string>
 		</dict>
 	</dict>
-	<key>SDICT:VAULTS</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@vault@</string>
-		<key>vault</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>zero</key>
-			<string>vaults</string>
-			<key>one</key>
-			<string>vault</string>
-			<key>two</key>
-			<string>vaults</string>
-			<key>few</key>
-			<string>vaults</string>
-			<key>many</key>
-			<string>vaults</string>
-			<key>other</key>
-			<string>vaults</string>
-		</dict>
-	</dict>
 	<key>SDICT:N_WALLETS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -72,30 +48,6 @@
 			<string>wallets</string>
 			<key>other</key>
 			<string>wallets</string>
-		</dict>
-	</dict>
-	<key>SDICT:N_VAULTS</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%d %#@vault@</string>
-		<key>vault</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>zero</key>
-			<string>vaults</string>
-			<key>one</key>
-			<string>vault</string>
-			<key>two</key>
-			<string>vaults</string>
-			<key>few</key>
-			<string>vaults</string>
-			<key>many</key>
-			<string>vaults</string>
-			<key>other</key>
-			<string>vaults</string>
 		</dict>
 	</dict>
 	<key>SDICT:N_DOMAINS</key>

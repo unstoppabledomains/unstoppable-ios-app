@@ -9,7 +9,11 @@ import Foundation
 
 let previewContext = AppContext()
 
-struct AppContext: AppContextProtocol {
+final class AppContext: AppContextProtocol {
+    lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                                            firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                                            walletsDataService: walletsDataService)
+    
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     
     var permissionsService: PermissionsServiceProtocol = PermissionsService()
@@ -69,9 +73,11 @@ struct AppContext: AppContextProtocol {
     var messagingService: MessagingServiceProtocol = MessagingService()
     
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
-    
+    var walletNFTsService: WalletNFTsServiceProtocol = PreviewWalletNFTsService()
+
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
+    var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))

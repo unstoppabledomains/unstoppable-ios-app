@@ -39,7 +39,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: AnyCancellable?
     private var preRequestedAction: PreRequestedProfileAction?
-    private let dataAggregatorService: DataAggregatorServiceProtocol
+    private let walletsDataService: WalletsDataServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
     private let domainTransactionsService: DomainTransactionsServiceProtocol
     private let coinRecordsService: CoinRecordsServiceProtocol
@@ -48,6 +48,8 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     private let sourceScreen: SourceScreen
     private var dataHolder: DataHolder
     private var sections = [any DomainProfileSection]()
+    private var cancellables: Set<AnyCancellable> = []
+
     var navBackStyle: BaseViewController.NavBackIconStyle {
         switch sourceScreen {
         case .domainsCollection: return .cancel
@@ -57,11 +59,10 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
 
     init(view: any DomainProfileViewProtocol,
          domain: DomainDisplayInfo,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          preRequestedAction: PreRequestedProfileAction?,
          sourceScreen: SourceScreen,
-         dataAggregatorService: DataAggregatorServiceProtocol,
+         walletsDataService: WalletsDataServiceProtocol,
          domainRecordsService: DomainRecordsServiceProtocol,
          domainTransactionsService: DomainTransactionsServiceProtocol,
          coinRecordsService: CoinRecordsServiceProtocol,
@@ -70,22 +71,37 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
         self.sourceScreen = sourceScreen
         self.preRequestedAction = preRequestedAction
         self.dataHolder = DataHolder(domain: domain,
-                                     wallet: wallet,
-                                     walletInfo: walletInfo)
+                                     wallet: wallet)
         
         self.domainRecordsService = domainRecordsService
         self.domainTransactionsService = domainTransactionsService
         self.coinRecordsService = coinRecordsService
-        self.dataAggregatorService = dataAggregatorService
+        self.walletsDataService = walletsDataService
         super.init()
-        dataAggregatorService.addListener(self)
+        walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
         externalEventsService.addListener(self)
+    }
+    
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        if let wallet = wallets.findWithAddress(dataHolder.wallet.address),
+           wallet != dataHolder.wallet {
+            dataHolder.wallet = wallet
+            refreshDomainProfileDetails(animated: true)
+        }
+        
+        let domains = wallets.combinedDomains()
+        if let domain = domains.changed(domain: dataHolder.domain) {
+            dataHolder.domain = domain
+            refreshDomainProfileDetails(animated: true)
+        }
     }
 }
 
 // MARK: - DomainProfileViewPresenterProtocol
 extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
-    var walletName: String { dataHolder.walletInfo.walletSourceName }
+    var walletName: String { dataHolder.wallet.displayInfo.walletSourceName }
     var domainName: String { dataHolder.domain.name }
     var progress: Double? { nil }
     
@@ -157,10 +173,10 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
             switch sourceScreen {
             case .domainsCollection:
                 await MainActor.run {
-                    guard let navigation = view?.cNavigationController else { return }
+                    guard let navigation = view?.cNavigationController,
+                          let wallet = appContext.walletsDataService.wallets.findWithAddress(dataHolder.wallet.address) else { return }
                     
-                    UDRouter().showWalletDetailsOf(wallet: dataHolder.wallet,
-                                                   walletInfo: dataHolder.walletInfo,
+                    UDRouter().showWalletDetailsOf(wallet: wallet,
                                                    source: .domainDetails,
                                                    in: navigation)
                     
@@ -235,9 +251,8 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
 extension DomainProfileViewPresenter {
     @MainActor
     func replace(domain: DomainDisplayInfo,
-                 wallet: UDWallet,
-                 walletInfo: WalletDisplayInfo) {
-        guard domain.name != dataHolder.domain.name || walletInfo != dataHolder.walletInfo else {
+                 wallet: WalletEntity) {
+        guard domain.name != dataHolder.domain.name || wallet.address != dataHolder.wallet.address else {
             // Refresh only if domain or wallet has changed
             return
         }
@@ -250,7 +265,6 @@ extension DomainProfileViewPresenter {
                 await scrollToTheTop()
                 dataHolder.domain = domain
                 dataHolder.wallet = wallet
-                dataHolder.walletInfo = walletInfo
                 stateController.reset()
                 dataHolder.reset()
                 sections.removeAll()
@@ -269,36 +283,6 @@ extension DomainProfileViewPresenter {
                     await view.dismissPullUpMenu()
                     await applyChangesAndReset()
                 }
-            }
-        }
-    }
-}
-
-// MARK: - DataAggregatorServiceListener
-extension DomainProfileViewPresenter: DataAggregatorServiceListener {
-    nonisolated
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task { @MainActor in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .walletsListUpdated(let walletsWithInfo):
-                    if let walletWithInfo = walletsWithInfo.first(where: { $0.wallet == dataHolder.wallet }),
-                       let walletInfo = walletWithInfo.displayInfo,
-                       dataHolder.wallet != walletWithInfo.wallet || dataHolder.walletInfo != walletInfo {
-                        dataHolder.wallet = walletWithInfo.wallet
-                        dataHolder.walletInfo = walletInfo
-                        refreshDomainProfileDetails(animated: true)
-                    }
-                case .domainsUpdated(let domains):
-                    if let domain = domains.changed(domain: dataHolder.domain) {
-                        dataHolder.domain = domain
-                        refreshDomainProfileDetails(animated: true)
-                    }
-                case .primaryDomainChanged, .domainsPFPUpdated: return
-                }
-            case .failure:
-                return
             }
         }
     }
@@ -414,7 +398,7 @@ private extension DomainProfileViewPresenter {
     func asyncCheckForExternalWalletAndFetchProfile() {
         Task {
             let domain = dataHolder.domain
-            let walletInfo = dataHolder.walletInfo
+            let walletInfo = dataHolder.wallet.displayInfo
             if isAbleToLoadProfile(of: domain, walletInfo: walletInfo) {
                 await self.fetchProfileData()
             } else {
@@ -463,7 +447,7 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func scrollToTheTop() async {
         view?.setContentOffset(.zero, animated: true)
-        try? await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.3)
     }
     
     func perform(requestsWithChanges: [RequestWithChanges]) async {
@@ -482,7 +466,7 @@ private extension DomainProfileViewPresenter {
         
         var results = [UpdateProfileResult]()
         
-        switch dataHolder.walletInfo.source {
+        switch dataHolder.wallet.displayInfo.source {
         case .external:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for requestsWithChange in requestsWithChanges {
@@ -536,8 +520,9 @@ private extension DomainProfileViewPresenter {
                     await self?.fetchProfileData()
                     await self?.updateProfileFinished()
                 }
+                let domain = dataHolder.domain
                 Task.detached {
-                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+                    try? await appContext.walletsDataService.refreshDataForWalletDomain(domain.name)
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
@@ -667,7 +652,6 @@ private extension DomainProfileViewPresenter {
         
         UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
                                                           wallet: dataHolder.wallet,
-                                                          walletInfo: dataHolder.walletInfo,
                                                           domain: dataHolder.domain,
                                                           resultCallback: { [weak self] in
             self?.didSetDomainForReverseResolution()
@@ -676,10 +660,7 @@ private extension DomainProfileViewPresenter {
     
     func didSetDomainForReverseResolution() {
         Task {
-            await MainActor.run {
-                dataHolder.walletInfo.reverseResolutionDomain = self.dataHolder.domain
-                setAvailableActions()
-            }
+            setAvailableActions()
             await fetchProfileData(of: [.transactions])
         }
     }
@@ -801,8 +782,7 @@ private extension DomainProfileViewPresenter {
     }
     
     func getCurrentDomain() async throws -> DomainItem {
-        let domainName = generalData.domain.name
-        return try await dataAggregatorService.getDomainWith(name: domainName)
+        generalData.domain.toDomainItem()
     }
 }
 
@@ -1053,7 +1033,7 @@ private extension DomainProfileViewPresenter {
         Task {
             let domain = dataHolder.domain
             let wallet = dataHolder.wallet
-            let walletInfo = dataHolder.walletInfo
+            let walletInfo = dataHolder.wallet.displayInfo
             let state = stateController.state
             
             var isSetPrimaryActionAvailable: Bool { !domain.isPrimary && domain.isInteractable }
@@ -1085,7 +1065,7 @@ private extension DomainProfileViewPresenter {
             if isSetReverseResolutionActionAvailable, isSetReverseResolutionActionVisible {
                 switch state {
                 case .default:
-                    let isEnabled = await dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
+                    let isEnabled = wallet.isReverseResolutionChangeAllowed()
                     topActionsGroup.append(.setReverseResolution(isEnabled: isEnabled))
                 case .loading, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
                     topActionsGroup.append(.setReverseResolution(isEnabled: false))
@@ -1191,8 +1171,8 @@ private extension DomainProfileViewPresenter {
     final class DataHolder: DomainProfileGeneralData {
       
         var domain: DomainDisplayInfo
-        var wallet: UDWallet
-        var walletInfo: WalletDisplayInfo
+        var wallet: WalletEntity
+        var domainWallet: WalletEntity? { wallet }
         var transactions: [TransactionItem] = []
         var recordsData: DomainRecordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
         var currencies: [CoinRecord] = []
@@ -1202,10 +1182,9 @@ private extension DomainProfileViewPresenter {
         var domainImagesInfo: DomainImagesInfo = .init()
         var numberOfFailedToUpdateProfileAttempts = 0
         
-        nonisolated init(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo) {
+        nonisolated init(domain: DomainDisplayInfo, wallet: WalletEntity) {
             self.domain = domain
             self.wallet = wallet
-            self.walletInfo = walletInfo
         }
         
         func set(transactions: [TransactionItem]) {

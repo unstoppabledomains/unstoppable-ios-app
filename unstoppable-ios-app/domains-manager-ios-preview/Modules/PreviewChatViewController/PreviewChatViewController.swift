@@ -41,7 +41,7 @@ private final class ChannelPreviewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         view?.setUIState(.loading)
         Task {
-            try? await Task.sleep(seconds: 1)
+            await Task.sleep(seconds: 1)
             showData()
             
             view?.setUIState(.chat)

@@ -310,16 +310,12 @@ private extension FirebasePurchaseDomainsService {
     
     func runRefreshTimer() {
         Task {
-            do {
-                if !isAutoRefreshCartSuspended,
-                   !domainsToPurchase.isEmpty {
-                    refreshUserCartAsync()
-                }
-                try await Task.sleep(seconds: 60)
-                runRefreshTimer()
-            } catch {
-                
+            if !isAutoRefreshCartSuspended,
+               !domainsToPurchase.isEmpty {
+                refreshUserCartAsync()
             }
+            await Task.sleep(seconds: 60)
+            runRefreshTimer()
         }
     }
     
@@ -395,8 +391,7 @@ private extension FirebasePurchaseDomainsService {
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)
-        let data = try await makeFirebaseAPIDataRequest(request)
-        print((try? JSONSerialization.jsonObject(with: data, options: [])))
+        try await makeFirebaseAPIDataRequest(request)
     }
     
     func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {

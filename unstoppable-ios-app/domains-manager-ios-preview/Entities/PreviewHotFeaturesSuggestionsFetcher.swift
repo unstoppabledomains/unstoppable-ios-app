@@ -9,7 +9,7 @@ import Foundation
 
 struct PreviewHotFeaturesSuggestionsFetcher: HotFeaturesSuggestionsFetcher {
     func loadHotFeatureSuggestions() async throws -> [HotFeatureSuggestion] {
-        try? await Task.sleep(seconds: 0.7)
+        await Task.sleep(seconds: 0.7)
         return [createMockStepsSuggestion()]
     }
 }

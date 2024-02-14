@@ -12,7 +12,7 @@ final class MockWCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
         
     }
     
-    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
+    func handleWCRequest(_ request: WCRequest, target: UDWallet) async throws {
         
     }
     

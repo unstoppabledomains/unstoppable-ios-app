@@ -12,8 +12,8 @@ protocol MessagingAPIServiceProtocol {
     var capabilities: MessagingServiceCapabilities { get }
 
     // User profile
-    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
+    func getUserFor(wallet: WalletEntity) async throws -> MessagingChatUserProfile
+    func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile
     func updateUserProfile(_ user: MessagingChatUserProfile,
                            name: String,
                            avatar: String) async throws

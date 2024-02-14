@@ -43,10 +43,7 @@ struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
 private extension PublicProfileDomainSelectionView {
     func onAppear() {
         logAnalytic(event: .viewDidAppear, parameters: [.domainName : profileDomain])
-        Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().availableForMessagingItems()
-            domainsToSelectFrom = domains
-        }
+        domainsToSelectFrom = appContext.walletsDataService.wallets.combinedDomains()
     }
     
     func dismiss() {

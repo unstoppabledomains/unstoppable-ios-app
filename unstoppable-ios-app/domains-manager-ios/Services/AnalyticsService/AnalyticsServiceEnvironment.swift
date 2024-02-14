@@ -44,6 +44,7 @@ extension Analytics {
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
+        case searchProfilePressed
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -72,6 +73,9 @@ extension Analytics {
         case didPurchaseDomains, didFailToPurchaseDomains, accountHasUnpaidDomains, applePayNotSupported
         case purchaseFirebaseRequestError, purchaseGetPaymentDetailsError, purchaseWillUseCachedPaymentDetails
         case didSelectNotSupportedDomainForPurchaseInSearch
+        
+        case shareResult, didSelectHomeTab
+        case didPullToRefresh
     }
 }
 
@@ -122,6 +126,18 @@ extension Analytics {
         case searchType
         case walletType
         case chatId
+        case profileId 
+        case homeContentType
+        case sortType
+        case expand
+        case ticker
+        case chain
+        case collectionName
+        case nftName
+        case tld
+        case numberOfItemsInSection
+        case success
+        case tab
     }
 }
 
@@ -161,7 +177,7 @@ extension Analytics {
         case newExternalWalletConnected, onboardingExternalWalletConnected
         case connectNewExternalWalletSelection, onboardingConnectExternalWalletSelection
         case importNewWallet, onboardingImportWallet, importExistingExternalWallet
-        case home, homeDomainsSearch, domainsList
+        case home, homeDomainsSearch, domainsList, domainsSearch
         case scanning, wcConnectedAppsList, signWCTransactionDomainSelection
         case upgradeToPolygonTutorial
         case webView, buyDomainsWebView
@@ -201,6 +217,8 @@ extension Analytics {
         case shakeToFind
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
+        
+        case shareWalletInfo, nftDetails, profileSelection
     }
 }
 
@@ -283,7 +301,7 @@ extension Analytics {
         case connectedAppDomain, connectedAppSupportedNetworks
         
         // Wallet connect
-        case wcDAppName, wcDomainName, wcSelectNetwork, wcEstimatedFee
+        case wcDAppName, wcWallet, wcSelectNetwork, wcEstimatedFee
         
         // Pull up
         case viewWallet, restoreFromICloud
@@ -346,6 +364,20 @@ extension Analytics {
         
         case suggestionBanner
         case inspire, cancelInspire
+        
+        case addWallet
+        
+        case buy, receive, profile, more
+        case connectedApps
+        case selectProfile, profileSelected
+        case rrDomainAvatar, purchaseDomainAvatar
+        case homeContentTypeSelected
+        case sort, sortType
+        case notMatchingToken, notMatchingTokensSectionHeader
+        case collectibleTile, collectiblesSectionHeader
+        case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
+        case subdomainsSectionHeader, domainsSectionHeader
+        case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
     }
 }
 
@@ -397,6 +429,7 @@ extension Analytics {
         case purchaseDomainsAuthWalletError, purchaseDomainsCalculationsError, purchaseDomainsError
         case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         case searchPurchaseDomainNotSupported
+        case createYourProfile
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

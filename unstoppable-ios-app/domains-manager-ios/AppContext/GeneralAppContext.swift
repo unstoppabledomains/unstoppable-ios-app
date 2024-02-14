@@ -10,7 +10,7 @@ import Foundation
 final class GeneralAppContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol
     
-    
+    let userProfileService: UserProfileServiceProtocol
     let notificationsService: NotificationsServiceProtocol
     let permissionsService: PermissionsServiceProtocol
     let pullUpViewService: PullUpViewServiceProtocol
@@ -29,6 +29,8 @@ final class GeneralAppContext: AppContextProtocol {
     let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     let purchaseDomainsService: PurchaseDomainsServiceProtocol
     let messagingService: MessagingServiceProtocol
+    let walletsDataService: WalletsDataServiceProtocol
+    let walletNFTsService: WalletNFTsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -38,13 +40,13 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
-        AnalyticsService(dataAggregatorService: dataAggregatorService,
+        AnalyticsService(walletsDataService: walletsDataService,
                          wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
-        AppLaunchService(dataAggregatorService: dataAggregatorService,
-                         coreAppCoordinator: coreAppCoordinator,
-                         udWalletsService: udWalletsService)
+        AppLaunchService(coreAppCoordinator: coreAppCoordinator,
+                         udWalletsService: udWalletsService, 
+                         userProfileService: userProfileService)
     }()
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
@@ -53,12 +55,14 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
-
+    
     init() {
         authentificationService = AuthentificationService()
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
+        walletNFTsService = WalletNFTsService()
+        
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
@@ -75,6 +79,12 @@ final class GeneralAppContext: AppContextProtocol {
                                                           transactionsService: domainTransactionsService,
                                                           walletConnectServiceV2: walletConnectServiceV2)
         self.dataAggregatorService = dataAggregatorService
+        
+        walletsDataService = WalletsDataService(domainsService: udDomainsService,
+                                                walletsService: udWalletsService,
+                                                transactionsService: domainTransactionsService,
+                                                walletConnectServiceV2: walletConnectServiceV2,
+                                                walletNFTsService: walletNFTsService)
         
         // WC requests
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,
@@ -109,12 +119,13 @@ final class GeneralAppContext: AppContextProtocol {
                                                 decrypterService: messagingDecrypterService,
                                                 filesService: messagingFilesService,
                                                 unreadCountingService: messagingUnreadCountingService,
-                                                udWalletsService: udWalletsService)
+                                                udWalletsService: udWalletsService,
+                                                walletsDataService: walletsDataService)
         self.messagingService = messagingService
         
         // External events
         externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
-                                                      dataAggregatorService: dataAggregatorService,
+                                                      walletsDataService: walletsDataService,
                                                       udWalletsService: udWalletsService,
                                                       walletConnectServiceV2: walletConnectServiceV2,
                                                       walletConnectRequestsHandlingService: wcRequestsHandlingService)
@@ -144,10 +155,15 @@ final class GeneralAppContext: AppContextProtocol {
                                                                                        firebaseSigner: firebaseSigner)
         self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
         firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
-                                                        firebaseSigner: firebaseSigner)
+                                                              firebaseSigner: firebaseSigner)
         
-        firebaseParkedDomainsAuthenticationService.addListener(dataAggregatorService)
-        dataAggregatorService.addListener(LocalNotificationsService.shared)
+        let userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                walletsDataService: walletsDataService)
+        self.userProfileService = userProfileService
+        udWalletsService.addListener(userProfileService)
+
+        LocalNotificationsService.shared.setWith(firebaseDomainsService: firebaseParkedDomainsService)
         
         // Purchase domains
         let firebasePurchaseDomainsRefreshTokenStorage = PurchaseDomainsFirebaseAuthTokenStorage()

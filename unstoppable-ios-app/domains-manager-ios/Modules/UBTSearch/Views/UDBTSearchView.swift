@@ -7,7 +7,7 @@
     
 import SwiftUI
 
-typealias UDBTSearchResultCallback = (_ discoveredDomain: BTDomainUIInfo, _ promotingDomain: DomainDisplayInfo)->()
+typealias UDBTSearchResultCallback = (_ discoveredDomain: BTDomainUIInfo, _ promotingWallet: WalletEntity)->()
 
 struct UDBTSearchView: View, ViewAnalyticsLogger {
     
@@ -22,6 +22,7 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
         return vc
     }
     
+    @Environment(\.walletsDataService) var walletsDataService
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject private var controller: UBTController
     private var gridColumns = [GridItem(.flexible()),
@@ -29,10 +30,10 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                                GridItem(.flexible())]
     let searchResultCallback: UDBTSearchResultCallback
     private(set) var btState: UBTControllerState = .notReady
-    @State private var promotingDomain: DomainDisplayInfo?
-    @State private var promotingDomainImage: UIImage?
-    @State private var canChangePromotingDomain: Bool = false
-    @State private var isDomainsListPresented = false
+    @State private var promotingWallet: WalletEntity?
+    @State private var promotingWalletImage: UIImage?
+    @State private var canChangePromotingWallet: Bool = false
+    @State private var isProfilesListPresented = false
     var analyticsName: Analytics.ViewName { .shakeToFind }
 
     var body: some View {
@@ -55,14 +56,14 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                         .offset(x: 20)
                         .squareFrame(24)
                     Spacer()
-                    if let promotingDomain {
+                    if let promotingWallet {
                         Spacer()
                         Spacer()
-                        domainSelectionView(domain: promotingDomain)
+                        walletSelectionView(wallet: promotingWallet)
                         Spacer()
                         Spacer()
                         Spacer()
-                        HStack { } // Placeholder to center domain selection
+                        HStack { } // Placeholder to center wallet selection
                             .squareFrame(24)
                     }
                 }
@@ -75,13 +76,16 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                 controller.startScanning()
             }
         })
+        .onReceive(walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main)) { selectedWallet in
+            if let selectedWallet {
+                setPromotingWallet(selectedWallet)
+            }
+        }
         .onAppear {
             logAnalytic(event: .viewDidAppear)
-            setInitialPromotingDomain()
+            setInitialPromotingWallet()
         }
-        .modifier(ShowingPromotingDomainsList(isDomainsListPresented: $isDomainsListPresented,
-                                              domainSelectionCallback: setPromotingDomain,
-                                              currentDomainName: promotingDomain?.name))
+        .modifier(ShowingWalletSelectionModifier(isSelectWalletPresented: $isProfilesListPresented))
     }
     
     init(controller: UBTController,
@@ -107,43 +111,44 @@ private extension UDBTSearchView {
     }
     
     func didSelectDeviceToConnect(_ device: BTDomainUIInfo) {
-        guard let promotingDomain else { return }
+        guard let promotingWallet else { return }
         UDVibration.buttonTap.vibrate()
         logButtonPressedAnalyticEvents(button: .btDomain)
-        searchResultCallback(device, promotingDomain)
+        searchResultCallback(device, promotingWallet)
     }
     
     func scheduleAddMock() {
         #if DEBUG
         Task {
-            try? await Task.sleep(seconds: 2)
+            await Task.sleep(seconds: 2)
             controller.addMock()
             scheduleAddMock()
         }
         #endif
     }
     
-    func setInitialPromotingDomain() {
-        Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().availableForMessagingItems()
-            guard !domains.isEmpty else { return }
-            
-            setPromotingDomain(domains[0])
-            canChangePromotingDomain = domains.count > 1
-        }
+    func setInitialPromotingWallet() {
+        guard let wallet = walletsDataService.selectedWallet ?? walletsDataService.wallets.first else { return }
+        
+        setPromotingWallet(wallet)
+        canChangePromotingWallet = walletsDataService.wallets.count > 1
     }
     
-    func setPromotingDomain(_ domain: DomainDisplayInfo) {
-        promotingDomain = domain
+    func setPromotingWallet(_ wallet: WalletEntity) {
+        promotingWallet = wallet
         Task {
-            promotingDomainImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
-                                                                                  downsampleDescription: .icon)
+            if let domain = wallet.getDomainToViewPublicProfile() {
+                promotingWalletImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
+                                                                                      downsampleDescription: .icon)
+            } else {
+                promotingWalletImage = nil
+            }
         }
-        controller.setPromotingDomainInfo(domain)
+        controller.setPromotingWalletInfo(wallet)
     }
     
-    func showDomainsSelection() {
-        isDomainsListPresented = true
+    func showProfilesSelection() {
+        isProfilesListPresented = true
     }
     
     func dismiss() {
@@ -165,24 +170,24 @@ private extension UDBTSearchView {
     }
     
     @ViewBuilder
-    func domainSelectionView(domain: DomainDisplayInfo) -> some View {
+    func walletSelectionView(wallet: WalletEntity) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            showDomainsSelection()
+            showProfilesSelection()
         } label: {
             HStack(spacing: 8) {
-                Image(uiImage: promotingDomainImage ?? .domainSharePlaceholder)
+                Image(uiImage: promotingWalletImage ?? .domainSharePlaceholder)
                     .resizable()
                     .scaledToFill()
                     .squareFrame(20)
                     .clipShape(Circle())
                 
-                Text(domain.name)
+                Text(wallet.domainOrDisplayName)
                     .foregroundColor(.white)
                     .font(.currentFont(size: 16, weight: .semibold))
                     .lineLimit(1)
                 
-                if canChangePromotingDomain{
+                if canChangePromotingWallet{
                     Image.chevronDown
                         .resizable()
                         .scaledToFill()
@@ -191,7 +196,7 @@ private extension UDBTSearchView {
                         .clipShape(Circle())
                 }
             }
-        }.disabled(!canChangePromotingDomain)
+        }.disabled(!canChangePromotingWallet)
     }
     
     @ViewBuilder
@@ -227,21 +232,6 @@ private extension UDBTSearchView {
             .offset(y: geom.size.height
                     - cardHeight
                     - 64) // Bottom offset
-        }
-    }
-    
-    struct ShowingPromotingDomainsList: ViewModifier {
-        @Binding var isDomainsListPresented: Bool
-        let domainSelectionCallback: UBTPromotingDomainSelectionCallback
-        let currentDomainName: DomainName?
-        
-        func body(content: Content) -> some View {
-            content
-                .sheet(isPresented: $isDomainsListPresented, content: {
-                    UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                    currentDomainName: currentDomainName)
-                    .adaptiveSheet()
-                })
         }
     }
 }

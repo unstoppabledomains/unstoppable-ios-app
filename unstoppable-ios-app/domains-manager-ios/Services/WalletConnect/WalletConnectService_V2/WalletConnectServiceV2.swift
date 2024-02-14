@@ -63,8 +63,11 @@ typealias WCAnyCodable = Commons.AnyCodable
 typealias EthereumTransaction = Boilertalk_Web3.EthereumTransaction
 
 
-class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
-    override init() {
+final class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
+    
+    static let shared = WCClientConnectionsV2()
+    
+    private override init() {
         super.init()
         storageKey = "CLIENT_CONNECTIONS_STORAGE_v2"
         q = DispatchQueue(label: "work-queue-client-connections_v2")
@@ -89,6 +92,13 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDat
         self.retrieveAll()
             .filter({ $0.session.topic == topic})
             .first
+    }
+    
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        self.retrieveAll()
+            .filter({ ($0.session.getWalletAddresses())
+                .contains(walletAddress.normalized) })
+            .map({$0.session})
     }
 }
 
@@ -131,7 +141,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
     
-    let walletStorageV2 = WCClientConnectionsV2()
+    let walletStorageV2 = WCClientConnectionsV2.shared
     var appsStorageV2: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
     
     private var publishers = [AnyCancellable]()
@@ -169,11 +179,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Settled pairings:\n\(pairings)")
         #endif
-        
-        // listen to the updates to domains, disconnect those dApps connected to gone domains
-        Task { await MainActor.run {
-            appContext.dataAggregatorService.addListener(self) }
-        }
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
@@ -185,29 +190,28 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     // returns both V1 and V2 apps
-    func getConnectedApps() async -> [UnifiedConnectAppInfo] {
+    func getConnectedApps() -> [UnifiedConnectAppInfo] {
         let unifiedApps = getAllUnifiedAppsFromCache()
         
         // trim the list of connected dApps
-        let validDomains = await appContext.dataAggregatorService.getDomainItems()
-        let validConnectedApps = unifiedApps.trimmed(to: validDomains)
-        
+        let validWallets = appContext.walletsDataService.wallets
+        let validAddresses = validWallets.map { $0.address }
+        let validConnectedApps = unifiedApps.filter({ validAddresses.contains($0.walletAddress.normalized) })
+
         // disconnect those connected to gone domains
         disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         return validConnectedApps
     }
     
     public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
-        walletStorageV2.retrieveAll()
-            .filter({ ($0.session.getWalletAddresses())
-            .contains(walletAddress.normalized) })
-            .map({$0.session})
+        walletStorageV2.findSessions(by: walletAddress)
     }
         
-    func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
+    func disconnectAppsForAbsentWallets(from validWallets: [WalletEntity]) {
         Task {
+            let validAddresses = validWallets.map { $0.address }
             let unifiedApps = getAllUnifiedAppsFromCache()
-            let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+            let validConnectedApps = unifiedApps.filter({ validAddresses.contains($0.walletAddress.normalized) })
             
             disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         }
@@ -285,12 +289,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         return references
     }
     
-    private func pickDomain() async -> DomainItem? {
-        if let primaryDomainDisplayInfo = await appContext.dataAggregatorService.getDomainsDisplayInfo().first,
-           let primaryDomain = try? await appContext.dataAggregatorService.getDomainWith(name: primaryDomainDisplayInfo.name) {
-            return primaryDomain
-        }
-        return appContext.udDomainsService.getAllDomains().first
+    private func pickWallet() async -> WalletEntity? {
+        appContext.walletsDataService.selectedWallet ?? appContext.walletsDataService.wallets.first
     }
     
     private func handleSessionProposal( _ proposal: SessionV2.Proposal) async throws -> HexAddress {
@@ -305,26 +305,23 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         willHandleRequestCallback?()
         
         let uiConfig: WCRequestUIConfiguration
-        if let connectionIntent = intentsStorage.retrieveIntents().first {
-            uiConfig = WCRequestUIConfiguration(connectionIntent: connectionIntent,
-                                                    sessionProposal: proposal)
+        if let connectionIntent = intentsStorage.retrieveIntents().first,
+           let config = WCRequestUIConfiguration(connectionIntent: connectionIntent,
+                                                            sessionProposal: proposal) {
+            uiConfig = config
         } else {
-            guard let connectionDomain = await pickDomain() else {
-                throw WalletConnectRequestError.failedToFindDomainToConnect
+            guard let connectionWallet = await pickWallet() else {
+                throw WalletConnectRequestError.failedToFindWalletToSign
             }
-            uiConfig = WCRequestUIConfiguration(connectionDomain: connectionDomain,
-                                                    sessionProposal: proposal)
+            uiConfig = WCRequestUIConfiguration(wallet: connectionWallet,
+                                                sessionProposal: proposal)
         }
         
         let connectionData = try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
-        guard let walletAddressToConnect = connectionData.domain.ownerWallet else {
-            Debugger.printFailure("Domain without wallet address", critical: true)
-            throw WalletConnectRequestError.failedToFindWalletToSign
-        }
+        let walletAddressToConnect = connectionData.wallet.address
         
         intentsStorage.removeAll()
-        intentsStorage.save(newIntent: WCConnectionIntentStorage.Intent(domain: connectionData.domain,
-                                                                        walletAddress: walletAddressToConnect,
+        intentsStorage.save(newIntent: WCConnectionIntentStorage.Intent(walletAddress: walletAddressToConnect,
                                                                         requiredNamespaces: proposal.requiredNamespaces,
                                                                         appData: proposal.proposer))
         Debugger.printInfo(topic: .WalletConnectV2, "Confirmed to connect to \(proposal.proposer.name)")
@@ -510,7 +507,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         Task {
             let newApp = WCConnectedAppsStorageV2.ConnectedApp(topic: session.topic,
                                                                walletAddress: connectionIntent.walletAddress,
-                                                               domain: connectionIntent.domain,
                                                                sessionProxy: WCConnectedAppsStorageV2.SessionProxy(session),
                                                                appIconUrls: session.peer.icons,
                                                                proposalNamespace: namespace,
@@ -685,7 +681,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let walletAddress = tx.from?.hex(eip55: true).normalized else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
-            let udWallet = try detectWallet(by: walletAddress)
+            let udWallet = try detectWallet(by: walletAddress).udWallet
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
             
@@ -740,7 +736,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let walletAddress = tx.from?.hex(eip55: true) else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
-            let udWallet = try detectWallet(by: walletAddress)
+            let udWallet = try detectWallet(by: walletAddress).udWallet
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
             
@@ -919,18 +915,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
 }
 
-extension WalletConnectServiceV2: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        if case .success(let serviceResult) = result,
-           case .domainsUpdated = serviceResult {
-            Task {
-                let validDomains = await appContext.dataAggregatorService.getDomainItems()
-                disconnectAppsForAbsentDomains(from: validDomains)
-            }
-        }
-    }
-}
-
 // MARK: - Private methods
 private extension WalletConnectServiceV2 {
     func findWalletConnectSessionFor(walletAddress: HexAddress) throws -> WCConnectedAppsStorageV2.SessionProxy {
@@ -960,7 +944,7 @@ extension WalletConnectServiceV2 {
     private func disconnectApps(from unifiedApps: [UnifiedConnectAppInfo],
                                 notIncluding validConnectedApps: [UnifiedConnectAppInfo]) {
         Set(unifiedApps).subtracting(Set(validConnectedApps)).forEach { lostApp in
-            Debugger.printWarning("Disconnecting \(lostApp.appName) because its domain \(lostApp.domain.name) is gone")
+            Debugger.printWarning("Disconnecting \(lostApp.appName) because its wallet \(lostApp.walletAddress) is gone")
             Task { try? await disconnect(app: lostApp) }
         }
     }
@@ -973,12 +957,12 @@ extension WalletConnectServiceV2 {
         return connectedApp
     }
     
-    private func detectWallet(by address: HexAddress) throws -> UDWallet {
-        guard let udWallet = appContext.udWalletsService.find(by: address) else {
+    private func detectWallet(by address: HexAddress) throws -> WalletEntity {
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == address.normalized }) else {
             Debugger.printFailure("No connected wallet can sign for the wallet address \(address)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
-        return udWallet
+        return wallet
     }
     
     private func getClientAfterConfirmationIfNeeded(address: HexAddress,
@@ -1007,9 +991,9 @@ extension WalletConnectServiceV2 {
                                                     request: WalletConnectSign.Request,
                                                     uiConfigBuilder: (WalletConnectServiceV2.ConnectionConfig)-> WCRequestUIConfiguration ) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
         let connectedApp = try detectApp(by: address, topic: request.topic)
-        let udWallet = try detectWallet(by: address)
+        let wallet = try detectWallet(by: address)
         
-        if udWallet.walletState != .externalLinked {
+        if wallet.udWallet.walletState != .externalLinked {
             guard let uiHandler = self.uiHandler else { //
                 Debugger.printFailure("UI Handler is not set", critical: true)
                 throw WalletConnectRequestError.uiHandlerNotSet
@@ -1017,12 +1001,12 @@ extension WalletConnectServiceV2 {
 
             let appInfo = Self.appInfo(from: connectedApp.appData,
                                        nameSpases: connectedApp.proposalNamespace)
-            let connectionConfig = WalletConnectServiceV2.ConnectionConfig(domain: connectedApp.domain,
-                                                                         appInfo: appInfo)
+            let connectionConfig = WalletConnectServiceV2.ConnectionConfig(wallet: wallet,
+                                                                           appInfo: appInfo)
             let uiConfig = uiConfigBuilder(connectionConfig)
             try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
         }
-        return (connectedApp, udWallet)
+        return (connectedApp, wallet.udWallet)
     }
  
     private func parseAddress(from addressIdentificator: String) throws -> HexAddress {
@@ -1147,17 +1131,16 @@ extension WCAnyCodable {
 }
 
 extension WCRequestUIConfiguration {
-    init (connectionIntent: WCConnectionIntentStorage.Intent, sessionProposal: SessionV2.Proposal) {
-        let intendedDomain = connectionIntent.domain
+    init?(connectionIntent: WCConnectionIntentStorage.Intent, sessionProposal: SessionV2.Proposal) {
         let appInfo = WalletConnectServiceV2.appInfo(from: sessionProposal)
-        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == connectionIntent.walletAddress.normalized }) else { return nil }
+        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(wallet: wallet, appInfo: appInfo)
         self = WCRequestUIConfiguration.connectWallet(intendedConfig)
     }
     
-    init (connectionDomain: DomainItem, sessionProposal: SessionV2.Proposal) {
-        let intendedDomain = connectionDomain
+    init(wallet: WalletEntity, sessionProposal: SessionV2.Proposal) {
         let appInfo = WalletConnectServiceV2.appInfo(from: sessionProposal)
-        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
+        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(wallet: wallet, appInfo: appInfo)
         self = WCRequestUIConfiguration.connectWallet(intendedConfig)
     }
 }
@@ -1194,16 +1177,6 @@ extension WalletConnectServiceV2 {
                                                            proposalNamespace: nameSpases)
         return WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                      isTrusted: appMetaData.isTrusted)
-    }
-}
-
-protocol DomainHolder {
-    var domain: DomainItem { get }
-}
-
-extension Array where Element: DomainHolder {
-    func trimmed(to domains: [DomainItem]) -> [Element] {
-        self.filter({domains.contains(domain: $0.domain)})
     }
 }
 

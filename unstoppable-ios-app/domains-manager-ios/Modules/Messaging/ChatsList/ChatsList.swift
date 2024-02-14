@@ -58,7 +58,7 @@ extension ChatsList {
             let debounce = self.debounce
             let task: SearchUsersTask = Task.detached {
                 do {
-                    try await Task.sleep(seconds: debounce)
+                    await Task.sleep(seconds: debounce)
                     try Task.checkCancellation()
                     
                     async let searchUsersTask = Utilities.catchingFailureAsyncTask(asyncCatching: {

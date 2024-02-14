@@ -12,10 +12,6 @@ struct DataAggregatorService: DataAggregatorServiceProtocol {
         WalletWithInfo.mock
     }
     
-    func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance] {
-        []
-    }
-    
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         nil
     }

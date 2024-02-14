@@ -31,7 +31,8 @@ extension DomainsCollectionListCell {
         setIsSelectable(isSelectable)
         
         if domainItem.pfpSource != .none,
-           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem)) {
+           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem),
+                                                                  downsampleDescription: .icon) {
             iconImageView.image = image
         } else {
             Task {

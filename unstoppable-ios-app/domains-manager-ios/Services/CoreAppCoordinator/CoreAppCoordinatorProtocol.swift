@@ -9,9 +9,11 @@ import UIKit
 
 @MainActor
 protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEventsUIHandler {
+    var topVC: UIViewController? { get }
+    
     func startWith(window: UIWindow)
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
-    func showHome(mintingState: DomainsCollectionMintingState)
+    func showHome(profile: UserProfile)
     func showAppUpdateRequired()
     func setKeyWindow()
     @discardableResult

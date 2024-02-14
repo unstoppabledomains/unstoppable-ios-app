@@ -215,13 +215,8 @@ extension ChatViewController: ChatViewProtocol {
     }
     
     func saveImage(_ image: UIImage) {
-        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
-                                                        in: presentedViewController,
-                                                        shouldShowAlertIfNotGranted: true) { granted in
-            if granted {
-                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
-            }
-        }
+        let saver = PhotoLibraryImageSaver()
+        saver.saveImage(image)
     }
 }
 
@@ -564,20 +559,8 @@ private extension ChatViewController {
     }
     
     func userDidTapImage(_ image: UIImage) {
-        let imageDetailsVC = MessagingImageView.instantiate(mode: .view(saveCallback: { [weak self] in
-            self?.saveImage(image)
-        }), image: image)
+        let imageDetailsVC = MessagingImageView.instantiate(mode: .view, image: image)
         present(imageDetailsVC, animated: true)
-    }
-  
-    @objc func handleImageSavingWith(image: UIImage, error: Error?, contextInfo: UnsafeRawPointer) {
-        Task { @MainActor in
-            if error != nil {
-                Vibration.error.vibrate()
-            } else {
-                Vibration.success.vibrate()
-            }
-        }
     }
 }
 

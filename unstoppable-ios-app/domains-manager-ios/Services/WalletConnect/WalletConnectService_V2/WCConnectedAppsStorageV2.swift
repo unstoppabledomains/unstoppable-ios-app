@@ -65,12 +65,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(sessionProxy.peer.url)
-            hasher.combine(domain)
         }
                 
         let topic: String
         let walletAddress: HexAddress
-        let domain: DomainItem
         let sessionProxy: SessionProxy
         let appIconUrls: [String]
         let proposalNamespace: [String: ProposalNamespace]
@@ -84,7 +82,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         var appHost: String { self.sessionProxy.peer.url }
         var displayName: String { self.sessionProxy.peer.name }
         var description: String {
-            "ConnectedApp: \(appName), wallet: \(walletAddress), to domain: \(domain.name)"
+            "ConnectedApp: \(appName), wallet: \(walletAddress)"
         }
         
         var isTrusted: Bool {
@@ -123,7 +121,6 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
 
 protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable, Sendable {
     var walletAddress: HexAddress { get }
-    var domain: DomainItem { get }
     var appIconUrls: [String] { get }
     
     var appName: String { get }
@@ -146,21 +143,18 @@ extension UnifiedConnectAppInfoProtocol {
     }
 }
 
-struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
+struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
     static func == (lhs: UnifiedConnectAppInfo, rhs: UnifiedConnectAppInfo) -> Bool {
         return lhs.walletAddress.normalized == rhs.walletAddress.normalized
-        && lhs.domain.name == rhs.domain.name
         && lhs.appName == rhs.appName
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(walletAddress)
-        hasher.combine(domain)
         hasher.combine(appName)
     }
     
     let walletAddress: HexAddress
-    let domain: DomainItem
     let appIconUrls: [String]
     let appName: String
     let appUrlString: String
@@ -173,7 +167,6 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp) {
         self.walletAddress = appV2.walletAddress
-        self.domain = appV2.domain
         self.appIconUrls = appV2.appIconUrls
         self.appName = appV2.appName
         self.appUrlString = appV2.appUrlString
@@ -192,10 +185,8 @@ extension WCConnectionIntentStorage {
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(walletAddress)
-            hasher.combine(domain)
         }
         
-        let domain: DomainItem
         let walletAddress: HexAddress
         let requiredNamespaces: [String: ProposalNamespace]? // only for WC V2
         let appData: AppMetadata? // only for WC V2

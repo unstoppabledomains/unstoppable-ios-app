@@ -7,6 +7,6 @@
 
 import UIKit
 
-protocol PaymentConfirmationDelegate: UIViewController {
+protocol PaymentConfirmationDelegate: AnyObject {
 
 }

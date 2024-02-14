@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ReviewAndConfirmTransferViewPresenterProtocol: BasePresenterProtocol {
     var progress: Double? { get }
     var analyticsName: Analytics.ViewName { get }
@@ -15,6 +16,7 @@ protocol ReviewAndConfirmTransferViewPresenterProtocol: BasePresenterProtocol {
     func transferButtonPressed()
 }
 
+@MainActor
 final class ReviewAndConfirmTransferViewPresenter: ViewAnalyticsLogger {
     private weak var view: ReviewAndConfirmTransferViewProtocol?
     private weak var transferDomainFlowManager: TransferDomainFlowManager?
@@ -22,7 +24,7 @@ final class ReviewAndConfirmTransferViewPresenter: ViewAnalyticsLogger {
     private let recipient: TransferDomainNavigationManager.RecipientType
     private let mode: TransferDomainNavigationManager.Mode
     private var confirmationData = ConfirmationData()
-    var analyticsName: Analytics.ViewName { .transferReviewAndConfirm }
+    let analyticsName: Analytics.ViewName = .transferReviewAndConfirm
     var progress: Double? { 0.75 }
 
     init(view: ReviewAndConfirmTransferViewProtocol,

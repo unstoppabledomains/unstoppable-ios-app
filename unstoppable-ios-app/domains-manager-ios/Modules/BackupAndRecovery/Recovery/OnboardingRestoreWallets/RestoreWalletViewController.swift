@@ -39,7 +39,7 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
                 prevTitleView?.isHidden = true
                 setDashesProgress(0.25)
             }
-            try? await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             prevTitleView?.isHidden = false
         }
     }
@@ -140,10 +140,7 @@ private extension RestoreWalletViewController {
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
-        if backedUpWallets.containUDVault() {
-            return String.Constants.pluralVaults.localized(backedUpWallets.count)
-        }
-        return String.Constants.pluralWallets.localized(backedUpWallets.count)
+        String.Constants.pluralWallets.localized(backedUpWallets.count)
     }
     
     func setupTableView() {

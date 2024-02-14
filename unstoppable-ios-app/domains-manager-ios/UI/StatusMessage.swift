@@ -174,3 +174,20 @@ extension StatusMessage {
         }
     }
 }
+
+
+struct StatusMessageBridgeView: UIViewRepresentable {
+    
+    let component: StatusMessage.Component
+
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = StatusMessage()
+        view.setComponent(component)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+    }
+    
+}

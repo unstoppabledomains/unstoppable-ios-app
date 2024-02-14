@@ -86,7 +86,7 @@ private extension OnboardingBackupWalletPresenter {
         let isICloudAvailable = iCloudWalletStorage.isICloudAvailable()
         switch onboardingFlow {
         case .newUser, .sameUserWithoutWallets:
-            let vaultsPlural = String.Constants.vault.localized().lowercased()
+            let vaultsPlural = String.Constants.wallet.localized().lowercased()
             view?.setTitle(String.Constants.backUpYourWallet.localized(vaultsPlural))
             
             if isICloudAvailable {
@@ -98,12 +98,7 @@ private extension OnboardingBackupWalletPresenter {
             view?.setSubtitle(String.Constants.backUpYourWalletDescription.localized())
         case .existingUser:
             let wallets = udWalletsService.getUserWallets()
-            let vaultsPlural: String
-            if wallets.first(where: { $0.type == .generatedLocally || $0.type == .defaultGeneratedLocally }) != nil {
-                vaultsPlural = String.Constants.pluralVaults.localized(wallets.count)
-            } else {
-                vaultsPlural = String.Constants.pluralWallets.localized(wallets.count)
-            }
+            let vaultsPlural = String.Constants.pluralWallets.localized(wallets.count)
             
             view?.setTitle(String.Constants.backUpYourWallet.localized(vaultsPlural))
             view?.setBackupTypes([.iCloud(subtitle: nil, isOnline: isNetworkReachable)])

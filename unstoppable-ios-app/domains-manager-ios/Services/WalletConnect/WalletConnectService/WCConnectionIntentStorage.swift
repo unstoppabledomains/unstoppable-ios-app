@@ -31,19 +31,17 @@ class WCConnectionIntentStorage: DefaultsStorage<WCConnectionIntentStorage.Inten
     }
     
     func replaceIntent(with newIntent: Intent, foundBy accounts: [HexAddress]) async -> Intent? {
-        let normalizedAccounts = accounts.map({$0.normalized})
+        let normalizedAccounts = accounts.map({ $0.normalized })
         return await replace(with: newIntent) {
             normalizedAccounts.contains($0.walletAddress.normalized)
         }
     }
     
-    func replaceIntent(with newDomain: DomainItem,
-                       address: HexAddress,
+    func replaceIntent(address: HexAddress,
                        foundBy accounts: [HexAddress]) async -> Intent? {
-        let newIntent = Intent(domain: newDomain,
-                               walletAddress: address,
+        let newIntent = Intent(walletAddress: address,
                                requiredNamespaces: nil,
-                                appData: nil)
+                               appData: nil)
         return await replaceIntent(with: newIntent, foundBy: accounts)
     }
 }

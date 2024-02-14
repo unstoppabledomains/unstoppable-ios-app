@@ -9,11 +9,11 @@ import SwiftUI
 
 struct UDIconButtonView: View {
     
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.isEnabled) private var isEnabled
 
     let icon: Image
     let style: UDButtonIconStyle
-    let callback: EmptyCallback
+    let callback: MainActorCallback
     
     var body: some View {
         Button {

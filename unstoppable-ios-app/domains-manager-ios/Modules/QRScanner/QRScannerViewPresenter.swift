@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
@@ -22,26 +23,30 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     
     internal weak var view: QRScannerViewProtocol?
     private var isAcceptingQRCodes = true
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
-    private let udWalletsService: UDWalletsServiceProtocol
-    private var selectedDomain: DomainDisplayInfo
+    private let walletsDataService: WalletsDataServiceProtocol
+    private var selectedWallet: WalletEntity
+    private var blockchainType: BlockchainType = .Ethereum // UserDefaults.selectedBlockchainType
+    private var cancellables: Set<AnyCancellable> = []
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
-    var qrRecognizedCallback: EmptyAsyncCallback?
-    
+    var qrRecognizedCallback: MainActorAsyncCallback?
+
     init(view: QRScannerViewProtocol,
-         selectedDomain: DomainDisplayInfo,
-         dataAggregatorService: DataAggregatorServiceProtocol,
+         selectedWallet: WalletEntity,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
-         udWalletsService: UDWalletsServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol) {
         self.view = view
-        self.selectedDomain = selectedDomain
-        self.dataAggregatorService = dataAggregatorService
+        self.selectedWallet = selectedWallet
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
-        self.udWalletsService = udWalletsService
+        self.walletsDataService = walletsDataService
+        walletsDataService.selectedWalletPublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedWallet in
+            if let selectedWallet {
+                self?.setSelected(wallet: selectedWallet)
+            }
+        }.store(in: &cancellables)
     }
 }
 
@@ -51,10 +56,9 @@ typealias QRCode = String
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     func viewDidLoad() {
         guard let view = self.view else { return }
-        dataAggregatorService.addListener(self)
         appContext.wcRequestsHandlingService.addListener(self)
         view.setState(.askingForPermissions)
-        let selectedDomain = self.selectedDomain
+        let selectedDomain = self.selectedWallet
         Task.detached(priority: .low) { [weak self] in
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
             
@@ -66,7 +70,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             }
             
             await self?.showNumberOfAppsConnected()
-            await self?.showInfoFor(domain: selectedDomain, balance: nil)
+            await self?.setSelected(wallet: selectedDomain)
         }
     }
     
@@ -85,7 +89,8 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
 
         isAcceptingQRCodes = false
         UDVibration.buttonTap.vibrate()
-        logAnalytic(event: .didRecognizeQRCode, parameters: [.domainName: selectedDomain.name])
+        logAnalytic(event: .didRecognizeQRCode, parameters: [.domainName: selectedWallet.rrDomain?.name ?? "",
+                                                             .wallet: selectedWallet.address])
         Task {
             guard let view = self.view else { return }
             
@@ -100,7 +105,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
                 let wcRequest = try await getWCConnectionRequest(for: qrCode)
                 try await handleWCRequest(wcRequest)
                 await view.dismiss(animated: false)
-                view.cNavigationController?.popViewController(animated: true)
+                view.navigationController?.popViewController(animated: true)
                 qrRecognizedCallback?()
             } catch {
                 waitAndResumeAcceptingQRCodes()
@@ -138,62 +143,54 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         Task {
             view.stopCaptureSession()
             await UDRouter().showConnectedAppsListScreen(in: view)
-            await showNumberOfAppsConnected()
+            showNumberOfAppsConnected()
             view.startCaptureSession()
         }
     }
     
     func didTapDomainInfoView() {
         UDVibration.buttonTap.vibrate()
-        Task {
-            guard let view = self.view else { return }
-            view.stopCaptureSession()
-            do {
-                let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
-                                                                                           swipeToDismissEnabled: true,
-                                                                                           in: view)
-                await showInfoFor(domain: result.0, balance: result.1)
-            } catch { }
-            view.startCaptureSession()
-        }
+        guard let view = self.view else { return }
+        UDRouter().showProfileSelectionScreen(selectedWallet: selectedWallet,
+                                              in: view)
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
         guard blockchainType != UserDefaults.selectedBlockchainType else { return }
         
         UserDefaults.selectedBlockchainType = blockchainType
+        self.blockchainType = blockchainType
         setBlockchainTypePicker()
-        Task {
-            await showInfoFor(domain: selectedDomain, balance: nil)
-        }
+        setSelected(wallet: selectedWallet)
     }
 }
 
 // MARK: - WalletConnectServiceListener
 extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
+    nonisolated
     func didConnect(to app: UnifiedConnectAppInfo) {
-        Task {
-            await showNumberOfAppsConnected()
+        Task { @MainActor in
+            showNumberOfAppsConnected()
+            waitAndResumeAcceptingQRCodes()
         }
-        waitAndResumeAcceptingQRCodes()
     }
     
+    nonisolated
     func didCompleteConnectionAttempt() {
-        waitAndResumeAcceptingQRCodes()
-    }
-    
-    func didDisconnect(from app: UnifiedConnectAppInfo) {
-        Task {
-            await showNumberOfAppsConnected()
+        Task { @MainActor in
+            waitAndResumeAcceptingQRCodes()
         }
     }
     
-    internal func getCurrentConnectionTarget() async -> (UDWallet, DomainItem)? {
-        let wallets = await dataAggregatorService.getWalletsWithInfo().map({ $0.wallet })
-        
-        guard let domain = try? await dataAggregatorService.getDomainWith(name: selectedDomain.name),
-              let wallet = wallets.first(where: { $0.owns(domain: domain) }) else { return nil }
-        return (wallet, domain)
+    nonisolated
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        Task { @MainActor in
+            showNumberOfAppsConnected()
+        }
+    }
+    
+    internal func getCurrentConnectionTarget() -> UDWallet? {
+        selectedWallet.udWallet
     }
     
     private func resumeAcceptingQRCodes() {
@@ -201,71 +198,28 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension QRScannerViewPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            switch result {
-            case .success(let result):
-                switch result {
-                case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    if let domain = domains.first(where: { $0.name == self.selectedDomain.name }) {
-                        self.selectedDomain = domain
-                        await showInfoFor(domain: domain, balance: nil)
-                    } else if domains.isEmpty {
-                        view?.cNavigationController?.popViewController(animated: true)
-                    } else {
-                        await setPrimaryDomainInfo()
-                    }
-                case .walletsListUpdated, .primaryDomainChanged:
-                    return
-                }
-            case .failure:
-                return
-            }
-        }
-    }
-}
-
 // MARK: - Private functions
 private extension QRScannerViewPresenter {
     func setBlockchainTypePicker() {
-        view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: UserDefaults.selectedBlockchainType)
+        view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: blockchainType)
     }
     
-    func showInfoFor(domain: DomainDisplayInfo, balance: WalletBalance?) async {
-        guard let walletWithInfo = await dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) }),
-              let displayInfo = walletWithInfo.displayInfo else { return }
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        self.selectedDomain = domain
+    func setSelected(wallet: WalletEntity) {
+        let wallets = walletsDataService.wallets
+        self.selectedWallet = wallet
         
-        view?.setWith(selectedDomain: domain,
-                            wallet: displayInfo,
-                            balance: balance,
-                            isSelectable: domains.count > 1)
-        
-        if balance == nil {
-            do {
-                let walletBalance = try await udWalletsService.getBalanceFor(walletAddress: walletWithInfo.wallet.address,
-                                                                             blockchainType: UserDefaults.selectedBlockchainType,
-                                                                             forceRefresh: false)
-                view?.setWith(selectedDomain: domain,
-                                    wallet: displayInfo,
-                                    balance: walletBalance,
-                                    isSelectable: domains.count > 1)
-            } catch { }
-        }
+        view?.setWith(wallet: wallet,
+                      isSelectable: wallets.count > 1)
     }
     
-    func setPrimaryDomainInfo() async {
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        if let primaryDomain = domains.first(where: { $0.isPrimary })  {
-            await showInfoFor(domain: primaryDomain, balance: nil)
+    func setSelectedWalletInfo() {
+        if let wallet = appContext.walletsDataService.selectedWallet {
+            setSelected(wallet: wallet)
         }
     }
 
-    func showNumberOfAppsConnected() async {
-        let appsConnected = await walletConnectServiceV2.getConnectedApps()
+    func showNumberOfAppsConnected() {
+        let appsConnected = walletConnectServiceV2.getConnectedApps()
         view?.setWith(appsConnected: appsConnected.count)
     }
     
@@ -283,7 +237,7 @@ private extension QRScannerViewPresenter {
     }
     
     func handleWCRequest(_ request: WCRequest) async throws {
-        guard let target = await getCurrentConnectionTarget() else {
+        guard let target = getCurrentConnectionTarget() else {
             throw WalletConnectRequestError.uiHandlerNotSet
         }
         
@@ -298,7 +252,7 @@ private extension QRScannerViewPresenter {
     }
     
     func wait(for interval: TimeInterval) async throws {
-        try await Task.sleep(seconds: interval)
+        await Task.sleep(seconds: interval)
     }
 }
 

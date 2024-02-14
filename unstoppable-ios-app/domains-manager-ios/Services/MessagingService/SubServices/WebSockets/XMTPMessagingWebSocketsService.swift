@@ -75,7 +75,7 @@ private extension XMTPMessagingWebSocketsService {
                                       eventCallback: eventCallback)
                 }
             } catch {
-                try? await Task.sleep(seconds: 3)
+                await Task.sleep(seconds: 3)
                 listenForConversations(in: client, for: profileId, listeningId: listeningId, eventCallback: eventCallback)
             }
         }
@@ -97,7 +97,7 @@ private extension XMTPMessagingWebSocketsService {
                     eventCallback(.chatReceivedMessage(websocketMessage))
                 }
             } catch {
-                try? await Task.sleep(seconds: 3)
+                await Task.sleep(seconds: 3)
                 listenForMessages(in: conversation, 
                                   for: profileId,
                                   listeningId: listeningId,

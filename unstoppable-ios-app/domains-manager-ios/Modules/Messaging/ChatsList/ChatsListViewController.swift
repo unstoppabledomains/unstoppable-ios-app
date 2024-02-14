@@ -11,7 +11,8 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
+    func setNavigationWith(navigationState: ChatsListNavigationView.State,
+                           isSelectable: Bool)
     func stopSearching()
     func setActivityIndicator(active: Bool)
 }
@@ -38,10 +39,12 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListEmptyCell.self,
                                                         CommunityListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
+    var router: HomeTabRouter?
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
     private var state: State = .loading
     private let operationQueue = OperationQueue()
+    private let scrollableContentBottomOffset: CGFloat = 52
 
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var isObservingKeyboard: Bool { true }
@@ -49,7 +52,7 @@ final class ChatsListViewController: BaseViewController {
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
-        case .createProfile, .loading, .requestsList: return nil
+        case .createProfile, .loading, .requestsList, .noWallet: return nil
         }
     }
     private var searchBar: UDSearchBar = UDSearchBar()
@@ -87,11 +90,11 @@ final class ChatsListViewController: BaseViewController {
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
-        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset
+        collectionView.contentInset.bottom = keyboardHeight + scrollableContentBottomOffset
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
-        collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
+        collectionView.contentInset.bottom = scrollableContentBottomOffset
     }
     
     override func shouldPopOnBackButton() -> Bool {
@@ -119,18 +122,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
             activityIndicator.stopAnimating()
         }
         
-        setupCollectionInset()
+        setupCollectionTopInset()
         setupActionButton()
         setupNavigation()
         cNavigationController?.updateNavigationBar()
     }
  
-    func setNavigationWith(selectedWallet: WalletDisplayInfo,
-                           wallets: [ChatsListNavigationView.WalletTitleInfo],
-                           isLoading: Bool) {
-        navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
-                                            wallets: wallets,
-                                            isLoading: isLoading))
+    func setNavigationWith(navigationState: ChatsListNavigationView.State,
+                           isSelectable: Bool) {
+        navView?.setWithState(navigationState, isSelectable: isSelectable)
     }
     
     func stopSearching() {
@@ -169,7 +169,7 @@ extension ChatsListViewController: UICollectionViewDelegate {
 extension ChatsListViewController: UDSearchBarDelegate {
     func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStartSearching)
-        setupCollectionInset(isSearchActive: true)
+        setupCollectionTopInset(isSearchActive: true)
         presenter.didStartSearch(with: searchMode)
     }
     
@@ -241,7 +241,7 @@ private extension ChatsListViewController {
             cNavigationBar?.setBackButton(hidden: true)
         case .editing:
             mode = .default
-            collectionView.contentInset.bottom = 0
+            collectionView.contentInset.bottom = scrollableContentBottomOffset
             cNavigationBar?.setBackButton(hidden: false)
         }
         
@@ -264,7 +264,7 @@ private extension ChatsListViewController {
     
     func checkIfCollectionScrollingEnabled() {
         switch state {
-        case .chatsList, .loading, .requestsList:
+        case .chatsList, .loading, .requestsList, .noWallet:
             collectionView.isScrollEnabled = true
         case .createProfile:
             let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
@@ -273,7 +273,7 @@ private extension ChatsListViewController {
     }
     
     func setSearchBarActive(_ isActive: Bool) {
-        setupCollectionInset(isSearchActive: isActive)
+        setupCollectionTopInset(isSearchActive: isActive)
         cNavigationBar?.setSearchActive(isActive, animated: true)
         if !isActive {
             searchMode = .default
@@ -301,10 +301,8 @@ private extension ChatsListViewController {
         func addNavViewIfNil() {
             if navView == nil {
                 navView = ChatsListNavigationView()
-                navView.walletSelectedCallback = { [weak self] wallet in
-                    self?.presenter.didSelectWallet(wallet)
-                }
                 navView.pressedCallback = { [weak self] in
+                    self?.router?.isSelectProfilePresented = true
                     self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
                 }
                 navigationItem.titleView = navView
@@ -321,7 +319,7 @@ private extension ChatsListViewController {
                                                    action: #selector(newMessageButtonPressed))
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
-        case .createProfile:
+        case .createProfile, .noWallet:
             addNavViewIfNil()
             navView?.isHidden = false
             navigationItem.rightBarButtonItem = nil
@@ -366,7 +364,7 @@ private extension ChatsListViewController {
     
     func setupActionButton() {
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .noWallet:
             actionButtonContainerView.isHidden = true
         case .requestsList:
             switch mode {
@@ -398,11 +396,11 @@ private extension ChatsListViewController {
         }
     }
     
-    func setupCollectionInset(isSearchActive: Bool = false) {
+    func setupCollectionTopInset(isSearchActive: Bool = false) {
         switch state {
         case .chatsList, .loading:
             collectionView.contentInset.top = isSearchActive ? 58 : 110
-        case .createProfile, .requestsList:
+        case .createProfile, .requestsList, .noWallet:
             collectionView.contentInset.top = 68
         }
     }
@@ -413,8 +411,9 @@ private extension ChatsListViewController {
         collectionView.register(ChatsListSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: ChatsListSectionHeaderView.reuseIdentifier)
-        setupCollectionInset()
-        
+        setupCollectionTopInset()
+        collectionView.contentInset.bottom = scrollableContentBottomOffset
+
         configureDataSource()
     }
     
@@ -471,6 +470,9 @@ private extension ChatsListViewController {
                     case .noCommunitiesProfile:
                         self?.logButtonPressedAnalyticEvents(button: .createCommunityProfile)
                         self?.presenter.createCommunitiesProfileButtonPressed()
+                    case .noWalletAdded:
+                        self?.logButtonPressedAnalyticEvents(button: .addWallet)
+                        self?.router?.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
                     }
                 })
                 
@@ -680,6 +682,7 @@ extension ChatsListViewController {
     enum EmptyStateUIConfiguration: Hashable {
         case emptyData(dataType: DataType, isRequestsList: Bool)
         case noCommunitiesProfile
+        case noWalletAdded
     }
     
     struct UserInfoUIConfiguration: Hashable {
@@ -687,6 +690,7 @@ extension ChatsListViewController {
     }
     
     enum State {
+        case noWallet
         case createProfile
         case chatsList
         case loading
@@ -696,5 +700,52 @@ extension ChatsListViewController {
     enum Mode {
         case `default`
         case editing
+    }
+}
+
+
+import SwiftUI
+struct ChatsListViewControllerWrapper: UIViewControllerRepresentable {
+    
+    @StateObject var navTracker: NavigationTracker
+    
+    init(tabState: HomeTabRouter) {
+        self._navTracker = StateObject(wrappedValue: NavigationTracker(tabState: tabState))
+    }
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildChatsListModule(presentOptions: .default)
+        let nav = CNavigationController(rootViewController: vc)
+        vc.router = navTracker.tabRouter
+        nav.delegate = navTracker
+        navTracker.tabRouter.chatsListCoordinator = vc.presenter as? ChatsListCoordinator
+        vc.viewDidLoad()
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+    final class NavigationTracker: ObservableObject, CNavigationControllerDelegate {
+        nonisolated
+        init(tabState: HomeTabRouter) {
+            self.tabRouter = tabState
+        }
+        
+        let tabRouter: HomeTabRouter
+        
+        func navigationController(_ navigationController: CNavigationController, willShow viewController: UIViewController, animated: Bool) {
+            if viewController != navigationController.rootViewController {
+                withAnimation {
+                    self.tabRouter.isTabBarVisible = false
+                }
+            }
+        }
+        
+        func navigationController(_ navigationController: CNavigationController, didShow viewController: UIViewController, animated: Bool) {
+            withAnimation {
+                self.tabRouter.isTabBarVisible = viewController == navigationController.rootViewController
+            }
+        }
+        
     }
 }

@@ -17,7 +17,6 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        showDomainsCollection()
     }
     
     @IBAction func runPurchaseButtonPressed() {
@@ -35,31 +34,13 @@ class ViewController: UIViewController {
     
     func showPurchaseDomainsCheckout() {
         let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil, isAbleToPurchase: true),
-                                               selectedWallet: WalletWithInfo.mock[0],
-                                               wallets: WalletWithInfo.mock,
+                                               selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                                               wallets: MockEntitiesFabric.Wallet.mockEntities(),
                                                profileChanges: .init(domainName: "oleg.x"),
                                                delegate: nil)
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
-    }
-    
-    func showDomainsCollection() {
-        let router = DomainsCollectionRouter()
-        let vc = router.configureViewController(mintingState: .default)
-        vc.modalTransitionStyle = .crossDissolve
-        vc.modalPresentationStyle = .fullScreen
-        
-        present(vc, animated: false)
-        
-//        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
-//        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
-//        domainsCollectionVC.presenter = presenter
-//        let nav = CNavigationController(rootViewController: domainsCollectionVC)
-//        nav.modalTransitionStyle = .crossDissolve
-//        nav.modalPresentationStyle = .fullScreen
-//
-//        present(nav, animated: false)
     }
 
     func showDomainProfile() {
@@ -71,5 +52,6 @@ class ViewController: UIViewController {
         let nav = EmptyRootCNavigationController(rootViewController: vc)
         present(nav, animated: false)
     }
+    
 }
 

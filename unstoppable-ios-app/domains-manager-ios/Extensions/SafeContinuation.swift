@@ -69,7 +69,7 @@ import Foundation
 }
 
 @MainActor
-@inlinable func withSafeCheckedThrowingMainActorContinuation<T>(critical: Bool = true,
+@inlinable func withSafeCheckedThrowingMainActorContinuation<T>(critical: Bool = false,
                                                                 function: String = #function,
                                                                 _ block: ( @Sendable @MainActor (@escaping (Result<T, any Error>)->())->()) ) async throws -> T {
     var didFireContinuation = false

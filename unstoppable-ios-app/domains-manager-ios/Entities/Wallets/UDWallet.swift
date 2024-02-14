@@ -468,7 +468,7 @@ extension UDWallet {
     }
     
     var isExternalConnectionActive: Bool {
-        !(appContext.walletConnectServiceV2.findSessions(by: self.address).isEmpty)
+        !(WCClientConnectionsV2.shared.findSessions(by: self.address).isEmpty)
     }
 }
 
@@ -477,5 +477,15 @@ extension UDWallet: Equatable {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
         let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
         return resultEth || resultZil
+    }
+}
+
+extension UDWallet: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(extractEthWallet()?.address)
+        hasher.combine(extractZilWallet()?.address)
+        hasher.combine(aliasName)
+        hasher.combine(hasBeenBackedUp)
+        hasher.combine(walletState)
     }
 }

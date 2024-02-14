@@ -104,7 +104,7 @@ extension ExternalWalletConnectionService: WalletConnectExternalWalletConnection
         
         Task {
             await appContext.coreAppCoordinator.showExternalWalletDidNotRespondPullUp(for: connectingWallet)
-            try? await Task.sleep(seconds: 0.3)
+            await Task.sleep(seconds: 0.3)
             finishWith(result: .failure(.noResponse))
         }
     }
