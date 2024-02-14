@@ -2117,6 +2117,10 @@
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
 		C6D9E29928535E3E002CDAC2 /* ShareDomainImagePullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */; };
+		C6DA0B782B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
+		C6DA0B792B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
+		C6DA0B7B2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
+		C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
 		C6DDF24D2B147F1A006D1F0B /* UDCollectionSectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */; };
 		C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */; };
 		C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */; };
@@ -3470,6 +3474,8 @@
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
 		C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareDomainImagePullUpView.xib; sourceTree = "<group>"; };
 		C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsDecodingTests.swift; sourceTree = "<group>"; };
+		C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReactionDescription.swift; sourceTree = "<group>"; };
+		C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingReactionType.swift; sourceTree = "<group>"; };
 		C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionSectionBackgroundView.swift; sourceTree = "<group>"; };
 		C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowLayoutView.swift; sourceTree = "<group>"; };
 		C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionListRowButton.swift; sourceTree = "<group>"; };
@@ -5416,6 +5422,8 @@
 		C65271F92A148FC4001A084C /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */,
+				C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */,
 				C652721A2A149E41001A084C /* MessageDateFormatter.swift */,
 				C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */,
 				C652727F2A165A3D001A084C /* MessagingChatSender.swift */,
@@ -8703,6 +8711,7 @@
 				C6D6E50C2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C6124CD7292351F8005E6537 /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C666893228114B0E002062B4 /* BaseButton.swift in Sources */,
+				C6DA0B782B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */,
 				C681092128041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C666E0AF29CB41960003DECB /* DomainParkingStatus.swift in Sources */,
 				C609825C2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
@@ -9209,6 +9218,7 @@
 				C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */,
 				C6109E9828E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
 				C600AB8829F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
+				C6DA0B7B2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */,
 				C630BC772B18376100E29318 /* BaseHappyEndViewPresenter.swift in Sources */,
 				C645130C280808ED00413C51 /* Codable.swift in Sources */,
 				C6E041C4295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */,
@@ -9495,6 +9505,7 @@
 				C6C8F9342B2183D100A9834D /* DomainDetailsViewController.swift in Sources */,
 				C6D646A62B1ED15A00D724AC /* PublicProfileViewModel.swift in Sources */,
 				C61808802B19BC530032E543 /* Error.swift in Sources */,
+				C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */,
 				C6C8F8142B217CC000A9834D /* WalletConnectedViewController.swift in Sources */,
 				C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
@@ -9657,6 +9668,7 @@
 				C6C8F8E42B21836400A9834D /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C6C8F96D2B21880E00A9834D /* ExternalWalletConnectionService.swift in Sources */,
 				C6C8F8BD2B2182E400A9834D /* SetupReverseResolutionViewController.swift in Sources */,
+				C6DA0B792B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */,
 				C61808372B19AF120032E543 /* UITextField.swift in Sources */,
 				C6C8F8112B217CC000A9834D /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */,

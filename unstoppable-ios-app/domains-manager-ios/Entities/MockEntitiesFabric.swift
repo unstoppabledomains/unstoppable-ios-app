@@ -16,7 +16,7 @@ struct MockEntitiesFabric {
 // MARK: - Messaging
 extension MockEntitiesFabric {
     enum Reactions {
-        static let reactionsToTest: [ReactionCounter] =
+        static let reactionsToTest: [MessageReactionDescription] =
         [.init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: true),
          .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false),
          .init(content: "😅", messageId: "1", referenceMessageId: "1", isUserReaction: false),

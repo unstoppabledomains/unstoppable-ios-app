@@ -424,7 +424,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             messagesToKeep = missingMessageThreadHash.messagesToKeep
         }
         
-        
         if messagesToKeep.count >= fetchLimit {
             return messagesToKeep
         }

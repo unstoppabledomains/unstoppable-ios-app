@@ -56,7 +56,7 @@ final class ChatViewPresenter {
     private var isAbleToContactUser: Bool = true
     private var didLoadTime = Date()
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
-    private var messagesToReactions: [String : Set<ReactionCounter>] = [:]
+    private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
     
     var analyticsName: Analytics.ViewName { .chatDialog }
 
@@ -308,10 +308,10 @@ private extension ChatViewPresenter {
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
         messagesCache.formUnion(messages)
 
-        var messages = serialQueue.sync {
+        let messages = serialQueue.sync {
             messages.filter { message in
                 if case .reaction(let info) = message.type {
-                    let counter = ReactionCounter(content: info.content,
+                    let counter = MessageReactionDescription(content: info.content,
                                                   messageId: message.id,
                                                   referenceMessageId: info.messageId,
                                                   isUserReaction: message.senderType.isThisUser)
@@ -825,6 +825,8 @@ private extension ChatViewPresenter {
                                             chat: chat)
                 view?.setLoading(active: false)
             }
+        case .sendReaction(let content, let toMessage):
+             sendReactionMesssage(content, toMessage: toMessage)
         }
     }
     
@@ -1010,6 +1012,12 @@ private extension ChatViewPresenter {
         sendMessageOfType(messageType)
     }
     
+    func sendReactionMesssage(_ content: String, toMessage: String) {
+        let reactionTypeDetails = MessagingChatMessageReactionTypeDisplayInfo(content: content, messageId: toMessage)
+        let messageType = MessagingChatMessageDisplayType.reaction(reactionTypeDetails)
+        sendMessageOfType(messageType)
+    }
+    
     func sendImageMessage(_ image: UIImage) {
         guard let data = image.dataToUpload else { return }
         let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(data: data, image: image)
@@ -1039,9 +1047,14 @@ private extension ChatViewPresenter {
                     newMessage = message
                     view?.setLoading(active: false)
                 }
-                await newMessage.prepareToDisplay()
-                messages.insert(newMessage, at: 0)
-                showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
+                if case .reaction = newMessage.type {
+                    await addMessages([newMessage])
+                    showData(animated: false, isLoading: isLoadingMessages)
+                } else {
+                    await newMessage.prepareToDisplay()
+                    messages.insert(newMessage, at: 0)
+                    showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
+                }
             } catch {
                 view?.setLoading(active: false)
                 view?.showAlertWith(error: error, handler: nil)
@@ -1062,11 +1075,4 @@ private extension ChatViewPresenter {
             throw error
         }
     }
-}
-
-struct ReactionCounter: Hashable {
-    let content: String
-    let messageId: String
-    let referenceMessageId: String
-    let isUserReaction: Bool
 }

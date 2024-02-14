@@ -21,6 +21,7 @@ class ChatUserMessageCell: ChatBaseCell {
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     private(set) var isGroupChatMessage = false
+    private(set) var messageId: String?
     private(set) var reactions: [ReactionUIDescription] = []
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
@@ -57,6 +58,7 @@ class ChatUserMessageCell: ChatBaseCell {
     
     func setWith(message: MessagingChatMessageDisplayInfo,
                  isGroupChatMessage: Bool) {
+        self.messageId = message.id
         self.isGroupChatMessage = isGroupChatMessage
         switch message.deliveryState {
         case .delivered:
@@ -210,12 +212,13 @@ private extension ChatUserMessageCell {
         actionCallback?(.viewSenderProfile(sender))
     }
     
-    func buildReactionsUIDescription(from reactions: [ReactionCounter]) -> [ReactionUIDescription] {
-        let groupedByContent = [String : [ReactionCounter]].init(grouping: reactions, by: { $0.content })
+    func buildReactionsUIDescription(from reactions: [MessageReactionDescription]) -> [ReactionUIDescription] {
+        let groupedByContent = [String : [MessageReactionDescription]].init(grouping: reactions, by: { $0.content })
         
-        return groupedByContent.map { .init(content: $0.key, 
+        return groupedByContent.map { .init(content: $0.key,
                                             count: $0.value.count,
                                             containsUserReaction: $0.value.first(where: { $0.isUserReaction }) != nil) }
+        .sorted(by: { $0.count > $1.count })
     }
 }
 

@@ -720,6 +720,7 @@ extension ChatViewController {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&
+            lhs.message.reactions == rhs.message.reactions &&
             lhs.message.deliveryState == rhs.message.deliveryState
         }
         
@@ -738,6 +739,7 @@ extension ChatViewController {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&
+            lhs.message.reactions == rhs.message.reactions &&
             lhs.message.deliveryState == rhs.message.deliveryState
         }
         
@@ -756,6 +758,7 @@ extension ChatViewController {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&
+            lhs.message.reactions == rhs.message.reactions &&
             lhs.message.deliveryState == rhs.message.deliveryState
         }
         
@@ -771,7 +774,9 @@ extension ChatViewController {
         let pressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.message.id == rhs.message.id
+            lhs.message.id == rhs.message.id &&
+            lhs.message.reactions == rhs.message.reactions
+
         }
         
         func hash(into hasher: inout Hasher) {
@@ -814,6 +819,7 @@ extension ChatViewController {
         case viewSenderProfile(MessagingChatSender)
         
         case copyText(String)
+        case sendReaction(content: String, toMessage: String)
         case saveImage(UIImage)
         case blockUserInGroup(MessagingChatUserDisplayInfo)
     }

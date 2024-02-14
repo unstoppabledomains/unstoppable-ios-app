@@ -18,7 +18,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var isFirstInChat: Bool
     var deliveryState: DeliveryState
     var isEncrypted: Bool
-    var reactions: [ReactionCounter] = []
+    var reactions: [MessageReactionDescription] = []
     
     mutating func prepareToDisplay() async {
         if deliveryState == .failedToSend {

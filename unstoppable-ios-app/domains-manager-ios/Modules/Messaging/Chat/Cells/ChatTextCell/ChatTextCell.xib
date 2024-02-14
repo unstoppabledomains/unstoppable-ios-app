@@ -25,10 +25,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="407" height="159"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0of-wM-QUa">
-                                        <rect key="frame" x="0.0" y="30.999999999999993" width="359" height="97.333333333333314"/>
+                                        <rect key="frame" x="0.0" y="26.999999999999993" width="359" height="105.33333333333331"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="gZV-Vy-nuP">
-                                                <rect key="frame" x="12" y="6" width="335" height="85.333333333333329"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="gZV-Vy-nuP">
+                                                <rect key="frame" x="12" y="6" width="335" height="93.333333333333329"/>
                                                 <subviews>
                                                     <textView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="999" horizontalCompressionResistancePriority="999" scrollEnabled="NO" editable="NO" text="sdlkfj sdlfj sdlfkj sldkjf " textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hCe-Sg-oz6">
                                                         <rect key="frame" x="0.0" y="0.0" width="335" height="35.333333333333336"/>
@@ -38,7 +38,7 @@
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
                                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" placeholderIntrinsicWidth="200" placeholderIntrinsicHeight="50" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="cyl-nz-4zM">
-                                                        <rect key="frame" x="0.0" y="35.333333333333329" width="335" height="50"/>
+                                                        <rect key="frame" x="0.0" y="43.333333333333329" width="335" height="50"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Qgu-bJ-RGO">
                                                             <size key="itemSize" width="128" height="128"/>
