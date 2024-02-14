@@ -95,7 +95,7 @@ private extension UpdateToWalletGreetingsView {
                      style: .large(.raisedPrimary),
                      callback: {
             logButtonPressedAnalyticEvents(button: .gotIt)
-
+            presentationMode.wrappedValue.dismiss()
         })
     }
 }

@@ -66,6 +66,10 @@ extension HomeWalletView {
             }.store(in: &cancellables)
         }
         
+        func onAppear() {
+            showGreetingsIfNeeded()
+        }
+        
         func walletActionPressed(_ action: WalletAction) {
             switch action {
             case .receive:
@@ -275,5 +279,12 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         }
         
         return tickerRecords.filter({ $0.address != wallet }).count
+    }
+    
+    func showGreetingsIfNeeded() {
+        if UserDefaults.didUpdateToWalletVersion {
+            UserDefaults.didUpdateToWalletVersion = false
+            router.showingUpdatedToWalletGreetings = true
+        }
     }
 }

@@ -89,7 +89,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
-            .onAppear(perform: setTitleViewIfNeeded)
+            .onAppear(perform: onAppear)
     }
 }
 
@@ -156,6 +156,11 @@ private extension HomeWalletView {
             setTitleViewIfNeeded()
             self.isNavTitleVisible = isNavTitleVisible
         }
+    }
+    
+    func onAppear() {
+        setTitleViewIfNeeded()
+        viewModel.onAppear()
     }
     
     func setTitleViewIfNeeded() {
