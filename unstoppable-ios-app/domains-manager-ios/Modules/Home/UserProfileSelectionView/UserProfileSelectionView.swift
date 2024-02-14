@@ -74,6 +74,7 @@ private extension UserProfileSelectionView {
         if let selectedProfile {
             UDCollectionSectionBackgroundView {
                 listViewFor(profile: selectedProfile)
+                    .allowsHitTesting(false)
             }
         }
     }
@@ -84,14 +85,7 @@ private extension UserProfileSelectionView {
             UDCollectionSectionBackgroundView {
                 VStack(alignment: .center, spacing: 0) {
                     ForEach(profiles, id: \.id) { profile in
-                        Button {
-                            UDVibration.buttonTap.vibrate()
-                            presentationMode.wrappedValue.dismiss()
-                            userProfileService.setSelectedProfile(profile)
-                            logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
-                        } label: {
-                            listViewFor(profile: profile)
-                        }
+                        listViewFor(profile: profile)
                     }
                 }
             }
@@ -100,9 +94,16 @@ private extension UserProfileSelectionView {
     
     @ViewBuilder
     func listViewFor(profile: UserProfile) -> some View {
-        UserProfileSelectionRowView(profile: profile,
-                                    isSelected: profile.id == selectedProfile?.id)
-        .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+        UDCollectionListRowButton(content: {
+            UserProfileSelectionRowView(profile: profile,
+                                        isSelected: profile.id == selectedProfile?.id)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            presentationMode.wrappedValue.dismiss()
+            userProfileService.setSelectedProfile(profile)
+            logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
+        })
+        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
     }
     
     @ViewBuilder
