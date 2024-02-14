@@ -235,7 +235,7 @@ extension HomeWalletView {
             self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
             self.balanceUsd = walletBalance.value.walletUsdAmt
             self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
-            self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr ?? 0
+            self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         }
         
         init(symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil,
@@ -255,7 +255,7 @@ extension HomeWalletView {
             self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
             self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
             self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
-            self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr ?? 0
+            self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
             self.parentSymbol = parentSymbol
             self.logoURL = URL(string: walletToken.logoUrl ?? "")
         }
