@@ -122,8 +122,28 @@ private extension AppDelegate {
     
     func setVersionAndBuildNumber() {
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        setFlagIfUserUpgradedToWalletVersion(currentVersion: version)
+        
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         UserDefaults.buildVersion = "Build \(version) (\(build)) \(Env.schemeDescription)"
+    }
+    
+    func setFlagIfUserUpgradedToWalletVersion(currentVersion: String) {
+        let oldBuildVersion = UserDefaults.buildVersion
+        guard !oldBuildVersion.isEmpty else { return }
+        
+        let components = oldBuildVersion.components(separatedBy: " ")
+        
+        guard components.count > 2,
+              let newVersion = try? Version.parse(versionString: components[1]),
+              let oldVersion = try? Version.parse(versionString: currentVersion) else {
+            return
+        }
+
+        if oldVersion.major == 4,
+           newVersion.major == 5 {
+            UserDefaults.didUpdateToWalletVersion = true
+        }
     }
 
     func setupBugsnag() {
