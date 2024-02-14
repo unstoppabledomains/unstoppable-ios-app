@@ -57,13 +57,22 @@ struct HomeWalletTokenRowView: View {
             }
             Spacer()
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .trailing,
+                   spacing: 0) {
                 Text("$\(token.balanceUsd.formatted(toMaxNumberAfterComa: 2))")
                     .font(.currentFont(size: 16, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Color.foregroundDefault)
                     .skeletonable()
                     .skeletonCornerRadius(12)
+                if let pctChange = token.marketPctChange24Hr {
+                    Text("\(pctChange.formatted(toMaxNumberAfterComa: 2))%")
+                        .font(.currentFont(size: 14))
+                        .foregroundStyle(pctChange > 0 ? Color.foregroundSuccess : Color.foregroundSecondary)
+                        .frame(height: token.isSkeleton ? 12 : 20)
+                        .skeletonable()
+                        .skeletonCornerRadius(10)
+                }
             }
         }
         .frame(height: HomeWalletTokenRowView.height)

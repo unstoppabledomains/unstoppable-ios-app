@@ -681,6 +681,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
         let marketUsdAmt: Double?
         let walletUsd: String
         let walletUsdAmt: Double
+        let marketPctChange24Hr: Double?
     }
     
     struct Stats: Codable, Hashable {
