@@ -767,6 +767,12 @@
 		C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A692810074D0000AE56 /* SecurityWindow.swift */; };
 		C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
 		C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6637A7028100D3A0000AE56 /* LaunchViewController.xib */; };
+		C663A4C92B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4C82B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift */; };
+		C663A4CA2B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4C82B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift */; };
+		C663A4CE2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4CC2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift */; };
+		C663A4CF2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4CC2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift */; };
+		C663A4D02B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C663A4CD2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib */; };
+		C663A4D12B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C663A4CD2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib */; };
 		C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */; };
 		C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */; };
 		C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */; };
@@ -2948,6 +2954,9 @@
 		C6637A692810074D0000AE56 /* SecurityWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWindow.swift; sourceTree = "<group>"; };
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		C6637A7028100D3A0000AE56 /* LaunchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
+		C663A4C82B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageReactionsSelectionView.swift; sourceTree = "<group>"; };
+		C663A4CC2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageReactionsSelectionViewCell.swift; sourceTree = "<group>"; };
+		C663A4CD2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatMessageReactionsSelectionViewCell.xib; sourceTree = "<group>"; };
 		C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileLinkValidator.swift; sourceTree = "<group>"; };
 		C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
@@ -5567,6 +5576,7 @@
 				C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */,
 				C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */,
 				C61308962A7A22D500E7CE21 /* MessagingImageView.swift */,
+				C663A4CB2B7CAF0A0099BCE8 /* ChatMessageReactionsSelectionView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -5679,6 +5689,16 @@
 				C6637A7028100D3A0000AE56 /* LaunchViewController.xib */,
 			);
 			path = LaunchViewController;
+			sourceTree = "<group>";
+		};
+		C663A4CB2B7CAF0A0099BCE8 /* ChatMessageReactionsSelectionView */ = {
+			isa = PBXGroup;
+			children = (
+				C663A4C82B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift */,
+				C663A4CC2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift */,
+				C663A4CD2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib */,
+			);
+			path = ChatMessageReactionsSelectionView;
 			sourceTree = "<group>";
 		};
 		C66430F928D8B83C00A9C734 /* ConnectExternalWallet */ = {
@@ -8123,6 +8143,7 @@
 				C671E3BD290133E000A2B3A0 /* CropImageViewController.xib in Resources */,
 				C6A2D5B0285062D100327C47 /* BaseSignTransactionView.xib in Resources */,
 				C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */,
+				C663A4D02B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib in Resources */,
 				C628E34927FDB1310044E408 /* TableViewSelectionCell.xib in Resources */,
 				C6157B092A7113C900081574 /* ChatRemoteContentCell.xib in Resources */,
 				C666E09429CB3F430003DECB /* ParkedDomainsFoundViewController.xib in Resources */,
@@ -8342,6 +8363,7 @@
 				C6960C222B19939E00B79E28 /* Main.storyboard in Resources */,
 				C6D646F22B1ED5BB00D724AC /* UDTextView.xib in Resources */,
 				C6C8F9382B2183D100A9834D /* ShareDomainImagePullUpView.xib in Resources */,
+				C663A4D12B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib in Resources */,
 				C6D646572B1ED10100D724AC /* DomainProfileWeb3WebsiteCell.xib in Resources */,
 				C6C8F9772B2188FA00A9834D /* QRScannerPermissionsView.xib in Resources */,
 				C6C8F9192B21839100A9834D /* ChatListCreateProfileCell.xib in Resources */,
@@ -8769,6 +8791,7 @@
 				C6D647402B1EDA1900D724AC /* WalletConnectServiceV2+Entities.swift in Sources */,
 				C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */,
 				C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
+				C663A4CE2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift in Sources */,
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
 				C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
@@ -8805,6 +8828,7 @@
 				C6C1EC552A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */,
 				C6109E3728E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */,
+				C663A4C92B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift in Sources */,
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
 				C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
@@ -9931,6 +9955,7 @@
 				C6C8F9372B2183D100A9834D /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6D6470D2B1ED7D000D724AC /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C6C8F83E2B217E9600A9834D /* RecoveryPhraseViewController.swift in Sources */,
+				C663A4CA2B7CAE7B0099BCE8 /* ChatMessageReactionsSelectionView.swift in Sources */,
 				C6C8F8742B21822700A9834D /* TutorialStepViewController.swift in Sources */,
 				C6C8F8BF2B2182E400A9834D /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				C6C8F82A2B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
@@ -10073,6 +10098,7 @@
 				C6D647952B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C6C8F9272B2183B700A9834D /* OnboardingPasscodeViewController.swift in Sources */,
 				C61808582B19BB3C0032E543 /* PreviewUDFeatureFlagsService.swift in Sources */,
+				C663A4CF2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift in Sources */,
 				C6D6471F2B1ED89A00D724AC /* ViewErrorHolder.swift in Sources */,
 				C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */,
 				C61807E92B19A6290032E543 /* DomainPFPInfo.swift in Sources */,

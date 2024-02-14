@@ -295,18 +295,73 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         })
     }
     
+    func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+        animator.preferredCommitStyle = .pop
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfiguration configuration: UIContextMenuConfiguration,
                         highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
         guard let cell = collectionView.cellForItem(at: indexPath) as? ChatBaseCell,
               let visibleFrame = cell.getContextMenuPreviewFrame() else { return nil }
         
-        let visiblePath = UIBezierPath(roundedRect: visibleFrame, cornerRadius: 10.0)
-
-        let parameters = UIPreviewParameters()
-        parameters.visiblePath = visiblePath
+        let reactionsSelectionView = ChatMessageReactionsSelectionView()
+        reactionsSelectionView.frame.size.height = 60
+        reactionsSelectionView.translatesAutoresizingMaskIntoConstraints = false
+        reactionsSelectionView.isUserInteractionEnabled = true
         
-        return UITargetedPreview(view: cell, parameters: parameters)
+        let snapshot = cell.resizableSnapshotView(from: visibleFrame, afterScreenUpdates: false, withCapInsets: .zero)!
+//        let snapshot = cell.snapshotView(afterScreenUpdates: false)!
+        
+        snapshot.isHidden = false
+        snapshot.layer.cornerRadius = 10
+        snapshot.backgroundColor = .systemBackground
+        snapshot.layer.masksToBounds = true
+        snapshot.translatesAutoresizingMaskIntoConstraints = false
+        
+        let container = UIView(frame: CGRect(
+            origin: .zero,
+            size: CGSize(width: cell.bounds.width,
+                         height: cell.bounds.height + reactionsSelectionView.bounds.height + 50)
+        ))
+        container.backgroundColor = .clear
+        container.addSubview(reactionsSelectionView)
+        container.addSubview(snapshot)
+        container.isUserInteractionEnabled = true 
+        
+        NSLayoutConstraint.activate([
+            snapshot.topAnchor.constraint(equalTo: container.topAnchor, constant: reactionsSelectionView.bounds.height + 20),
+            snapshot.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            snapshot.widthAnchor.constraint(equalToConstant: visibleFrame.width),
+            snapshot.heightAnchor.constraint(equalToConstant: visibleFrame.height),
+            reactionsSelectionView.leftAnchor.constraint(equalTo: container.leftAnchor),
+            reactionsSelectionView.topAnchor.constraint(equalTo: container.topAnchor),
+            reactionsSelectionView.widthAnchor.constraint(equalToConstant: 300),
+            reactionsSelectionView.heightAnchor.constraint(equalToConstant: reactionsSelectionView.bounds.height)
+        ])
+        
+        var centerPoint = CGPoint(x: cell.center.x, y: cell.center.y - reactionsSelectionView.bounds.height)
+        let windowHeight =  self.view.window?.bounds.height ?? 0
+        
+        if snapshot.bounds.height > (windowHeight * 0.9) {
+//            centerPoint = CGPoint(x: cell.center.x, y: collectionView.center.y)
+        }
+        
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+        parameters.shadowPath = UIBezierPath()
+        
+        let previewTarget = UIPreviewTarget(container: collectionView, center: centerPoint)
+        
+        return UITargetedPreview(view: container, parameters: parameters, target: previewTarget)
+        
+        
+//        let visiblePath = UIBezierPath(roundedRect: visibleFrame, cornerRadius: 10.0)
+//        let parameters = UIPreviewParameters()
+//        parameters.visiblePath = visiblePath
+//        
+//        
+//        return UITargetedPreview(view: cell, parameters: parameters)
     }
 }
 
