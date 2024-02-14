@@ -13,6 +13,7 @@ struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
     
     @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.userProfileService) private var userProfileService
 
     @State var selectedWallet: WalletEntity
     let wallets: [WalletEntity]
@@ -58,6 +59,7 @@ private extension PurchaseDomainsSelectWalletView {
 
             let selectedWallet = wallet
             self.selectedWallet = selectedWallet
+            userProfileService.setSelectedProfile(.wallet(selectedWallet))
             selectedWalletCallback(selectedWallet)
             presentationMode.wrappedValue.dismiss()
         })
