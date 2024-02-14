@@ -79,7 +79,7 @@ extension ChatTextCell {
 @available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some textjjfkjhjkljkj")
+    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Som ")
     
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
@@ -90,7 +90,7 @@ extension ChatTextCell {
                                                   isRead: false,
                                                   isFirstInChat: true,
                                                   deliveryState: .delivered,
-                                                  isEncrypted: false,
+                                                  isEncrypted: true,
                                                   reactions: MockEntitiesFabric.Reactions.reactionsToTest)
     let collectionView = PreviewCollectionViewCell<ChatTextCell>(cellSize: CGSize(width: 390, height: 176)) { cell in
         cell.setWith(configuration: .init(message: message,

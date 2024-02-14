@@ -443,7 +443,7 @@ private extension ChatViewPresenter {
         var message = message
         let messageReactions = serialQueue.sync { messagesToReactions[message.id] ?? [] }
         message.reactions = Array(messageReactions)
-        print("LOGO: - Will put \(messageReactions.count) reactions into message")
+        
         switch message.type {
         case .text(let textMessageDisplayInfo):
             return .textMessage(configuration: .init(message: message,
