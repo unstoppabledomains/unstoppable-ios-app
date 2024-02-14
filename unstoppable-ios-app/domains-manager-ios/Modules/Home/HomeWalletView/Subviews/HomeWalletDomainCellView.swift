@@ -68,6 +68,7 @@ private extension HomeWalletDomainCellView {
             .foregroundStyle(Color.white)
             .padding(EdgeInsets(top: 4, leading: 8, bottom: 8, trailing: 4))
         }
+        .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
