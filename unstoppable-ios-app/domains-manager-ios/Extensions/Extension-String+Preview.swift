@@ -1101,6 +1101,8 @@ extension String {
         static let updating = "UPDATING"
         static let transferring = "TRANSFERRING"
         static let copyWalletAddress = "COPY_WALLET_ADDRESS"
+        static let updatedToWalletGreetingsTitle = "UPDATED_TO_WALLET_GREETINGS_TITLE"
+        static let updatedToWalletGreetingsSubtitle = "UPDATED_TO_WALLET_GREETINGS_SUBTITLE"
     }
     
     enum BlockChainIcons: String {

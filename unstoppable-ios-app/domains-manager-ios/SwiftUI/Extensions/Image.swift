@@ -69,6 +69,7 @@ extension Image {
     static let shareIcon = Image("shareIcon")
     static let web3ProfileIllustration = Image("web3ProfileIllustration")
     static let subdomainGridBackground = Image("subdomainGridBackground")
+    static let udLogoBlue = Image("udLogoBlue")
 
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")

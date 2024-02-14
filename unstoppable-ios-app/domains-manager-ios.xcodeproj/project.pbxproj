@@ -815,6 +815,8 @@
 		C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A692810074D0000AE56 /* SecurityWindow.swift */; };
 		C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
 		C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6637A7028100D3A0000AE56 /* LaunchViewController.xib */; };
+		C663A4D62B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */; };
+		C663A4D72B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */; };
 		C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */; };
 		C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */; };
 		C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */; };
@@ -2984,6 +2986,7 @@
 		C6637A692810074D0000AE56 /* SecurityWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWindow.swift; sourceTree = "<group>"; };
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		C6637A7028100D3A0000AE56 /* LaunchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
+		C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateToWalletGreetingsView.swift; sourceTree = "<group>"; };
 		C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileLinkValidator.swift; sourceTree = "<group>"; };
 		C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
@@ -5750,6 +5753,14 @@
 			path = LaunchViewController;
 			sourceTree = "<group>";
 		};
+		C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */ = {
+			isa = PBXGroup;
+			children = (
+				C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */,
+			);
+			path = UpdateToWalletGreetingsView;
+			sourceTree = "<group>";
+		};
 		C66430F928D8B83C00A9C734 /* ConnectExternalWallet */ = {
 			isa = PBXGroup;
 			children = (
@@ -6982,6 +6993,9 @@
 		C6B65F4D2B54DA6D006D1812 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */,
+				C6170EB62B79D306008E9C93 /* DomainsSearchView */,
+				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 				C6E0DC5B2B71E20C0069E100 /* ShareWalletInfoView */,
 				C6102FC52B6A338D0098AF75 /* HomeWebAccountView */,
 				C64939FA2B637DCB00457363 /* ReverseResolution */,
@@ -6992,8 +7006,6 @@
 				C64939F12B6357A600457363 /* HomeTabRouter.swift */,
 				C64939EE2B63579700457363 /* HomeTabPullUpHandlerModifier.swift */,
 				C617FDA92B590B6600B93433 /* NavigationViewWithCustomTitle.swift */,
-				C6170EB62B79D306008E9C93 /* DomainsSearchView */,
-				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -9117,6 +9129,7 @@
 				C6B65FA42B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */,
 				C669C37A2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6FF2D9C28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
+				C663A4D62B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */,
 				C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */,
 				C65271E12A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C6DDF2592B147F5E006D1F0B /* UDTitleText.swift in Sources */,
@@ -9494,6 +9507,7 @@
 				C6C8F81F2B217CC000A9834D /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C6D6470C2B1ED7D000D724AC /* MessagingChatMessageDisplayType.swift in Sources */,
 				C61807C02B19A2D10032E543 /* AppContextEnvironmentKeys.swift in Sources */,
+				C663A4D72B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */,
 				C6D646FA2B1ED74900D724AC /* BlinkingView.swift in Sources */,
 				C6D6475B2B1EDCED00D724AC /* PreviewDomainProfileInfoStorage.swift in Sources */,
 				C6D647742B1EE08900D724AC /* DomainTransactionInProgressCell.swift in Sources */,

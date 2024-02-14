@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UDButtonView: View {
     
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.isEnabled) private var isEnabled
 
     let text: String
     var subtext: String?

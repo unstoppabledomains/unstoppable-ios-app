@@ -218,6 +218,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             await Task.sleep(seconds: 0.5)
             
             if router.resolvingPrimaryDomainWallet == nil,
+               !router.showingUpdatedToWalletGreetings,
                selectedWallet.isReverseResolutionChangeAllowed(),
                !router.isUpdatingPurchasedProfiles,
                router.walletViewNavPath.isEmpty {
