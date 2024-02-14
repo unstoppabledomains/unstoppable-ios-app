@@ -15,12 +15,12 @@ protocol MessagingServiceProtocol {
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool
     func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
-    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo]
-    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo?
+    func fetchWalletsAvailableForMessaging() -> [WalletEntity]
+    func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo?
     
     // User
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)

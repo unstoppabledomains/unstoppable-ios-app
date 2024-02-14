@@ -160,9 +160,11 @@ private extension PurchaseDomainDomainProfileViewPresenter {
     
     struct DomainDisplayInfoHolder: DomainProfileGeneralData {
         let domain: DomainDisplayInfo
+        let domainWallet: WalletEntity?
         
         init(domainToPurchase: DomainToPurchase) {
             self.domain = .init(name: domainToPurchase.name, ownerWallet: "", isSetForRR: false)
+            self.domainWallet = nil
         }
     }
     

@@ -19,7 +19,7 @@ final class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundVie
     }
     
     override func confirmButtonPressed() {
-        appContext.firebaseParkedDomainsAuthenticationService.logout()
+        appContext.firebaseParkedDomainsAuthenticationService.logOut()
         view?.cNavigationController?.popTo(RestoreWalletViewController.self)
     }
 }

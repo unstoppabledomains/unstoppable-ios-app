@@ -346,7 +346,7 @@ private extension ChatViewPresenter {
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
             } catch {
-                try? await Task.sleep(seconds: 5)
+                await Task.sleep(seconds: 5)
                 loadRemoteContentOfMessageAsync(message)
             }
         }
@@ -358,7 +358,7 @@ private extension ChatViewPresenter {
         
         let dif = uiReadyTime - timeSinceViewDidLoad
         if dif > 0 {
-            try? await Task.sleep(seconds: dif)
+            await Task.sleep(seconds: dif)
         }
     }
     
@@ -492,9 +492,9 @@ private extension ChatViewPresenter {
     
     func setupPlaceholder() {
         Task {
-            let wallets = await messagingService.fetchWalletsAvailableForMessaging()
+            let wallets = messagingService.fetchWalletsAvailableForMessaging()
             let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
-            let sender = userWallet?.reverseResolutionDomain?.name ?? profile.wallet.walletAddressTruncated
+            let sender = userWallet?.rrDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
         }
@@ -648,10 +648,11 @@ private extension ChatViewPresenter {
                                          walletAddress: String) {
         Task {
             guard let view,
-                  let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
+                let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
-                                               viewingDomain: viewingDomain,
+                                               by: wallet,
+                                               viewingDomain: nil,
                                                preRequestedAction: nil,
                                                in: view)
         }
@@ -950,16 +951,16 @@ private extension ChatViewPresenter {
             switch showDomainResult {
             case .none:
                 view.openLink(.generic(url: url.absoluteString))
-            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
+            case .showUserDomainProfile(let domain, let wallet, let action):
                 await UDRouter().showDomainProfileScreen(in: view,
                                                          domain: domain,
                                                          wallet: wallet,
-                                                         walletInfo: walletInfo,
                                                          preRequestedAction: action,
                                                          dismissCallback: nil)
-            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
                 UDRouter().showPublicDomainProfile(of: publicDomainDisplayInfo,
-                                                   viewingDomain: viewingDomain,
+                                                   by: wallet,
+                                                   viewingDomain: nil,
                                                    preRequestedAction: action,
                                                    in: view)
             }

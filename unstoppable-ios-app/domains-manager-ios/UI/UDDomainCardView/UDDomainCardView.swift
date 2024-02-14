@@ -42,7 +42,8 @@ final class UDDomainCardView: UIView, SelfNameable, NibInstantiateable {
 extension UDDomainCardView {
     func setWith(domainItem: DomainDisplayInfo) {
         if domainItem.pfpSource != .none,
-           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem)) {
+           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem),
+                                                                  downsampleDescription: nil) {
             setWith(domainName: domainItem.name, avatarImage: image)
         } else {
             setWith(domainName: domainItem.name, avatarImage: nil)

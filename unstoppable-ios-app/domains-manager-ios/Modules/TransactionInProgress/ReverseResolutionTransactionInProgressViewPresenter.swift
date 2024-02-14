@@ -13,7 +13,6 @@ final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransaction
     private let domain: DomainItem
     private let domainDisplayInfo: DomainDisplayInfo
     private let walletInfo: WalletDisplayInfo
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private var domainTransaction: TransactionItem?
     override var content: TransactionInProgressViewController.HeaderDescription.Content { .reverseResolution }
     
@@ -22,12 +21,10 @@ final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransaction
          domainDisplayInfo: DomainDisplayInfo,
          walletInfo: WalletDisplayInfo,
          transactionsService: DomainTransactionsServiceProtocol,
-         notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         notificationsService: NotificationsServiceProtocol) {
         self.domain = domain
         self.domainDisplayInfo = domainDisplayInfo
         self.walletInfo = walletInfo
-        self.dataAggregatorService = dataAggregatorService
         super.init(view: view,
                    transactionsService: transactionsService,
                    notificationsService: notificationsService)
@@ -61,7 +58,7 @@ final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransaction
             if domainTransaction == nil {
                 dismiss()
                 if !isNotificationPermissionsGranted {
-                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                    await refreshDataForWalletWith(address: walletInfo.address)
                 }
             } else {
                 showData()

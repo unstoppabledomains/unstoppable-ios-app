@@ -57,7 +57,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return []
     }
     
-    func disconnectAppsForAbsentDomains(from: [DomainItem]) {
+    func disconnectAppsForAbsentWallets(from: [WalletEntity]) {
     }
     
     func getConnectedApps() -> [UnifiedConnectAppInfo] {

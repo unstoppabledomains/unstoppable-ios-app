@@ -55,12 +55,12 @@ final class EnterBackupOnboardingPresenter: EnterBackupBasePresenter {
                 }
             } catch {
                 let backedUpWallets = udWalletsService.fetchCloudWalletClusters().reduce([BackedUpWallet](), { $0 + $1.wallets })
-                let walletName: String = backedUpWallets.containUDVault() ? String.Constants.pluralVaults : String.Constants.pluralWallets
+                let walletName: String = String.Constants.pluralWallets.localized(backedUpWallets.count)
                 Debugger.printFailure("Failed to create a wallet from iCloud, error: \(error)", critical: true)
                 await MainActor.run {
                     view.setContinueButtonEnabled(true)
                     view.showSimpleAlert(title: String.Constants.restoreFromICloudFailedTitle.localized(),
-                                                body: String.Constants.restoreFromICloudFailedMessage.localized(walletName.localized(backedUpWallets.count)))
+                                                body: String.Constants.restoreFromICloudFailedMessage.localized(walletName))
                 }
             }
         }

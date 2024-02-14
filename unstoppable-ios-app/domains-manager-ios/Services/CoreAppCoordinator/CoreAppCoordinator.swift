@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 @MainActor
 final class CoreAppCoordinator {
@@ -40,8 +41,9 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         setOnboardingAsRoot(flow)
     }
     
-    func showHome(mintingState: DomainsCollectionMintingState) {
-        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
+    func showHome(profile: UserProfile) {
+//        setDomainsCollectionScreenAsRoot(mintingState: mintingState)
+        setHomeScreenAsRoot(profile: profile)
         if let event = pendingDeepLinkEvent {
             handleDeepLinkEvent(event)
         }
@@ -65,7 +67,7 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
     
     func didRegisterShakeDevice() {
         switch currentRoot {
-        case .domainsCollection(let router):
+        case .home(let router):
             router.didRegisterShakeDevice()
         default:
             return 
@@ -74,7 +76,7 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
     
     func isActiveState(_ state: AppCoordinationState) -> Bool {
         switch currentRoot {
-        case .domainsCollection(let router):
+        case .home(let router):
             switch state {
             case .chatOpened(let chatId):
                 return router.isChatOpenedWith(chatId: chatId)
@@ -85,6 +87,8 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
             return false
         }
     }
+    
+    var topVC: UIViewController? { window?.rootViewController?.topVisibleViewController() }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -103,14 +107,11 @@ extension CoreAppCoordinator: DeepLinkServiceListener {
 extension CoreAppCoordinator: ExternalEventsUIHandler {
     func handle(uiFlow: ExternalEventUIFlow) async throws {
         switch currentRoot {
-        case .domainsCollection(let router):
+        case .home(let router):
             switch uiFlow {
-            case .showDomainProfile(let domain, let walletWithInfo):
-                guard let walletInfo = walletWithInfo.displayInfo else { throw CoordinatorError.incorrectArguments }
-                
+            case .showDomainProfile(let domain, let wallet):
                 await router.showDomainProfile(domain,
-                                               wallet: walletWithInfo.wallet,
-                                               walletInfo: walletInfo,
+                                               wallet: wallet,
                                                preRequestedAction: nil,
                                                dismissCallback: nil)
             case .primaryDomainMinted(let primaryDomain):
@@ -118,7 +119,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
             case .showHomeScreenList:
                 await router.showHomeScreenList()
             case .showPullUpLoading:
-                guard let topVC = router.topViewController() else { throw CoordinatorError.noRootVC }
+                guard let topVC else { throw CoordinatorError.noRootVC }
                 
                 pullUpViewService.showLoadingIndicator(in: topVC)
             case .showChat(let chatId, let profile):
@@ -140,23 +141,22 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
-        func awaitPullUpDisappear() async throws {
-            try await Task.sleep(seconds: 0.2)
-        }
-        
         switch currentRoot {
-        case .domainsCollection(let router):
-            guard let hostView = router.topViewController() else { throw WalletConnectUIError.noControllerToPresent }
+        case .home:
+            func awaitPullUpDisappear() async {
+                await Task.sleep(seconds: 0.2)
+            }
+            guard let topVC else { throw WalletConnectUIError.noControllerToPresent }
             do {
                 Vibration.success.vibrate()
                 let domainToProcessRequest = try await pullUpViewService
                     .showServerConnectConfirmationPullUp(for: config,
-                                                         in: hostView)
-                await hostView.dismissPullUpMenu()
+                                                         in: topVC)
+                await topVC.dismissPullUpMenu()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
-                try? await awaitPullUpDisappear()
+                await awaitPullUpDisappear()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
@@ -166,37 +166,36 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
     
     @MainActor
     func didFailToConnect(with error: WalletConnectRequestError) async {
-        @MainActor
-        func showErrorAlert(in hostView: UIViewController) async {
-            Vibration.error.vibrate()
-            switch error.groupType {
-            case .failedConnection, .connectionTimeout:
-                await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
-            case .failedTx:
-                await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
-            case .networkNotSupported:
-                await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
-            case .lowAllowance:
-                await pullUpViewService.showWCLowBalancePullUp(in: hostView)
-            case .methodUnsupported:
-                await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
-            }
-        }
-        
         switch currentRoot {
-        case .domainsCollection(let router):
-            guard let hostView = router.topViewController() else { return }
+        case .home:
+            @MainActor
+            func showErrorAlert(in hostView: UIViewController) async {
+                Vibration.error.vibrate()
+                switch error.groupType {
+                case .failedConnection, .connectionTimeout:
+                    await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
+                case .failedTx:
+                    await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
+                case .networkNotSupported:
+                    await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
+                case .lowAllowance:
+                    await pullUpViewService.showWCLowBalancePullUp(in: hostView)
+                case .methodUnsupported:
+                    await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
+                }
+            }
+            guard let topVC else { return }
             
             switch error.groupType {
             case .connectionTimeout:
-                await showErrorAlert(in: hostView)
+                await showErrorAlert(in: topVC)
             case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
-                if let pullUpView = hostView as? PullUpViewController,
+                if let pullUpView = topVC as? PullUpViewController,
                    pullUpView.pullUp != .wcLoading {
                     return
                 }
                 
-                await showErrorAlert(in: hostView)
+                await showErrorAlert(in: topVC)
             }
         default: return
         }
@@ -205,12 +204,13 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
     @MainActor
     func dismissLoadingPageIfPresented() async {
         switch currentRoot {
-        case .domainsCollection(let router):
-            guard let hostView = router.topViewController() else { return }
-            
-            if let pullUpView = hostView as? PullUpViewController,
-               pullUpView.pullUp == .wcLoading {
-                await hostView.dismissPullUpMenu()
+        case .home(let router):
+            if router.pullUp?.analyticName == .wcLoading {
+                await router.dismissPullUpMenu()
+            } else if let topVC,
+                      let pullUpView = topVC as? PullUpViewController,
+                       pullUpView.pullUp == .wcLoading {
+                await topVC.dismissPullUpMenu()
             }
         default: return
         }
@@ -223,7 +223,7 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             switch self.currentRoot {
-            case .domainsCollection, .onboarding:
+            case .onboarding, .home:
                 guard let windowScene = self.window?.windowScene else { return }
                 
                 Task {
@@ -253,9 +253,9 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
     func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool {
         switch self.currentRoot {
-        case .domainsCollection(let router):
-            guard let topVC = router.topViewController() else { return false }
-            
+        case .home:
+            guard let topVC else { return false }
+
             let response = await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: topVC)
             await topVC.dismissPullUpMenu()
             return response 
@@ -265,9 +265,9 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
     func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async {
         switch self.currentRoot {
-        case .domainsCollection(let router):
-            guard let topVC = router.topViewController() else { return }
-            
+        case .home:
+            guard let topVC else { return }
+
             await appContext.pullUpViewService.showExternalWalletConnectionHintPullUp(for: connectingWallet,
                                                                                 in: topVC)
         default: return
@@ -280,14 +280,14 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
 private extension CoreAppCoordinator {
     func handleDeepLinkEvent(_ event: DeepLinkEvent) {
         switch currentRoot {
-        case .domainsCollection(let router):
+        case .home(let router):
             switch event {
             case .mintDomainsVerificationCode(let email, let code):
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
-            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
-                Task { await router.showDomainProfile(domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: action, dismissCallback: nil) }
-            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
-                Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, viewingDomain: viewingDomain, preRequestedAction: action) }
+            case .showUserDomainProfile(let domain, let wallet, let action):
+                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action, dismissCallback: nil) }
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
+                Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
             }
         default: return
         }
@@ -300,12 +300,13 @@ private extension CoreAppCoordinator {
         let launchVC = LaunchViewController.nibInstance()
         setRootViewController(launchVC)
     }
-
-    func setDomainsCollectionScreenAsRoot(mintingState: DomainsCollectionMintingState) {
-        let router = DomainsCollectionRouter()
-        let vc = router.configureViewController(mintingState: mintingState)
+    
+    func setHomeScreenAsRoot(profile: UserProfile) {
+        let router = HomeTabRouter(profile: profile)
+        let view = HomeTabView(tabRouter: router)
+        let vc = UIHostingController(rootView: view)
         setRootViewController(vc)
-        currentRoot = .domainsCollection(router: router)
+        currentRoot = .home(router: router)
     }
     
     func setOnboardingAsRoot(_ flow: OnboardingNavigationController.OnboardingFlow) {
@@ -356,6 +357,7 @@ extension CoreAppCoordinator {
 // MARK: - CurrentRoot
 private extension CoreAppCoordinator {
     enum CurrentRoot {
-        case none, onboarding, domainsCollection(router: DomainsCollectionRouter), appUpdate
+        case none, onboarding, appUpdate
+        case home(router: HomeTabRouter)
     }
 }

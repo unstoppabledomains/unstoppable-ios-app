@@ -16,12 +16,21 @@ struct MessagingAPIServiceHelper {
     }
     
     static func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        let wallet = wallet.normalized
-        guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
+        let address = wallet.normalized
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(address),
+              let domain = wallet.domains.first?.toDomainItem() else {
             throw MessagingHelperError.noDomainForWallet
         }
         
         return domain
+    }
+    
+    static func getWalletEntity(for walletAddress: HexAddress) throws -> WalletEntity {
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress }) else {
+            throw MessagingHelperError.walletNotFound
+        }
+        
+        return wallet
     }
     
     static func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
@@ -38,6 +47,7 @@ struct MessagingAPIServiceHelper {
     enum MessagingHelperError: String, LocalizedError {
         case noDomainForWallet
         case failedToDecodeServiceData
+        case walletNotFound
         
         public var errorDescription: String? { rawValue }
     }

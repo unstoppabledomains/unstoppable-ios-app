@@ -26,7 +26,7 @@ struct UDCollectionListRowButton<Content: View>: View {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(state.pressed ? Color.backgroundSubtle : Color.clear)
                 content()
-                    .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                    .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 8))
             }
         }))
     }

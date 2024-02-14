@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct DomainDisplayInfo: Hashable, DomainEntity, Equatable {
+struct DomainDisplayInfo: Hashable, DomainEntity, Equatable, Codable, Identifiable {
+    
+    var id: String { name }
     
     private(set) var name: String
     private(set) var ownerWallet: String?
@@ -19,12 +21,14 @@ struct DomainDisplayInfo: Hashable, DomainEntity, Equatable {
     
     init(name: String,
          ownerWallet: String,
+         blockchain: BlockchainType? = nil,
          pfpInfo: DomainPFPInfo? = nil,
          state: State = .default,
          order: Int? = nil,
          isSetForRR: Bool) {
         self.name = name
         self.ownerWallet = ownerWallet
+        self.blockchain = blockchain
         self.state = state
         self.domainPFPInfo = pfpInfo
         self.order = order
@@ -44,6 +48,15 @@ struct DomainDisplayInfo: Hashable, DomainEntity, Equatable {
         self.order = order
         self.isSetForRR = isSetForRR
     }
+    
+    init(firebaseDomain: FirebaseDomainDisplayInfo,
+         order: Int? = nil) {
+        self.name = firebaseDomain.name
+        self.ownerWallet = firebaseDomain.ownerAddress
+        self.state = .parking(status: firebaseDomain.parkingStatus)
+        self.order = order
+        self.isSetForRR = false
+    }
 }
 
 // MARK: - Open methods
@@ -52,7 +65,7 @@ extension DomainDisplayInfo {
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
     var isUpdatingRecords: Bool {
         switch state {
-        case .minting, .updatingRecords, .transfer:
+        case .minting, .updatingRecords, .transfer, .updatingReverseResolution:
             return true
         case .default, .parking:
             return false
@@ -67,6 +80,7 @@ extension DomainDisplayInfo {
     }
     var isTransferring: Bool { state == .transfer }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
+    var isSubdomain: Bool { name.isSubdomain() }
     
     func isReverseResolutionChangeAllowed() -> Bool {
         state == .default
@@ -87,8 +101,9 @@ extension DomainDisplayInfo {
 
 // MARK: - State
 extension DomainDisplayInfo {
-    enum State: Hashable {
+    enum State: Hashable, Codable {
         case `default`, minting, updatingRecords, parking(status: DomainParkingStatus), transfer
+        case updatingReverseResolution
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
@@ -101,6 +116,8 @@ extension DomainDisplayInfo {
             case (.parking, .parking):
                 return true
             case (.transfer, .transfer):
+                return true
+            case (.updatingReverseResolution, .updatingReverseResolution):
                 return true
             default:
                 return false
@@ -170,5 +187,11 @@ extension Array where Element == DomainDisplayInfo {
             }
             return false
         }
+    }
+}
+
+extension DomainDisplayInfo {
+    func toDomainItem() -> DomainItem {
+        DomainItem(name: name, ownerWallet: ownerWallet, blockchain: blockchain)
     }
 }

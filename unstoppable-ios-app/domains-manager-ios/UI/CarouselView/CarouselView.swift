@@ -13,6 +13,7 @@ protocol CarouselViewItem {
     var text: String  { get }
     var tintColor: UIColor { get }
     var backgroundColor: UIColor { get }
+    var isRotating: Bool { get }
 }
 
 final class CarouselView: UIView {
@@ -23,7 +24,7 @@ final class CarouselView: UIView {
     private let gradientViewWidth: CGFloat = 48
     private var sideGradientViews: [GradientView] = []
 
-    var elementSideOffset: CGFloat = 12
+    var elementSideOffset: CGFloat = 0
     var style: CarouselCollectionViewCell.Style = .default
     var data: [CarouselViewItem] = []
     
@@ -162,5 +163,25 @@ private extension CarouselView {
         } completion: { [weak self] _ in
             self?.startAutoScroll()
         }
+    }
+}
+
+struct CarouselViewBridgeView: UIViewRepresentable {
+    
+    let data: [CarouselViewItem]
+    let backgroundColor: UIColor
+    var style: CarouselCollectionViewCell.Style = .small
+    var sideGradientHidden: Bool = true
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = CarouselView()
+        view.style = style
+        view.set(data: data)
+        view.backgroundColor = backgroundColor
+        view.setSideGradient(hidden: sideGradientHidden)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
     }
 }

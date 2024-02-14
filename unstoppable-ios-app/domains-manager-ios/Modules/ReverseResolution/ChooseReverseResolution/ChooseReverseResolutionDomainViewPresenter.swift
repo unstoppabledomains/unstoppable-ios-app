@@ -20,9 +20,7 @@ protocol ChooseReverseResolutionDomainViewPresenterProtocol: BasePresenterProtoc
 class ChooseReverseResolutionDomainViewPresenter {
     private(set) weak var view: ChooseReverseResolutionDomainViewProtocol?
     
-    let wallet: UDWallet
-    let walletInfo: WalletDisplayInfo
-    private let dataAggregatorService: DataAggregatorServiceProtocol
+    let wallet: WalletEntity
     var title: String { "" }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     private(set) var walletDomains = [DomainDisplayInfo]()
@@ -30,13 +28,9 @@ class ChooseReverseResolutionDomainViewPresenter {
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: ChooseReverseResolutionDomainViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         wallet: WalletEntity) {
         self.view = view
         self.wallet = wallet
-        self.walletInfo = walletInfo
-        self.dataAggregatorService = dataAggregatorService
     }
     
     func confirmButtonPressed() {
@@ -51,10 +45,8 @@ class ChooseReverseResolutionDomainViewPresenter {
 // MARK: - ChooseReverseResolutionViewPresenterProtocol
 extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDomainViewPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            await loadDomains()
-            showDomainsList()
-        }
+        loadDomains()
+        showDomainsList()
     }
     
     func didSelectItem(_ item: ChooseReverseResolutionDomainViewController.Item) {
@@ -72,9 +64,8 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
 
 // MARK: - Private functions
 private extension ChooseReverseResolutionDomainViewPresenter {
-    func loadDomains() async {
-        let domains = await dataAggregatorService.getDomainsDisplayInfo().availableForRRItems()
-        walletDomains = domains.filter({ $0.isOwned(by: wallet ) })
+    func loadDomains() {
+        walletDomains = wallet.domains.availableForRRItems()
     }
 }
 

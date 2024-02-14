@@ -193,21 +193,6 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         showOrUpdate(in: viewController, pullUp: .themeSelection, contentView: contentView, height: selectionViewHeight)
     }
     
-    func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction {
-        let selectionViewHeight: CGFloat = 436
-        
-        return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
-            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.importYourDomains.localized()),
-                                                                         contentAlignment: .center),
-                                                    items: AddDomainPullUpAction.pullUpSections,
-                                                    itemSelectedCallback: { action in
-                completion(.success(action))
-            })
-            
-            showOrUpdate(in: viewController, pullUp: .mintDomainsSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
-        }
-    }
-    
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: UnavailableOfflineFeature) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in

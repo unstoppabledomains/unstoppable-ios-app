@@ -10,8 +10,8 @@ import Combine
 
 final class MockFirebaseInteractionsService {
     
-    @Published var isAuthorized: Bool = true
-    var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
+    @Published var firebaseUser: FirebaseUser?
+    var authorizedUserPublisher: Published<FirebaseUser?>.Publisher { $firebaseUser }
     
     private var cart: PurchaseDomainsCart = .empty {
         didSet {
@@ -22,6 +22,9 @@ final class MockFirebaseInteractionsService {
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
     var isApplePaySupported: Bool { true }
 
+    @Published private(set) var parkedDomains: [FirebaseDomainDisplayInfo] = []
+    var parkedDomainsPublisher: Published<[FirebaseDomainDisplayInfo]>.Publisher  { $parkedDomains }
+    
     private var cancellables: Set<AnyCancellable> = []
     private var checkoutData: PurchaseDomainsCheckoutData
     
@@ -29,6 +32,7 @@ final class MockFirebaseInteractionsService {
         let preferencesService = PurchaseDomainsPreferencesStorage.shared
         checkoutData = preferencesService.checkoutData
         cartStatus = .ready(cart: cart)
+        firebaseUser = .init(email: "qq@qq.qq")
         preferencesService.$checkoutData.publisher
             .sink { val in
                 self.checkoutData = val
@@ -57,23 +61,15 @@ extension MockFirebaseInteractionsService: FirebaseAuthenticationServiceProtocol
         try await authorize()
     }
     
-    func getUserProfile() async throws -> FirebaseUser {
-        .init(email: "qq@qq.qq")
+    func logOut() {
+        firebaseUser = nil
     }
-    
-    func logout() {
-        isAuthorized = false
-    }
-    
-    // Listeners
-    func addListener(_ listener: FirebaseAuthenticationServiceListener) { }
-    func removeListener(_ listener: FirebaseAuthenticationServiceListener) { }
 }
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        try await Task.sleep(seconds: 0.5)
+        await Task.sleep(seconds: 0.5)
         let key = key.lowercased()
         let tlds = ["x", "crypto", "nft", "wallet", "polygon", "dao", "888", "blockchain", "go", "bitcoin"]
         let prices = [40000, 20000, 8000, 4000, 500]
@@ -90,7 +86,7 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     }
     
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        try await Task.sleep(seconds: 0.4)
+        await Task.sleep(seconds: 0.4)
         
         return ["greenfashion", "naturalstyle", "savvydressers", "ethicalclothes", "urbanfashions", "wearables", "consciouslook", "activegears", "minimalista", "outsizeoutfits", "styletone"].map { DomainToPurchaseSuggestion(name: $0) }
     }
@@ -131,21 +127,18 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
 // MARK: - FirebaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain] {
-        []
+        MockEntitiesFabric.Domains.mockFirebaseDomains()
     }
     func getParkedDomains() async throws -> [FirebaseDomain] {
-        []
-    }
-    func clearParkedDomains() {
-        
+        MockEntitiesFabric.Domains.mockFirebaseDomains()
     }
 }
 
 // MARK: - Private methods
 private extension MockFirebaseInteractionsService {
     func authorize() async throws {
-        try? await Task.sleep(seconds: 0.4)
-        isAuthorized = true
+        await Task.sleep(seconds: 0.4)
+        firebaseUser = .init(email: "qq@qq.qq")
     }
     
     func loadUserCryptoWallets() async throws -> [FirebasePurchaseDomainsService.UDUserAccountCryptWallet] {

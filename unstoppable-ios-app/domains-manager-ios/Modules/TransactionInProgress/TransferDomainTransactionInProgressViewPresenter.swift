@@ -57,7 +57,7 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
             if domainTransaction == nil {
                 dismiss()
                 if !isNotificationPermissionsGranted {
-                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                    await refreshDataForWalletWith(address: domainDisplayInfo.ownerWallet)
                 }
             } else {
                 showData()

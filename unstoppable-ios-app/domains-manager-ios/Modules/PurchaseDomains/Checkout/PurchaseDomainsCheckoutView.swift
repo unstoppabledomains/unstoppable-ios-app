@@ -17,11 +17,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
-    @Environment(\.dataAggregatorService) private var dataAggregatorService
+    @Environment(\.walletsDataService) private var walletsDataService
     
     @State var domain: DomainToPurchase
-    @State var selectedWallet: WalletWithInfo
-    @State var wallets: [WalletWithInfo]
+    @State var selectedWallet: WalletEntity
+    @State var wallets: [WalletEntity]
     @State var profileChanges: DomainProfilePendingChanges
 
     @State private var domainAvatar: UIImage?
@@ -29,7 +29,7 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
     @State private var error: PullUpErrorConfiguration?
-    @State private var pullUp: ViewPullUpConfiguration?
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
     @State private var isSelectWalletPresented = false
@@ -122,7 +122,9 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func topWarningViewWith(message: TopMessageDescription, callback: @escaping MainActorCallback) -> some View {
         Button {
-            callback()
+            Task { @MainActor in
+                callback()
+            }
         } label: {
             HStack(spacing: 8) {
                 Image.infoIcon
@@ -191,12 +193,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var selectedWalletName: String {
-        if let displayInfo = selectedWallet.displayInfo,
-           displayInfo.isNameSet {
-            return "\(displayInfo.name) (\(displayInfo.address.walletAddressTruncated))"
-        } else {
-            return selectedWallet.address.walletAddressTruncated
-        }
+        selectedWallet.displayName
     }
     
     @ViewBuilder
@@ -410,7 +407,6 @@ private extension PurchaseDomainsCheckoutView {
             }
             checkoutButton()
         }
-        
     }
     
     var checkoutButtonTitle: String {
@@ -471,19 +467,19 @@ private extension PurchaseDomainsCheckoutView {
         }
     }
     
-    func warnUserIfNeededAndSelectWallet(_ wallet: WalletWithInfo, forceReload: Bool = false) {
-        switch wallet.displayInfo?.source {
+    func warnUserIfNeededAndSelectWallet(_ wallet: WalletEntity, forceReload: Bool = false) {
+        switch wallet.displayInfo.source {
         case .external(let name, let walletMake):
             warnToSignInExternalWallet(wallet,
                                        externalWalletInfo: .init(name: name,
                                                                  icon: walletMake.icon),
                                        forceReload: forceReload)
         default:
-            authorizeWithSelectedWalle(wallet, forceReload: forceReload)
+            authorizeWithSelectedWallet(wallet, forceReload: forceReload)
         }
     }
     
-    func authorizeWithSelectedWalle(_ wallet: WalletWithInfo, forceReload: Bool = false) { 
+    func authorizeWithSelectedWallet(_ wallet: WalletEntity, forceReload: Bool = false) {
         guard wallet.address != selectedWallet.address || isFailedToAuthWallet || forceReload else { return }
         
         error = nil
@@ -491,7 +487,7 @@ private extension PurchaseDomainsCheckoutView {
             selectedWallet = wallet
             setLoading(true)
             do {
-                try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
+                try await purchaseDomainsService.authoriseWithWallet(wallet.udWallet,
                                                                      toPurchaseDomains: [domain])
             } catch {
                 Debugger.printFailure("Did fail to authorise wallet \(wallet.address) with error \(error)")
@@ -518,10 +514,10 @@ private extension PurchaseDomainsCheckoutView {
                 PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])
                 PurchasedDomainsStorage.addPendingNonEmptyProfiles([profileChanges])
                 
-                await dataAggregatorService.didPurchaseDomains([pendingPurchasedDomain],
-                                                               pendingProfiles: [profileChanges])
+                await walletsDataService.didPurchaseDomains([pendingPurchasedDomain],
+                                                            pendingProfiles: [profileChanges])
                 Task.detached { // Run in background
-                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                    try? await walletsDataService.refreshDataForWallet(selectedWallet)
                 }
                 delegate?.purchaseViewDidPurchaseDomains()
             } catch {
@@ -550,7 +546,7 @@ private extension PurchaseDomainsCheckoutView {
                 isSelectWalletPresented = true
             }, tryAgainCallback: {
                 guard let walletWithInfo = self.wallets.first(where: { $0.address == wallet.address }) else { return }
-                authorizeWithSelectedWalle(walletWithInfo, forceReload: true)
+                authorizeWithSelectedWallet(walletWithInfo, forceReload: true)
             })
         case .failedToLoadCalculations(let callback):
             error = .loadCalculationsError(tryAgainCallback: callback)
@@ -559,8 +555,8 @@ private extension PurchaseDomainsCheckoutView {
         }
     }
     
-    func warnToSignInExternalWallet(_ wallet: WalletWithInfo, externalWalletInfo: ExternalWalletInfo, forceReload: Bool = false) {
-        pullUp = .init(icon: .init(icon: externalWalletInfo.icon,
+    func warnToSignInExternalWallet(_ wallet: WalletEntity, externalWalletInfo: ExternalWalletInfo, forceReload: Bool = false) {
+        pullUp = .default(.init(icon: .init(icon: externalWalletInfo.icon,
                                    size: .large),
                        title: .text(String.Constants.purchaseWalletAuthSigRequiredTitle.localized()),
                        subtitle: .label(.text(String.Constants.purchaseWalletAuthSigRequiredSubtitle.localized(externalWalletInfo.name))),
@@ -568,10 +564,10 @@ private extension PurchaseDomainsCheckoutView {
                                                           analyticsName: .gotIt,
                                                           action: {
             pullUp = nil
-            authorizeWithSelectedWalle(wallet, forceReload: forceReload)
+            authorizeWithSelectedWallet(wallet, forceReload: forceReload)
         })),
                        dismissAble: false, 
-                       analyticName: .purchaseDomainsAskToSign)
+                       analyticName: .purchaseDomainsAskToSign))
     }
     
     struct ExternalWalletInfo {
@@ -610,38 +606,27 @@ private extension PurchaseDomainsCheckoutView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectDiscountsPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PurchaseDomainsSelectDiscountsView()
-                            .presentationDetents([.medium])
-                    } else {
-                        PurchaseDomainsSelectDiscountsView()
-                    }
+                    PurchaseDomainsSelectDiscountsView()
+                        .presentationDetents([.medium])
                 })
         }
     }
     
     struct ShowingSelectWallet: ViewModifier {
         @Binding var isSelectWalletPresented: Bool
-        let selectedWallet: WalletWithInfo
-        let wallets: [WalletWithInfo]
+        let selectedWallet: WalletEntity
+        let wallets: [WalletEntity]
         let analyticsName: Analytics.ViewName
         let selectedWalletCallback: PurchaseDomainSelectWalletCallback
         
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
-                                                        wallets: wallets,
-                                                        selectedWalletCallback: selectedWalletCallback)
-                        .presentationDetents([.medium, .large])
-                        .environment(\.analyticsViewName, analyticsName)
-                    } else {
-                        PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
-                                                        wallets: wallets,
-                                                        selectedWalletCallback: selectedWalletCallback)
-                        .environment(\.analyticsViewName, analyticsName)
-                    }
+                    PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
+                                                    wallets: wallets,
+                                                    selectedWalletCallback: selectedWalletCallback)
+                    .adaptiveSheet()
+                    .environment(\.analyticsViewName, analyticsName)
                 })
         }
     }
@@ -706,8 +691,8 @@ private extension PullUpErrorConfiguration {
                                               price: 10000,
                                               metadata: nil,
                                              isAbleToPurchase: true),
-                                selectedWallet: WalletWithInfo.mock[0],
-                                wallets: Array(WalletWithInfo.mock.prefix(4)),
+                                selectedWallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                                wallets: Array(MockEntitiesFabric.Wallet.mockEntities().prefix(4)),
                                 profileChanges: .init(domainName: "oleg.x",
                                                       avatarData: UIImage.Preview.previewLandscape?.dataToUpload),
                                 delegate: nil)

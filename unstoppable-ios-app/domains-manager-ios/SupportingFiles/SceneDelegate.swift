@@ -129,6 +129,7 @@ extension SceneDelegate: SceneDelegateProtocol {
     var interfaceOrientation: UIInterfaceOrientation { window?.windowScene?.interfaceOrientation ?? .unknown }
 
     func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle) {
+        let appearanceStyle: UIUserInterfaceStyle = .dark
         window?.overrideUserInterfaceStyle = appearanceStyle
         securityWindow?.overrideUserInterfaceStyle = appearanceStyle
         UserDefaults.appearanceStyle = appearanceStyle

@@ -12,6 +12,7 @@ protocol SceneDelegateProtocol {
     var interfaceOrientation: UIInterfaceOrientation { get }
     var window: MainWindow? { get }
     var sceneActivationState: UIScene.ActivationState { get }
+    
     func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle)
     func authorizeUserOnAppOpening() async throws
     func restartOnboarding()

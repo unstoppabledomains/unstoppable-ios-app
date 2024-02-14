@@ -51,22 +51,18 @@ struct DomainProfileLinkValidator {
             preRequestedAction = .showBadge(code: badgeCode)
         }
         
-        let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-        let walletsWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo()
-        if let domain = userDomains.first(where: { $0.name == domainName }),
-           let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: domain) }),
-           let walletInfo = walletWithInfo.displayInfo {
+        let wallets = appContext.walletsDataService.wallets
+        if let wallet = wallets.findOwningDomain(domainName),
+           let domain = wallet.domains.first(where: { $0.name == domainName }) {
             return .showUserDomainProfile(domain: domain,
-                                          wallet: walletWithInfo.wallet,
-                                          walletInfo: walletInfo,
+                                          wallet: wallet,
                                           action: preRequestedAction)
-        } else if let userDomainDisplayInfo = userDomains.first,
-                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: userDomainDisplayInfo.name),
+        } else if let selectedWallet = appContext.walletsDataService.selectedWallet ?? appContext.walletsDataService.wallets.first,
                   let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
             let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,
                                                                   name: domainName)
             return .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,
-                                            viewingDomain: viewingDomain,
+                                            wallet: selectedWallet,
                                             action: preRequestedAction)
         }
         
@@ -75,8 +71,8 @@ struct DomainProfileLinkValidator {
     
     enum ShowDomainProfileResult {
         case none
-        case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, action: PreRequestedProfileAction?)
-        case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)
+        case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
+        case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     }
 }
 

@@ -31,7 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
-        Debugger.setAllowedTopicsSet(.custom([.Analytics]))
+        
+        Debugger.setAllowedTopicsSet(.debugDefault)
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        Task {
@@ -94,7 +95,6 @@ extension AppDelegate: AppDelegateProtocol {
 private extension AppDelegate {
     func setup() {
         setVersionAndBuildNumber()
-        configureNavBar()
         setupAppearance()
         setupBugsnag()
         setupFeatureFlags()

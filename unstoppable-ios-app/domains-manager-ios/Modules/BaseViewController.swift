@@ -48,6 +48,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         addObservers()
         navigationController?.navigationBar.prefersLargeTitles = prefersLargeTitles
         customiseNavigationBackButton(image: navBackStyle.icon)
+        setupNavBar()
         navBarUpdated()
         cNavigationController?.backButtonPressedCallback = { [weak self] in
             UDVibration.buttonTap.vibrate()
@@ -136,6 +137,12 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         view.endEditing(true)
         cNavigationController?.view.endEditing(true)
     }
+    
+    func setNavBarTint(_ color: UIColor) {
+        self.navigationController?.navigationBar.tintColor = color
+        self.navigationController?.navigationBar.barTintColor = color
+    }
+    
 }
 
 // MARK: - BaseViewControllerProtocol
@@ -180,13 +187,21 @@ private extension BaseViewController {
 private extension BaseViewController {
     func setup() {
         view.backgroundColor = .backgroundDefault
+        setupNavBar()
+        cNavigationController?.navigationBar.navBarContentView.backButton.accessibilityIdentifier = "Navigation Back Button"
+        navBarUpdated()
+    }
+    
+    func setupNavBar() {
         customiseNavigationBackButton(image: navBackStyle.icon)
+        if let navBarTitleAttributes {
+            navigationController?.navigationBar.standardAppearance.titleTextAttributes = navBarTitleAttributes
+            navigationController?.navigationBar.scrollEdgeAppearance?.titleTextAttributes = navBarTitleAttributes
+        }
         navigationController?.navigationBar.isHidden = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         navigationController?.navigationBar.prefersLargeTitles = prefersLargeTitles
         navigationItem.setValue(true, forKey: "__largeTitleTwoLineMode")
-        cNavigationController?.navigationBar.navBarContentView.backButton.accessibilityIdentifier = "Navigation Back Button"
-        navBarUpdated()
     }
 }
 

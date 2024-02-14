@@ -23,6 +23,9 @@ final class UDDomainsService: UDDomainsServiceProtocol {
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
         []
     }
+    func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo] {
+        []
+    }
     
     func loadPFP(for domainName: DomainName) async -> DomainPFPInfo? {
         nil
@@ -33,6 +36,7 @@ final class UDDomainsService: UDDomainsServiceProtocol {
     }
     
     func mintDomains(_ domains: [String], paidDomains: [String], to wallet: UDWallet, userEmail: String, securityCode: String) async throws {
+        
     }
     
     func findDomains(by domainNames: [String]) -> [DomainItem] {

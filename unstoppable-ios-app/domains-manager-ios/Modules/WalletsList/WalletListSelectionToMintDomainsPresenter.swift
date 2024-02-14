@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias WalletSelectedCallback = (UDWallet)->()
+typealias WalletSelectedCallback = (WalletEntity)->()
 
 final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter {
     
@@ -21,24 +21,21 @@ final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter 
     var walletSelectedCallback: WalletSelectedCallback?
     
     init(view: WalletsListViewProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         selectedWallet: UDWallet?,
+         selectedWallet: WalletEntity?,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          walletSelectedCallback: @escaping WalletSelectedCallback) {
         super.init(view: view,
-                   dataAggregatorService: dataAggregatorService,
                    initialAction: .none,
                    networkReachabilityService: networkReachabilityService,
                    udWalletsService: udWalletsService)
-        if let selectedWallet = selectedWallet,
-           let walletInfo = WalletDisplayInfo(wallet: selectedWallet, domainsCount: 0, udDomainsCount: 0) {
-            selectedWalletInfo = walletInfo
+        if let selectedWallet = selectedWallet {
+            selectedWalletInfo = selectedWallet.displayInfo
         }
         self.walletSelectedCallback = walletSelectedCallback
     }
     
-    override func didSelectWallet(_ wallet: UDWallet, walletInfo: WalletDisplayInfo) async {
+    override func didSelectWallet(_ wallet: WalletEntity, walletInfo: WalletDisplayInfo) async {
         await view?.dismiss(animated: true)
         walletSelectedCallback?(wallet)
     }

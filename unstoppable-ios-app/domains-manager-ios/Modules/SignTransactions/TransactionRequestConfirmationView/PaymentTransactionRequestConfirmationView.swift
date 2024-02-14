@@ -34,7 +34,7 @@ final class PaymentTransactionRequestConfirmationView: BaseSignTransactionView {
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundDefault)
         addCostContainerView()
-        addDomainInfo()
+        addWalletInfo()
         addLowBalanceStack()
     }
     
@@ -45,9 +45,9 @@ extension PaymentTransactionRequestConfirmationView {
     func configureWith(_ configuration: SignPaymentTransactionUIConfiguration) {
         self.configuration = configuration
         addCostView(configuration: configuration)
-        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo, domain: configuration.connectionConfig.domain)
+        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo)
         setWith(appInfo: configuration.connectionConfig.appInfo)
-        setDomainInfo(configuration.connectionConfig.domain, isSelectable: false)
+        setWalletInfo(configuration.connectionConfig.wallet, isSelectable: false)
         balanceValueWarningIndicator?.isHidden = true
         costView?.set(isLoading: true)
         self.cancelButton.isEnabled = false
@@ -69,13 +69,15 @@ extension PaymentTransactionRequestConfirmationView {
 // MARK: - Refresh balance methods
 private extension PaymentTransactionRequestConfirmationView {
     func refresh() async throws {
-        guard let configuration = self.configuration else { return }
+        guard let configuration = self.configuration,
+        let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == configuration.walletAddress }) else { return }
         
         let chainId = configuration.chainId
         let blockchainType: BlockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum
-        let balance = try await appContext.udWalletsService.getBalanceFor(walletAddress: configuration.walletAddress, blockchainType: blockchainType, forceRefresh: true)
+        guard let balance = wallet.balanceFor(blockchainType: blockchainType) else { return }
+        
         costView?.setWith(cost: configuration.cost,
-                          exchangeRate: balance.exchangeRate,
+                          exchangeRate: balance.value.marketUsdAmt ?? 0,
                           blockchainType: blockchainType,
                           pullUp: pullUp)
 
@@ -83,9 +85,9 @@ private extension PaymentTransactionRequestConfirmationView {
         let quantity = cost.quantity
         let gasFee = cost.gasPrice
         let price = Double(quantity + gasFee).ethValue
-        let isEnoughMoney = balance.coinBalance >= price
+        let isEnoughMoney = balance.balanceAmt >= price
         
-        balanceValueLabel?.setAttributedTextWith(text: balance.formattedValue,
+        balanceValueLabel?.setAttributedTextWith(text: balance.value.walletUsd,
                                                  font: .currentFont(withSize: 16, weight: .medium),
                                                  textColor: isEnoughMoney ? .foregroundDefault : .foregroundWarning,
                                                  alignment: .right)
@@ -143,11 +145,11 @@ private extension PaymentTransactionRequestConfirmationView {
         self.costView = costView
     }
     
-    func addDomainInfo() {
-        let domainStack = buildDomainInfoView()
-        domainStack.axis = .vertical
-        domainStack.alignment = .leading
-        domainStack.spacing = 6
+    func addWalletInfo() {
+        let walletStack = buildWalletInfoView()
+        walletStack.axis = .vertical
+        walletStack.alignment = .leading
+        walletStack.spacing = 6
 
         let balanceLabel = UILabel()
         balanceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -191,7 +193,7 @@ private extension PaymentTransactionRequestConfirmationView {
         balanceStack.alignment = .trailing
         balanceStack.spacing = 6
         
-        let bottomStack = UIStackView(arrangedSubviews: [domainStack, balanceStack])
+        let bottomStack = UIStackView(arrangedSubviews: [walletStack, balanceStack])
         bottomStack.axis = .horizontal
         bottomStack.alignment = .center
         bottomStack.distribution = .fillEqually

@@ -9,6 +9,10 @@ import SwiftUI
 
 @MainActor
 extension View {
+    var safeAreaInset: UIEdgeInsets {
+        SceneDelegate.shared?.window?.safeAreaInsets ?? .zero
+    }
+    
     @inlinable
     public func reverseMask<Mask: View>(
         alignment: Alignment = .center,
@@ -45,4 +49,32 @@ extension View {
         openURLExternally(url)
     }
     
+    func openLink(_ link: String.Links) {
+        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        topVC.openLink(link)
+    }
+    
+    func shareItems(_ items: [Any], completion: ((Bool)->())?) {
+        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        activityVC.completionWithItemsHandler = { _, completed, _, _ in
+            completion?(completed)
+        }
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let thisViewVC = UIHostingController(rootView: self)
+            activityVC.popoverPresentationController?.sourceView = thisViewVC.view
+        }
+        
+        topVC.present(activityVC, animated: true, completion: nil)
+    }
+}
+
+extension View {
+    func withoutAnimation() -> some View {
+        self.transaction { transaction in
+            transaction.animation = nil
+        }
+    }
 }

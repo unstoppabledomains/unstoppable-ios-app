@@ -19,6 +19,6 @@ final class MockStripeService {
 // MARK: - StripeServiceProtocol
 extension MockStripeService: StripeServiceProtocol {
     func payWithStripe() async throws {
-        try await Task.sleep(seconds: 1)
+        await Task.sleep(seconds: 1)
     }
 }

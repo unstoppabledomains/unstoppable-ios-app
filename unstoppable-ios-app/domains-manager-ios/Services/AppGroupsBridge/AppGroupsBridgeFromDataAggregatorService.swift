@@ -6,32 +6,20 @@
 //
 
 import Foundation
+import Combine
 
 final class AppGroupsBridgeFromDataAggregatorService {
     
     static let shared = AppGroupsBridgeFromDataAggregatorService()
-    
-    private init() {
-        appContext.dataAggregatorService.addListener(self)
-    }
-    
-}
+    private var cancellables: Set<AnyCancellable> = []
 
-// MARK: - DataAggregatorServiceListener
-extension AppGroupsBridgeFromDataAggregatorService: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        switch result {
-        case .success(let aggregationResult):
-            switch aggregationResult {
-            case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                updateDomainsPFPInBridge(domains)
-            case .primaryDomainChanged, .walletsListUpdated:
-                return
-            }
-        case .failure:
-            return
-        }
+    private init() {
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            let domains = wallets.combinedDomains()
+            self?.updateDomainsPFPInBridge(domains)
+        }.store(in: &cancellables)
     }
+    
 }
 
 // MARK: - Private methods

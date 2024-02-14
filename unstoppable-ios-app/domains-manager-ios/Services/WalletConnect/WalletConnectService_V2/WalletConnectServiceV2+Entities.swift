@@ -9,12 +9,12 @@ import Foundation
 
 extension WalletConnectServiceV2 {
     struct ConnectionUISettings {
-        let domain: DomainItem
+        let wallet: WalletEntity
         let blockchainType: BlockchainType
     }
     
     struct ConnectionConfig {
-        let domain: DomainItem
+        let wallet: WalletEntity
         let appInfo: WCServiceAppInfo
     }
     

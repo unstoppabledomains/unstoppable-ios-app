@@ -6,20 +6,23 @@
 //
 
 import UIKit
+import Combine
 
 final class DomainsListPresenter: DomainsListViewPresenter {
     
-    private let walletWithInfo: WalletWithInfo
+    private let wallet: WalletEntity
     override var analyticsName: Analytics.ViewName { .domainsList }
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
-    override var title: String { String.Constants.domains.localized().capitalizedFirstCharacter + " · \(domains.count)" }
+    override var title: String { String.Constants.domains.localized() + " · \(domains.count)" }
+    private var cancellables: Set<AnyCancellable> = []
 
     init(view: DomainsListViewProtocol,
-         domains: [DomainDisplayInfo],
-         walletWithInfo: WalletWithInfo) {
-        self.walletWithInfo = walletWithInfo
-        super.init(view: view, domains: domains)
-        appContext.dataAggregatorService.addListener(self)
+         wallet: WalletEntity) {
+        self.wallet = wallet
+        super.init(view: view, domains: wallet.domains)
+        appContext.walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsUpdated(wallets)
+        }.store(in: &cancellables)
     }
     
     @MainActor
@@ -52,34 +55,21 @@ final class DomainsListPresenter: DomainsListViewPresenter {
     }
 }
 
-// MARK: - DataAggregatorServiceListener
-extension DomainsListPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            await MainActor.run {
-                switch result {
-                case .success(let resultType):
-                    switch resultType {
-                    case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                        let isDomainsChanged = self.domains != domains
-                        if isDomainsChanged {
-                            let wallet = walletWithInfo.wallet
-                            self.domains = domains.filter({ $0.isOwned(by: [wallet])})
-                            showDomains()
-                            view?.refreshTitle()
-                        }
-                    case .primaryDomainChanged, .walletsListUpdated: return
-                    }
-                case .failure:
-                    return
-                }
-            }
-        }
-    }
-}
-
 // MARK: - Private methods
 private extension DomainsListPresenter {
+    func walletsUpdated(_ wallets: [WalletEntity]) {
+        guard let wallet = wallets.findWithAddress(wallet.address) else {
+            view?.dismiss(animated: true)
+            return
+        }
+        
+        if self.domains != wallet.domains {
+            self.domains = wallet.domains
+            showDomains()
+            view?.refreshTitle()
+        }
+    }
+    
     @MainActor
     func showDomains() {
         var snapshot = DomainsListSnapshot()
@@ -111,11 +101,13 @@ private extension DomainsListPresenter {
 
     @MainActor
     func showProfile(of domain: DomainDisplayInfo) {
-        guard let nav = self.view?.cNavigationController,
-            let walletInfo = walletWithInfo.displayInfo else { return }
+        guard let nav = self.view?.cNavigationController else { return }
         
         Task {
-            await UDRouter().pushDomainProfileScreen(in: nav, domain: domain, wallet: walletWithInfo.wallet, walletInfo: walletInfo, preRequestedAction: nil)
+            await UDRouter().pushDomainProfileScreen(in: nav, 
+                                                     domain: domain,
+                                                     wallet: wallet,
+                                                     preRequestedAction: nil)
         }
     }
     
@@ -142,15 +134,16 @@ private extension DomainsListPresenter {
     func showPublicDomainProfile(of domain: DomainDisplayInfo) {
         Task {
             guard let view,
-                  let walletAddress = domain.ownerWallet,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                  let walletAddress = domain.ownerWallet else {
                 Debugger.printInfo("No profile for a non-interactible domain")
                 self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
                 return
             }
             
+            let domain = domain.toDomainItem()
             let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
-            UDRouter().showPublicDomainProfile(of: domainPublicInfo, 
+            UDRouter().showPublicDomainProfile(of: domainPublicInfo,
+                                               by: wallet,
                                                viewingDomain: domain,
                                                preRequestedAction: nil,
                                                in: view)

@@ -26,8 +26,8 @@ final class MintDomainsConfigurationViewPresenter: ViewAnalyticsLogger {
     private var unMintedAvailableDomains: [String] = []
     private let mintedDomains: [DomainDisplayInfo]
     private let walletsService: UDWalletsServiceProtocol
-    private var wallets = [UDWallet]()
-    private var selectedWallet: UDWallet?
+    private var wallets = [WalletEntity]()
+    private var selectedWallet: WalletEntity?
     private var selectedDomains: Set<String> = []
     private var shouldUseAsPrimary = false
     private let mintDomainsAmountLimit = 50
@@ -113,7 +113,8 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
             view?.setLoadingIndicator(active: true)
             do {
                 if unMintedDomains.count > 1 {
-                    try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint(Array(selectedDomains), wallet: wallet))
+                    try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint(Array(selectedDomains),
+                                                                                             wallet: wallet))
                 } else if let domain = unMintedAvailableDomains.first {
                     try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint([domain], wallet: wallet))
                 }
@@ -174,19 +175,16 @@ private extension MintDomainsConfigurationViewPresenter {
     }
     
     func loadData() async {
-        wallets = walletsService.getUserWallets()
+        wallets = appContext.walletsDataService.wallets
         selectedWallet = wallets.first
         updateUIForSelectedWallet()
     }
     
     @MainActor
     func updateUIForSelectedWallet() {
-        guard let selectedWallet = self.selectedWallet,
-              let walletInfo = WalletDisplayInfo(wallet: selectedWallet,
-                                                 domainsCount: 0,
-                                                 udDomainsCount: 0) else { return }
+        guard let selectedWallet = self.selectedWallet else { return }
         
-        view?.setWalletInfo(walletInfo, canSelect: wallets.count > 1)
+        view?.setWalletInfo(selectedWallet.displayInfo, canSelect: wallets.count > 1)
     }
     
     @MainActor

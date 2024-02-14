@@ -10,6 +10,7 @@ import SwiftUI
 struct DisplayError<T: Error>: ViewModifier {
     
     @Binding var error: T?
+    var dismissCallback: MainActorCallback?
     var isShowingError: Binding<Bool> {
         Binding {
             error != nil
@@ -25,13 +26,15 @@ struct DisplayError<T: Error>: ViewModifier {
                 
                 return Alert(title: Text(title),
                              message: Text(message),
-                             dismissButton: .default(Text(String.Constants.ok.localized())))
+                             dismissButton: .default(Text(String.Constants.ok.localized()), action: {
+                    dismissCallback?()
+                }))
             }
     }
 }
 
 extension View {
-    func displayError<T: Error>(_ error: Binding<T?>) -> some View {
-        self.modifier(DisplayError(error: error))
+    func displayError<T: Error>(_ error: Binding<T?>, dismissCallback: MainActorCallback? = nil) -> some View {
+        self.modifier(DisplayError(error: error, dismissCallback: dismissCallback))
     }
 }

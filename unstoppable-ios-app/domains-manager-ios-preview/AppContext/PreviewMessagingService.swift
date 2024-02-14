@@ -22,12 +22,12 @@ final class MessagingService: MessagingServiceProtocol {
         true
     }
     
-    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] {
-        []
+    func fetchWalletsAvailableForMessaging() -> [WalletEntity] {
+        MockEntitiesFabric.Wallet.mockEntities() 
     }
     
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        throw NSError()
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
@@ -148,16 +148,23 @@ final class MessagingService: MessagingServiceProtocol {
     
     func logout() { }
     
-    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? {
+    func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo? {
         nil
     }
     
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        .init(id: "", wallet: domain.ownerWallet ?? "", serviceIdentifier: .xmtp)
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        .init(id: "1", wallet: wallet.address, serviceIdentifier: .xmtp)
     }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        []
+        [.init(id: "1",
+               thisUserDetails: .init(wallet: "1"),
+               avatarURL: nil,
+               serviceIdentifier: .xmtp,
+               type: .private(.init(otherUser: .init(wallet: "2"))),
+               unreadMessagesCount: 0,
+               isApproved: true,
+               lastMessageTime: Date())]
     }
     
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }

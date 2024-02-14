@@ -8,50 +8,52 @@
 import Foundation
 
 extension MessagingService {
-    func createUserProfile(for domain: DomainDisplayInfo, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
+    func createUserProfile(for wallet: WalletEntity, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
         
-        if let existingUser = try? await getUserProfile(for: domain, serviceIdentifier: serviceIdentifier) {
+        if let existingUser = try? await getUserProfile(for: wallet, serviceIdentifier: serviceIdentifier) {
             return existingUser
         }
-        let domainItem = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        let newUser = try await apiService.createUser(for: domainItem)
-        Task.detached {
-            try? await apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
+        let newUser = try await apiService.createUser(for: wallet)
+        if let domain = wallet.rrDomain {
+            Task.detached {
+                try? await apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
+            }
         }
         await storageService.saveUserProfile(newUser)
         return newUser.displayInfo
     }
     
-    func getUserProfile(for domain: DomainDisplayInfo, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await getUserProfileFor(domainName: domain.name, serviceIdentifier: serviceIdentifier)
+    func getUserProfile(for wallet: WalletEntity, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await getUserProfileFor(wallet: wallet, serviceIdentifier: serviceIdentifier)
     }
     
-    func getUserProfileFor(domainName: String, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
-        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: serviceIdentifier)
-    }
-    
-    func getUserProfileFor(domainItem: DomainItem, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
+    func getUserProfileFor(wallet: WalletEntity, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        if let cachedProfile = try? storageService.getUserProfileFor(domain: domainItem,
+        if let cachedProfile = try? storageService.getUserProfileFor(wallet: wallet.address,
                                                                      serviceIdentifier: serviceIdentifier) {
             return cachedProfile.displayInfo
         }
         
-        let remoteProfile = try await apiService.getUserFor(domain: domainItem)
+        let remoteProfile = try await apiService.getUserFor(wallet: wallet)
         await storageService.saveUserProfile(remoteProfile)
         return remoteProfile.displayInfo
     }
     
     func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        let wallet = messagingProfile.wallet
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
-        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: communitiesServiceIdentifier)
+        let wallet = try findWalletEntityWithAddress(messagingProfile.wallet)
+        return try await getUserProfileFor(wallet: wallet, serviceIdentifier: communitiesServiceIdentifier)
     }
     
-    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+    func findWalletEntityWithAddress(_ walletAddress: String) throws -> WalletEntity {
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress }) else {
+            throw MessagingServiceError.walletNotFound
+        }
+        return wallet
+    }
+    
+    func createUserCommunitiesProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await createUserProfile(for: wallet, serviceIdentifier: communitiesServiceIdentifier)
     }
     
     /// Return at least one existing profile or throw error

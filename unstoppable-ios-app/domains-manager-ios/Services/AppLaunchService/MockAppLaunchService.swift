@@ -31,7 +31,7 @@ extension MockAppLaunchService: AppLaunchServiceProtocol {
         DispatchQueue.main.async {
             switch TestsEnvironment.launchStateToUse {
             case .home:
-                self.coreAppCoordinator.showHome(mintingState: .default)
+                self.coreAppCoordinator.showHome(profile: .wallet(appContext.walletsDataService.selectedWallet!))
             case .onboardingNew:
                 self.clearOnboarding()
                 let onboardingFlow = OnboardingNavigationController.OnboardingFlow.newUser(subFlow: nil)

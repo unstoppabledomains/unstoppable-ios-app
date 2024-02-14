@@ -45,6 +45,15 @@ extension ChatListEmptyCell {
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.enable.localized(), image: appContext.authentificationService.biometricIcon)
             actionButton.isHidden = false
+        case .noWalletAdded:
+            iconImageView.image = .walletIcon
+
+            setTitle(String.Constants.messagingNoWalletsTitle.localized())
+            setSubtitle(String.Constants.messagingNoWalletsSubtitle.localized())
+            
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle(String.Constants.addWalletTitle.localized(), image: .plusIcon18)
+            actionButton.isHidden = false
         }
     }
     

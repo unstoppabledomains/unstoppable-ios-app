@@ -17,17 +17,6 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
     var blockchain: String
     var name: String
     var ownerAddress: String
-
-    init(firebaseDomain: FirebaseDomain) {
-        self.claimStatus = firebaseDomain.claimStatus
-        self.internalCustody = firebaseDomain.internalCustody
-        self.purchasedAt = firebaseDomain.purchasedAt
-        self.parkingExpiresAt = firebaseDomain.parkingExpiresAt
-        self.parkingTrial = firebaseDomain.parkingTrial
-        self.blockchain = firebaseDomain.blockchain
-        self.name = firebaseDomain.name
-        self.ownerAddress = firebaseDomain.ownerAddress
-    }
     
     var parkingStatus: DomainParkingStatus {
         guard internalCustody else { return .claimed }
@@ -56,3 +45,16 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
     }
 }
 
+// MARK: - Open methods
+extension FirebaseDomainDisplayInfo {
+    init(firebaseDomain: FirebaseDomain) {
+        self.claimStatus = firebaseDomain.claimStatus
+        self.internalCustody = firebaseDomain.internalCustody
+        self.purchasedAt = firebaseDomain.purchasedAt
+        self.parkingExpiresAt = firebaseDomain.parkingExpiresAt
+        self.parkingTrial = firebaseDomain.parkingTrial
+        self.blockchain = firebaseDomain.blockchain
+        self.name = firebaseDomain.name
+        self.ownerAddress = firebaseDomain.ownerAddress
+    }
+}

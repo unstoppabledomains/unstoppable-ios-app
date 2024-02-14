@@ -52,7 +52,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     func createNewUDWallet() async throws -> UDWallet {
         try checkIfAbleToAddNewWallet()
         
-        let namePrefix = "Vault"
+        let namePrefix = "Wallet"
         let newName = UDWalletsStorage.instance.getLowestIndexedName(startingWith: namePrefix)
         let waitAtLeast: TimeInterval = 3
        
@@ -61,7 +61,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         let timeSpent = Date().timeIntervalSince(startDate)
         if timeSpent < waitAtLeast {
             let stillNeedToWait = waitAtLeast - timeSpent
-            try await Task.sleep(seconds: stillNeedToWait)
+            await Task.sleep(seconds: stillNeedToWait)
         }
          
         store(wallet: wallet)
@@ -271,32 +271,6 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         iCloudStorage.clear()
         getUserWallets().forEach({ updateWalletInStorage($0, backedUpState: false) })
         notifyListeners(.walletsUpdated(getUserWallets()))
-    }
-    
-    // Balance
-    func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
-        let layerId = try UnsConfigManager.getBlockchainLayerId(for: blockchainType)
-        async let ratesTask = CurrencyExchangeRates.getRates(forceRefresh: forceRefresh)
-        async let quantityTask = NetworkService().fetchBalance(address: walletAddress,
-                                                                 layerId: layerId)
-        
-        let (quantity, rates) = try await (quantityTask, ratesTask)
-        
-        let exchangeRate: Double
-        switch blockchainType {
-        case .Ethereum:
-            exchangeRate = rates.usdToEth
-        case .Matic:
-            exchangeRate = rates.usdToMatic
-        case .Zilliqa:
-            Debugger.printFailure("Trying to get balance of ZIL wallet", critical: true)
-            throw WalletError.unsupportedBlockchainType
-        }
-        
-        return WalletBalance(address: walletAddress,
-                             quantity: quantity,
-                             exchangeRate: exchangeRate,
-                             blockchain: blockchainType)
     }
     
     // Reverse Resolution

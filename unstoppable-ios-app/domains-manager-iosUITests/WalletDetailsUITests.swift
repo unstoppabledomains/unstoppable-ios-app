@@ -11,7 +11,7 @@ import XCTest
 final class WalletDetailsUDBackedUpUITests: BaseXCTestCase {
     
     private lazy var walletsToUse: [TestsEnvironment.TestWalletDescription] = {
-        [.init(type: "generatedLocally", name: "Vault", hasBeenBackedUp: true, isExternal: false, domainNames: ["joshgordon_0.x"])]
+        [.init(type: "generatedLocally", name: "Wallet", hasBeenBackedUp: true, isExternal: false, domainNames: ["joshgordon_0.x"])]
     }()
     override var launchEnvironment: [String : String] { [TestsEnvironment.numberOfDomains.rawValue : "1",
                                                          TestsEnvironment.wallets.rawValue : TestsEnvironment.TestWalletDescription.groupedWalletsStr(from: walletsToUse)] }

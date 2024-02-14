@@ -49,7 +49,7 @@ extension HeapAnalyticService: AnalyticsServiceChildProtocol {
     }
     
     func set(userID: String) {
-        
+        self.userID = userID
     }
 }
 
@@ -114,7 +114,7 @@ private extension HeapAnalyticService {
     }
     
     func identity() -> String? {
-        userID
+        userID ?? "none"
     }
     
     func setupTimer() {

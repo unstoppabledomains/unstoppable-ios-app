@@ -20,7 +20,6 @@ struct UDCollectionSectionBackgroundView<Content: View>: View {
             content()
         }
         .backgroundShadow(needed: withShadow)
-        .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 8)
     }
     
     init(backgroundColor: Color = .backgroundOverlay,

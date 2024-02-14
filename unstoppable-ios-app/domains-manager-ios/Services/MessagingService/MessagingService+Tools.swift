@@ -8,15 +8,6 @@
 import Foundation
 
 extension MessagingService {
-    func getReverseResolutionDomainItem(for wallet: String) async throws -> DomainItem {
-        let walletsForMessaging = await fetchWalletsAvailableForMessaging()
-        guard let wallet = walletsForMessaging.first(where: { $0.address == wallet.normalized }),
-              let domainInfo = wallet.reverseResolutionDomain else {
-            throw MessagingServiceError.noRRDomainForProfile
-        }
-        return try await appContext.dataAggregatorService.getDomainWith(name: domainInfo.name)
-    }
-    
     func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
         guard let ethAddress = domain.getETHAddress() else { throw MessagingServiceError.domainWithoutWallet }
         return ethAddress
@@ -40,8 +31,7 @@ extension MessagingService {
     func getUserProfileWith(wallet: String,
                             serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfile {
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        let rrDomain = try await getReverseResolutionDomainItem(for: wallet)
-        return try storageService.getUserProfileFor(domain: rrDomain,
+        return try storageService.getUserProfileFor(wallet: wallet,
                                                     serviceIdentifier: apiService.serviceIdentifier)
     }
     

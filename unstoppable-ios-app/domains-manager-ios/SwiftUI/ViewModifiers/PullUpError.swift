@@ -10,14 +10,16 @@ import SwiftUI
 struct PullUpError: ViewModifier {
 
     @Binding var error: PullUpErrorConfiguration?
-    var configuration: Binding<ViewPullUpConfiguration?> {
+    var configuration: Binding<ViewPullUpConfigurationType?> {
         Binding {
             if let error {
-                return createPullUpConfigurationFor(error: error)
+                return .default(createPullUpConfigurationFor(error: error))
             }
             return nil
-        } set: { _ in
-            error = nil
+        } set: { val in
+            if val == nil {
+                error = nil
+            }
         }
     }
     
@@ -25,8 +27,8 @@ struct PullUpError: ViewModifier {
         content.viewPullUp(configuration)
     }
     
-    private func createPullUpConfigurationFor(error: PullUpErrorConfiguration) -> ViewPullUpConfiguration {
-        ViewPullUpConfiguration(icon: .init(icon: .infoIcon, size: .small,
+    private func createPullUpConfigurationFor(error: PullUpErrorConfiguration) -> ViewPullUpDefaultConfiguration {
+        ViewPullUpDefaultConfiguration(icon: .init(icon: .infoIcon, size: .small,
                                             tintColor: .foregroundDanger),
                                 title: .text(error.title),
                                 subtitle: .label(.text(error.subtitle)),

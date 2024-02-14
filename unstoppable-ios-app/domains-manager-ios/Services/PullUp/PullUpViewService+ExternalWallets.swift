@@ -87,19 +87,13 @@ extension PullUpViewService {
                 }
             }
             
-            signTransactionView.domainButtonCallback = { [weak pullUpView, weak signTransactionView] domain in
+            signTransactionView.walletButtonCallback = { [weak pullUpView] wallet in
                 Task {
                     do {
-                        
                         guard let pullUpView = pullUpView else { return }
-                        let isSetForRR = await appContext.dataAggregatorService.isReverseResolutionSet(for: domain.name)
-                        let selectedDomain = DomainDisplayInfo(domainItem: domain, isSetForRR: isSetForRR)
-                        let newDomain = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
-                                                                                                      swipeToDismissEnabled: false,
-                                                                                                      in: pullUpView)
                         
-                        let domain = try await appContext.dataAggregatorService.getDomainWith(name: newDomain.0.name)
-                        signTransactionView?.setDomainInfo(domain, isSelectable: true)
+                        UDRouter().showProfileSelectionScreen(selectedWallet: wallet,
+                                                              in: pullUpView)
                     }
                 }
             }
