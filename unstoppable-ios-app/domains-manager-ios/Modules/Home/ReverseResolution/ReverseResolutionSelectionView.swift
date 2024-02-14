@@ -178,6 +178,15 @@ private extension ReverseResolutionSelectionView {
         .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
     }
     
+    var isConfirmButtonDisabled: Bool {
+        switch mode {
+        case .selectFirst:
+            selectedDomain == nil
+        case .change:
+            selectedDomain == wallet.rrDomain
+        }
+    }
+    
     @ViewBuilder
     func confirmView() -> some View {
         UDButtonView(text: String.Constants.confirm.localized(),
@@ -187,7 +196,7 @@ private extension ReverseResolutionSelectionView {
             logButtonPressedAnalyticEvents(button: .confirm, parameters: [.value : selectedDomain?.name ?? ""])
             setSelectedDomainAsRR()
         }
-                     .disabled(selectedDomain == nil)
+                     .disabled(isConfirmButtonDisabled)
                      .padding(EdgeInsets(top: 0, leading: 0, bottom: 6, trailing: 0))
                      .allowsHitTesting(!isSettingRRDomain)
     }
