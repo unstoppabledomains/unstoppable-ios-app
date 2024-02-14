@@ -192,6 +192,7 @@ private extension ChatUserMessageCell {
         reactionsCollection.delegate = self
         reactionsCollection.backgroundColor = .clear
         reactionsCollectionHeightConstraint = reactionsCollection.heightAnchor.constraint(equalToConstant: 40)
+        reactionsCollectionHeightConstraint?.priority = .defaultHigh
         reactionsCollectionHeightConstraint?.isActive = true
         reactionsCollection.showsHorizontalScrollIndicator = false
         reactionsCollection.contentInset = .zero
