@@ -8,9 +8,14 @@
 import SwiftUI
 import Combine
 
+@MainActor
+protocol HomeWalletViewCoordinator: AnyObject {
+    func domainPurchased()
+}
+
 extension HomeWalletView {
     @MainActor
-    final class HomeWalletViewModel: ObservableObject {
+    final class HomeWalletViewModel: ObservableObject, HomeWalletViewCoordinator {
         
         @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [TokenDescription] = []
@@ -35,6 +40,7 @@ extension HomeWalletView {
              router: HomeTabRouter) {
             self.selectedWallet = selectedWallet
             self.router = router
+            router.homeWalletViewCoordinator = self
             
             setSelectedWallet(selectedWallet)
             
@@ -112,6 +118,10 @@ extension HomeWalletView {
         
         func buyDomainPressed() {
             router.runPurchaseFlow()
+        }
+        
+        func domainPurchased() {
+            selectedContentType = .domains
         }
     }
 }

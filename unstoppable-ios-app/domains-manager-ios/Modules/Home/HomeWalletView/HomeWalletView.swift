@@ -26,7 +26,8 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
             OffsetObservingListView(offset: $scrollOffset) {
                 HomeWalletHeaderRowView(wallet: viewModel.selectedWallet,
                                         domainNamePressedCallback: viewModel.domainNamePressed,
-                                        didSelectDomainCallback: viewModel.didSelectChangeRR)
+                                        didSelectDomainCallback: viewModel.didSelectChangeRR,
+                                        purchaseDomainCallback: viewModel.buyDomainPressed)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .onAppearanceChange($isHeaderVisible)

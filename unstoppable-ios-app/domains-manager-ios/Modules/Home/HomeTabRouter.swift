@@ -26,6 +26,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var showingWalletInfo: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
+    weak var homeWalletViewCoordinator: HomeWalletViewCoordinator?
     
     let id: UUID = UUID()
     private var topViews = 0
@@ -63,7 +64,14 @@ extension HomeTabRouter {
     func runPurchaseFlow() {
         Task {
             await showHomeScreenList()
-            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { _ in }))
+            walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { [weak self] result in
+                switch result {
+                case .cancel:
+                    return
+                case .purchased:
+                    self?.homeWalletViewCoordinator?.domainPurchased()
+                }
+            }))
         }
     }
     

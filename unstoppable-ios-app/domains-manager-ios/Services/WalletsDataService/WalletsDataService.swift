@@ -65,7 +65,7 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
                             pendingProfiles: [DomainProfilePendingChanges]) async {
         guard !purchasedDomains.isEmpty,
-              let wallet = wallets.first(where: { $0.address == purchasedDomains[0].walletAddress }) else { return }
+              let wallet = wallets.findWithAddress(purchasedDomains[0].walletAddress) else { return }
         
         var domains = wallet.domains
         let purchasedDomainsDisplayInfo = await transformPendingPurchasedDomainToDomainsWithInfo(purchasedDomains,

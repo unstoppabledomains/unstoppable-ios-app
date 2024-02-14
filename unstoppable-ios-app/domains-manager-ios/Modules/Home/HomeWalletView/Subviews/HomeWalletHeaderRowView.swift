@@ -17,6 +17,7 @@ struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     let wallet: WalletEntity
     let domainNamePressedCallback: MainActorCallback
     let didSelectDomainCallback: MainActorCallback
+    let purchaseDomainCallback: MainActorCallback
 
     @State private var domainAvatar: UIImage?
     
@@ -141,7 +142,7 @@ private extension HomeWalletHeaderRowView {
     func getAvatarViewToGetDomain() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            tabRouter.runPurchaseFlow()
+            purchaseDomainCallback()
             logButtonPressedAnalyticEvents(button: .purchaseDomainAvatar)
         } label: {
             ZStack {
@@ -236,7 +237,8 @@ private extension HomeWalletHeaderRowView {
 #Preview {
     HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
                             domainNamePressedCallback: { }, 
-                            didSelectDomainCallback: { })
+                            didSelectDomainCallback: { },
+                            purchaseDomainCallback: { })
 }
 
 
