@@ -182,7 +182,7 @@ private extension ChatUserMessageCell {
         guard let reactionsCollection else { return }
         
         reactionsCollection.registerCellNibOfType(ChatUserMessageReactionCell.self)
-        let layout = UICollectionViewFlowLayout()
+        let layout = ReactionsCollectionLayout()
         layout.scrollDirection = .vertical
         layout.estimatedItemSize = CGSize(width: 60, height: 40)
         reactionsCollection.collectionViewLayout = layout
@@ -191,8 +191,8 @@ private extension ChatUserMessageCell {
         reactionsCollection.backgroundColor = .clear
         reactionsCollectionHeightConstraint = reactionsCollection.heightAnchor.constraint(equalToConstant: 40)
         reactionsCollectionHeightConstraint?.isActive = true
-        
         reactionsCollection.showsHorizontalScrollIndicator = false
+        reactionsCollection.contentInset = .zero
     }
     
     @objc func didTapTimeLabel() {
@@ -213,7 +213,9 @@ private extension ChatUserMessageCell {
     func buildReactionsUIDescription(from reactions: [ReactionCounter]) -> [ReactionUIDescription] {
         let groupedByContent = [String : [ReactionCounter]].init(grouping: reactions, by: { $0.content })
         
-        return groupedByContent.map { .init(content: $0.key, count: $0.value.count) }
+        return groupedByContent.map { .init(content: $0.key, 
+                                            count: $0.value.count,
+                                            containsUserReaction: $0.value.first(where: { $0.isUserReaction }) != nil) }
     }
 }
 
@@ -226,7 +228,7 @@ extension ChatUserMessageCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueCellOfType(ChatUserMessageReactionCell.self, forIndexPath: indexPath)
         let reaction = reactions[indexPath.row]
-        cell.setWith(reaction: reaction)
+        cell.setWith(reaction: reaction, isThisUserMessage: sender?.isThisUser == true)
         return cell
     }
 }
@@ -236,18 +238,38 @@ extension ChatUserMessageCell: UICollectionViewDelegate {
  
 }
 
-// MARK: - UICollectionViewDelegate
-extension ChatUserMessageCell: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        8
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        8
-    }
-}
-
 struct ReactionUIDescription {
     let content: String
     let count: Int
+    let containsUserReaction: Bool
+}
+
+private final class ReactionsCollectionLayout: UICollectionViewFlowLayout {
+    
+    required override init() {super.init(); common()}
+    required init?(coder aDecoder: NSCoder) {super.init(coder: aDecoder); common()}
+    
+    private func common() {
+        estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        minimumLineSpacing = 8
+        minimumInteritemSpacing = 8
+    }
+    
+    override func layoutAttributesForElements(
+        in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+            
+            guard let att = super.layoutAttributesForElements(in:rect) else {return []}
+            var x: CGFloat = sectionInset.left
+            var y: CGFloat = -1.0
+            
+            for a in att {
+                if a.representedElementCategory != .cell { continue }
+                
+                if a.frame.origin.y >= y { x = sectionInset.left }
+                a.frame.origin.x = x
+                x += a.frame.width + minimumInteritemSpacing
+                y = a.frame.maxY
+            }
+            return att
+        }
 }

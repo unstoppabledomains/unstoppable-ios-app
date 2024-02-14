@@ -5537,8 +5537,8 @@
 			children = (
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
 				C6E0D66C2A4AC2AE009431AF /* ChatUserMessageCell.swift */,
-				C631DFAF2B7B621C00040221 /* ChatUserMessageReactionCell */,
 				C603D7A92A56FC2300CEC696 /* ChatUserBubbledMessageCell.swift */,
+				C631DFAF2B7B621C00040221 /* ChatUserMessageReactionCell */,
 				C6157B022A7113BD00081574 /* ChatRemoteContentCell */,
 				C603D79E2A56B6FF00CEC696 /* ChatUnsupportedMessageCell */,
 				C6BF42C92A49552700A02860 /* ChatLoadingCell */,

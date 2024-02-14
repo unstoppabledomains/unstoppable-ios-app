@@ -103,7 +103,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         }
         
         if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
-           let last = messages.last,
+           let last = messagesCache.lazy.sorted(by: { $0.time > $1.time }).last,
            !last.isFirstInChat {
             loadMoreMessagesBefore(message: last)
         }
@@ -307,6 +307,22 @@ private extension ChatViewPresenter {
     
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
         messagesCache.formUnion(messages)
+
+        var messages = serialQueue.sync {
+            messages.filter { message in
+                if case .reaction(let info) = message.type {
+                    let counter = ReactionCounter(content: info.content,
+                                                  messageId: message.id,
+                                                  referenceMessageId: info.messageId,
+                                                  isUserReaction: message.senderType.isThisUser)
+                    _ = messagesToReactions[info.messageId, default: []].insert(counter)
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
+        
         for message in messages {
             var message = message
             await message.prepareToDisplay()
@@ -333,17 +349,6 @@ private extension ChatViewPresenter {
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
-        if messages.first(where: { message in
-            if case .reaction = message.type {
-                return false
-            }
-            return true
-        }) == nil,
-           let lastMessage = messages.last {
-            DispatchQueue.main.async {
-                self.loadMoreMessagesBefore(message: lastMessage)
-            }
-        }
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
@@ -438,7 +443,7 @@ private extension ChatViewPresenter {
         var message = message
         let messageReactions = serialQueue.sync { messagesToReactions[message.id] ?? [] }
         message.reactions = Array(messageReactions)
-        
+        print("LOGO: - Will put \(messageReactions.count) reactions into message")
         switch message.type {
         case .text(let textMessageDisplayInfo):
             return .textMessage(configuration: .init(message: message,
@@ -478,13 +483,7 @@ private extension ChatViewPresenter {
                                                               pressedCallback: {
                 
             }))
-        case .reaction(let info):
-            serialQueue.sync {
-                let counter = ReactionCounter(content: info.content,
-                                              messageId: message.id,
-                                              referenceMessageId: info.messageId)
-                _ = messagesToReactions[info.messageId, default: []].insert(counter)
-            }
+        case .reaction:
             return nil
         }
     }
@@ -1069,4 +1068,5 @@ struct ReactionCounter: Hashable {
     let content: String
     let messageId: String
     let referenceMessageId: String
+    let isUserReaction: Bool
 }

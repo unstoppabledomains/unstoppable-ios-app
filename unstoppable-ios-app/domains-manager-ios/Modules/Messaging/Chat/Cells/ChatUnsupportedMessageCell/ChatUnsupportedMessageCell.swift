@@ -103,7 +103,7 @@ extension ChatUnsupportedMessageCell {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
     let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
                                                                         type: "file",
-                                                                        name: "sjlhfksdjfhskdjhfskdhjfksdjfhsdfsdf",
+                                                                        name: "sjlhfksdjfhskdj",
                                                                         size: 99900)
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
@@ -114,18 +114,14 @@ extension ChatUnsupportedMessageCell {
                                                   isRead: false,
                                                   isFirstInChat: true,
                                                   deliveryState: .delivered,
-                                                  isEncrypted: false)
-    
-    let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
-    collection.registerCellNibOfType(ChatUnsupportedMessageCell.self)
-    let cell = collection.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: IndexPath(row: 0, section: 0))
-    
-    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
-    cell.alpha = 1
-    cell.setWith(configuration: .init(message: message,
-                                      isGroupChatMessage: false,
-                                      pressedCallback: { }))
-    
-    return cell
+                                                  isEncrypted: false,
+                                                  reactions: MockEntitiesFabric.Reactions.reactionsToTest)
+    let collectionView = PreviewCollectionViewCell<ChatUnsupportedMessageCell>(cellSize: CGSize(width: 390, height: 126)) { cell in
+        cell.setWith(configuration: .init(message: message,
+                                          isGroupChatMessage: false,
+                                          pressedCallback: { }))
+        cell.backgroundColor = .backgroundDefault
+    }
+    return collectionView
     
 }

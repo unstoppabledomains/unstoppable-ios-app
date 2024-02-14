@@ -18,7 +18,7 @@ final class ChatUserMessageReactionCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        backgroundContainer.backgroundColor = .backgroundOverlay
+        
     }
     
     override func layoutSubviews() {
@@ -29,11 +29,21 @@ final class ChatUserMessageReactionCell: UICollectionViewCell {
         }
     }
 
-    func setWith(reaction: ReactionUIDescription) {
+    func setWith(reaction: ReactionUIDescription,
+                 isThisUserMessage: Bool) {
         contentLabel.text = reaction.content
+        
+        var textColor: UIColor = .foregroundAccent
+        if reaction.containsUserReaction,
+           isThisUserMessage {
+            textColor = .white
+        }
+        
         counterLabel.setAttributedTextWith(text: String(reaction.count),
                                            font: Self.counterFont,
-                                           textColor: .foregroundAccent)
+                                           textColor: textColor)
+        
+        backgroundContainer.backgroundColor = reaction.containsUserReaction ? .backgroundAccent : .backgroundOverlay
     }
     
 }

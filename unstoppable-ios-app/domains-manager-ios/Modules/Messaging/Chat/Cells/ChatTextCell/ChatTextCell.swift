@@ -79,38 +79,28 @@ extension ChatTextCell {
 @available (iOS 17.0, *)
 #Preview {
     let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text unas ljahs")
-    let reactions: [ReactionCounter] = [.init(content: "😜", messageId: "1", referenceMessageId: "1"),
-                                        .init(content: "🧐", messageId: "1", referenceMessageId: "1"),
-                                        .init(content: "🤓", messageId: "1", referenceMessageId: "1"),
-                                        .init(content: "🥳", messageId: "1", referenceMessageId: "1"),
-                                        .init(content: "🥳", messageId: "1", referenceMessageId: "1")]
+    let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some textjjfkjhjkljkj")
     
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
                                                   userId: "1",
-                                                  senderType: .thisUser(user),
+                                                  senderType: .otherUser(user),
                                                   time: Date(),
                                                   type: .text(textDetails),
                                                   isRead: false,
                                                   isFirstInChat: true,
                                                   deliveryState: .delivered,
                                                   isEncrypted: false,
-                                                  reactions: reactions)
-    
-    let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
-    collection.registerCellNibOfType(ChatTextCell.self)
-    let cell = collection.dequeueCellOfType(ChatTextCell.self, forIndexPath: IndexPath(row: 0, section: 0))
-    
-    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
-    cell.alpha = 1
-    cell.setWith(configuration: .init(message: message,
-                                      textMessageDisplayInfo: textDetails,
-                                      isGroupChatMessage: true,
-                                      actionCallback: { _ in },
-                                      externalLinkHandleCallback: { _ in }))
-    cell.backgroundColor = .backgroundDefault
-    return cell
+                                                  reactions: MockEntitiesFabric.Reactions.reactionsToTest)
+    let collectionView = PreviewCollectionViewCell<ChatTextCell>(cellSize: CGSize(width: 390, height: 176)) { cell in
+        cell.setWith(configuration: .init(message: message,
+                                          textMessageDisplayInfo: textDetails,
+                                          isGroupChatMessage: true,
+                                          actionCallback: { _ in },
+                                          externalLinkHandleCallback: { _ in }))
+        cell.backgroundColor = .backgroundDefault
+    }
+    return collectionView
 }
 // MARK: - Private methods
 extension ChatUserMessageCell {
@@ -120,13 +110,18 @@ extension ChatUserMessageCell {
             !reactionsCollection.isHidden else { return }
         
         let spacingsTotalWidth = CGFloat(reactions.count - 1) * 8
-        let reactionsTotalWidth = reactions.reduce(CGFloat(0), { $0 + widthForReaction($1) })
+        let reactionsElementsWidth = reactions.reduce(CGFloat(0), { $0 + widthForReaction($1) })
+        let reactionsTotalWidth = reactionsElementsWidth + spacingsTotalWidth
+        let cellHeight: CGFloat = 38
         let collectionWidth = reactionsCollection.bounds.width
         
-        let numberOfVerticalRows = ceil((spacingsTotalWidth + reactionsTotalWidth) / collectionWidth)
-        let requiredHeight = numberOfVerticalRows * 29 + (numberOfVerticalRows - 1) * 8
-        if reactionsCollectionHeightConstraint?.constant != requiredHeight {
-            reactionsCollectionHeightConstraint?.constant = requiredHeight
+        let numberOfVerticalRows = ceil(reactionsTotalWidth / collectionWidth)
+        let maxHeight: CGFloat = cellHeight * 2
+        
+        let requiredHeight = numberOfVerticalRows * cellHeight + (numberOfVerticalRows - 1) * 8
+        let height = min(maxHeight, requiredHeight)
+        if reactionsCollectionHeightConstraint?.constant != height {
+            reactionsCollectionHeightConstraint?.constant = height
             invalidateIntrinsicContentSize()
         }
     }
@@ -139,3 +134,4 @@ extension ChatUserMessageCell {
     }
     
 }
+

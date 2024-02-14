@@ -137,19 +137,23 @@ private extension ChatImageCell {
     let message = MessagingChatMessageDisplayInfo(id: "1",
                                                   chatId: "2",
                                                   userId: "1",
-                                                  senderType: .otherUser(user),
+                                                  senderType: .thisUser(user),
                                                   time: Date(),
                                                   type: .imageBase64(imageDetails),
                                                   isRead: false,
                                                   isFirstInChat: true,
                                                   deliveryState: .delivered,
-                                                  isEncrypted: false)
-    let cell = ChatImageCell()
-    cell.frame = CGRect(x: 0, y: 0, width: 390, height: 76)
-    cell.setWith(configuration: .init(message: message,
-                                      imageMessageDisplayInfo: imageDetails,
-                                      isGroupChatMessage: true,
-                                      actionCallback: { _ in }))
-    return cell
+                                                  isEncrypted: false,
+                                                  reactions: MockEntitiesFabric.Reactions.reactionsToTest)
+    
+    
+    let collectionView = PreviewCollectionViewCell<ChatImageCell>(cellSize: CGSize(width: 390, height: 376)) { cell in
+        cell.setWith(configuration: .init(message: message,
+                                          imageMessageDisplayInfo: imageDetails,
+                                          isGroupChatMessage: true,
+                                          actionCallback: { _ in }))
+        cell.backgroundColor = .backgroundDefault
+    }
+    return collectionView
     
 }

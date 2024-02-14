@@ -50,7 +50,7 @@
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="1hu-hF-OXA">
-                                                        <rect key="frame" x="56" y="5.6666666666666643" width="367" height="44"/>
+                                                        <rect key="frame" x="56" y="0.0" width="367" height="55"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YnQ-TL-Hsi">
                                                                 <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="24"/>
@@ -65,7 +65,7 @@
                                                                 <rect key="frame" x="0.0" y="24" width="120.33333333333333" height="20"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r0d-Ca-O8T" customClass="UDConfigurableButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="1.3333333333333357" width="75" height="17"/>
+                                                                        <rect key="frame" x="0.0" y="1.6666666666666679" width="75" height="17"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="17" id="zaU-3s-O3j"/>
                                                                         </constraints>
@@ -83,7 +83,20 @@
                                                                     </label>
                                                                 </subviews>
                                                             </stackView>
+                                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="aYj-QE-OLF">
+                                                                <rect key="frame" x="0.0" y="44" width="367" height="11"/>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="i99-no-Gg7">
+                                                                    <size key="itemSize" width="128" height="128"/>
+                                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                                </collectionViewFlowLayout>
+                                                            </collectionView>
                                                         </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="aYj-QE-OLF" firstAttribute="width" secondItem="1hu-hF-OXA" secondAttribute="width" id="Rvw-vA-QfJ"/>
+                                                        </constraints>
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
@@ -136,6 +149,7 @@
                 <outlet property="iconContainerView" destination="Pj0-t7-wVi" id="pF1-13-UvZ"/>
                 <outlet property="iconImageView" destination="KNM-O0-GQ6" id="NOv-k4-E1e"/>
                 <outlet property="primaryLabel" destination="YnQ-TL-Hsi" id="GJj-6j-lKJ"/>
+                <outlet property="reactionsCollection" destination="aYj-QE-OLF" id="xIL-K9-IUq"/>
                 <outlet property="secondaryLabel" destination="avE-5e-FQy" id="YdS-jY-f3A"/>
                 <outlet property="timeLabel" destination="5tR-Rx-iQg" id="aQG-ke-I5c"/>
                 <outlet property="timeStackView" destination="BDV-Xl-MCS" id="ohp-In-Cax"/>

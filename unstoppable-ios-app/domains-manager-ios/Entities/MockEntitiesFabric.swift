@@ -15,6 +15,15 @@ struct MockEntitiesFabric {
 
 // MARK: - Messaging
 extension MockEntitiesFabric {
+    enum Reactions {
+        static let reactionsToTest: [ReactionCounter] =
+        [.init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: true),
+         .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+         .init(content: "😅", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+         .init(content: "🤓", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+         .init(content: "🫂", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+         .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
+    }
     enum Messaging {
         static func messagingChatUserDisplayInfo(wallet: String = "13123",
                                                  domainName: String? = nil,
