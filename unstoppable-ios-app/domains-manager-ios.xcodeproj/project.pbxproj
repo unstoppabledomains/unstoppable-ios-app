@@ -2152,6 +2152,8 @@
 		C6D9E29928535E3E002CDAC2 /* ShareDomainImagePullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */; };
 		C6DA0B722B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
 		C6DA0B732B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
+		C6DA0B752B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */; };
+		C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */; };
 		C6DDF24D2B147F1A006D1F0B /* UDCollectionSectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */; };
 		C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */; };
 		C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */; };
@@ -3517,6 +3519,7 @@
 		C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareDomainImagePullUpView.xib; sourceTree = "<group>"; };
 		C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsDecodingTests.swift; sourceTree = "<group>"; };
 		C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListVGrid.swift; sourceTree = "<group>"; };
+		C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionSpacingModifier.swift; sourceTree = "<group>"; };
 		C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionSectionBackgroundView.swift; sourceTree = "<group>"; };
 		C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowLayoutView.swift; sourceTree = "<group>"; };
 		C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionListRowButton.swift; sourceTree = "<group>"; };
@@ -6585,6 +6588,7 @@
 				C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */,
 				C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */,
 				C69F99162A9F1264004B1958 /* ClearListBackground.swift */,
+				C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */,
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
 				C64939F72B6373EC00457363 /* DeviceShakeViewModifier.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
@@ -9305,6 +9309,7 @@
 				C6526DFA29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				C6B6B048297039E500D4E30F /* DateFormattingService.swift in Sources */,
 				C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */,
+				C6DA0B752B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */,
 				C6A89C4C2B315B80008AB043 /* HotFeatureSuggestionsServiceProtocol.swift in Sources */,
 				C62C3FB9283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
 				C6109EA228E6B1CC0027D5D8 /* Toast.swift in Sources */,
@@ -9613,6 +9618,7 @@
 				C6C8F96D2B21880E00A9834D /* ExternalWalletConnectionService.swift in Sources */,
 				C6C8F8BD2B2182E400A9834D /* SetupReverseResolutionViewController.swift in Sources */,
 				C61808372B19AF120032E543 /* UITextField.swift in Sources */,
+				C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */,
 				C6C8F8112B217CC000A9834D /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				C6B65F982B566B37006D1812 /* NFTDisplayInfo.swift in Sources */,
 				C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */,

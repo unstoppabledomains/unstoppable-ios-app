@@ -109,7 +109,7 @@ extension MockEntitiesFabric {
             
             for tld in tlds {
                 for i in 0..<5 {
-                    let domain = DomainDisplayInfo(name: "oleg_\(i).\(tld)",
+                    let domain = DomainDisplayInfo(name: "oleg_\(i)_\(ownerWallet.last!).\(tld)",
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
                                                    isSetForRR: false)

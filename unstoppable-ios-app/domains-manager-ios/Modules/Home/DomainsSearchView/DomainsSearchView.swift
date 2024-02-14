@@ -40,17 +40,18 @@ struct DomainsSearchView: View, ViewAnalyticsLogger {
                     if !domainsToShow.isEmpty {
                         domainsSection(domainsToShow)
                             .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+
                     }
                     if !globalProfiles.isEmpty {
                         discoveredProfilesSection(globalProfiles)
                             .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
                     }
                 }
-            }
-            .listStyle(.plain)
+            }.environment(\.defaultMinListRowHeight, 28)
             .listRowSpacing(0)
+            .sectionSpacing(16)
             .clearListBackground()
             .background(Color.black)
             .animation(.default, value: UUID())
@@ -82,17 +83,14 @@ private extension DomainsSearchView {
     
     @ViewBuilder
     func domainsSection(_ domains: [DomainDisplayInfo]) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            sectionHeaderViewWith(title: String.Constants.yourDomains.localized())
-            UDListSectionView {
-                VStack(spacing: 0) {
-                    ForEach(domains) { domain in
-                        domainsRowView(domain)
-                    }
-                }
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        sectionHeaderViewWith(title: String.Constants.yourDomains.localized())
+            .listRowBackground(Color.clear)
+        Section {
+            ForEach(domains) { domain in
+                domainsRowView(domain)
             }
         }
+        .listRowBackground(Color.backgroundOverlay)
     }
     
     @ViewBuilder
@@ -118,17 +116,14 @@ private extension DomainsSearchView {
     
     @ViewBuilder
     func discoveredProfilesSection(_ profiles: [SearchDomainProfile]) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            sectionHeaderViewWith(title: String.Constants.globalSearch.localized())
-            UDListSectionView {
-                VStack(spacing: 0) {
-                    ForEach(profiles, id: \.name) { profile in
-                        discoveredProfileRowView(profile)
-                    }
-                }
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        sectionHeaderViewWith(title: String.Constants.globalSearch.localized())
+            .listRowBackground(Color.clear)
+        Section {
+            ForEach(profiles, id: \.name) { profile in
+                discoveredProfileRowView(profile)
             }
         }
+        .listRowBackground(Color.backgroundOverlay)
     }
     
     @ViewBuilder
@@ -279,5 +274,7 @@ private extension DomainsSearchView {
 }
 
 #Preview {
-    DomainsSearchView()
+    let router = HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))
+    return DomainsSearchView()
+        .environmentObject(router)
 }

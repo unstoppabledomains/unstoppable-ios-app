@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UDListItemView: View {
     
-    static let height: CGFloat = 56
+    static let height: CGFloat = 48
     
     private let iconSize: CGFloat = 40
     
