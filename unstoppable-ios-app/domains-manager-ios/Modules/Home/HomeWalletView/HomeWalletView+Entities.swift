@@ -220,6 +220,7 @@ extension HomeWalletView {
         let balance: Double
         let balanceUsd: Double
         var marketUsd: Double?
+        var marketPctChange24Hr: Double?
         var parentSymbol: String?
         var logoURL: URL?
         var parentLogoURL: URL?
@@ -234,14 +235,18 @@ extension HomeWalletView {
             self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
             self.balanceUsd = walletBalance.value.walletUsdAmt
             self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
+            self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         }
         
-        init(symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil, icon: UIImage? = nil) {
+        init(symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil,
+             marketPctChange24Hr: Double? = nil,
+             icon: UIImage? = nil) {
             self.symbol = symbol
             self.name = name
             self.balance = balance
             self.balanceUsd = balanceUsd
             self.marketUsd = marketUsd
+            self.marketPctChange24Hr = marketPctChange24Hr
         }
         
         init(walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
@@ -250,6 +255,7 @@ extension HomeWalletView {
             self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
             self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
             self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
+            self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
             self.parentSymbol = parentSymbol
             self.logoURL = URL(string: walletToken.logoUrl ?? "")
         }
