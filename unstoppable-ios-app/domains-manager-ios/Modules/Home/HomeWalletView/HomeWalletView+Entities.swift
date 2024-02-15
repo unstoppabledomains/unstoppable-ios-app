@@ -268,7 +268,12 @@ extension HomeWalletView {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
             let parentSymbol = walletBalance.symbol
             let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
-            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(chain: walletBalance.symbol, walletToken: $0, parentSymbol: parentSymbol, parentLogoURL: parentLogoURL) }).filter({ $0.balanceUsd >= 1 }) ?? []
+            let chainSymbol = walletBalance.symbol
+            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(chain: chainSymbol,
+                                                                                    walletToken: $0,
+                                                                                    parentSymbol: parentSymbol,
+                                                                                    parentLogoURL: parentLogoURL) })
+                                                            .filter({ $0.balanceUsd >= 1 }) ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
