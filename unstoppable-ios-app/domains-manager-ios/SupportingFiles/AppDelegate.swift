@@ -135,12 +135,12 @@ private extension AppDelegate {
         let components = oldBuildVersion.components(separatedBy: " ")
         
         guard components.count > 2,
-              let newVersion = try? Version.parse(versionString: components[1]),
-              let oldVersion = try? Version.parse(versionString: currentVersion) else {
+              let oldVersion = try? Version.parse(versionString: components[1]),
+              let newVersion = try? Version.parse(versionString: currentVersion) else {
             return
         }
 
-        if oldVersion.major == 4,
+        if oldVersion.major <= 4,
            newVersion.major == 5 {
             UserDefaults.didUpdateToWalletVersion = true
         }
