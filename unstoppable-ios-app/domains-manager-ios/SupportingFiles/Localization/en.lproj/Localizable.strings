@@ -1001,8 +1001,8 @@
 "UPDATING" = "Updating";
 "TRANSFERRING" = "Transferring";
 "COPY_WALLET_ADDRESS" = "Copy wallet address";
-"UPDATED_TO_WALLET_GREETINGS_TITLE" = "Unstoppable App 5.0";
-"UPDATED_TO_WALLET_GREETINGS_SUBTITLE" = "What’s new?";
+"UPDATED_TO_WALLET_GREETINGS_TITLE" = "Introducing the";
+"UPDATED_TO_WALLET_GREETINGS_SUBTITLE" = "New Home Screen";
 
 "INTRO_SWITCHER_TITLE" = "New domains switcher";
 "INTRO_BALANCE_TITLE" = "Wallet total balance";

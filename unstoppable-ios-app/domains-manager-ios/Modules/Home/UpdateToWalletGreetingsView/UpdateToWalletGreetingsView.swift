@@ -74,7 +74,7 @@ private extension UpdateToWalletGreetingsView {
         HStack(spacing: 16) {
             hint.icon
                 .resizable()
-                .squareFrame(24)
+                .squareFrame(40)
                 .foregroundStyle(hint.iconTint)
                 .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
             VStack(alignment: .leading, spacing: 0) {
@@ -111,13 +111,13 @@ private extension UpdateToWalletGreetingsView {
         var icon: Image {
             switch self {
             case .switcher:
-                return .appleIcon
+                return .switcherIcon
             case .balance:
-                return .appleIcon
+                return .balanceIcon
             case .collectibles:
-                return .appleIcon
+                return .collectiblesIcon
             case .messages:
-                return .appleIcon
+                return .messagesIcon
             }
         }
         
