@@ -103,35 +103,66 @@ private extension UpdateToWalletGreetingsView {
 // MARK: - Private methods
 private extension UpdateToWalletGreetingsView {
     enum GreetingHint: CaseIterable {
-        case wallet
+        case switcher
+        case balance
+        case collectibles
+        case messages
         
         var icon: Image {
             switch self {
-            case .wallet:
+            case .switcher:
+                return .appleIcon
+            case .balance:
+                return .appleIcon
+            case .collectibles:
+                return .appleIcon
+            case .messages:
                 return .appleIcon
             }
         }
         
         var iconTint: Color {
             switch self {
-            case .wallet:
-                return .pink
+            case .switcher, .balance, .collectibles, .messages:
+                return .orange
             }
         }
         
         var title: String {
             switch self {
-            case .wallet:
-                return "Heading"
+            case .switcher:
+                return String.Constants.introSwitcherTitle.localized()
+            case .balance:
+                return String.Constants.introBalanceTitle.localized()
+            case .collectibles:
+                return String.Constants.introCollectiblesTitle.localized()
+            case .messages:
+                return String.Constants.introMessagesTitle.localized()
             }
         }
         
         var subtitle: String {
             switch self {
-            case .wallet:
-                return "Subheading"
+            case .switcher:
+                return String.Constants.introSwitcherBody.localized()
+            case .balance:
+                return String.Constants.introBalanceBody.localized()
+            case .collectibles:
+                return String.Constants.introCollectiblesBody.localized()
+            case .messages:
+                return String.Constants.introMessagesBody.localized()
             }
         }
+        
+        static let introSwitcherTitle = "INTRO_SWITCHER_TITLE"
+        static let introBalanceTitle = "INTRO_BALANCE_TITLE"
+        static let introCollectiblesTitle = "INTRO_COLLECTIBLES_TITLE"
+        static let introMessagesTitle = "INTRO_MESSAGES_TITLE"
+        
+        static let introSwitcherBody = "INTRO_SWITCHER_BODY"
+        static let introBalanceBody = "INTRO_BALANCE_BODY"
+        static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
+        static let introMessagesBody = "INTRO_MESSAGES_BODY"
     }
 }
 

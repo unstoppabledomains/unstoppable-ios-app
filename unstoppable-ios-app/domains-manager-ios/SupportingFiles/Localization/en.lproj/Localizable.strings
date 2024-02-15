@@ -1004,3 +1004,13 @@
 "UPDATED_TO_WALLET_GREETINGS_TITLE" = "Unstoppable App 5.0";
 "UPDATED_TO_WALLET_GREETINGS_SUBTITLE" = "What’s new?";
 
+"INTRO_SWITCHER_TITLE" = "New domains switcher";
+"INTRO_BALANCE_TITLE" = "Wallet total balance";
+"INTRO_COLLECTIBLES_TITLE" = "Your NFTs in the collectibles tab";
+"INTRO_MESSAGES_TITLE" = "New place for messages";
+
+"INTRO_SWITCHER_BODY" = "Seamlessly toggle between your domains.";
+"INTRO_BALANCE_BODY" = "Monitor your cryptocurrency holdings with real-time updates for ETH, MATIC, and others to be added soon.";
+"INTRO_COLLECTIBLES_BODY" = "Keep an eye on your NFT collection and stay updated with market prices.";
+"INTRO_MESSAGES_BODY" = "Messages now have a dedicated tab.
+More tabs are coming in the next updates.";
