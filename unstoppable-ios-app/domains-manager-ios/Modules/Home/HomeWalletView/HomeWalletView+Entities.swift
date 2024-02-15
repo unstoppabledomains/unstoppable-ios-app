@@ -213,8 +213,9 @@ extension HomeWalletView {
 
 extension HomeWalletView {
     struct TokenDescription: Hashable, Identifiable {
-        var id: String { symbol }
+        var id: String { "\(chain)/\(symbol)" }
         
+        let chain: String
         let symbol: String
         let name: String
         let balance: Double
@@ -230,6 +231,7 @@ extension HomeWalletView {
         static let iconStyle: InitialsView.Style = .gray
         
         init(walletBalance: WalletTokenPortfolio) {
+            self.chain = walletBalance.symbol
             self.symbol = walletBalance.symbol
             self.name = walletBalance.name
             self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
@@ -238,9 +240,10 @@ extension HomeWalletView {
             self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         }
         
-        init(symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil,
+        init(chain: String, symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil,
              marketPctChange24Hr: Double? = nil,
              icon: UIImage? = nil) {
+            self.chain = chain
             self.symbol = symbol
             self.name = name
             self.balance = balance
@@ -249,7 +252,8 @@ extension HomeWalletView {
             self.marketPctChange24Hr = marketPctChange24Hr
         }
         
-        init(walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
+        init(chain: String, walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
+            self.chain = chain
             self.symbol = walletToken.symbol
             self.name = walletToken.name
             self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
@@ -264,13 +268,13 @@ extension HomeWalletView {
             let tokenDescription = TokenDescription(walletBalance: walletBalance)
             let parentSymbol = walletBalance.symbol
             let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
-            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(walletToken: $0, parentSymbol: parentSymbol, parentLogoURL: parentLogoURL) }).filter({ $0.balanceUsd >= 1 }) ?? []
+            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(chain: walletBalance.symbol, walletToken: $0, parentSymbol: parentSymbol, parentLogoURL: parentLogoURL) }).filter({ $0.balanceUsd >= 1 }) ?? []
             
             return [tokenDescription] + subTokenDescriptions
         }
         
         static func createSkeletonEntity() -> TokenDescription {
-            var token = TokenDescription(symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+            var token = TokenDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
             token.isSkeleton = true
             return token 
         }
