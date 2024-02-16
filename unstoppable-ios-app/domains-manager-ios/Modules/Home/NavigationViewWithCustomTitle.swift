@@ -13,6 +13,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     var navigationStateProvider: (NavigationStateManager)->()
     @Binding var path: NavigationPath 
     @StateObject private var navigationState = NavigationStateManager()
+    @State private var viewPresentationStyle: ViewPresentationStyle = .fullScreen
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -20,7 +21,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
         }
         .overlay(alignment: .top, content: {
             if navigationState.isTitleVisible,
-            let customTitle = navigationState.customTitle {
+               let customTitle = navigationState.customTitle {
                 AnyView(customTitle())
                     .offset(y: currentTitleOffset)
                     .frame(maxWidth: 240)
@@ -29,10 +30,21 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
         .onAppear(perform: {
             navigationStateProvider(navigationState)
         })
+        .presentationStyleChecker(viewPresentationStyle: $viewPresentationStyle)
     }
     
     @MainActor
     private var currentTitleOffset: CGFloat {
+        switch viewPresentationStyle {
+        case .sheet:
+            currentDeviceOffset + 10
+        case .fullScreen:
+            currentDeviceOffset
+        }
+    }
+    
+    @MainActor
+    private var currentDeviceOffset: CGFloat {
         if #available(iOS 17, *) {
             if (SceneDelegate.shared?.window?.safeAreaInsets.bottom ?? 0) > 0 {
                 return 6

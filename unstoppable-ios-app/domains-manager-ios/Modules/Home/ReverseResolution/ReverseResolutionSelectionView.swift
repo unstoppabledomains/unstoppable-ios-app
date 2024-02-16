@@ -29,11 +29,15 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     @State private var isSettingRRDomain = false
     @State private var domains: [DomainDisplayInfo] = []
     @State private var selectedDomain: DomainDisplayInfo?
+    @State private var scrollOffset: CGPoint = .zero
+    @State private var isHeaderVisible: Bool = true
+    @State private var navigationState: NavigationStateManager?
+    @State private var navPath: NavigationPath = NavigationPath()
     
     var body: some View {
-        NavigationStack {
+        NavigationViewWithCustomTitle(content: {
             VStack(spacing: 0) {
-                ScrollView(showsIndicators: false) {
+                OffsetObservingScrollView(showsIndicators: false, offset: $scrollOffset) {
                     LazyVStack(spacing: 16) {
                         headerView()
                         selectedDomainView()
@@ -72,7 +76,13 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                     return
                 }
             }
-        }
+            .onChange(of: scrollOffset) { point in
+                updateNavTitleVisibility()
+            }
+        }, navigationStateProvider: { state in
+            self.navigationState = state
+            setTitleViewIfNeeded()
+        }, path: $navPath)
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
@@ -86,6 +96,38 @@ private extension ReverseResolutionSelectionView {
         case .change:
             selectedDomain = wallet.rrDomain
             domains = wallet.domains.availableForRRItems().filter({ $0.name != selectedDomain?.name })
+        }
+    }
+    
+    func updateNavTitleVisibility() {
+        let isNavTitleVisible = (scrollOffset.y > 150) || (!isHeaderVisible)
+        if navigationState?.isTitleVisible != isNavTitleVisible {
+            setTitleViewIfNeeded()
+            withAnimation {
+                navigationState?.isTitleVisible = isNavTitleVisible
+            }
+        }
+    }
+    
+    func setTitleViewIfNeeded() {
+        if navigationState?.customViewID == nil {
+            navigationState?.setCustomTitle(customTitle: { NavigationTitleView() },
+                                            id: UUID().uuidString)
+        }
+    }
+    
+    struct NavigationTitleView: View {
+        var body: some View {
+            HStack {
+                Image.crownIcon
+                    .resizable()
+                    .foregroundStyle(Color.foregroundMuted)
+                    .squareFrame(24)
+                Text("Select primary domain")
+                    .font(.currentFont(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.foregroundDefault)
+                    .lineLimit(1)
+            }
         }
     }
     
@@ -141,13 +183,15 @@ private extension ReverseResolutionSelectionView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-        domainsSectionBackground {
-            LazyVStack(spacing: 0) {
-                ForEach(domains) { domain in
-                    domainsRowView(domain)
+        if !domains.isEmpty {
+            domainsSectionBackground {
+                LazyVStack(spacing: 0) {
+                    ForEach(domains) { domain in
+                        domainsRowView(domain)
+                    }
                 }
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
     }
     
