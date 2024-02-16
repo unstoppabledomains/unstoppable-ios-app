@@ -109,7 +109,8 @@ private extension HomeWalletTokenRowView {
 }
 
 #Preview {
-    HomeWalletTokenRowView(token: .init(symbol: "ETH",
+    HomeWalletTokenRowView(token: .init(chain: "ETH",
+                                        symbol: "ETH",
                                         name: "ETH",
                                         balance: 1,
                                         balanceUsd: 1,
