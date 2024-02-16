@@ -16,27 +16,25 @@ struct UpdateToWalletGreetingsView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
-                    VStack {
-                        VStack(spacing: 32) {
-                            headerView()
-                            hintsListView()
-                        }
-                        Spacer()
+                VStack {
+                    VStack(spacing: 32) {
+                        headerView()
+                        hintsListView()
                     }
+                    Spacer()
                 }
                 gotItButton()
             }
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                .navigationTitle("")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButtonView {
-                            logButtonPressedAnalyticEvents(button: .close)
-                            presentationMode.wrappedValue.dismiss()
-                        }
+            .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
+                        presentationMode.wrappedValue.dismiss()
                     }
                 }
+            }
         }
     }
 }
@@ -103,33 +101,54 @@ private extension UpdateToWalletGreetingsView {
 // MARK: - Private methods
 private extension UpdateToWalletGreetingsView {
     enum GreetingHint: CaseIterable {
-        case wallet
+        case switcher
+        case balance
+        case collectibles
+        case messages
         
         var icon: Image {
             switch self {
-            case .wallet:
-                return .appleIcon
+            case .switcher:
+                return .switcherIcon
+            case .balance:
+                return .balanceIcon
+            case .collectibles:
+                return .collectiblesIcon
+            case .messages:
+                return .messagesIcon
             }
         }
         
         var iconTint: Color {
             switch self {
-            case .wallet:
-                return .pink
+            case .switcher, .balance, .collectibles, .messages:
+                return .orange
             }
         }
         
         var title: String {
             switch self {
-            case .wallet:
-                return "Heading"
+            case .switcher:
+                return String.Constants.introSwitcherTitle.localized()
+            case .balance:
+                return String.Constants.introBalanceTitle.localized()
+            case .collectibles:
+                return String.Constants.introCollectiblesTitle.localized()
+            case .messages:
+                return String.Constants.introMessagesTitle.localized()
             }
         }
         
         var subtitle: String {
             switch self {
-            case .wallet:
-                return "Subheading"
+            case .switcher:
+                return String.Constants.introSwitcherBody.localized()
+            case .balance:
+                return String.Constants.introBalanceBody.localized()
+            case .collectibles:
+                return String.Constants.introCollectiblesBody.localized()
+            case .messages:
+                return String.Constants.introMessagesBody.localized()
             }
         }
     }
