@@ -65,6 +65,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 isTabBarVisible = !isOtherScreenPushed
             }
             .onChange(of: scrollOffset) { point in
+                guard point.y > -200 else { return }
                 updateNavTitleVisibility()
             }
             .animation(.default, value: viewModel.selectedWallet)
@@ -104,6 +105,7 @@ private extension HomeWalletView {
         
         var body: some View {
             content()
+                .frame(maxWidth: 200)
                 .onAppear(perform: loadAvatar)
                 .onChange(of: wallet) { newValue in
                     avatar = nil
