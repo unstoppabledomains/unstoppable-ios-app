@@ -8,7 +8,8 @@
 import Foundation
 
 protocol FirebaseDomainsServiceProtocol {
+    var parkedDomainsPublisher: Published<[FirebaseDomainDisplayInfo]>.Publisher  { get }
+
     func getCachedDomains() -> [FirebaseDomain]
     func getParkedDomains() async throws -> [FirebaseDomain]
-    func clearParkedDomains()
 }

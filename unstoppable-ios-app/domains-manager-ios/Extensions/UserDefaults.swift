@@ -28,6 +28,9 @@ public enum UserDefaultsKey: String {
     case viewedHotFeatureSuggestions
     case dismissedHotFeatureSuggestions
     case didMigrateXMTPConsentsListFromUD
+    case selectedProfileId
+    case firebaseUser
+    case didUpdateToWalletVersion
     
     // Purchase domains
     case purchasedDomains
@@ -40,19 +43,20 @@ extension UserDefaults {
     @UserDefaultsCodableValue(key: .onboardingDomainsPurchasedDetails) static var onboardingDomainsPurchasedDetails: DomainsPurchasedDetails?
     @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didMigrateXMTPConsentsListFromUD, defaultValue: false) static var didMigrateXMTPConsentsListFromUD: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didUpdateToWalletVersion, defaultValue: false) static var didUpdateToWalletVersion: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
     @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
     @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
-    @UserDefaultsOptionalValue(key: .preferableDomainNameForRR) static var preferableDomainNameForRR: String?
     @UserDefaultsValue(key: UserDefaultsKey.didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
     @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
     @UserDefaultsOptionalValue(key: .currentMessagingOwnerWallet) static var currentMessagingOwnerWallet: String?
+    @UserDefaultsOptionalValue(key: .selectedProfileId) static var selectedProfileId: String?
 }
 
 // MARK: - Property Wrappers

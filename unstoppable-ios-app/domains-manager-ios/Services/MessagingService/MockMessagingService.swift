@@ -22,11 +22,11 @@ extension MockMessagingService: MessagingServiceProtocol {
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool { true }
     func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
-    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] { [] }
-    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
+    func fetchWalletsAvailableForMessaging() -> [WalletEntity] { [] }
+    func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
     
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool { true }
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws { throw NSError() }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
@@ -48,7 +48,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus { .unblocked }
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
-    func setUser(in chat: MessagingChatDisplayInfo,
+    func setUser(in chatType: MessagingBlockUserInChatType,
                  blocked: Bool) async throws { }
     func block(chats: [MessagingChatDisplayInfo]) async throws { }
     

@@ -17,7 +17,6 @@ typealias WalletsListSnapshot = NSDiffableDataSourceSnapshot<WalletsListViewCont
 
 @MainActor
 final class WalletsListViewController: BaseViewController {
-    
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -38,10 +37,10 @@ final class WalletsListViewController: BaseViewController {
         presenter.viewDidLoad()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        presenter.viewWillAppear()
+        presenter.viewDidAppear()
     }
     
 }
@@ -259,4 +258,19 @@ extension WalletsListViewController {
         case manageICloudBackups
         case empty
     }
+}
+
+import SwiftUI
+struct WalletsListViewControllerWrapper: UIViewControllerRepresentable {
+    
+    let initialAction: WalletsListViewPresenter.InitialAction
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let vc = UDRouter().buildWalletsListModule(initialAction: initialAction)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
 }

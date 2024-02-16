@@ -48,6 +48,9 @@ class ChatBaseCell: UICollectionViewCell {
         containerViewSideConstraints = [leadingConstraint, trailingConstraint]
         NSLayoutConstraint.activate(containerViewSideConstraints)
     }
+    
+    func getContextMenu() -> UIMenu? { nil }
+    func getContextMenuPreviewFrame() -> CGRect? { nil }
 }
 
 // MARK: - Open methods

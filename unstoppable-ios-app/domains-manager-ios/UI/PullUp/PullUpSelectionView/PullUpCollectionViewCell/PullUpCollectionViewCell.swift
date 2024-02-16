@@ -12,10 +12,11 @@ enum PullUpDisclosureIndicatorStyle {
     case right
     case topRight
     case copyToClipboard
-
+    case actionButton(title: String, callback: EmptyCallback)
+    
     var icon: UIImage? {
         switch self {
-        case .none:
+        case .none, .actionButton:
             return nil
         case .right:
             return UIImage(named: "chevronRight")
@@ -69,7 +70,16 @@ final class PullUpCollectionViewCell: BaseListCollectionViewCell {
     @IBOutlet private weak var subtitleLabel: UILabel!
     @IBOutlet private weak var subtitleImageView: UIImageView!
     @IBOutlet private weak var chevronContainerView: UIView!
+    @IBOutlet private weak var trailingStackView: UIStackView!
     @IBOutlet private weak var containerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var actionButton: UDConfigurableButton!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+        actionButton.customCornerRadius = 16
+    }
     
 }
 
@@ -83,8 +93,27 @@ extension PullUpCollectionViewCell {
                                          lineHeight: 24,
                                          lineBreakMode: .byTruncatingTail)
         containerHeightConstraint.constant = pullUpItem.height
-        chevronContainerView.isHidden = pullUpItem.disclosureIndicatorStyle == .none
-        chevronImageView.image = pullUpItem.disclosureIndicatorStyle.icon
+        
+        
+        switch pullUpItem.disclosureIndicatorStyle {
+        case .none:
+            chevronContainerView.isHidden = true
+            actionButton.isHidden = true
+        case .actionButton(let title, let callback):
+            chevronContainerView.isHidden = true
+            actionButton.isHidden = false
+            actionButton.setTitle(title, image: nil)
+            actionButton.addAction(.init(handler: { _ in
+                callback()
+            }), for: .touchUpInside)
+        default:
+            chevronContainerView.isHidden = false
+            actionButton.isHidden = true
+            chevronImageView.image = pullUpItem.disclosureIndicatorStyle.icon
+        }
+        trailingStackView.alignment = actionButton.isHidden ? .fill : .trailing
+        trailingStackView.isHidden = trailingStackView.arrangedSubviews.filter( { !$0.isHidden }).isEmpty
+        
         Task {
             iconContainerView.image = await pullUpItem.icon
         }
@@ -105,11 +134,24 @@ extension PullUpCollectionViewCell {
                                              textColor: pullUpItem.subtitleColor,
                                              lineHeight: 20)
         
-        self.isUserInteractionEnabled = pullUpItem.isSelectable
+        self.isSelectable = pullUpItem.isSelectable
     }
 }
 
 // MARK: - Private methods
 private extension PullUpCollectionViewCell {
     
+}
+
+@available(iOS 17, *)
+#Preview {
+    let collectionView = PreviewCollectionViewCell<PullUpCollectionViewCell>(cellSize: CGSize(width: 390, height: 68),
+                                                                                    configureCellCallback: { cell in
+        cell.setWith(pullUpItem: MessagingChatUserPullUpSelectionItem.init(userInfo: .init(wallet: "adasdsdf sd fsd fsdf sd fsd"), isAdmin: false, isPending: false,
+                                                                           unblockCallback:  { }))
+//        cell.setWith(pullUpItem: WalletDetailsAddWalletAction.recoveryOrKey)
+//        cell.setWith(pullUpItem: ManageBackupsAction.restore)
+    })
+    
+    return collectionView
 }

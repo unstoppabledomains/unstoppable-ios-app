@@ -69,7 +69,7 @@ private extension HotFeatureSuggestionsService {
                 notifyCurrentSuggestionUpdated()
             } catch {
                 Debugger.printFailure("Failed to load suggestions", critical: false)
-                try? await Task.sleep(seconds: 30)
+                await Task.sleep(seconds: 30)
                 loadSuggestions()
             }
         }

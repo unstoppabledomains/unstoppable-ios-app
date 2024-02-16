@@ -26,11 +26,10 @@ final class CoreDataMessagingStorageService: CoreDataService {
 // MARK: - MessagingStorageServiceProtocol
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     // User Profile
-    func getUserProfileFor(domain: DomainItem,
+    func getUserProfileFor(wallet: String,
                            serviceIdentifier: MessagingServiceIdentifier) throws -> MessagingChatUserProfile {
         try coreDataQueue.sync {
-            guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
-            let walletPredicate = NSPredicate(format: "normalizedWallet == %@", wallet)
+            let walletPredicate = NSPredicate(format: "normalizedWallet == %@", wallet.normalized)
             let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier.rawValue)
             
             if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(andPredicates: [walletPredicate, servicePredicate]) {
@@ -535,7 +534,8 @@ private extension CoreDataMessagingStorageService {
                                                                        isPublic: details.isPublic,
                                                                        members: members,
                                                                        pendingMembers: pendingMembers,
-                                                                       adminWallets: details.adminWallets)
+                                                                       adminWallets: details.adminWallets,
+                                                                       blockedUsersList: details.blockedUsersList ?? [])
             return .community(communityChatDetails)
         }
         
@@ -592,7 +592,8 @@ private extension CoreDataMessagingStorageService {
                                                                      isPublic: details.isPublic,
                                                                      memberWallets: memberWallets,
                                                                      pendingMembersWallets: pendingMembersWallets,
-                                                                     adminWallets: details.adminWallets).jsonRepresentation()
+                                                                     adminWallets: details.adminWallets,
+                                                                     blockedUsersList: details.blockedUsersList).jsonRepresentation()
         }
     }
 }
@@ -955,6 +956,7 @@ private extension CoreDataMessagingStorageService {
         let memberWallets: [String]
         let pendingMembersWallets: [String]
         let adminWallets: [String]
+        var blockedUsersList: [String]?
     }
     
     struct CoreDataUnknownMessageDetails: Codable {

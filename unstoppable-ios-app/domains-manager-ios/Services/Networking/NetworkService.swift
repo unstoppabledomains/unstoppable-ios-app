@@ -75,6 +75,19 @@ struct NetworkService {
         return ["Authorization" : "Bearer \(authAPIKey)"]
     }
     
+    static var currentProfilesAPIKey: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return NetworkService.testnetProfilesAPIKey
+        } else {
+            return NetworkService.mainnetProfilesAPIKey
+        }
+    }
+    
+    static var profilesAPIHeader: [String : String] {
+        ["x-api-key" : currentProfilesAPIKey]
+    }
+    
     func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
@@ -101,6 +114,32 @@ struct NetworkService {
                       method: HttpRequestMethod) async throws -> Data {
         guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
         let data = try await fetchData(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
+        return data
+    }
+    
+    @discardableResult
+    func fetchDataHandlingThrottleFor(endpoint: Endpoint,
+                      method: HttpRequestMethod) async throws -> Data {
+        guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
+        let data = try await fetchDataHandlingThrottle(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
+        return data
+    }
+    
+    func fetchDataHandlingThrottle(for url: URL,
+                                           body: String = "",
+                                           method: HttpRequestMethod = .post,
+                                           extraHeaders: [String: String]  = [:]) async throws -> Data {
+        let data: Data
+        do {
+            data = try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders)
+        } catch  {
+            guard let err = error as? NetworkLayerError,
+                  err == NetworkLayerError.backendThrottle else {
+                throw error
+            }
+            try await Task.sleep(nanoseconds: 750_000_000)
+            return try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders) // allow another attempt in 0.75 sec
+        }
         return data
     }
     
@@ -255,21 +294,6 @@ extension NetworkService {
         let error: ErrorDescription
     }
     
-    func fetchBalance (address: HexAddress,
-                       layerId: UnsConfigManager.BlockchainLayerId) async throws -> SplitQuantity {
-        
-        
-        guard let data = try? await NetworkService().fetchData(for: getJRPCProviderUrl(layerId: layerId),
-                                                               body: "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\": [\"\(address)\", \"latest\"],\"id\":1}",
-                                                               method: .post),
-              let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) else {
-            throw NetworkLayerError.failedFetchBalance
-        }
-        let bigUInt = BigUInt(response.result.dropFirst(2), radix: 16) ?? 0
-        return try SplitQuantity(bigUInt)
-    }
-    
-    
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String
@@ -417,7 +441,10 @@ struct ErrorResponse: Codable {
     var message: String
 }
 
-enum NetworkLayerError: LocalizedError, RawValueLocalizable {
+enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
+    static func < (lhs: NetworkLayerError, rhs: NetworkLayerError) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
     
     case creatingURLFailed
     case badResponseOrStatusCode(code: Int, message: String?)

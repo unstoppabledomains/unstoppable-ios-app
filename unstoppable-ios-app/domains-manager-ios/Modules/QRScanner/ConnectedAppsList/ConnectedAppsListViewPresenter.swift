@@ -16,15 +16,13 @@ protocol ConnectedAppsListViewPresenterProtocol: BasePresenterProtocol {
 final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: ConnectedAppsListViewProtocol?
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
+    var scanCallback: EmptyCallback?
     
     init(view: ConnectedAppsListViewProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
-        self.dataAggregatorService = dataAggregatorService
         self.walletConnectServiceV2 = walletConnectServiceV2
     }
 }
@@ -32,11 +30,8 @@ final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
 // MARK: - ConnectedAppsListViewPresenterProtocol
 extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol {
     func viewDidLoad() {
-        Task {
-            await showConnectedAppsList()
-            appContext.wcRequestsHandlingService.addListener(self)
-            appContext.wcRequestsHandlingService.addListener(self)
-        }
+        showConnectedAppsList()
+        appContext.wcRequestsHandlingService.addListener(self)
     }
     
     func didSelectItem(_ item: ConnectedAppsListViewController.Item) { }
@@ -61,68 +56,65 @@ extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener
 
 // MARK: - Private functions
 private extension ConnectedAppsListViewPresenter {
-    func showConnectedAppsList() async {
-        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = await walletConnectServiceV2.getConnectedApps()
+    func showConnectedAppsList() {
+        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = walletConnectServiceV2.getConnectedApps()
         
+        var snapshot = ConnectedAppsListSnapshot()
         guard !connectedAppsUnified.isEmpty else {
-            view?.navigationController?.popViewController(animated: true)
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(scanCallback: { [weak self] in 
+                self?.scanCallback?()
+            })])
+            view?.applySnapshot(snapshot, animated: true)
             return
         }
         
-        let walletsDisplayInfo = await dataAggregatorService.getWalletsWithInfo().compactMap({ $0.displayInfo })
-        let domains = await dataAggregatorService.getDomainsDisplayInfo()
-        
-        var snapshot = ConnectedAppsListSnapshot()
+        let wallets = appContext.walletsDataService.wallets
         
         // Fill snapshot
         let appsGroupedByWallet = [String : [any UnifiedConnectAppInfoProtocol]].init(grouping: connectedAppsUnified,
                                                                               by: { $0.walletAddress })
         
-        for displayInfo in walletsDisplayInfo {
-            if let apps = appsGroupedByWallet[displayInfo.address] {
-                guard let displayInfo = walletsDisplayInfo.first(where: { $0.address == apps[0].walletAddress }) else { continue }
-                
-                var items: [ConnectedAppsListViewController.Item] = apps.map({ app in
-                    let domainItem = app.domain
-                    let domainDisplayInfo: DomainDisplayInfo
-                    if let _domain = domains.first(where: { $0.isSameEntity(domainItem) }) {
-                        domainDisplayInfo = _domain
-                    } else {
-                        Debugger.printFailure("Forced to display a domain that has been disconnected, \(app.domain.name)", critical: true)
-                        domainDisplayInfo = DomainDisplayInfo(domainItem: domainItem,
-                                                   pfpInfo: nil,
-                                                   isSetForRR: false)
-                    }
-                    
-                    var blockchainTypesArray: [BlockchainType] = app.chainIds.compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
-                    if blockchainTypesArray.isEmpty {
-                        blockchainTypesArray.append(.Ethereum) /// Fallback to V1 when chainId could be nil and we set ETH as default
-                    }
-                    
-                    let blockchainTypes = NonEmptyArray(items: blockchainTypesArray)! // safe after the previous lines
-                    
-                    let supportedNetworks = BlockchainType.supportedCases.map({ $0.fullName })
-                    let displayInfo = ConnectedAppsListViewController.AppItemDisplayInfo(app: app,
-                                                                                         domain: domainDisplayInfo,
-                                                                                         blockchainTypes: blockchainTypes,
-                                                                                         actions: [.domainInfo(domain: domainDisplayInfo),
-                                                                                                   .networksInfo(networks: supportedNetworks),
-                                                                                                   .disconnect])
-                    return ConnectedAppsListViewController.Item.app(displayInfo, actionCallback: { [weak self] action in
-                        self?.handleAction(action, for: app)
-                    })
-                })
-                items = Set(items).sorted(by: { $0.appName < $1.appName })
-                
-                if items.isEmpty {
-                    continue
+        for (walletAddress, apps) in appsGroupedByWallet {
+            guard let wallet = wallets.findWithAddress(walletAddress),
+                  !apps.isEmpty else { continue }
+            
+            var items: [ConnectedAppsListViewController.Item] = apps.map({ app in
+                var blockchainTypesArray: [BlockchainType] = app.chainIds.compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
+                if blockchainTypesArray.isEmpty {
+                    blockchainTypesArray.append(.Ethereum) /// Fallback to V1 when chainId could be nil and we set ETH as default
                 }
-                snapshot.appendSections([.walletApps(walletName: displayInfo.displayName)])
-                snapshot.appendItems(items)
-            }
+                
+                let blockchainTypes = NonEmptyArray(items: blockchainTypesArray)! // safe after the previous lines
+                let supportedNetworks = BlockchainType.supportedCases.map({ $0.fullName })
+
+                let actions: [ConnectedAppsListViewController.ItemAction] = [.networksInfo(networks: supportedNetworks),
+                                                                             .disconnect]
+                
+                let displayInfo = ConnectedAppsListViewController.AppItemDisplayInfo(app: app,
+                                                                                     blockchainTypes: blockchainTypes,
+                                                                                     actions: actions)
+                return ConnectedAppsListViewController.Item.app(displayInfo, actionCallback: { [weak self] action in
+                    self?.handleAction(action, for: app)
+                })
+            })
+            items = Set(items).sorted(by: { $0.appName < $1.appName })
+            
+            let header = sectionHeaderFor(wallet: wallet)
+            snapshot.appendSections([.walletApps(walletName: header)])
+            snapshot.appendItems(items)
         }
         
         view?.applySnapshot(snapshot, animated: true)
+    }
+    
+    func sectionHeaderFor(wallet: WalletEntity) -> String {
+        if let rrDomain = wallet.rrDomain {
+            return rrDomain.name
+        } else if wallet.displayInfo.isNameSet {
+            return "\(wallet.displayName) (\(wallet.address.walletAddressTruncated))"
+        }
+        return wallet.address.walletAddressTruncated
     }
     
     func handleAction(_ action: ConnectedAppsListViewController.ItemAction,

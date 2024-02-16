@@ -21,7 +21,7 @@ struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     @State private var searchResultType: SearchResultType = .userInput
     @State private var scrollOffset: CGPoint = .zero
     @State private var skeletonItemsWidth: [CGFloat] = []
-    @State private var pullUp: ViewPullUpConfiguration?
+    @State private var pullUp: ViewPullUpConfigurationType?
 
     var domainSelectedCallback: ((DomainToPurchase)->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
@@ -295,7 +295,7 @@ private extension PurchaseSearchDomainsView {
         
         func waitAndTryAgain() {
             Task {
-                try? await Task.sleep(seconds: 5)
+                await Task.sleep(seconds: 5)
                 loadSuggestions()
             }
         }
@@ -376,7 +376,7 @@ private extension PurchaseSearchDomainsView {
             logAnalytic(event: .didSelectNotSupportedDomainForPurchaseInSearch, parameters: [.domainName: domain.name,
                                                                                              .price : String(domain.price),
                                                                                              .searchType: searchResultType.rawValue])
-            pullUp = .init(icon: .init(icon: .cartIcon, size: .large),
+            pullUp = .default(.init(icon: .init(icon: .cartIcon, size: .large),
                            title: .text(String.Constants.purchaseSearchCantButPullUpTitle.localized()),
                            subtitle: .label(.highlightedText(.init(text: String.Constants.purchaseSearchCantButPullUpSubtitle.localized(domain.tld),
                                                                    highlightedText: [.init(highlightedText: domain.tld,
@@ -389,7 +389,7 @@ private extension PurchaseSearchDomainsView {
                 openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
             })),
                            cancelButton: .gotItButton(),
-                           analyticName: .searchPurchaseDomainNotSupported)
+                           analyticName: .searchPurchaseDomainNotSupported))
         }
     }
 }

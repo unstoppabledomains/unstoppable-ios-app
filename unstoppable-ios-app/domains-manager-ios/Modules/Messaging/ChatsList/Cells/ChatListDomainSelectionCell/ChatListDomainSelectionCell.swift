@@ -66,7 +66,8 @@ private extension ChatListDomainSelectionCell {
     
     func loadDomainImageFor(domain: DomainDisplayInfo) {
         if domain.pfpSource != .none,
-           let image = appContext.imageLoadingService.cachedImage(for: .domain(domain)) {
+           let image = appContext.imageLoadingService.cachedImage(for: .domain(domain),
+                                                                  downsampleDescription: .icon) {
             iconImageView.image = image
         } else {
             Task {

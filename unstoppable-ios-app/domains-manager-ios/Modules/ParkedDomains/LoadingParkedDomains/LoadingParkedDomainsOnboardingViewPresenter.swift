@@ -43,7 +43,7 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                         }
                     }
                 case .apple:
-                    try? await Task.sleep(seconds: 1.5)
+                    await Task.sleep(seconds: 1.5)
                     onboardingFlowManager?.moveToStep(.noParkedDomains)
                 }
             } catch {
@@ -70,7 +70,7 @@ extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingDataHandling {
 private extension LoadingParkedDomainsOnboardingViewPresenter {
     func failedToLoadParkedDomains() {
         Task { @MainActor in
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logOut()
             view?.cNavigationController?.popTo(LoginViewController.self)
         }
     }

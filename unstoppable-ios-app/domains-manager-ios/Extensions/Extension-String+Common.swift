@@ -82,11 +82,22 @@ extension DomainName {
     }
     
     func getBelowTld() -> String? {
-        guard let domainName = domainComponents()?.dropLast(1).joined(separator: String.dotSeparator) else {
+        guard let domainName = getComponentsBelowTld()?.joined(separator: String.dotSeparator) else {
             Debugger.printFailure("Couldn't get domain name", critical: false)
             return nil
         }
         return domainName
+    }
+    
+    func getComponentsBelowTld() -> [String]? {
+        guard let components = domainComponents() else { return nil }
+        return components.dropLast(1)
+    }
+    
+    func isSubdomain() -> Bool {
+        guard let components = domainComponents() else { return false }
+        
+        return components.count > 2
     }
     
     static func isZilByExtension(ext: String) -> Bool {

@@ -12,8 +12,8 @@ protocol MessagingAPIServiceProtocol {
     var capabilities: MessagingServiceCapabilities { get }
 
     // User profile
-    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
+    func getUserFor(wallet: WalletEntity) async throws -> MessagingChatUserProfile
+    func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile
     func updateUserProfile(_ user: MessagingChatUserProfile,
                            name: String,
                            avatar: String) async throws
@@ -29,6 +29,10 @@ protocol MessagingAPIServiceProtocol {
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws
     func block(chats: [MessagingChat],

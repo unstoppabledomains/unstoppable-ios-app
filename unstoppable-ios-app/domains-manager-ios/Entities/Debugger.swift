@@ -39,6 +39,7 @@ public struct Debugger {
         case WebSockets = "SOCKETS"
         case Messaging = "MS"
         case Debug = "DEBUG"
+        case NFT = "NFT"
     }
     
     enum DebugTopicsSet {

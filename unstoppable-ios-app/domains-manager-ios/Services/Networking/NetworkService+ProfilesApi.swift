@@ -23,7 +23,8 @@ extension NetworkService {
                                                   fields: fields).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         guard let info = SerializedPublicDomainProfile.objectFromData(data) else {
             
             // detect the case if the value of the record was nil, which failed the parsing
@@ -47,7 +48,7 @@ extension NetworkService {
         guard let url = Endpoint.getBadgesInfo(for: domainName).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         guard let info = BadgesInfo.objectFromData(data,
                                                    dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
@@ -59,7 +60,7 @@ extension NetworkService {
         guard let url = Endpoint.refreshDomainBadges(for: domain).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         guard let response = RefreshBadgesResponse.objectFromData(data,
                                                                   dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
@@ -72,7 +73,7 @@ extension NetworkService {
         guard let url = Endpoint.getBadgeDetailedInfo(for: badge).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         guard let info = BadgeDetailedInfo.objectFromData(data,
                                                           dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
@@ -88,7 +89,7 @@ extension NetworkService {
                                                shouldBeSetAsRR: shouldBeSetAsRR).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         Debugger.printTimeSensitiveInfo(topic: .Network, "to search for RR domains", startDate: startTime, timeout: 2)
         guard let names = [SearchDomainProfile].objectFromData(data,
                                                   dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
@@ -177,7 +178,7 @@ extension NetworkService {
             let endpoint = try Endpoint.getDomainNotificationsPreferences(for: domain,
                                                                           expires: expires,
                                                                           signature: signature)
-            let data = try await fetchDataFor(endpoint: endpoint, method: .get)
+            let data = try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .get)
             let preferences = try UserDomainNotificationsPreferences.objectFromDataThrowing(data)
             return preferences
         } catch {
@@ -204,7 +205,7 @@ extension NetworkService {
                                                                           expires: expires,
                                                                           signature: signature,
                                                                           body: body)
-            try await fetchDataFor(endpoint: endpoint, method: .post)
+            try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .post)
         } catch {
             if checkIfBadSignatureErrorAndRevokeSignature(error, for: domain),
                !isRetryAfterSignatureFailed {
@@ -220,7 +221,7 @@ extension NetworkService {
         guard let url = Endpoint.getGeneratedMessageToRetrieve(for: domain).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, method: .get)
+        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
         guard let info = GeneratedMessage.objectFromData(data) else {
             throw NetworkLayerError.failedParseProfileData
         }
@@ -235,7 +236,7 @@ extension NetworkService {
                                                      expires: expires,
                                                      signature: signature,
                                                      fields: fields)
-        let data = try await fetchDataFor(endpoint: endpoint, method: .get)
+        let data = try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .get)
         let info = try SerializedUserDomainProfile.objectFromDataThrowing(data)
         return info
     }
@@ -246,7 +247,7 @@ extension NetworkService {
                                                              body: body).url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url, body: body, method: .post)
+        let data = try await fetchDataHandlingThrottle(for: url, body: body, method: .post)
         guard let info = GeneratedMessage.objectFromData(data) else {
             throw NetworkLayerError.failedParseProfileData
         }
@@ -274,7 +275,7 @@ extension NetworkService {
         guard let url = endpoint.url else {
             throw NetworkLayerError.creatingURLFailed
         }
-        let data = try await fetchData(for: url,
+        let data = try await fetchDataHandlingThrottle(for: url,
                                        body: body,
                                        method: .post,
                                        extraHeaders: endpoint.headers)
@@ -363,10 +364,22 @@ extension NetworkService {
                                        body: body)
         let method: HttpRequestMethod = isFollowing ? .post : .delete
         do {
-            try await fetchDataFor(endpoint: endpoint, method: method)
+            try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: method)
         } catch {
             checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
+    }
+}
+
+// MARK: - Open methods
+extension NetworkService {
+  
+    public func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet)
+        let response: [WalletTokenPortfolio] = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                          method: .get,
+                                                                          dateDecodingStrategy: .defaultDateDecodingStrategy())
+        return response
     }
 }

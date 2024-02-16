@@ -58,16 +58,14 @@ private extension BackupCreatedLocalWalletPresenter {
     func setupForCurrentFlow() {
         let isNetworkReachable = networkReachabilityService?.isReachable == true
         
+        let walletsPlural = String.Constants.wallet.localized().lowercased()
+        view?.setTitle(String.Constants.backUpYourWallet.localized(walletsPlural))
         switch walletSource {
         case .locallyCreated:
-            let vaultsPlural = String.Constants.vault.localized().lowercased()
-            view?.setTitle(String.Constants.backUpYourWallet.localized(vaultsPlural))
             view?.setSubtitle(String.Constants.backUpYourWalletDescription.localized())
             view?.setBackupTypes([.iCloud(subtitle: nil, isOnline: isNetworkReachable), .manual])
             view?.setSkipButtonHidden(true)
         case .imported:
-            let vaultsPlural = String.Constants.wallet.localized().lowercased()
-            view?.setTitle(String.Constants.backUpYourWallet.localized(vaultsPlural))
             view?.setSubtitle(String.Constants.backUpYourExistingWalletDescription.localized())
             view?.setBackupTypes([.iCloud(subtitle: nil, isOnline: isNetworkReachable)])
             view?.setSkipButtonHidden(false)

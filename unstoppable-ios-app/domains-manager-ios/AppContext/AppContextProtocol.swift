@@ -9,6 +9,7 @@ import Foundation
 
 protocol AppContextProtocol {
     
+    var userProfileService: UserProfileServiceProtocol { get }
     var notificationsService: NotificationsServiceProtocol { get }
     var permissionsService: PermissionsServiceProtocol { get }
     var pullUpViewService: PullUpViewServiceProtocol { get }
@@ -40,7 +41,9 @@ protocol AppContextProtocol {
     var messagingService: MessagingServiceProtocol { get }
     var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol { get }
-    
+    var walletNFTsService: WalletNFTsServiceProtocol { get }
+    var walletsDataService: WalletsDataServiceProtocol { get }
+
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol

@@ -24,6 +24,7 @@ final class SettingsViewController: BaseViewController {
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [SettingsCollectionViewCell.self] }
     var presenter: SettingsPresenterProtocol!
+    weak var router: HomeTabRouter?
     
     private var dataSource: SettingsDataSource!
     override var prefersLargeTitles: Bool { true }
@@ -198,7 +199,7 @@ extension SettingsViewController {
             return items
         }
 
-        case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
+        case wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
         case websiteAccount(user: FirebaseUser?)
@@ -224,8 +225,6 @@ extension SettingsViewController {
                 return String.Constants.settingsLegal.localized()
             case .testnet:
                 return "Testnet"
-            case .homeScreen:
-                return String.Constants.settingsHomeScreen.localized()
             case .websiteAccount:
                 return String.Constants.viewVaultedDomains.localized()
             case .inviteFriends:
@@ -235,7 +234,7 @@ extension SettingsViewController {
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .inviteFriends:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .inviteFriends:
                 return nil
             case .websiteAccount:
                 return String.Constants.protectedByUD.localized()
@@ -262,8 +261,6 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconLegal")!
             case .testnet:
                 return UIImage(named: "settingsIconTestnet")!
-            case .homeScreen:
-                return .domainsProfileIcon
             case .websiteAccount:
                 return .domainsProfileIcon
             case .inviteFriends:
@@ -287,8 +284,6 @@ extension SettingsViewController {
                 return .brandSkyBlue
             case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
                 return .backgroundMuted2
-            case .homeScreen:
-                return .brandDeepPurple
             case .websiteAccount:
                 return .brandDeepBlue
             }
@@ -296,7 +291,7 @@ extension SettingsViewController {
         
         var controlType: ControlType {
             switch self {
-            case .wallets(let value), .security(let value), .homeScreen(let value):
+            case .wallets(let value), .security(let value):
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
@@ -314,7 +309,7 @@ extension SettingsViewController {
         
         var isPrimary: Bool {
             switch self {
-            case .wallets, .security, .homeScreen, .appearance, .testnet, .websiteAccount:
+            case .wallets, .security, .appearance, .testnet, .websiteAccount:
                 return true
             default:
                 return false
@@ -327,8 +322,6 @@ extension SettingsViewController {
         
         var analyticsName: Analytics.Button {
             switch self {
-            case .homeScreen:
-                return .settingsHomeScreen
             case .wallets:
                 return .settingsWallets
             case .security:
@@ -352,6 +345,78 @@ extension SettingsViewController {
             case .inviteFriends:
                 return .settingsInviteFriends
             }
+        }
+    }
+}
+
+import SwiftUI
+struct SettingsViewControllerWrapper: UIViewControllerRepresentable {
+    
+    @StateObject private var navTracker: NavigationTracker = NavigationTracker()
+    @EnvironmentObject private var tabRouter: HomeTabRouter
+
+    func makeUIViewController(context: Context) -> CNavigationController {
+        let vc = UDRouter().buildSettingsModule(loginCallback: nil)
+        let nav = EmptyRootCNavigationController(rootViewController: vc)
+        navTracker.settingsNav = nav
+        return nav
+    }
+    
+    func updateUIViewController(_ uiViewController: CNavigationController, context: Context) {
+        (uiViewController.viewControllers.first as? SettingsViewController)?.router = tabRouter
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            navTracker.setNavigationController(uiViewController.navigationController)
+        }
+    }
+    
+    /// Track when user goes back to home, check any presented view controller and dismiss.
+    final class NavigationTracker: NSObject, ObservableObject, UINavigationControllerDelegate {
+        private weak var originalDelegate: UINavigationControllerDelegate?
+        var settingsNav: CNavigationController?
+        
+        func setNavigationController(_ navigationController: UINavigationController?) {
+            guard navigationController?.delegate !== self else { return }
+            
+            originalDelegate = navigationController?.delegate
+            navigationController?.delegate = self
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+
+            if viewController == navigationController.viewControllers.first {
+                if settingsNav?.presentedViewController != nil {
+                    settingsNav?.dismiss(animated: true)
+                }
+                for viewController in settingsNav?.viewControllers ?? [] {
+                    if viewController.presentedViewController != nil {
+                        viewController.dismiss(animated: true)
+                    }
+                }
+                navigationController.delegate = originalDelegate
+            }
+            originalDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+            originalDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+        }
+        
+        func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+            originalDelegate?.navigationControllerSupportedInterfaceOrientations?(navigationController) ?? .portrait
+        }
+        
+        func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
+            originalDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .portrait
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+            originalDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
+        }
+        
+        func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+            originalDelegate?.navigationController?(navigationController,
+                                                    animationControllerFor: operation,
+                                                    from: fromVC, to: toVC)
         }
     }
 }

@@ -10,4 +10,5 @@ import Foundation
 @MainActor
 protocol DomainProfileGeneralData {
     var domain: DomainDisplayInfo { get }
+    var domainWallet: WalletEntity? { get }
 }

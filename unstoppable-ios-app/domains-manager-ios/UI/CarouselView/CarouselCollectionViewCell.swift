@@ -9,7 +9,7 @@ import UIKit
 
 final class CarouselCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet private weak var iconImageView: UIImageView!
+    @IBOutlet private weak var iconImageView: KeepingAnimationImageView!
     @IBOutlet private weak var textLabel: UILabel!
     @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var imageSizeConstraint: NSLayoutConstraint!
@@ -42,13 +42,17 @@ extension CarouselCollectionViewCell {
              style: Style) {
         contentLeftOffsetConstraint.constant = sideOffset
         iconImageView.image = carouselItem.icon
-        textLabel.text = carouselItem.text
         textLabel.setAttributedTextWith(text: carouselItem.text,
                                         font: .currentFont(withSize: style.fontSize, weight: .medium),
                                         textColor: carouselItem.tintColor)
         iconImageView.tintColor = carouselItem.tintColor
         containerView.backgroundColor = carouselItem.backgroundColor
         setStyle(style)
+        if carouselItem.isRotating {
+            iconImageView.runUpdatingRecordsAnimation()
+        } else {
+            iconImageView.stopUpdatingRecordsAnimation()
+        }
     }
     
 }

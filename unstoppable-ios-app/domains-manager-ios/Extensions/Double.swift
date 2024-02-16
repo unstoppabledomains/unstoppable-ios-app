@@ -19,4 +19,13 @@ extension Double {
         let originalDecimal = truncated / multiplier // move the decimal back
         return originalDecimal
     }
+    
+    func rounded(toDecimalPlaces decimalPlaces: Int) -> Double {
+        let multiplier = pow(10.0, Double(decimalPlaces))
+        return (self * multiplier).rounded() / multiplier
+    }
+    
+    func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int) -> String {
+        String(format: "%.\(maxNumberAfterComa)f", self)
+    }
 }

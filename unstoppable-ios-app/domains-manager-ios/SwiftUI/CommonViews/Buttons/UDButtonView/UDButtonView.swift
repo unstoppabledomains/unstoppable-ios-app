@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UDButtonView: View {
     
-    @Environment(\.isEnabled) var isEnabled
+    @Environment(\.isEnabled) private var isEnabled
 
     let text: String
     var subtext: String?
@@ -18,7 +18,7 @@ struct UDButtonView: View {
     let style: UDButtonStyle
     var isLoading = false
     var isSuccess = false
-    let callback: EmptyCallback
+    let callback: MainActorCallback
     
     var body: some View {
         Button {

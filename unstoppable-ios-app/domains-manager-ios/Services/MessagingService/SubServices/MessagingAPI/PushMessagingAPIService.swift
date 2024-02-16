@@ -37,26 +37,26 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     var serviceIdentifier: MessagingServiceIdentifier { .push }
     
     // User profile
-    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
-        let wallet = try await domain.getAddress()
+    func getUserFor(wallet: WalletEntity) async throws -> MessagingChatUserProfile {
+        let walletAddress = wallet.ethFullAddress
         let env = getCurrentPushEnvironment()
         
-        guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
+        guard let pushUser = try await PushUser.get(account: walletAddress, env: env) else {
             throw PushMessagingAPIServiceError.failedToGetPushUser
         }
         
         let userProfile = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
-        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, wallet: wallet)
         return userProfile
     }
     
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
+    func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile {
         let env = getCurrentPushEnvironment()
         let pushUser = try await PushUser.create(options: .init(env: env,
-                                                                signer: domain,
+                                                                signer: wallet,
                                                                 version: .PGP_V3,
                                                                 progressHook: nil))
-        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, wallet: wallet)
         let chatUser = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
         
         return chatUser
@@ -108,6 +108,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     private func getBadgesCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
         let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
         let badgesList = try await NetworkService().fetchBadgesInfo(for: domain)
+        let pushUser = try await getPushUser(of: user)
+        let blockedUsersList = pushUser.profile.blockedUsersList ?? []
         let badges = badgesList.badges
         var chats: [MessagingChat] = []
         
@@ -116,10 +118,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 group.addTask {
                     if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
                         if let groupChatId = badge.groupChatId,
-                           let chat = try? await self.getGroupChatBy(groupChatId: groupChatId, user: user, badgeInfo: badgeInfo) {
+                           let chat = try? await self.getGroupChatBy(groupChatId: groupChatId, 
+                                                                     user: user,
+                                                                     badgeInfo: badgeInfo,
+                                                                     blockedUsersList: blockedUsersList) {
                             return chat
                         } else {
-                            let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo, user: user)
+                            let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo,
+                                                                                          user: user,
+                                                                                          blockedUsersList: blockedUsersList)
                             return chat
                         }
                     } else {
@@ -139,7 +146,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     private func getGroupChatBy(groupChatId: String,
                                 user: MessagingChatUserProfile,
-                                badgeInfo: BadgeDetailedInfo) async throws -> MessagingChat {
+                                badgeInfo: BadgeDetailedInfo,
+                                blockedUsersList: [String]) async throws -> MessagingChat {
         let env = getCurrentPushEnvironment()
         guard let pushGroup = (try await Push.PushChat.getGroup(chatId: groupChatId, env: env)) else {
             throw PushMessagingAPIServiceError.groupChatWithGivenIdNotFound
@@ -147,13 +155,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
         let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
         let publicKeys = pushGroup.members.compactMap { $0.publicKey }
-        
+        let communityDetails: PushEntitiesTransformer.CommunityChatDetails = .init(badgeInfo: badgeInfo,
+                                                                                   blockedUsersList: blockedUsersList)
         guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
-                                                                 userId: user.id,
-                                                                 userWallet: user.wallet,
-                                                                 isApproved: true,
-                                                                 publicKeys: publicKeys,
-                                                                       badgeInfo: badgeInfo) else {
+                                                                       userId: user.id,
+                                                                       userWallet: user.wallet,
+                                                                       isApproved: true,
+                                                                       publicKeys: publicKeys,
+                                                                       communityChatDetails: communityDetails) else {
             throw PushMessagingAPIServiceError.failedToConvertPushChat
         }
         return chat
@@ -171,13 +180,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             case .badge(let badgeInfo):
                 let privateKey = try await getPGPPrivateKeyFor(user: user)
                 let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
-                
-                let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo, 
+                let pushUser = try await getPushUser(of: user)
+                let blockedUsersList = pushUser.profile.blockedUsersList ?? []
+                let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo,
                                                                                     by: userWallet,
                                                                                     signature: signature)
                 let groupChat = try await getGroupChatBy(groupChatId: approveResponse.groupChatId,
                                                          user: user,
-                                                         badgeInfo: badgeInfo)
+                                                         badgeInfo: badgeInfo,
+                                                         blockedUsersList: blockedUsersList)
                 let requests = try await getPushChatsForUser(user,
                                                             page: 1,
                                                             limit: 3,
@@ -204,13 +215,16 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             case .badge(let badgeInfo):
                 let privateKey = try await getPGPPrivateKeyFor(user: user)
                 let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
+                let pushUser = try await getPushUser(of: user)
+                let blockedUsersList = pushUser.profile.blockedUsersList ?? []
                 
                 try await NetworkService().leaveBadgeCommunity(badge: badgeInfo,
                                                                by: userWallet,
                                                                signature: signature)
                 let groupChat = try await getGroupChatBy(groupChatId: communityChat.displayInfo.id,
                                                          user: user,
-                                                         badgeInfo: badgeInfo)
+                                                         badgeInfo: badgeInfo,
+                                                         blockedUsersList: blockedUsersList)
                 return groupChat
             }
         case .private, .group:
@@ -343,27 +357,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws {
-        let env = getCurrentPushEnvironment()
-        
         switch chat.displayInfo.type {
         case .private(let details):
-            let account = chat.displayInfo.thisUserDetails.wallet
             let otherUserAddress = details.otherUser.wallet
-            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-            
-            if blocked {
-                try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
-                                              account: account,
-                                              pgpPrivateKey: pgpPrivateKey,
-                                              env: env)
-            } else {
-                try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
-                                                account: account,
-                                                pgpPrivateKey: pgpPrivateKey,
-                                                env: env)
-            }
+            try await setOtherUserAddress(otherUserAddress, blocked: blocked, by: user)
         case .group, .community:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
+        }
+    }
+    
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
+        switch groupChat.displayInfo.type {
+        case .private:
+            return
+        case .group, .community:
+            let otherUserAddress = otherUser.wallet
+            try await setOtherUserAddress(otherUserAddress, blocked: blocked, by: user)
         }
     }
     
@@ -609,14 +621,23 @@ private extension PushMessagingAPIService {
 
 // MARK: - Private methods
 private extension PushMessagingAPIService {
-    func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, domain: DomainItem) async throws {
-        let wallet = try await domain.getAddress()
-        guard KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) == nil else { return } // Already saved
+    func getPushUser(of user: MessagingChatUserProfile) async throws -> Push.PushUser {
+        let env = getCurrentPushEnvironment()
+        let account = user.wallet
+        guard let pushUser = try await PushUser.get(account: account, env: env) else {
+            throw PushMessagingAPIServiceError.failedToGetPushUser
+        }
+        return pushUser
+    }
+    
+    func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, wallet: WalletEntity) async throws {
+        let walletAddress = wallet.ethFullAddress
+        guard KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: walletAddress) == nil else { return } // Already saved
         
         let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: pushUser.encryptedPrivateKey,
-                                                             signer: domain)
+                                                             signer: wallet)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey,
-                                                   forIdentifier: wallet)
+                                                   forIdentifier: walletAddress)
     }
     
     func getPGPPrivateKeyFor(user: MessagingChatUserProfile) async throws -> String {
@@ -680,6 +701,23 @@ private extension PushMessagingAPIService {
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
+    
+    func setOtherUserAddress(_ otherUserAddress: String, blocked: Bool, by user: MessagingChatUserProfile) async throws {
+        let env = getCurrentPushEnvironment()
+        let account = user.wallet
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        if blocked {
+            try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
+                                          account: account,
+                                          pgpPrivateKey: pgpPrivateKey,
+                                          env: env)
+        } else {
+            try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
+                                            account: account,
+                                            pgpPrivateKey: pgpPrivateKey,
+                                            env: env)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -720,17 +758,17 @@ extension PushMessagingAPIService {
     }
 }
 
-extension DomainItem: Push.Signer, Push.TypedSigner {
+extension WalletEntity: Push.Signer, Push.TypedSigner {
     func getEip191Signature(message: String) async throws -> String {
-        try await self.personalSign(message: message)
+        try await udWallet.getPersonalSignature(messageString: message)
     }
     
     func getEip712Signature(message: String) async throws -> String {
-        try await self.typedDataSign(message: message)
+        try await udWallet.getSignTypedData(dataString: message)
     }
     
     func getAddress() async throws -> String {
-        try getETHAddressThrowing()
+        ethFullAddress
     }
 }
 

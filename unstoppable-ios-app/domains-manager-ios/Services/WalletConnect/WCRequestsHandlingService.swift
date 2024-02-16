@@ -37,13 +37,12 @@ final class WCRequestsHandlingService {
 
 // MARK: - Open methods
 extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
-    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
+    func handleWCRequest(_ request: WCRequest, target: UDWallet) async throws {
         guard case let .connectWallet(req) = request else {
             Debugger.printFailure("Request is not for connecting wallet", critical: true)
             throw WalletConnectRequestError.invalidWCRequest
         }
-            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
-                                                                                              walletAddress: target.0.address,
+            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(walletAddress: target.address,
                                                                                               requiredNamespaces: nil,
                                                                                               appData: nil))
             connectAsync(to: req)

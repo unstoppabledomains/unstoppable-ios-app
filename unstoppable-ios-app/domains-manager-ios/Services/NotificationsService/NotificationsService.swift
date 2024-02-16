@@ -166,8 +166,7 @@ fileprivate extension NotificationsService {
         #else
         environment = .production
         #endif
-        Notify.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
-                         environment: environment,
+        Notify.configure(environment: environment,
                          crypto: WCV2NotifyDefaultCryptoProvider())
         #if DEBUG
         Notify.instance.setLogging(level: .debug)
@@ -227,9 +226,7 @@ fileprivate extension NotificationsService {
                 try await NetworkService().updatePushNotificationsInfo(info: info)
             } catch {
                 Debugger.printFailure("Failed to update push notifications info \(error.localizedDescription)", critical: false)
-                let interval: TimeInterval = 60
-                let duration = UInt64(interval * 1_000_000_000)
-                try? await Task.sleep(nanoseconds: duration)
+                await Task.sleep(seconds: 60)
                 updatePushNotificationsInfo(info)
             }
         }

@@ -38,6 +38,7 @@ public struct Debugger {
         case WebSockets = "SOCKETS"
         case Messaging = "MS"
         case Debug = "DEBUG"
+        case NFT = "NFT"
     }
     
     enum DebugTopicsSet {
@@ -101,7 +102,7 @@ public struct Debugger {
         }
     }
     
-    public static func printFailure(_ s: String, critical: Bool = false) {
+    public static func printFailure(_ s: String, critical: Bool = false, suppressBugSnag: Bool = false) {
 #if DEBUG
         if critical {
             fatalError("⛔️ CRITICAL ERROR: \(s)")
@@ -116,7 +117,7 @@ public struct Debugger {
 #endif
     }
     
-    static func printWarning(_ s: String) {
+    static func printWarning(_ s: String, suppressBugSnag: Bool = false) {
 #if DEBUG
         logger.warning("🟨🔸 WARNING: \(s)")
 #else

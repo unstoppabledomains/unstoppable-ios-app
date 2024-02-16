@@ -22,6 +22,7 @@ final class MessagingService {
     let decrypterService: MessagingContentDecrypterService
     let filesService: MessagingFilesServiceProtocol
     let unreadCountingService: MessagingUnreadCountingServiceProtocol
+    let walletsDataService: WalletsDataServiceProtocol
     
     let dataRefreshManager = MessagingServiceDataRefreshManager()
     /// By default and as primary service we use XMTP
@@ -39,7 +40,8 @@ final class MessagingService {
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
          unreadCountingService: MessagingUnreadCountingServiceProtocol,
-         udWalletsService: UDWalletsServiceProtocol) {
+         udWalletsService: UDWalletsServiceProtocol,
+         walletsDataService: WalletsDataServiceProtocol) {
         self.serviceProviders = serviceProviders
         self.channelsApiService = channelsApiService
         self.channelsWebSocketsService = channelsWebSocketsService
@@ -47,6 +49,7 @@ final class MessagingService {
         self.decrypterService = decrypterService
         self.filesService = filesService
         self.unreadCountingService = unreadCountingService
+        self.walletsDataService = walletsDataService
         udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
@@ -82,54 +85,24 @@ extension MessagingService: MessagingServiceProtocol {
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
     
-    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] {
-        let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            .compactMap { walletWithInfo -> WalletDisplayInfo? in
-                let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
-                let applicableDomains = walletDomains.availableForMessagingItems()
-                if applicableDomains.isEmpty {
-                    return nil
-                }
-                var walletDisplayInfo = walletWithInfo.displayInfo
-                if walletDisplayInfo?.reverseResolutionDomain == nil {
-                    if applicableDomains.first(where: { $0.isUDDomain }) == nil {
-                        /// If wallet doesn't have any UNS domain, we still allow to chat as other (ENS only for now) domain
-                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
-                    } else if applicableDomains.first(where: { $0.isAbleToSetAsRR }) == nil {
-                        /// If wallet has only L1 domains (that can't be set as RR ATM), we still allow to chat
-                        walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
-                    }
-                }
-                return walletDisplayInfo
-            }
-            .sorted(by: {
-                if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
-                    return false
-                } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
-                    return true
-                }
-                return $0.domainsCount > $1.domainsCount
-            })
-        
+    func fetchWalletsAvailableForMessaging() -> [WalletEntity] {
+        let wallets = walletsDataService.wallets
         return wallets
     }
     
-    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? {
-        let wallets: [WalletDisplayInfo]
+    func getLastUsedMessagingProfile(among givenWallets: [WalletEntity]?) async -> MessagingChatUserProfileDisplayInfo? {
+        let wallets: [WalletEntity]
         
         if let givenWallets {
             wallets = givenWallets
         } else {
-            wallets = await fetchWalletsAvailableForMessaging()
+            wallets = fetchWalletsAvailableForMessaging()
         }
         
         if let apiService = try? getDefaultAPIService(),
            let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
            let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
-           let rrDomain = wallet.reverseResolutionDomain,
-           let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
-           let profile = try? storageService.getUserProfileFor(domain: domain,
+           let profile = try? storageService.getUserProfileFor(wallet: wallet.address,
                                                                serviceIdentifier: apiService.serviceIdentifier) {
             /// User already used chat with some profile, select last used.
             //                try await selectProfileWalletPair(.init(wallet: wallet,
@@ -140,14 +113,14 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // User
-    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await getUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
+    func getUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await getUserProfile(for: wallet, serviceIdentifier: defaultServiceIdentifier)
     }
  
-    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        let profile = try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
+    func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
+        let profile = try await createUserProfile(for: wallet, serviceIdentifier: defaultServiceIdentifier)
         if Constants.isCommunitiesEnabled {
-            _ = try? await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+            _ = try? await createUserProfile(for: wallet, serviceIdentifier: communitiesServiceIdentifier)
         }
         return profile
     }
@@ -161,8 +134,8 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
-        guard let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.ownerWallet?.lowercased() == messagingProfile.wallet.lowercased() }) else { throw MessagingServiceError.noRRDomainForProfile }
-        _ = try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+        let wallet = try findWalletEntityWithAddress(messagingProfile.wallet.lowercased())
+        _ = try await createUserProfile(for: wallet, serviceIdentifier: communitiesServiceIdentifier)
     }
 
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
@@ -247,14 +220,20 @@ extension MessagingService: MessagingServiceProtocol {
         return try await apiService.getBlockingStatusForChat(chat)
     }
     
-    func setUser(in chat: MessagingChatDisplayInfo,
+    func setUser(in chatType: MessagingBlockUserInChatType,
                  blocked: Bool) async throws {
-        let serviceIdentifier = chat.serviceIdentifier
+        let serviceIdentifier = chatType.chat.serviceIdentifier
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
-        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
-
-        try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        let profile = try await getUserProfileWith(wallet: chatType.chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
+        let chat = try await getMessagingChatFor(displayInfo: chatType.chat, userId: profile.id)
+        
+        switch chatType {
+        case .chat:
+            try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        case .userInGroup(let otherUser, _):
+            try await apiService.setUser(otherUser, in: chat, blocked: blocked, by: profile)
+        }
+        
         if Constants.shouldHideBlockedUsersLocally {
             try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
             notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)
@@ -618,12 +597,9 @@ extension MessagingService: UDWalletsServiceListener {
             case .walletsUpdated, .reverseResolutionDomainChanged:
                 return
             case .walletRemoved(let wallet):
-                if let rrDomainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.address),
-                   let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName) {
-                    for serviceProvider in serviceProviders {
-                        if let profile = try? storageService.getUserProfileFor(domain: rrDomain, serviceIdentifier: serviceProvider.identifier) {
-                            await storageService.clearAllDataOf(profile: profile, filesService: filesService)
-                        }
+                for serviceProvider in serviceProviders {
+                    if let profile = try? storageService.getUserProfileFor(wallet: wallet.address, serviceIdentifier: serviceProvider.identifier) {
+                        await storageService.clearAllDataOf(profile: profile, filesService: filesService)
                     }
                 }
             }
@@ -719,7 +695,7 @@ private extension MessagingService {
     
     func preloadLastUsedProfile() {
         Task {
-            try? await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             if let lastUsedProfile = await getLastUsedMessagingProfile(among: nil) {
                 setCurrentUser(lastUsedProfile)
             }
@@ -731,6 +707,7 @@ private extension MessagingService {
 extension MessagingService {
     enum MessagingServiceError: String, LocalizedError {
         case domainWithoutWallet
+        case walletNotFound
         case chatNotFound
         case messageNotFound
         case noRRDomainForProfile

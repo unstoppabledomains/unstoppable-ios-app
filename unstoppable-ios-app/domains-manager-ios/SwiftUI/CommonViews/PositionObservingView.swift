@@ -19,17 +19,19 @@ struct PositionObservingView<Content: View>: View {
                                        value: geometry.frame(in: coordinateSpace).origin)
             })
             .onPreferenceChange(PreferenceKey.self) { position in
-                self.position = position
+                self.position = position ?? .zero
             }
     }
 }
 
 private extension PositionObservingView {
     struct PreferenceKey: SwiftUI.PreferenceKey {
-        static var defaultValue: CGPoint { .zero }
+        static var defaultValue: CGPoint? { nil }
         
-        static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
-            // No-op
+        static func reduce(value: inout Value, nextValue: () -> Value) {
+            if let nextValue = nextValue() {
+                value = nextValue
+            }
         }
     }
 }

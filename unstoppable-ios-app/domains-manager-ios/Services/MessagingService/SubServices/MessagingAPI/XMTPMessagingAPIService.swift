@@ -39,25 +39,26 @@ final class XMTPMessagingAPIService {
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     var serviceIdentifier: MessagingServiceIdentifier { .xmtp }
 
-    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
+    func getUserFor(wallet: WalletEntity) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
         
-        let wallet = try domain.getETHAddressThrowing()
-        guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) != nil else {
+        let walletAddress = wallet.ethFullAddress
+        guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: walletAddress, env: env) != nil else {
             throw XMTPServiceError.userNotCreatedYet
         }
         
-        return try await createUser(for: domain) /// In XMTP same function responsible for either get or create profile
+        return try await createUser(for: wallet) /// In XMTP same function responsible for either get or create profile
     }
     
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
+    func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
-        let client = try await XMTP.Client.create(account: domain,
+        let account = WalletXMTPSigningKey(walletEntity: wallet)
+        let client = try await XMTP.Client.create(account: account,
                                                   options: .init(api: .init(env: env,
                                                                             isSecure: true,
                                                                             appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
 
-        try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
+        try storeKeysDataFromClientIfNeeded(client, wallet: wallet, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
         return userProfile
     }
@@ -155,6 +156,13 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
+    }
+    
+    func setUser(_ otherUser: MessagingChatUserDisplayInfo,
+                 in groupChat: MessagingChat,
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
+        throw XMTPServiceError.unsupportedAction
     }
     
     func block(chats: [MessagingChat],
@@ -479,9 +487,9 @@ private extension XMTPMessagingAPIService {
 // MARK: - Private methods
 private extension XMTPMessagingAPIService {
     func storeKeysDataFromClientIfNeeded(_ client: XMTP.Client,
-                                         domain: DomainItem,
+                                         wallet: WalletEntity,
                                          env: XMTPEnvironment) throws {
-        let wallet = try domain.getETHAddressThrowing()
+        let wallet = wallet.ethFullAddress
         guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) == nil else { return } // Already saved
         
         let keysData = try client.privateKeyBundle.serializedData()
@@ -602,17 +610,22 @@ extension XMTPMessagingAPIService {
     }
 }
 
-extension DomainItem: SigningKey {
-    var address: String { getETHAddress() ?? "" }
+private struct WalletXMTPSigningKey {
+    let address: String
+    let udWallet: UDWallet
     
+    init(walletEntity: WalletEntity) {
+        self.address = walletEntity.ethFullAddress
+        self.udWallet = walletEntity.udWallet
+    }
+}
+
+extension WalletXMTPSigningKey: SigningKey {
     func sign(_ data: Data) async throws -> XMTP.Signature {
         try await sign(message: HexAddress.hexPrefix + data.dataToHexString())
     }
     
     func sign(message: String) async throws -> XMTP.Signature {
-        guard let udWalletAddress = ownerWallet,
-              let udWallet = appContext.udWalletsService.find(by: udWalletAddress) else {
-            throw UDWallet.Error.failedToFindWallet }
         let newMess = "0x" + Data(message.utf8).toHexString()
         let sign = try await udWallet.getPersonalSignature(messageString: newMess, shouldTryToConverToReadable: false)
         var bytes = sign.hexToBytes()

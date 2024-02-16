@@ -30,7 +30,7 @@ final class DataAggregatorService {
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         dataHolder = DataHolder(wallets: walletsService.getUserWallets())
-        walletsService.addListener(self)
+//        walletsService.addListener(self)
         Task {
             await startRefreshTimer()
         }
@@ -48,39 +48,6 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return await wallets.asyncMap({ await WalletWithInfo(wallet: $0, displayInfo: getWalletDisplayInfo(for: $0)) })
     }
     
-    func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance] {
-        let walletsWithInfo = await getWalletsWithInfo()
-        var balances = [WalletBalance]()
-        
-        try await withThrowingTaskGroup(of: WalletBalance.self, body: { [unowned self] group in
-            /// 1. Fill group with tasks
-            for wallet in walletsWithInfo {
-                group.addTask {
-                    /// Note: This block capturing self.
-                    return try await self.walletsService.getBalanceFor(walletAddress: wallet.wallet.address, blockchainType: blockchainType, forceRefresh: false)
-                }
-            }
-            
-            /// 2. Take values from group
-            for try await balance in group {
-                balances.append(balance)
-            }
-        })
-        
-        var walletsWithInfoAndBalance = [WalletWithInfoAndBalance]()
-        
-        for walletWithInfo in walletsWithInfo {
-            guard let balance = balances.first(where: { $0.address == walletWithInfo.wallet.address }) else {
-                Debugger.printFailure("Failed to get balance for wallet and error wasn't thrown", critical: true)
-                throw WalletError.unsupportedBlockchainType
-            }
-            let walletWithInfoAndBalance = WalletWithInfoAndBalance(wallet: walletWithInfo.wallet, displayInfo: walletWithInfo.displayInfo, balance: balance)
-            walletsWithInfoAndBalance.append(walletWithInfoAndBalance)
-        }
-        
-        return walletsWithInfoAndBalance
-    }
-  
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         let domains = await getDomainsDisplayInfo()
         let reverseResolutionDomain = await reverseResolutionDomain(for: wallet)
@@ -266,76 +233,76 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
 }
 
-// MARK: - UDWalletsServiceListener
-extension DataAggregatorService: UDWalletsServiceListener {
-    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
-        Task {
-            switch notification {
-            case .walletsUpdated(let wallets):
-                let walletsCount = await self.dataHolder.wallets.count
-                
-                await dataHolder.setWallets(wallets)
-                let walletsInfo = await getWalletsWithInfo()
-                notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
-                
-                // If wallet were added/removed we'll update domains list
-                if wallets.count != walletsCount {
-                    await reloadAndAggregateData()
-                }
-                await checkAppSessionAndLogOutIfNeeded()
-            case .reverseResolutionDomainChanged(let domainName, let txIds):
-                var transactions = await dataHolder.getTransactions(by: [domainName])
-                let newTransactions = txIds.map({TransactionItem(id: $0,
-                                                                 transactionHash: nil,
-                                                                 domainName: domainName,
-                                                                 isPending: true,
-                                                                 operation: .setReverseResolution)})
-                transactions.append(contentsOf: newTransactions)
-                transactionsService.cacheTransactions(transactions)
-                
-                let walletsInfo = await getWalletsWithInfo()
-                notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
-                
-                await dataHolder.setReverseResolutionInProgress(for: domainName)
-                let domains = await getDomainsDisplayInfo()
-                notifyListenersWith(result: .success(.domainsUpdated(domains)))
-                AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
-            case .walletRemoved: return
-            }
-        }
-    }
-}
+//// MARK: - UDWalletsServiceListener
+//extension DataAggregatorService: UDWalletsServiceListener {
+//    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+//        Task {
+//            switch notification {
+//            case .walletsUpdated(let wallets):
+//                let walletsCount = await self.dataHolder.wallets.count
+//                
+//                await dataHolder.setWallets(wallets)
+//                let walletsInfo = await getWalletsWithInfo()
+//                notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
+//                
+//                // If wallet were added/removed we'll update domains list
+//                if wallets.count != walletsCount {
+//                    await reloadAndAggregateData()
+//                }
+//                await checkAppSessionAndLogOutIfNeeded()
+//            case .reverseResolutionDomainChanged(let domainName, let txIds):
+//                var transactions = await dataHolder.getTransactions(by: [domainName])
+//                let newTransactions = txIds.map({TransactionItem(id: $0,
+//                                                                 transactionHash: nil,
+//                                                                 domainName: domainName,
+//                                                                 isPending: true,
+//                                                                 operation: .setReverseResolution)})
+//                transactions.append(contentsOf: newTransactions)
+//                transactionsService.cacheTransactions(transactions)
+//                
+//                let walletsInfo = await getWalletsWithInfo()
+//                notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
+//                
+//                await dataHolder.setReverseResolutionInProgress(for: domainName)
+//                let domains = await getDomainsDisplayInfo()
+//                notifyListenersWith(result: .success(.domainsUpdated(domains)))
+//                AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
+//            case .walletRemoved: return
+//            }
+//        }
+//    }
+//}
 
-// MARK: - FirebaseAuthenticationServiceListener
-extension DataAggregatorService: FirebaseAuthenticationServiceListener {
-    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        Task {
-            if firebaseUser != nil {
-                let parkedDomains = await loadParkedDomains()
-                await fillDomainsDataFromCache(parkedDomains: parkedDomains)
-                let updatedDomains = await dataHolder.domainsWithDisplayInfo
-                notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: updatedDomains))))
-            }
-            
-            await reloadAndAggregateData(shouldRefreshPFP: false)
-            await checkAppSessionAndLogOutIfNeeded()
-        }
-    }
-}
+//// MARK: - FirebaseAuthenticationServiceListener
+//extension DataAggregatorService: FirebaseAuthenticationServiceListener {
+//    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+//        Task {
+//            if firebaseUser != nil {
+//                let parkedDomains = await loadParkedDomains()
+//                await fillDomainsDataFromCache(parkedDomains: parkedDomains)
+//                let updatedDomains = await dataHolder.domainsWithDisplayInfo
+//                notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: updatedDomains))))
+//            }
+//            
+//            await reloadAndAggregateData(shouldRefreshPFP: false)
+//            await checkAppSessionAndLogOutIfNeeded()
+//        }
+//    }
+//}
 
 // MARK: - Private methods
 private extension DataAggregatorService {
     @MainActor
     func checkAppSessionAndLogOutIfNeeded() {
-        let sessionState = AppSessionInterpreter.shared.state()
-        switch sessionState {
-        case .walletAdded, .webAccountWithParkedDomains:
-            return
-        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
-            SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseParkedDomainsAuthenticationService.logout()
-            Task { await aggregateData(shouldRefreshPFP: false) }
-        }
+//        let sessionState = UserProfileService.shared.state()
+//        switch sessionState {
+//        case .walletAdded, .webAccountWithParkedDomains:
+//            return
+//        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+//            SceneDelegate.shared?.restartOnboarding()
+//            appContext.firebaseParkedDomainsAuthenticationService.logout()
+//            Task { await aggregateData(shouldRefreshPFP: false) }
+//        }
     }
     
     func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {
@@ -417,7 +384,7 @@ private extension DataAggregatorService {
             let finalDomains = await dataHolder.domainsWithDisplayInfo
             notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: finalDomains))))
             
-            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
+//            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
             Debugger.printTimeSensitiveInfo(topic: .DataAggregation,
                                             "to aggregate data for \(finalDomains.count) domains",
                                             startDate: startTime,

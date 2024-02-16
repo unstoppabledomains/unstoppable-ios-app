@@ -13,9 +13,9 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler)
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
-    func getConnectedApps() async -> [UnifiedConnectAppInfo]
+    func getConnectedApps() -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
-    func disconnectAppsForAbsentDomains(from: [DomainItem])
+    func disconnectAppsForAbsentWallets(from: [WalletEntity])
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
     

@@ -21,9 +21,9 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
     @IBOutlet private(set) weak var cancelButton: TertiaryButton!
     @IBOutlet private(set) weak var confirmButton: MainButton!
     
-    private var domainImageView: UIImageView?
-    private var domainNameButton: SelectorButton?
-    private var domain: DomainItem?
+    private var walletImageView: UIImageView?
+    private var walletNameButton: SelectorButton?
+    private var wallet: WalletEntity?
     private var appInfo: WalletConnectServiceV2.WCServiceAppInfo?
     var network: BlockchainType?
     var pullUp: Analytics.PullUp = .unspecified
@@ -31,7 +31,7 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
     var confirmButtonTitle: String { String.Constants.confirm.localized() }
     
     var confirmationCallback: ((WalletConnectServiceV2.ConnectionUISettings)->())?
-    var domainButtonCallback: ((DomainItem)->())?
+    var walletButtonCallback: ((WalletEntity)->())?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,37 +47,39 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
     
     func additionalSetup() { }
     
-    func buildDomainInfoView() -> UIStackView {
+    func buildWalletInfoView() -> UIStackView {
         let imageSize: CGFloat = 20
-        let domainImageView = UIImageView()
-        domainImageView.translatesAutoresizingMaskIntoConstraints = false
-        domainImageView.clipsToBounds = true
-        domainImageView.layer.cornerRadius = imageSize / 2
-        domainImageView.heightAnchor.constraint(equalToConstant: imageSize).isActive = true
-        domainImageView.widthAnchor.constraint(equalTo: domainImageView.heightAnchor, multiplier: 1).isActive = true
+        let walletImageView = UIImageView()
+        walletImageView.translatesAutoresizingMaskIntoConstraints = false
+        walletImageView.clipsToBounds = true
+        walletImageView.layer.cornerRadius = imageSize / 2
+        walletImageView.heightAnchor.constraint(equalToConstant: imageSize).isActive = true
+        walletImageView.widthAnchor.constraint(equalTo: walletImageView.heightAnchor, multiplier: 1).isActive = true
 
-        let domainNameButton = SelectorButton()
-        domainNameButton.customTitleEdgePadding = 0
-        domainNameButton.translatesAutoresizingMaskIntoConstraints = false
-        domainNameButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        domainNameButton.addTarget(self, action: #selector(domainButtonPressed), for: .touchUpInside)
+        let walletNameButton = SelectorButton()
+        walletNameButton.customTitleEdgePadding = 0
+        walletNameButton.translatesAutoresizingMaskIntoConstraints = false
+        walletNameButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        walletNameButton.addTarget(self, action: #selector(walletButtonPressed), for: .touchUpInside)
         
-        self.domainImageView = domainImageView
-        self.domainNameButton = domainNameButton
+        self.walletImageView = walletImageView
+        self.walletNameButton = walletNameButton
         
-        let domainInfoStack = UIStackView(arrangedSubviews: [domainImageView, domainNameButton])
-        domainInfoStack.axis = .horizontal
-        domainInfoStack.spacing = 8
-        domainInfoStack.alignment = .center
+        let walletInfoStack = UIStackView(arrangedSubviews: [walletImageView, walletNameButton])
+        walletInfoStack.axis = .horizontal
+        walletInfoStack.spacing = -2
+        walletInfoStack.alignment = .center
 
-        let domainLabel = UILabel()
-        domainLabel.translatesAutoresizingMaskIntoConstraints = false
-        domainLabel.setAttributedTextWith(text: String.Constants.domain.localized(),
+        let walletLabel = UILabel()
+        walletLabel.translatesAutoresizingMaskIntoConstraints = false
+        walletLabel.setAttributedTextWith(text: String.Constants.profile.localized(),
                                           font: .currentFont(withSize: 14, weight: .medium),
                                           textColor: .foregroundSecondary)
         
-        let stack = UIStackView(arrangedSubviews: [domainLabel, domainInfoStack])
-        
+        let stack = UIStackView(arrangedSubviews: [walletLabel, walletInfoStack])
+        stack.spacing = 16
+        stack.alignment = .center
+
         return stack
     }
 }
@@ -118,34 +120,37 @@ extension BaseSignTransactionView {
                                image: appInfo.isTrusted ? .checkBadge : nil)
     }
     
-    func setNetworkFrom(appInfo: WalletConnectServiceV2.WCServiceAppInfo, domain: DomainItem) {
-        self.network = getChainFromAppInfo(appInfo, domain: domain)
+    func setNetworkFrom(appInfo: WalletConnectServiceV2.WCServiceAppInfo) {
+        self.network = getChainFromAppInfo(appInfo)
     }
     
-    func getChainFromAppInfo(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo, domain: DomainItem) -> BlockchainType {
+    func getChainFromAppInfo(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo) -> BlockchainType {
         let appBlockchainTypes = appInfo.getChainIds().compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
-        if let domainBlockchainType = appBlockchainTypes.first(where: { $0 == domain.getBlockchainType() }) {
-            return domainBlockchainType
+        
+        if appBlockchainTypes.contains(.Ethereum) {
+            return .Ethereum
+        } else if appBlockchainTypes.contains(.Matic) {
+            return .Matic
         }
         return appBlockchainTypes.first ?? .Ethereum
     }
     
-    func setDomainInfo(_ domain: DomainItem, isSelectable: Bool) {
-        self.domain = domain
-        if let domainImageView {
+    func setWalletInfo(_ wallet: WalletEntity, isSelectable: Bool) {
+        self.wallet = wallet
+        if let walletImageView {
             Task {
-                let domainsDisplayInfo = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-                if let domainDisplayInfo = domainsDisplayInfo.first(where: { $0.name == domain.name }) {
-                    domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
+                if let domainDisplayInfo = wallet.rrDomain {
+                    walletImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
                                                                                            downsampleDescription: nil)
                     let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainDisplayInfo, size: .full),
                                                                                downsampleDescription: .icon)
-                    domainImageView.image = image
+                    walletImageView.image = image
                 }
+                walletImageView.isHidden = wallet.rrDomain == nil
             }
         }
-        domainNameButton?.setTitle(domain.name, image: isSelectable ? .chevronDown : nil)
-        domainNameButton?.setSelectorEnabled(isSelectable)
+        walletNameButton?.setTitle(wallet.domainOrDisplayName, image: isSelectable ? .chevronDown : nil)
+        walletNameButton?.setSelectorEnabled(isSelectable)
     }
     
     func logAnalytic(event: Analytics.Event, parameters: Analytics.EventParameters = [:]) {
@@ -157,11 +162,11 @@ extension BaseSignTransactionView {
         }
         let wcAppName = appInfo?.getDappName() ?? "n/a"
         let hostName = appInfo?.getDappHostName() ?? "n/a"
-        let domainName = domain?.name ?? "n/a"
+        let wallet = wallet?.address ?? "n/a"
         var analyticParameters: Analytics.EventParameters = [.pullUpName: pullUp.rawValue,
                                                              .wcAppName: wcAppName,
                                                              .hostURL: hostName,
-                                                             .domainName: domainName]
+                                                             .wallet: wallet]
         if let chainId = appInfo?.getChainIds().first {
             analyticParameters[.chainId] = String(chainId)
         }
@@ -180,18 +185,19 @@ private extension BaseSignTransactionView {
     @IBAction func cancelButtonPressed(_ sender: Any) {
         logButtonPressed(.cancel)
         pullUpView?.cancel()
+        findViewController()?.dismiss(animated: true)
     }
     
     @IBAction func confirmButtonPressed(_ sender: Any) {
         logButtonPressed(.confirm)
-        guard let domain = self.domain else {
-            Debugger.printFailure("Invalid DomainItem: nil", critical: true)
+        guard let wallet = self.wallet else {
+            Debugger.printFailure("Invalid wallet: nil", critical: true)
             return }
         guard let network = self.network else {
             Debugger.printFailure("Invalid Network: nil", critical: true)
             return }
         
-        confirmationCallback?(.init(domain: domain,
+        confirmationCallback?(.init(wallet: wallet,
                                     blockchainType: network))
     }
     
@@ -203,11 +209,11 @@ private extension BaseSignTransactionView {
         }
     }
     
-    @objc func domainButtonPressed() {
-        logButtonPressed(.wcDomainName)
-        guard let domain = self.domain else { return }
+    @objc func walletButtonPressed() {
+        logButtonPressed(.wcWallet)
+        guard let wallet = self.wallet else { return }
         
-        domainButtonCallback?(domain)
+        walletButtonCallback?(wallet)
     }
 }
 

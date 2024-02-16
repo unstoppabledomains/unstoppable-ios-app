@@ -21,7 +21,7 @@ final class SignMessageRequestConfirmationView: BaseSignTransactionView {
         titleLabel.setAttributedTextWith(text: String.Constants.messageSignRequestTitle.localized(),
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundDefault)
-        addDomainInfo()
+        addWalletInfo()
     }
     
     func requiredHeight() -> CGFloat {
@@ -33,9 +33,9 @@ final class SignMessageRequestConfirmationView: BaseSignTransactionView {
 extension SignMessageRequestConfirmationView {
     func configureWith(_ configuration: SignMessageTransactionUIConfiguration) {
         addSigningMessageView(signingMessage: configuration.signingMessage)
-        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo, domain: configuration.connectionConfig.domain)
+        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo)
         setWith(appInfo: configuration.connectionConfig.appInfo)
-        setDomainInfo(configuration.connectionConfig.domain, isSelectable: false)
+        setWalletInfo(configuration.connectionConfig.wallet, isSelectable: false)
     }
 }
 
@@ -72,12 +72,12 @@ private extension SignMessageRequestConfirmationView {
         contentStackView.insertArrangedSubview(textView, at: 1)
     }
     
-    func addDomainInfo() {
-        let domainStackView = buildDomainInfoView()
-        domainStackView.axis = .horizontal
-        domainStackView.spacing = 16
+    func addWalletInfo() {
+        let walletStackView = buildWalletInfoView()
+        walletStackView.axis = .horizontal
+        walletStackView.spacing = 16
 
-        let wrapStack = UIStackView(arrangedSubviews: [domainStackView])
+        let wrapStack = UIStackView(arrangedSubviews: [walletStackView])
         wrapStack.axis = .vertical
         wrapStack.alignment = .center
         

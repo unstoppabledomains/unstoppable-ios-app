@@ -39,6 +39,9 @@ final class PurchaseDomainsNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
+            if let navigationController {
+                return navigationController.popViewController(animated: true)
+            }
             return cNavigationController?.popViewController(animated: true)
         }
         return super.popViewController(animated: animated, completion: completion)
@@ -56,7 +59,7 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
                                profileChanges: profileChanges)
         case .didPurchaseDomains:
             Task {
-                try? await Task.sleep(seconds: 0.5)
+                await Task.sleep(seconds: 0.5)
                 await appContext.purchaseDomainsService.reset()
             }
             moveToStep(.purchased)
@@ -98,6 +101,10 @@ private extension PurchaseDomainsNavigationController {
         self.cNavigationController?.popViewController(animated: true) {
             domainsPurchasedCallback?(result)
         }
+        navigationController?.popViewController(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            domainsPurchasedCallback?(result)
+        }
     }
     
     func setSwipeGestureEnabledForCurrentState() {        
@@ -119,20 +126,17 @@ private extension PurchaseDomainsNavigationController {
     
     func moveToCheckoutWith(domain: DomainToPurchase,
                             profileChanges: DomainProfilePendingChanges) {
-        Task { @MainActor in
-            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            guard let selectedWallet = wallets.first else {
-                askUserToAddWalletToPurchase(domain: domain,
-                                             profileChanges: profileChanges)
-                return
-            }
-            
-            purchaseData.domain = domain
-            moveToStep(.checkout(domain: domain,
-                                 profileChanges: profileChanges,
-                                 selectedWallet: selectedWallet,
-                                 wallets: wallets))
+        guard let selectedWallet = appContext.walletsDataService.selectedWallet else {
+            askUserToAddWalletToPurchase(domain: domain,
+                                         profileChanges: profileChanges)
+            return
         }
+        let wallets = appContext.walletsDataService.wallets
+        purchaseData.domain = domain
+        moveToStep(.checkout(domain: domain,
+                             profileChanges: profileChanges,
+                             selectedWallet: selectedWallet,
+                             wallets: wallets))
     }
     
     func askUserToAddWalletToPurchase(domain: DomainToPurchase,
@@ -226,7 +230,7 @@ extension PurchaseDomainsNavigationController {
     enum Step {
         case searchDomain
         case fillProfile(domain: DomainToPurchase)
-        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
+        case checkout(domain: DomainToPurchase, profileChanges: DomainProfilePendingChanges, selectedWallet: WalletEntity, wallets: [WalletEntity])
         case purchased
     }
     
@@ -241,4 +245,19 @@ extension PurchaseDomainsNavigationController {
         case cancel
         case purchased(domainName: String)
     }
+}
+
+import SwiftUI
+struct PurchaseDomainsNavigationControllerWrapper: UIViewControllerRepresentable {
+    
+    let domainsPurchasedCallback:  PurchaseDomainsNavigationController.DomainsPurchasedCallback
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
+        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
+        return purchaseDomainsNavigationController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
 }

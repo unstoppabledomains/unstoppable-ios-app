@@ -9,7 +9,7 @@ import UIKit
 
 protocol ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage?
-    func cachedImage(for source: ImageSource) -> UIImage?
+    func cachedImage(for source: ImageSource, downsampleDescription: DownsampleDescription?) -> UIImage?
     func downsample(image: UIImage, downsampleDescription: DownsampleDescription) -> UIImage?
     func storeImage(_ image: UIImage, for source: ImageSource) async
     func getStoredImage(for source: ImageSource) async -> UIImage?
@@ -46,6 +46,7 @@ enum ImageSource: Sendable {
     case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
+    case currencyTicker(_ ticker: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case wcApp(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
     case qrCode(url: URL, options: [QRCodeService.Options])
@@ -73,7 +74,9 @@ enum ImageSource: Sendable {
             }
             return ImageSource.domainInitials(domainItem, size: size).key
         case .currency(let currency, let size, let style):
-            return currency.ticker + "_\(size.rawValue)_\(style.rawValue)"
+            return ImageSource.currencyTicker(currency.ticker, size: size, style: style).key
+        case .currencyTicker(let ticker, let size, let style):
+            return ticker + "_\(size.rawValue)_\(style.rawValue)"
         case .wcApp(let appInfo, let size):
             return appInfo.getDisplayName() + "_\(size.rawValue)"
         case .connectedApp(let appInfo, let size):

@@ -11,7 +11,7 @@ import XCTest
 final class WalletsListUITests: BaseXCTestCase {
     
     private lazy var walletsToUse: [TestsEnvironment.TestWalletDescription] = {
-        [.init(type: "generatedLocally", name: "Vault", hasBeenBackedUp: true, isExternal: false),
+        [.init(type: "generatedLocally", name: "Wallet", hasBeenBackedUp: true, isExternal: false),
          .init(type: "mnemonicsEntered", name: nil, hasBeenBackedUp: true, isExternal: false),
          .init(type: "privateKeyEntered", name: nil, hasBeenBackedUp: false, isExternal: false),
          .init(type: "importedUnverified", name: "Rainbow", hasBeenBackedUp: false, isExternal: true)]

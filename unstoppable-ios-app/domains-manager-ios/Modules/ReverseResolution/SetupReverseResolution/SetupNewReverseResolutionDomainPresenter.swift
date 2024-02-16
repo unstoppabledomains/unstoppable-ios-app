@@ -7,6 +7,15 @@
 
 import Foundation
 
+typealias DomainItemSelectedCallback = (SetNewHomeDomainResult)->()
+
+enum SetNewHomeDomainResult {
+    case cancelled
+    case domainsOrderSet(_ domains: [DomainDisplayInfo])
+    case domainsOrderAndReverseResolutionSet(_ domains: [DomainDisplayInfo], reverseResolutionDomain: DomainDisplayInfo)
+}
+
+
 final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionViewPresenter {
     
     var resultCallback: DomainItemSelectedCallback?
@@ -16,8 +25,7 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
     override var domainName: String? { reverseResolutionDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
-         wallet: UDWallet,
-         walletInfo: WalletDisplayInfo,
+         wallet: WalletEntity,
          domains: [DomainDisplayInfo],
          reverseResolutionDomain: DomainDisplayInfo,
          udWalletsService: UDWalletsServiceProtocol,
@@ -26,7 +34,6 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
         self.domains = domains
         super.init(view: view,
                    wallet: wallet,
-                   walletInfo: walletInfo,
                    domain: reverseResolutionDomain,
                    udWalletsService: udWalletsService)
         self.resultCallback = resultCallback

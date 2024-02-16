@@ -34,7 +34,7 @@ struct NetworkService {
         "Content-Type": "application/json"]
     
     static let appVersionHeaderKey = "X-IOS-APP-VERSION"
-    
+    static var profilesAPIHeader: [String : String] { ["" : ""] }
     
     init() {
     }
@@ -182,7 +182,8 @@ extension NetworkService {
               socialAccounts: nil,
               referralCode: nil,
               social: nil,
-              records: nil)
+              records: nil,
+              walletBalances: [])
     }
     
     public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
@@ -226,7 +227,13 @@ extension NetworkService {
 extension NetworkService {
     public func searchForDomainsWith(name: String,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
-        []
+        var result = [SearchDomainProfile]()
+        
+        for i in 0..<40 {
+            result.append(.init(name: "\(name)_\(i).x", ownerAddress: "123", imagePath: nil, imageType: nil))
+        }
+        
+        return result
     }
     
     func isDomain(_ followerDomain: String, following followingDomain: String) async throws -> Bool {

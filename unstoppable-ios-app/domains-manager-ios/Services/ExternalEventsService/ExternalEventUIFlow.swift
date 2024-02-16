@@ -8,7 +8,7 @@
 import Foundation
 
 enum ExternalEventUIFlow {
-    case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
+    case showDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity)
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading

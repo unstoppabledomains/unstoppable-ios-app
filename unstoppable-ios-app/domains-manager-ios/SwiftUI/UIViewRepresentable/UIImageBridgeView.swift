@@ -13,6 +13,8 @@ struct UIImageBridgeView: UIViewRepresentable {
     var width: CGFloat?
     var height: CGFloat?
     
+    private let serialQueue = DispatchQueue(label: "com.UIImageBridgeView.serial")
+    
     var contentMode: UIView.ContentMode = .scaleAspectFill
     
     func makeUIView(context: Context) -> UIImageView {
@@ -34,6 +36,12 @@ struct UIImageBridgeView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIImageView, context: Context) {
-        uiView.image = image
+        serialQueue.sync {
+            uiView.stopAnimating()
+            uiView.image = image
+            uiView.animationImages = image?.images
+            uiView.animationDuration = image?.duration ?? 0
+            uiView.startAnimating()
+        }
     }
 }

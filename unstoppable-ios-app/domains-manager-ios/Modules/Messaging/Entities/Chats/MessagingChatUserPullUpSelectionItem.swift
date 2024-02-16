@@ -12,6 +12,8 @@ struct MessagingChatUserPullUpSelectionItem: PullUpCollectionViewCellItem {
     let isAdmin: Bool
     let isPending: Bool
     
+    var unblockCallback: MainActorAsyncCallback?
+    
     var title: String { userInfo.displayName }
     var subtitle: String? {
         if isPending { return String.Constants.pending.localized() }
@@ -37,7 +39,16 @@ struct MessagingChatUserPullUpSelectionItem: PullUpCollectionViewCellItem {
     }
     
     var analyticsName: String { "groupChatUser" }
-    var disclosureIndicatorStyle: PullUpDisclosureIndicatorStyle { userInfo.domainName == nil ? .none : .right }
+    var disclosureIndicatorStyle: PullUpDisclosureIndicatorStyle {
+        if unblockCallback != nil {
+            return .actionButton(title: String.Constants.unblock.localized()) {
+                Task {
+                    await unblockCallback?()
+                }
+            }
+        }
+        return userInfo.domainName == nil ? .none : .right
+    }
     var isSelectable: Bool { userInfo.domainName != nil }
     
     

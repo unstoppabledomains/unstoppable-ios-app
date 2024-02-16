@@ -22,7 +22,6 @@ protocol PullUpViewServiceProtocol {
     func showAppearanceStyleSelectionPullUp(in viewController: UIViewController,
                                             selectedStyle: UIUserInterfaceStyle,
                                             styleChangedCallback: @escaping AppearanceStyleChangedCallback)
-    func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction
     
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: PullUpViewService.UnavailableOfflineFeature) async
@@ -127,4 +126,8 @@ protocol PullUpViewServiceProtocol {
     func showCommunityChatInfoPullUp(communityDetails: MessagingCommunitiesChatDetails,
                                      by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                      in viewController: UIViewController) async
+    func showCommunityBlockedUsersListPullUp(communityDetails: MessagingCommunitiesChatDetails,
+                                             by messagingProfile: MessagingChatUserProfileDisplayInfo,
+                                             unblockCallback: @escaping ((MessagingChatUserDisplayInfo)->()),
+                                             in viewController: UIViewController) async
 }

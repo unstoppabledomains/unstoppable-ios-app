@@ -128,20 +128,51 @@ extension Encodable {
     }
 }
 
+protocol DateFormatterProtocol {
+    func date(from string: String) -> Date?
+}
+
+extension DateFormatter: DateFormatterProtocol { }
+extension ISO8601DateFormatter: DateFormatterProtocol { }
+
 extension JSONDecoder.DateDecodingStrategy {
     static func defaultDateDecodingStrategy() -> JSONDecoder.DateDecodingStrategy {
         .iso8601WithOptions([.withFractionalSeconds])
     }
     
     static func iso8601WithOptions(_ options: ISO8601DateFormatter.Options) -> JSONDecoder.DateDecodingStrategy {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions.insert(options)
+        return dateStrategyUsing(formatters: [formatter])
+    }
+    
+    private static func noTimeZoneIndicatorDateFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return formatter
+    }
+    
+    static func noTimeZoneIndicatorDecodingStrategy() -> JSONDecoder.DateDecodingStrategy {
+        let formatter = noTimeZoneIndicatorDateFormatter()
+        
+        return dateStrategyUsing(formatters: [formatter])
+    }
+    
+    static func nftDateDecodingStrategy() -> JSONDecoder.DateDecodingStrategy {
+        let formatter = noTimeZoneIndicatorDateFormatter()
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions.insert([.withFractionalSeconds])
+        return dateStrategyUsing(formatters: [formatter, isoFormatter])
+    }
+    
+    static func dateStrategyUsing(formatters: [DateFormatterProtocol]) -> JSONDecoder.DateDecodingStrategy {
         .custom { decoder in
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions.insert(options)
-            
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-            if let date = formatter.date(from: dateString) {
-                return date
+            for formatter in formatters {
+                if let date = formatter.date(from: dateString) {
+                    return date
+                }
             }
             
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")

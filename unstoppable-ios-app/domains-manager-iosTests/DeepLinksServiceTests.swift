@@ -187,7 +187,7 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
         
     }
     
-    func showHome(mintingState: domains_manager_ios.DomainsCollectionMintingState) {
+    func showHome(mintingState: domains_manager_ios.DomainsCollectionMintingState, wallet: WalletEntity) {
         
     }
     
