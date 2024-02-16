@@ -55,6 +55,9 @@ struct HomeTabView: View {
             NFTDetailsView(nft: nft)
                 .pullUpHandler(router)
         })
+        .sheet(isPresented: $router.showingUpdatedToWalletGreetings, content: {
+            UpdateToWalletGreetingsView()
+        })
         .sheet(item: $router.showingWalletInfo, content: {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])

@@ -65,6 +65,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 isTabBarVisible = !isOtherScreenPushed
             }
             .onChange(of: scrollOffset) { point in
+                guard point.y > -200 else { return }
                 updateNavTitleVisibility()
             }
             .animation(.default, value: viewModel.selectedWallet)
@@ -89,7 +90,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 try? await appContext.walletsDataService.refreshDataForWallet(viewModel.selectedWallet)
             }
-            .onAppear(perform: setTitleViewIfNeeded)
+            .onAppear(perform: onAppear)
     }
 }
 
@@ -104,6 +105,7 @@ private extension HomeWalletView {
         
         var body: some View {
             content()
+                .frame(maxWidth: 200)
                 .onAppear(perform: loadAvatar)
                 .onChange(of: wallet) { newValue in
                     avatar = nil
@@ -156,6 +158,11 @@ private extension HomeWalletView {
             setTitleViewIfNeeded()
             self.isNavTitleVisible = isNavTitleVisible
         }
+    }
+    
+    func onAppear() {
+        setTitleViewIfNeeded()
+        viewModel.onAppear()
     }
     
     func setTitleViewIfNeeded() {

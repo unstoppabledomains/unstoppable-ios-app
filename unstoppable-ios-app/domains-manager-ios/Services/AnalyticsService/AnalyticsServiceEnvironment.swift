@@ -219,6 +219,7 @@ extension Analytics {
         case hotFeatureDetails
         
         case shareWalletInfo, nftDetails, profileSelection
+        case updateToWalletGreetings
     }
 }
 

@@ -1101,6 +1101,20 @@ extension String {
         static let updating = "UPDATING"
         static let transferring = "TRANSFERRING"
         static let copyWalletAddress = "COPY_WALLET_ADDRESS"
+        static let updatedToWalletGreetingsTitle = "UPDATED_TO_WALLET_GREETINGS_TITLE"
+        static let updatedToWalletGreetingsSubtitle = "UPDATED_TO_WALLET_GREETINGS_SUBTITLE"
+        
+        // Intro to v 5.0.0 screen
+        static let introSwitcherTitle = "INTRO_SWITCHER_TITLE"
+        static let introBalanceTitle = "INTRO_BALANCE_TITLE"
+        static let introCollectiblesTitle = "INTRO_COLLECTIBLES_TITLE"
+        static let introMessagesTitle = "INTRO_MESSAGES_TITLE"
+        
+        static let introSwitcherBody = "INTRO_SWITCHER_BODY"
+        static let introBalanceBody = "INTRO_BALANCE_BODY"
+        static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
+        static let introMessagesBody = "INTRO_MESSAGES_BODY"
+        
     }
     
     enum BlockChainIcons: String {

@@ -159,7 +159,7 @@ private extension WalletsDataService {
     
     func refreshDataForWalletSync(_ wallet: WalletEntity) async {
         async let domainsTask: () = refreshWalletDomainsSync(wallet, shouldRefreshPFP: true)
-        async let walletsTask: () = refreshWalletBalancesSync(wallet)
+        async let walletsTask: () = refreshWalletBalancesAsync(wallet)
         async let NFTsTask: () = refreshWalletNFTsSync(wallet)
         
         await (_) = (domainsTask, walletsTask, NFTsTask)
@@ -468,11 +468,11 @@ private extension WalletsDataService {
 private extension WalletsDataService {
     func refreshWalletBalancesAsync(_ wallet: WalletEntity) {
         Task {
-            await refreshWalletBalancesSync(wallet)
+            await refreshWalletBalancesAsync(wallet)
         }
     }
     
-    func refreshWalletBalancesSync(_ wallet: WalletEntity) async {
+    func refreshWalletBalancesAsync(_ wallet: WalletEntity) async {
         do {
             let walletBalance = try await loadBalanceFor(wallet: wallet)
             mutateWalletEntity(wallet) { wallet in
