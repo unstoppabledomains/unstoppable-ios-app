@@ -25,6 +25,7 @@ struct ChatView: View {
                 .scrollDismissesKeyboard(.interactively)
                 .scrollIndicators(.hidden)
                 .listStyle(.plain)
+                .clearListBackground()
                 .animation(.default, value: UUID())
                 .flippedUpsideDown()
                 .onChange(of: viewModel.scrollToMessage) { scrollToMessage in
@@ -33,8 +34,19 @@ struct ChatView: View {
                     }
                 }
             }
+            .displayError($viewModel.error)
+            .background(Color.backgroundMuted2)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image.plusIcon18
+                    }
+                }
+            }
             .safeAreaInset(edge: .bottom) {
-                MessageInputView(input: $viewModel.input, 
+                MessageInputView(input: $viewModel.input,
                                  sendCallback: viewModel.sendPressed,
                                  additionalActionCallback: viewModel.additionalActionPressed)
                     .background(.regularMaterial)
@@ -74,6 +86,16 @@ private extension ChatView {
     @ViewBuilder
     func messageViewFor(_ message: MessagingChatMessageDisplayInfo) -> some View {
         Text(message.id)
+    }
+}
+
+extension ChatView {
+    enum TitleType {
+        case domainName(DomainName)
+        case walletAddress(HexAddress)
+        case channel(MessagingNewsChannel)
+        case group(MessagingGroupChatDetails)
+        case community(MessagingCommunitiesChatDetails)
     }
 }
 
