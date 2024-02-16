@@ -648,7 +648,7 @@ private extension ChatViewPresenter {
                                          walletAddress: String) {
         Task {
             guard let view,
-                let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
+                  let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == profile.wallet.normalized }) else { return }
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
                                                by: wallet,
