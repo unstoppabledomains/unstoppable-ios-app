@@ -817,6 +817,8 @@
 		C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6637A7028100D3A0000AE56 /* LaunchViewController.xib */; };
 		C663A4D62B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */; };
 		C663A4D72B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */; };
+		C663A4D92B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */; };
+		C663A4DA2B7F2FB00099BCE8 /* PresentationStyleCheckerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */; };
 		C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */; };
 		C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */; };
 		C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */; };
@@ -2987,6 +2989,7 @@
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		C6637A7028100D3A0000AE56 /* LaunchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
 		C663A4D52B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateToWalletGreetingsView.swift; sourceTree = "<group>"; };
+		C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationStyleCheckerModifier.swift; sourceTree = "<group>"; };
 		C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileLinkValidator.swift; sourceTree = "<group>"; };
 		C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
@@ -6604,6 +6607,7 @@
 				C64939F72B6373EC00457363 /* DeviceShakeViewModifier.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
 				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
+				C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */,
 				C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */,
 				C6493A012B63A8B700457363 /* TrackingPressingStateModifier.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
@@ -8939,6 +8943,7 @@
 				C6B65F592B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift in Sources */,
 				C63095EC2B0DA66400205054 /* FirebaseAuthError.swift in Sources */,
 				C60982402823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
+				C663A4D92B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift in Sources */,
 				C6D646F42B1ED65200D724AC /* Extension-String+Common.swift in Sources */,
 				C6B6B02D296D309C00D4E30F /* CGSize.swift in Sources */,
 				C6DDF2522B147F1A006D1F0B /* UDIconButtonView.swift in Sources */,
@@ -9821,6 +9826,7 @@
 				C6C8F9202B2183B700A9834D /* DigitalKeyboardViewController.swift in Sources */,
 				C6C8F8E62B21836400A9834D /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C6D647642B1EDEDA00D724AC /* ResizableRoundedWalletImageView.swift in Sources */,
+				C663A4DA2B7F2FB00099BCE8 /* PresentationStyleCheckerModifier.swift in Sources */,
 				C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */,
 				C6C8F8702B21822700A9834D /* TutorialViewPresenter.swift in Sources */,
 				C61807EC2B19A6980032E543 /* PreviewUDWalletsService.swift in Sources */,
