@@ -12,7 +12,8 @@ struct ExpandableTextEditor: View {
     @State private var textSize: CGFloat = 0
     @State var textEditorHeight : CGFloat = 20
     private var font: Font { .currentFont(size: 16) }
-    
+    @FocusState.Binding var focused: Bool
+
     var body: some View {
         
         ZStack(alignment: .leading) {
@@ -35,6 +36,7 @@ struct ExpandableTextEditor: View {
                                     bottom: 0, trailing: 8))
                 .background(Color.backgroundMuted)
                 .tint(Color.foregroundAccent)
+                .focused($focused)
         }
         .onPreferenceChange(ViewHeightKey.self) { textEditorHeight = $0 }
     }

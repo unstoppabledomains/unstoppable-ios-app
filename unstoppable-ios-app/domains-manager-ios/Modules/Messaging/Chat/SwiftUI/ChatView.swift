@@ -10,7 +10,8 @@ import SwiftUI
 struct ChatView: View {
     
     @StateObject var viewModel: ChatViewModel
-    
+    @FocusState var focused: Bool
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
@@ -36,6 +37,11 @@ struct ChatView: View {
             }
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
+            .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
+                withAnimation {
+                    focused = keyboardFocused
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -47,6 +53,7 @@ struct ChatView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 MessageInputView(input: $viewModel.input,
+                                 focused: $focused,
                                  sendCallback: viewModel.sendPressed,
                                  additionalActionCallback: viewModel.additionalActionPressed)
                     .background(.regularMaterial)
@@ -58,19 +65,6 @@ struct ChatView: View {
 
 // MARK: - Private methods
 private extension ChatView {
-    @ViewBuilder
-    func confirmView() -> some View {
-        Button {
-            
-        } label: {
-            Text("Send")
-                .frame(maxWidth: .infinity)
-                .padding()
-        }
-        .padding()
-        .buttonStyle(.borderedProminent)
-    }
-    
     @ViewBuilder
     func messageRow(_ message: MessagingChatMessageDisplayInfo) -> some View {
         messageViewFor(message)
@@ -97,6 +91,17 @@ extension ChatView {
         case group(MessagingGroupChatDetails)
         case community(MessagingCommunitiesChatDetails)
     }
+    
+    enum State {
+        case loading
+        case chat
+        case viewChannel
+        case joinChannel
+        case otherUserIsBlocked
+        case userIsBlocked
+        case cantContactUser(ableToInvite: Bool)
+    }
+    
 }
 
 #Preview {
