@@ -16,27 +16,25 @@ struct UpdateToWalletGreetingsView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
-                    VStack {
-                        VStack(spacing: 32) {
-                            headerView()
-                            hintsListView()
-                        }
-                        Spacer()
+                VStack {
+                    VStack(spacing: 32) {
+                        headerView()
+                        hintsListView()
                     }
+                    Spacer()
                 }
                 gotItButton()
             }
-                .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-                .navigationTitle("")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButtonView {
-                            logButtonPressedAnalyticEvents(button: .close)
-                            presentationMode.wrappedValue.dismiss()
-                        }
+            .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
+                        presentationMode.wrappedValue.dismiss()
                     }
                 }
+            }
         }
     }
 }
@@ -74,7 +72,7 @@ private extension UpdateToWalletGreetingsView {
         HStack(spacing: 16) {
             hint.icon
                 .resizable()
-                .squareFrame(40)
+                .squareFrame(24)
                 .foregroundStyle(hint.iconTint)
                 .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
             VStack(alignment: .leading, spacing: 0) {
@@ -153,16 +151,6 @@ private extension UpdateToWalletGreetingsView {
                 return String.Constants.introMessagesBody.localized()
             }
         }
-        
-        static let introSwitcherTitle = "INTRO_SWITCHER_TITLE"
-        static let introBalanceTitle = "INTRO_BALANCE_TITLE"
-        static let introCollectiblesTitle = "INTRO_COLLECTIBLES_TITLE"
-        static let introMessagesTitle = "INTRO_MESSAGES_TITLE"
-        
-        static let introSwitcherBody = "INTRO_SWITCHER_BODY"
-        static let introBalanceBody = "INTRO_BALANCE_BODY"
-        static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
-        static let introMessagesBody = "INTRO_MESSAGES_BODY"
     }
 }
 
