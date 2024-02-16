@@ -44,15 +44,16 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             }
             .background(Color.backgroundDefault)
             .displayError($error, dismissCallback: dismiss)
+            .safeAreaInset(edge: .bottom) {
+                confirmView()
+                    .background(.regularMaterial)
+            }
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
                         
                     }
                     .opacity(0)
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    confirmView()
                 }
             })
             .onAppear(perform: { setAvailableDomains() })
@@ -95,6 +96,7 @@ private extension ReverseResolutionSelectionView {
                 .resizable()
                 .squareFrame(48)
                 .foregroundStyle(Color.foregroundMuted)
+                .onAppearanceChange($isHeaderVisible)
             AttributedText(attributesList: .init(text: String.Constants.selectPrimaryDomainTitle.localized(wallet.displayName),
                                                  font: .currentFont(withSize: 32, weight: .bold),
                                                  textColor: .foregroundDefault,
@@ -197,7 +199,7 @@ private extension ReverseResolutionSelectionView {
             setSelectedDomainAsRR()
         }
                      .disabled(isConfirmButtonDisabled)
-                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 6, trailing: 0))
+                     .padding(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
                      .allowsHitTesting(!isSettingRRDomain)
     }
     
