@@ -607,6 +607,22 @@
 		C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */; };
 		C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */; };
 		C630BC812B1847F800E29318 /* PendingPurchasedDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */; };
+		C630E4A32B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */; };
+		C630E4A42B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */; };
+		C630E4A62B7F4918008F3269 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A52B7F4918008F3269 /* ChatView.swift */; };
+		C630E4A72B7F4918008F3269 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A52B7F4918008F3269 /* ChatView.swift */; };
+		C630E4A92B7F4959008F3269 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A82B7F4959008F3269 /* ChatViewModel.swift */; };
+		C630E4AA2B7F4959008F3269 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A82B7F4959008F3269 /* ChatViewModel.swift */; };
+		C630E4AC2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4AB2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift */; };
+		C630E4AD2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4AB2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift */; };
+		C630E4B32B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */; };
+		C630E4B42B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */; };
+		C630E4B62B7F58BC008F3269 /* MessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B52B7F58BB008F3269 /* MessageInputView.swift */; };
+		C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B52B7F58BB008F3269 /* MessageInputView.swift */; };
+		C630E4B92B7F5BAC008F3269 /* Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B82B7F5BAC008F3269 /* Padding.swift */; };
+		C630E4BA2B7F5BAC008F3269 /* Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4B82B7F5BAC008F3269 /* Padding.swift */; };
+		C631DFA12B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
+		C631DFA22B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
 		C631DFA42B7B4F4800040221 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA32B7B4F4800040221 /* AnyCodable.swift */; };
 		C631DFA52B7B4F4800040221 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA32B7B4F4800040221 /* AnyCodable.swift */; };
 		C631DFA72B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */; };
@@ -615,8 +631,6 @@
 		C631DFAC2B7B621800040221 /* ChatUserMessageReactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */; };
 		C631DFAD2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */; };
 		C631DFAE2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */; };
-		C631DFA12B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
-		C631DFA22B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -2167,14 +2181,14 @@
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
 		C6D9E29928535E3E002CDAC2 /* ShareDomainImagePullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */; };
-		C6DA0B782B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
-		C6DA0B792B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
-		C6DA0B7B2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
-		C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
 		C6DA0B722B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
 		C6DA0B732B7BC1C1009920B5 /* ListVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */; };
 		C6DA0B752B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */; };
 		C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */; };
+		C6DA0B782B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
+		C6DA0B792B7C9DBA009920B5 /* MessageReactionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */; };
+		C6DA0B7B2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
+		C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */; };
 		C6DDF24D2B147F1A006D1F0B /* UDCollectionSectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */; };
 		C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */; };
 		C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */; };
@@ -2822,11 +2836,18 @@
 		C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContextEnvironmentKeys.swift; sourceTree = "<group>"; };
 		C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedDomainsStorage.swift; sourceTree = "<group>"; };
 		C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPurchasedDomain.swift; sourceTree = "<group>"; };
+		C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysPopoverModifier.swift; sourceTree = "<group>"; };
+		C630E4A52B7F4918008F3269 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		C630E4A82B7F4959008F3269 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		C630E4AB2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedUpsideDownModifier.swift; sourceTree = "<group>"; };
+		C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableTextEditor.swift; sourceTree = "<group>"; };
+		C630E4B52B7F58BB008F3269 /* MessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageInputView.swift; sourceTree = "<group>"; };
+		C630E4B82B7F5BAC008F3269 /* Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Padding.swift; sourceTree = "<group>"; };
+		C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteRotationModifier.swift; sourceTree = "<group>"; };
 		C631DFA32B7B4F4800040221 /* AnyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
 		C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReactionTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C631DFA92B7B621800040221 /* ChatUserMessageReactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUserMessageReactionCell.swift; sourceTree = "<group>"; };
 		C631DFAA2B7B621800040221 /* ChatUserMessageReactionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatUserMessageReactionCell.xib; sourceTree = "<group>"; };
-		C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteRotationModifier.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -3547,10 +3568,10 @@
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
 		C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareDomainImagePullUpView.xib; sourceTree = "<group>"; };
 		C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsDecodingTests.swift; sourceTree = "<group>"; };
-		C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReactionDescription.swift; sourceTree = "<group>"; };
-		C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingReactionType.swift; sourceTree = "<group>"; };
 		C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListVGrid.swift; sourceTree = "<group>"; };
 		C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionSpacingModifier.swift; sourceTree = "<group>"; };
+		C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReactionDescription.swift; sourceTree = "<group>"; };
+		C6DA0B7A2B7CA3F5009920B5 /* MessagingReactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingReactionType.swift; sourceTree = "<group>"; };
 		C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionSectionBackgroundView.swift; sourceTree = "<group>"; };
 		C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowLayoutView.swift; sourceTree = "<group>"; };
 		C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDCollectionListRowButton.swift; sourceTree = "<group>"; };
@@ -5135,6 +5156,17 @@
 			path = Stripe;
 			sourceTree = "<group>";
 		};
+		C630E4B12B7F4E6E008F3269 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
+				C630E4A52B7F4918008F3269 /* ChatView.swift */,
+				C630E4B52B7F58BB008F3269 /* MessageInputView.swift */,
+				C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
 		C631DFAF2B7B621C00040221 /* ChatUserMessageReactionCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -5641,6 +5673,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */,
+				C630E4B12B7F4E6E008F3269 /* SwiftUI */,
 				C652724A2A15D938001A084C /* ChatViewPresenter.swift */,
 				C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */,
 				C652724B2A15D938001A084C /* ChatViewController.swift */,
@@ -5802,8 +5835,8 @@
 				C663A4CD2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.xib */,
 			);
 			path = ChatMessageReactionsSelectionView;
-            sourceTree = "<group>";
-        };
+			sourceTree = "<group>";
+		};
 		C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */ = {
 			isa = PBXGroup;
 			children = (
@@ -6653,6 +6686,7 @@
 				C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */,
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
 				C64939F72B6373EC00457363 /* DeviceShakeViewModifier.swift */,
+				C630E4AB2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
 				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
 				C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */,
@@ -6667,6 +6701,7 @@
 				C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */,
 				C6DDF2572B147F5D006D1F0B /* UDTitleText.swift */,
 				C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */,
+				C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */,
 				C64F8DFC2B60F2010075D37F /* ViewPullUp */,
 			);
 			path = ViewModifiers;
@@ -6679,6 +6714,7 @@
 				C69F991D2A9F1264004B1958 /* Image.swift */,
 				C69F991E2A9F1264004B1958 /* Font.swift */,
 				C69F991F2A9F1264004B1958 /* Color.swift */,
+				C630E4B82B7F5BAC008F3269 /* Padding.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -8273,7 +8309,6 @@
 				C6960C4B2B19986E00B79E28 /* Inter-Black.ttf in Resources */,
 				C6C8F8EC2B21836D00A9834D /* ChatViewController.xib in Resources */,
 				C631DFAE2B7B621800040221 /* ChatUserMessageReactionCell.xib in Resources */,
-				C6C8F9812B2188FA00A9834D /* DomainSelectionCell.xib in Resources */,
 				C6C8F92B2B2183C700A9834D /* DomainsCollectionMintingInProgressCell.xib in Resources */,
 				C6C8F9132B21839100A9834D /* ChatListRequestsCell.xib in Resources */,
 				C6960C2D2B19945000B79E28 /* Assets.xcassets in Resources */,
@@ -8614,6 +8649,7 @@
 				C655CAA52B16E82800FDA063 /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C635AFF328338A080058F14F /* DomainURLActivityItemSource.swift in Sources */,
 				30CB2D2225C2E98C00203052 /* ApiRequestBuilder.swift in Sources */,
+				C630E4B92B7F5BAC008F3269 /* Padding.swift in Sources */,
 				C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */,
 				C64513072808089400413C51 /* UserDefaults.swift in Sources */,
 				C6C9959A289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
@@ -8877,6 +8913,7 @@
 				3018AEAE27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
 				309194EF2582C52400D132B9 /* MobileAPIAccess.swift in Sources */,
 				C69F99202A9F1264004B1958 /* Line.swift in Sources */,
+				C630E4A62B7F4918008F3269 /* ChatView.swift in Sources */,
 				C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */,
 				307EC19B25383EF600D62BA1 /* TransactionItem.swift in Sources */,
 				C642A6A92841157E00299C6E /* TransactionInProgressViewController.swift in Sources */,
@@ -8974,6 +9011,7 @@
 				C6456F152800212000A517D5 /* UIStackView.swift in Sources */,
 				C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
+				C630E4A92B7F4959008F3269 /* ChatViewModel.swift in Sources */,
 				C6F060C42ACAA35B00BA2E7E /* MessagingService+Tools.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */,
@@ -9028,6 +9066,7 @@
 				C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
+				C630E4A32B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */,
 				C63095ED2B0DA66400205054 /* BaseFirebaseInteractionService.swift in Sources */,
 				C6170EB82B79D311008E9C93 /* DomainsSearchView.swift in Sources */,
 				C666895528117C66002062B4 /* BaseViewController.swift in Sources */,
@@ -9126,6 +9165,7 @@
 				C61002A0293E075300462983 /* DomainProfileDataToClipboardCopier.swift in Sources */,
 				C6A7E1DE2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift in Sources */,
 				C617FDA12B58E75B00B93433 /* WalletEntity.swift in Sources */,
+				C630E4AC2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				306486832527253700388026 /* SceneDelegate.swift in Sources */,
 				C617FD972B58BB7600B93433 /* WalletsDataService.swift in Sources */,
 				C6F9FBCF2A25C41900102F81 /* MessagingService.swift in Sources */,
@@ -9151,6 +9191,7 @@
 				C62396772A288A5C00363F60 /* MessagingChatMessageTextTypeDisplayInfo.swift in Sources */,
 				3026FA1727E7678200FE058B /* CreateWalletViewController.swift in Sources */,
 				C609827628251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
+				C630E4B62B7F58BC008F3269 /* MessageInputView.swift in Sources */,
 				C6170EBB2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift in Sources */,
 				C62C3F90283F35610094FC93 /* CodeVerificationView.swift in Sources */,
 				C6010D1F287FC99400FBD401 /* Task.swift in Sources */,
@@ -9306,6 +9347,7 @@
 				C6B65F502B54DA84006D1812 /* HomeWalletViewModel.swift in Sources */,
 				C685A97B2840BF6200E54044 /* InfoScreen.swift in Sources */,
 				C630BC7B2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
+				C630E4B32B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */,
 				C63095EF2B0DA66400205054 /* FirebaseAuthenticationService.swift in Sources */,
 				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
@@ -9536,6 +9578,7 @@
 				C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
 				C6D6462C2B1DC2BC00D724AC /* ResizableRoundedImageView.swift in Sources */,
+				C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */,
 				C6D646742B1ED11B00D724AC /* DomainProfileUpdateDataRequestType.swift in Sources */,
 				C6D647592B1EDC2E00D724AC /* TertiaryButton.swift in Sources */,
 				C6C8F92E2B2183C700A9834D /* DomainsCollectionSearchEmptyCell.swift in Sources */,
@@ -9600,6 +9643,7 @@
 				C6D646762B1ED11B00D724AC /* CryptoEditingGroupedRecord.swift in Sources */,
 				C6D646AC2B1ED16900D724AC /* DomainProfileTutorialViewController.swift in Sources */,
 				C6D6467A2B1ED12100D724AC /* DomainProfileGenericChangeDescription.swift in Sources */,
+				C630E4BA2B7F5BAC008F3269 /* Padding.swift in Sources */,
 				C6D647192B1ED84500D724AC /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C6C8F8372B217E9600A9834D /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6D646612B1ED11400D724AC /* DomainProfileSectionHeader.swift in Sources */,
@@ -9740,6 +9784,7 @@
 				C64939FD2B637DDB00457363 /* ReverseResolutionSelectionView.swift in Sources */,
 				C6D646A82B1ED15A00D724AC /* PublicProfileCryptoListView.swift in Sources */,
 				C6A7E1DF2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift in Sources */,
+				C630E4AD2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				C6D646E22B1ED49D00D724AC /* TableViewSelectionCell.swift in Sources */,
 				C6C8F8262B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6D647182B1ED83800D724AC /* CollectionTextFooterReusableView.swift in Sources */,
@@ -9931,8 +9976,6 @@
 				C6D646B42B1ED18F00D724AC /* WallpaperDomainImagePreviewView.swift in Sources */,
 				C6C8F9892B21893600A9834D /* WCRequestsHandlingServiceProtocol.swift in Sources */,
 				C6D645D52B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
-				C6D645872B1DBAA700D724AC /* DomainCollectionUnderCardControl.swift in Sources */,
-				C6C8F9942B218BA600A9834D /* PreviewAnyCodable.swift in Sources */,
 				C6D6460A2B1DC06300D724AC /* UserDefaults.swift in Sources */,
 				C6C8F92F2B2183C700A9834D /* DomainsListViewController.swift in Sources */,
 				C6B65F912B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
@@ -9949,6 +9992,7 @@
 				C6C8F9242B2183B700A9834D /* SetupPasscodeViewController.swift in Sources */,
 				C6D646832B1ED12D00D724AC /* DomainProfileSocialsSection.swift in Sources */,
 				C6C8F8F72B21837E00A9834D /* ChatTextCell.swift in Sources */,
+				C630E4A42B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */,
 				C6D646B82B1ED1A300D724AC /* UDDomainSharingWatchCardView.swift in Sources */,
 				C6C8F9072B21838400A9834D /* ChatsListNavigationView.swift in Sources */,
 				C618082A2B19ACF20032E543 /* PreviewAPIRequest.swift in Sources */,
@@ -10118,6 +10162,7 @@
 				C6D647952B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C6C8F9272B2183B700A9834D /* OnboardingPasscodeViewController.swift in Sources */,
 				C61808582B19BB3C0032E543 /* PreviewUDFeatureFlagsService.swift in Sources */,
+				C630E4AA2B7F4959008F3269 /* ChatViewModel.swift in Sources */,
 				C663A4CF2B7CAF1B0099BCE8 /* ChatMessageReactionsSelectionViewCell.swift in Sources */,
 				C6E0DC5E2B71E2410069E100 /* ShareWalletInfoView.swift in Sources */,
 				C6D6471F2B1ED89A00D724AC /* ViewErrorHolder.swift in Sources */,
@@ -10272,8 +10317,10 @@
 				C6C8F9262B2183B700A9834D /* VerifyPasscodeViewController.swift in Sources */,
 				C6D6478C2B1EE5B600D724AC /* PreviewDomainProfile.swift in Sources */,
 				C6C8F9172B21839100A9834D /* ChatListCreateProfileCell.swift in Sources */,
+				C630E4B42B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */,
 				C6D647072B1ED7CA00D724AC /* MessagingNewsChannelFeed.swift in Sources */,
 				C6C8F8442B217E9600A9834D /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
+				C630E4A72B7F4918008F3269 /* ChatView.swift in Sources */,
 				C6D645D92B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6D645E02B1DBD8400D724AC /* BaseViewControllerProtocol.swift in Sources */,
 				C6D646222B1DC27100D724AC /* DomainURLActivityItemSource.swift in Sources */,
