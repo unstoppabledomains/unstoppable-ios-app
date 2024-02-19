@@ -12,6 +12,7 @@ struct MessageRowView: View {
     let message: MessagingChatMessageDisplayInfo
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
+    private let timeViewOffset: CGFloat = 18
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
@@ -24,6 +25,9 @@ struct MessageRowView: View {
                 messageContentView()
                 timeView()
             }
+            if isFailedMessage {
+                deleteMessageView()
+            }
         }
         .background(Color.clear)
     }
@@ -31,8 +35,7 @@ struct MessageRowView: View {
 // MARK: - Private methods
 private extension MessageRowView {
     var isFailedMessage: Bool {
-        true
-//        message.deliveryState == .failedToSend
+        message.deliveryState == .failedToSend
     }
     
     @ViewBuilder
@@ -56,9 +59,16 @@ private extension MessageRowView {
         }
     }
     
+    var timeLabelText: String {
+        if message.deliveryState == .sending {
+            return String.Constants.sending.localized() + "..."
+        }
+        return MessageDateFormatter.formatMessageDate(message.time)
+    }
+    
     @ViewBuilder
     func timeLabelView() -> some View {
-        Text(MessageDateFormatter.formatMessageDate(message.time))
+        Text(timeLabelText)
             .font(.currentFont(size: 11))
             .foregroundStyle(Color.foregroundSecondary)
     }
@@ -78,6 +88,17 @@ private extension MessageRowView {
         }
     }
     
+    
+    @ViewBuilder
+    func deleteMessageView() -> some View {
+        UDIconButtonView(icon: .trashIcon,
+                         style: .circle(size: .small,
+                                        style: .raisedTertiary)) {
+            
+        }
+                                        .offset(y: -timeViewOffset)
+    }
+    
     @ViewBuilder
     func otherUserAvatarView() -> some View {
         UIImageBridgeView(image: otherUserAvatar,
@@ -86,7 +107,7 @@ private extension MessageRowView {
         .squareFrame(36)
         .clipShape(Circle())
         .onAppear(perform: loadAvatarForOtherUserInfo)
-        .offset(y: -18)
+        .offset(y: -timeViewOffset)
     }
     
     func loadAvatarForOtherUserInfo() {
