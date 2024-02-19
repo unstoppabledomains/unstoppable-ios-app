@@ -64,7 +64,8 @@ struct HomeTabView: View {
         })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
-                                           mode: presentationDetails.mode)
+                                           mode: presentationDetails.mode,
+                                           domainSetCallback: presentationDetails.domainSetCallback)
             .interactiveDismissDisabled(presentationDetails.mode == .selectFirst)
         })
         .sheet(isPresented: $router.isSearchingDomains, content: {

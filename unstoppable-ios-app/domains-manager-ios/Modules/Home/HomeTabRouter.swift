@@ -267,6 +267,19 @@ extension HomeTabRouter {
         return openedChannelId.normalized.contains(channelId.normalized)
     }
     
+    func popToRoot() {
+        isSelectProfilePresented = false
+        isConnectedAppsListPresented = false
+        isSearchingDomains = false
+        showingUpdatedToWalletGreetings = false
+        presentedNFT = nil
+        presentedDomain = nil
+        presentedPublicDomain = nil
+        resolvingPrimaryDomainWallet = nil
+        showingWalletInfo = nil
+        walletViewNavPath = .init()
+        chatsListCoordinator?.popToChatsList()
+    }
 }
 
 // MARK: - Pull up related
@@ -382,20 +395,6 @@ extension HomeTabRouter: PublicProfileViewDelegate {
 
 // MARK: - Private methods
 private extension HomeTabRouter {
-    func popToRoot() {
-        isSelectProfilePresented = false
-        isConnectedAppsListPresented = false
-        isSearchingDomains = false
-        showingUpdatedToWalletGreetings = false
-        presentedNFT = nil
-        presentedDomain = nil
-        presentedPublicDomain = nil
-        resolvingPrimaryDomainWallet = nil
-        showingWalletInfo = nil
-        walletViewNavPath = .init()
-        chatsListCoordinator?.popToChatsList()
-    }
-    
     func popToRootAndWait() async {
         popToRoot()
         await waitForScreenClosed()
@@ -517,5 +516,6 @@ extension HomeTabRouter {
         
         let wallet: WalletEntity
         let mode: ReverseResolutionSelectionView.Mode
+        var domainSetCallback: (@MainActor (DomainDisplayInfo)->())? = nil
     }
 }

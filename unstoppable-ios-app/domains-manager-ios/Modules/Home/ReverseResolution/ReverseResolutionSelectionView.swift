@@ -19,6 +19,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @State var wallet: WalletEntity
     let mode: Mode
+    var domainSetCallback: (@MainActor (DomainDisplayInfo)->())? = nil
     
     enum Mode {
         case selectFirst
@@ -257,6 +258,7 @@ private extension ReverseResolutionSelectionView {
                 try await udWalletsService.setReverseResolution(to: domain,
                                                                 paymentConfirmationDelegate: paymentHandler)
                 dismiss()
+                domainSetCallback?(selectedDomain)
             } catch {
                 self.error = error
             }
@@ -271,5 +273,6 @@ private extension ReverseResolutionSelectionView {
 
 #Preview {
     ReverseResolutionSelectionView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0], 
-                                   mode: .change)
+                                   mode: .change,
+                                   domainSetCallback: nil)
 }
