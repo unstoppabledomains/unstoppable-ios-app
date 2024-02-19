@@ -70,7 +70,7 @@ extension PaymentTransactionRequestConfirmationView {
 private extension PaymentTransactionRequestConfirmationView {
     func refresh() async throws {
         guard let configuration = self.configuration,
-        let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == configuration.walletAddress }) else { return }
+        let wallet = appContext.walletsDataService.wallets.findWithAddress(configuration.walletAddress) else { return }
         
         let chainId = configuration.chainId
         let blockchainType: BlockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum

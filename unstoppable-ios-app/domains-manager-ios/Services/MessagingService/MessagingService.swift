@@ -101,7 +101,7 @@ extension MessagingService: MessagingServiceProtocol {
         
         if let apiService = try? getDefaultAPIService(),
            let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
-           let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
+           let wallet = wallets.findWithAddress(lastUsedWallet),
            let profile = try? storageService.getUserProfileFor(wallet: wallet.address,
                                                                serviceIdentifier: apiService.serviceIdentifier) {
             /// User already used chat with some profile, select last used.

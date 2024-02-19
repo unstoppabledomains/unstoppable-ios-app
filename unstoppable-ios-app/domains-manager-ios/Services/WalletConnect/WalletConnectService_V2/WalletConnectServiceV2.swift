@@ -958,7 +958,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func detectWallet(by address: HexAddress) throws -> WalletEntity {
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == address.normalized }) else {
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(address) else {
             Debugger.printFailure("No connected wallet can sign for the wallet address \(address)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
@@ -1133,7 +1133,7 @@ extension AnyCodable {
 extension WCRequestUIConfiguration {
     init?(connectionIntent: WCConnectionIntentStorage.Intent, sessionProposal: SessionV2.Proposal) {
         let appInfo = WalletConnectServiceV2.appInfo(from: sessionProposal)
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == connectionIntent.walletAddress.normalized }) else { return nil }
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(connectionIntent.walletAddress) else { return nil }
         let intendedConfig = WalletConnectServiceV2.ConnectionConfig(wallet: wallet, appInfo: appInfo)
         self = WCRequestUIConfiguration.connectWallet(intendedConfig)
     }

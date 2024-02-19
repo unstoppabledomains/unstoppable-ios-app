@@ -46,7 +46,7 @@ extension MessagingService {
     }
     
     func findWalletEntityWithAddress(_ walletAddress: String) throws -> WalletEntity {
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress }) else {
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(walletAddress) else {
             throw MessagingServiceError.walletNotFound
         }
         return wallet
