@@ -2339,6 +2339,8 @@
 		C6FFBADC2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */; };
 		C6FFBADE2B833C3600CB442D /* ChatListChatRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */; };
 		C6FFBADF2B833C3600CB442D /* ChatListChatRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */; };
+		C6FFBAE12B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */; };
+		C6FFBAE22B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3714,6 +3716,7 @@
 		C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListDataTypeSelectorView.swift; sourceTree = "<group>"; };
 		C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreateMessagingProfileView.swift; sourceTree = "<group>"; };
 		C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListChatRowView.swift; sourceTree = "<group>"; };
+		C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeChatNavigationDestination.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -7613,6 +7616,7 @@
 			children = (
 				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
+				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
 				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
 				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
 				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
@@ -9170,6 +9174,7 @@
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
 				C628E35E27FDDA930044E408 /* String.swift in Sources */,
 				C6B435072A53F42400BC644B /* BaseDiffableCollectionViewControllerProtocol.swift in Sources */,
+				C6FFBAE12B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */,
 				C6C9DEAE2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C623967C2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift in Sources */,
 				C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
@@ -9916,6 +9921,7 @@
 				C617FDB42B5919CC00B93433 /* OnAppearanceChange.swift in Sources */,
 				C6C8F8EB2B21836400A9834D /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C60A31672B464F8700C806A5 /* PreviewChatViewController.swift in Sources */,
+				C6FFBAE22B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */,
 				C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */,
 				C6C8F8382B217E9600A9834D /* EnterBackupOnboardingPresenter.swift in Sources */,
 				C6D6466C2B1ED11B00D724AC /* CachedDomainProfileInfo.swift in Sources */,

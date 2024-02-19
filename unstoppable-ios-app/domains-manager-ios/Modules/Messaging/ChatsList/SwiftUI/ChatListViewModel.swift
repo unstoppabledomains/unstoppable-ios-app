@@ -118,6 +118,20 @@ extension ChatListViewModel {
         }
     }
     
+    
+    func openChatWith(conversationState: MessagingChatConversationState) {
+        guard let profile = selectedProfileWalletPair?.profile else { return }
+        if case .existingChat(let messagingChatDisplayInfo) = conversationState,
+           messagingChatDisplayInfo.isCommunityChat,
+           !Constants.isCommunitiesEnabled {
+            return
+        }
+        
+        router.chatTabNavPath.append(HomeChatNavigationDestination.chat(profile: profile,
+                                                                        conversationState: conversationState))
+    }
+    
+    
     func actionButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
@@ -419,6 +433,8 @@ private extension ChatListViewModel {
     
     func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
         (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
+        chatsListToShow = chatsList
+        communitiesListToShow = communitiesList
     }
     
     func refreshAvailableWalletsList() {
@@ -545,6 +561,7 @@ private extension ChatListViewModel {
         
         setNewChats(chats)
         self.channels = channels
+        self.channelsToShow = channels
         
         await awaitForUIReady()
         chatState = .chatsList
@@ -847,21 +864,7 @@ private extension ChatListViewModel {
 //            self?.showData()
 //        }
     }
-    
-    func openChatWith(conversationState: MessagingChatConversationState) {
-//        guard let profile = selectedProfileWalletPair?.profile,
-//              let nav = view?.cNavigationController else { return }
-//        
-//        if case .existingChat(let messagingChatDisplayInfo) = conversationState,
-//           messagingChatDisplayInfo.isCommunityChat,
-//           !Constants.isCommunitiesEnabled {
-//            return
-//        }
-//        UDRouter().showChatScreen(profile: profile,
-//                                  conversationState: conversationState,
-//                                  in: nav)
-    }
-    
+
     func showCurrentDataTypeRequests() {
 //        guard let profile = selectedProfileWalletPair?.profile,
 //              let nav = view?.cNavigationController else { return }

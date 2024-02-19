@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MessagingServiceIdentifier: String, CaseIterable {
+enum MessagingServiceIdentifier: String, Hashable, CaseIterable {
     case xmtp = "xmtp"
     case push = "push"
 }

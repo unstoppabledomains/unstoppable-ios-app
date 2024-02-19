@@ -79,7 +79,7 @@ private extension ChatListDataTypeSelectorView {
         } label: {
             Text(dataType.title)
                 .font(.currentFont(size: 14, weight: .semibold))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(dataType == self.dataType ? Color.black : Color.foregroundDefault)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)

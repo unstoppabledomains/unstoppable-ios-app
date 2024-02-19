@@ -11,18 +11,30 @@ struct ChatListView: View, ViewAnalyticsLogger {
 
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
+    @State private var isNavTitleVisible: Bool = true
     
     @StateObject var viewModel: ChatListViewModel
     @FocusState var focused: Bool
     private var hasBottomView: Bool { viewModel.chatState == .createProfile }
     var analyticsName: Analytics.ViewName { .chatsHome }
+    var isOtherScreenPushed: Bool { !tabRouter.chatTabNavPath.isEmpty }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                List {
-                    chatListContentView()
+                if viewModel.chatState == .chatsList {
+                    List {
+                        chatListContentView()
+                    }
+                    .searchable(text: $viewModel.searchText,
+                                placement: .navigationBarDrawer(displayMode: .automatic),
+                                prompt: Text(String.Constants.search.localized()))
+                } else {
+                    List {
+                        chatListContentView()
+                    }
                 }
+            
                 if viewModel.isLoading {
                     ProgressView()
                 }
@@ -33,6 +45,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
                 withAnimation {
                     focused = keyboardFocused
                 }
+            }
+            .onChange(of: tabRouter.chatTabNavPath) { _ in
+                tabRouter.isTabBarVisible = !isOtherScreenPushed
             }
             .toolbar {
                 //            if !viewModel.navActions.isEmpty {
@@ -48,11 +63,17 @@ struct ChatListView: View, ViewAnalyticsLogger {
                         .background(.regularMaterial)
                 }
             }
+            .navigationDestination(for: HomeChatNavigationDestination.self) { destination in
+                HomeChatLinkNavigationDestination.viewFor(navigationDestination: destination,
+                                                          tabRouter: tabRouter)
+                    .ignoresSafeArea()
+            }
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.chatTabNavPath)
         .onAppear(perform: onAppear)
     }
+    
     
 }
 
@@ -193,9 +214,6 @@ private extension ChatListView {
     @ViewBuilder
     func chatsListStateContentView() -> some View {
         chatsListForSelectedDataTypeView()
-            .searchable(text: $viewModel.searchText,
-                        placement: .navigationBarDrawer(displayMode: .automatic),
-                        prompt: Text(String.Constants.search.localized()))
     }
     
     @ViewBuilder
@@ -214,9 +232,23 @@ private extension ChatListView {
     func chatsListContentView() -> some View {
         Section {
             ForEach(viewModel.chatsListToShow, id: \.id) { chat in
-                ChatListChatRowView(chat: chat)
+                chatRowView(chat: chat)
             }
         }
+        .listRowBackground(Color.backgroundOverlay)
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(4))
+    }
+    
+    @ViewBuilder
+    func chatRowView(chat: MessagingChatDisplayInfo) -> some View {
+        UDCollectionListRowButton(content: {
+            ChatListChatRowView(chat: chat)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .chatInList)
+            viewModel.openChatWith(conversationState: .existingChat(chat))
+        })
     }
     
     @ViewBuilder

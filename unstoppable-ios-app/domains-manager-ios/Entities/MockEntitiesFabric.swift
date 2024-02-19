@@ -33,17 +33,25 @@ extension MockEntitiesFabric {
             .existingChat(isGroup ? mockGroupChat() : mockPrivateChat())
         }
         
-        static func mockPrivateChat() -> MessagingChatDisplayInfo {
+        static func createChatsForUITesting() -> [MessagingChatDisplayInfo] {
+            [mockPrivateChat(lastMessage: nil),
+             mockPrivateChat(lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),
+             mockPrivateChat(lastMessage: createImageMessage(image: .alertCircle, isThisUser: false)),
+             mockPrivateChat(lastMessage: createRemoteContentMessage(isThisUser: false)),
+             mockPrivateChat(lastMessage: createUnknownContentMessage(isThisUser: false))]
+        }
+        
+        static func mockPrivateChat(lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
             let chatId = UUID().uuidString
             let sender = chatSenderFor(isThisUser: true)
+            let otherSender = chatSenderFor(isThisUser: false)
             let avatarURL = URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")
-            let lastMessage: MessagingChatMessageDisplayInfo? = nil
             let unreadMessagesCount = 0
             let chat = MessagingChatDisplayInfo(id: chatId,
                                                 thisUserDetails: sender.userDisplayInfo,
                                                 avatarURL: avatarURL,
                                                 serviceIdentifier: .xmtp,
-                                                type: .private(.init(otherUser: sender.userDisplayInfo)),
+                                                type: .private(.init(otherUser: otherSender.userDisplayInfo)),
                                                 unreadMessagesCount: unreadMessagesCount,
                                                 isApproved: true,
                                                 lastMessageTime: lastMessage?.time ?? Date(),

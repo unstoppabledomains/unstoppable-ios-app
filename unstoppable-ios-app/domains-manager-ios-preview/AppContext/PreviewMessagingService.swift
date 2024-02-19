@@ -158,14 +158,7 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        [.init(id: "1",
-               thisUserDetails: .init(wallet: "1"),
-               avatarURL: nil,
-               serviceIdentifier: .xmtp,
-               type: .private(.init(otherUser: .init(wallet: "2"))),
-               unreadMessagesCount: 0,
-               isApproved: true,
-               lastMessageTime: Date())]
+        MockEntitiesFabric.Messaging.createChatsForUITesting()
     }
     
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }
