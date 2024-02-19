@@ -115,7 +115,11 @@ extension MockEntitiesFabric {
              createImageMessage(id: "42",
                                 image: UIImage.Preview.previewLandscape,
                                 isThisUser: true,
-                                deliveryState: .sending)]
+                                deliveryState: .sending),
+             createRemoteContentMessage(id: "5",
+                                        isThisUser: false),
+             createRemoteContentMessage(id: "6",
+                                        isThisUser: true)]
         }
         
         static func createTextMessage(id: String = UUID().uuidString,
@@ -151,6 +155,24 @@ extension MockEntitiesFabric {
                                                    senderType: sender,
                                                    time: Date(),
                                                    type: .imageBase64(imageDetails),
+                                                   isRead: false,
+                                                   isFirstInChat: true,
+                                                   deliveryState: deliveryState,
+                                                   isEncrypted: false)
+            
+            
+        }
+        
+        static func createRemoteContentMessage(id: String = UUID().uuidString,
+                                               isThisUser: Bool,
+                                               deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
+            let sender = chatSenderFor(isThisUser: isThisUser)
+            return MessagingChatMessageDisplayInfo(id: id,
+                                                   chatId: "2",
+                                                   userId: "1",
+                                                   senderType: sender,
+                                                   time: Date(),
+                                                   type: .remoteContent(.init(serviceData: Data())),
                                                    isRead: false,
                                                    isFirstInChat: true,
                                                    deliveryState: deliveryState,

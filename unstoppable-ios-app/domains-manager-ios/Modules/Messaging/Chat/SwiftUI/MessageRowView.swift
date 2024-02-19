@@ -49,6 +49,8 @@ private extension MessageRowView {
             ImageMessageRowView(image: info.image)
         case .imageBase64(let info):
             ImageMessageRowView(image: info.image)
+        case .remoteContent:
+            RemoteContentMessageRowView()
         default:
             Text("Hello world")
         }

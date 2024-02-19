@@ -105,5 +105,5 @@ extension ChatView {
     ChatView(viewModel: .init(profile: .init(id: "", 
                                              wallet: "",
                                              serviceIdentifier: .push),
-                              conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true)))
+                              conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false)))
 }
