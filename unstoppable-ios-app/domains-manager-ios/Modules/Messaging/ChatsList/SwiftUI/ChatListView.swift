@@ -46,8 +46,11 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     focused = keyboardFocused
                 }
             }
-            .onChange(of: tabRouter.chatTabNavPath) { _ in
+            .onChange(of: tabRouter.chatTabNavPath) { path in
                 tabRouter.isTabBarVisible = !isOtherScreenPushed
+                if path.isEmpty {
+                    setupTitle()
+                }
             }
             .toolbar {
                 //            if !viewModel.navActions.isEmpty {
@@ -66,7 +69,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
             .navigationDestination(for: HomeChatNavigationDestination.self) { destination in
                 HomeChatLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                           tabRouter: tabRouter)
-                    .ignoresSafeArea()
+                .environmentObject(navigationState!)
             }
         }, navigationStateProvider: { state in
             self.navigationState = state
@@ -80,8 +83,12 @@ struct ChatListView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension ChatListView {
     func onAppear() {
+        setupTitle()
+    }
+    
+    func setupTitle() {
         navigationState?.setCustomTitle(customTitle: { ChatListNavTitleView(profile: viewModel.selectedProfile) },
-                                       id: UUID().uuidString)
+                                        id: UUID().uuidString)
         navigationState?.isTitleVisible = true
     }
     
@@ -293,8 +300,6 @@ extension ChatListView {
     let router = HomeTabRouter(profile: profile)
     
     return ChatListView(viewModel: .init(presentOptions: .default,
-                                         selectedProfile: profile,
-                                         router: router,
-                                         messagingService: appContext.messagingService))
+                                         router: router))
     .environmentObject(router)
 }

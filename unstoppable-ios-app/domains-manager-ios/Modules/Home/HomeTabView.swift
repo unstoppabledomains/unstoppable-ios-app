@@ -27,8 +27,8 @@ struct HomeTabView: View {
             .tag(HomeTab.wallets)
             .tabBarVisible(router.isTabBarVisible)
             
-            ChatsListViewControllerWrapper(tabState: router)
-                .ignoresSafeArea()
+            ChatListView(viewModel: .init(presentOptions: .default,
+                                          router: router))
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })

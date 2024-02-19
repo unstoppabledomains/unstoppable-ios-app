@@ -44,12 +44,11 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     private var router: HomeTabRouter
 
     init(presentOptions: ChatsList.PresentOptions,
-         selectedProfile: UserProfile,
          router: HomeTabRouter,
-         messagingService: MessagingServiceProtocol) {
+         messagingService: MessagingServiceProtocol = appContext.messagingService) {
         self.presentOptions = presentOptions
-        self.selectedProfile = selectedProfile
-        if case .wallet(let wallet) = selectedProfile {
+        self.selectedProfile = router.profile
+        if case .wallet(let wallet) = router.profile {
             selectedWallet = wallet
         }
         self.router = router
