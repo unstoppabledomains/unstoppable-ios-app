@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 19.07.2023.
 //
 
-import Foundation
+import UIKit
 
 struct MockEntitiesFabric {
     
@@ -25,6 +25,117 @@ extension MockEntitiesFabric {
          .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
     }
     enum Messaging {
+        static func newChatConversationState() -> MessagingChatConversationState {
+            .newChat(.init(userInfo: .init(wallet: "123"), messagingService: .xmtp))
+        }
+        
+        static func existingChatConversationState(isGroup: Bool = false) -> MessagingChatConversationState {
+            .existingChat(isGroup ? mockGroupChat() : mockPrivateChat())
+        }
+        
+        static func mockPrivateChat() -> MessagingChatDisplayInfo {
+            let chatId = UUID().uuidString
+            let sender = chatSenderFor(isThisUser: true)
+            let avatarURL = URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")
+            let lastMessage: MessagingChatMessageDisplayInfo? = nil
+            let unreadMessagesCount = 0
+            let chat = MessagingChatDisplayInfo(id: chatId,
+                                                thisUserDetails: sender.userDisplayInfo,
+                                                avatarURL: avatarURL,
+                                                serviceIdentifier: .xmtp,
+                                                type: .private(.init(otherUser: sender.userDisplayInfo)),
+                                                unreadMessagesCount: unreadMessagesCount,
+                                                isApproved: true,
+                                                lastMessageTime: lastMessage?.time ?? Date(),
+                                                lastMessage: lastMessage)
+            
+            return chat
+        }
+        
+        static func mockGroupChat() -> MessagingChatDisplayInfo {
+            let chatId = UUID().uuidString
+            let sender = chatSenderFor(isThisUser: true)
+            let avatarURL = URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")
+            let lastMessage: MessagingChatMessageDisplayInfo? = nil
+            let unreadMessagesCount = 0
+            let chat = MessagingChatDisplayInfo(id: chatId,
+                                                thisUserDetails: sender.userDisplayInfo,
+                                                avatarURL: avatarURL,
+                                                serviceIdentifier: .xmtp,
+                                                type: .group(.init(members: [sender.userDisplayInfo],
+                                                                   pendingMembers: [],
+                                                                   name: "Group chat",
+                                                                   adminWallets: [],
+                                                                   isPublic: false)),
+                                                unreadMessagesCount: unreadMessagesCount,
+                                                isApproved: true,
+                                                lastMessageTime: lastMessage?.time ?? Date(),
+                                                lastMessage: lastMessage)
+            
+            return chat
+        }
+        
+        static func createMessagesForUITesting() -> [MessagingChatMessageDisplayInfo] {
+            [createTextMessage(id: "1",
+                               text: "Hello my friend", 
+                               isThisUser: false),
+             createTextMessage(id: "2",
+                               text: "Hi!", 
+                               isThisUser: true),
+             createImageMessage(id: "3",
+                                image: .web3ProfileIllustration, 
+                                isThisUser: false),
+             createImageMessage(id: "4",
+                                image: .profileAccessIllustrationLarge, 
+                                isThisUser: true)]
+        }
+        
+        static func createTextMessage(id: String = UUID().uuidString,
+                                      text: String,
+                                      isThisUser: Bool) -> MessagingChatMessageDisplayInfo {
+            let sender = chatSenderFor(isThisUser: isThisUser)
+            let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
+            
+            return MessagingChatMessageDisplayInfo(id: id,
+                                                   chatId: "2",
+                                                   userId: "1",
+                                                   senderType: sender,
+                                                   time: Date(),
+                                                   type: .text(textDetails),
+                                                   isRead: false,
+                                                   isFirstInChat: true,
+                                                   deliveryState: .delivered,
+                                                   isEncrypted: false)
+        }
+        
+        static func createImageMessage(id: String = UUID().uuidString,
+                                       image: UIImage?,
+                                       isThisUser: Bool) -> MessagingChatMessageDisplayInfo {
+            let sender = chatSenderFor(isThisUser: isThisUser)
+
+            var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
+            imageDetails.image = image
+            return MessagingChatMessageDisplayInfo(id: id,
+                                                   chatId: "2",
+                                                   userId: "1",
+                                                   senderType: sender,
+                                                   time: Date(),
+                                                   type: .imageBase64(imageDetails),
+                                                   isRead: false,
+                                                   isFirstInChat: true,
+                                                   deliveryState: .delivered,
+                                                   isEncrypted: false)
+            
+            
+        }
+        
+        static func chatSenderFor(user: MessagingChatUserDisplayInfo? = nil,
+                                  isThisUser: Bool) -> MessagingChatSender {
+            let user = user ?? messagingChatUserDisplayInfo(domainName: "oleg.x", withPFP: true)
+            
+            return isThisUser ? .thisUser(user) : .otherUser(user)
+        }
+        
         static func messagingChatUserDisplayInfo(wallet: String = "13123",
                                                  domainName: String? = nil,
                                                  withPFP: Bool) -> MessagingChatUserDisplayInfo {

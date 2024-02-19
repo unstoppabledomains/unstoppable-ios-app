@@ -20,6 +20,7 @@ struct ChatView: View {
                         messageRow(message)
                             .id(message.id)
                             .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
                     }
                     .flippedUpsideDown()
                 }
@@ -67,7 +68,8 @@ struct ChatView: View {
 private extension ChatView {
     @ViewBuilder
     func messageRow(_ message: MessagingChatMessageDisplayInfo) -> some View {
-        messageViewFor(message)
+        MessageRowView(message: message,
+                       isGroupChatMessage: viewModel.isGroupChatMessage)
             .contextMenu {
                 Button {
                     print("Change country setting")
@@ -75,11 +77,6 @@ private extension ChatView {
                     Label("Choose Country", systemImage: "globe")
                 }
             }
-    }
-    
-    @ViewBuilder
-    func messageViewFor(_ message: MessagingChatMessageDisplayInfo) -> some View {
-        Text(message.id)
     }
 }
 
@@ -108,6 +105,5 @@ extension ChatView {
     ChatView(viewModel: .init(profile: .init(id: "", 
                                              wallet: "",
                                              serviceIdentifier: .push),
-                              conversationState: .newChat(.init(userInfo: .init(wallet: "123"),
-                                                                messagingService: .push))))
+                              conversationState: MockEntitiesFabric.Messaging.existingChatConversationState()))
 }

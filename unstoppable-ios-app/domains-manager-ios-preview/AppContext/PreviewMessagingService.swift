@@ -79,11 +79,12 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo, before message: MessagingChatMessageDisplayInfo?, cachedOnly: Bool, limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        []
+        MockEntitiesFabric.Messaging.createMessagesForUITesting()
     }
     
     func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo, in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
-        throw NSError()
+//        throw NSError()
+        message
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType, isEncrypted: Bool, in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {

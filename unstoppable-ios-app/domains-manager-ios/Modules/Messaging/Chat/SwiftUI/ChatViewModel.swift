@@ -32,6 +32,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
+    var isGroupChatMessage: Bool { conversationState.isGroupConversation }
     
     var analyticsName: Analytics.ViewName { .chatDialog }
 
@@ -197,6 +198,12 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
+        print("Now have \(messages.count) messages")
+        if scrollToBottom {
+            withAnimation {
+                scrollToMessage = messages.last
+            }
+        }
     }
     
     private func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
