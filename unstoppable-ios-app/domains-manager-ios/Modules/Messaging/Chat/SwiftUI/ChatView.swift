@@ -70,13 +70,13 @@ private extension ChatView {
     func messageRow(_ message: MessagingChatMessageDisplayInfo) -> some View {
         MessageRowView(message: message,
                        isGroupChatMessage: viewModel.isGroupChatMessage)
-            .contextMenu {
-                Button {
-                    print("Change country setting")
-                } label: {
-                    Label("Choose Country", systemImage: "globe")
-                }
-            }
+//            .contextMenu {
+//                Button {
+//                    print("Change country setting")
+//                } label: {
+//                    Label("Choose Country", systemImage: "globe")
+//                }
+//            }
     }
 }
 
@@ -105,5 +105,5 @@ extension ChatView {
     ChatView(viewModel: .init(profile: .init(id: "", 
                                              wallet: "",
                                              serviceIdentifier: .push),
-                              conversationState: MockEntitiesFabric.Messaging.existingChatConversationState()))
+                              conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true)))
 }

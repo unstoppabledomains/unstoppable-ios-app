@@ -153,6 +153,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
+    @MainActor
     private func addMessages(_ messages: [MessagingChatMessageDisplayInfo],
                              scrollToBottom: Bool) async {
         messagesCache.formUnion(messages)

@@ -45,6 +45,10 @@ private extension MessageRowView {
             TextMessageRowView(info: info,
                                isThisUser: message.senderType.isThisUser, 
                                isFailed: isFailedMessage)
+        case .imageData(let info):
+            ImageMessageRowView(image: info.image)
+        case .imageBase64(let info):
+            ImageMessageRowView(image: info.image)
         default:
             Text("Hello world")
         }

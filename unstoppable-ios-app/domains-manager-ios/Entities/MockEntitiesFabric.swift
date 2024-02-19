@@ -29,7 +29,7 @@ extension MockEntitiesFabric {
             .newChat(.init(userInfo: .init(wallet: "123"), messagingService: .xmtp))
         }
         
-        static func existingChatConversationState(isGroup: Bool = false) -> MessagingChatConversationState {
+        static func existingChatConversationState(isGroup: Bool) -> MessagingChatConversationState {
             .existingChat(isGroup ? mockGroupChat() : mockPrivateChat())
         }
         
@@ -82,17 +82,46 @@ extension MockEntitiesFabric {
              createTextMessage(id: "2",
                                text: "Hi!", 
                                isThisUser: true),
+             createTextMessage(id: "21",
+                               text: "I'm failed!",
+                               isThisUser: true,
+                               deliveryState: .failedToSend),
+             createTextMessage(id: "22",
+                               text: "And i'm sending",
+                               isThisUser: true,
+                               deliveryState: .sending),
              createImageMessage(id: "3",
-                                image: .web3ProfileIllustration, 
+                                image: UIImage.Preview.previewLandscape,
+                                isThisUser: false),
+             createImageMessage(id: "31",
+                                image: UIImage.Preview.previewPortrait,
+                                isThisUser: false),
+             createImageMessage(id: "32",
+                                image: UIImage.Preview.previewSquare,
+                                isThisUser: false),
+             createImageMessage(id: "33",
+                                image: nil,
                                 isThisUser: false),
              createImageMessage(id: "4",
-                                image: .profileAccessIllustrationLarge, 
-                                isThisUser: true)]
+                                image: UIImage.Preview.previewPortrait,
+                                isThisUser: true),
+             createImageMessage(id: "4",
+                                image: nil,
+                                isThisUser: true),
+             createImageMessage(id: "41",
+                                image: UIImage.Preview.previewSquare,
+                                isThisUser: true,
+                                deliveryState: .failedToSend),
+             createImageMessage(id: "42",
+                                image: UIImage.Preview.previewLandscape,
+                                isThisUser: true,
+                                deliveryState: .sending)]
         }
         
         static func createTextMessage(id: String = UUID().uuidString,
                                       text: String,
-                                      isThisUser: Bool) -> MessagingChatMessageDisplayInfo {
+                                      isThisUser: Bool,
+                                      deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
             let sender = chatSenderFor(isThisUser: isThisUser)
             let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
             
@@ -104,13 +133,14 @@ extension MockEntitiesFabric {
                                                    type: .text(textDetails),
                                                    isRead: false,
                                                    isFirstInChat: true,
-                                                   deliveryState: .delivered,
+                                                   deliveryState: deliveryState,
                                                    isEncrypted: false)
         }
         
         static func createImageMessage(id: String = UUID().uuidString,
                                        image: UIImage?,
-                                       isThisUser: Bool) -> MessagingChatMessageDisplayInfo {
+                                       isThisUser: Bool,
+                                       deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
             let sender = chatSenderFor(isThisUser: isThisUser)
 
             var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
@@ -123,7 +153,7 @@ extension MockEntitiesFabric {
                                                    type: .imageBase64(imageDetails),
                                                    isRead: false,
                                                    isFirstInChat: true,
-                                                   deliveryState: .delivered,
+                                                   deliveryState: deliveryState,
                                                    isEncrypted: false)
             
             

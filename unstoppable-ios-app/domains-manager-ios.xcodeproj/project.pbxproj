@@ -2181,6 +2181,8 @@
 		C6D8FF1C2B82E7A80094A21E /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */; };
 		C6D8FF1E2B82EB740094A21E /* TextMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */; };
 		C6D8FF1F2B82EB740094A21E /* TextMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */; };
+		C6D8FF212B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */; };
+		C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */; };
 		C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */; };
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
@@ -3569,6 +3571,7 @@
 		C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageRowView.swift; sourceTree = "<group>"; };
+		C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMessageRowView.swift; sourceTree = "<group>"; };
 		C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingCardView.swift; sourceTree = "<group>"; };
 		C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingCardView.xib; sourceTree = "<group>"; };
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
@@ -5168,6 +5171,7 @@
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
 				C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */,
+				C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */,
 				C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */,
 				C630E4B52B7F58BB008F3269 /* MessageInputView.swift */,
 				C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */,
@@ -9084,6 +9088,7 @@
 				C6D6E4E32817C0F4008C66BB /* OnboardingProtectWalletViewPresenter.swift in Sources */,
 				C673D57629FA3645001CC77C /* ReviewAndConfirmTransferViewController.swift in Sources */,
 				C65DEA7729B5837600FF142B /* WalletConnectExternalWalletHandlerProtocol.swift in Sources */,
+				C6D8FF212B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */,
 				C628E35927FDDA850044E408 /* UIColor.swift in Sources */,
 				C6DDF2552B147F1A006D1F0B /* ControllableButtonStyle.swift in Sources */,
 				C60982612824000000546392 /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
@@ -9596,6 +9601,7 @@
 				C6C8F8C32B2182E400A9834D /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				C6C8F8752B21822700A9834D /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D647662B1EDEF600D724AC /* UDCarouselFeature.swift in Sources */,
+				C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */,
 				C61808082B19A9E60032E543 /* AnalyticsServiceProtocol.swift in Sources */,
 				C6C8F80F2B217CA900A9834D /* EmptyRootNavigationController.swift in Sources */,
 				C6D646852B1ED12D00D724AC /* DomainProfileMetadataSection.swift in Sources */,
