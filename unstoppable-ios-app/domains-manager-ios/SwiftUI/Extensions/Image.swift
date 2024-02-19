@@ -76,6 +76,7 @@ extension Image {
     static let framesIcon = Image("framesIcon")
     static let helpIcon = Image("helpIcon24")
     static let docsIcon = Image("docsIcon24")
+    static let dotsCircleIcon = Image("dotsCircleIcon")
 
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")

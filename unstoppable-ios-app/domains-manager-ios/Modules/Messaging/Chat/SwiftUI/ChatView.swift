@@ -7,13 +7,15 @@
 
 import SwiftUI
 
-struct ChatView: View {
+struct ChatView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
     @Binding var isNavTitleVisible: Bool
-
+    var analyticsName: Analytics.ViewName { .chatDialog }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
+    
     var body: some View {
         ScrollViewReader { proxy in
             List {
@@ -45,11 +47,9 @@ struct ChatView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    
-                } label: {
-                    Image.plusIcon18
+            if !viewModel.navActions.isEmpty {
+                ToolbarItem(placement: .topBarTrailing) {
+                    navActionButton()
                 }
             }
         }
@@ -78,10 +78,32 @@ private extension ChatView {
         MessageRowView(message: message,
                        isGroupChatMessage: viewModel.isGroupChatMessage)
     }
+    
+    @ViewBuilder
+    func navActionButton() -> some View {
+        Menu {
+            ForEach(viewModel.navActions, id: \.type) { action in
+                Button(role: action.type.isDestructive ? .destructive : .cancel) {
+                    UDVibration.buttonTap.vibrate()
+                    action.callback()
+                } label: {
+                    Label(
+                        title: { Text(action.type.title) },
+                        icon: { Image(uiImage: action.type.icon) }
+                    )
+                }
+            }
+        } label: {
+            Image.dotsCircleIcon
+                .foregroundStyle(Color.foregroundDefault)
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: .dots)
+        }
+    }
 }
 
 extension ChatView {
-    
     enum State {
         case loading
         case chat
@@ -90,6 +112,63 @@ extension ChatView {
         case otherUserIsBlocked
         case userIsBlocked
         case cantContactUser(ableToInvite: Bool)
+    }
+    
+    
+    struct NavAction {
+        let type: NavActionType
+        let callback: EmptyCallback
+    }
+    
+    enum NavActionType {
+        case viewProfile, block, viewInfo, leave, copyAddress, blockedUsers
+        case joinCommunity, leaveCommunity
+        
+        var title: String {
+            switch self {
+            case .viewProfile:
+                return String.Constants.viewProfile.localized()
+            case .block:
+                return String.Constants.block.localized()
+            case .viewInfo:
+                return String.Constants.viewInfo.localized()
+            case .leave:
+                return String.Constants.leave.localized()
+            case .copyAddress:
+                return String.Constants.copyAddress.localized()
+            case .joinCommunity:
+                return String.Constants.join.localized()
+            case .leaveCommunity:
+                return String.Constants.leave.localized()
+            case .blockedUsers:
+                return String.Constants.blocked.localized()
+            }
+        }
+        
+        var icon: UIImage {
+            switch self {
+            case .viewProfile, .viewInfo:
+                return .arrowUpRight
+            case .block, .blockedUsers:
+                return .systemMultiplyCircle
+            case .leave, .leaveCommunity:
+                return .systemRectangleArrowRight
+            case .copyAddress:
+                return .systemDocOnDoc
+            case .joinCommunity:
+                return .add
+            }
+        }
+        
+        var isDestructive: Bool {
+            switch self {
+            case .viewProfile, .viewInfo, .copyAddress, .joinCommunity, .blockedUsers:
+                return false
+            case .block, .leave, .leaveCommunity:
+                return true
+            }
+        }
+        
     }
 }
 

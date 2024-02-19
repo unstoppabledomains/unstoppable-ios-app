@@ -27,8 +27,8 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var isLoading = false
     @Published private(set) var chatState: ChatView.State = .loading
     @Published private(set) var canSendAttachments = true
-    @Published private(set) var actions: [ChatViewController.NavButtonConfiguration.Action] = []
     @Published private(set) var placeholder: String = ""
+    @Published private(set) var navActions: [ChatView.NavAction] = []
     @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
@@ -270,11 +270,11 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     }
     
     private func setupBarButtons() async {
-        var actions: [ChatViewController.NavButtonConfiguration.Action] = []
+        var actions: [ChatView.NavAction] = []
         
         func addCopyAddressActionFor(userInfo: MessagingChatUserDisplayInfo) {
             actions.append(.init(type: .copyAddress, callback: { [weak self] in
-                //                    self?.logButtonPressedAnalyticEvents(button: .copyWalletAddress)
+                                    self?.logButtonPressedAnalyticEvents(button: .copyWalletAddress)
                 CopyWalletAddressPullUpHandler.copyToClipboard(address: userInfo.wallet, ticker: BlockchainType.Ethereum.rawValue)
             }))
         }
@@ -285,7 +285,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 
                 if canViewProfile  {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
-                        //                            self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
+                                                    self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
                         self?.didPressViewDomainProfileButton(domainName: domainName,
                                                               walletAddress: userInfo.wallet)
                     }))
@@ -309,7 +309,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                     switch blockStatus {
                     case .unblocked, .currentUserIsBlocked:
                         actions.append(.init(type: .block, callback: { [weak self] in
-                            //                                self?.logButtonPressedAnalyticEvents(button: .block)
+                                                            self?.logButtonPressedAnalyticEvents(button: .block)
                             self?.didPressBlockButton()
                         }))
                     case .bothBlocked, .otherUserIsBlocked:
@@ -318,27 +318,27 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 }
             case .group(let groupDetails):
                 actions.append(.init(type: .viewInfo, callback: { [weak self] in
-                    //                        self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
+                                            self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
                     self?.didPressViewGroupInfoButton(groupDetails: groupDetails)
                 }))
                 
                 if !groupDetails.isUserAdminWith(wallet: profile.wallet) {
                     actions.append(.init(type: .leave, callback: { [weak self] in
-                        //                            self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
+                                                    self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
                         self?.didPressLeaveButton()
                     }))
                 }
             case .community(let details):
                 actions.append(.init(type: .viewInfo, callback: { [weak self] in
-                    //                        self?.logButtonPressedAnalyticEvents(button: .viewCommunityInfo,
-                    //                                                             parameters: [.communityName: details.displayName])
+                                            self?.logButtonPressedAnalyticEvents(button: .viewCommunityInfo,
+                                                                                 parameters: [.communityName: details.displayName])
                     self?.didPressViewCommunityInfoButton(communityDetails: details)
                 }))
                 
                 if !details.blockedUsersList.isEmpty {
                     actions.append(.init(type: .blockedUsers, callback: { [weak self] in
-                        //                            self?.logButtonPressedAnalyticEvents(button: .viewBlockedUsersList,
-                        //                                                                 parameters: [.communityName: details.displayName])
+                                                    self?.logButtonPressedAnalyticEvents(button: .viewBlockedUsersList,
+                                                                                         parameters: [.communityName: details.displayName])
                         self?.didPressViewBlockedUsersListButton(communityDetails: details,
                                                                  in: chat)
                     }))
@@ -346,21 +346,21 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 
                 if details.isJoined {
                     actions.append(.init(type: .leaveCommunity, callback: { [weak self] in
-                        //                            self?.logButtonPressedAnalyticEvents(button: .leaveCommunity,
-                        //                                                                 parameters: [.communityName: details.displayName])
+                                                    self?.logButtonPressedAnalyticEvents(button: .leaveCommunity,
+                                                                                         parameters: [.communityName: details.displayName])
                         self?.didPressLeaveCommunity(chat: chat)
                     }))
                 } else {
                     actions.append(.init(type: .joinCommunity, callback: { [weak self] in
-                        //                            self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
-                        //                                                                 parameters: [.communityName: details.displayName])
+                                                    self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                                                                         parameters: [.communityName: details.displayName])
                         self?.didPressJoinCommunity(chat: chat)
                     }))
                 }
             }
         }
         
-        self.actions = actions
+        self.navActions = actions
     }
     
     
@@ -504,10 +504,10 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         
         switch action {
         case .resend:
-            //                logButtonPressedAnalyticEvents(button: .resendMessage)
+                            logButtonPressedAnalyticEvents(button: .resendMessage)
             Task { try? await messagingService.resendMessage(message, in: chat) }
         case .delete:
-            //                logButtonPressedAnalyticEvents(button: .deleteMessage)
+                            logButtonPressedAnalyticEvents(button: .deleteMessage)
             Task { try? await messagingService.deleteMessage(message, in: chat) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
@@ -530,17 +530,17 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 }
             }
         case .copyText(let text):
-            //                logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
+                            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
             UIPasteboard.general.string = text
             Vibration.success.vibrate()
         case .saveImage(let image):
-            //                logButtonPressedAnalyticEvents(button: .saveChatImage)
+                            logButtonPressedAnalyticEvents(button: .saveChatImage)
 //            view?.saveImage(image)
             return
         case .blockUserInGroup(let user):
-            //                logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
-            //                                               parameters: [.chatId : chat.id,
-//                .wallet: user.wallet])
+                            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
+                                                           parameters: [.chatId : chat.id,
+                .wallet: user.wallet])
             Task {
                 isLoading = true
                 try? await setGroupChatUser(user,
