@@ -17,26 +17,12 @@ struct ChatView: View, ViewAnalyticsLogger {
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
     
     var body: some View {
-        ScrollViewReader { proxy in
-            List {
-                ForEach(viewModel.messages.reversed(), id: \.id) { message in
-                    messageRow(message)
-                        .id(message.id)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                }
-//                .flippedUpsideDown()
+        ZStack {
+            if viewModel.chatState != .loading {
+                chatContentView()
             }
-            .scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.hidden)
-            .listStyle(.plain)
-            .clearListBackground()
-            .animation(.default, value: UUID())
-//            .flippedUpsideDown()
-            .onChange(of: viewModel.scrollToMessage) { scrollToMessage in
-                withAnimation {
-                    proxy.scrollTo(scrollToMessage?.id)
-                }
+            if viewModel.isLoading {
+                ProgressView()
             }
         }
         .displayError($viewModel.error)
@@ -54,10 +40,8 @@ struct ChatView: View, ViewAnalyticsLogger {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            MessageInputView(input: $viewModel.input,
-                             focused: $focused,
-                             sendCallback: viewModel.sendPressed,
-                             additionalActionCallback: viewModel.additionalActionPressed)
+            bottomView()
+                .frame(maxWidth: .infinity)
             .background(.regularMaterial)
         }
         .onAppear(perform: onAppear)
@@ -71,6 +55,31 @@ private extension ChatView {
         navigationState.setCustomTitle(customTitle: { ChatNavTitleView(titleType: viewModel.titleType) },
                                        id: UUID().uuidString)
         navigationState.isTitleVisible = true
+    }
+    
+    
+    @ViewBuilder
+    func chatContentView() -> some View {
+        ScrollViewReader { proxy in
+            List {
+                ForEach(viewModel.messages.reversed(), id: \.id) { message in
+                    messageRow(message)
+                        .id(message.id)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .scrollIndicators(.hidden)
+            .listStyle(.plain)
+            .clearListBackground()
+            .animation(.default, value: UUID())
+            .onChange(of: viewModel.scrollToMessage) { scrollToMessage in
+                withAnimation {
+                    proxy.scrollTo(scrollToMessage?.id)
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -101,6 +110,59 @@ private extension ChatView {
             logButtonPressedAnalyticEvents(button: .dots)
         }
     }
+    
+    @ViewBuilder
+    func bottomView() -> some View {
+        switch viewModel.chatState {
+        case .loading, .viewChannel:
+            if true { }
+        case .chat:
+            chatInputView()
+        case .joinChannel:
+            joinChannelBottomView()
+        case .otherUserIsBlocked:
+            otherUserBlockedBottomView()
+        case .userIsBlocked:
+            thisUserBlockedBottomView()
+        case .cantContactUser:
+            if viewModel.isAbleToContactUser {
+                
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func chatInputView() -> some View {
+        MessageInputView(input: $viewModel.input,
+                         focused: $focused,
+                         sendCallback: viewModel.sendPressed,
+                         additionalActionCallback: viewModel.additionalActionPressed)
+    }
+    
+    @ViewBuilder
+    func joinChannelBottomView() -> some View {
+        UDButtonView(text: String.Constants.join.localized(),
+                     style: .large(.raisedPrimary)) {
+            
+        }
+                     .padding()
+    }
+    
+    @ViewBuilder
+    func otherUserBlockedBottomView() -> some View {
+        UDButtonView(text: String.Constants.unblock.localized(),
+                     style: .medium(.ghostPrimary)) {
+            
+        }
+    }
+    
+    @ViewBuilder
+    func thisUserBlockedBottomView() -> some View {
+        Text(String.Constants.messagingYouAreBlocked.localized())
+            .foregroundStyle(Color.foregroundDefault)
+            .font(.currentFont(size: 16, weight: .medium))
+            .padding(.init(vertical: 8))
+    }
 }
 
 extension ChatView {
@@ -111,7 +173,7 @@ extension ChatView {
         case joinChannel
         case otherUserIsBlocked
         case userIsBlocked
-        case cantContactUser(ableToInvite: Bool)
+        case cantContactUser
     }
     
     

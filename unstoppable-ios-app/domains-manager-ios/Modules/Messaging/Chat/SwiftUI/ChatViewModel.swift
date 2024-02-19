@@ -594,7 +594,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                         prepareToChat()
                     } else {
                         isAbleToContactUser = false
-                        chatState = .cantContactUser(ableToInvite: false)
+                        chatState = .cantContactUser
                     }
                 } catch {
                     self.error = error
