@@ -64,7 +64,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
             .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
                 switch mode {
                 case .selectFirst:
-                    guard let wallet = wallets.first(where: { $0.address == self.wallet.address }),
+                    guard let wallet = wallets.findWithAddress(self.wallet.address),
                           wallet.rrDomain == nil,
                           wallet.isReverseResolutionChangeAllowed() else {
                         dismiss()

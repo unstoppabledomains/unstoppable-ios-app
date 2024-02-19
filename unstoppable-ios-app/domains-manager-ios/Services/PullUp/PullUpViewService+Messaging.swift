@@ -253,7 +253,7 @@ private extension PullUpViewService {
             Task {
                 guard let pullUpVC,
                       let domainName = item.userInfo.domainName,
-                    let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == messagingProfile.wallet.normalized }) else { return }
+                    let wallet = appContext.walletsDataService.wallets.findWithAddress(messagingProfile.wallet) else { return }
                 
                 let viewingDomain = wallet.getDomainToViewPublicProfile()?.toDomainItem()
                 let walletAddress = item.userInfo.wallet

@@ -122,7 +122,7 @@ extension WalletEntity: Identifiable {
 
 extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
-        guard let address else { return nil }
+        guard let address = address?.normalized else { return nil }
         
         return first(where: { $0.address == address })
     }
