@@ -78,7 +78,7 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             switch item {
             case .walletInfo(let walletInfo), .selectableWalletInfo(let walletInfo, _):
                 UDVibration.buttonTap.vibrate()
-                guard let wallet = wallets.first(where: { $0.address == walletInfo.address }) else { return }
+                guard let wallet = wallets.findWithAddress(walletInfo.address) else { return }
                 
                 logButtonPressedAnalyticEvents(button: .walletInList, parameters: [.wallet : wallet.address])
                 await didSelectWallet(wallet, walletInfo: walletInfo)
@@ -242,7 +242,7 @@ private extension WalletsListViewPresenter {
             }
             appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
             if case .createdAndBackedUp(let wallet) = result,
-               let wallet = wallets.first(where: { $0.address == wallet.address }) {
+               let wallet = wallets.findWithAddress(wallet.address) {
                 showDetailsOf(wallet: wallet)
             }
             AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
