@@ -18,6 +18,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
     var body: some View {
         NavigationStack(path: $path) {
             content()
+                .environmentObject(navigationState)
         }
         .overlay(alignment: .top, content: {
             if navigationState.isTitleVisible,

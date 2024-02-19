@@ -29,6 +29,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var canSendAttachments = true
     @Published private(set) var actions: [ChatViewController.NavButtonConfiguration.Action] = []
     @Published private(set) var placeholder: String = ""
+    @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
@@ -52,7 +53,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         messagingService.addListener(self)
         featureFlagsService.addListener(self)
         chatState = .loading
-//                    setupTitle()
+        setupTitle()
         setupPlaceholder()
         setupFunctionality()
         loadAndShowData()
@@ -69,6 +70,31 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     
     func additionalActionPressed(_ action: MessageInputView.AdditionalAction) {
         
+    }
+    
+    func setupTitle() {
+        switch conversationState {
+        case .existingChat(let chat):
+            switch chat.type {
+            case .private(let chatDetails):
+                let otherUser = chatDetails.otherUser
+                setupTitleFor(userInfo: otherUser)
+            case .group(let groupDetails):
+                titleType = .group(groupDetails)
+            case .community(let communityDetails):
+                titleType = .community(communityDetails)
+            }
+        case .newChat(let description):
+            setupTitleFor(userInfo: description.userInfo)
+        }
+    }
+    
+    func setupTitleFor(userInfo: MessagingChatUserDisplayInfo) {
+        if let domainName = userInfo.rrDomainName ?? userInfo.domainName {
+            titleType = .domainName(domainName)
+        } else {
+            titleType = .walletAddress(userInfo.wallet)
+        }
     }
     
     private  func setupPlaceholder() {

@@ -2187,6 +2187,8 @@
 		C6D8FF252B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */; };
 		C6D8FF272B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */; };
 		C6D8FF282B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */; };
+		C6D8FF2F2B8307E70094A21E /* ChatNavTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */; };
+		C6D8FF302B8307E70094A21E /* ChatNavTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */; };
 		C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */; };
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
@@ -3578,6 +3580,7 @@
 		C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentMessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnknownMessageRowView.swift; sourceTree = "<group>"; };
+		C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatNavTitleView.swift; sourceTree = "<group>"; };
 		C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingCardView.swift; sourceTree = "<group>"; };
 		C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingCardView.xib; sourceTree = "<group>"; };
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
@@ -5176,13 +5179,9 @@
 			children = (
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
-				C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */,
-				C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */,
-				C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */,
-				C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */,
-				C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */,
-				C630E4B52B7F58BB008F3269 /* MessageInputView.swift */,
-				C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */,
+				C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */,
+				C6D8FF2A2B8302A40094A21E /* InputView */,
+				C6D8FF292B8302980094A21E /* Messages */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -7569,6 +7568,27 @@
 			path = DomainsCollectionListCell;
 			sourceTree = "<group>";
 		};
+		C6D8FF292B8302980094A21E /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */,
+				C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */,
+				C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */,
+				C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */,
+				C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		C6D8FF2A2B8302A40094A21E /* InputView */ = {
+			isa = PBXGroup;
+			children = (
+				C630E4B52B7F58BB008F3269 /* MessageInputView.swift */,
+				C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */,
+			);
+			path = InputView;
+			sourceTree = "<group>";
+		};
 		C6D9E28728533766002CDAC2 /* UDDomainSharingCardView */ = {
 			isa = PBXGroup;
 			children = (
@@ -8713,6 +8733,7 @@
 				306B3D6C253DF88300102A76 /* Constants.swift in Sources */,
 				299713CD28F6931E00743003 /* Function.swift in Sources */,
 				C69F99232A9F1264004B1958 /* AttributedText.swift in Sources */,
+				C6D8FF2F2B8307E70094A21E /* ChatNavTitleView.swift in Sources */,
 				C6289A472AAB06F9002C2DEC /* SquareFrame.swift in Sources */,
 				C64939F82B6373EC00457363 /* DeviceShakeViewModifier.swift in Sources */,
 				C6BA746E2AD4FE1800628DC6 /* PullUpViewService+Tools.swift in Sources */,
@@ -10325,6 +10346,7 @@
 				C6C8F84F2B217E9600A9834D /* ConfirmWordsViewController.swift in Sources */,
 				C6D645AD2B1DBB6200D724AC /* ConnectedAppImageView.swift in Sources */,
 				C6DA0B732B7BC1C1009920B5 /* ListVGrid.swift in Sources */,
+				C6D8FF302B8307E70094A21E /* ChatNavTitleView.swift in Sources */,
 				C618086A2B19BC050032E543 /* UDButtonStyle.swift in Sources */,
 				C618082B2B19AD6C0032E543 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C6C8F9712B2188C000A9834D /* WalletConnectServiceProtocol.swift in Sources */,
