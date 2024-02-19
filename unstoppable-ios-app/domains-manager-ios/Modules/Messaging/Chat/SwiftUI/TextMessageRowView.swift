@@ -26,6 +26,8 @@ struct TextMessageRowView: View {
                 } label: {
                     Label("Choose Country", systemImage: "globe")
                 }
+            } preview: {
+                TextMessageRowView(info: info, isThisUser: isThisUser, isFailed: isFailed)
             }
     }
 }
