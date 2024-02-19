@@ -2185,6 +2185,8 @@
 		C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */; };
 		C6D8FF242B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */; };
 		C6D8FF252B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */; };
+		C6D8FF272B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */; };
+		C6D8FF282B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */; };
 		C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */; };
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
@@ -3575,6 +3577,7 @@
 		C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentMessageRowView.swift; sourceTree = "<group>"; };
+		C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnknownMessageRowView.swift; sourceTree = "<group>"; };
 		C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingCardView.swift; sourceTree = "<group>"; };
 		C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingCardView.xib; sourceTree = "<group>"; };
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
@@ -5174,6 +5177,7 @@
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
 				C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */,
+				C6D8FF262B82FAFB0094A21E /* UnknownMessageRowView.swift */,
 				C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */,
 				C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */,
 				C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */,
@@ -9152,6 +9156,7 @@
 				C673D57229FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */,
 				C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */,
 				C6D3B9B52A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift in Sources */,
+				C6D8FF272B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */,
 				C655CA9C2B16E5BE00FDA063 /* UDListItemView.swift in Sources */,
 				C679B5FB2919327100F543A7 /* DomainProfileSectionDataChangeType.swift in Sources */,
 				C6166CBF28EC179E00004252 /* SafeContinuation.swift in Sources */,
@@ -10217,6 +10222,7 @@
 				C6D647AA2B1F18B500D724AC /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
 				C6C8F84B2B217E9600A9834D /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
 				C6C8F8E32B21836400A9834D /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
+				C6D8FF282B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */,
 				C6C8F8122B217CC000A9834D /* BaseExternalWalletConnectedPresenter.swift in Sources */,
 				C6960C2E2B19947000B79E28 /* UIImage.swift in Sources */,
 				C618081D2B19AB110032E543 /* PurchaseDomainsServiceEnvironmentKey.swift in Sources */,

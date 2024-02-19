@@ -37,13 +37,14 @@ private extension MessageRowView {
     var isFailedMessage: Bool {
         message.deliveryState == .failedToSend
     }
+    var isThisUser: Bool { message.senderType.isThisUser }
     
     @ViewBuilder
     func messageContentView() -> some View {
         switch message.type {
         case .text(let info):
             TextMessageRowView(info: info,
-                               isThisUser: message.senderType.isThisUser, 
+                               isThisUser: isThisUser,
                                isFailed: isFailedMessage)
         case .imageData(let info):
             ImageMessageRowView(image: info.image)
@@ -51,6 +52,9 @@ private extension MessageRowView {
             ImageMessageRowView(image: info.image)
         case .remoteContent:
             RemoteContentMessageRowView()
+        case .unknown(let info):
+            UnknownMessageRowView(info: info,
+                                  isThisUser: isThisUser)
         default:
             Text("Hello world")
         }
@@ -92,8 +96,8 @@ private extension MessageRowView {
             }
             .font(.currentFont(size: 11))
         }
+        .buttonStyle(.plain)
     }
-    
     
     @ViewBuilder
     func deleteMessageView() -> some View {

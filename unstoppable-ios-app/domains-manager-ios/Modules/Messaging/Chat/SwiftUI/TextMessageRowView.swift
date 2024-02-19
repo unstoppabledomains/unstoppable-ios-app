@@ -20,6 +20,13 @@ struct TextMessageRowView: View {
             .foregroundStyle(foregroundColor)
             .background(isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .contextMenu {
+                Button {
+                    print("Change country setting")
+                } label: {
+                    Label("Choose Country", systemImage: "globe")
+                }
+            }
     }
 }
 

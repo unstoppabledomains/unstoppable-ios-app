@@ -119,7 +119,41 @@ extension MockEntitiesFabric {
              createRemoteContentMessage(id: "5",
                                         isThisUser: false),
              createRemoteContentMessage(id: "6",
-                                        isThisUser: true)]
+                                        isThisUser: true),
+             createUnknownContentMessage(id: "7",
+                                         isThisUser: false),
+             createUnknownContentMessage(id: "71",
+                                         name: "Name of file",
+                                         isThisUser: false),
+             createUnknownContentMessage(id: "72",
+                                         size: 100000,
+                                         isThisUser: false),
+             createUnknownContentMessage(id: "73",
+                                         name: "Name of file",
+                                         size: 100000,
+                                         isThisUser: false),
+             createUnknownContentMessage(id: "8",
+                                         isThisUser: true),
+             createUnknownContentMessage(id: "81",
+                                         name: "Name of file",
+                                         isThisUser: true),
+             createUnknownContentMessage(id: "82",
+                                         size: 100000,
+                                         isThisUser: true),
+             createUnknownContentMessage(id: "83",
+                                         name: "Name of file",
+                                         size: 100000,
+                                         isThisUser: true),
+             createUnknownContentMessage(id: "83",
+                                         name: "Name of file",
+                                         size: 100000,
+                                         isThisUser: true,
+                                         deliveryState: .sending),
+             createUnknownContentMessage(id: "83",
+                                         name: "Name of file",
+                                         size: 100000,
+                                         isThisUser: true,
+                                         deliveryState: .failedToSend)]
         }
         
         static func createTextMessage(id: String = UUID().uuidString,
@@ -173,6 +207,33 @@ extension MockEntitiesFabric {
                                                    senderType: sender,
                                                    time: Date(),
                                                    type: .remoteContent(.init(serviceData: Data())),
+                                                   isRead: false,
+                                                   isFirstInChat: true,
+                                                   deliveryState: deliveryState,
+                                                   isEncrypted: false)
+            
+            
+        }
+        
+        static func createUnknownContentMessage(id: String = UUID().uuidString,
+                                                fileName: String = "oleg.zip",
+                                                type: String = "zip",
+                                                name: String? = nil,
+                                                size: Int? = nil,
+                                                isThisUser: Bool,
+                                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
+            let sender = chatSenderFor(isThisUser: isThisUser)
+            let details = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "oleg.zip",
+                                                                     type: "zip",
+                                                                     name: name,
+                                                                     size: size)
+
+            return MessagingChatMessageDisplayInfo(id: id,
+                                                   chatId: "2",
+                                                   userId: "1",
+                                                   senderType: sender,
+                                                   time: Date(),
+                                                   type: .unknown(details),
                                                    isRead: false,
                                                    isFirstInChat: true,
                                                    deliveryState: deliveryState,
