@@ -7,13 +7,15 @@
 
 import SwiftUI
 
-struct ChatListView: View {
+struct ChatListView: View, ViewAnalyticsLogger {
 
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
     
     @StateObject var viewModel: ChatListViewModel
     @FocusState var focused: Bool
+    private var hasBottomView: Bool { viewModel.chatState == .createProfile }
+    var analyticsName: Analytics.ViewName { .chatsHome }
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -27,9 +29,6 @@ struct ChatListView: View {
             }
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
-            .searchable(text: $viewModel.searchText,
-                        placement: .navigationBarDrawer(displayMode: .automatic),
-                        prompt: Text(String.Constants.search.localized()))
             .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
                 withAnimation {
                     focused = keyboardFocused
@@ -41,6 +40,13 @@ struct ChatListView: View {
                 //                    navActionButton()
                 //                }
                 //            }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if hasBottomView {
+                    bottomView()
+                        .frame(maxWidth: .infinity)
+                        .background(.regularMaterial)
+                }
             }
         }, navigationStateProvider: { state in
             self.navigationState = state
@@ -61,6 +67,114 @@ private extension ChatListView {
     @ViewBuilder
     func chatListContentView() -> some View {
         chatDataTypePickerView()
+        chatStateContentView()
+    }
+    
+    var bioImage: Image? {
+        if let bioUIImage {
+            return Image(uiImage: bioUIImage)
+        }
+        return nil
+    }
+    
+    var bioUIImage: UIImage? {
+        if User.instance.getSettings().touchIdActivated {
+            return appContext.authentificationService.biometricIcon
+        }
+        return nil
+    }
+    
+    @ViewBuilder
+    func bottomView() -> some View {
+        if case .createProfile = viewModel.chatState {
+            UDButtonView(text: String.Constants.enable.localized(),
+                         icon: bioImage,
+                         style: .large(.raisedPrimary),
+                         callback: {
+                
+            })
+            .padding()
+        }
+    }
+ 
+    @ViewBuilder
+    func chatStateContentView() -> some View {
+        switch viewModel.chatState {
+        case .noWallet:
+            noWalletStateContentView()
+        case .createProfile:
+            createProfileStateContentView()
+        case .chatsList:
+            chatsListStateContentView()
+        case .loading:
+            loadingStateContentView()
+        }
+    }
+    
+    @ViewBuilder
+    func noWalletStateContentView() -> some View {
+        emptyStateView(title: String.Constants.messagingNoWalletsTitle.localized(),
+                       subtitle: String.Constants.messagingNoWalletsSubtitle.localized(),
+                       icon: .walletIcon,
+                       buttonTitle: String.Constants.addWalletTitle.localized(),
+                       buttonIcon: .plusIcon18,
+                       buttonStyle: .medium(.raisedPrimary),
+                       buttonCallback: {
+            logButtonPressedAnalyticEvents(button: .createMessagingProfile)
+            viewModel.actionButtonPressed()
+        })
+    }
+    
+    @ViewBuilder
+    func createProfileStateContentView() -> some View {
+        ChatCreateMessagingProfileView()
+        .frame(maxWidth: .infinity)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(0))
+    }
+    
+    @ViewBuilder
+    func loadingStateContentView() -> some View {
+        ProgressView()
+            .frame(maxWidth: .infinity)
+            .frame(height: 400)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+    }
+    
+    @ViewBuilder
+    func emptyStateView(title: String,
+                        subtitle: String,
+                        icon: Image,
+                        buttonTitle: String,
+                        buttonIcon: Image,
+                        buttonStyle: UDButtonStyle,
+                        buttonCallback: @escaping MainActorCallback) -> some View {
+        VStack(spacing: 24) {
+            VStack(spacing: 16) {
+                icon
+                    .resizable()
+                    .squareFrame(32)
+                VStack(spacing: 8) {
+                    Text(title)
+                        .font(.currentFont(size: 20, weight: .bold))
+                    Text(subtitle)
+                        .font(.currentFont(size: 16))
+                }
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+            .multilineTextAlignment(.center)
+            
+            UDButtonView(text: buttonTitle,
+                         icon: buttonIcon,
+                         style: buttonStyle,
+                         callback: buttonCallback)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 400)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
     
     @ViewBuilder
@@ -68,7 +182,7 @@ private extension ChatListView {
         switch viewModel.chatState {
         case .noWallet, .createProfile, .loading:
             if true { }
-        case .chatsList, .requestsList:
+        case .chatsList:
             ChatListDataTypeSelectorView(dataType: $viewModel.selectedDataType)
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -76,6 +190,44 @@ private extension ChatListView {
         }
     }
     
+    @ViewBuilder
+    func chatsListStateContentView() -> some View {
+        chatsListForSelectedDataTypeView()
+            .searchable(text: $viewModel.searchText,
+                        placement: .navigationBarDrawer(displayMode: .automatic),
+                        prompt: Text(String.Constants.search.localized()))
+    }
+    
+    @ViewBuilder
+    func chatsListForSelectedDataTypeView() -> some View {
+        switch viewModel.selectedDataType {
+        case .chats:
+            chatsListContentView()
+        case .communities:
+            communitiesListContentView()
+        case .channels:
+            channelsListContentView()
+        }
+    }
+    
+    @ViewBuilder
+    func chatsListContentView() -> some View {
+        Section {
+            ForEach(viewModel.chatsListToShow, id: \.id) { chat in
+                ChatListChatRowView(chat: chat)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func communitiesListContentView() -> some View {
+        
+    }
+    
+    @ViewBuilder
+    func channelsListContentView() -> some View {
+        
+    }
 }
 
 // MARK: - Open methods
@@ -95,13 +247,11 @@ extension ChatListView {
         }
     }
     
-    
     enum ViewState {
         case noWallet
         case createProfile
         case chatsList
         case loading
-        case requestsList(DataType)
     }
 }
 

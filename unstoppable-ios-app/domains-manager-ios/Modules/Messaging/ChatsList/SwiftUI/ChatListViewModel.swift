@@ -33,6 +33,9 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var isLoading = false
     @Published private(set) var chatState: ChatListView.ViewState = .loading
     @Published private(set) var searchData = SearchData()
+    @Published private(set) var chatsListToShow: [MessagingChatDisplayInfo] = []
+    @Published private(set) var communitiesListToShow: [MessagingChatDisplayInfo] = []
+    @Published private(set) var channelsToShow: [MessagingNewsChannel] = []
     @Published var selectedDataType: ChatListView.DataType = .chats
     @Published var error: Error?
     @Published var keyboardFocused: Bool = false

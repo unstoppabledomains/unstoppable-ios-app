@@ -2335,6 +2335,10 @@
 		C6FF2DA628F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FF2DA528F02B1700148007 /* DomainProfileSectionUIChangeType.swift */; };
 		C6FFBAD52B832B3900CB442D /* ChatListDataTypeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */; };
 		C6FFBAD62B832B3900CB442D /* ChatListDataTypeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */; };
+		C6FFBADB2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */; };
+		C6FFBADC2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */; };
+		C6FFBADE2B833C3600CB442D /* ChatListChatRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */; };
+		C6FFBADF2B833C3600CB442D /* ChatListChatRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3708,6 +3712,8 @@
 		C6FF2D9B28F0245F00148007 /* DomainProfileSectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSectionsController.swift; sourceTree = "<group>"; };
 		C6FF2DA528F02B1700148007 /* DomainProfileSectionUIChangeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSectionUIChangeType.swift; sourceTree = "<group>"; };
 		C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListDataTypeSelectorView.swift; sourceTree = "<group>"; };
+		C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCreateMessagingProfileView.swift; sourceTree = "<group>"; };
+		C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListChatRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -7607,6 +7613,8 @@
 			children = (
 				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
+				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
+				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
 				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
 				C6D8FF382B831BC40094A21E /* ChatListNavTitleView.swift */,
 			);
@@ -8751,6 +8759,7 @@
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C603D7A12A56B72700CEC696 /* ChatUnsupportedMessageCell.swift in Sources */,
 				C63095E92B0DA66400205054 /* GoogleIDTokenUtilities.swift in Sources */,
+				C6FFBADB2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */,
 				C60982352823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
 				C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */,
 				C691CFE128C1D5600077C59F /* SetupNewReverseResolutionDomainPresenter.swift in Sources */,
@@ -8898,6 +8907,7 @@
 				C69F99412A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift in Sources */,
 				C69F99242A9F1264004B1958 /* ClearListBackground.swift in Sources */,
 				C6456F0B27FF299800A517D5 /* UIView.swift in Sources */,
+				C6FFBADE2B833C3600CB442D /* ChatListChatRowView.swift in Sources */,
 				C6D3B9D92A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */,
 				C66107942A3180DA0076782F /* MessagingNewsChannelFeed.swift in Sources */,
 				C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */,
@@ -9664,6 +9674,7 @@
 				C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */,
 				C61808082B19A9E60032E543 /* AnalyticsServiceProtocol.swift in Sources */,
 				C6C8F80F2B217CA900A9834D /* EmptyRootNavigationController.swift in Sources */,
+				C6FFBADF2B833C3600CB442D /* ChatListChatRowView.swift in Sources */,
 				C6D646852B1ED12D00D724AC /* DomainProfileMetadataSection.swift in Sources */,
 				C6D6464A2B1ED0D900D724AC /* DomainProfileViewController.swift in Sources */,
 				C6D8FF372B8318310094A21E /* ChatListView.swift in Sources */,
@@ -10028,6 +10039,7 @@
 				C6C8F8BC2B2182E400A9834D /* SetupReverseResolutionViewPresenter.swift in Sources */,
 				C6C8F8C22B2182E400A9834D /* ChooseReverseResolutionDomainViewController.swift in Sources */,
 				C6D6462B2B1DC2AB00D724AC /* PullUpSelectionView.swift in Sources */,
+				C6FFBADC2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */,
 				C61807E42B19A5800032E543 /* SortDomainsManager.swift in Sources */,
 				C6D6462D2B1DC2C000D724AC /* IconBorderedContainerView.swift in Sources */,
 				C6C8F8532B217E9600A9834D /* CreateBackupPasswordBasePresenter.swift in Sources */,
