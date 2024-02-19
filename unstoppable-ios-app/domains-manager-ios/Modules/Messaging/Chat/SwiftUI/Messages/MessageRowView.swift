@@ -53,7 +53,8 @@ private extension MessageRowView {
         case .remoteContent:
             RemoteContentMessageRowView()
         case .unknown(let info):
-            UnknownMessageRowView(info: info,
+            UnknownMessageRowView(message: message,
+                                  info: info,
                                   isThisUser: isThisUser)
         default:
             Text("Hello world")

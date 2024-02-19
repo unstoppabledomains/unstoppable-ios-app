@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 @MainActor
 final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     
@@ -36,16 +34,19 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     var isGroupChatMessage: Bool { conversationState.isGroupConversation }
     
     var analyticsName: Analytics.ViewName { .chatDialog }
-
+    
+    private var router: HomeTabRouter
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
     private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
     
     init(profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
+         router: HomeTabRouter,
          messagingService: MessagingServiceProtocol = appContext.messagingService,
          featureFlagsService: UDFeatureFlagsServiceProtocol = appContext.udFeatureFlagsService) {
         self.profile = profile
         self.conversationState = conversationState
+        self.router = router
         self.messagingService = messagingService
         self.featureFlagsService = featureFlagsService
         
@@ -59,17 +60,76 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         loadAndShowData()
     }
     
+}
+
+// MARK: - Open methods
+extension ChatViewModel {
+    func willDisplayItem(_ item: ChatViewController.Item) {
+        guard let message = item.message,
+              case .existingChat(let chat) = conversationState else { return }
+        
+        guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
+            Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
+            return }
+        
+        if !message.isRead {
+            messages[messageIndex].isRead = true
+            try? messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
+        }
+        
+        if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
+           let last = messagesCache.lazy.sorted(by: { $0.time > $1.time }).last,
+           !last.isFirstInChat {
+            loadMoreMessagesBefore(message: last)
+        }
+    }
     
     func sendPressed() {
-        //            let newMessage = Message(text: input,
-        //                                     isCurrentUser: [true, false].randomElement()!)
-        //            messages.append(newMessage)
-        //            scrollToMessage = newMessage
+        let text = input.trimmedSpaces
+        guard !text.isEmpty else { return }
+        
         input = ""
+        sendTextMesssage(text)
+    }
+    
+    func approveButtonPressed() {  }
+    
+    func didPressUnblockButton() {
+        setOtherUser(blocked: false)
     }
     
     func additionalActionPressed(_ action: MessageInputView.AdditionalAction) {
+        switch action {
+        case .takePhoto:
+            takePhotoButtonPressed()
+        case .choosePhoto:
+            choosePhotoButtonPressed()
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension ChatViewModel {
+    func choosePhotoButtonPressed() {
+        keyboardFocused = false
+        guard let view = appContext.coreAppCoordinator.topVC else { return  }
         
+        UnstoppableImagePicker.shared.pickImage(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
+    }
+    
+    func takePhotoButtonPressed() {
+        keyboardFocused = false
+        guard let view = appContext.coreAppCoordinator.topVC else { return  }
+
+        UnstoppableImagePicker.shared.selectFromCamera(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
     }
     
     func setupTitle() {
@@ -97,7 +157,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    private func setupPlaceholder() {
+    func setupPlaceholder() {
         Task {
             let wallets = messagingService.fetchWalletsAvailableForMessaging()
             let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
@@ -107,13 +167,13 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    private func setupFunctionality() {
+    func setupFunctionality() {
         if isCommunityChat() {
             canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
         }
     }
     
-    private func loadAndShowData() {
+    func loadAndShowData() {
         Task {
             isLoading = true
             do {
@@ -147,7 +207,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    private func loadMoreMessagesBefore(message: MessagingChatMessageDisplayInfo) {
+    func loadMoreMessagesBefore(message: MessagingChatMessageDisplayInfo) {
         guard !isLoadingMessages,
               case .existingChat(let chat) = conversationState else { return }
         
@@ -167,7 +227,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    private func reloadCachedMessages() {
+    func reloadCachedMessages() {
         Task {
             if case .existingChat(let chat) = conversationState {
                 let cachedMessages = try await messagingService.getMessagesForChat(chat,
@@ -180,7 +240,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     }
     
     @MainActor
-    private func addMessages(_ messages: [MessagingChatMessageDisplayInfo],
+    func addMessages(_ messages: [MessagingChatMessageDisplayInfo],
                              scrollToBottom: Bool) async {
         messagesCache.formUnion(messages)
         
@@ -377,30 +437,26 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     }
     
     func didPressLeaveCommunity(chat: MessagingChatDisplayInfo) {
-//        Task {
-//            isLoading = true
-//            do {
-//                _ = try await messagingService.leaveCommunityChat(chat)
-//                view?.cNavigationController?.popViewController(animated: true)
-//            } catch {
-//                self.error = error
-//            }
-//            isLoading = false
-//        }
+        Task {
+            isLoading = true
+            do {
+                _ = try await messagingService.leaveCommunityChat(chat)
+                router.chatTabNavPath.removeLast()
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
     }
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-//        Task {
-//            guard let view,
-//                  let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
-//            UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
-//                                                         name: domainName),
-//                                               by: wallet,
-//                                               viewingDomain: nil,
-//                                               preRequestedAction: nil,
-//                                               in: view)
-//        }
+        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
+        router.showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                 name: domainName),
+                                       by: wallet,
+                                       viewingDomain: nil,
+                                       preRequestedAction: nil)
     }
     
     func didPressViewGroupInfoButton(groupDetails: MessagingGroupChatDetails) {
@@ -463,23 +519,19 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    func didPressUnblockButton() {
-        setOtherUser(blocked: false)
-    }
-    
     func didPressLeaveButton() {
-//        guard case .existingChat(let chat) = conversationState else { return }
-//        
-//        Task {
-//            do {
-//                isLoading = true
-//                try await messagingService.leaveGroupChat(chat)
-//                view?.cNavigationController?.popViewController(animated: true)
-//            } catch {
-//                self.error = error
-//            }
-//            isLoading = false
-//        }
+        guard case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            do {
+                isLoading = true
+                try await messagingService.leaveGroupChat(chat)
+                router.chatTabNavPath.removeLast()
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
     }
     
     func setOtherUser(blocked: Bool) {
@@ -606,25 +658,6 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         await setupBarButtons()
     }
     
-    func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
-//        Task {
-//            guard let contentURL = await messagingService.decryptedContentURLFor(message: message) else {
-//                view?.showSimpleAlert(title: String.Constants.error.localized(),
-//                                      body: String.Constants.messagingShareDecryptionErrorMessage.localized())
-//                Debugger.printFailure("Failed to decrypt message content of \(message.id) - \(message.time) in \(message.chatId)")
-//                return
-//            }
-//            
-//            let activityViewController = UIActivityViewController(activityItems: [contentURL], applicationActivities: nil)
-//            activityViewController.completionWithItemsHandler = { _, completed, _, _ in
-//                if completed {
-//                    AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
-//                }
-//            }
-//            view?.present(activityViewController, animated: true)
-//        }
-    }
-    
     func handleExternalLinkPressed(_ url: URL, in message: MessagingChatMessageDisplayInfo) {
         guard case .existingChat(let chat) = conversationState else { return }
         guard let view = appContext.coreAppCoordinator.topVC else { return }
@@ -692,38 +725,35 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     }
     
     func openLinkOrDomainProfile(_ url: URL) {
-//        Task {
-//            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(url: url)
-//            
-//            switch showDomainResult {
-//            case .none:
-//                view.openLink(.generic(url: url.absoluteString))
-//            case .showUserDomainProfile(let domain, let wallet, let action):
-//                await UDRouter().showDomainProfileScreen(in: view,
-//                                                         domain: domain,
-//                                                         wallet: wallet,
-//                                                         preRequestedAction: action,
-//                                                         dismissCallback: nil)
-//            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
-//                UDRouter().showPublicDomainProfile(of: publicDomainDisplayInfo,
-//                                                   by: wallet,
-//                                                   viewingDomain: nil,
-//                                                   preRequestedAction: action,
-//                                                   in: view)
-//            }
-//        }
+        Task {
+            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(url: url)
+            
+            switch showDomainResult {
+            case .none:
+                appContext.coreAppCoordinator.topVC?.openLink(.generic(url: url.absoluteString))
+            case .showUserDomainProfile(let domain, let wallet, let action):
+                await router.showDomainProfile(domain,
+                                               wallet: wallet,
+                                               preRequestedAction: action,
+                                               dismissCallback: nil)
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
+                router.showPublicDomainProfile(of: publicDomainDisplayInfo,
+                                               by: wallet,
+                                               preRequestedAction: action)
+            }
+        }
     }
 }
 
 // MARK: - Images related methods
 private extension ChatViewModel {
     func didPickImageToSend(_ image: UIImage) {
-//        let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
-//        
-//        let confirmationVC = MessagingImageView.instantiate(mode: .confirmSending(callback: { [weak self] in
-//            self?.sendImageMessage(resizedImage)
-//        }), image: resizedImage)
-//        view?.present(confirmationVC, animated: true)
+        let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
+        
+        let confirmationVC = MessagingImageView.instantiate(mode: .confirmSending(callback: { [weak self] in
+            self?.sendImageMessage(resizedImage)
+        }), image: resizedImage)
+        appContext.coreAppCoordinator.topVC?.present(confirmationVC, animated: true)
     }
 }
 

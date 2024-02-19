@@ -9,8 +9,10 @@ import SwiftUI
 
 struct UnknownMessageRowView: View {
     
+    let message: MessagingChatMessageDisplayInfo
     let info: MessagingChatMessageUnknownTypeDisplayInfo
     let isThisUser: Bool
+    @State private var error: Error?
 
     var body: some View {
         HStack {
@@ -27,6 +29,8 @@ struct UnknownMessageRowView: View {
         .padding(6)
         .background(isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .displayError($error)
+
     }
 }
 
@@ -67,7 +71,7 @@ private extension UnknownMessageRowView {
     @ViewBuilder
     func downloadView(size: Int) -> some View {
         Button {
-            
+            shareUnknownMessageContent()
         } label: {
             HStack(spacing: 2) {
                 Text(String.Constants.download.localized())
@@ -80,8 +84,25 @@ private extension UnknownMessageRowView {
         }
         .buttonStyle(.plain)
     }
+    
+    func shareUnknownMessageContent() {
+        Task {
+            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else {
+                error = LocalError.decryptionError
+                Debugger.printFailure("Failed to decrypt message content of \(message.id) - \(message.time) in \(message.chatId)")
+                return
+            }
+            
+            await shareItems([contentURL], completion: nil)
+        }
+    }
+    
+    enum LocalError: Error {
+        case decryptionError
+    }
 }
 
 #Preview {
-    UnknownMessageRowView(info: .init(fileName: "Filename", type: "zip"), isThisUser: false)
+    UnknownMessageRowView(message: MockEntitiesFabric.Messaging.createUnknownContentMessage(isThisUser: false),
+                          info: .init(fileName: "Filename", type: "zip"), isThisUser: false)
 }

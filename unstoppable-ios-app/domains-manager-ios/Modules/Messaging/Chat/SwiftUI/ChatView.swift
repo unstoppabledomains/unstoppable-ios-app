@@ -154,9 +154,7 @@ private extension ChatView {
     @ViewBuilder
     func inviteUserBottomView() -> some View {
         UDButtonView(text: String.Constants.messagingInvite.localized(),
-                     style: .large(.raisedPrimary)) {
-            
-        }
+                     style: .large(.raisedPrimary)) {  }
                      .padding()
     }
     
@@ -173,7 +171,8 @@ private extension ChatView {
     func otherUserBlockedBottomView() -> some View {
         UDButtonView(text: String.Constants.unblock.localized(),
                      style: .medium(.ghostPrimary)) {
-            
+            logButtonPressedAnalyticEvents(button: .unblock)
+            viewModel.didPressUnblockButton()
         }
     }
     
@@ -260,7 +259,8 @@ extension ChatView {
         ChatView(viewModel: .init(profile: .init(id: "",
                                                  wallet: "",
                                                  serviceIdentifier: .push),
-                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false)),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))),
                  isNavTitleVisible: .constant(true))
         
     }, navigationStateProvider: { state in
