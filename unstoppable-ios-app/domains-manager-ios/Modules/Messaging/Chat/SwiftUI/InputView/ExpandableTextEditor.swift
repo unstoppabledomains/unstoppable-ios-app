@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExpandableTextEditor: View {
     let text: Binding<String>
+    let placeholder: String
     @State private var textSize: CGFloat = 0
     @State var textEditorHeight : CGFloat = 20
     private var font: Font { .currentFont(size: 16) }
@@ -34,9 +35,15 @@ struct ExpandableTextEditor: View {
                 .scrollContentBackground(.hidden)
                 .padding(EdgeInsets(top: 0, leading: 8,
                                     bottom: 0, trailing: 8))
-                .background(Color.backgroundMuted)
+                .background(focused ? Color.backgroundMuted : Color.backgroundSubtle)
                 .tint(Color.foregroundAccent)
                 .focused($focused)
+            
+            Text(placeholder)
+                .opacity(text.wrappedValue.isEmpty ? 1 : 0)
+                .font(.currentFont(size: 16))
+                .foregroundStyle(Color.foregroundSecondary)
+                .padding(.init(horizontal: 16))
         }
         .onPreferenceChange(ViewHeightKey.self) { textEditorHeight = $0 }
     }
@@ -47,4 +54,20 @@ struct ExpandableTextEditor: View {
             value = value + nextValue()
         }
     }
+}
+
+#Preview {
+    
+    struct Preview: View {
+        @FocusState var focused: Bool
+
+        var body: some View {
+            ExpandableTextEditor(text: .constant(""),
+                                 placeholder: "Hello",
+                                 textEditorHeight: 40,
+                                 focused: $focused)
+        }
+    }
+    
+    return Preview()
 }

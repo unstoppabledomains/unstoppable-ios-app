@@ -145,6 +145,7 @@ private extension ChatView {
     @ViewBuilder
     func chatInputView() -> some View {
         MessageInputView(input: $viewModel.input,
+                         placeholder: viewModel.placeholder,
                          focused: $focused,
                          sendCallback: viewModel.sendPressed,
                          additionalActionCallback: viewModel.additionalActionPressed)

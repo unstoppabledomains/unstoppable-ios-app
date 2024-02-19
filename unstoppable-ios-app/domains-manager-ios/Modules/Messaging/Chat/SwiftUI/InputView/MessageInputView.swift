@@ -10,6 +10,7 @@ import SwiftUI
 struct MessageInputView: View {
     
     let input: Binding<String>
+    let placeholder: String
     @FocusState.Binding var focused: Bool
     let sendCallback: MainActorCallback
     let additionalActionCallback: @MainActor (AdditionalAction)->()
@@ -94,7 +95,8 @@ struct MessageInputView: View {
 private extension MessageInputView {
     @ViewBuilder
     func textFieldView() -> some View {
-        ExpandableTextEditor(text: input,
+        ExpandableTextEditor(text: input, 
+                             placeholder: placeholder,
                              focused: $focused)
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }

@@ -97,7 +97,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         }
     }
     
-    private  func setupPlaceholder() {
+    private func setupPlaceholder() {
         Task {
             let wallets = messagingService.fetchWalletsAvailableForMessaging()
             let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
@@ -504,17 +504,17 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         
         switch action {
         case .resend:
-                            logButtonPressedAnalyticEvents(button: .resendMessage)
+            logButtonPressedAnalyticEvents(button: .resendMessage)
             Task { try? await messagingService.resendMessage(message, in: chat) }
         case .delete:
-                            logButtonPressedAnalyticEvents(button: .deleteMessage)
+            logButtonPressedAnalyticEvents(button: .deleteMessage)
             Task { try? await messagingService.deleteMessage(message, in: chat) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
             }
         case .unencrypted:
             guard let view = appContext.coreAppCoordinator.topVC else { return }
-
+            
             appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
         case .viewSenderProfile(let sender):
             Task {
@@ -530,17 +530,17 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 }
             }
         case .copyText(let text):
-                            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
+            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
             UIPasteboard.general.string = text
             Vibration.success.vibrate()
         case .saveImage(let image):
-                            logButtonPressedAnalyticEvents(button: .saveChatImage)
-//            view?.saveImage(image)
-            return
+            logButtonPressedAnalyticEvents(button: .saveChatImage)
+            let saver = PhotoLibraryImageSaver()
+            saver.saveImage(image)
         case .blockUserInGroup(let user):
-                            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
-                                                           parameters: [.chatId : chat.id,
-                .wallet: user.wallet])
+            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
+                                           parameters: [.chatId : chat.id,
+                                                        .wallet: user.wallet])
             Task {
                 isLoading = true
                 try? await setGroupChatUser(user,
