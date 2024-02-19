@@ -40,9 +40,11 @@ struct ChatView: View, ViewAnalyticsLogger {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            bottomView()
-                .frame(maxWidth: .infinity)
-            .background(.regularMaterial)
+            if hasBottomView {
+                bottomView()
+                    .frame(maxWidth: .infinity)
+                    .background(.regularMaterial)
+            }
         }
         .onAppear(perform: onAppear)
     }
@@ -111,6 +113,15 @@ private extension ChatView {
         }
     }
     
+    var hasBottomView: Bool {
+        switch viewModel.chatState {
+        case .loading, .viewChannel:
+            return false
+        default:
+            return true
+        }
+    }
+    
     @ViewBuilder
     func bottomView() -> some View {
         switch viewModel.chatState {
@@ -126,7 +137,7 @@ private extension ChatView {
             thisUserBlockedBottomView()
         case .cantContactUser:
             if viewModel.isAbleToContactUser {
-                
+                inviteUserBottomView()
             }
         }
     }
@@ -137,6 +148,15 @@ private extension ChatView {
                          focused: $focused,
                          sendCallback: viewModel.sendPressed,
                          additionalActionCallback: viewModel.additionalActionPressed)
+    }
+    
+    @ViewBuilder
+    func inviteUserBottomView() -> some View {
+        UDButtonView(text: String.Constants.messagingInvite.localized(),
+                     style: .large(.raisedPrimary)) {
+            
+        }
+                     .padding()
     }
     
     @ViewBuilder
