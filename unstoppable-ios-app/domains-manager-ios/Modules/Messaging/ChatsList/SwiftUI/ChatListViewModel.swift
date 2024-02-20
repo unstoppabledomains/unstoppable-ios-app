@@ -28,6 +28,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     private var communitiesList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
     private let searchManager = ChatsList.SearchManager(debounce: 0.3)
+    private var didResolveInitialState = false
     private var cancellables: Set<AnyCancellable> = []
     @Published private(set) var selectedProfile: UserProfile
     @Published private(set) var isLoading = false
@@ -60,6 +61,8 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
         appContext.udWalletsService.addListener(self)
         SceneDelegate.shared?.addListener(self)
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+            guard self?.didResolveInitialState == true else { return }
+            
             if case .wallet(let selectedWallet) = selectedProfile {
                 self?.didSelectWallet(selectedWallet)
             } else {
@@ -70,11 +73,14 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
             }
         }.store(in: &cancellables)
         $searchText.sink { [weak self] searchText in
+            guard self?.didResolveInitialState == true else { return }
+
             self?.didSearchWith(key: searchText)
         }.store(in: &cancellables)
         $isSearchActive.sink { [weak self] isActive in
-            if self?.selectedProfileWalletPair != nil,
-               !isActive {
+            guard self?.didResolveInitialState == true else { return }
+
+            if !isActive {
                 self?.didStopSearch()
             }
         }.store(in: &cancellables)
@@ -436,10 +442,11 @@ private extension ChatListViewModel {
                     tryAutoOpenChannel(channelId, profile: profile)
                 }
             } catch ChatsListError.noWalletsForChatting {
-                return
+              
             } catch {
                 self.error = error
             }
+            didResolveInitialState = true
         }
     }
     
