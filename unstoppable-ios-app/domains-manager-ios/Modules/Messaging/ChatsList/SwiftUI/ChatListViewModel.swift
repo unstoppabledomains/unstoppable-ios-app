@@ -58,6 +58,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
         }
         self.router = router
         self.messagingService = messagingService
+        router.chatsListCoordinator = self
         appContext.udWalletsService.addListener(self)
         SceneDelegate.shared?.addListener(self)
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
@@ -158,12 +159,9 @@ extension ChatListViewModel {
     }
     
     func openChannel(_ channel: MessagingNewsChannel) {
-        //        guard let profile = selectedProfileWalletPair?.profile,
-        //              let nav = view?.cNavigationController else { return }
+                guard let profile = selectedProfileWalletPair?.profile else { return }
         
-        //        UDRouter().showChannelScreen(profile: profile,
-        //                                     channel: channel,
-        //                                     in: nav)
+        router.chatTabNavPath.append(HomeChatNavigationDestination.channel(profile: profile, channel: channel))
     }
     
     func actionButtonPressed() {
@@ -234,16 +232,6 @@ extension ChatListViewModel {
 
 // MARK: - ChatsListCoordinator
 extension ChatListViewModel: ChatsListCoordinator {
-    var chatId: String? {
-        nil
-//        (view?.cNavigationController?.topVisibleViewController() as? ChatPresenterContentIdentifiable)?.chatId
-    }
-    
-    var channelId: String? {
-        nil
-//        (view?.cNavigationController?.topVisibleViewController() as? ChatPresenterContentIdentifiable)?.channelId
-    }
-    
     func update(presentOptions: ChatsList.PresentOptions) {
         Task {
             do {
@@ -281,11 +269,6 @@ extension ChatListViewModel: ChatsListCoordinator {
                 self.error = error
             }
         }
-    }
-    
-    func popToChatsList() {
-        router.tabViewSelection = .messaging
-        router.popToRoot()
     }
     
     private func dataTypeFor(chatId: String) -> ChatsListDataType {

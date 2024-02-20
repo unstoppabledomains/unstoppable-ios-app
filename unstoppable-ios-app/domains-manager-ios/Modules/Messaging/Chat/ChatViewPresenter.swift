@@ -35,8 +35,7 @@ extension ChatViewPresenterProtocol {
 
 @MainActor
 protocol ChatPresenterContentIdentifiable {
-    var chatId: String? { get }
-    var channelId: String? { get }
+ 
 }
 
 @MainActor

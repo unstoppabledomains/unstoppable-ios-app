@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct NavigationViewWithCustomTitle<Content: View>: View {
+struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
-    @Binding var path: NavigationPath 
+    @Binding var path: Data
     @StateObject private var navigationState = NavigationStateManager()
     @State private var viewPresentationStyle: ViewPresentationStyle = .fullScreen
 
@@ -60,7 +60,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, navigationStateProvider: { _ in }, path: .constant(.init()))
+    }, navigationStateProvider: { _ in }, path: .constant([0]))
 }
 
 final class NavigationStateManager: ObservableObject {

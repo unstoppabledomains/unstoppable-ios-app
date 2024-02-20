@@ -34,7 +34,6 @@ extension ChatsListViewPresenterProtocol {
 @MainActor
 protocol ChatsListCoordinator: AnyObject, ChatPresenterContentIdentifiable {
     func update(presentOptions: ChatsList.PresentOptions)
-    func popToChatsList()
 }
 
 @MainActor
@@ -207,14 +206,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 
 // MARK: - ChatsListCoordinator
 extension ChatsListViewPresenter: ChatsListCoordinator {
-    var chatId: String? {
-        (view?.cNavigationController?.topVisibleViewController() as? ChatPresenterContentIdentifiable)?.chatId
-    }
-    
-    var channelId: String? {
-        (view?.cNavigationController?.topVisibleViewController() as? ChatPresenterContentIdentifiable)?.channelId
-    }
-    
     func update(presentOptions: ChatsList.PresentOptions) {
         view?.presentedViewController?.dismiss(animated: true)
         

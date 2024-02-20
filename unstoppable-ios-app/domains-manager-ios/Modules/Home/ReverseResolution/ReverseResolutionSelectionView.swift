@@ -33,7 +33,6 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     @State private var scrollOffset: CGPoint = .zero
     @State private var isHeaderVisible: Bool = true
     @State private var navigationState: NavigationStateManager?
-    @State private var navPath: NavigationPath = NavigationPath()
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -83,7 +82,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
         }, navigationStateProvider: { state in
             self.navigationState = state
             setTitleViewIfNeeded()
-        }, path: $navPath)
+        }, path: .constant([0]))
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }

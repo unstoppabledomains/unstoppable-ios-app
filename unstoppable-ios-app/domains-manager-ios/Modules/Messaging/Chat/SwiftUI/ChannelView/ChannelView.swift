@@ -193,5 +193,5 @@ extension ChannelView {
                                                     serviceIdentifier: .push),
                                      channel: MockEntitiesFabric.Messaging.mockChannel(name: "Preview")))
     }, navigationStateProvider: { state in
-    }, path: .constant(.init()))
+    }, path: .constant([0]))
 }
