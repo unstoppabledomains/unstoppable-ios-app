@@ -40,7 +40,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var channelsRequests: [MessagingNewsChannel] = []
     @Published var selectedDataType: ChatListView.DataType = .chats
     @Published var error: Error?
-    @Published var keyboardFocused: Bool = false
+    @Published var isSearchActive: Bool = false
     @Published var searchText: String = ""
     @Published var searchMode: ChatsList.SearchMode = .default
 
@@ -930,7 +930,7 @@ private extension ChatListViewModel {
     }
     
     func stopSearching() {
-        keyboardFocused = false
+        isSearchActive = false
         searchText = ""
     }
 }

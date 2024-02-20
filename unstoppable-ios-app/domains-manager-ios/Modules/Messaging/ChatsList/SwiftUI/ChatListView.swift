@@ -43,9 +43,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
-                viewModel.keyboardFocused = value
+                viewModel.isSearchActive = value
             }
-            .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
+            .onChange(of: viewModel.isSearchActive) { keyboardFocused in
                 setSearchFieldActive(keyboardFocused)
                 withAnimation {
                     navigationState?.isTitleVisible = !keyboardFocused
@@ -58,11 +58,11 @@ struct ChatListView: View, ViewAnalyticsLogger {
                 }
             }
             .toolbar {
-                //            if !viewModel.navActions.isEmpty {
-                //                ToolbarItem(placement: .topBarTrailing) {
-                //                    navActionButton()
-                //                }
-                //            }
+                if viewModel.chatState == .chatsList {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        newMessageNavButton()
+                    }
+                }
             }
             .safeAreaInset(edge: .bottom) {
                 if hasBottomView {
@@ -82,6 +82,19 @@ struct ChatListView: View, ViewAnalyticsLogger {
         .onAppear(perform: onAppear)
     }
     
+    @ViewBuilder
+    func newMessageNavButton() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .newMessage)
+            viewModel.searchMode = .chatsOnly
+            viewModel.isSearchActive = true
+        } label: {
+            Image.newMessageIcon
+                .resizable()
+                .foregroundStyle(Color.foregroundDefault)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -101,7 +114,7 @@ private extension ChatListView {
          @available(iOS 17, *)
          Bind isPresented to viewModel.keyboardFocused
          .searchable(text: $viewModel.searchText,
-                     isPresented: $viewModel.keyboardFocused,
+                     isPresented: $viewModel.isSearchActive,
                      placement: .navigationBarDrawer(displayMode: .automatic),
                      prompt: Text(String.Constants.search.localized()))
          */
@@ -196,14 +209,16 @@ private extension ChatListView {
    
     @ViewBuilder
     func chatDataTypePickerView() -> some View {
-        switch viewModel.chatState {
-        case .noWallet, .createProfile, .loading:
-            if true { }
-        case .chatsList:
-            ChatListDataTypeSelectorView(dataType: $viewModel.selectedDataType)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(0))
+        if !viewModel.isSearchActive {
+            switch viewModel.chatState {
+            case .noWallet, .createProfile, .loading:
+                if true { }
+            case .chatsList:
+                ChatListDataTypeSelectorView(dataType: $viewModel.selectedDataType)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(0))
+            }
         }
     }
     
@@ -246,7 +261,7 @@ private extension ChatListView {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                            parameters: [.value: DataType.chats.rawValue])
             viewModel.searchMode = .chatsOnly
-            viewModel.keyboardFocused = true
+            viewModel.isSearchActive = true
         })
     }
     
@@ -334,7 +349,7 @@ private extension ChatListView {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                            parameters: [.value: DataType.channels.rawValue])
             viewModel.searchMode = .channelsOnly
-            viewModel.keyboardFocused = true
+            viewModel.isSearchActive = true
         })
     }
     
