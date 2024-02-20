@@ -13,7 +13,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
-    private var conversationState: MessagingChatConversationState
+    private(set) var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 20
     @Published private(set) var isLoadingMessages = false
     @Published private(set) var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
@@ -64,9 +64,8 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
 
 // MARK: - Open methods
 extension ChatViewModel {
-    func willDisplayItem(_ item: ChatViewController.Item) {
-        guard let message = item.message,
-              case .existingChat(let chat) = conversationState else { return }
+    func willDisplayMessage(_ message: MessagingChatMessageDisplayInfo) {
+        guard case .existingChat(let chat) = conversationState else { return }
         
         guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
             Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
@@ -286,9 +285,7 @@ private extension ChatViewModel {
         }
         self.messages.sort(by: { $0.time > $1.time })
         if scrollToBottom {
-            withAnimation {
-                scrollToMessage = messages.last
-            }
+            scrollToMessage = messages.first
         }
     }
     

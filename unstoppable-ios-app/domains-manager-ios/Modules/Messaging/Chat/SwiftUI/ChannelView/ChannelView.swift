@@ -16,8 +16,12 @@ struct ChannelView: View, ViewAnalyticsLogger {
     
     var body: some View {
         ZStack {
-            if viewModel.channelState != .loading {
+            if !viewModel.isLoading,
+               viewModel.feed.isEmpty {
+                ChannelFeedEmptyView()
+            } else {
                 chatContentView()
+                    .opacity(viewModel.channelState == .loading ? 0 : 1)
             }
             if viewModel.isLoading {
                 ProgressView()
@@ -70,10 +74,8 @@ private extension ChannelView {
             .listStyle(.plain)
             .clearListBackground()
             .animation(.default, value: UUID())
-            .onChange(of: viewModel.scrollToFeed) { scrollToMessage in
-                withAnimation {
-                    proxy.scrollTo(scrollToMessage?.id)
-                }
+            .onChange(of: viewModel.scrollToFeed) { scrollToFeed in
+                proxy.scrollTo(scrollToFeed?.id, anchor: .top)
             }
         }
     }

@@ -1051,6 +1051,12 @@
 		C688C18D2B846FD400BD233A /* ChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18B2B846FD400BD233A /* ChannelViewModel.swift */; };
 		C688C18F2B8474D000BD233A /* ChannelFeedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */; };
 		C688C1902B8474D000BD233A /* ChannelFeedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */; };
+		C688C1952B8483D700BD233A /* ChatMessagesEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */; };
+		C688C1962B8483D700BD233A /* ChatMessagesEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */; };
+		C688C1982B84840700BD233A /* ChatCommonEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */; };
+		C688C1992B84840700BD233A /* ChatCommonEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */; };
+		C688C19B2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */; };
+		C688C19C2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */; };
 		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
 		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
 		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
@@ -3256,6 +3262,9 @@
 		C688C1852B846F1B00BD233A /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		C688C18B2B846FD400BD233A /* ChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewModel.swift; sourceTree = "<group>"; };
 		C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFeedRowView.swift; sourceTree = "<group>"; };
+		C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessagesEmptyView.swift; sourceTree = "<group>"; };
+		C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCommonEmptyView.swift; sourceTree = "<group>"; };
+		C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFeedEmptyView.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -5219,6 +5228,7 @@
 		C630E4B12B7F4E6E008F3269 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */,
 				C688C1842B846F1000BD233A /* ChannelView */,
 				C688C1832B846F0300BD233A /* ChatView */,
 			);
@@ -6577,6 +6587,7 @@
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
 				C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */,
+				C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */,
 				C6D8FF2A2B8302A40094A21E /* InputView */,
 				C6D8FF292B8302980094A21E /* Messages */,
 			);
@@ -6589,6 +6600,7 @@
 				C688C18B2B846FD400BD233A /* ChannelViewModel.swift */,
 				C688C1852B846F1B00BD233A /* ChannelView.swift */,
 				C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */,
+				C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */,
 			);
 			path = ChannelView;
 			sourceTree = "<group>";
@@ -8765,6 +8777,7 @@
 				C69F99792A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */,
 				299713D228F6933F00743003 /* ABIEncoder.swift in Sources */,
 				C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */,
+				C688C19B2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */,
 				C6C8F96F2B21882F00A9834D /* WalletConnectServiceV2Protocol.swift in Sources */,
 				C6BA74722AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift in Sources */,
 				C665B9C028335808005E535C /* ListItemView.swift in Sources */,
@@ -9114,6 +9127,7 @@
 				C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */,
 				C6EECEA72833A68A00978ED5 /* DomainRecordsService.swift in Sources */,
 				C62C3FA9283F67B60094FC93 /* NoDomainsToMintViewPresenter.swift in Sources */,
+				C688C1952B8483D700BD233A /* ChatMessagesEmptyView.swift in Sources */,
 				C69F99282A9F1264004B1958 /* AdaptiveSheet.swift in Sources */,
 				C688C18F2B8474D000BD233A /* ChannelFeedRowView.swift in Sources */,
 				C69F99252A9F1264004B1958 /* UnstoppableListRowInset.swift in Sources */,
@@ -9536,6 +9550,7 @@
 				C617FD9E2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */,
 				C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */,
 				C6FF2D9728F0238100148007 /* DomainProfileSectionChangeUIDescription.swift in Sources */,
+				C688C1982B84840700BD233A /* ChatCommonEmptyView.swift in Sources */,
 				C60982712824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C6109E3B28E5AB310027D5D8 /* MockAppLaunchService.swift in Sources */,
 				C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */,
@@ -9783,6 +9798,7 @@
 				C6D646FA2B1ED74900D724AC /* BlinkingView.swift in Sources */,
 				C6D6475B2B1EDCED00D724AC /* PreviewDomainProfileInfoStorage.swift in Sources */,
 				C6D647742B1EE08900D724AC /* DomainTransactionInProgressCell.swift in Sources */,
+				C688C1962B8483D700BD233A /* ChatMessagesEmptyView.swift in Sources */,
 				C6D645C32B1DBD3900D724AC /* CNavigationTransitionHandler.swift in Sources */,
 				C6D645E92B1DBE7D00D724AC /* UDSearchBar.swift in Sources */,
 				C6C8F8B72B2182CF00A9834D /* MintDomainsConfigurationSelectionCell.swift in Sources */,
@@ -10166,6 +10182,7 @@
 				C6C8F8F72B21837E00A9834D /* ChatTextCell.swift in Sources */,
 				C630E4A42B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */,
 				C6D646B82B1ED1A300D724AC /* UDDomainSharingWatchCardView.swift in Sources */,
+				C688C19C2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */,
 				C6C8F9072B21838400A9834D /* ChatsListNavigationView.swift in Sources */,
 				C618082A2B19ACF20032E543 /* PreviewAPIRequest.swift in Sources */,
 				C6C8F98C2B21895A00A9834D /* PreviewWCConnectedAppsStorageV2.swift in Sources */,
@@ -10442,6 +10459,7 @@
 				C6D645C02B1DBD2500D724AC /* KeyboardService.swift in Sources */,
 				C6C8F9462B2184E000A9834D /* MockEntitiesFabric.swift in Sources */,
 				C6D646E12B1ED49300D724AC /* ShareDomainImagePullUpView.swift in Sources */,
+				C688C1992B84840700BD233A /* ChatCommonEmptyView.swift in Sources */,
 				C6C8F8802B21827700A9834D /* LoginViewPresenter.swift in Sources */,
 				C6C8F8882B21829000A9834D /* SettingsFooterView.swift in Sources */,
 				C6C8F95E2B21867E00A9834D /* PreviewEncrypting.swift in Sources */,

@@ -38,7 +38,6 @@ final class ChannelViewModel: ObservableObject, ViewAnalyticsLogger {
 // MARK: - ChatViewPresenterProtocol
 extension ChannelViewModel {
     func willDisplayFeed(_ displayFeed: MessagingNewsChannelFeed) {
-        print("Will display \(displayFeed.title)")
         guard let displayFeedIndex = feed.firstIndex(where: { $0.id == displayFeed.id }) else {
             Debugger.printFailure("Failed to find will display feed with id \(displayFeed.id) in the list", critical: true)
             return }
@@ -124,10 +123,10 @@ private extension ChannelViewModel {
                 isLoading = true
                 
                 try await loadAndAddFeed(forPage: currentPage, scrollToBottom: true, cachedOnly: true)
+                setupChannelActions()
                 try await loadAndAddFeed(forPage: currentPage, scrollToBottom: true)
                 self.isLoadingFeed = false
                 isLoading = false
-                setupChannelActions()
             } catch {
                 self.error = error
             }
@@ -146,7 +145,7 @@ private extension ChannelViewModel {
            !self.feed.isEmpty {
             self.feed[self.feed.count - 1].isFirstInChannel = true
         }
-        addFeed(feed)
+        addFeed(feed, scrollToBottom: scrollToBottom)
         return feed
     }
     
@@ -180,7 +179,7 @@ private extension ChannelViewModel {
         self.feed.sort(by: { $0.time > $1.time })
         
         if scrollToBottom {
-            self.scrollToFeed = feed.last
+            self.scrollToFeed = feed.first
         }
     }
     

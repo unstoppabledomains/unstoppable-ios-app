@@ -17,8 +17,12 @@ struct ChatView: View, ViewAnalyticsLogger {
     
     var body: some View {
         ZStack {
-            if viewModel.chatState != .loading {
+            if !viewModel.isLoading,
+               viewModel.messages.isEmpty {
+                ChatMessagesEmptyView(mode: emptyStateMode)
+            } else {
                 chatContentView()
+                    .opacity(viewModel.chatState == .loading ? 0 : 1)
             }
             if viewModel.isLoading {
                 ProgressView()
@@ -57,6 +61,18 @@ private extension ChatView {
         navigationState.isTitleVisible = true
     }
     
+    var emptyStateMode: ChatMessagesEmptyView.Mode {
+        if case .existingChat(let chat) = viewModel.conversationState,
+           case .community = chat.type {
+            return .community
+        } else {
+            if viewModel.isAbleToContactUser {
+                return viewModel.isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted
+            } else {
+                return .cantContact
+            }
+        }
+    }
     
     @ViewBuilder
     func chatContentView() -> some View {
@@ -86,6 +102,9 @@ private extension ChatView {
     func messageRow(_ message: MessagingChatMessageDisplayInfo) -> some View {
         MessageRowView(message: message,
                        isGroupChatMessage: viewModel.isGroupChatMessage)
+        .onAppear {
+            viewModel.willDisplayMessage(message)
+        }
     }
     
     @ViewBuilder
