@@ -11,10 +11,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
 
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
-    @State private var isNavTitleVisible: Bool = true
     
     @StateObject var viewModel: ChatListViewModel
-    @FocusState var focused: Bool
+
     private var hasBottomView: Bool { viewModel.chatState == .createProfile }
     var analyticsName: Analytics.ViewName { .chatsHome }
     var isOtherScreenPushed: Bool { !tabRouter.chatTabNavPath.isEmpty }
@@ -43,9 +42,13 @@ struct ChatListView: View, ViewAnalyticsLogger {
             }
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
+            .onReceive(keyboardPublisher) { value in
+                viewModel.keyboardFocused = value
+            }
             .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
+                setSearchFieldActive(keyboardFocused)
                 withAnimation {
-                    focused = keyboardFocused
+                    navigationState?.isTitleVisible = !keyboardFocused
                 }
             }
             .onChange(of: tabRouter.chatTabNavPath) { path in
@@ -79,7 +82,6 @@ struct ChatListView: View, ViewAnalyticsLogger {
         .onAppear(perform: onAppear)
     }
     
-    
 }
 
 // MARK: - Private methods
@@ -92,6 +94,25 @@ private extension ChatListView {
         navigationState?.setCustomTitle(customTitle: { ChatListNavTitleView(profile: viewModel.selectedProfile) },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
+    }
+    
+    func setSearchFieldActive(_ active: Bool) {
+        /*
+         @available(iOS 17, *)
+         Bind isPresented to viewModel.keyboardFocused
+         .searchable(text: $viewModel.searchText,
+                     isPresented: $viewModel.keyboardFocused,
+                     placement: .navigationBarDrawer(displayMode: .automatic),
+                     prompt: Text(String.Constants.search.localized()))
+         */
+        
+        guard let searchBar = findFirstUIViewOfType(UISearchBar.self) else { return }
+        
+        if active {
+            searchBar.becomeFirstResponder()
+        } else {
+            searchBar.resignFirstResponder()
+        }
     }
     
     @ViewBuilder
