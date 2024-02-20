@@ -124,7 +124,7 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getFeedFor(channel: MessagingNewsChannel, cachedOnly: Bool, page: Int, limit: Int) async throws -> [MessagingNewsChannelFeed] {
-        []
+        MockEntitiesFabric.Messaging.createChannelsFeedForUITesting()
     }
     
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed, isRead: Bool, in channel: MessagingNewsChannel) throws {

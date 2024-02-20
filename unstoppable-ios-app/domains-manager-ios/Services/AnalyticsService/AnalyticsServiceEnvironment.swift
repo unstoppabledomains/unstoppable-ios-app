@@ -338,6 +338,7 @@ extension Analytics {
         case viewMessagingProfile, viewGroupChatInfo
         case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo, viewBlockedUsersList
         case block, unblock, leaveGroup, joinCommunity, leaveCommunity
+        case join
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
         case bulkBlockButtonPressed

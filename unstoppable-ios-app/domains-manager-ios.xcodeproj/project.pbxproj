@@ -1045,6 +1045,12 @@
 		C688C17D2B8443CA00BD233A /* ChatListEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C17B2B8443CA00BD233A /* ChatListEmptyStateView.swift */; };
 		C688C17F2B845FE500BD233A /* ChatListUserRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C17E2B845FE500BD233A /* ChatListUserRowView.swift */; };
 		C688C1802B845FE500BD233A /* ChatListUserRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C17E2B845FE500BD233A /* ChatListUserRowView.swift */; };
+		C688C1862B846F1B00BD233A /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1852B846F1B00BD233A /* ChannelView.swift */; };
+		C688C1872B846F1B00BD233A /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1852B846F1B00BD233A /* ChannelView.swift */; };
+		C688C18C2B846FD400BD233A /* ChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18B2B846FD400BD233A /* ChannelViewModel.swift */; };
+		C688C18D2B846FD400BD233A /* ChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18B2B846FD400BD233A /* ChannelViewModel.swift */; };
+		C688C18F2B8474D000BD233A /* ChannelFeedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */; };
+		C688C1902B8474D000BD233A /* ChannelFeedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */; };
 		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
 		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
 		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
@@ -3247,6 +3253,9 @@
 		C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListRequestsRowView.swift; sourceTree = "<group>"; };
 		C688C17B2B8443CA00BD233A /* ChatListEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListEmptyStateView.swift; sourceTree = "<group>"; };
 		C688C17E2B845FE500BD233A /* ChatListUserRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListUserRowView.swift; sourceTree = "<group>"; };
+		C688C1852B846F1B00BD233A /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
+		C688C18B2B846FD400BD233A /* ChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewModel.swift; sourceTree = "<group>"; };
+		C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFeedRowView.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -5210,11 +5219,8 @@
 		C630E4B12B7F4E6E008F3269 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
-				C630E4A52B7F4918008F3269 /* ChatView.swift */,
-				C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */,
-				C6D8FF2A2B8302A40094A21E /* InputView */,
-				C6D8FF292B8302980094A21E /* Messages */,
+				C688C1842B846F1000BD233A /* ChannelView */,
+				C688C1832B846F0300BD233A /* ChatView */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -6543,6 +6549,50 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
+		C688C1812B846EC200BD233A /* ChatListRows */ = {
+			isa = PBXGroup;
+			children = (
+				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
+				C688C17E2B845FE500BD233A /* ChatListUserRowView.swift */,
+				C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */,
+				C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */,
+			);
+			path = ChatListRows;
+			sourceTree = "<group>";
+		};
+		C688C1822B846ED000BD233A /* ChatListViews */ = {
+			isa = PBXGroup;
+			children = (
+				C688C17B2B8443CA00BD233A /* ChatListEmptyStateView.swift */,
+				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
+				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
+				C6D8FF382B831BC40094A21E /* ChatListNavTitleView.swift */,
+			);
+			path = ChatListViews;
+			sourceTree = "<group>";
+		};
+		C688C1832B846F0300BD233A /* ChatView */ = {
+			isa = PBXGroup;
+			children = (
+				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
+				C630E4A52B7F4918008F3269 /* ChatView.swift */,
+				C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */,
+				C6D8FF2A2B8302A40094A21E /* InputView */,
+				C6D8FF292B8302980094A21E /* Messages */,
+			);
+			path = ChatView;
+			sourceTree = "<group>";
+		};
+		C688C1842B846F1000BD233A /* ChannelView */ = {
+			isa = PBXGroup;
+			children = (
+				C688C18B2B846FD400BD233A /* ChannelViewModel.swift */,
+				C688C1852B846F1B00BD233A /* ChannelView.swift */,
+				C688C18E2B8474D000BD233A /* ChannelFeedRowView.swift */,
+			);
+			path = ChannelView;
+			sourceTree = "<group>";
+		};
 		C68953972834D0820046CBA3 /* AddCurrencyCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -7629,14 +7679,8 @@
 				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
 				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
-				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
-				C688C17E2B845FE500BD233A /* ChatListUserRowView.swift */,
-				C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */,
-				C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */,
-				C688C17B2B8443CA00BD233A /* ChatListEmptyStateView.swift */,
-				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
-				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
-				C6D8FF382B831BC40094A21E /* ChatListNavTitleView.swift */,
+				C688C1822B846ED000BD233A /* ChatListViews */,
+				C688C1812B846EC200BD233A /* ChatListRows */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -8542,6 +8586,7 @@
 				306DB27226936C57009D95DE /* Endpoint.swift in Sources */,
 				C6124CC729222CC7005E6537 /* DashesView.swift in Sources */,
 				C60CB4F02B2020DD007FD3CF /* UIImage+Preview.swift in Sources */,
+				C688C18C2B846FD400BD233A /* ChannelViewModel.swift in Sources */,
 				C6D6478F2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */,
 				C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */,
 				C6B6B03E296FF74400D4E30F /* SortDomainsManager.swift in Sources */,
@@ -9070,6 +9115,7 @@
 				C6EECEA72833A68A00978ED5 /* DomainRecordsService.swift in Sources */,
 				C62C3FA9283F67B60094FC93 /* NoDomainsToMintViewPresenter.swift in Sources */,
 				C69F99282A9F1264004B1958 /* AdaptiveSheet.swift in Sources */,
+				C688C18F2B8474D000BD233A /* ChannelFeedRowView.swift in Sources */,
 				C69F99252A9F1264004B1958 /* UnstoppableListRowInset.swift in Sources */,
 				C63095D12B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift in Sources */,
 				C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */,
@@ -9114,6 +9160,7 @@
 				C6F060C42ACAA35B00BA2E7E /* MessagingService+Tools.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */,
+				C688C1862B846F1B00BD233A /* ChannelView.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
@@ -9831,6 +9878,7 @@
 				C6C8F8A82B2182AE00A9834D /* RenameWalletViewController.swift in Sources */,
 				C6C8F91D2B2183AB00A9834D /* InviteFriendsViewController.swift in Sources */,
 				C6C8F97C2B2188FA00A9834D /* QRScannerViewPresenter.swift in Sources */,
+				C688C1872B846F1B00BD233A /* ChannelView.swift in Sources */,
 				C6960C352B19962800B79E28 /* BlockchainType.swift in Sources */,
 				C61808252B19AB250032E543 /* PurchasedDomainsWalletDescription.swift in Sources */,
 				C6B65F9C2B566B84006D1812 /* NFTDetailsView.swift in Sources */,
@@ -10329,6 +10377,7 @@
 				C61807D02B19A4040032E543 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C6C8F87E2B21827700A9834D /* LoginWithEmailViewController.swift in Sources */,
 				C6C8F8672B21814200A9834D /* SecureHashStorage.swift in Sources */,
+				C688C18D2B846FD400BD233A /* ChannelViewModel.swift in Sources */,
 				C6C8F8F62B21837200A9834D /* ChatTextView.swift in Sources */,
 				C6C8F8332B217E9600A9834D /* CreatePasswordViewController.swift in Sources */,
 				C6D6461E2B1DC23600D724AC /* BlockChainItem.swift in Sources */,
@@ -10402,6 +10451,7 @@
 				C6C8F85C2B217FED00A9834D /* BackedUpWallet.swift in Sources */,
 				C6170EC52B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
 				C6C8F82F2B217E7F00A9834D /* AppUpdatedRequired.swift in Sources */,
+				C688C1902B8474D000BD233A /* ChannelFeedRowView.swift in Sources */,
 				C61808752B19BC290032E543 /* UDTitleText.swift in Sources */,
 				C6D646512B1ED10100D724AC /* DomainProfileTopInfoCell.swift in Sources */,
 				C6C8F9732B2188FA00A9834D /* QRScannerSightView.swift in Sources */,

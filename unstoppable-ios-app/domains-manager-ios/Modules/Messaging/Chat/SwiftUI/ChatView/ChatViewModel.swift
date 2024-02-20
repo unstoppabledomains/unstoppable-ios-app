@@ -285,7 +285,6 @@ private extension ChatViewModel {
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
         self.messages.sort(by: { $0.time > $1.time })
-        print("Now have \(messages.count) messages")
         if scrollToBottom {
             withAnimation {
                 scrollToMessage = messages.last

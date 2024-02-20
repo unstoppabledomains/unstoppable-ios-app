@@ -12,7 +12,6 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
-    @Binding var isNavTitleVisible: Bool
     var analyticsName: Analytics.ViewName { .chatDialog }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
     
@@ -49,7 +48,6 @@ struct ChatView: View, ViewAnalyticsLogger {
         .onAppear(perform: onAppear)
     }
 }
-
 
 // MARK: - Private methods
 private extension ChatView {
@@ -115,7 +113,7 @@ private extension ChatView {
     
     var hasBottomView: Bool {
         switch viewModel.chatState {
-        case .loading, .viewChannel:
+        case .loading:
             return false
         default:
             return true
@@ -125,12 +123,10 @@ private extension ChatView {
     @ViewBuilder
     func bottomView() -> some View {
         switch viewModel.chatState {
-        case .loading, .viewChannel:
+        case .loading:
             if true { }
         case .chat:
             chatInputView()
-        case .joinChannel:
-            joinChannelBottomView()
         case .otherUserIsBlocked:
             otherUserBlockedBottomView()
         case .userIsBlocked:
@@ -159,15 +155,6 @@ private extension ChatView {
     }
     
     @ViewBuilder
-    func joinChannelBottomView() -> some View {
-        UDButtonView(text: String.Constants.join.localized(),
-                     style: .large(.raisedPrimary)) {
-            
-        }
-                     .padding()
-    }
-    
-    @ViewBuilder
     func otherUserBlockedBottomView() -> some View {
         UDButtonView(text: String.Constants.unblock.localized(),
                      style: .medium(.ghostPrimary)) {
@@ -189,13 +176,10 @@ extension ChatView {
     enum State {
         case loading
         case chat
-        case viewChannel
-        case joinChannel
         case otherUserIsBlocked
         case userIsBlocked
         case cantContactUser
     }
-    
     
     struct NavAction {
         let type: NavActionType
@@ -260,8 +244,7 @@ extension ChatView {
                                                  wallet: "",
                                                  serviceIdentifier: .push),
                                   conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
-                                  router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))),
-                 isNavTitleVisible: .constant(true))
+                                  router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in
     }, path: .constant(.init()))

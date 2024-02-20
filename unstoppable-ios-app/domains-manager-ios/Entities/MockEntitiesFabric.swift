@@ -59,16 +59,24 @@ extension MockEntitiesFabric {
                          lastMessage: lastMessage)
         }
         
+        static func createChannelsFeedForUITesting() -> [MessagingNewsChannelFeed] {
+            [mockChannelFeed(title: "Preview", message: "One"),
+             mockChannelFeed(title: "Preview with link", message: "One", minutesOffset: -1, withLink: true),
+             mockChannelFeed(title: "Preview", message: "Slkj lfdkj aldjfh ajhalskdfhjlaskdjfh akslhf lkas dfkjshd fkljsha k skfljsdkfskdj fhskj fhskjd fhskjdhf skdjfhskdj fhskdjf skdhf ksdjf hkjh", minutesOffset: -10),
+             mockChannelFeed(title: "Preview", message: "Slkj lfdkj aldjfh ajhalskdfhjlaskdjfh akslhf lkas dfkjshd fkljsha k skfljsdkfskdj fhskj fhskjd fhskjdhf skdjfhskdj fhskdjf skdhf ksdjf hkjh", minutesOffset: -19, withLink: true)]
+        }
+        
         static func mockChannelFeed(title: String,
                                     message: String,
-                                    link: URL? = nil,
+                                    minutesOffset: TimeInterval = 0,
+                                    withLink: Bool = false,
                                     isRead: Bool = true) -> MessagingNewsChannelFeed {
             
             return .init(id: UUID().uuidString,
                          title: title,
                          message: message,
-                         link: link,
-                         time: Date(),
+                         link: withLink ? URL(string: "https://google.com") : nil,
+                         time: Date().addingTimeInterval(minutesOffset * 60),
                          isRead: isRead,
                          isFirstInChannel: false)
         }

@@ -21,8 +21,7 @@ struct HomeChatLinkNavigationDestination {
         case .chat(let profile, let conversationState):
             ChatView(viewModel: .init(profile: profile,
                                       conversationState: conversationState,
-                                      router: tabRouter),
-                     isNavTitleVisible: .constant(true))
+                                      router: tabRouter))
                 
         }
     }
