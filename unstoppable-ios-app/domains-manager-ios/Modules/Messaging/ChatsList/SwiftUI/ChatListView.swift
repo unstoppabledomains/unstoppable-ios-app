@@ -267,12 +267,37 @@ private extension ChatListView {
     
     @ViewBuilder
     func communitiesListContentView() -> some View {
-        if viewModel.communitiesListToShow.isEmpty {
+        switch viewModel.communitiesListState {
+        case .noProfile:
+            communitiesListNoProfileView()
+        case .empty:
             communitiesListEmptyView()
-        } else {
-            chatsListContentViewFor(chats: viewModel.communitiesListToShow,
+        case .notJoinedOnly(let communities):
+            chatsListContentViewFor(chats: communities,
                                     requests: [])
+        case .mixed(let joined, let notJoined):
+            chatsListContentViewFor(chats: joined,
+                                    requests: [])
+            if !notJoined.isEmpty {
+                chatsListContentViewFor(chats: notJoined,
+                                        requests: [],
+                                        title: String.Constants.messagingCommunitiesSectionTitle.localized())
+            }
         }
+    }
+    
+    @ViewBuilder
+    func communitiesListNoProfileView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.messagingCommunitiesListEnableTitle.localized(),
+                               subtitle: String.Constants.messagingCommunitiesListEnableSubtitle.localized(),
+                               icon: .chatRequestsIcon,
+                               buttonTitle: String.Constants.enable.localized(),
+                               buttonIcon: Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
+                               buttonStyle: .medium(.raisedPrimary),
+                               buttonCallback: {
+            logButtonPressedAnalyticEvents(button: .createCommunityProfile)
+            viewModel.createCommunitiesProfileButtonPressed()
+        })
     }
     
     @ViewBuilder
@@ -292,7 +317,16 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListContentViewFor(chats: [MessagingChatDisplayInfo],
-                                 requests: [MessagingChatDisplayInfo]) -> some View {
+                                 requests: [MessagingChatDisplayInfo],
+                                 title: String? = nil) -> some View {
+        if let title {
+            Text(title)
+                .font(.currentFont(size: 14, weight: .medium))
+                .foregroundStyle(Color.foregroundSecondary)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(4))
+        }
         Section {
             chatsRequestsContentView(requests: requests)
             ForEach(chats, id: \.id) { chat in
@@ -319,11 +353,32 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatRowView(chat: MessagingChatDisplayInfo) -> some View {
+        switch chat.type {
+        case .private, .group:
+            chatDefaultSelectableRowView(chat: chat)
+        case .community(let details):
+            if details.isJoined {
+                chatDefaultSelectableRowView(chat: chat)
+            } else {
+                ChatListChatRowView(chat: chat, joinCommunityCallback: {
+                    viewModel.joinCommunity(chat)
+                })
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func chatDefaultSelectableRowView(chat: MessagingChatDisplayInfo) -> some View {
         UDCollectionListRowButton(content: {
             ChatListChatRowView(chat: chat)
         }, callback: {
             UDVibration.buttonTap.vibrate()
-            logButtonPressedAnalyticEvents(button: .chatInList)
+            switch chat.type {
+            case .private, .group:
+                logButtonPressedAnalyticEvents(button: .chatInList)
+            case .community:
+                logButtonPressedAnalyticEvents(button: .communityInList)
+            }
             viewModel.openChatWith(conversationState: .existingChat(chat))
         })
     }
@@ -415,6 +470,14 @@ extension ChatListView {
         case chatsList
         case loading
     }
+    
+    enum CommunitiesListState {
+        case noProfile
+        case empty
+        case notJoinedOnly([MessagingChatDisplayInfo])
+        case mixed(joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
+    }
+    
 }
 
 #Preview {

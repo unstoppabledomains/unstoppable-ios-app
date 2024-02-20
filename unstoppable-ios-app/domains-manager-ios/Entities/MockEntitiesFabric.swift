@@ -74,23 +74,25 @@ extension MockEntitiesFabric {
         }
         
         static func createChatsForUITesting() -> [MessagingChatDisplayInfo] {
-            [mockPrivateChat(lastMessage: nil),
-             mockPrivateChat(lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),
+            [mockPrivateChat(lastMessage: nil, unreadMessagesCount: 1),
+             mockPrivateChat(lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false),
+                             unreadMessagesCount: 10),
              mockPrivateChat(lastMessage: createImageMessage(image: .alertCircle, isThisUser: false)),
              mockPrivateChat(lastMessage: createRemoteContentMessage(isThisUser: false)),
              mockPrivateChat(lastMessage: createUnknownContentMessage(isThisUser: false)),
              mockGroupChat(numberOfMembers: 10),
              mockGroupChat(numberOfMembers: 10, lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),
             mockCommunityChat(name: "Web3 Domain", numberOfMembers: 30),
-            mockCommunityChat(name: "4 Years Club", numberOfMembers: 10, lastMessage: createTextMessage(text: "Nice to join this awesome community!", isThisUser: false))]
+             mockCommunityChat(name: "Polygon holders", numberOfMembers: 30, isJoined: false),
+             mockCommunityChat(name: "4 Years Club", numberOfMembers: 10, unreadMessagesCount: 5, lastMessage: createTextMessage(text: "Nice to join this awesome community!", isThisUser: false))]
         }
         
-        static func mockPrivateChat(lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
+        static func mockPrivateChat(lastMessage: MessagingChatMessageDisplayInfo? = nil,
+                                    unreadMessagesCount: Int = 0) -> MessagingChatDisplayInfo {
             let chatId = UUID().uuidString
             let sender = chatSenderFor(isThisUser: true)
             let otherSender = chatSenderFor(isThisUser: false)
             let avatarURL = URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")
-            let unreadMessagesCount = 0
             let chat = MessagingChatDisplayInfo(id: chatId,
                                                 thisUserDetails: sender.userDisplayInfo,
                                                 avatarURL: avatarURL,
@@ -133,15 +135,16 @@ extension MockEntitiesFabric {
         
         static func mockCommunityChat(name: String,
                                       numberOfMembers: Int,
+                                      isJoined: Bool = true,
+                                      unreadMessagesCount: Int = 0,
                                       lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
             let chatId = UUID().uuidString
             let sender = chatSenderFor(isThisUser: true)
             var members = [sender.userDisplayInfo]
-            for i in 0..<numberOfMembers {
+            for _ in 0..<numberOfMembers {
                 let sender = chatSenderFor(isThisUser: false)
                 members.append(sender.userDisplayInfo)
             }
-            let unreadMessagesCount = 0
             let badgeInfo = BadgeDetailedInfo(badge: .init(code: chatId,
                                                            name: name,
                                                            logo: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png",
@@ -153,14 +156,14 @@ extension MockEntitiesFabric {
                                                 avatarURL: nil,
                                                 serviceIdentifier: .xmtp,
                                                 type: .community(.init(type: type,
-                                                                       isJoined: true,
+                                                                       isJoined: isJoined,
                                                                        isPublic: true,
                                                                        members: members,
                                                                        pendingMembers: [],
                                                                        adminWallets: [],
                                                                        blockedUsersList: [])),
                                                 unreadMessagesCount: unreadMessagesCount,
-                                                isApproved: true,
+                                                isApproved: isJoined,
                                                 lastMessageTime: lastMessage?.time ?? Date(),
                                                 lastMessage: lastMessage)
             

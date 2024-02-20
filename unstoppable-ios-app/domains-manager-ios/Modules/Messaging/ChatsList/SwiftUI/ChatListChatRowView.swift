@@ -7,10 +7,14 @@
 
 import SwiftUI
 
-struct ChatListChatRowView: View {
+struct ChatListChatRowView: View, ViewAnalyticsLogger {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     let chat: MessagingChatDisplayInfo
+    var joinCommunityCallback: EmptyCallback? = nil
     
     @State private var icon: UIImage?
     private let iconSize: CGFloat = 40
@@ -26,7 +30,7 @@ struct ChatListChatRowView: View {
                     subtitleView()
                 }
                 Spacer()
-                timeView()
+                trailingView()
             }
         }
         .frame(height: 60)
@@ -138,13 +142,78 @@ private extension ChatListChatRowView {
         }
     }
     
+    @ViewBuilder
+    func trailingView() -> some View {
+        if case .community(let details) = chat.type,
+           !details.isJoined {
+            joinCommunityButtonView(messagingCommunitiesChatDetails: details)
+        } else {
+            timeView()
+        }
+    }
     
     @ViewBuilder
     func timeView() -> some View {
-        if let lastMessage = chat.lastMessage {
-            Text(MessageDateFormatter.formatChannelDate(lastMessage.time))
-                .font(.currentFont(size: 13))
-                .foregroundStyle(Color.foregroundSecondary)
+        VStack(spacing: 4) {
+            if let lastMessage = chat.lastMessage {
+                Text(MessageDateFormatter.formatChannelDate(lastMessage.time))
+                    .font(.currentFont(size: 13))
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
+            UnreadMessagesCounterView(unreadMessages: chat.unreadMessagesCount)
+        }
+    }
+    
+    @ViewBuilder
+    func joinCommunityButtonView(messagingCommunitiesChatDetails: MessagingCommunitiesChatDetails) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                           parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
+            joinCommunityCallback?()
+        } label: {
+            Text(String.Constants.join.localized())
+                .font(.currentFont(size: 14, weight: .medium))
+                .foregroundStyle(Color.foregroundOnEmphasis)
+                .frame(height: 20)
+                .padding(.init(vertical: 6))
+                .padding(.init(horizontal: 12))
+                .background(Color.backgroundAccentEmphasis)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct UnreadMessagesCounterView: View {
+    
+    let unreadMessages: Int
+    
+    var body: some View {
+        if unreadMessages > 0 {
+            ZStack {
+                Text("\(unreadMessages)")
+                    .font(.currentFont(size: 11, weight: .semibold))
+                    .foregroundStyle(Color.white)
+                    .padding(.init(horizontal: 5))
+            }
+            .frame(height: 16)
+            .background(Color.foregroundAccent)
+            .modifier(ClipShapeModifier(unreadMessages: unreadMessages))
+        }
+    }
+    
+    private struct ClipShapeModifier: ViewModifier {
+        let unreadMessages: Int
+
+        func body(content: Content) -> some View {
+            if unreadMessages > 9 {
+                content
+                    .clipShape(Capsule())
+            } else {
+                content
+                    .clipShape(Circle())
+            }
         }
     }
 }
