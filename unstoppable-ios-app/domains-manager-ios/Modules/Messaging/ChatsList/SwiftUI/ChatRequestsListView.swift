@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatRequestsListView: View, ViewAnalyticsLogger {
     
+    @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatRequestsListViewModel
     var analyticsName: Analytics.ViewName { viewModel.analyticsName }
 
@@ -61,11 +62,16 @@ struct ChatRequestsListView: View, ViewAnalyticsLogger {
                     .background(.regularMaterial)
             }
         }
+        .onAppear(perform: onAppear)
     }
 }
 
 // MARK: - Private methods
 private extension ChatRequestsListView {
+    func onAppear() {
+        navigationState.isTitleVisible = false
+    }
+    
     var title: String {
         switch viewModel.dataType {
         case .chatRequests:

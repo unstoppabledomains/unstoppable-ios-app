@@ -56,9 +56,11 @@ struct ChatView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension ChatView {
     func onAppear() {
-        navigationState.setCustomTitle(customTitle: { ChatNavTitleView(titleType: viewModel.titleType) },
-                                       id: UUID().uuidString)
-        navigationState.isTitleVisible = true
+        withAnimation {
+            navigationState.setCustomTitle(customTitle: { ChatNavTitleView(titleType: viewModel.titleType) },
+                                           id: UUID().uuidString)
+            navigationState.isTitleVisible = true
+        }
     }
     
     var emptyStateMode: ChatMessagesEmptyView.Mode {

@@ -53,7 +53,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
             .onChange(of: tabRouter.chatTabNavPath) { path in
                 tabRouter.isTabBarVisible = !isOtherScreenPushed
                 if path.isEmpty {
-                    setupTitle()
+                    withAnimation {
+                        setupTitle()
+                    }
                 }
             }
             .toolbar {

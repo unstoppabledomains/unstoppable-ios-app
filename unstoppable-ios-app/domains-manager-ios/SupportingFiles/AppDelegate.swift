@@ -98,22 +98,35 @@ private extension AppDelegate {
         setupAppearance()
         setupBugsnag()
         setupFeatureFlags()
+        configureNavBar()
     }
     
     func configureNavBar() {
-        let titleFont: UIFont
-        if let font = UIFont(name: UIFont.fontBoldName, size: 18) { titleFont = font }
-        else {
-            titleFont = UIFont.systemFont(ofSize: 18, weight: .bold)
-            Debugger.printFailure("Failed to find the SFPro-Bold font")
-        }
-        let titleFontAttrs = [ NSAttributedString.Key.font: titleFont, NSAttributedString.Key.foregroundColor: UIColor.label ]
+        let backButtonAppearance = UIBarButtonItemAppearance(style: .plain)
+        backButtonAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        backButtonAppearance.disabled.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        backButtonAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
         
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        UINavigationBar.appearance().shadowImage = UIImage()
-        UINavigationBar.appearance().backgroundColor = .clear
-        UINavigationBar.appearance().isTranslucent = true
-        UINavigationBar.appearance().titleTextAttributes = titleFontAttrs
+        let navigationBarStandardAppearance = UINavigationBarAppearance()
+        navigationBarStandardAppearance.configureWithTransparentBackground()
+        navigationBarStandardAppearance.backButtonAppearance = backButtonAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarStandardAppearance
+        
+        let navigationBarScrollingEdgeAppearance = UINavigationBarAppearance()
+        navigationBarScrollingEdgeAppearance.backButtonAppearance = backButtonAppearance
+        UINavigationBar.appearance().standardAppearance = navigationBarScrollingEdgeAppearance
+        
+        
+        let image =  BaseViewController.NavBackIconStyle.arrow.icon
+        let backButtonBackgroundImage = image.withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
+        
+        UINavigationBar.appearance().standardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
+                                                                              
+                                                                              transitionMaskImage: backButtonBackgroundImage)
+        UINavigationBar.appearance().scrollEdgeAppearance?.setBackIndicatorImage(backButtonBackgroundImage,
+                                                                                 
+                                                                                 transitionMaskImage: backButtonBackgroundImage)
     }
     
     func setupAppearance() {
