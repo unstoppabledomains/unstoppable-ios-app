@@ -26,12 +26,14 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     List {
                         chatListContentView()
                     }
+                    .sectionSpacing(16)
                     .searchable(text: $viewModel.searchText,
                                 placement: .navigationBarDrawer(displayMode: .automatic),
                                 prompt: Text(String.Constants.search.localized()))
                 } else {
                     List {
-                        chatListContentView()
+                        Text("")
+                            .listRowBackground(Color.clear)
                     }
                 }
             
@@ -237,17 +239,21 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListContentView() -> some View {
-        chatsListContentViewFor(chats: viewModel.chatsListToShow)
+        chatsListContentViewFor(chats: viewModel.chatsListToShow, 
+                                requests: viewModel.chatsRequests)
     }
     
     @ViewBuilder
     func communitiesListContentView() -> some View {
-        chatsListContentViewFor(chats: viewModel.communitiesListToShow)
+        chatsListContentViewFor(chats: viewModel.communitiesListToShow,
+                                requests: [])
     }
     
     @ViewBuilder
-    func chatsListContentViewFor(chats: [MessagingChatDisplayInfo]) -> some View {
+    func chatsListContentViewFor(chats: [MessagingChatDisplayInfo],
+                                 requests: [MessagingChatDisplayInfo]) -> some View {
         Section {
+            chatsRequestsContentView(requests: requests)
             ForEach(chats, id: \.id) { chat in
                 chatRowView(chat: chat)
             }
@@ -255,6 +261,19 @@ private extension ChatListView {
         .listRowBackground(Color.backgroundOverlay)
         .listRowSeparator(.hidden)
         .listRowInsets(EdgeInsets(4))
+    }
+    
+    @ViewBuilder
+    func chatsRequestsContentView(requests: [MessagingChatDisplayInfo]) -> some View {
+        if !requests.isEmpty {
+            UDCollectionListRowButton(content: {
+                ChatListRequestsRowView(dataType: .chats, numberOfRequests: requests.count)
+            }, callback: {
+                UDVibration.buttonTap.vibrate()
+                logButtonPressedAnalyticEvents(button: .chatRequests)
+                viewModel.showCurrentDataTypeRequests()
+            })
+        }
     }
     
     @ViewBuilder
@@ -271,6 +290,7 @@ private extension ChatListView {
     @ViewBuilder
     func channelsListContentView() -> some View {
         Section {
+            channelsRequestsContentView()
             ForEach(viewModel.channelsToShow, id: \.id) { channel in
                 channelRowView(channel: channel)
             }
@@ -289,6 +309,19 @@ private extension ChatListView {
             logButtonPressedAnalyticEvents(button: .channelInList)
             viewModel.openChannel(channel)
         })
+    }
+    
+    @ViewBuilder
+    func channelsRequestsContentView() -> some View {
+        if !viewModel.channelsRequests.isEmpty {
+            UDCollectionListRowButton(content: {
+                ChatListRequestsRowView(dataType: .channels, numberOfRequests: viewModel.channelsRequests.count)
+            }, callback: {
+                UDVibration.buttonTap.vibrate()
+                logButtonPressedAnalyticEvents(button: .channelsSpam)
+                viewModel.showCurrentDataTypeRequests()
+            })
+        }
     }
     
 }

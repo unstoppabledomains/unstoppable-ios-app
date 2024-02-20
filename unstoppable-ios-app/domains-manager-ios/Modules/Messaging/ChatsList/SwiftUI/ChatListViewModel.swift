@@ -34,8 +34,10 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var chatState: ChatListView.ViewState = .loading
     @Published private(set) var searchData = SearchData()
     @Published private(set) var chatsListToShow: [MessagingChatDisplayInfo] = []
+    @Published private(set) var chatsRequests: [MessagingChatDisplayInfo] = []
     @Published private(set) var communitiesListToShow: [MessagingChatDisplayInfo] = []
     @Published private(set) var channelsToShow: [MessagingNewsChannel] = []
+    @Published private(set) var channelsRequests: [MessagingNewsChannel] = []
     @Published var selectedDataType: ChatListView.DataType = .chats
     @Published var error: Error?
     @Published var keyboardFocused: Bool = false
@@ -118,6 +120,32 @@ extension ChatListViewModel {
     }
     
     
+    func showCurrentDataTypeRequests() {
+        //        guard let profile = selectedProfileWalletPair?.profile,
+        //              let nav = view?.cNavigationController else { return }
+        //
+        //        switch selectedDataType {
+        //        case .chats:
+        //            let chatsList = getListOfUnblockedChats()
+        //            let requests = chatsList.requestsOnly()
+        //            guard !requests.isEmpty else { return }
+        //
+        //            UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
+        //                                              profile: profile,
+        //                                              in: nav)
+        //        case .communities:
+        //            Debugger.printFailure("Requests section are not exist for communities", critical: true)
+        //            return
+        //        case .channels:
+        //            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
+        //            guard !channels.isEmpty else { return }
+        //
+        //            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
+        //                                              profile: profile,
+        //                                              in: nav)
+        //        }
+    }
+
     func openChatWith(conversationState: MessagingChatConversationState) {
         guard let profile = selectedProfileWalletPair?.profile else { return }
         if case .existingChat(let messagingChatDisplayInfo) = conversationState,
@@ -442,6 +470,7 @@ private extension ChatListViewModel {
         (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
         chatsListToShow = chatsList
         communitiesListToShow = communitiesList
+        chatsRequests = chatsList
     }
     
     func refreshAvailableWalletsList() {
@@ -569,6 +598,7 @@ private extension ChatListViewModel {
         setNewChats(chats)
         self.channels = channels
         self.channelsToShow = channels
+        self.channelsRequests = channels
         
         await awaitForUIReady()
         chatState = .chatsList
@@ -636,14 +666,8 @@ private extension ChatListViewModel {
 //            snapshot.appendSections([.emptyState])
 //            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
 //        } else {
-//            snapshot.appendSections([.listItems(title: nil)])
-//            let requestsList = chatsList.requestsOnly()
-//            let approvedList = chatsList.confirmedOnly()
-//            if !requestsList.isEmpty {
-//                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-//                                                                         numberOfRequests: requestsList.count))])
-//            }
-//            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+//            chatsRequests = chatsList.requestsOnly()
+//            chatsListToShow = chatsList.confirmedOnly()
 //        }
     }
     
@@ -735,14 +759,8 @@ private extension ChatListViewModel {
 //            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
 //        } else {
 //            snapshot.appendSections([.listItems(title: nil)])
-//            let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
-//            let spamList = channels.filter({ !$0.isCurrentUserSubscribed })
-//            if !spamList.isEmpty {
-//                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-//                                                                         numberOfRequests: spamList.count))])
-//            }
-//            snapshot.appendItems(channelsList.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
-//        }
+            channelsToShow = channels.filter({ $0.isCurrentUserSubscribed })
+            channelsRequests = channels.filter({ !$0.isCurrentUserSubscribed })
     }
     
     func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot) {
@@ -869,32 +887,6 @@ private extension ChatListViewModel {
 //            self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
 //            self?.selectedDataType = newSelectedDataType
 //            self?.showData()
-//        }
-    }
-
-    func showCurrentDataTypeRequests() {
-//        guard let profile = selectedProfileWalletPair?.profile,
-//              let nav = view?.cNavigationController else { return }
-//        
-//        switch selectedDataType {
-//        case .chats:
-//            let chatsList = getListOfUnblockedChats()
-//            let requests = chatsList.requestsOnly()
-//            guard !requests.isEmpty else { return }
-//            
-//            UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
-//                                              profile: profile,
-//                                              in: nav)
-//        case .communities:
-//            Debugger.printFailure("Requests section are not exist for communities", critical: true)
-//            return
-//        case .channels:
-//            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
-//            guard !channels.isEmpty else { return }
-//            
-//            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
-//                                              profile: profile,
-//                                              in: nav)
 //        }
     }
 

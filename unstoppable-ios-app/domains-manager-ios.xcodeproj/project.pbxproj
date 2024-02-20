@@ -1039,6 +1039,8 @@
 		C686BF2C2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
 		C688C1762B8439F400BD233A /* ChatListChannelRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */; };
 		C688C1772B8439F400BD233A /* ChatListChannelRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */; };
+		C688C1792B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */; };
+		C688C17A2B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */; };
 		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
 		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
 		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
@@ -3238,6 +3240,7 @@
 		C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnencryptedMessageInfoPullUpView.swift; sourceTree = "<group>"; };
 		C686BF2B2A6135570036C7C1 /* ChatsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsList.swift; sourceTree = "<group>"; };
 		C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListChannelRowView.swift; sourceTree = "<group>"; };
+		C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListRequestsRowView.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -7622,6 +7625,7 @@
 				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
 				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
 				C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */,
+				C688C1782B843BC000BD233A /* ChatListRequestsRowView.swift */,
 				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
 				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
 				C6D8FF382B831BC40094A21E /* ChatListNavTitleView.swift */,
@@ -9420,6 +9424,7 @@
 				C6A2D58E284FA0AB00327C47 /* WalletConnectServiceProtocol.swift in Sources */,
 				C6D5DAC828365A3400379C38 /* FABCounterButton.swift in Sources */,
 				C673D59629FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
+				C688C1792B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */,
 				C60DCEE2282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */,
 				C61808822B19BC680032E543 /* TransactionError.swift in Sources */,
 				C6D647442B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift in Sources */,
@@ -9932,6 +9937,7 @@
 				C6D6466C2B1ED11B00D724AC /* CachedDomainProfileInfo.swift in Sources */,
 				C61807DD2B19A4D50032E543 /* PreviewUDWallet.swift in Sources */,
 				C6C8F85A2B217FA600A9834D /* CloudStorage.swift in Sources */,
+				C688C17A2B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */,
 				C6C8F8732B21822700A9834D /* OnboardingProtocols.swift in Sources */,
 				C6C8F8392B217E9600A9834D /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C6D646082B1DC02800D724AC /* UDSubtitleLabel.swift in Sources */,
