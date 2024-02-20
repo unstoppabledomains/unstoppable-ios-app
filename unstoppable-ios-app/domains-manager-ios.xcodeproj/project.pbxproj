@@ -1057,6 +1057,8 @@
 		C688C1992B84840700BD233A /* ChatCommonEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */; };
 		C688C19B2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */; };
 		C688C19C2B84854200BD233A /* ChannelFeedEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */; };
+		C688C19E2B848D0600BD233A /* ChatRequestsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */; };
+		C688C19F2B848D0600BD233A /* ChatRequestsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */; };
 		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
 		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
 		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
@@ -3265,6 +3267,7 @@
 		C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessagesEmptyView.swift; sourceTree = "<group>"; };
 		C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCommonEmptyView.swift; sourceTree = "<group>"; };
 		C688C19A2B84854200BD233A /* ChannelFeedEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFeedEmptyView.swift; sourceTree = "<group>"; };
+		C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequestsListView.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -7690,6 +7693,7 @@
 			children = (
 				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
+				C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */,
 				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
 				C688C1822B846ED000BD233A /* ChatListViews */,
 				C688C1812B846EC200BD233A /* ChatListRows */,
@@ -8912,6 +8916,7 @@
 				C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C6F060C02ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift in Sources */,
 				C6B65F902B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
+				C688C19E2B848D0600BD233A /* ChatRequestsListView.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6DDF2502B147F1A006D1F0B /* UDButtonStyle.swift in Sources */,
@@ -10528,6 +10533,7 @@
 				C6D6467B2B1ED12100D724AC /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C6C8F8922B21829000A9834D /* AppearanceSettingsCell.swift in Sources */,
 				C6102FC42B6A12010098AF75 /* OnButtonTapModifier.swift in Sources */,
+				C688C19F2B848D0600BD233A /* ChatRequestsListView.swift in Sources */,
 				C6D646872B1ED12D00D724AC /* DomainProfileBadgesSection.swift in Sources */,
 				C6C8F9532B21858200A9834D /* PreviewValet.swift in Sources */,
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,
