@@ -80,20 +80,6 @@ struct ChatListView: View, ViewAnalyticsLogger {
         }, path: $tabRouter.chatTabNavPath)
         .onAppear(perform: onAppear)
     }
-    
-    @ViewBuilder
-    func newMessageNavButton() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            logButtonPressedAnalyticEvents(button: .newMessage)
-            viewModel.searchMode = .chatsOnly
-            viewModel.isSearchActive = true
-        } label: {
-            Image.newMessageIcon
-                .resizable()
-                .foregroundStyle(Color.foregroundDefault)
-        }
-    }
 }
 
 // MARK: - Private methods
@@ -145,6 +131,20 @@ private extension ChatListView {
             return appContext.authentificationService.biometricIcon
         }
         return nil
+    }
+    
+    @ViewBuilder
+    func newMessageNavButton() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .newMessage)
+            viewModel.searchMode = .chatsOnly
+            viewModel.isSearchActive = true
+        } label: {
+            Image.newMessageIcon
+                .resizable()
+                .foregroundStyle(Color.foregroundDefault)
+        }
     }
     
     @ViewBuilder
@@ -390,36 +390,14 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatRowView(chat: MessagingChatDisplayInfo) -> some View {
-        switch chat.type {
-        case .private, .group:
-            chatDefaultSelectableRowView(chat: chat)
-        case .community(let details):
-            if details.isJoined {
-                chatDefaultSelectableRowView(chat: chat)
-            } else {
-                ChatListChatRowView(chat: chat, joinCommunityCallback: {
-                    viewModel.joinCommunity(chat)
-                })
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func chatDefaultSelectableRowView(chat: MessagingChatDisplayInfo) -> some View {
-        UDCollectionListRowButton(content: {
-            ChatListChatRowView(chat: chat)
-        }, callback: {
-            UDVibration.buttonTap.vibrate()
-            switch chat.type {
-            case .private, .group:
-                logButtonPressedAnalyticEvents(button: .chatInList)
-            case .community:
-                logButtonPressedAnalyticEvents(button: .communityInList)
-            }
+        SelectableChatRowView(chat: chat,
+                              chatSelectedCallback: { chat in
             viewModel.openChatWith(conversationState: .existingChat(chat))
+        }, joinCommunityCallback: { chat in
+            viewModel.joinCommunity(chat)
         })
     }
-  
+    
     @ViewBuilder
     func channelsListContentView() -> some View {
         if viewModel.channelsToShow.isEmpty {
