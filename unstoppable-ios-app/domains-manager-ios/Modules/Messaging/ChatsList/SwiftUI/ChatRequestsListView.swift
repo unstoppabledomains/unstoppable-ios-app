@@ -26,15 +26,17 @@ struct ChatRequestsListView: View, ViewAnalyticsLogger {
         .animation(.default, value: UUID())
         .background(Color.backgroundMuted2)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    UDVibration.buttonTap.vibrate()
-                    logButtonPressedAnalyticEvents(button: viewModel.isEditing ? .cancel : .edit)
-                    viewModel.isEditing.toggle()
-                } label: {
-                    Text(viewModel.isEditing ? String.Constants.cancel.localized() : String.Constants.editButtonTitle.localized())
-                        .foregroundStyle(Color.foregroundDefault)
-                        .font(.currentFont(size: 16, weight: .medium))
+            if case .chatRequests = viewModel.dataType {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        UDVibration.buttonTap.vibrate()
+                        logButtonPressedAnalyticEvents(button: viewModel.isEditing ? .cancel : .edit)
+                        viewModel.isEditing.toggle()
+                    } label: {
+                        Text(viewModel.isEditing ? String.Constants.cancel.localized() : String.Constants.editButtonTitle.localized())
+                            .foregroundStyle(Color.foregroundDefault)
+                            .font(.currentFont(size: 16, weight: .medium))
+                    }
                 }
             }
             
@@ -144,7 +146,7 @@ extension ChatRequestsListView {
     let router = HomeTabRouter(profile: profile)
     
     return NavigationStack {
-        ChatRequestsListView(viewModel: .init(dataType: .chatRequests(MockEntitiesFabric.Messaging.createChatsForUITesting()),
+        ChatRequestsListView(viewModel: .init(dataType: .channelsSpam(MockEntitiesFabric.Messaging.createChannelsForUITesting()),
                                               profile: .mock(),
                                               router: router))
     }
