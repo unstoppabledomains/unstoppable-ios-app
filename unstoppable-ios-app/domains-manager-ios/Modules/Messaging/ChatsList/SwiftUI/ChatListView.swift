@@ -224,7 +224,40 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListStateContentView() -> some View {
-        chatsListForSelectedDataTypeView()
+        if viewModel.isSearchActive {
+            chatsListForSearchStateView()
+        } else {
+            chatsListForSelectedDataTypeView()
+        }
+    }
+
+    @ViewBuilder
+    func chatsListForSearchStateView() -> some View {
+        if case .empty = viewModel.communitiesListState,
+           viewModel.channelsToShow.isEmpty,
+           viewModel.chatsListToShow.isEmpty,
+           viewModel.foundUsersToShow.isEmpty {
+            
+        } else {
+            if !viewModel.foundUsersToShow.isEmpty {
+                usersListSectionContentViewFor(users: viewModel.foundUsersToShow,
+                                               title: String.Constants.people.localized())
+            }
+            if !viewModel.chatsListToShow.isEmpty {
+                chatsListSectionContentViewFor(chats: viewModel.chatsListToShow,
+                                        requests: viewModel.chatsRequests,
+                                        title: String.Constants.people.localized())
+            }
+            if case .mixed(let joined, let notJoined) = viewModel.communitiesListState {
+                chatsListSectionContentViewFor(chats: joined + notJoined,
+                                        requests: [],
+                                        title: String.Constants.communities.localized())
+            }
+            if !viewModel.channelsToShow.isEmpty {
+                channelsListSectionView(channels: viewModel.channelsToShow,
+                                        title: String.Constants.apps.localized())
+            }
+        }
     }
     
     @ViewBuilder
@@ -244,7 +277,7 @@ private extension ChatListView {
         if viewModel.chatsListToShow.isEmpty {
             chatsListEmptyView()
         } else {
-            chatsListContentViewFor(chats: viewModel.chatsListToShow,
+            chatsListSectionContentViewFor(chats: viewModel.chatsListToShow,
                                     requests: viewModel.chatsRequests)
         }
     }
@@ -273,13 +306,13 @@ private extension ChatListView {
         case .empty:
             communitiesListEmptyView()
         case .notJoinedOnly(let communities):
-            chatsListContentViewFor(chats: communities,
+            chatsListSectionContentViewFor(chats: communities,
                                     requests: [])
         case .mixed(let joined, let notJoined):
-            chatsListContentViewFor(chats: joined,
+            chatsListSectionContentViewFor(chats: joined,
                                     requests: [])
             if !notJoined.isEmpty {
-                chatsListContentViewFor(chats: notJoined,
+                chatsListSectionContentViewFor(chats: notJoined,
                                         requests: [],
                                         title: String.Constants.messagingCommunitiesSectionTitle.localized())
             }
@@ -316,9 +349,7 @@ private extension ChatListView {
     }
     
     @ViewBuilder
-    func chatsListContentViewFor(chats: [MessagingChatDisplayInfo],
-                                 requests: [MessagingChatDisplayInfo],
-                                 title: String? = nil) -> some View {
+    func sectionTitleView(_ title: String?) -> some View {
         if let title {
             Text(title)
                 .font(.currentFont(size: 14, weight: .medium))
@@ -327,6 +358,13 @@ private extension ChatListView {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(4))
         }
+    }
+    
+    @ViewBuilder
+    func chatsListSectionContentViewFor(chats: [MessagingChatDisplayInfo],
+                                        requests: [MessagingChatDisplayInfo],
+                                        title: String? = nil) -> some View {
+        sectionTitleView(title)
         Section {
             chatsRequestsContentView(requests: requests)
             ForEach(chats, id: \.id) { chat in
@@ -388,7 +426,7 @@ private extension ChatListView {
         if viewModel.channelsToShow.isEmpty {
             channelsListEmptyView()
         } else {
-            channelsListView()
+            channelsListSectionView(channels: viewModel.channelsToShow)
         }
     }
     
@@ -409,10 +447,12 @@ private extension ChatListView {
     }
     
     @ViewBuilder
-    func channelsListView() -> some View {
+    func channelsListSectionView(channels: [MessagingNewsChannel],
+                                 title: String? = nil) -> some View {
+        sectionTitleView(title)
         Section {
             channelsRequestsContentView()
-            ForEach(viewModel.channelsToShow, id: \.id) { channel in
+            ForEach(channels, id: \.id) { channel in
                 channelRowView(channel: channel)
             }
         }
@@ -443,6 +483,31 @@ private extension ChatListView {
                 viewModel.showCurrentDataTypeRequests()
             })
         }
+    }
+    
+    @ViewBuilder
+    func usersListSectionContentViewFor(users: [MessagingChatUserDisplayInfo],
+                                        title: String? = nil) -> some View {
+        sectionTitleView(title)
+        Section {
+            ForEach(users, id: \.wallet) { user in
+                userRowView(user: user)
+            }
+        }
+        .listRowBackground(Color.backgroundOverlay)
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(4))
+    }
+    
+    @ViewBuilder
+    func userRowView(user: MessagingChatUserDisplayInfo) -> some View {
+        UDCollectionListRowButton(content: {
+            ChatListUserRowView(user: user)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .userToChatInList)
+            viewModel.didSelectUserToChat(user)
+        })
     }
     
 }

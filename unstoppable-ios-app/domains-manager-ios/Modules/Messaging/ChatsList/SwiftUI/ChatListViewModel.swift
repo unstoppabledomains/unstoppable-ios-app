@@ -38,6 +38,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var communitiesListState: ChatListView.CommunitiesListState = .empty
     @Published private(set) var channelsToShow: [MessagingNewsChannel] = []
     @Published private(set) var channelsRequests: [MessagingNewsChannel] = []
+    @Published private(set) var foundUsersToShow: [MessagingChatUserDisplayInfo] = []
     @Published var selectedDataType: ChatListView.DataType = .chats
     @Published var error: Error?
     @Published var isSearchActive: Bool = false
@@ -72,10 +73,10 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
             self?.didSearchWith(key: searchText)
         }.store(in: &cancellables)
         $isSearchActive.sink { [weak self] isActive in
-            if !isActive {
+            if self?.selectedProfileWalletPair != nil,
+               !isActive {
                 self?.didStopSearch()
             }
-            self?.prepareData()
         }.store(in: &cancellables)
         
         messagingService.addListener(self)
@@ -85,48 +86,11 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
 }
 
 extension ChatListViewModel {
-    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode) {
-        UDVibration.buttonTap.vibrate()
-        stopSearching()
-        switch item {
-        case .domainSelection(let configuration):
-            guard !configuration.isSelected else { return }
-            
-            prepareData()
-        case .chat(let configuration):
-            switch configuration.chat.type {
-            case .private:
-                logButtonPressedAnalyticEvents(button: .chatInList)
-            case .group:
-                logButtonPressedAnalyticEvents(button: .groupChatInList)
-            case .community:
-                logButtonPressedAnalyticEvents(button: .communityInList)
-            }
-            openChatWith(conversationState: .existingChat(configuration.chat))
-        case .chatRequests(let configuration):
-            switch configuration.dataType {
-            case .chats:
-                logButtonPressedAnalyticEvents(button: .chatRequests)
-            case .communities:
-                Debugger.printFailure("Requests section are not exist for communities", critical: true)
-            case .channels:
-                logButtonPressedAnalyticEvents(button: .channelsSpam)
-            }
-            showCurrentDataTypeRequests()
-        case .channel(let configuration):
-            logButtonPressedAnalyticEvents(button: .channelInList)
-            openChannel(configuration.channel)
-        case .userInfo(let configuration):
-            logButtonPressedAnalyticEvents(button: .userToChatInList)
-            if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
-                openChatWith(conversationState: .existingChat(existingChat))
-            } else {
-                openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: messagingService.defaultServiceIdentifier)))
-            }
-        case .community(let configuration):
-            joinCommunity(configuration.community)
-        case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
-            return
+    func didSelectUserToChat(_ user: MessagingChatUserDisplayInfo) {
+        if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == user.wallet.normalized }) {
+            openChatWith(conversationState: .existingChat(existingChat))
+        } else {
+            openChatWith(conversationState: .newChat(.init(userInfo: user, messagingService: messagingService.defaultServiceIdentifier)))
         }
     }
     
@@ -182,6 +146,7 @@ extension ChatListViewModel {
             return
         }
         
+        isSearchActive = false
         router.chatTabNavPath.append(HomeChatNavigationDestination.chat(profile: profile,
                                                                         conversationState: conversationState))
     }
@@ -490,9 +455,6 @@ private extension ChatListViewModel {
     
     func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
         (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
-//        chatsListToShow = chatsList
-//        communitiesListToShow = communitiesList
-//        chatsRequests = chatsList
     }
     
     func refreshAvailableWalletsList() {
@@ -634,8 +596,6 @@ private extension ChatListViewModel {
     
     func prepareData() {
         Task {
-            var snapshot = ChatsListSnapshot()
-            
             if selectedWallet == nil {
                 chatState = .noWallet
             } else if selectedProfileWalletPair?.profile == nil {
@@ -643,11 +603,11 @@ private extension ChatListViewModel {
             } else {
                 chatState = .chatsList
                 if isSearchActive {
-                    fillSnapshotForSearchActiveState(&snapshot)
+                    fillSnapshotForSearchActiveState()
                 } else {
-                    fillSnapshotForUserChatsList(&snapshot)
-                    fillSnapshotForUserCommunitiesList(&snapshot)
-                    fillSnapshotForUserChannelsList(&snapshot)
+                    fillSnapshotForUserChatsList()
+                    fillSnapshotForUserCommunitiesList()
+                    fillSnapshotForUserChannelsList()
                 }
             }
         }
@@ -661,12 +621,12 @@ private extension ChatListViewModel {
         communitiesList.unblockedOnly()
     }
     
-    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
+    func fillSnapshotForUserChatsList() {
         chatsRequests = chatsList.requestsOnly()
         chatsListToShow = chatsList.confirmedOnly()
     }
   
-    func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
+    func fillSnapshotForUserCommunitiesList() {
         let communitiesList = getListOfUnblockedCommunities()
         
         if selectedProfileWalletPair?.isCommunitiesEnabled != true {
@@ -705,32 +665,12 @@ private extension ChatListViewModel {
         }
     }
     
-    func createChatListItemForNotJoinedCommunity(_ community: MessagingChatDisplayInfo) -> ChatsListViewController.Item? {
-        switch community.type {
-        case .community(let messagingCommunitiesChatDetails):
-            return .community(configuration: .init(community: community,
-                                                   communityDetails: messagingCommunitiesChatDetails,
-                                                   joinButtonPressedCallback: { [weak self] in
-                self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
-                                                     parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
-                self?.joinCommunity(community)
-            }))
-        default:
-            return nil
-        }
+    func fillSnapshotForUserChannelsList() {
+        channelsToShow = channels.filter({ $0.isCurrentUserSubscribed })
+        channelsRequests = channels.filter({ !$0.isCurrentUserSubscribed })
     }
     
-    func fillSnapshotForUserChannelsList(_ snapshot: inout ChatsListSnapshot) {
-//        if channels.isEmpty {
-//            snapshot.appendSections([.emptyState])
-//            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
-//        } else {
-//            snapshot.appendSections([.listItems(title: nil)])
-//            channelsToShow = channels.filter({ $0.isCurrentUserSubscribed })
-//            channelsRequests = channels.filter({ !$0.isCurrentUserSubscribed })
-    }
-    
-    func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot) {
+    func fillSnapshotForSearchActiveState() {
         enum PeopleSearchResult {
             case existingChat(MessagingChatDisplayInfo)
             case newUser(MessagingChatUserDisplayInfo)
@@ -798,26 +738,28 @@ private extension ChatListViewModel {
         }
         
         
+        var foundUsers: [MessagingChatUserDisplayInfo] = []
+        var chats: [MessagingChatDisplayInfo] = []
         
-        if people.isEmpty && channels.isEmpty {
-            snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptySearch])
-        } else {
-            if !people.isEmpty {
-                snapshot.appendSections([.listItems(title: String.Constants.people.localized())])
-                snapshot.appendItems(people.map({ $0.item }))
-            }
-            if !communities.isEmpty {
-                snapshot.appendSections([.listItems(title: String.Constants.communities.localized())])
-                let groupedCommunities = groupCommunitiesByJoinStatus(communities)
-                snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-                snapshot.appendItems(groupedCommunities.notJoined.compactMap({ createChatListItemForNotJoinedCommunity($0) }))
-            }
-            if !channels.isEmpty {
-                snapshot.appendSections([.listItems(title: String.Constants.apps.localized())])
-                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+        for person in people {
+            switch person {
+            case .existingChat(let chat):
+                chats.append(chat)
+            case .newUser(let user):
+                foundUsers.append(user)
             }
         }
+        
+        self.foundUsersToShow = foundUsers
+        self.chatsListToShow = chats
+        if communities.isEmpty {
+            communitiesListState = .empty
+        } else {
+            let groupedCommunities = groupCommunitiesByJoinStatus(communities)
+            communitiesListState = .mixed(joined: groupedCommunities.joined, notJoined: groupedCommunities.notJoined)
+        }
+        
+        channelsToShow = channels
     }
     
     func isChatMatchingSearchKey(_ chat: MessagingChatDisplayInfo, searchKey: String) -> Bool {
