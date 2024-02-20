@@ -42,6 +42,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var error: Error?
     @Published var keyboardFocused: Bool = false
     @Published var searchText: String = ""
+    @Published var searchMode: ChatsList.SearchMode = .default
 
     private var router: HomeTabRouter
 
@@ -468,9 +469,9 @@ private extension ChatListViewModel {
     
     func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
         (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
-        chatsListToShow = chatsList
-        communitiesListToShow = communitiesList
-        chatsRequests = chatsList
+//        chatsListToShow = chatsList
+//        communitiesListToShow = communitiesList
+//        chatsRequests = chatsList
     }
     
     func refreshAvailableWalletsList() {
@@ -597,7 +598,7 @@ private extension ChatListViewModel {
         
         setNewChats(chats)
         self.channels = channels
-        self.channelsToShow = channels
+//        self.channelsToShow = channels
         self.channelsRequests = channels
         
         await awaitForUIReady()
@@ -759,8 +760,8 @@ private extension ChatListViewModel {
 //            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
 //        } else {
 //            snapshot.appendSections([.listItems(title: nil)])
-            channelsToShow = channels.filter({ $0.isCurrentUserSubscribed })
-            channelsRequests = channels.filter({ !$0.isCurrentUserSubscribed })
+//            channelsToShow = channels.filter({ $0.isCurrentUserSubscribed })
+//            channelsRequests = channels.filter({ !$0.isCurrentUserSubscribed })
     }
     
     func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot) {

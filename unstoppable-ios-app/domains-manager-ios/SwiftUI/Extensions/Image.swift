@@ -84,6 +84,7 @@ extension Image {
     static let gasFeeIcon = Image("gasFeeIcon")
     static let chatRequestsIcon = Image("chatRequestsIcon")
     static let alertOctagon24 = Image("alertOctagon24")
+    static let newMessageIcon = Image("newMessageIcon")
 
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")

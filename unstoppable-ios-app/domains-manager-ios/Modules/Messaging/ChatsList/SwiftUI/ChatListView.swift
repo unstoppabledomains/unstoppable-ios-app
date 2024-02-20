@@ -143,7 +143,7 @@ private extension ChatListView {
     
     @ViewBuilder
     func noWalletStateContentView() -> some View {
-        emptyStateView(title: String.Constants.messagingNoWalletsTitle.localized(),
+        ChatListEmptyStateView(title: String.Constants.messagingNoWalletsTitle.localized(),
                        subtitle: String.Constants.messagingNoWalletsSubtitle.localized(),
                        icon: .walletIcon,
                        buttonTitle: String.Constants.addWalletTitle.localized(),
@@ -172,41 +172,7 @@ private extension ChatListView {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
     }
-    
-    @ViewBuilder
-    func emptyStateView(title: String,
-                        subtitle: String,
-                        icon: Image,
-                        buttonTitle: String,
-                        buttonIcon: Image,
-                        buttonStyle: UDButtonStyle,
-                        buttonCallback: @escaping MainActorCallback) -> some View {
-        VStack(spacing: 24) {
-            VStack(spacing: 16) {
-                icon
-                    .resizable()
-                    .squareFrame(32)
-                VStack(spacing: 8) {
-                    Text(title)
-                        .font(.currentFont(size: 20, weight: .bold))
-                    Text(subtitle)
-                        .font(.currentFont(size: 16))
-                }
-            }
-            .foregroundStyle(Color.foregroundSecondary)
-            .multilineTextAlignment(.center)
-            
-            UDButtonView(text: buttonTitle,
-                         icon: buttonIcon,
-                         style: buttonStyle,
-                         callback: buttonCallback)
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 400)
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
-    }
-    
+   
     @ViewBuilder
     func chatDataTypePickerView() -> some View {
         switch viewModel.chatState {
@@ -239,14 +205,53 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListContentView() -> some View {
-        chatsListContentViewFor(chats: viewModel.chatsListToShow, 
-                                requests: viewModel.chatsRequests)
+        if viewModel.chatsListToShow.isEmpty {
+            chatsListEmptyView()
+        } else {
+            chatsListContentViewFor(chats: viewModel.chatsListToShow,
+                                    requests: viewModel.chatsRequests)
+        }
+    }
+    
+    @ViewBuilder
+    func chatsListEmptyView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.messagingChatsListEmptyTitle.localized(),
+                       subtitle: String.Constants.messagingChatsListEmptySubtitle.localized(),
+                       icon: .messageCircleIcon24,
+                       buttonTitle: String.Constants.newMessage.localized(),
+                       buttonIcon: .newMessageIcon,
+                       buttonStyle: .medium(.raisedPrimary),
+                       buttonCallback: {
+            logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                           parameters: [.value: DataType.chats.rawValue])
+            viewModel.searchMode = .chatsOnly
+            viewModel.keyboardFocused = true
+        })
     }
     
     @ViewBuilder
     func communitiesListContentView() -> some View {
-        chatsListContentViewFor(chats: viewModel.communitiesListToShow,
-                                requests: [])
+        if viewModel.communitiesListToShow.isEmpty {
+            communitiesListEmptyView()
+        } else {
+            chatsListContentViewFor(chats: viewModel.communitiesListToShow,
+                                    requests: [])
+        }
+    }
+    
+    @ViewBuilder
+    func communitiesListEmptyView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.messagingCommunitiesEmptyTitle.localized(),
+                               subtitle: String.Constants.messagingCommunitiesEmptySubtitle.localized(),
+                               icon: .messageCircleIcon24,
+                               buttonTitle: String.Constants.learnMore.localized(),
+                               buttonIcon: .infoIcon,
+                               buttonStyle: .medium(.raisedPrimary),
+                               buttonCallback: {
+            logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                           parameters: [.value: DataType.communities.rawValue])
+            openLink(.communitiesInfo)
+        })
     }
     
     @ViewBuilder
@@ -289,6 +294,31 @@ private extension ChatListView {
   
     @ViewBuilder
     func channelsListContentView() -> some View {
+        if viewModel.channelsToShow.isEmpty {
+            channelsListEmptyView()
+        } else {
+            channelsListView()
+        }
+    }
+    
+    @ViewBuilder
+    func channelsListEmptyView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.messagingChannelsEmptyTitle.localized(),
+                               subtitle: String.Constants.messagingChannelsEmptySubtitle.localized(),
+                               icon: .messageCircleIcon24,
+                               buttonTitle: String.Constants.searchApps.localized(),
+                               buttonIcon: .searchIcon,
+                               buttonStyle: .medium(.raisedTertiary),
+                               buttonCallback: {
+            logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                           parameters: [.value: DataType.channels.rawValue])
+            viewModel.searchMode = .channelsOnly
+            viewModel.keyboardFocused = true
+        })
+    }
+    
+    @ViewBuilder
+    func channelsListView() -> some View {
         Section {
             channelsRequestsContentView()
             ForEach(viewModel.channelsToShow, id: \.id) { channel in
