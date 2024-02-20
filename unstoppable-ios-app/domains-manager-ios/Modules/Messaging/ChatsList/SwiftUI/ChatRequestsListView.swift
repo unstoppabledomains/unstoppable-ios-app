@@ -101,6 +101,7 @@ private extension ChatRequestsListView {
                                   chatSelectedCallback: { chat in
                 viewModel.openChat(chat)
             })
+            .allowsHitTesting(!viewModel.isEditing)
             .listRowBackground(Color.backgroundOverlay)
             .listRowSeparator(.hidden)
             .listRowInsets(EdgeInsets(4))
@@ -119,6 +120,7 @@ private extension ChatRequestsListView {
                         logButtonPressedAnalyticEvents(button: .channelInList)
                         viewModel.openChannel(channel)
                     })
+                    .allowsHitTesting(!viewModel.isEditing)
                 }
             }
             .listRowBackground(Color.backgroundOverlay)
