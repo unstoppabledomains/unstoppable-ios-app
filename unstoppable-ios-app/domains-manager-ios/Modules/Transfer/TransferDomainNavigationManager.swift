@@ -72,7 +72,7 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
                                                                                         .fromWallet: domain.ownerWallet ?? "",
                                                                                         .toWallet: recipient.ownerAddress])
             Task.detached {
-                guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == domain.ownerWallet }) else { return }
+                guard let wallet = appContext.walletsDataService.wallets.findWithAddress(domain.ownerWallet) else { return }
                 try? await appContext.walletsDataService.refreshDataForWallet(wallet)
             }
             moveToStep(.transferInProgressOf(domain: domainDisplayInfo))

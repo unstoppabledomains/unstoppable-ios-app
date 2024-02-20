@@ -95,7 +95,7 @@ extension BaseTransactionInProgressViewPresenter {
     }
     
     func refreshDataForWalletWith(address: String?) async {
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == address }) else { return }
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(address) else { return }
         try? await appContext.walletsDataService.refreshDataForWallet(wallet)
     }
 }

@@ -516,7 +516,7 @@ private extension ChatViewPresenter {
     func setupPlaceholder() {
         Task {
             let wallets = messagingService.fetchWalletsAvailableForMessaging()
-            let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
+            let userWallet = wallets.findWithAddress(profile.wallet)
             let sender = userWallet?.rrDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
@@ -671,7 +671,7 @@ private extension ChatViewPresenter {
                                          walletAddress: String) {
         Task {
             guard let view,
-                let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
+                  let wallet = appContext.walletsDataService.wallets.findWithAddress(profile.wallet) else { return }
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
                                                by: wallet,

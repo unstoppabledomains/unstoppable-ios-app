@@ -119,7 +119,7 @@ extension WalletDetailsViewPresenter: NetworkReachabilityServiceListener {
 // MARK: - Private functions
 private extension WalletDetailsViewPresenter {
     func walletsUpdated(_ wallets: [WalletEntity]) {
-        if let wallet = wallets.first(where: { $0.address == wallet.address }) {
+        if let wallet = wallets.findWithAddress(wallet.address) {
             self.wallet = wallet
             showWalletDetails()
         } else {

@@ -545,7 +545,7 @@ private extension PurchaseDomainsCheckoutView {
                                        selectAnotherCallback: {
                 isSelectWalletPresented = true
             }, tryAgainCallback: {
-                guard let walletWithInfo = self.wallets.first(where: { $0.address == wallet.address }) else { return }
+                guard let walletWithInfo = self.wallets.findWithAddress(wallet.address) else { return }
                 authorizeWithSelectedWallet(walletWithInfo, forceReload: true)
             })
         case .failedToLoadCalculations(let callback):
