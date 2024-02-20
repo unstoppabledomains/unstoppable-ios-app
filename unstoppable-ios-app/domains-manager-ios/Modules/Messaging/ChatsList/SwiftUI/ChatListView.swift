@@ -30,9 +30,8 @@ struct ChatListView: View, ViewAnalyticsLogger {
                                 placement: .navigationBarDrawer(displayMode: .automatic),
                                 prompt: Text(String.Constants.search.localized()))
                 } else {
-                    List {
-                        Text("")
-                            .listRowBackground(Color.clear)
+                    ScrollView {
+                        chatListContentView()
                     }
                 }
             
@@ -58,10 +57,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
                 }
             }
             .toolbar {
-                if viewModel.chatState == .chatsList {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        newMessageNavButton()
-                    }
+                ToolbarItem(placement: .topBarTrailing) {
+                    newMessageNavButton()
+                        .opacity(viewModel.chatState == .chatsList ? 1 : 0)
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -71,6 +69,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                         .background(.regularMaterial)
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: HomeChatNavigationDestination.self) { destination in
                 HomeChatLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                           tabRouter: tabRouter)
