@@ -237,8 +237,18 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListContentView() -> some View {
+        chatsListContentViewFor(chats: viewModel.chatsListToShow)
+    }
+    
+    @ViewBuilder
+    func communitiesListContentView() -> some View {
+        chatsListContentViewFor(chats: viewModel.communitiesListToShow)
+    }
+    
+    @ViewBuilder
+    func chatsListContentViewFor(chats: [MessagingChatDisplayInfo]) -> some View {
         Section {
-            ForEach(viewModel.chatsListToShow, id: \.id) { chat in
+            ForEach(chats, id: \.id) { chat in
                 chatRowView(chat: chat)
             }
         }
@@ -257,12 +267,7 @@ private extension ChatListView {
             viewModel.openChatWith(conversationState: .existingChat(chat))
         })
     }
-    
-    @ViewBuilder
-    func communitiesListContentView() -> some View {
-        
-    }
-    
+  
     @ViewBuilder
     func channelsListContentView() -> some View {
         
