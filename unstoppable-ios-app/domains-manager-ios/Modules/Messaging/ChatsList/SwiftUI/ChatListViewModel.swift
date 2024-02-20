@@ -120,29 +120,26 @@ extension ChatListViewModel {
     }
     
     func showCurrentDataTypeRequests() {
-        //        guard let profile = selectedProfileWalletPair?.profile,
-        //              let nav = view?.cNavigationController else { return }
-        //
-        //        switch selectedDataType {
-        //        case .chats:
-        //            let chatsList = getListOfUnblockedChats()
-        //            let requests = chatsList.requestsOnly()
-        //            guard !requests.isEmpty else { return }
-        //
-        //            UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
-        //                                              profile: profile,
-        //                                              in: nav)
-        //        case .communities:
-        //            Debugger.printFailure("Requests section are not exist for communities", critical: true)
-        //            return
-        //        case .channels:
-        //            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
-        //            guard !channels.isEmpty else { return }
-        //
-        //            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
-        //                                              profile: profile,
-        //                                              in: nav)
-        //        }
+        guard let profile = selectedProfileWalletPair?.profile else { return }
+        
+        switch selectedDataType {
+        case .chats:
+            let chatsList = getListOfUnblockedChats()
+            let requests = chatsList.requestsOnly()
+            guard !requests.isEmpty else { return }
+            
+            router.chatTabNavPath.append(.requests(profile: profile,
+                                                   dataType: .chatRequests(requests)))
+        case .communities:
+            Debugger.printFailure("Requests section are not exist for communities", critical: true)
+            return
+        case .channels:
+            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
+            guard !channels.isEmpty else { return }
+            
+            router.chatTabNavPath.append(.requests(profile: profile,
+                                                   dataType: .channelsSpam(channels)))
+        }
     }
 
     func openChatWith(conversationState: MessagingChatConversationState) {

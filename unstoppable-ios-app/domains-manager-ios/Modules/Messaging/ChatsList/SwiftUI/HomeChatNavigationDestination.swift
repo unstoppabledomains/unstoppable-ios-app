@@ -10,6 +10,7 @@ import SwiftUI
 enum HomeChatNavigationDestination: Hashable {
     case chat(profile: MessagingChatUserProfileDisplayInfo, conversationState: MessagingChatConversationState)
     case channel(profile: MessagingChatUserProfileDisplayInfo, channel: MessagingNewsChannel)
+    case requests(profile: MessagingChatUserProfileDisplayInfo, dataType: ChatRequestsListView.DataType)
 }
 
 struct HomeChatLinkNavigationDestination {
@@ -26,7 +27,10 @@ struct HomeChatLinkNavigationDestination {
         case .channel(let profile, let channel):
             ChannelView(viewModel: .init(profile: profile,
                                          channel: channel))
-                
+        case .requests(let profile, let dataType):
+            ChatRequestsListView(viewModel: .init(dataType: dataType,
+                                                  profile: profile,
+                                                  router: tabRouter))
         }
     }
     

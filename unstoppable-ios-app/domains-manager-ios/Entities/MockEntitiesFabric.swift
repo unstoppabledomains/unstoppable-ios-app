@@ -24,7 +24,15 @@ extension MockEntitiesFabric {
          .init(content: "🫂", messageId: "1", referenceMessageId: "1", isUserReaction: false),
          .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
     }
+    
     enum Messaging {
+        static func createProfileDisplayInfo(wallet: String = "0x",
+                                             serviceIdentifier: MessagingServiceIdentifier = .xmtp) -> MessagingChatUserProfileDisplayInfo {
+            MessagingChatUserProfileDisplayInfo(id: UUID().uuidString,
+                                                wallet: wallet,
+                                                serviceIdentifier: serviceIdentifier)
+        }
+        
         static func newChatConversationState() -> MessagingChatConversationState {
             .newChat(.init(userInfo: .init(wallet: "123"), messagingService: .xmtp))
         }

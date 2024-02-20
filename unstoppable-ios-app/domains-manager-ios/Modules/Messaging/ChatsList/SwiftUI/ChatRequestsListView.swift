@@ -134,7 +134,7 @@ private extension ChatRequestsListView {
 
 // MARK: - Open methods
 extension ChatRequestsListView {
-    enum DataType {
+    enum DataType: Hashable {
         case chatRequests([MessagingChatDisplayInfo])
         case channelsSpam([MessagingNewsChannel])
     }
@@ -147,7 +147,7 @@ extension ChatRequestsListView {
     
     return NavigationStack {
         ChatRequestsListView(viewModel: .init(dataType: .channelsSpam(MockEntitiesFabric.Messaging.createChannelsForUITesting()),
-                                              profile: .mock(),
+                                              profile: MockEntitiesFabric.Messaging.createProfileDisplayInfo(),
                                               router: router))
     }
     .environmentObject(router)
