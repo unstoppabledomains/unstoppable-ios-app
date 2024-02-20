@@ -1037,6 +1037,8 @@
 		C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
 		C686BF222A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C686BF2C2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
+		C688C1762B8439F400BD233A /* ChatListChannelRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */; };
+		C688C1772B8439F400BD233A /* ChatListChannelRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */; };
 		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
 		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
 		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
@@ -3235,6 +3237,7 @@
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
 		C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnencryptedMessageInfoPullUpView.swift; sourceTree = "<group>"; };
 		C686BF2B2A6135570036C7C1 /* ChatsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsList.swift; sourceTree = "<group>"; };
+		C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListChannelRowView.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
 		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
@@ -7618,6 +7621,7 @@
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
 				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
 				C6FFBADD2B833C3600CB442D /* ChatListChatRowView.swift */,
+				C688C1752B8439F400BD233A /* ChatListChannelRowView.swift */,
 				C6FFBADA2B833A8300CB442D /* ChatCreateMessagingProfileView.swift */,
 				C6FFBAD42B832B3900CB442D /* ChatListDataTypeSelectorView.swift */,
 				C6D8FF382B831BC40094A21E /* ChatListNavTitleView.swift */,
@@ -9333,6 +9337,7 @@
 				C69F992B2A9F1264004B1958 /* Font.swift in Sources */,
 				C6A2D5AB285062C200327C47 /* BaseSignTransactionView.swift in Sources */,
 				C6C995DA289D313E00367362 /* CNavigationBar.swift in Sources */,
+				C688C1762B8439F400BD233A /* ChatListChannelRowView.swift in Sources */,
 				C679B5ED2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */,
 				C60982512823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
@@ -10040,6 +10045,7 @@
 				C6C8F8702B21822700A9834D /* TutorialViewPresenter.swift in Sources */,
 				C61807EC2B19A6980032E543 /* PreviewUDWalletsService.swift in Sources */,
 				C6D647262B1ED91F00D724AC /* PullUpViewService+Tools.swift in Sources */,
+				C688C1772B8439F400BD233A /* ChatListChannelRowView.swift in Sources */,
 				C6B65F662B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */,
 				C6D645B82B1DBC4300D724AC /* KeepingAnimationImageView.swift in Sources */,
 				C6C8F8BC2B2182E400A9834D /* SetupReverseResolutionViewPresenter.swift in Sources */,

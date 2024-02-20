@@ -120,7 +120,7 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
-        []
+        MockEntitiesFabric.Messaging.createChannelsForUITesting()
     }
     
     func getFeedFor(channel: MessagingNewsChannel, cachedOnly: Bool, page: Int, limit: Int) async throws -> [MessagingNewsChannelFeed] {

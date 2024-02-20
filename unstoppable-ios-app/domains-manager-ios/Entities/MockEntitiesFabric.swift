@@ -33,6 +33,46 @@ extension MockEntitiesFabric {
             .existingChat(isGroup ? mockGroupChat(numberOfMembers: 4) : mockPrivateChat())
         }
         
+        static func createChannelsForUITesting() -> [MessagingNewsChannel] {
+            [mockChannel(name: "Push channel"),
+             mockChannel(name: "Lens Protocol", lastMessage: mockChannelFeed(title: "Title", message: "Message content")),
+             mockChannel(name: "Unsubscribed", isCurrentUserSubscribed: false)]
+        }
+        
+        static func mockChannel(name: String,
+                                isCurrentUserSubscribed: Bool = true,
+                                lastMessage: MessagingNewsChannelFeed? = nil) -> MessagingNewsChannel {
+            let id = UUID().uuidString
+            return .init(id: id,
+                         userId: "1",
+                         channel: id,
+                         name: name,
+                         info: "This channel is for testing purposes only",
+                         url: URL(string: "https://google.com")!,
+                         icon: URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")!,
+                         verifiedStatus: 1,
+                         blocked: 0,
+                         subscriberCount: 100,
+                         unreadMessagesCount: 0,
+                         isCurrentUserSubscribed: isCurrentUserSubscribed,
+                         isSearchResult: false,
+                         lastMessage: lastMessage)
+        }
+        
+        static func mockChannelFeed(title: String,
+                                    message: String,
+                                    link: URL? = nil,
+                                    isRead: Bool = true) -> MessagingNewsChannelFeed {
+            
+            return .init(id: UUID().uuidString,
+                         title: title,
+                         message: message,
+                         link: link,
+                         time: Date(),
+                         isRead: isRead,
+                         isFirstInChannel: false)
+        }
+        
         static func createChatsForUITesting() -> [MessagingChatDisplayInfo] {
             [mockPrivateChat(lastMessage: nil),
              mockPrivateChat(lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),

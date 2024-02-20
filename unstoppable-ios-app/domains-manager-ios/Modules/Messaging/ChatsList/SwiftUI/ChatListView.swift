@@ -270,8 +270,27 @@ private extension ChatListView {
   
     @ViewBuilder
     func channelsListContentView() -> some View {
-        
+        Section {
+            ForEach(viewModel.channelsToShow, id: \.id) { channel in
+                channelRowView(channel: channel)
+            }
+        }
+        .listRowBackground(Color.backgroundOverlay)
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(4))
     }
+    
+    @ViewBuilder
+    func channelRowView(channel: MessagingNewsChannel) -> some View {
+        UDCollectionListRowButton(content: {
+            ChatListChannelRowView(channel: channel)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .channelInList)
+            viewModel.openChannel(channel)
+        })
+    }
+    
 }
 
 // MARK: - Open methods

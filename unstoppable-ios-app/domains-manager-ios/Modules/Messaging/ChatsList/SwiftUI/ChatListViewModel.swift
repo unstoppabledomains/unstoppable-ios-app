@@ -130,6 +130,14 @@ extension ChatListViewModel {
                                                                         conversationState: conversationState))
     }
     
+    func openChannel(_ channel: MessagingNewsChannel) {
+        //        guard let profile = selectedProfileWalletPair?.profile,
+        //              let nav = view?.cNavigationController else { return }
+        
+        //        UDRouter().showChannelScreen(profile: profile,
+        //                                     channel: channel,
+        //                                     in: nav)
+    }
     
     func actionButtonPressed() {
         Task {
@@ -889,16 +897,7 @@ private extension ChatListViewModel {
 //                                              in: nav)
 //        }
     }
-    
-    func openChannel(_ channel: MessagingNewsChannel) {
-//        guard let profile = selectedProfileWalletPair?.profile,
-//              let nav = view?.cNavigationController else { return }
-        
-//        UDRouter().showChannelScreen(profile: profile,
-//                                     channel: channel,
-//                                     in: nav)
-    }
-    
+
     func askToSetRRDomainAndCreateProfileFor(wallet: WalletEntity) {
         Task {
             router.resolvingPrimaryDomainWallet = .init(wallet: wallet,
