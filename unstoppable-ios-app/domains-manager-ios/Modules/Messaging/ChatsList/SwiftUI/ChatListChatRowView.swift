@@ -17,7 +17,7 @@ struct ChatListChatRowView: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            iconView()
+            avatarsView()
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(currentTitle)
@@ -77,12 +77,22 @@ private extension ChatListChatRowView {
     }
     
     @ViewBuilder
+    func avatarsView() -> some View {
+        switch chat.type {
+        case .private, .community:
+            iconView()
+                .clipShape(Circle())
+        case .group:
+            iconView()
+        }
+    }
+    
+    @ViewBuilder
     func iconView() -> some View {
         UIImageBridgeView(image: icon,
                           width: iconSize,
                           height: iconSize)
         .squareFrame(iconSize)
-        .clipShape(Circle())
     }
     
     var currentTitle: String {

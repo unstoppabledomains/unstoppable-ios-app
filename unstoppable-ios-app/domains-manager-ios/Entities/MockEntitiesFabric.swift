@@ -30,7 +30,7 @@ extension MockEntitiesFabric {
         }
         
         static func existingChatConversationState(isGroup: Bool) -> MessagingChatConversationState {
-            .existingChat(isGroup ? mockGroupChat() : mockPrivateChat())
+            .existingChat(isGroup ? mockGroupChat(numberOfMembers: 4) : mockPrivateChat())
         }
         
         static func createChatsForUITesting() -> [MessagingChatDisplayInfo] {
@@ -38,7 +38,11 @@ extension MockEntitiesFabric {
              mockPrivateChat(lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),
              mockPrivateChat(lastMessage: createImageMessage(image: .alertCircle, isThisUser: false)),
              mockPrivateChat(lastMessage: createRemoteContentMessage(isThisUser: false)),
-             mockPrivateChat(lastMessage: createUnknownContentMessage(isThisUser: false))]
+             mockPrivateChat(lastMessage: createUnknownContentMessage(isThisUser: false)),
+             mockGroupChat(numberOfMembers: 10),
+             mockGroupChat(numberOfMembers: 10, lastMessage: createTextMessage(text: "Hello ksjd kjshf ksjdh fkjsdh fkjsdh fksjhd fkjsdhf  oskjdfl ksdjflksdjflkjsdlfkjsdlk fjsldkj f", isThisUser: false)),
+            mockCommunityChat(name: "Web3 Domain", numberOfMembers: 30),
+            mockCommunityChat(name: "4 Years Club", numberOfMembers: 10, lastMessage: createTextMessage(text: "Nice to join this awesome community!", isThisUser: false))]
         }
         
         static func mockPrivateChat(lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
@@ -60,21 +64,61 @@ extension MockEntitiesFabric {
             return chat
         }
         
-        static func mockGroupChat() -> MessagingChatDisplayInfo {
+        static func mockGroupChat(numberOfMembers: Int,
+                                  lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
             let chatId = UUID().uuidString
             let sender = chatSenderFor(isThisUser: true)
-            let avatarURL = URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png")
-            let lastMessage: MessagingChatMessageDisplayInfo? = nil
+            var members = [sender.userDisplayInfo]
+            for i in 0..<numberOfMembers {
+                let sender = chatSenderFor(isThisUser: false)
+                members.append(sender.userDisplayInfo)
+            }
             let unreadMessagesCount = 0
             let chat = MessagingChatDisplayInfo(id: chatId,
                                                 thisUserDetails: sender.userDisplayInfo,
-                                                avatarURL: avatarURL,
+                                                avatarURL: nil,
                                                 serviceIdentifier: .xmtp,
-                                                type: .group(.init(members: [sender.userDisplayInfo],
+                                                type: .group(.init(members: members,
                                                                    pendingMembers: [],
                                                                    name: "Group chat",
                                                                    adminWallets: [],
                                                                    isPublic: false)),
+                                                unreadMessagesCount: unreadMessagesCount,
+                                                isApproved: true,
+                                                lastMessageTime: lastMessage?.time ?? Date(),
+                                                lastMessage: lastMessage)
+            
+            return chat
+        }
+        
+        static func mockCommunityChat(name: String,
+                                      numberOfMembers: Int,
+                                      lastMessage: MessagingChatMessageDisplayInfo? = nil) -> MessagingChatDisplayInfo {
+            let chatId = UUID().uuidString
+            let sender = chatSenderFor(isThisUser: true)
+            var members = [sender.userDisplayInfo]
+            for i in 0..<numberOfMembers {
+                let sender = chatSenderFor(isThisUser: false)
+                members.append(sender.userDisplayInfo)
+            }
+            let unreadMessagesCount = 0
+            let badgeInfo = BadgeDetailedInfo(badge: .init(code: chatId,
+                                                           name: name,
+                                                           logo: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/kuplin.hi/f9bed9e5-c6e5-4946-9c32-a655d87e670c.png",
+                                                           description: "This is community for this badge holders."),
+                                              usage: .init(rank: 10, holders: 10, domains: 10, featured: nil))
+            let type: MessagingCommunitiesChatDetails.CommunityType = .badge(badgeInfo)
+            let chat = MessagingChatDisplayInfo(id: chatId,
+                                                thisUserDetails: sender.userDisplayInfo,
+                                                avatarURL: nil,
+                                                serviceIdentifier: .xmtp,
+                                                type: .community(.init(type: type,
+                                                                       isJoined: true,
+                                                                       isPublic: true,
+                                                                       members: members,
+                                                                       pendingMembers: [],
+                                                                       adminWallets: [],
+                                                                       blockedUsersList: [])),
                                                 unreadMessagesCount: unreadMessagesCount,
                                                 isApproved: true,
                                                 lastMessageTime: lastMessage?.time ?? Date(),
