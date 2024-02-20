@@ -60,12 +60,6 @@ extension ChannelViewModel {
     }
 }
 
-// MARK: - ChatPresenterContentIdentifiable
-extension ChannelViewModel: ChatPresenterContentIdentifiable {
-    var chatId: String? { nil }
-    var channelId: String? { channel.channel }
-}
-
 // MARK: - MessagingServiceListener
 extension ChannelViewModel: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {

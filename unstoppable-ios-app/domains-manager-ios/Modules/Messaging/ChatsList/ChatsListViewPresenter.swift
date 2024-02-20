@@ -32,11 +32,6 @@ extension ChatsListViewPresenterProtocol {
 }
 
 @MainActor
-protocol ChatsListCoordinator: AnyObject, ChatPresenterContentIdentifiable {
-    func update(presentOptions: ChatsList.PresentOptions)
-}
-
-@MainActor
 final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?

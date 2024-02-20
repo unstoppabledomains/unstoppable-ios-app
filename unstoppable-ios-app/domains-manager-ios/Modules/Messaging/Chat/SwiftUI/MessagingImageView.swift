@@ -114,8 +114,6 @@ extension MessagingImageView {
     }
 }
 
-//struct MessagingImageView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MessagingImageView(mode: .view(saveCallback: { }), image: )
-//    }
-//}
+#Preview {
+    MessagingImageView(mode: .view, image: .web3ProfileIllustration)
+}

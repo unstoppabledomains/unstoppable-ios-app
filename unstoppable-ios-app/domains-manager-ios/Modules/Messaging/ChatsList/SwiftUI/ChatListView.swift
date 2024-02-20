@@ -43,6 +43,9 @@ struct ChatListView: View, ViewAnalyticsLogger {
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
                 viewModel.isSearchActive = value
+                if !value {
+                    UDVibration.buttonTap.vibrate()
+                }
             }
             .onChange(of: viewModel.isSearchActive) { keyboardFocused in
                 setSearchFieldActive(keyboardFocused)
@@ -293,7 +296,7 @@ private extension ChatListView {
                        buttonStyle: .medium(.raisedPrimary),
                        buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
-                                           parameters: [.value: DataType.chats.rawValue])
+                                           parameters: [.value: ChatsList.DataType.chats.rawValue])
             viewModel.searchMode = .chatsOnly
             viewModel.isSearchActive = true
         })
@@ -344,7 +347,7 @@ private extension ChatListView {
                                buttonStyle: .medium(.raisedPrimary),
                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
-                                           parameters: [.value: DataType.communities.rawValue])
+                                           parameters: [.value: ChatsList.DataType.communities.rawValue])
             openLink(.communitiesInfo)
         })
     }
@@ -367,7 +370,9 @@ private extension ChatListView {
                                         title: String? = nil) -> some View {
         sectionTitleView(title)
         Section {
-            chatsRequestsContentView(requests: requests)
+            if !viewModel.isSearchActive {
+                chatsRequestsContentView(requests: requests)
+            }
             ForEach(chats, id: \.id) { chat in
                 chatRowView(chat: chat)
             }
@@ -419,7 +424,7 @@ private extension ChatListView {
                                buttonStyle: .medium(.raisedTertiary),
                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
-                                           parameters: [.value: DataType.channels.rawValue])
+                                           parameters: [.value: ChatsList.DataType.channels.rawValue])
             viewModel.searchMode = .channelsOnly
             viewModel.isSearchActive = true
         })
@@ -430,7 +435,9 @@ private extension ChatListView {
                                  title: String? = nil) -> some View {
         sectionTitleView(title)
         Section {
-            channelsRequestsContentView()
+            if !viewModel.isSearchActive {
+                channelsRequestsContentView()
+            }
             ForEach(channels, id: \.id) { channel in
                 channelRowView(channel: channel)
             }
@@ -493,21 +500,6 @@ private extension ChatListView {
 
 // MARK: - Open methods
 extension ChatListView {
-    enum DataType: String, Hashable, CaseIterable {
-        case chats, communities, channels
-        
-        var title: String {
-            switch self {
-            case .chats:
-                return String.Constants.chats.localized()
-            case .communities:
-                return String.Constants.communities.localized()
-            case .channels:
-                return String.Constants.appsInbox.localized()
-            }
-        }
-    }
-    
     enum ViewState {
         case noWallet
         case createProfile
@@ -521,7 +513,6 @@ extension ChatListView {
         case notJoinedOnly([MessagingChatDisplayInfo])
         case mixed(joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
     }
-    
 }
 
 #Preview {

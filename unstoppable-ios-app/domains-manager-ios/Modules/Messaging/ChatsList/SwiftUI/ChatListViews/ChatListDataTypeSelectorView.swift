@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ChatListDataTypeSelectorView: View {
     
-    @Binding var dataType: ChatListView.DataType
+    @Binding var dataType: ChatsList.DataType
     
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 backgroundView()
                 selectedBackgroundView(width: proxy.size.width / 3)
-                viewForSegments(dataTypes: ChatListView.DataType.allCases)
+                viewForSegments(dataTypes: ChatsList.DataType.allCases)
             }
             .frame(height: 36)
             .frame(maxWidth: .infinity)
@@ -29,8 +29,13 @@ struct ChatListDataTypeSelectorView: View {
 private extension ChatListDataTypeSelectorView {
     @ViewBuilder
     func backgroundView() -> some View {
-        Color.backgroundSubtle
+        Color.white.opacity(0.1)
             .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(lineWidth: 1)
+                    .foregroundColor(Color.borderSubtle)
+            }
     }
     
     @ViewBuilder
@@ -46,7 +51,7 @@ private extension ChatListDataTypeSelectorView {
         let selectedIndex = self.selectedIndex()
         if selectedIndex == 0 {
             return 4
-        } else if selectedIndex == ChatListView.DataType.allCases.count - 1 {
+        } else if selectedIndex == ChatsList.DataType.allCases.count - 1 {
             return -4
         }
         return 0
@@ -57,20 +62,20 @@ private extension ChatListDataTypeSelectorView {
     }
     
     func selectedIndex() -> Int {
-        ChatListView.DataType.allCases.firstIndex(of: dataType) ?? 0
+        ChatsList.DataType.allCases.firstIndex(of: dataType) ?? 0
     }
     
     @ViewBuilder
-    func viewForSegments(dataTypes: [ChatListView.DataType]) -> some View {
+    func viewForSegments(dataTypes: [ChatsList.DataType]) -> some View {
         HStack(spacing: 0) {
-            ForEach(ChatListView.DataType.allCases, id: \.self) { dataType in
+            ForEach(ChatsList.DataType.allCases, id: \.self) { dataType in
                 viewForSegmentWith(dataType: dataType)
             }
         }
     }
     
     @ViewBuilder
-    func viewForSegmentWith(dataType: ChatListView.DataType) -> some View {
+    func viewForSegmentWith(dataType: ChatsList.DataType) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             if self.dataType != dataType {

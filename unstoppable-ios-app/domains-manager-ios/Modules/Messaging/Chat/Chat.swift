@@ -45,3 +45,17 @@ extension Chat {
         
     }
 }
+
+extension Chat {
+    enum ChatMessageAction: Hashable {
+        case resend
+        case delete
+        case unencrypted
+        case viewSenderProfile(MessagingChatSender)
+        
+        case copyText(String)
+        case sendReaction(content: String, toMessage: String)
+        case saveImage(UIImage)
+        case blockUserInGroup(MessagingChatUserDisplayInfo)
+    }
+}

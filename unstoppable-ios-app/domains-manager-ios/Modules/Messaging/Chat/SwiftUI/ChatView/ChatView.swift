@@ -28,6 +28,7 @@ struct ChatView: View, ViewAnalyticsLogger {
                 ProgressView()
             }
         }
+        .environmentObject(viewModel)
         .displayError($viewModel.error)
         .background(Color.backgroundMuted2)
         .onChange(of: viewModel.keyboardFocused) { keyboardFocused in

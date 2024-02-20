@@ -32,6 +32,42 @@ extension ChatsList {
     enum EditingModeAction {
         case edit, cancel, selectAll
     }
+    
+    enum DataType: String, Hashable, CaseIterable {
+        case chats, communities, channels
+        
+        var title: String {
+            switch self {
+            case .chats:
+                return String.Constants.chats.localized()
+            case .communities:
+                return String.Constants.communities.localized()
+            case .channels:
+                return String.Constants.appsInbox.localized()
+            }
+        }
+    }
+    
+    struct DataTypeUIConfiguration: Hashable {
+        let dataType: DataType
+        let badge: Int
+    }
+    
+    struct DataTypeSelectionUIConfiguration: Hashable, Sendable {
+        let dataTypesConfigurations: [DataTypeUIConfiguration]
+        let selectedDataType: DataType
+        var dataTypeChangedCallback: @Sendable @MainActor (DataType)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.dataTypesConfigurations == rhs.dataTypesConfigurations &&
+            lhs.selectedDataType == rhs.selectedDataType
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(dataTypesConfigurations)
+            hasher.combine(selectedDataType)
+        }
+    }
 }
 
 extension ChatsList {
@@ -127,3 +163,9 @@ extension ChatsList {
         }
     }
 }
+
+@MainActor
+protocol ChatsListCoordinator: AnyObject {
+    func update(presentOptions: ChatsList.PresentOptions)
+}
+

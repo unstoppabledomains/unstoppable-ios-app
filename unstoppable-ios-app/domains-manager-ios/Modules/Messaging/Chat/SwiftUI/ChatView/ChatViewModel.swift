@@ -105,6 +105,61 @@ extension ChatViewModel {
             choosePhotoButtonPressed()
         }
     }
+    
+    func handleChatMessageAction(_ action: Chat.ChatMessageAction,
+                                 forMessage message: MessagingChatMessageDisplayInfo) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        
+        switch action {
+        case .resend:
+            logButtonPressedAnalyticEvents(button: .resendMessage)
+            Task { try? await messagingService.resendMessage(message, in: chat) }
+        case .delete:
+            logButtonPressedAnalyticEvents(button: .deleteMessage)
+            Task { try? await messagingService.deleteMessage(message, in: chat) }
+            if let i = messages.firstIndex(where: { $0.id == message.id }) {
+                messages.remove(at: i)
+            }
+        case .unencrypted:
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+            
+            appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
+        case .viewSenderProfile(let sender):
+            Task {
+                let wallet = sender.userDisplayInfo.wallet
+                var domainName = sender.userDisplayInfo.domainName
+                if domainName == nil {
+                    domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: wallet.lowercased()))?.name
+                }
+                if let domainName,
+                   domainName.isValidDomainName() {
+                    UDVibration.buttonTap.vibrate()
+                    didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
+                }
+            }
+        case .copyText(let text):
+            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
+            UIPasteboard.general.string = text
+            Vibration.success.vibrate()
+        case .saveImage(let image):
+            logButtonPressedAnalyticEvents(button: .saveChatImage)
+            let saver = PhotoLibraryImageSaver()
+            saver.saveImage(image)
+        case .blockUserInGroup(let user):
+            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
+                                           parameters: [.chatId : chat.id,
+                                                        .wallet: user.wallet])
+            Task {
+                isLoading = true
+                try? await setGroupChatUser(user,
+                                            blocked: true,
+                                            chat: chat)
+                isLoading = false
+            }
+        case .sendReaction(let content, let toMessage):
+            sendReactionMesssage(content, toMessage: toMessage)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -543,61 +598,6 @@ private extension ChatViewModel {
             }
             
             isLoading = false
-        }
-    }
-    
-    func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
-                                 forMessage message: MessagingChatMessageDisplayInfo) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        
-        switch action {
-        case .resend:
-            logButtonPressedAnalyticEvents(button: .resendMessage)
-            Task { try? await messagingService.resendMessage(message, in: chat) }
-        case .delete:
-            logButtonPressedAnalyticEvents(button: .deleteMessage)
-            Task { try? await messagingService.deleteMessage(message, in: chat) }
-            if let i = messages.firstIndex(where: { $0.id == message.id }) {
-                messages.remove(at: i)
-            }
-        case .unencrypted:
-            guard let view = appContext.coreAppCoordinator.topVC else { return }
-            
-            appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
-        case .viewSenderProfile(let sender):
-            Task {
-                let wallet = sender.userDisplayInfo.wallet
-                var domainName = sender.userDisplayInfo.domainName
-                if domainName == nil {
-                    domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: wallet.lowercased()))?.name
-                }
-                if let domainName,
-                   domainName.isValidDomainName() {
-                    UDVibration.buttonTap.vibrate()
-                    didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
-                }
-            }
-        case .copyText(let text):
-            logButtonPressedAnalyticEvents(button: .copyChatMessageToClipboard)
-            UIPasteboard.general.string = text
-            Vibration.success.vibrate()
-        case .saveImage(let image):
-            logButtonPressedAnalyticEvents(button: .saveChatImage)
-            let saver = PhotoLibraryImageSaver()
-            saver.saveImage(image)
-        case .blockUserInGroup(let user):
-            logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
-                                           parameters: [.chatId : chat.id,
-                                                        .wallet: user.wallet])
-            Task {
-                isLoading = true
-                try? await setGroupChatUser(user,
-                                            blocked: true,
-                                            chat: chat)
-                isLoading = false
-            }
-        case .sendReaction(let content, let toMessage):
-            sendReactionMesssage(content, toMessage: toMessage)
         }
     }
     

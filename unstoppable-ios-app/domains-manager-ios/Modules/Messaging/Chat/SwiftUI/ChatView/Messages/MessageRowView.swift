@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MessageRowView: View {
     
+    @EnvironmentObject var viewModel: ChatViewModel
+
     let message: MessagingChatMessageDisplayInfo
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
@@ -87,7 +89,8 @@ private extension MessageRowView {
     @ViewBuilder
     func failedToSendMessageView() -> some View {
         Button {
-            
+            UDVibration.buttonTap.vibrate()
+            viewModel.handleChatMessageAction(.resend, forMessage: message)
         } label: {
             HStack(spacing: 2) {
                 Text(String.Constants.sendingFailed.localized() + ".")
@@ -105,20 +108,27 @@ private extension MessageRowView {
         UDIconButtonView(icon: .trashIcon,
                          style: .circle(size: .small,
                                         style: .raisedTertiary)) {
-            
+            UDVibration.buttonTap.vibrate()
+            viewModel.handleChatMessageAction(.delete, forMessage: message)
         }
                                         .offset(y: -timeViewOffset)
     }
     
     @ViewBuilder
     func otherUserAvatarView() -> some View {
-        UIImageBridgeView(image: otherUserAvatar,
-                          width: 36,
-                          height: 35)
-        .squareFrame(36)
-        .clipShape(Circle())
-        .onAppear(perform: loadAvatarForOtherUserInfo)
-        .offset(y: -timeViewOffset)
+        Button {
+            UDVibration.buttonTap.vibrate()
+            viewModel.handleChatMessageAction(.viewSenderProfile(message.senderType), forMessage: message)
+        } label: {
+            UIImageBridgeView(image: otherUserAvatar,
+                              width: 36,
+                              height: 35)
+            .squareFrame(36)
+            .clipShape(Circle())
+            .onAppear(perform: loadAvatarForOtherUserInfo)
+            .offset(y: -timeViewOffset)
+        }
+        .buttonStyle(.plain)
     }
     
     func loadAvatarForOtherUserInfo() {

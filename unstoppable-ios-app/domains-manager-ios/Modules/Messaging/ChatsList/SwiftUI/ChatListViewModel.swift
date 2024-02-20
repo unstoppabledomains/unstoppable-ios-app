@@ -12,7 +12,7 @@ import Combine
 final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .chatsHome }
     
-    typealias ChatsListDataType = ChatListView.DataType
+    typealias ChatsListDataType = ChatsList.DataType
     
     private let fetchLimit: Int = 10
     private let messagingService: MessagingServiceProtocol
@@ -40,7 +40,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var channelsToShow: [MessagingNewsChannel] = []
     @Published private(set) var channelsRequests: [MessagingNewsChannel] = []
     @Published private(set) var foundUsersToShow: [MessagingChatUserDisplayInfo] = []
-    @Published var selectedDataType: ChatListView.DataType = .chats
+    @Published var selectedDataType: ChatsList.DataType = .chats
     @Published var error: Error?
     @Published var isSearchActive: Bool = false
     @Published var searchText: String = ""
@@ -661,15 +661,6 @@ private extension ChatListViewModel {
         enum PeopleSearchResult {
             case existingChat(MessagingChatDisplayInfo)
             case newUser(MessagingChatUserDisplayInfo)
-            
-            var item: ChatsListViewController.Item {
-                switch self {
-                case .existingChat(let chat):
-                    return .chat(configuration: .init(chat: chat))
-                case .newUser(let userInfo):
-                    return .userInfo(configuration: .init(userInfo: userInfo))
-                }
-            }
         }
         let searchKey = searchData.searchKey.trimmedSpaces.lowercased()
         
@@ -768,7 +759,7 @@ private extension ChatListViewModel {
         return user.domainName?.lowercased().contains(searchKey) == true
     }
     
-    func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
+    func getDataTypeSelectionUIConfiguration() -> ChatsList.DataTypeSelectionUIConfiguration {
         .init(dataTypesConfigurations: [], selectedDataType: .channels, dataTypeChangedCallback: { _ in })
 //        let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
 //        let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })

@@ -850,17 +850,7 @@ extension ChatViewController {
         }
     }
 
-    enum ChatMessageAction: Hashable {
-        case resend
-        case delete
-        case unencrypted
-        case viewSenderProfile(MessagingChatSender)
-        
-        case copyText(String)
-        case sendReaction(content: String, toMessage: String)
-        case saveImage(UIImage)
-        case blockUserInGroup(MessagingChatUserDisplayInfo)
-    }
+   
     
     enum ChatFeedAction: Hashable {
         case learnMore(URL)

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatListRequestsRowView: View {
     
-    let dataType: ChatListView.DataType
+    let dataType: ChatsList.DataType
     let numberOfRequests: Int
     
     var body: some View {

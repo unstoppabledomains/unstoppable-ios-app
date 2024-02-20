@@ -7,9 +7,10 @@
 
 import SwiftUI
 
+
 @available(iOS 17.0, *)
 #Preview {
-    let profile = MessagingChatUserProfileDisplayInfo.mock(serviceIdentifier: .push)
+    let profile = MockEntitiesFabric.Messaging.createProfileDisplayInfo(serviceIdentifier: .push)
     let channel = MessagingNewsChannel.mock()
     
     let vc = ChatsListViewController.nibInstance()
