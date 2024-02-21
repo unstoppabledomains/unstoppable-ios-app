@@ -343,6 +343,11 @@ private extension ChatViewModel {
             
             self.messages = self.messages.filter { !communityChatDetails.blockedUsersList.contains($0.senderType.userDisplayInfo.wallet.normalized) }
         }
+        
+        for (i, message) in self.messages.enumerated() {
+            self.messages[i].reactions = Array(messagesToReactions[message.id] ?? [])
+        }
+        
         self.messages.sort(by: { $0.time > $1.time })
         if scrollToBottom {
             self.scrollToBottom()
