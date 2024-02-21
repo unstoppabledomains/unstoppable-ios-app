@@ -235,14 +235,14 @@ private extension ChatListView {
             chatsListForSelectedDataTypeView()
         }
     }
-
+    
     @ViewBuilder
     func chatsListForSearchStateView() -> some View {
         if case .empty = viewModel.communitiesListState,
            viewModel.channelsToShow.isEmpty,
            viewModel.chatsListToShow.isEmpty,
            viewModel.foundUsersToShow.isEmpty {
-            
+            noSearchResultsView()
         } else {
             if !viewModel.foundUsersToShow.isEmpty {
                 usersListSectionContentViewFor(users: viewModel.foundUsersToShow,
@@ -265,6 +265,21 @@ private extension ChatListView {
         }
     }
     
+    @ViewBuilder
+    func noSearchResultsView() -> some View {
+        VStack(spacing: 16) {
+            Image.searchIcon
+                .resizable()
+                .squareFrame(32)
+            Text(String.Constants.noResults.localized())
+                .font(.currentFont(size: 20, weight: .bold))
+        }
+        .foregroundStyle(Color.foregroundSecondary)
+        .frame(height: 400)
+        .frame(maxWidth: .infinity)
+        .listRowBackground(Color.clear)
+    }
+
     @ViewBuilder
     func chatsListForSelectedDataTypeView() -> some View {
         switch viewModel.selectedDataType {
