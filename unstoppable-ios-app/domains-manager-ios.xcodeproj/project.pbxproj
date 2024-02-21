@@ -491,7 +491,6 @@
 		C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247B4283CFF1F002A0CBD /* DomainTransactionsService.swift */; };
 		C62247BA283CFF23002A0CBD /* MockDomainTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247B9283CFF23002A0CBD /* MockDomainTransactionsService.swift */; };
 		C62247BF283D28C0002A0CBD /* ApplePayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247BE283D28C0002A0CBD /* ApplePayButton.swift */; };
-		C623966C2A273D3B00363F60 /* Push in Frameworks */ = {isa = PBXBuildFile; productRef = C623966B2A273D3B00363F60 /* Push */; };
 		C62396772A288A5C00363F60 /* MessagingChatMessageTextTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396762A288A5C00363F60 /* MessagingChatMessageTextTypeDisplayInfo.swift */; };
 		C623967C2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623967B2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift */; };
 		C62396812A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396802A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift */; };
@@ -682,6 +681,7 @@
 		C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */; };
 		C64312A32B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
 		C64312A42B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
+		C64457822B85EBEB00F236A4 /* Push in Frameworks */ = {isa = PBXBuildFile; productRef = C64457812B85EBEB00F236A4 /* Push */; };
 		C64513072808089400413C51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513062808089400413C51 /* UserDefaults.swift */; };
 		C645130C280808ED00413C51 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645130B280808ED00413C51 /* Codable.swift */; };
 		C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */; };
@@ -3613,10 +3613,10 @@
 				30AD0D792704634600F42ACC /* Zesame in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
-				C623966C2A273D3B00363F60 /* Push in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
 				C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */,
+				C64457822B85EBEB00F236A4 /* Push in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
 				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
 				290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */,
@@ -7649,7 +7649,6 @@
 				290A60532950AA1600882109 /* WalletConnectVerify */,
 				C63812232993E009002590E7 /* Valet */,
 				C61ECD852A25AB4200E97D70 /* SocketIO */,
-				C623966B2A273D3B00363F60 /* Push */,
 				2917EDDA2A6F25AB004EAB31 /* Boilertalk-Web3 */,
 				2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */,
 				2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */,
@@ -7657,6 +7656,7 @@
 				C65244692AF8A7A400673CC0 /* WalletConnectNotify */,
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
 				C66811F42B47B1C600BDABB0 /* XMTP */,
+				C64457812B85EBEB00F236A4 /* Push */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -7790,12 +7790,12 @@
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
 				C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */,
-				C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
 				C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */,
 				C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */,
 				C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
 				C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */,
+				C64457802B85EBD300F236A4 /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -10994,6 +10994,14 @@
 				kind = branch;
 			};
 		};
+		C64457802B85EBD300F236A4 /* XCRemoteSwiftPackageReference "push-swift-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Oleg-Pecheneg/push-swift-sdk";
+			requirement = {
+				kind = revision;
+				revision = ff3151a6834db9ca841ee0564979298f4b0df053;
+			};
+		};
 		C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/xmtp/xmtp-ios";
@@ -11016,14 +11024,6 @@
 			requirement = {
 				kind = exactVersion;
 				version = 4.0.6;
-			};
-		};
-		C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ethereum-push-notification-service/push-swift-sdk";
-			requirement = {
-				kind = exactVersion;
-				version = 0.6.10;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -11119,11 +11119,6 @@
 			package = C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
 		};
-		C623966B2A273D3B00363F60 /* Push */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */;
-			productName = Push;
-		};
 		C63402872886547C00AB5D38 /* SVGKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */;
@@ -11133,6 +11128,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
+		};
+		C64457812B85EBEB00F236A4 /* Push */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C64457802B85EBD300F236A4 /* XCRemoteSwiftPackageReference "push-swift-sdk" */;
+			productName = Push;
 		};
 		C65244692AF8A7A400673CC0 /* WalletConnectNotify */ = {
 			isa = XCSwiftPackageProductDependency;
