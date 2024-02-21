@@ -152,16 +152,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         guard let pushGroup = (try await Push.PushChat.getGroup(chatId: groupChatId, env: env)) else {
             throw PushMessagingAPIServiceError.groupChatWithGivenIdNotFound
         }
+        
         let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
         let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
-        let publicKeys = pushGroup.members.compactMap { $0.publicKey }
         let communityDetails: PushEntitiesTransformer.CommunityChatDetails = .init(badgeInfo: badgeInfo,
                                                                                    blockedUsersList: blockedUsersList)
         guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
                                                                        isApproved: true,
-                                                                       publicKeys: publicKeys,
                                                                        communityChatDetails: communityDetails) else {
             throw PushMessagingAPIServiceError.failedToConvertPushChat
         }
@@ -243,34 +242,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                   isRequests: isRequests)
     }
     
-    private func getPublicKeysFor(pushChat: PushChat) async throws -> [String] {
-        if let cachedKeys = PushPublicKeysStorage.instance.getCachedKeys(for: pushChat.chatId),
-           !cachedKeys.publicKeys.isEmpty {
-            return cachedKeys.publicKeys
-        }
-        
-        var keys = [String]()
-        if let groupInfo = pushChat.groupInformation {
-            keys = groupInfo.members.compactMap { $0.publicKey }
-        } else {
-            let chatDids = pushChat.combinedDID.components(separatedBy: "_")
-            guard chatDids.count == 2 else {
-                return  []
-            }
-          
-            let env = getCurrentPushEnvironment()
-            if let anotherUser = try await PushUser.get(account: chatDids[0] , env: env),
-               let senderUser = try await PushUser.get(account: chatDids[1], env: env) {
-                keys = [senderUser.getPGPPublickey(), anotherUser.getPGPPublickey()]
-            }
-        }
-        
-        if !keys.isEmpty {
-            PushPublicKeysStorage.instance.saveKeysHoldersInfo([.init(chatId: pushChat.chatId, publicKeys: keys)])
-        }
-        return keys
-    }
-    
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
@@ -295,12 +266,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         try await withThrowingTaskGroup(of: MessagingChat.self, body: { group in
             for pushChat in pushChats {
-                let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
                 if let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                             userId: user.id,
                                                                             userWallet: user.wallet,
-                                                                            isApproved: isApproved,
-                                                                            publicKeys: publicKeys) {
+                                                                            isApproved: isApproved) {
                     chats.append(chat)
                 }
             }
@@ -408,24 +377,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             guard let currentMessageLink = getLinkFrom(message: message) else { return [] } // Request messages before first in chat
             threadHash = currentMessageLink
         }
-        let result = try messageToLoadDescriptionFrom(in: cachedMessages, starting: threadHash)
-        switch result {
-        case .noCachedMessages:
-            Void()
-        case .reachedFirstMessageInChat:
-            messagesToKeep = cachedMessages
-        case .messageToLoad(let missingMessageThreadHash):
-            threadHash = missingMessageThreadHash.threadHash
-            fetchLimitToUse -= missingMessageThreadHash.offset
-            messagesToKeep = missingMessageThreadHash.messagesToKeep
-        }
-        
-        if messagesToKeep.count >= fetchLimit {
-            return messagesToKeep
-        }
-        if messagesToKeep.last?.displayInfo.isFirstInChat == true {
-            return messagesToKeep
-        }
         
         let remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
                                                                                threadHash: threadHash,
@@ -527,13 +478,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = PushServiceHelper.getCurrentPushEnvironment()
 
         guard let pushChat = pushChats.first(where: { $0.threadhash == message.cid }) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
-        let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
              
         guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
-                                                                       isApproved: true,
-                                                                       publicKeys: publicKeys),
+                                                                       isApproved: true),
               let chatMessage = await PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                               in: chat,
                                                                                               pgpKey: pgpPrivateKey,
@@ -794,17 +743,12 @@ final class DefaultPushMessagingAPIServiceDataProvider: PushMessagingAPIServiceD
                                                            pgpPrivateKey: "", // Get encrypted messages
                                                            toDecrypt: false,
                                                            env: env)
-        var messages: [MessagingChatMessage] = []
-        for pushMessage in pushMessages {
-            if let message = await PushEntitiesTransformer.convertPushMessageToChatMessage(pushMessage,
-                                                                                           in: chat,
-                                                                                           pgpKey: pgpPrivateKey,
-                                                                                           isRead: isRead,
-                                                                                           filesService: filesService,
-                                                                                           env: env) {
-                messages.append(message)
-            }
-        }
+        let messages = await PushEntitiesTransformer.convertPushMessagesToChatMessage(pushMessages,
+                                                                                      in: chat,
+                                                                                      pgpKey: pgpPrivateKey,
+                                                                                      isRead: isRead,
+                                                                                      filesService: filesService,
+                                                                                      env: env)
         return messages
     }
 }
