@@ -183,6 +183,7 @@ private extension ChatView {
             logButtonPressedAnalyticEvents(button: .unblock)
             viewModel.didPressUnblockButton()
         }
+                     .padding(.init(vertical: 8))
     }
     
     @ViewBuilder

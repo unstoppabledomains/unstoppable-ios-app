@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 @MainActor
 final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
@@ -38,7 +39,8 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private var router: HomeTabRouter
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
     private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
-    
+    private var cancellables: Set<AnyCancellable> = []
+
     init(profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
          router: HomeTabRouter,
@@ -53,6 +55,11 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         
         messagingService.addListener(self)
         featureFlagsService.addListener(self)
+        $keyboardFocused.sink { [weak self] isActive in
+            if isActive {
+                self?.scrollToBottom()
+            }
+        }.store(in: &cancellables)
         chatState = .loading
         setupTitle()
         setupPlaceholder()
@@ -338,7 +345,7 @@ private extension ChatViewModel {
         }
         self.messages.sort(by: { $0.time > $1.time })
         if scrollToBottom {
-            scrollToMessage = messages.first
+            self.scrollToBottom()
         }
     }
     
@@ -463,6 +470,10 @@ private extension ChatViewModel {
                 } catch { }
             }
         }
+    }
+    
+    func scrollToBottom() {
+        scrollToMessage = messages.first
     }
 }
 
@@ -834,14 +845,7 @@ extension ChatViewModel: MessagingServiceListener {
         Task { @MainActor in
             switch messagingDataType {
             case .chats(let chats, let profile):
-                if profile.id == self.profile.id,
-                   case .existingChat(let chat) = conversationState,
-                   let updatedChat = chats.first(where: { $0.id == chat.id }),
-                   let lastMessage = updatedChat.lastMessage,
-                   messages.first(where: { $0.id == lastMessage.id }) == nil {
-                    self.conversationState = .existingChat(updatedChat)
-                    loadAndShowData()
-                }
+                return
             case .messagesAdded(let messages, let chatId, let userId):
                 if userId == self.profile.id,
                    case .existingChat(let chat) = conversationState,
@@ -854,8 +858,7 @@ extension ChatViewModel: MessagingServiceListener {
                    updatedMessage.chatId == chat.id,
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
-                    self.messages.remove(at: i)
-                    await addMessages([newMessage], scrollToBottom: false)
+                    self.messages[i] = newMessage
                 }
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,

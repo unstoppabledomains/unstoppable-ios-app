@@ -44,6 +44,7 @@ struct ExpandableTextEditor: View {
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .padding(.init(horizontal: 16))
+                .allowsHitTesting(false)
         }
         .onPreferenceChange(ViewHeightKey.self) { textEditorHeight = $0 }
     }

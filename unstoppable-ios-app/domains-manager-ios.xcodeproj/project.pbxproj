@@ -5470,12 +5470,11 @@
 		C65272482A15D8EA001A084C /* ChatsList */ = {
 			isa = PBXGroup;
 			children = (
+				C684A0222B85917200B751A5 /* Requests */,
 				C686BF2B2A6135570036C7C1 /* ChatsList.swift */,
 				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
 				C6D8FF352B8318310094A21E /* ChatListView.swift */,
 				C688C1A32B84946C00BD233A /* SelectableChatRowView.swift */,
-				C688C1A02B8490F700BD233A /* ChatRequestsListViewModel.swift */,
-				C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */,
 				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
 				C688C1822B846ED000BD233A /* ChatListViews */,
 				C688C1812B846EC200BD233A /* ChatListRows */,
@@ -6177,6 +6176,15 @@
 				3018AEBC27EB2AF200E8C37D /* HappyEnd.storyboard */,
 			);
 			path = HappyEnd;
+			sourceTree = "<group>";
+		};
+		C684A0222B85917200B751A5 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				C688C1A02B8490F700BD233A /* ChatRequestsListViewModel.swift */,
+				C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 		C68580342B3545B200907568 /* Preview */ = {

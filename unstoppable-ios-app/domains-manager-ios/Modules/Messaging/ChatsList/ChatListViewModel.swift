@@ -104,9 +104,6 @@ extension ChatListViewModel {
     }
     
     func joinCommunity(_ community: MessagingChatDisplayInfo) {
-        guard let selectedProfileWalletPair else {
-            return
-        }
         Task {
             isLoading = true
             do {
@@ -122,6 +119,7 @@ extension ChatListViewModel {
     func showChatRequests() {
         guard let profile = selectedProfileWalletPair?.profile else { return }
 
+        stopSearching()
         router.chatTabNavPath.append(.requests(profile: profile,
                                                dataType: .chatRequests(chatsRequests)))
     }
@@ -129,6 +127,7 @@ extension ChatListViewModel {
     func showChannelRequests() {
         guard let profile = selectedProfileWalletPair?.profile else { return }
 
+        stopSearching()
         router.chatTabNavPath.append(.requests(profile: profile,
                                                dataType: .channelsSpam(channelsRequests)))
     }
@@ -141,6 +140,7 @@ extension ChatListViewModel {
             return
         }
         
+        stopSearching()
         isSearchActive = false
         router.chatTabNavPath.append(HomeChatNavigationDestination.chat(profile: profile,
                                                                         conversationState: conversationState))
@@ -149,6 +149,7 @@ extension ChatListViewModel {
     func openChannel(_ channel: MessagingNewsChannel) {
                 guard let profile = selectedProfileWalletPair?.profile else { return }
         
+        stopSearching()
         router.chatTabNavPath.append(HomeChatNavigationDestination.channel(profile: profile, channel: channel))
     }
     
@@ -548,21 +549,13 @@ private extension ChatListViewModel {
         }
     }
     
-    func getListOfUnblockedChats() -> [MessagingChatDisplayInfo] {
-        chatsList.unblockedOnly()
-    }
-    
-    func getListOfUnblockedCommunities() -> [MessagingChatDisplayInfo] {
-        communitiesList.unblockedOnly()
-    }
-    
     func fillSnapshotForUserChatsList() {
         chatsRequests = chatsList.requestsOnly()
-        chatsListToShow = chatsList.confirmedOnly()
+        chatsListToShow = chatsList.confirmedOnly().unblockedOnly()
     }
   
     func fillSnapshotForUserCommunitiesList() {
-        let communitiesList = getListOfUnblockedCommunities()
+        let communitiesList = communitiesList.unblockedOnly()
         
         if selectedProfileWalletPair?.isCommunitiesEnabled != true {
             communitiesListState = .noProfile
