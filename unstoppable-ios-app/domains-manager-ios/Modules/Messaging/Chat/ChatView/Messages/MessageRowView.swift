@@ -29,12 +29,6 @@ struct MessageRowView: View {
                 }
             }
             
-            ScrollView(.horizontal) {
-                ForEach(message.reactions, id: \.self) { reaction in
-                    Text(reaction.content)
-                }
-            }
-            
             HStack {
                 if isGroupChatMessage, !isThisUser {
                     Spacer()
@@ -46,10 +40,12 @@ struct MessageRowView: View {
                         .frame(width: 40)
                 }
             }
+            reactionsView()
         }
         .background(Color.clear)
     }
 }
+
 // MARK: - Private methods
 private extension MessageRowView {
     var isFailedMessage: Bool {
@@ -166,14 +162,111 @@ private extension MessageRowView {
             }
         }
     }
+  
+}
+
+// MARK: - Reactions
+private extension MessageRowView {
+    enum ReactionActionType: Hashable, Identifiable {
+        case addReaction
+        case existingReaction(MessagingChatMessageDisplayInfo.ReactionUIDescription)
+        
+        var id: String {
+            switch self {
+            case .addReaction:
+                return "addReaction"
+            case .existingReaction(let description):
+                return description.content
+            }
+        }
+    }
+    
+    var reactionsList: [ReactionActionType] {
+        if isThisUser {
+            return message.buildReactionsUIDescription().map { .existingReaction($0) }
+        }
+        return [.addReaction] + message.buildReactionsUIDescription().map { .existingReaction($0) }
+    }
+    @ViewBuilder
+    func reactionsView() -> some View {
+        if !reactionsList.isEmpty {
+            HStack {
+                FlowLayoutView(reactionsList) { reactionType in
+                    reactionTypeView(reactionType)
+                }
+                .modifier(ReactionMirroredModifier(sender: sender))
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func reactionTypeView(_ reactionType: ReactionActionType) -> some View {
+        switch reactionType {
+        case .addReaction:
+            addReactionButtonView()
+        case .existingReaction(let reactionUIDescription):
+            reactionView(reactionUIDescription)
+        }
+    }
+    
+    @ViewBuilder
+    func addReactionButtonView() -> some View {
+        Button {
+            
+        } label: {
+            HStack(spacing: 2) {
+                Image(systemName: "face.smiling.inverse")
+                Text("+")
+                    .bold()
+            }
+            .font(.currentFont(size: 17))
+            .foregroundStyle(Color.foregroundDefault)
+            .padding(.init(horizontal: 8, vertical: 8))
+            .background(Color.backgroundMuted)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func reactionView(_ reaction: MessagingChatMessageDisplayInfo.ReactionUIDescription) -> some View {
+        HStack {
+            Text(reaction.content)
+            Text("\(reaction.count)")
+                .foregroundStyle(reaction.containsUserReaction ? Color.white : Color.foregroundDefault)
+        }
+        .padding(.init(horizontal: 10, vertical: 8))
+        .background(reaction.containsUserReaction ? Color.blue : Color.backgroundMuted)
+        .clipShape(Capsule())
+        .modifier(ReactionMirroredModifier(sender: sender))
+    }
+    
+    struct ReactionMirroredModifier: ViewModifier {
+        let sender: MessagingChatSender
+        func body(content: Content) -> some View {
+            if sender.isThisUser {
+                content
+                    .scaleEffect(x: -1, y: 1, anchor: .center)
+            } else {
+                content
+            }
+        }
+    }
 }
 
 #Preview {
+    let reactionsToTest: [MessageReactionDescription] =
+    [.init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: true),
+     .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+     .init(content: "😅", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+     .init(content: "🤓", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+     .init(content: "🫂", messageId: "1", referenceMessageId: "1", isUserReaction: false),
+     .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
     let reactions = MockEntitiesFabric.Reactions.reactionsToTest
-    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js lkjs dflkj lksa fs dfsd fsd f lakjf lsdkj fkjsdh fkjsdh fkjsdh fkjh kdjhf skjdhf ksjdhf ksjdh fksjdh fksjdfh ",
-                                                                 isThisUser: true,
+    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js ",
+                                                                 isThisUser: false,
                                                                  deliveryState: .delivered,
-                                                                 reactions: reactions)
+                                                                 reactions: reactionsToTest)
     return MessageRowView(message: message,
                    isGroupChatMessage: true)
     .padding()
