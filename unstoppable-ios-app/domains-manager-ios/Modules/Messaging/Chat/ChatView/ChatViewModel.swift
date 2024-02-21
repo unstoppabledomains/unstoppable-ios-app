@@ -319,6 +319,7 @@ private extension ChatViewModel {
         
         for message in messages {
             var message = message
+            message.reactions = Array(messagesToReactions[message.id] ?? [])
             await message.prepareToDisplay()
             if let i = self.messages.firstIndex(where: { $0.id == message.id }) {
                 self.messages[i] = message

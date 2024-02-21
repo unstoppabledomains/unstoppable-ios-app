@@ -270,7 +270,8 @@ extension MockEntitiesFabric {
         static func createTextMessage(id: String = UUID().uuidString,
                                       text: String,
                                       isThisUser: Bool,
-                                      deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
+                                      deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered,
+                                      reactions: [MessageReactionDescription] = []) -> MessagingChatMessageDisplayInfo {
             let sender = chatSenderFor(isThisUser: isThisUser)
             let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
             
@@ -283,7 +284,8 @@ extension MockEntitiesFabric {
                                                    isRead: false,
                                                    isFirstInChat: true,
                                                    deliveryState: deliveryState,
-                                                   isEncrypted: false)
+                                                   isEncrypted: false,
+                                                   reactions: reactions)
         }
         
         static func createImageMessage(id: String = UUID().uuidString,

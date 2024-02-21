@@ -14,21 +14,37 @@ struct MessageRowView: View {
     let message: MessagingChatMessageDisplayInfo
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
-    private let timeViewOffset: CGFloat = 18
     
     var body: some View {
-        HStack(alignment: .bottom, spacing: 8) {
-            if message.senderType.isThisUser {
-                Spacer()
-            } else if isGroupChatMessage {
-                otherUserAvatarView()
-            }
-            VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
+        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
+            HStack(alignment: .bottom, spacing: 8) {
+                if message.senderType.isThisUser {
+                    Spacer()
+                } else if isGroupChatMessage {
+                    otherUserAvatarView()
+                }
                 messageContentView()
-                timeView()
+                if isFailedMessage {
+                    deleteMessageView()
+                }
             }
-            if isFailedMessage {
-                deleteMessageView()
+            
+            ScrollView(.horizontal) {
+                ForEach(message.reactions, id: \.self) { reaction in
+                    Text(reaction.content)
+                }
+            }
+            
+            HStack {
+                if isGroupChatMessage, !isThisUser {
+                    Spacer()
+                        .frame(width: 46)
+                }
+                timeView()
+                if isFailedMessage, isThisUser {
+                    Spacer()
+                        .frame(width: 40)
+                }
             }
         }
         .background(Color.clear)
@@ -114,7 +130,6 @@ private extension MessageRowView {
             UDVibration.buttonTap.vibrate()
             viewModel.handleChatMessageAction(.delete(message))
         }
-                                        .offset(y: -timeViewOffset)
     }
     
     @ViewBuilder
@@ -129,7 +144,6 @@ private extension MessageRowView {
             .squareFrame(36)
             .clipShape(Circle())
             .onAppear(perform: loadAvatarForOtherUserInfo)
-            .offset(y: -timeViewOffset)
         }
         .buttonStyle(.plain)
     }
@@ -155,7 +169,12 @@ private extension MessageRowView {
 }
 
 #Preview {
-    MessageRowView(message: MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js lkjs dflkj lksa fs dfsd fsd f", isThisUser: true),
+    let reactions = MockEntitiesFabric.Reactions.reactionsToTest
+    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js lkjs dflkj lksa fs dfsd fsd f lakjf lsdkj fkjsdh fkjsdh fkjsdh fkjh kdjhf skjdhf ksjdhf ksjdh fksjdh fksjdfh ",
+                                                                 isThisUser: true,
+                                                                 deliveryState: .delivered,
+                                                                 reactions: reactions)
+    return MessageRowView(message: message,
                    isGroupChatMessage: true)
     .padding()
 }
