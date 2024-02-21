@@ -310,6 +310,10 @@ private extension ChatViewModel {
                                                              referenceMessageId: info.messageId,
                                                              isUserReaction: message.senderType.isThisUser)
                     _ = messagesToReactions[info.messageId, default: []].insert(counter)
+                    if !message.isRead,
+                       case .existingChat(let chat) = conversationState {
+                        try? messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
+                    }
                     return false
                 } else {
                     return true
