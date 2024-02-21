@@ -82,6 +82,11 @@ private extension ChatView {
         ScrollViewReader { proxy in
             List {
                 ForEach(viewModel.messages.reversed(), id: \.id) { message in
+                    if viewModel.isLoadingMessages,
+                       message.id == viewModel.messages.reversed().first?.id {
+                        topLoadingView()
+                    }
+                    
                     messageRow(message)
                         .id(message.id)
                         .listRowSeparator(.hidden)
@@ -99,6 +104,16 @@ private extension ChatView {
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func topLoadingView() -> some View {
+        HStack(alignment: .center) {
+            ProgressView()
+        }
+        .frame(maxWidth: .infinity)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
     
     @ViewBuilder

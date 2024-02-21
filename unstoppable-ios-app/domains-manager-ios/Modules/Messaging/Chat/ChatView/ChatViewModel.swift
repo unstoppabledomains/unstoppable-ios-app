@@ -280,11 +280,10 @@ private extension ChatViewModel {
                 await addMessages(unreadMessages, scrollToBottom: false)
                 self.scrollToMessage = scrollToMessage
                 await Task.sleep(seconds: 0.2)
-                isLoadingMessages = false
             } catch {
                 self.error = error
-                isLoadingMessages = false
             }
+            isLoadingMessages = false
         }
     }
     
