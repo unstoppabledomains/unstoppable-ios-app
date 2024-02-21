@@ -5039,17 +5039,6 @@
 			path = Stripe;
 			sourceTree = "<group>";
 		};
-		C630E4B12B7F4E6E008F3269 /* SwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				C61308962A7A22D500E7CE21 /* MessagingImageView.swift */,
-				C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */,
-				C688C1842B846F1000BD233A /* ChannelView */,
-				C688C1832B846F0300BD233A /* ChatView */,
-			);
-			path = SwiftUI;
-			sourceTree = "<group>";
-		};
 		C635193328D03F1600FC6AF8 /* SetupReverseResolution */ = {
 			isa = PBXGroup;
 			children = (
@@ -5481,8 +5470,15 @@
 		C65272482A15D8EA001A084C /* ChatsList */ = {
 			isa = PBXGroup;
 			children = (
-				C6D8FF312B8317FC0094A21E /* SwiftUI */,
 				C686BF2B2A6135570036C7C1 /* ChatsList.swift */,
+				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
+				C6D8FF352B8318310094A21E /* ChatListView.swift */,
+				C688C1A32B84946C00BD233A /* SelectableChatRowView.swift */,
+				C688C1A02B8490F700BD233A /* ChatRequestsListViewModel.swift */,
+				C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */,
+				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
+				C688C1822B846ED000BD233A /* ChatListViews */,
+				C688C1812B846EC200BD233A /* ChatListRows */,
 			);
 			path = ChatsList;
 			sourceTree = "<group>";
@@ -5492,7 +5488,10 @@
 			children = (
 				C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */,
 				C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */,
-				C630E4B12B7F4E6E008F3269 /* SwiftUI */,
+				C61308962A7A22D500E7CE21 /* MessagingImageView.swift */,
+				C688C1972B84840700BD233A /* ChatCommonEmptyView.swift */,
+				C688C1842B846F1000BD233A /* ChannelView */,
+				C688C1832B846F0300BD233A /* ChatView */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -7295,21 +7294,6 @@
 				C630E4B22B7F5835008F3269 /* ExpandableTextEditor.swift */,
 			);
 			path = InputView;
-			sourceTree = "<group>";
-		};
-		C6D8FF312B8317FC0094A21E /* SwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				C6D8FF322B83180A0094A21E /* ChatListViewModel.swift */,
-				C6D8FF352B8318310094A21E /* ChatListView.swift */,
-				C688C1A32B84946C00BD233A /* SelectableChatRowView.swift */,
-				C688C1A02B8490F700BD233A /* ChatRequestsListViewModel.swift */,
-				C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */,
-				C6FFBAE02B834EF700CB442D /* HomeChatNavigationDestination.swift */,
-				C688C1822B846ED000BD233A /* ChatListViews */,
-				C688C1812B846EC200BD233A /* ChatListRows */,
-			);
-			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		C6D9E28728533766002CDAC2 /* UDDomainSharingCardView */ = {
