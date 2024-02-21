@@ -276,7 +276,10 @@ private extension ChatViewModel {
                                                                                    before: message,
                                                                                    cachedOnly: false,
                                                                                    limit: fetchLimit)
-                await addMessages(unreadMessages, scrollToBottom: false )
+                let scrollToMessage = self.messages.last
+                await addMessages(unreadMessages, scrollToBottom: false)
+                self.scrollToMessage = scrollToMessage
+                await Task.sleep(seconds: 0.2)
                 isLoadingMessages = false
             } catch {
                 self.error = error
@@ -353,8 +356,10 @@ private extension ChatViewModel {
         }
         
         self.messages.sort(by: { $0.time > $1.time })
+        
         if scrollToBottom {
             self.scrollToBottom()
+            await Task.sleep(seconds: 0.2) // Let UI to finish scroll
         }
     }
     
