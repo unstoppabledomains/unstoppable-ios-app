@@ -197,6 +197,7 @@ private extension MessageRowView {
                 reactionTypeView(reactionType)
             }
             .modifier(ReactionMirroredModifier(sender: sender))
+            .frame(minHeight: 50)
         }
     }
     
