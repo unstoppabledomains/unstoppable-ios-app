@@ -82,7 +82,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
         }, navigationStateProvider: { state in
             self.navigationState = state
             setTitleViewIfNeeded()
-        }, path: .constant([0]))
+        }, path: .constant(EmptyNavigationPath()))
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }

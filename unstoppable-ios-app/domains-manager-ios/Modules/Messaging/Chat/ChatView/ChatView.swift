@@ -270,5 +270,5 @@ extension ChatView {
                                   router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in
-    }, path: .constant([0]))
+    }, path: .constant(EmptyNavigationPath()))
 }

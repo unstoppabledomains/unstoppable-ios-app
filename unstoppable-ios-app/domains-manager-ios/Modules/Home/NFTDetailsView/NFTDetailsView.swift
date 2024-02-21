@@ -56,7 +56,7 @@ struct NFTDetailsView: View, ViewAnalyticsLogger {
         }, navigationStateProvider: { navigationState in
             self.navigationState = navigationState
             navigationState.setCustomTitle(customTitle: { NavigationTitleView(nft: nft) }, id: nft.id)
-        }, path: .constant([0]))
+        }, path: .constant(EmptyNavigationPath()))
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }

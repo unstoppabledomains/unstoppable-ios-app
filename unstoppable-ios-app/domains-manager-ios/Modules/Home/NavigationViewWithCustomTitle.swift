@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+typealias EmptyNavigationPath = Array<Int>
+
 struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
     
     @ViewBuilder var content: () -> Content
@@ -60,7 +62,7 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, navigationStateProvider: { _ in }, path: .constant([0]))
+    }, navigationStateProvider: { _ in }, path: .constant(EmptyNavigationPath()))
 }
 
 final class NavigationStateManager: ObservableObject {
