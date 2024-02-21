@@ -188,9 +188,11 @@ private extension MessageRowView {
         }
         return message.buildReactionsUIDescription().map { .existingReaction($0) } + [.addReaction]
     }
+    
     @ViewBuilder
     func reactionsView() -> some View {
-        if !reactionsList.isEmpty {
+        if isGroupChatMessage,
+           !reactionsList.isEmpty {
             FlowLayoutView(reactionsList) { reactionType in
                 reactionTypeView(reactionType)
             }
