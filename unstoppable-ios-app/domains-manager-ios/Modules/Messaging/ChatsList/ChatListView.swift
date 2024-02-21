@@ -190,7 +190,7 @@ private extension ChatListView {
                        buttonStyle: .medium(.raisedPrimary),
                        buttonCallback: {
             logButtonPressedAnalyticEvents(button: .createMessagingProfile)
-            viewModel.actionButtonPressed()
+            viewModel.createProfilePressed()
         })
     }
     
@@ -391,7 +391,7 @@ private extension ChatListView {
             }, callback: {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .chatRequests)
-                viewModel.showCurrentDataTypeRequests()
+                viewModel.showChatRequests()
             })
         }
     }
@@ -467,7 +467,7 @@ private extension ChatListView {
             }, callback: {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
-                viewModel.showCurrentDataTypeRequests()
+                viewModel.showChannelRequests()
             })
         }
     }

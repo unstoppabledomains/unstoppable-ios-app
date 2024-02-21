@@ -91,8 +91,6 @@ extension ChatViewModel {
         sendTextMesssage(text)
     }
     
-    func approveButtonPressed() {  }
-    
     func didPressUnblockButton() {
         setOtherUser(blocked: false)
     }
@@ -178,7 +176,7 @@ private extension ChatViewModel {
     func takePhotoButtonPressed() {
         keyboardFocused = false
         guard let view = appContext.coreAppCoordinator.topVC else { return  }
-
+        
         UnstoppableImagePicker.shared.selectFromCamera(in: view, imagePickerCallback: { [weak self] image in
             DispatchQueue.main.async {
                 self?.didPickImageToSend(image)
@@ -295,7 +293,7 @@ private extension ChatViewModel {
     
     @MainActor
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo],
-                             scrollToBottom: Bool) async {
+                     scrollToBottom: Bool) async {
         messagesCache.formUnion(messages)
         
         let messages = serialQueue.sync {
@@ -344,7 +342,7 @@ private extension ChatViewModel {
         }
     }
     
-    private func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
+    func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
         guard case .remoteContent = message.type,
               case .existingChat(let chat) = conversationState else { return }
         
@@ -362,7 +360,7 @@ private extension ChatViewModel {
         }
     }
     
-    private func getCommunityChatDetails() -> MessagingCommunitiesChatDetails? {
+    func getCommunityChatDetails() -> MessagingCommunitiesChatDetails? {
         switch conversationState {
         case .existingChat(let chat):
             switch chat.type {
@@ -376,10 +374,100 @@ private extension ChatViewModel {
         }
     }
     
-    private func isCommunityChat() -> Bool {
+    func isCommunityChat() -> Bool {
         getCommunityChatDetails() != nil
     }
     
+    
+    func updateUIForChatApprovedStateAsync() {
+        Task {
+            await updateUIForChatApprovedState()
+        }
+    }
+    
+    func updateUIForChatApprovedState() async {
+        switch conversationState {
+        case .existingChat(let chat):
+            if case .group = chat.type {
+                chatState = .chat
+                return
+            }
+            
+            if let blockStatus = try? await messagingService.getBlockingStatusForChat(chat) {
+                self.blockStatus = blockStatus
+                switch blockStatus {
+                case .unblocked:
+                    chatState = .chat
+                case .currentUserIsBlocked:
+                    chatState = .userIsBlocked
+                case .otherUserIsBlocked, .bothBlocked:
+                    chatState = .otherUserIsBlocked
+                }
+            }
+        case .newChat(let newConversationDescription):
+            func prepareToChat() {
+                chatState = .chat
+                DispatchQueue.main.async {
+                    self.keyboardFocused = true
+                }
+            }
+            
+            if !messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
+                do {
+                    let canContact = try await messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
+                                                                                      by: profile)
+                    if canContact {
+                        prepareToChat()
+                    } else {
+                        isAbleToContactUser = false
+                        chatState = .cantContactUser
+                    }
+                } catch {
+                    self.error = error
+                }
+            } else {
+                prepareToChat()
+            }
+        }
+        await setupBarButtons()
+    }
+    
+    func handleExternalLinkPressed(_ url: URL, in message: MessagingChatMessageDisplayInfo) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        keyboardFocused = false
+        
+        switch message.senderType {
+        case .thisUser:
+            openLinkOrDomainProfile(url)
+        case .otherUser(let otherUser):
+            Task {
+                do {
+                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    
+                    switch action {
+                    case .handle:
+                        openLinkOrDomainProfile(url)
+                    case .block:
+                        switch chat.type {
+                        case .private:
+                            try await messagingService.setUser(in: .chat(chat), blocked: true)
+                        case .group, .community:
+                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
+                        }
+                        
+                        view.cNavigationController?.popViewController(animated: true)
+                    }
+                } catch { }
+            }
+        }
+    }
+}
+
+// MARK: - Actions
+private extension ChatViewModel {
     private func setupBarButtons() async {
         var actions: [ChatView.NavAction] = []
         
@@ -598,92 +686,6 @@ private extension ChatViewModel {
             }
             
             isLoading = false
-        }
-    }
-    
-    func updateUIForChatApprovedStateAsync() {
-        Task {
-            await updateUIForChatApprovedState()
-        }
-    }
-    
-    func updateUIForChatApprovedState() async {
-        switch conversationState {
-        case .existingChat(let chat):
-            if case .group = chat.type {
-                chatState = .chat
-                return
-            }
-            
-            if let blockStatus = try? await messagingService.getBlockingStatusForChat(chat) {
-                self.blockStatus = blockStatus
-                switch blockStatus {
-                case .unblocked:
-                    chatState = .chat
-                case .currentUserIsBlocked:
-                    chatState = .userIsBlocked
-                case .otherUserIsBlocked, .bothBlocked:
-                    chatState = .otherUserIsBlocked
-                }
-            }
-        case .newChat(let newConversationDescription):
-            func prepareToChat() {
-                chatState = .chat
-                DispatchQueue.main.async {
-                    self.keyboardFocused = true
-                }
-            }
-            
-            if !messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
-                do {
-                    let canContact = try await messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
-                                                                                      by: profile)
-                    if canContact {
-                        prepareToChat()
-                    } else {
-                        isAbleToContactUser = false
-                        chatState = .cantContactUser
-                    }
-                } catch {
-                    self.error = error
-                }
-            } else {
-                prepareToChat()
-            }
-        }
-        await setupBarButtons()
-    }
-    
-    func handleExternalLinkPressed(_ url: URL, in message: MessagingChatMessageDisplayInfo) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
-
-        keyboardFocused = false
-        
-        switch message.senderType {
-        case .thisUser:
-            openLinkOrDomainProfile(url)
-        case .otherUser(let otherUser):
-            Task {
-                do {
-                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
-                    await view.dismissPullUpMenu()
-                    
-                    switch action {
-                    case .handle:
-                        openLinkOrDomainProfile(url)
-                    case .block:
-                        switch chat.type {
-                        case .private:
-                            try await messagingService.setUser(in: .chat(chat), blocked: true)
-                        case .group, .community:
-                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
-                        }
-                        
-                        view.cNavigationController?.popViewController(animated: true)
-                    }
-                } catch { }
-            }
         }
     }
     
