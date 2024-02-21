@@ -610,7 +610,7 @@ private extension ChatViewModel {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-        guard let wallet = appContext.walletsDataService.wallets.first(where: { $0.address == walletAddress.normalized }) else { return }
+        guard let wallet = appContext.walletsDataService.wallets.findWithAddress(profile.wallet) else { return }
         router.showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                  name: domainName),
                                        by: wallet,
@@ -824,6 +824,7 @@ private extension ChatViewModel {
                     await newMessage.prepareToDisplay()
                     messages.insert(newMessage, at: 0)
                     scrollToMessage = newMessage
+                    messagesCache.insert(newMessage)
                 }
             } catch {
                 isLoading = false
@@ -868,12 +869,16 @@ extension ChatViewModel: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
                     self.messages[i] = newMessage
+                    messagesCache.insert(newMessage)
                 }
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
                    chatId == chat.id {
                     let removedIds = messages.map { $0.id }
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
+                    for message in messages {
+                        messagesCache.remove(message)
+                    }
                 }
             case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
                 return
