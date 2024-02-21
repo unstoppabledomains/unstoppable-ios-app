@@ -54,7 +54,7 @@ extension Chat {
         case viewSenderProfile(MessagingChatSender)
         
         case copyText(String)
-        case sendReaction(content: String, toMessage: String)
+        case sendReaction(content: String, toMessage: MessagingChatMessageDisplayInfo)
         case saveImage(UIImage)
         case blockUserInGroup(MessagingChatUserDisplayInfo)
     }

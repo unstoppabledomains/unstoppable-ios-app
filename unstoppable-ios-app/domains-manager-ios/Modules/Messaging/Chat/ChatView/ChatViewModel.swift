@@ -161,7 +161,7 @@ extension ChatViewModel {
                 isLoading = false
             }
         case .sendReaction(let content, let toMessage):
-            sendReactionMesssage(content, toMessage: toMessage)
+            sendReactionMessage(content, toMessage: toMessage)
         }
     }
 }
@@ -774,8 +774,8 @@ private extension ChatViewModel {
         sendMessageOfType(messageType)
     }
     
-    func sendReactionMesssage(_ content: String, toMessage: String) {
-        let reactionTypeDetails = MessagingChatMessageReactionTypeDisplayInfo(content: content, messageId: toMessage)
+    func sendReactionMessage(_ content: String, toMessage: MessagingChatMessageDisplayInfo) {
+        let reactionTypeDetails = MessagingChatMessageReactionTypeDisplayInfo(content: content, messageId: toMessage.id)
         let messageType = MessagingChatMessageDisplayType.reaction(reactionTypeDetails)
         sendMessageOfType(messageType)
     }

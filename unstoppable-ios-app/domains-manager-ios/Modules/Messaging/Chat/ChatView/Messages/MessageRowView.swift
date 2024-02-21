@@ -14,6 +14,7 @@ struct MessageRowView: View {
     let message: MessagingChatMessageDisplayInfo
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
+    @State private var showingReactionsPopover = false
     
     var body: some View {
         VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
@@ -185,17 +186,15 @@ private extension MessageRowView {
         if isThisUser {
             return message.buildReactionsUIDescription().map { .existingReaction($0) }
         }
-        return [.addReaction] + message.buildReactionsUIDescription().map { .existingReaction($0) }
+        return message.buildReactionsUIDescription().map { .existingReaction($0) } + [.addReaction]
     }
     @ViewBuilder
     func reactionsView() -> some View {
         if !reactionsList.isEmpty {
-            HStack {
-                FlowLayoutView(reactionsList) { reactionType in
-                    reactionTypeView(reactionType)
-                }
-                .modifier(ReactionMirroredModifier(sender: sender))
+            FlowLayoutView(reactionsList) { reactionType in
+                reactionTypeView(reactionType)
             }
+            .modifier(ReactionMirroredModifier(sender: sender))
         }
     }
     
@@ -212,7 +211,8 @@ private extension MessageRowView {
     @ViewBuilder
     func addReactionButtonView() -> some View {
         Button {
-            
+            UDVibration.buttonTap.vibrate()
+            showingReactionsPopover = true
         } label: {
             HStack(spacing: 2) {
                 Image(systemName: "face.smiling.inverse")
@@ -226,6 +226,12 @@ private extension MessageRowView {
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+        .alwaysPopover(isPresented: $showingReactionsPopover) {
+            MessageReactionSelectionView(callback: { reactionType in
+                viewModel.handleChatMessageAction(.sendReaction(content: reactionType.rawValue,
+                                                                toMessage: message))
+            })
+        }
     }
     
     @ViewBuilder
@@ -255,18 +261,11 @@ private extension MessageRowView {
 }
 
 #Preview {
-    let reactionsToTest: [MessageReactionDescription] =
-    [.init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: true),
-     .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false),
-     .init(content: "😅", messageId: "1", referenceMessageId: "1", isUserReaction: false),
-     .init(content: "🤓", messageId: "1", referenceMessageId: "1", isUserReaction: false),
-     .init(content: "🫂", messageId: "1", referenceMessageId: "1", isUserReaction: false),
-     .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
     let reactions = MockEntitiesFabric.Reactions.reactionsToTest
     let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js ",
-                                                                 isThisUser: false,
+                                                                 isThisUser: true,
                                                                  deliveryState: .delivered,
-                                                                 reactions: reactionsToTest)
+                                                                 reactions: reactions)
     return MessageRowView(message: message,
                    isGroupChatMessage: true)
     .padding()
