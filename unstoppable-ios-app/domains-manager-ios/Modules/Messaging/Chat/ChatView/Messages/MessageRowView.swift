@@ -39,25 +39,28 @@ private extension MessageRowView {
     var isFailedMessage: Bool {
         message.deliveryState == .failedToSend
     }
-    var isThisUser: Bool { message.senderType.isThisUser }
+    var sender: MessagingChatSender { message.senderType }
+    var isThisUser: Bool { sender.isThisUser }
     
     @ViewBuilder
     func messageContentView() -> some View {
         switch message.type {
         case .text(let info):
             TextMessageRowView(info: info,
-                               isThisUser: isThisUser,
+                               sender: sender,
                                isFailed: isFailedMessage)
         case .imageData(let info):
-            ImageMessageRowView(image: info.image)
+            ImageMessageRowView(image: info.image,
+                                sender: sender)
         case .imageBase64(let info):
-            ImageMessageRowView(image: info.image)
+            ImageMessageRowView(image: info.image,
+                                sender: sender)
         case .remoteContent:
-            RemoteContentMessageRowView()
+            RemoteContentMessageRowView(sender: sender)
         case .unknown(let info):
             UnknownMessageRowView(message: message,
                                   info: info,
-                                  isThisUser: isThisUser)
+                                  sender: sender)
         default:
             Text("Hello world")
         }
@@ -90,7 +93,7 @@ private extension MessageRowView {
     func failedToSendMessageView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            viewModel.handleChatMessageAction(.resend, forMessage: message)
+            viewModel.handleChatMessageAction(.resend(message))
         } label: {
             HStack(spacing: 2) {
                 Text(String.Constants.sendingFailed.localized() + ".")
@@ -109,7 +112,7 @@ private extension MessageRowView {
                          style: .circle(size: .small,
                                         style: .raisedTertiary)) {
             UDVibration.buttonTap.vibrate()
-            viewModel.handleChatMessageAction(.delete, forMessage: message)
+            viewModel.handleChatMessageAction(.delete(message))
         }
                                         .offset(y: -timeViewOffset)
     }
@@ -118,7 +121,7 @@ private extension MessageRowView {
     func otherUserAvatarView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            viewModel.handleChatMessageAction(.viewSenderProfile(message.senderType), forMessage: message)
+            viewModel.handleChatMessageAction(.viewSenderProfile(message.senderType))
         } label: {
             UIImageBridgeView(image: otherUserAvatar,
                               width: 36,

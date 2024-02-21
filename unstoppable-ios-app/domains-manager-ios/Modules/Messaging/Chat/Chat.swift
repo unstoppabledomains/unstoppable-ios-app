@@ -48,8 +48,8 @@ extension Chat {
 
 extension Chat {
     enum ChatMessageAction: Hashable {
-        case resend
-        case delete
+        case resend(MessagingChatMessageDisplayInfo)
+        case delete(MessagingChatMessageDisplayInfo)
         case unencrypted
         case viewSenderProfile(MessagingChatSender)
         

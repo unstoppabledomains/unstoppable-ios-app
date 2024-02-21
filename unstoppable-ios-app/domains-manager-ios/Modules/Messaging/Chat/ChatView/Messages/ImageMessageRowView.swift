@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ImageMessageRowView: View {
     
+    @EnvironmentObject var viewModel: ChatViewModel
+
     var image: UIImage?
+    let sender: MessagingChatSender
 
     var body: some View {
         ZStack {
@@ -29,13 +32,20 @@ struct ImageMessageRowView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contextMenu {
-            Button {
-                print("Change country setting")
-            } label: {
-                Label("Choose Country", systemImage: "globe")
+            if let image = self.image {
+                Button {
+                    viewModel.handleChatMessageAction(.saveImage(image))
+                } label: {
+                    Label(String.Constants.saveToPhotos.localized(), systemImage: "square.and.arrow.down")
+                }
+            }
+            
+            if !sender.isThisUser {
+                Divider()
+                MessageActionBlockUserButtonView(sender: sender)
             }
         } preview: {
-            ImageMessageRowView(image: image)
+            ImageMessageRowView(image: image, sender: sender)
         }
     }
 }
@@ -63,5 +73,5 @@ private extension ImageMessageRowView {
 }
 
 #Preview {
-    ImageMessageRowView(image: .appleIcon)
+    ImageMessageRowView(image: .appleIcon, sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false))
 }

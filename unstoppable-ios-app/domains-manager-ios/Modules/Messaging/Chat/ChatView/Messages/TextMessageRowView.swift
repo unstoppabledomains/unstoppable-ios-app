@@ -9,8 +9,10 @@ import SwiftUI
 
 struct TextMessageRowView: View {
     
+    @EnvironmentObject var viewModel: ChatViewModel
+
     let info: MessagingChatMessageTextTypeDisplayInfo
-    let isThisUser: Bool
+    let sender: MessagingChatSender
     let isFailed: Bool
     
     var body: some View {
@@ -18,16 +20,19 @@ struct TextMessageRowView: View {
             .padding(.init(horizontal: 12))
             .padding(.init(vertical: 6))
             .foregroundStyle(foregroundColor)
-            .background(isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
+            .background(sender.isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .contextMenu {
                 Button {
-                    print("Change country setting")
+                    viewModel.handleChatMessageAction(.copyText(info.text))
                 } label: {
-                    Label("Choose Country", systemImage: "globe")
+                    Label(String.Constants.copy.localized(), systemImage: "doc.on.doc")
                 }
-            } preview: {
-                TextMessageRowView(info: info, isThisUser: isThisUser, isFailed: isFailed)
+                
+                if !sender.isThisUser {
+                    Divider()
+                    MessageActionBlockUserButtonView(sender: sender)
+                }
             }
     }
 }
@@ -38,12 +43,12 @@ private extension TextMessageRowView {
         if isFailed {
             return .foregroundOnEmphasisOpacity
         }
-        return isThisUser ? .foregroundOnEmphasis : .foregroundDefault
+        return sender.isThisUser ? .foregroundOnEmphasis : .foregroundDefault
     }
 }
 
 #Preview {
     TextMessageRowView(info: .init(text: "Hello world"),
-                       isThisUser: true,
+                       sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false),
                        isFailed: true)
 }

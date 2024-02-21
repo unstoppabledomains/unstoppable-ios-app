@@ -973,6 +973,8 @@
 		C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092528042AF0002D780E /* OnboardingNavigationController.swift */; };
 		C683EB552B3B0BFE0026CA41 /* hot-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */; };
 		C683EB562B3B0BFE0026CA41 /* hot-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */; };
+		C684A0242B85990600B751A5 /* MessageActionBlockUserButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C684A0232B85990600B751A5 /* MessageActionBlockUserButtonView.swift */; };
+		C684A0252B859AA000B751A5 /* MessageActionBlockUserButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C684A0232B85990600B751A5 /* MessageActionBlockUserButtonView.swift */; };
 		C68580362B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C68580372B3545BC00907568 /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */; };
 		C685803B2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */; };
@@ -3100,6 +3102,7 @@
 		C681092028041325002D780E /* GIFAnimationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFAnimationsService.swift; sourceTree = "<group>"; };
 		C681092528042AF0002D780E /* OnboardingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingNavigationController.swift; sourceTree = "<group>"; };
 		C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "hot-suggestions.json"; sourceTree = "<group>"; };
+		C684A0232B85990600B751A5 /* MessageActionBlockUserButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageActionBlockUserButtonView.swift; sourceTree = "<group>"; };
 		C68580352B3545BC00907568 /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarVisibleModifier.swift; sourceTree = "<group>"; };
 		C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletListSelectionToMintDomainsPresenter.swift; sourceTree = "<group>"; };
@@ -6187,6 +6190,14 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		C684A0262B859AAC00B751A5 /* Message Action Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				C684A0232B85990600B751A5 /* MessageActionBlockUserButtonView.swift */,
+			);
+			path = "Message Action Buttons";
+			sourceTree = "<group>";
+		};
 		C68580342B3545B200907568 /* Preview */ = {
 			isa = PBXGroup;
 			children = (
@@ -7291,6 +7302,7 @@
 				C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */,
 				C6D8FF232B82F8FE0094A21E /* RemoteContentMessageRowView.swift */,
 				C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */,
+				C684A0262B859AAC00B751A5 /* Message Action Buttons */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -8521,6 +8533,7 @@
 				C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */,
 				C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
+				C684A0242B85990600B751A5 /* MessageActionBlockUserButtonView.swift in Sources */,
 				C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
@@ -9282,6 +9295,7 @@
 				C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */,
 				C6D6467C2B1ED12100D724AC /* DomainProfileSectionDataChangeType.swift in Sources */,
 				C61807B42B199DE90032E543 /* GradientView.swift in Sources */,
+				C684A0252B859AA000B751A5 /* MessageActionBlockUserButtonView.swift in Sources */,
 				C6D647032B1ED7C300D724AC /* MessagingChat.swift in Sources */,
 				C6C8F9342B2183D100A9834D /* DomainDetailsViewController.swift in Sources */,
 				C6D646A62B1ED15A00D724AC /* PublicProfileViewModel.swift in Sources */,

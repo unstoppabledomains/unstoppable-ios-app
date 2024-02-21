@@ -11,7 +11,7 @@ struct UnknownMessageRowView: View {
     
     let message: MessagingChatMessageDisplayInfo
     let info: MessagingChatMessageUnknownTypeDisplayInfo
-    let isThisUser: Bool
+    let sender: MessagingChatSender
     @State private var error: Error?
 
     var body: some View {
@@ -27,10 +27,14 @@ struct UnknownMessageRowView: View {
             }
         }
         .padding(6)
-        .background(isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
+        .background(sender.isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .displayError($error)
-
+        .contextMenu {
+            if !sender.isThisUser {
+                MessageActionBlockUserButtonView(sender: sender)
+            }
+        }
     }
 }
 
@@ -42,7 +46,7 @@ private extension UnknownMessageRowView {
     var fileName: String {
         info.name ?? String.Constants.messageNotSupported.localized()
     }
-    var tintColor: Color { isThisUser ? Color.white : Color.foregroundDefault }
+    var tintColor: Color { sender.isThisUser ? Color.white : Color.foregroundDefault }
     
     var fileIcon: Image {
         if info.name == nil {
@@ -75,7 +79,7 @@ private extension UnknownMessageRowView {
         } label: {
             HStack(spacing: 2) {
                 Text(String.Constants.download.localized())
-                    .foregroundStyle(isThisUser ? Color.white : Color.foregroundAccent)
+                    .foregroundStyle(sender.isThisUser ? Color.white : Color.foregroundAccent)
                     .font(.currentFont(size: 14, weight: .medium))
                 Text("(\(bytesFormatter.string(fromByteCount: Int64(size))))")
                     .foregroundStyle(tintColor)
@@ -104,5 +108,5 @@ private extension UnknownMessageRowView {
 
 #Preview {
     UnknownMessageRowView(message: MockEntitiesFabric.Messaging.createUnknownContentMessage(isThisUser: false),
-                          info: .init(fileName: "Filename", type: "zip"), isThisUser: false)
+                          info: .init(fileName: "Filename", type: "zip"), sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false))
 }

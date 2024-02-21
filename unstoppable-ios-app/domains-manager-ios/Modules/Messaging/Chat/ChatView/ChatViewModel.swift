@@ -111,15 +111,14 @@ extension ChatViewModel {
         }
     }
     
-    func handleChatMessageAction(_ action: Chat.ChatMessageAction,
-                                 forMessage message: MessagingChatMessageDisplayInfo) {
+    func handleChatMessageAction(_ action: Chat.ChatMessageAction) {
         guard case .existingChat(let chat) = conversationState else { return }
         
         switch action {
-        case .resend:
+        case .resend(let message):
             logButtonPressedAnalyticEvents(button: .resendMessage)
             Task { try? await messagingService.resendMessage(message, in: chat) }
-        case .delete:
+        case .delete(let message):
             logButtonPressedAnalyticEvents(button: .deleteMessage)
             Task { try? await messagingService.deleteMessage(message, in: chat) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {

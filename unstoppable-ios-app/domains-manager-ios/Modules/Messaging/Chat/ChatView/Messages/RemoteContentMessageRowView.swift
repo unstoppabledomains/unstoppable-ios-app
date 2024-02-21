@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct RemoteContentMessageRowView: View {
+    
+    let sender: MessagingChatSender
+
     var body: some View {
         ProgressView()
             .squareFrame(50)
+            .contextMenu {
+                if !sender.isThisUser {
+                    MessageActionBlockUserButtonView(sender: sender)
+                }
+            }
     }
 }
 
 #Preview {
-    RemoteContentMessageRowView()
+    RemoteContentMessageRowView(sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false))
 }
