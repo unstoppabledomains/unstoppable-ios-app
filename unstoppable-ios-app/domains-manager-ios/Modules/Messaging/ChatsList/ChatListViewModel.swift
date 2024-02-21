@@ -225,6 +225,18 @@ extension ChatListViewModel {
         didSearchWith(key: "")
         prepareData()
     }
+    
+    func numberOfUnreadMessagesFor(dataType: ChatsList.DataType) -> Int {
+        switch dataType {
+        case .chats:
+            chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
+        case .communities:
+            communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
+        case .channels:
+            channels.reduce(0, { $0 + $1.unreadMessagesCount })
+        }
+    }
+    
 }
 
 // MARK: - ChatsListCoordinator
@@ -759,26 +771,6 @@ private extension ChatListViewModel {
         return user.domainName?.lowercased().contains(searchKey) == true
     }
     
-    func getDataTypeSelectionUIConfiguration() -> ChatsList.DataTypeSelectionUIConfiguration {
-        .init(dataTypesConfigurations: [], selectedDataType: .channels, dataTypeChangedCallback: { _ in })
-//        let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
-//        let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
-//        
-//        var configurations: [ChatsListViewController.DataTypeUIConfiguration] = [.init(dataType: .chats, badge: chatsBadge),
-//                                                                                 .init(dataType: .channels, badge: inboxBadge)]
-//        if Constants.isCommunitiesEnabled {
-//            let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
-//            configurations.insert(.init(dataType: .communities, badge: communitiesBadge), at: 1)
-//        }
-//        
-//        return .init(dataTypesConfigurations: configurations,
-//                     selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
-//            self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
-//            self?.selectedDataType = newSelectedDataType
-//            self?.showData()
-//        }
-    }
-
     func askToSetRRDomainAndCreateProfileFor(wallet: WalletEntity) {
         Task {
             router.resolvingPrimaryDomainWallet = .init(wallet: wallet,

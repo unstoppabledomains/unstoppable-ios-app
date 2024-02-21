@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ChatListDataTypeSelectorView: View {
     
+    @EnvironmentObject var viewModel: ChatListViewModel
     @Binding var dataType: ChatsList.DataType
+
+    private let indicatorSize: CGFloat = 4
     
     var body: some View {
         GeometryReader { proxy in
@@ -82,10 +85,19 @@ private extension ChatListDataTypeSelectorView {
                 self.dataType = dataType
             }
         } label: {
-            Text(dataType.title)
-                .font(.currentFont(size: 14, weight: .semibold))
-                .foregroundStyle(dataType == self.dataType ? Color.black : Color.foregroundDefault)
-                .frame(maxWidth: .infinity)
+            ZStack(alignment: .topTrailing) {
+                Text(dataType.title)
+                    .font(.currentFont(size: 14, weight: .semibold))
+                    .foregroundStyle(dataType == self.dataType ? Color.black : Color.foregroundDefault)
+                
+                if viewModel.numberOfUnreadMessagesFor(dataType: dataType) > 0 {
+                    Circle()
+                        .squareFrame(indicatorSize)
+                        .foregroundStyle(Color.foregroundAccent)
+                        .offset(x: indicatorSize + 4)
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
     }

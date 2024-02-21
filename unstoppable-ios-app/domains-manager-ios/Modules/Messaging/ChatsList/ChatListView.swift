@@ -25,6 +25,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     List {
                         chatListContentView()
                     }
+                    .environmentObject(viewModel)
                     .sectionSpacing(16)
                     .searchable(text: $viewModel.searchText,
                                 placement: .navigationBarDrawer(displayMode: .automatic),
