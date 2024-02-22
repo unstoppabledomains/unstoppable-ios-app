@@ -80,7 +80,7 @@ struct WalletEntity: Codable, Hashable {
             records = [currentRecord]
         }
         
-        records = records.filter { $0.date.dateDifferenceBetween(date: Date()).day ?? 0 <= 30 }
+        records = records.filter { $0.date.daysDifferenceBetween(date: Date()) <= 30 }
         
         self.portfolioRecords = records
         WalletPortfolioRecordsStorage.instance.saveRecords(records, for: address)

@@ -168,8 +168,8 @@ extension NFTDisplayInfo {
         case .rarity:
             return rarity
         case .holdDays:
-            if let acquiredDate,
-               let days = acquiredDate.dateDifferenceBetween(date: Date()).day {
+            if let acquiredDate {
+                let days = acquiredDate.daysDifferenceBetween(date: Date())
                 return String(days)
             }
         }
