@@ -23,7 +23,7 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
             if navigationState.isTitleVisible,
                let customTitle = navigationState.customTitle {
                 AnyView(customTitle())
-                    .offset(y: currentTitleOffset)
+                    .offset(y: currentTitleOffset + navigationState.yOffset)
                     .frame(maxWidth: 240)
             }
         })
@@ -64,8 +64,10 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
 
 final class NavigationStateManager: ObservableObject {
     @Published var isTitleVisible: Bool = false
+    @Published var yOffset: CGFloat = 0
     @Published private(set) var customTitle: (() -> any View)?
     private(set) var customViewID: String?
+    
     
     func setCustomTitle(customTitle: (() -> any View)?,
                         id: String) {
