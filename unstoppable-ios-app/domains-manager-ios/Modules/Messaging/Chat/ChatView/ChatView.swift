@@ -81,7 +81,7 @@ private extension ChatView {
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
             List {
-                if !viewModel.isLoadingMessages {
+                if viewModel.isLoadingMessages {
                     topLoadingView()
                         .listRowBackground(Color.clear)
                 }
@@ -99,7 +99,7 @@ private extension ChatView {
             .animation(.default, value: UUID())
             .onChange(of: viewModel.scrollToMessage) { scrollToMessage in
                 withAnimation {
-                    proxy.scrollTo(scrollToMessage?.id)
+                    proxy.scrollTo(scrollToMessage?.id, anchor: .top)
                 }
             }
         }

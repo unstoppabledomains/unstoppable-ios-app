@@ -243,14 +243,13 @@ private extension ChatViewModel {
                                                                                        cachedOnly: true,
                                                                                        limit: fetchLimit)
                     await addMessages(cachedMessages, scrollToBottom: true)
-                    
-                    updateUIForChatApprovedStateAsync()
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     let updateMessages = try await messagingService.getMessagesForChat(chat,
                                                                                        before: nil,
                                                                                        cachedOnly: false,
                                                                                        limit: fetchLimit)
-                    await addMessages(updateMessages, scrollToBottom: false)
+                    await addMessages(updateMessages, scrollToBottom: true)
+                    updateUIForChatApprovedStateAsync()
                     isLoadingMessages = false
                     isLoading = false
                 case .newChat:
@@ -276,17 +275,18 @@ private extension ChatViewModel {
                                                                                    before: message,
                                                                                    cachedOnly: false,
                                                                                    limit: fetchLimit)
-                let scrollToMessage = self.messages.last
+                let scrollToMessage = self.messages.first
                 await addMessages(unreadMessages, scrollToBottom: false)
+                await waitBeforeScroll()
                 self.scrollToMessage = scrollToMessage
-                await Task.sleep(seconds: 0.2)
+                await waitBeforeScroll()
             } catch {
                 self.error = error
             }
             isLoadingMessages = false
         }
     }
-    
+   
     func reloadCachedMessages() {
         Task {
             if case .existingChat(let chat) = conversationState {
@@ -357,9 +357,13 @@ private extension ChatViewModel {
         self.messages.sort(by: { $0.time > $1.time })
         
         if scrollToBottom {
+            await waitBeforeScroll()
             self.scrollToBottom()
-            await Task.sleep(seconds: 0.2) // Let UI to finish scroll
         }
+    }
+    
+    func waitBeforeScroll() async {
+        await Task.sleep(seconds: 0.3)
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
@@ -904,4 +908,16 @@ extension ChatViewModel: UDFeatureFlagsListener {
             return
         }
     }
+}
+
+#Preview {
+    NavigationViewWithCustomTitle(content: {
+        ChatView(viewModel: .init(profile: .init(id: "",
+                                                 wallet: "",
+                                                 serviceIdentifier: .push),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
+        
+    }, navigationStateProvider: { state in
+    }, path: .constant(EmptyNavigationPath()))
 }
