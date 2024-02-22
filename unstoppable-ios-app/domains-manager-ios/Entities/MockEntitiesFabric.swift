@@ -195,7 +195,7 @@ extension MockEntitiesFabric {
                                text: "Hello my friend",
                                isThisUser: false),
              createTextMessage(id: resolveMessageId(fixedID: "2"),
-                               text: "Hi!",
+                               text: "https://google.com",
                                isThisUser: true),
              createTextMessage(id: resolveMessageId(fixedID: "21"),
                                text: "I'm failed!",
