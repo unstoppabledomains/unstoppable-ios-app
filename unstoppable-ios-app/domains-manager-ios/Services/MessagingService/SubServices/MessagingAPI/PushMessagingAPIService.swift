@@ -404,11 +404,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                isRead: isRead,
                                                                                filesService: filesService,
                                                                                for: user)
-        if remoteMessages.count < fetchLimitToUse {
-            if !remoteMessages.isEmpty {
-                remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
-            }
-        }
         assignPreviousMessagesIn(messages: &remoteMessages)
         
         return messagesToKeep + remoteMessages

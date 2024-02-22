@@ -244,14 +244,15 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     await addMessages(cachedMessages, scrollToBottom: true)
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    isLoading = false
+                    await updateUIForChatApprovedState()
                     let updateMessages = try await messagingService.getMessagesForChat(chat,
                                                                                        before: nil,
                                                                                        cachedOnly: false,
                                                                                        limit: fetchLimit)
-                    await addMessages(updateMessages, scrollToBottom: true)
-                    updateUIForChatApprovedStateAsync()
                     isLoadingMessages = false
-                    isLoading = false
+                    await addMessages(updateMessages, scrollToBottom: true)
+                    scrollToBottom()
                 case .newChat:
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
@@ -275,11 +276,7 @@ private extension ChatViewModel {
                                                                                    before: message,
                                                                                    cachedOnly: false,
                                                                                    limit: fetchLimit)
-                let scrollToMessage = self.messages.first
                 await addMessages(unreadMessages, scrollToBottom: false)
-                await waitBeforeScroll()
-                self.scrollToMessage = scrollToMessage
-                await waitBeforeScroll()
             } catch {
                 self.error = error
             }
@@ -359,11 +356,12 @@ private extension ChatViewModel {
         if scrollToBottom {
             await waitBeforeScroll()
             self.scrollToBottom()
+            await waitBeforeScroll()
         }
     }
     
     func waitBeforeScroll() async {
-        await Task.sleep(seconds: 0.3)
+        await Task.sleep(seconds: 0.1)
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {

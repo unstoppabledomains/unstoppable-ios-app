@@ -80,41 +80,34 @@ private extension ChatView {
     @ViewBuilder
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
-            List {
-                if viewModel.isLoadingMessages {
-                    topLoadingView()
-                        .listRowBackground(Color.clear)
-                }
-                ForEach(viewModel.messages.reversed(), id: \.id) { message in
-                    messageRow(message)
-                        .id(message.id)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
+            ScrollView {
+                LazyVStack {
+                    if viewModel.isLoadingMessages {
+                        topLoadingView()
+                    }
+                    ForEach(viewModel.messages.reversed(), id: \.id) { message in
+                        messageRow(message)
+                            .id(message.id)
+                    }
                 }
             }
+            .padding(.init(horizontal: 16))
+            .frame(maxWidth: .infinity)
             .scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.hidden)
-            .listStyle(.plain)
-            .clearListBackground()
-            .animation(.default, value: UUID())
+            .withoutAnimation()
             .onChange(of: viewModel.scrollToMessage) { scrollToMessage in
-                withAnimation {
-                    proxy.scrollTo(scrollToMessage?.id, anchor: .top)
-                }
+                proxy.scrollTo(scrollToMessage?.id, anchor: .top)
             }
         }
     }
     
     @ViewBuilder
     func topLoadingView() -> some View {
-        Color.clear
-            .frame(height: 1)
         HStack(alignment: .center) {
             ProgressView()
                 .tint(.white)
         }
-        .frame(maxWidth: .infinity)
-        .listRowSeparator(.hidden)
+        .padding()
     }
     
     @ViewBuilder
@@ -282,7 +275,7 @@ extension ChatView {
         ChatView(viewModel: .init(profile: .init(id: "",
                                                  wallet: "",
                                                  serviceIdentifier: .push),
-                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
                                   router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in

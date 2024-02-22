@@ -28,6 +28,9 @@ struct MessageRowView: View {
                 if isFailedMessage {
                     deleteMessageView()
                 }
+                if !message.senderType.isThisUser {
+                    Spacer()
+                }
             }
             
             HStack {
@@ -43,6 +46,7 @@ struct MessageRowView: View {
             }
             reactionsView()
         }
+        .frame(maxWidth: .infinity)
         .background(Color.clear)
     }
 }
