@@ -20,12 +20,11 @@ enum PushEnvironment {
     
     struct ChatServiceMetadata: Codable {
         let threadHash: String?
-        let publicKeys: [String]
     }
     
     struct MessageServiceMetadata: Codable {
         let encType: String
-        let link: String?
+        var link: String?
     }
     
     struct UserProfileServiceMetadata: Codable {
@@ -39,9 +38,23 @@ enum PushEnvironment {
         var size: Int?
     }
     
-    struct ChatPublicKeysHolder: Codable {
-        let chatId: String
-        let publicKeys: [String]
+    struct PushMessageReactionContent: Codable {
+        let content: String
+        let reference: String
+    }
+    
+    struct PushMessageMetaContent: Codable {
+        let content: String
+        let info: [String : AnyCodable]
+    }
+    
+    struct PushMessageMediaEmbeddedContent: Codable {
+        let content: URL
+    }
+    
+    struct SessionKeyWithSecret: Codable {
+        let sessionKey: String
+        let secretKey: String
     }
     
     struct PushSocketMessageServiceContent {

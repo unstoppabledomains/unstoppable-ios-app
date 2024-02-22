@@ -19,6 +19,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     
     @State var wallet: WalletEntity
     let mode: Mode
+    var domainSetCallback: (@MainActor (DomainDisplayInfo)->())? = nil
     
     enum Mode {
         case selectFirst
@@ -32,7 +33,6 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     @State private var scrollOffset: CGPoint = .zero
     @State private var isHeaderVisible: Bool = true
     @State private var navigationState: NavigationStateManager?
-    @State private var navPath: NavigationPath = NavigationPath()
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -82,7 +82,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
         }, navigationStateProvider: { state in
             self.navigationState = state
             setTitleViewIfNeeded()
-        }, path: $navPath)
+        }, path: .constant(EmptyNavigationPath()))
         .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
@@ -257,6 +257,7 @@ private extension ReverseResolutionSelectionView {
                 try await udWalletsService.setReverseResolution(to: domain,
                                                                 paymentConfirmationDelegate: paymentHandler)
                 dismiss()
+                domainSetCallback?(selectedDomain)
             } catch {
                 self.error = error
             }
@@ -271,5 +272,6 @@ private extension ReverseResolutionSelectionView {
 
 #Preview {
     ReverseResolutionSelectionView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0], 
-                                   mode: .change)
+                                   mode: .change,
+                                   domainSetCallback: nil)
 }

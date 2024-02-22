@@ -79,11 +79,13 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo, before message: MessagingChatMessageDisplayInfo?, cachedOnly: Bool, limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        []
+        await Task.sleep(seconds: 0.2)
+        return MockEntitiesFabric.Messaging.createMessagesForUITesting(isFixedID: false)
     }
     
     func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo, in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
-        throw NSError()
+//        throw NSError()
+        message
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType, isEncrypted: Bool, in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
@@ -119,11 +121,11 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
-        []
+        MockEntitiesFabric.Messaging.createChannelsForUITesting()
     }
     
     func getFeedFor(channel: MessagingNewsChannel, cachedOnly: Bool, page: Int, limit: Int) async throws -> [MessagingNewsChannelFeed] {
-        []
+        MockEntitiesFabric.Messaging.createChannelsFeedForUITesting()
     }
     
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed, isRead: Bool, in channel: MessagingNewsChannel) throws {
@@ -157,14 +159,7 @@ final class MessagingService: MessagingServiceProtocol {
     }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        [.init(id: "1",
-               thisUserDetails: .init(wallet: "1"),
-               avatarURL: nil,
-               serviceIdentifier: .xmtp,
-               type: .private(.init(otherUser: .init(wallet: "2"))),
-               unreadMessagesCount: 0,
-               isApproved: true,
-               lastMessageTime: Date())]
+        MockEntitiesFabric.Messaging.createChatsForUITesting()
     }
     
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }

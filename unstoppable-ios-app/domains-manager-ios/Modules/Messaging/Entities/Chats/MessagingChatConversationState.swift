@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MessagingChatConversationState {
+enum MessagingChatConversationState: Hashable {
     case newChat(MessagingChatNewConversationDescription)
     case existingChat(MessagingChatDisplayInfo)
     
@@ -39,7 +39,7 @@ enum MessagingChatConversationState {
     }
 }
 
-struct MessagingChatNewConversationDescription {
+struct MessagingChatNewConversationDescription: Hashable {
     let userInfo: MessagingChatUserDisplayInfo
     let messagingService: MessagingServiceIdentifier
 }

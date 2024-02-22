@@ -237,7 +237,7 @@ private extension WCRequestsHandlingServiceTests {
     func callWC2Handler(requestType: WalletConnectRequestType) {
         mockWCServiceV2.pSessionRequestPublisher.send((Request(topic: "topic",
                                                               method: requestType.rawValue,
-                                                              params: AnyCodable(""),
+                                                              params: WCAnyCodable(""),
                                                               chainId: Blockchain("eip155:1")!),
                                                        VerifyContext(origin: nil,
                                                                      validation: .valid)))
@@ -327,7 +327,7 @@ private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtoc
         if let errorToFail {
             throw errorToFail
         }
-        return .response(AnyCodable(""))
+        return .response(WCAnyCodable(""))
     }
 }
 

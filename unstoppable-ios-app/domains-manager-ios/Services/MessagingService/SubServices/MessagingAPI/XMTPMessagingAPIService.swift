@@ -216,7 +216,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                isRead: isRead,
                                                                                filesService: filesService,
                                                                                for: user)
-        if remoteMessages.count < fetchLimit {
+        if remoteMessages.count < fetchLimitToUse {
             if !remoteMessages.isEmpty {
                 remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
             } else {
@@ -290,10 +290,10 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         
         return try await XMTPEntitiesTransformer.loadRemoteContentFrom(data: serviceData,
-                                                                messageId: message.displayInfo.id,
-                                                                userId: message.userId,
-                                                                client: client,
-                                                                filesService: filesService)
+                                                                       messageId: message.displayInfo.id,
+                                                                       userId: message.userId,
+                                                                       client: client,
+                                                                       filesService: filesService)
     }
     
     func joinCommunityChat(_ communityChat: MessagingChat,
@@ -330,7 +330,7 @@ private extension XMTPMessagingAPIService {
                                                       in: conversation,
                                                       client: client,
                                                       by: senderWallet)
-        case .unknown, .remoteContent:
+        case .unknown, .remoteContent, .reaction:
             throw XMTPServiceError.unsupportedAction
         }
         

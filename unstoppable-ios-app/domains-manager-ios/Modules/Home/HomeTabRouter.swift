@@ -18,7 +18,8 @@ final class HomeTabRouter: ObservableObject {
     @Published var showingUpdatedToWalletGreetings: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
-    @Published var walletViewNavPath: NavigationPath = NavigationPath()
+    @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
+    @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
@@ -255,17 +256,37 @@ extension HomeTabRouter {
     }
     
     func isChatOpenedWith(chatId: String) -> Bool {
-        guard let openedChatId = chatsListCoordinator?.chatId else { return false }
-        
-        return openedChatId.lowercased().contains(chatId.lowercased())
+        chatTabNavPath.first(where: { screen in
+            if case .chat(_, let conversationState) = screen,
+               case .existingChat(let chat) = conversationState {
+                return chat.id.lowercased().contains(chatId.lowercased())
+            }
+            return false
+        }) != nil
     }
     
     func isChannelOpenedWith(channelId: String) -> Bool {
-        guard let openedChannelId = chatsListCoordinator?.channelId else { return false }
-        
-        return openedChannelId.normalized.contains(channelId.normalized)
+        chatTabNavPath.first(where: { screen in
+            if case .channel(let profile, let channel) = screen {
+                return channel.channel.normalized.contains(channelId.normalized)
+            }
+            return false
+        }) != nil
     }
     
+    func popToRoot() {
+        isSelectProfilePresented = false
+        isConnectedAppsListPresented = false
+        isSearchingDomains = false
+        showingUpdatedToWalletGreetings = false
+        presentedNFT = nil
+        presentedDomain = nil
+        presentedPublicDomain = nil
+        resolvingPrimaryDomainWallet = nil
+        showingWalletInfo = nil
+        walletViewNavPath.removeAll()
+        chatTabNavPath.removeAll()
+    }
 }
 
 // MARK: - Pull up related
@@ -381,20 +402,6 @@ extension HomeTabRouter: PublicProfileViewDelegate {
 
 // MARK: - Private methods
 private extension HomeTabRouter {
-    func popToRoot() {
-        isSelectProfilePresented = false
-        isConnectedAppsListPresented = false
-        isSearchingDomains = false
-        showingUpdatedToWalletGreetings = false
-        presentedNFT = nil
-        presentedDomain = nil
-        presentedPublicDomain = nil
-        resolvingPrimaryDomainWallet = nil
-        showingWalletInfo = nil
-        walletViewNavPath = .init()
-        chatsListCoordinator?.popToChatsList()
-    }
-    
     func popToRootAndWait() async {
         popToRoot()
         await waitForScreenClosed()
@@ -516,5 +523,6 @@ extension HomeTabRouter {
         
         let wallet: WalletEntity
         let mode: ReverseResolutionSelectionView.Mode
+        var domainSetCallback: (@MainActor (DomainDisplayInfo)->())? = nil
     }
 }

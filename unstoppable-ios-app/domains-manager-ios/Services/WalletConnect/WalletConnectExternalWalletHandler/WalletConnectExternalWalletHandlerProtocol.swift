@@ -16,7 +16,7 @@ protocol WalletConnectExternalWalletHandlerProtocol {
     func sendWC2Request(method: WalletConnectRequestType,
                         session: SessionV2Proxy,
                         chainId: Int,
-                        requestParams: AnyCodable,
+                        requestParams: WCAnyCodable,
                         in wallet: UDWallet) async throws -> ResponseV2
     
     // Listeners

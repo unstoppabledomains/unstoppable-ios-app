@@ -645,6 +645,7 @@ private extension CoreDataMessagingStorageService {
         case imageBase64 = 1
         case imageData = 2
         case remoteContent = 3
+        case reaction = 4
         case unknown = 999
      
         static func valueFor(_ messageType: MessagingChatMessageDisplayType) -> CoreDataMessageTypeWrapper {
@@ -659,6 +660,8 @@ private extension CoreDataMessagingStorageService {
                 return .unknown
             case .remoteContent:
                 return .remoteContent
+            case .reaction:
+                return .reaction
             }
         }
     }
@@ -692,6 +695,12 @@ private extension CoreDataMessagingStorageService {
                   let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
             let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
             return .remoteContent(remoteContentDisplayInfo)
+        case .reaction:
+            guard let decryptedContent = getDecryptedContent(),
+                  let decryptedData = CoreDataMessageReactionDetails.objectFromJSONString(decryptedContent) else { return nil }
+            let reactionDisplayInfo = MessagingChatMessageReactionTypeDisplayInfo(content: decryptedData.content,
+                                                                                  messageId: decryptedData.messageId)
+            return .reaction(reactionDisplayInfo)
         case .unknown:
             guard let json = coreDataMessage.genericMessageDetails,
                   let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
@@ -733,6 +742,11 @@ private extension CoreDataMessagingStorageService {
                                                                                   fileName: info.fileName,
                                                                                   name: info.name,
                                                                                   size: info.size).jsonRepresentation()
+        case .reaction(let info):
+            let content = try CoreDataMessageReactionDetails(content: info.content,
+                                                             messageId: info.messageId).jsonStringThrowing()
+            let encryptedContent = try decrypterService.encryptText(content)
+            coreDataMessage.messageContent = encryptedContent
         }
     }
     
@@ -964,6 +978,11 @@ private extension CoreDataMessagingStorageService {
         var fileName: String
         var name: String?
         var size: Int?
+    }
+    
+    struct CoreDataMessageReactionDetails: Codable {
+        var content: String
+        var messageId: String
     }
     
     struct FileDetails: Codable {
