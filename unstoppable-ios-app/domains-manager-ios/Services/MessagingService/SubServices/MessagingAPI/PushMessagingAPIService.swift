@@ -369,6 +369,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
         guard let chatThreadHash = chatMetadata.threadHash else { return [] } // No messages in chat yet
         
+        var message = message
         var fetchLimitToUse = fetchLimit
         var threadHash = chatThreadHash
         var messagesToKeep = [MessagingChatMessage]()
@@ -377,13 +378,38 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             guard let currentMessageLink = getLinkFrom(message: message) else { return [] } // Request messages before first in chat
             threadHash = currentMessageLink
         }
+        let result = try messageToLoadDescriptionFrom(in: cachedMessages, starting: threadHash)
+        switch result {
+        case .noCachedMessages:
+            Void()
+        case .reachedFirstMessageInChat:
+            messagesToKeep = cachedMessages
+        case .messageToLoad(let missingMessageThreadHash):
+            threadHash = missingMessageThreadHash.threadHash
+            fetchLimitToUse -= missingMessageThreadHash.offset
+            messagesToKeep = missingMessageThreadHash.messagesToKeep
+        }
         
-        let remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
+        
+        if messagesToKeep.count >= fetchLimit {
+            return messagesToKeep
+        }
+        if messagesToKeep.last?.displayInfo.isFirstInChat == true {
+            return messagesToKeep
+        }
+        
+        var remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
                                                                                threadHash: threadHash,
                                                                                fetchLimit: fetchLimitToUse,
                                                                                isRead: isRead,
                                                                                filesService: filesService,
                                                                                for: user)
+        if remoteMessages.count < fetchLimitToUse {
+            if !remoteMessages.isEmpty {
+                remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
+            }
+        }
+        assignPreviousMessagesIn(messages: &remoteMessages)
         
         return messagesToKeep + remoteMessages
     }
@@ -573,6 +599,21 @@ private extension PushMessagingAPIService {
     func getLinkFrom(message: MessagingChatMessage) -> String? {
         let messageMetadata: PushEnvironment.MessageServiceMetadata? = try? decodeServiceMetadata(from: message.serviceMetadata)
         return messageMetadata?.link?.replacingOccurrences(of: "previous:", with: "")
+    }
+    
+    func assignPreviousMessagesIn(messages: inout [MessagingChatMessage]) {
+        guard !messages.isEmpty else { return }
+        
+        for i in 1..<messages.count {
+            setPreviousMessageId(messages[i].displayInfo.id, to: &messages[i-1])
+        }
+    }
+    
+    func setPreviousMessageId(_ previousMessageId: String, to message: inout MessagingChatMessage) {
+        guard var messageMetadata: PushEnvironment.MessageServiceMetadata = try? MessagingAPIServiceHelper.decodeServiceMetadata(from: message.serviceMetadata) else { return }
+        
+        messageMetadata.link = previousMessageId
+        message.serviceMetadata = messageMetadata.jsonData()
     }
 }
 

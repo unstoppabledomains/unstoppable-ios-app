@@ -24,7 +24,7 @@ enum PushEnvironment {
     
     struct MessageServiceMetadata: Codable {
         let encType: String
-        let link: String?
+        var link: String?
     }
     
     struct UserProfileServiceMetadata: Codable {
