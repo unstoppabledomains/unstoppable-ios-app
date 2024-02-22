@@ -52,9 +52,9 @@ enum PushEnvironment {
         let content: URL
     }
     
-    struct ChatPublicKeysHolder: Codable {
-        let chatId: String
-        let publicKeys: [String]
+    struct SessionKeyWithSecret: Codable {
+        let sessionKey: String
+        let secretKey: String
     }
     
     struct PushSocketMessageServiceContent {

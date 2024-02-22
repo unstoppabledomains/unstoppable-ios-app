@@ -1067,7 +1067,7 @@
 		C692C360282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C35E282EA71C00C31393 /* AppearanceSettingsCell.swift */; };
 		C692C364282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C692C35F282EA71C00C31393 /* AppearanceSettingsCell.xib */; };
 		C692C36A282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */; };
-		C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
+		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
 		C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1E2B19939E00B79E28 /* ViewController.swift */; };
@@ -3176,7 +3176,7 @@
 		C692C35E282EA71C00C31393 /* AppearanceSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsCell.swift; sourceTree = "<group>"; };
 		C692C35F282EA71C00C31393 /* AppearanceSettingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppearanceSettingsCell.xib; sourceTree = "<group>"; };
 		C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAppearanceThemePullUpView.swift; sourceTree = "<group>"; };
-		C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPublicKeysStorage.swift; sourceTree = "<group>"; };
+		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -4761,7 +4761,7 @@
 				C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */,
 				C62396B22A28DE3B00363F60 /* PushEnvironment.swift */,
 				C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */,
-				C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */,
+				C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */,
 				C66107982A31A4BC0076782F /* PushEntitiesTransformer.swift */,
 				C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */,
 				C61ECD722A20E85E00E97D70 /* Entities */,
@@ -8759,7 +8759,7 @@
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
-				C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
+				C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */,
 				C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6C9DE992834B28F00BAC36F /* SubheadTertiaryButton.swift in Sources */,
 				3018AEB827EA12A700E8C37D /* AddWalletViewController.swift in Sources */,

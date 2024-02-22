@@ -162,32 +162,14 @@ struct PushEntitiesTransformer {
         let id = chat.displayInfo.id
         return id.components(separatedBy: "_").first ?? id
     }
-    
-    static private var sessionKeyToSecretKeyCache: [String : String] = [:]
-    
+        
     static private func prepareSecretKeysFor(sessionKeys: Set<String>,
                                              pgpKey: String,
                                              env: Push.ENV) async {
-        let sessionKeys = sessionKeys.filter { sessionKey in
-            if sessionKeyToSecretKeyCache[sessionKey] == nil {
-                if let secretKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: sessionKey) {
-                    sessionKeyToSecretKeyCache[sessionKey] = secretKey
-                    return false
-                }
-                return true
-            } else {
-                return false                
-            }
-        }
+        let sessionKeys = sessionKeys.filter { PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: $0) == nil }
         guard !sessionKeys.isEmpty else { return }
         
-        struct SessionKeyWithSecret {
-            let sessionKey: String
-            let secretKey: String
-        }
-        
-        let start = Date()
-        await withTaskGroup(of: Optional<SessionKeyWithSecret>.self) { group in
+        await withTaskGroup(of: Optional<PushEnvironment.SessionKeyWithSecret>.self) { group in
             for sessionKey in sessionKeys {
                 group.addTask {
                     if let secretKey = try? await Push.PushChat.getPrivateGroupPGPSecretKey(sessionKey: sessionKey,
@@ -201,12 +183,10 @@ struct PushEntitiesTransformer {
             
             for await result in group {
                 if let result {
-                    KeychainPGPKeysStorage.instance.savePGPKey(result.secretKey, forIdentifier: result.sessionKey)
-                    sessionKeyToSecretKeyCache[result.sessionKey] = result.secretKey
+                    try? PushChatsSecretKeysStorage.instance.saveNew(keys: result)
                 }
             }
         }
-        print("LOGO: - It took \(Date().timeIntervalSince(start)) to prepare \(sessionKeys.count) keys")
     }
     
     static func convertPushMessagesToChatMessage(_ pushMessages: [Push.Message],
@@ -348,7 +328,7 @@ struct PushEntitiesTransformer {
                                 env: Push.ENV) async throws -> (String, String?) {
         
         if let sessionKey = pushMessage.sessionKey,
-           let secretKey = sessionKeyToSecretKeyCache[sessionKey] {
+           let secretKey = PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: sessionKey) {
             return try Push.PushChat.decryptPrivateGroupMessage(pushMessage,
                                                                 using: secretKey,
                                                                 privateKeyArmored: pgpKey,
