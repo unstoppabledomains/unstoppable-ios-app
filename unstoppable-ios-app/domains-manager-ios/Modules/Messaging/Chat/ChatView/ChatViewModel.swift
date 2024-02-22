@@ -164,6 +164,39 @@ extension ChatViewModel {
             sendReactionMessage(content, toMessage: toMessage)
         }
     }
+    
+    func handleExternalLinkPressed(_ url: URL, by sender: MessagingChatSender) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        keyboardFocused = false
+        
+        switch sender {
+        case .thisUser:
+            openLinkOrDomainProfile(url)
+        case .otherUser(let otherUser):
+            Task {
+                do {
+                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    
+                    switch action {
+                    case .handle:
+                        openLinkOrDomainProfile(url)
+                    case .block:
+                        switch chat.type {
+                        case .private:
+                            try await messagingService.setUser(in: .chat(chat), blocked: true)
+                        case .group, .community:
+                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
+                        }
+                        
+                        view.cNavigationController?.popViewController(animated: true)
+                    }
+                } catch { }
+            }
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -452,39 +485,6 @@ private extension ChatViewModel {
             }
         }
         await setupBarButtons()
-    }
-    
-    func handleExternalLinkPressed(_ url: URL, in message: MessagingChatMessageDisplayInfo) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
-        
-        keyboardFocused = false
-        
-        switch message.senderType {
-        case .thisUser:
-            openLinkOrDomainProfile(url)
-        case .otherUser(let otherUser):
-            Task {
-                do {
-                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
-                    await view.dismissPullUpMenu()
-                    
-                    switch action {
-                    case .handle:
-                        openLinkOrDomainProfile(url)
-                    case .block:
-                        switch chat.type {
-                        case .private:
-                            try await messagingService.setUser(in: .chat(chat), blocked: true)
-                        case .group, .community:
-                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
-                        }
-                        
-                        view.cNavigationController?.popViewController(animated: true)
-                    }
-                } catch { }
-            }
-        }
     }
     
     func scrollToBottom() {
