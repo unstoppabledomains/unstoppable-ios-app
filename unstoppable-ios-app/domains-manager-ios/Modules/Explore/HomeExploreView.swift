@@ -20,6 +20,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
         NavigationViewWithCustomTitle(content: {
             List {
                 followersSection(relationshipType: .following)
+                sectionSeparatorView()
                 followersSection(relationshipType: .followers)
 
             }
@@ -109,9 +110,20 @@ private extension HomeExploreView {
         HomeExploreFollowersSectionView(relationshipType: relationshipType)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
-            .unstoppableListRowInset()
+            .listRowInsets(.init(horizontal: 16))
     }
     
+    @ViewBuilder
+    func sectionSeparatorView() -> some View {
+        Line(direction: .horizontal)
+            .stroke(style: StrokeStyle(lineWidth: 1))
+            .foregroundStyle(Color.white.opacity(0.08))
+            .shadow(color: .black, radius: 0, x: 0, y: -1)
+            .frame(height: 1)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init(horizontal: 16))
+    }
 }
 
 #Preview {

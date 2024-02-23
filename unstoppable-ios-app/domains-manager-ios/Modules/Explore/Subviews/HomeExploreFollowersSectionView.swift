@@ -46,7 +46,7 @@ private extension HomeExploreFollowersSectionView {
     @ViewBuilder
     func gridWithFollowers(_ followers: [SerializedPublicDomainProfile]) -> some View {
         ListVGrid(data: followers,
-                  verticalSpacing: 0,
+                  verticalSpacing: 16,
                   horizontalSpacing: 16) { follower in
             Button {
                 UDVibration.buttonTap.vibrate()

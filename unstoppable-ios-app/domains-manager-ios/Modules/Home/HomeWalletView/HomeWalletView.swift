@@ -58,7 +58,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(.init(horizontal: 16))
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
