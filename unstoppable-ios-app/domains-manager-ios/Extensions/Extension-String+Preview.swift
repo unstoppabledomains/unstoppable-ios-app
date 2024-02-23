@@ -28,7 +28,6 @@ extension String {
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
-        case udBlue
         case communitiesInfo
         case setupApplePayInstruction
         case unstoppableDomainSearch(searchKey: String)
@@ -92,8 +91,6 @@ extension String {
                 return "https://unstoppabledomains.com/refer-a-friend"
             case .referralLink(let code):
                 return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
-            case .udBlue:
-                return "https://unstoppabledomains.com/products/blue"
             case .communitiesInfo:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:
