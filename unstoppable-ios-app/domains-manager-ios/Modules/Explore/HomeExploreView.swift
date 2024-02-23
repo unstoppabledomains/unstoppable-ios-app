@@ -19,10 +19,11 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             List {
+                domainsView()
+                    .listRowInsets(.init(horizontal: 16))
                 followersSection(relationshipType: .following)
                 sectionSeparatorView()
                 followersSection(relationshipType: .followers)
-
             }
             .listStyle(.plain)
             .listRowSpacing(0)
@@ -103,7 +104,129 @@ private extension HomeExploreView {
     }
 }
 
-// MARK: - Private methods
+// MARK: - Domains views
+private extension HomeExploreView {
+    @ViewBuilder
+    func domainsView() -> some View {
+        if viewModel.domainsToShow.isEmpty && viewModel.globalProfiles.isEmpty && !viewModel.isLoadingGlobalProfiles {
+            if viewModel.userDomains.isEmpty {
+                emptyStateFor(type: .noDomains)
+            } else {
+                emptyStateFor(type: .noResult)
+            }
+        } else {
+            if !viewModel.domainsToShow.isEmpty {
+                domainsSection(viewModel.domainsToShow)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+                
+            }
+            if !viewModel.globalProfiles.isEmpty {
+                discoveredProfilesSection(viewModel.globalProfiles)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func domainsSection(_ domains: [DomainDisplayInfo]) -> some View {
+        sectionHeaderViewWith(title: String.Constants.yourDomains.localized())
+        Section {
+            ForEach(domains) { domain in
+                domainsRowView(domain)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func domainsRowView(_ domain: DomainDisplayInfo) -> some View {
+        UDCollectionListRowButton(content: {
+            DomainSearchResultDomainRowView(domain: domain)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
+            viewModel.didTapUserDomainProfile(domain)
+        })
+    }
+    
+    @ViewBuilder
+    func discoveredProfilesSection(_ profiles: [SearchDomainProfile]) -> some View {
+        sectionHeaderViewWith(title: String.Constants.globalSearch.localized())
+        Section {
+            ForEach(profiles, id: \.name) { profile in
+                discoveredProfileRowView(profile)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func discoveredProfileRowView(_ profile: SearchDomainProfile) -> some View {
+        UDCollectionListRowButton(content: {
+            DomainSearchResultProfileRowView(profile: profile)
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])
+            viewModel.didTapSearchDomainProfile(profile)
+        })
+    }
+    
+    @ViewBuilder
+    func sectionHeaderViewWith(title: String) -> some View {
+        Text(title)
+            .font(.currentFont(size: 14, weight: .medium))
+            .foregroundStyle(Color.foregroundSecondary)
+    }
+    
+    @ViewBuilder
+    func emptyStateFor(type: EmptyStateType) -> some View {
+        ZStack {
+            VStack(spacing: 16) {
+                Text(type.title)
+                    .font(.currentFont(size: 22, weight: .bold))
+                    .frame(height: 28)
+                
+                if let subtitle = type.subtitle {
+                    Text(subtitle)
+                        .font(.currentFont(size: 16))
+                        .frame(height: 24)
+                }
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 300)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+    }
+    
+    enum EmptyStateType {
+        case noDomains, noResult
+        
+        var title: String {
+            switch self {
+            case .noDomains:
+                return "No domains in your wallet"
+            case .noResult:
+                return String.Constants.noResults.localized()
+            }
+        }
+        
+        
+        var subtitle: String? {
+            switch self {
+            case .noDomains:
+                return "Use the search to explore people's profiles."
+            case .noResult:
+                return nil
+            }
+        }
+    }
+}
+   
+// MARK: - Followers views
 private extension HomeExploreView {
     @ViewBuilder
     func followersSection(relationshipType: DomainProfileFollowerRelationshipType) -> some View {
