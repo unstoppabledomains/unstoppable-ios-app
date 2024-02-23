@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct HomeExploreView: View {
+    
+    @StateObject var viewModel: HomeExploreViewModel
+    
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    HomeExploreView()
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    
+    return HomeExploreView(viewModel: .init(router: router))
+        .environmentObject(router)
 }

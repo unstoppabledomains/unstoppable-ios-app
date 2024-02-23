@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChatListNavTitleView: View {
+struct HomeProfileSelectorNavTitleView: View {
     @Environment(\.userProfileService) private var userProfileService
     @Environment(\.imageLoadingService) private var imageLoadingService
     @EnvironmentObject var tabRouter: HomeTabRouter
@@ -52,7 +52,7 @@ struct ChatListNavTitleView: View {
 }
 
 // MARK: - Private methods
-private extension ChatListNavTitleView {
+private extension HomeProfileSelectorNavTitleView {
     var selectable: Bool {
         appContext.userProfileService.profiles.count > 1
     }
@@ -127,10 +127,10 @@ private extension ChatListNavTitleView {
 }
 
 // MARK: - Open methods
-extension ChatListNavTitleView {
+extension HomeProfileSelectorNavTitleView {
     
 }
 
 #Preview {
-    ChatListNavTitleView(profile: appContext.userProfileService.selectedProfile!)
+    HomeProfileSelectorNavTitleView(profile: appContext.userProfileService.selectedProfile!)
 }

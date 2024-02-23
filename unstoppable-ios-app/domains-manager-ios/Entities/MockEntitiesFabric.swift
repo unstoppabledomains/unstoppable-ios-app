@@ -25,6 +25,31 @@ extension MockEntitiesFabric {
          .init(content: "😜", messageId: "1", referenceMessageId: "1", isUserReaction: false)]
     }
     
+    enum Home {
+        @MainActor
+        static func createHomeTabRouter(isWebProfile: Bool = false) -> HomeTabRouter {
+            let profile: UserProfile
+            if isWebProfile {
+                profile = Profile.createWebAccountProfile()
+            } else {
+                profile = Profile.createWalletProfile()
+            }
+            return HomeTabRouter(profile: profile)
+        }
+    }
+    
+    enum Profile {
+        static func createWebAccountProfile() -> UserProfile {
+            .webAccount(.init(email: "oleg@unstoppabledomains.com"))
+        }
+        
+        static func createWalletProfile(using wallet: WalletEntity? = nil) -> UserProfile {
+            let wallet = wallet ?? Wallet.mockEntities().first!
+            
+            return .wallet(wallet)
+        }
+    }
+    
     enum Messaging {
         static func createProfileDisplayInfo(wallet: String = "0x",
                                              serviceIdentifier: MessagingServiceIdentifier = .xmtp) -> MessagingChatUserProfileDisplayInfo {
