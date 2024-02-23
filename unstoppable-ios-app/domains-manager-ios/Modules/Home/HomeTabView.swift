@@ -9,6 +9,7 @@ import SwiftUI
 
 enum HomeTab: String, Hashable {
     case wallets
+    case explore
     case messaging
 }
 
@@ -26,6 +27,14 @@ struct HomeTabView: View {
             }
             .tag(HomeTab.wallets)
             .tabBarVisible(router.isTabBarVisible)
+            
+            HomeExploreView(viewModel: .init(router: router))
+                .tabItem {
+                    Label(title: { Text(String.Constants.explore.localized()) },
+                          icon: { Image.exploreIcon })
+                }
+                .tag(HomeTab.explore)
+                .tabBarVisible(router.isTabBarVisible)
             
             ChatListView(viewModel: .init(presentOptions: .default,
                                           router: router))

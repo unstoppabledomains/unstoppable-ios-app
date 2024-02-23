@@ -44,7 +44,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
             }
         }.store(in: &cancellables)
     
-        $searchKey.sink { [weak self] searchText in
+        $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
 //            self?.didSearchWith(key: searchText)
         }.store(in: &cancellables)
         $isSearchActive.sink { [weak self] isActive in
