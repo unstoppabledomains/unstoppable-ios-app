@@ -18,19 +18,23 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            ZStack {
-                ScrollView {
-                    LazyVStack {
-                        
-                    }
-                }
-                .searchable(text: $viewModel.searchKey,
-                            placement: .navigationBarDrawer(displayMode: .always),
-                            prompt: Text(String.Constants.search.localized()))
-//                if viewModel.isLoading {
-                    ProgressView()
-//                }
+            List {
+                followersSection()
+                    .unstoppableListRowInset()
+
             }
+            .listStyle(.plain)
+            .listRowSpacing(0)
+            .clearListBackground()
+            .background(Color.backgroundDefault)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $viewModel.searchKey,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: Text(String.Constants.search.localized()))
+            .environmentObject(viewModel)
+            .environment(\.analyticsViewName, analyticsName)
+            .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
@@ -66,8 +70,8 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     }
 }
 
-// MARK: - Open methods
-extension HomeExploreView {
+// MARK: - Private methods
+private extension HomeExploreView {
     func onAppear() {
         setupTitle()
     }
@@ -96,7 +100,16 @@ extension HomeExploreView {
             searchBar.resignFirstResponder()
         }
     }
-    
+}
+
+// MARK: - Private methods
+private extension HomeExploreView {
+    @ViewBuilder
+    func followersSection() -> some View {
+        if !viewModel.followersList.isEmpty {
+            HomeExploreFollowersSectionView()
+        }
+    }
 }
 
 #Preview {

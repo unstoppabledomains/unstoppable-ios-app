@@ -381,6 +381,7 @@ extension Analytics {
         case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
         case subdomainsSectionHeader, domainsSectionHeader
         case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
+        case followerTile
     }
 }
 

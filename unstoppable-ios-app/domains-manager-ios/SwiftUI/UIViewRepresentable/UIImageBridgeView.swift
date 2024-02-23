@@ -20,6 +20,7 @@ struct UIImageBridgeView: UIViewRepresentable {
     func makeUIView(context: Context) -> UIImageView {
         let imageView = UIImageView(image: image)
         imageView.contentMode = contentMode
+        imageView.clipsToBounds = true
         
         if let width {
             imageView.frame.size.width = width
@@ -27,7 +28,7 @@ struct UIImageBridgeView: UIViewRepresentable {
             imageView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         }
         if let height {
-            imageView.frame.size.height = height
+//            imageView.frame.size.height = height
             imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
             imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         }

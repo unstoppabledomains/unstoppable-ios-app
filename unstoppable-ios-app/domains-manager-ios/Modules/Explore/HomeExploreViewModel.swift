@@ -65,7 +65,7 @@ private extension HomeExploreViewModel {
     }
     
     func loadFollowersFor(wallet: WalletEntity) {
-//        followersList = MockEntitiesFabric.Domains.createFollowersDisplayInfo()
+        followersList = MockEntitiesFabric.Explore.createFollowersProfiles()
     }
     
 }
