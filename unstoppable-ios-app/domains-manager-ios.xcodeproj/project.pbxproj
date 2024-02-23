@@ -483,6 +483,8 @@
 		C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
 		C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C61ECD852A25AB4200E97D70 /* SocketIO */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
+		C6203A4E2B882959000A1A8E /* HomeExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A4D2B882959000A1A8E /* HomeExploreView.swift */; };
+		C6203A4F2B882959000A1A8E /* HomeExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A4D2B882959000A1A8E /* HomeExploreView.swift */; };
 		C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
 		C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A4283B92C0002A0CBD /* UDNavigationController.swift */; };
@@ -2666,6 +2668,7 @@
 		C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatDTO.swift; sourceTree = "<group>"; };
 		C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatMember.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
+		C6203A4D2B882959000A1A8E /* HomeExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreView.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
 		C62247A4283B92C0002A0CBD /* UDNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNavigationController.swift; sourceTree = "<group>"; };
@@ -4782,6 +4785,14 @@
 				C62396A82A28D7D200363F60 /* PushChannel.swift */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		C6203A4C2B882909000A1A8E /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				C6203A4D2B882959000A1A8E /* HomeExploreView.swift */,
+			);
+			path = Explore;
 			sourceTree = "<group>";
 		};
 		C62247AE283CFF07002A0CBD /* DomainTransactionsService */ = {
@@ -7249,6 +7260,7 @@
 				C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */,
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
+				C6203A4C2B882909000A1A8E /* Explore */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
@@ -8407,6 +8419,7 @@
 				C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
 				C63095EA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift in Sources */,
 				C6D6E5A32819945C008C66BB /* StatusMessage.swift in Sources */,
+				C6203A4E2B882959000A1A8E /* HomeExploreView.swift in Sources */,
 				C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */,
 				C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */,
 				C6C8F85E2B21800E00A9834D /* ValetProtocol.swift in Sources */,
@@ -9511,6 +9524,7 @@
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,
 				C6C8F9782B2188FA00A9834D /* QRScannerViewController.swift in Sources */,
+				C6203A4F2B882959000A1A8E /* HomeExploreView.swift in Sources */,
 				C61808632B19BBFE0032E543 /* UDCollectionListRowButton.swift in Sources */,
 				C6D6468A2B1ED12D00D724AC /* DomainProfileTopInfoSection.swift in Sources */,
 				C6D645892B1DBACB00D724AC /* CGSize.swift in Sources */,
