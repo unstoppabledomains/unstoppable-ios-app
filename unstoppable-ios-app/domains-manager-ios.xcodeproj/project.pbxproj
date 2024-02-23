@@ -487,6 +487,13 @@
 		C6203A4F2B882959000A1A8E /* HomeExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A4D2B882959000A1A8E /* HomeExploreView.swift */; };
 		C6203A512B882EBC000A1A8E /* HomeExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */; };
 		C6203A522B882EBC000A1A8E /* HomeExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */; };
+		C6203A542B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */; };
+		C6203A552B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */; };
+		C6203A572B883832000A1A8E /* MockEntitiesFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */; };
+		C6203A592B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */; };
+		C6203A5A2B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */; };
+		C6203A5C2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */; };
+		C6203A5D2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */; };
 		C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
 		C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A4283B92C0002A0CBD /* UDNavigationController.swift */; };
@@ -2672,6 +2679,9 @@
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
 		C6203A4D2B882959000A1A8E /* HomeExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreView.swift; sourceTree = "<group>"; };
 		C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreViewModel.swift; sourceTree = "<group>"; };
+		C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreNavigationDestination.swift; sourceTree = "<group>"; };
+		C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Messaging.swift"; sourceTree = "<group>"; };
+		C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Domains.swift"; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
 		C62247A4283B92C0002A0CBD /* UDNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNavigationController.swift; sourceTree = "<group>"; };
@@ -4480,6 +4490,9 @@
 		C6109E4328E5ABFE0027D5D8 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
+				C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */,
+				C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */,
+				C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */,
 				C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */,
 			);
 			path = Mock;
@@ -4795,6 +4808,7 @@
 			children = (
 				C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */,
 				C6203A4D2B882959000A1A8E /* HomeExploreView.swift */,
+				C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */,
 			);
 			path = Explore;
 			sourceTree = "<group>";
@@ -6856,7 +6870,6 @@
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
 				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
-				C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */,
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
@@ -8619,6 +8632,7 @@
 				C669B4552B748214001D4788 /* HomeView.swift in Sources */,
 				C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */,
 				C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
+				C6203A542B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */,
 				C669C39E291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */,
 				C624D76B281AD2B900F55530 /* FABButton.swift in Sources */,
 				C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */,
@@ -8810,6 +8824,7 @@
 				C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C6F6AF6E28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
+				C6203A592B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
 				C630E4A32B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */,
@@ -9106,6 +9121,7 @@
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C6170EC42B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
+				C6203A5C2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
 				C61807CA2B19A3B00032E543 /* PullUpViewServiceProtocol.swift in Sources */,
@@ -9235,6 +9251,7 @@
 				C6109E8B28E5B18B0027D5D8 /* TestsEnum.swift in Sources */,
 				C6109E7A28E5AC510027D5D8 /* HappyEndRobot.swift in Sources */,
 				C6109E7E28E5AC510027D5D8 /* RecoveryPhraseRobot.swift in Sources */,
+				C6203A572B883832000A1A8E /* MockEntitiesFabric.swift in Sources */,
 				C6109E7728E5AC510027D5D8 /* ConfirmRecoveryWordsRobot.swift in Sources */,
 				C6109E7828E5AC510027D5D8 /* WalletDetailsRobot.swift in Sources */,
 				C6109E7628E5AC510027D5D8 /* DomainsCollectionScreenRobot.swift in Sources */,
@@ -9854,6 +9871,7 @@
 				C6D647082B1ED7CA00D724AC /* MessagingNewsChannel.swift in Sources */,
 				C6D646AB2B1ED16900D724AC /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C618081A2B19AAEF0032E543 /* FirebaseDomainsServiceProtocol.swift in Sources */,
+				C6203A5A2B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
 				C6D646D32B1ED2C800D724AC /* UDTextField.swift in Sources */,
 				C61808742B19BC150032E543 /* Font.swift in Sources */,
 				C618086F2B19BC100032E543 /* View+Skeleton.swift in Sources */,
@@ -10079,12 +10097,14 @@
 				C6C8F9532B21858200A9834D /* PreviewValet.swift in Sources */,
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,
 				C6D646D62B1ED2E700D724AC /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
+				C6203A5D2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */,
 				C6D646C62B1ED24E00D724AC /* SocialsType.swift in Sources */,
 				C669B4532B747607001D4788 /* SettingsLinkNavigationDestination.swift in Sources */,
 				C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
 				C6D646AA2B1ED15F00D724AC /* DomainProfileViewPresenter.swift in Sources */,
 				C6D646592B1ED10D00D724AC /* DomainProfileMetadataCell.swift in Sources */,
 				C61807B22B199DD70032E543 /* UIView.swift in Sources */,
+				C6203A552B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */,
 				C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */,
 				C6D645B22B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift in Sources */,
 				C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */,

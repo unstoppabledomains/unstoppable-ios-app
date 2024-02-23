@@ -19,7 +19,14 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-              
+                ScrollView {
+                    LazyVStack {
+                        
+                    }
+                }
+                .searchable(text: $viewModel.searchKey,
+                            placement: .navigationBarDrawer(displayMode: .always),
+                            prompt: Text(String.Constants.search.localized()))
 //                if viewModel.isLoading {
                     ProgressView()
 //                }
@@ -47,18 +54,15 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: HomeChatNavigationDestination.self) { destination in
-                HomeChatLinkNavigationDestination.viewFor(navigationDestination: destination,
+            .navigationDestination(for: HomeExploreNavigationDestination.self) { destination in
+                HomeExploreLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                           tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
         }, navigationStateProvider: { state in
             self.navigationState = state
-        }, path: $tabRouter.chatTabNavPath)
+        }, path: $tabRouter.exploreTabNavPath)
         .onAppear(perform: onAppear)
-        .searchable(text: $viewModel.searchKey,
-                    placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text(String.Constants.search.localized()))
     }
 }
 

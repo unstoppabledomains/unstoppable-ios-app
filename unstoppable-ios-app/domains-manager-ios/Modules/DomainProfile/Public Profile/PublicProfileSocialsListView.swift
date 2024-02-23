@@ -103,6 +103,6 @@ private extension PublicProfileSocialsListView {
 struct PublicProfileSocialsListView_Previews: PreviewProvider {
     static var previews: some View {
         PublicProfileSocialsListView(domainName: "dans.crypto",
-                                     socialAccounts: .mock())
+                                     socialAccounts: MockEntitiesFabric.DomainProfile.createSocialAccounts())
     }
 }

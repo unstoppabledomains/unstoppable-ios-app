@@ -20,6 +20,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
     @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
+    @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicDomainPresentationDetails?
@@ -286,6 +287,7 @@ extension HomeTabRouter {
         showingWalletInfo = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
+        exploreTabNavPath.removeAll()
     }
 }
 

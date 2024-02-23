@@ -15,15 +15,16 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     var analyticsName: Analytics.ViewName { .homeExplore }
     
+    @Published private(set) var selectedProfile: UserProfile
+    @Published private(set) var followersList: [SerializedPublicDomainProfile] = []
+    @Published private(set) var globalProfiles: [SearchDomainProfile] = []
+    @Published private(set) var userDomains: [DomainDisplayInfo] = []
+    @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
+    @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
-    @Published private var globalProfiles: [SearchDomainProfile] = []
-    @Published private var userDomains: [DomainDisplayInfo] = []
-    @Published private var domainsToShow: [DomainDisplayInfo] = []
-    @Published private var isLoadingGlobalProfiles = false
     @Published var searchKey: String = ""
     @Published var error: Error?
     @Published var isSearchActive: Bool = false
-    @Published private(set) var selectedProfile: UserProfile
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
@@ -31,8 +32,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     init(router: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
-      
-        
         self.selectedProfile = router.profile
         self.router = router
         self.walletsDataService = walletsDataService
@@ -53,6 +52,20 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
             }
         }.store(in: &cancellables)
         
-//        loadAndShowData()
+        loadAndShowData()
     }
+}
+
+// MARK: - Private methods
+private extension HomeExploreViewModel {
+    func loadAndShowData() {
+        if case .wallet(let wallet) = selectedProfile {
+            loadFollowersFor(wallet: wallet)
+        }
+    }
+    
+    func loadFollowersFor(wallet: WalletEntity) {
+//        followersList = MockEntitiesFabric.Domains.createFollowersDisplayInfo()
+    }
+    
 }
