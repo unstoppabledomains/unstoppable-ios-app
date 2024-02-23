@@ -17,6 +17,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
     @Published private(set) var selectedProfile: UserProfile
     @Published private(set) var followersList: [SerializedPublicDomainProfile] = []
+    @Published private(set) var followingsList: [SerializedPublicDomainProfile] = []
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
@@ -25,6 +26,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var searchKey: String = ""
     @Published var error: Error?
     @Published var isSearchActive: Bool = false
+    @Published var expandedFollowerTypes: Set<DomainProfileFollowerRelationshipType> = []
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
@@ -66,6 +68,7 @@ private extension HomeExploreViewModel {
     
     func loadFollowersFor(wallet: WalletEntity) {
         followersList = MockEntitiesFabric.Explore.createFollowersProfiles()
+        followingsList = MockEntitiesFabric.Explore.createFollowersProfiles()
     }
     
 }

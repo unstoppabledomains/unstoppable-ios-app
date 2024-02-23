@@ -19,8 +19,8 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             List {
-                followersSection()
-                    .unstoppableListRowInset()
+                followersSection(relationshipType: .following)
+                followersSection(relationshipType: .followers)
 
             }
             .listStyle(.plain)
@@ -105,11 +105,13 @@ private extension HomeExploreView {
 // MARK: - Private methods
 private extension HomeExploreView {
     @ViewBuilder
-    func followersSection() -> some View {
-        if !viewModel.followersList.isEmpty {
-            HomeExploreFollowersSectionView()
-        }
+    func followersSection(relationshipType: DomainProfileFollowerRelationshipType) -> some View {
+        HomeExploreFollowersSectionView(relationshipType: relationshipType)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .unstoppableListRowInset()
     }
+    
 }
 
 #Preview {
