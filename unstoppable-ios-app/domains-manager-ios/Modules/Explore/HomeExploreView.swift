@@ -47,9 +47,10 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             }
             .onChange(of: viewModel.isSearchActive) { keyboardFocused in
                 setSearchFieldActive(keyboardFocused)
-                withAnimation {
-                    navigationState?.isTitleVisible = !keyboardFocused
-                }
+                setTitleVisibility()
+            }
+            .onChange(of: viewModel.searchKey) { keyboardFocused in
+                setTitleVisibility()
             }
             .onChange(of: tabRouter.chatTabNavPath) { path in
                 tabRouter.isTabBarVisible = !isOtherScreenPushed
@@ -82,6 +83,12 @@ private extension HomeExploreView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
+    }
+    
+    func setTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchKey.isEmpty
+        }
     }
     
     func setSearchFieldActive(_ active: Bool) {
