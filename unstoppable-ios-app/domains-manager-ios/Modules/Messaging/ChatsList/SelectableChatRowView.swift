@@ -26,6 +26,7 @@ struct SelectableChatRowView: View, ViewAnalyticsLogger {
                 ChatListChatRowView(chat: chat, joinCommunityCallback: {
                     joinCommunityCallback?(chat)
                 })
+                .padding(.init(horizontal: 12))
             }
         }
     }

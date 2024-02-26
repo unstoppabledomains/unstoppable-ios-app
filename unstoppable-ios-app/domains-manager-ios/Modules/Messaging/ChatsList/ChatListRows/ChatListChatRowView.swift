@@ -112,12 +112,26 @@ private extension ChatListChatRowView {
     
     @ViewBuilder
     func subtitleView() -> some View {
-        if let lastMessage = chat.lastMessage {
-            Text(lastMessageTextFrom(message: lastMessage))
+        if let subtitle = getSubtitleText() {
+            Text(subtitle)
                 .lineLimit(2)
                 .foregroundStyle(Color.foregroundSecondary)
                 .font(.currentFont(size: 14))
         }
+    }
+    
+    func getSubtitleText() -> String? {
+        if let lastMessage = chat.lastMessage {
+            return lastMessageTextFrom(message: lastMessage)
+        } else if case .community(let details) = chat.type {
+            switch details.type {
+            case .badge(let badgeDetailedInfo):
+                let holders = badgeDetailedInfo.usage.holders
+                let holdersKsString = holders.asFormattedKsString
+                return String.Constants.pluralNHolders.localized(holdersKsString, holders)
+            }
+        }
+        return nil
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {

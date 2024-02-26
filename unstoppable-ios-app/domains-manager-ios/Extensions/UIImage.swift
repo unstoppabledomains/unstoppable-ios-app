@@ -145,7 +145,6 @@ extension UIImage {
     static let cellChevron = UIImage(named: "cellChevron")!
     static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
     static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
-    static let udBlueGrayIcon = UIImage(named: "udBlueGrayIcon")!
     static let check = UIImage(named: "check")!
     static let statsIcon = UIImage(named: "statsIcon")!
     static let sparkleIcon = UIImage(named: "sparkleIcon")!
