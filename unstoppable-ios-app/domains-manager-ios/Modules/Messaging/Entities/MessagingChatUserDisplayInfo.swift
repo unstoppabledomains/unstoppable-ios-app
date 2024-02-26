@@ -28,4 +28,8 @@ struct MessagingChatUserDisplayInfo: Hashable, Codable {
     func getETHWallet() -> String {
         wallet.ethChecksumAddress()
     }
+    
+    var nameForMention: String? {
+        anyDomainName
+    }
 }

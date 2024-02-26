@@ -54,6 +54,7 @@ private extension ChatMentionSuggestionRowView {
                           width: 20,
                           height: 20)
             .squareFrame(24)
+            .clipShape(Circle())
     }
     
     @ViewBuilder

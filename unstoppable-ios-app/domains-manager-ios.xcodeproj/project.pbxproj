@@ -2252,6 +2252,8 @@
 		C6FAED812B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */; };
 		C6FAED832B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */; };
 		C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */; };
+		C6FAED862B8C684700CC1844 /* MessageMentionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED852B8C684700CC1844 /* MessageMentionString.swift */; };
+		C6FAED872B8C684700CC1844 /* MessageMentionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED852B8C684700CC1844 /* MessageMentionString.swift */; };
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
@@ -3596,6 +3598,7 @@
 		C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessageType.swift; sourceTree = "<group>"; };
 		C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionRowView.swift; sourceTree = "<group>"; };
 		C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionsView.swift; sourceTree = "<group>"; };
+		C6FAED852B8C684700CC1844 /* MessageMentionString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMentionString.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
@@ -5420,6 +5423,7 @@
 				C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */,
 				C66107932A3180DA0076782F /* MessagingNewsChannelFeed.swift */,
 				C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */,
+				C6FAED852B8C684700CC1844 /* MessageMentionString.swift */,
 				C65272142A14937A001A084C /* Chats */,
 				C65272132A149370001A084C /* Messages */,
 			);
@@ -8268,6 +8272,7 @@
 				C6DDF2542B147F1A006D1F0B /* UDButtonImage.swift in Sources */,
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
 				C6BA74742AD5013500628DC6 /* PullUpViewService+DomainProfile.swift in Sources */,
+				C6FAED862B8C684700CC1844 /* MessageMentionString.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
 				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
@@ -9905,6 +9910,7 @@
 				C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */,
 				C61807E92B19A6290032E543 /* DomainPFPInfo.swift in Sources */,
 				C6C8F8D22B21833D00A9834D /* UBTSearchingView.swift in Sources */,
+				C6FAED872B8C684700CC1844 /* MessageMentionString.swift in Sources */,
 				C6D646722B1ED11B00D724AC /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C6D646FB2B1ED74E00D724AC /* GhostTertiaryWhiteButton.swift in Sources */,
 				C61808702B19BC100032E543 /* ForEach+Skeleton.swift in Sources */,

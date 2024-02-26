@@ -110,7 +110,7 @@ private extension TextMessageRowView {
     }
     
     func detectUsernamesIn(string: String, users: [String]) -> [NSTextCheckingResult] {
-        let pattern = "@([\\w.]+)"
+        let pattern = "\(MessageMentionString.messageMentionPrefix)([\\w.]+)"
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
         let nsText = string as NSString
         

@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatMentionSuggestionsView: View {
     
     let suggestingUsers: [MessagingChatUserDisplayInfo]
+    let selectionCallback: (MessagingChatUserDisplayInfo)->()
     
     private let maximumNumberOfVisibleSuggestingUsers = 6
     
@@ -36,6 +37,7 @@ private extension ChatMentionSuggestionsView {
     func selectableRowViewFor(user: MessagingChatUserDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            selectionCallback(user)
         } label: {
             ChatMentionSuggestionRowView(user: user)
         }
@@ -44,5 +46,6 @@ private extension ChatMentionSuggestionsView {
 }
 
 #Preview {
-    ChatMentionSuggestionsView(suggestingUsers: MockEntitiesFabric.Messaging.suggestingGroupChatMembersDisplayInfo())
+    ChatMentionSuggestionsView(suggestingUsers: MockEntitiesFabric.Messaging.suggestingGroupChatMembersDisplayInfo(),
+                               selectionCallback: { _ in })
 }
