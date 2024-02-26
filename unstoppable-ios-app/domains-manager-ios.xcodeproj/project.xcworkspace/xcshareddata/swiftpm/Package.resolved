@@ -131,7 +131,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Oleg-Pecheneg/push-swift-sdk",
       "state" : {
-        "revision" : "ff3151a6834db9ca841ee0564979298f4b0df053"
+        "revision" : "7aa3a1aeea89acd91dcbefcb0473a2a993a66334"
       }
     },
     {

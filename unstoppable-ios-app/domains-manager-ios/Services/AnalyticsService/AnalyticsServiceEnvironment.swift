@@ -345,6 +345,7 @@ extension Analytics {
         case copyChatMessageToClipboard
         case saveChatImage
         case blockUserInGroupChat
+        case chatInputActions, takePhoto, choosePhoto
 
         // Public profile
         case follow, unfollow

@@ -119,16 +119,16 @@ struct NetworkService {
     
     @discardableResult
     func fetchDataHandlingThrottleFor(endpoint: Endpoint,
-                      method: HttpRequestMethod) async throws -> Data {
+                                      method: HttpRequestMethod) async throws -> Data {
         guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
         let data = try await fetchDataHandlingThrottle(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
         return data
     }
     
     func fetchDataHandlingThrottle(for url: URL,
-                                           body: String = "",
-                                           method: HttpRequestMethod = .post,
-                                           extraHeaders: [String: String]  = [:]) async throws -> Data {
+                                   body: String = "",
+                                   method: HttpRequestMethod = .post,
+                                   extraHeaders: [String: String]  = [:]) async throws -> Data {
         let data: Data
         do {
             data = try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders)

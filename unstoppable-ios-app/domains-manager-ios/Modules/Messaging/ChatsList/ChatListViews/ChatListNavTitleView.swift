@@ -20,13 +20,20 @@ struct ChatListNavTitleView: View {
             UDVibration.buttonTap.vibrate()
             tabRouter.isSelectProfilePresented = true
         } label: {
-            HStack {
-                content()
-                if selectable {
-                    Image.chevronDown
-                        .resizable()
-                        .squareFrame(20)
-                        .foregroundStyle(Color.foregroundDefault)
+            ZStack {
+                Rectangle()
+                    .frame(width: 200, 
+                           height: 30)
+                    .opacity(0.001)
+                    .layoutPriority(-1)
+                HStack {
+                    content()
+                    if selectable {
+                        Image.chevronDown
+                            .resizable()
+                            .squareFrame(20)
+                            .foregroundStyle(Color.foregroundDefault)
+                    }
                 }
             }
         }
@@ -49,6 +56,7 @@ private extension ChatListNavTitleView {
     var selectable: Bool {
         appContext.userProfileService.profiles.count > 1
     }
+    
     @ViewBuilder
     func content() -> some View {
         switch profile {
@@ -121,4 +129,8 @@ private extension ChatListNavTitleView {
 // MARK: - Open methods
 extension ChatListNavTitleView {
     
+}
+
+#Preview {
+    ChatListNavTitleView(profile: appContext.userProfileService.selectedProfile!)
 }

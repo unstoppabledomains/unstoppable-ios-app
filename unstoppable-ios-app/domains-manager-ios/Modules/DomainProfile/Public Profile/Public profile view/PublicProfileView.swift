@@ -189,11 +189,6 @@ private extension PublicProfileView {
                               height: avatarSize)
                 .squareFrame(avatarSize)
                 .clipForAvatarStyle(avatarStyle)
-            if viewModel.isUDBlue {
-                Image.udBlueGrayIcon
-                    .resizable()
-                    .squareFrame(24)
-            }
         }
     }
     
