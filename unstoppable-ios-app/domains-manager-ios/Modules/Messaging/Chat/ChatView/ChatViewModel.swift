@@ -184,7 +184,12 @@ private extension ChatViewModel {
     }
     
     func handleMentionPressedTo(domainName: String) {
-        
+        Task {
+            guard let presentationDetails = await DomainProfileLinkValidator.getShowDomainProfilePresentationDetailsFor(domainName: domainName, params: nil) else { return }
+            
+            UDVibration.buttonTap.vibrate()
+            await showDomainProfileWith(presentationDetails: presentationDetails)
+        }
     }
     
     func parseMentionDomainNameFrom(url: URL) -> String? {
@@ -732,7 +737,7 @@ private extension ChatViewModel {
                 try await appContext.pullUpViewService.showMessagingBlockConfirmationPullUp(blockUserName: conversationState.userInfo?.displayName ?? "",
                                                                                             in: view)
                 await view.dismissPullUpMenu()
-                try? await setUser(user, in: chat, blocked: true)
+                _ = (try? await setUser(user, in: chat, blocked: true))
             } catch { }
         }
     }
@@ -818,21 +823,25 @@ private extension ChatViewModel {
     
     func openLinkOrDomainProfile(_ url: URL) {
         Task {
-            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(url: url)
-            
-            switch showDomainResult {
-            case .none:
+            if let presentationDetails = await DomainProfileLinkValidator.getShowDomainProfilePresentationDetailsFor(url: url) {
+                await showDomainProfileWith(presentationDetails: presentationDetails)
+            } else {
                 appContext.coreAppCoordinator.topVC?.openLink(.generic(url: url.absoluteString))
-            case .showUserDomainProfile(let domain, let wallet, let action):
-                await router.showDomainProfile(domain,
-                                               wallet: wallet,
-                                               preRequestedAction: action,
-                                               dismissCallback: nil)
-            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
-                router.showPublicDomainProfile(of: publicDomainDisplayInfo,
-                                               by: wallet,
-                                               preRequestedAction: action)
             }
+        }
+    }
+    
+    func showDomainProfileWith(presentationDetails: DomainProfileLinkValidator.ShowDomainProfilePresentationDetails) async {
+        switch presentationDetails {
+        case .showUserDomainProfile(let domain, let wallet, let action):
+            await router.showDomainProfile(domain,
+                                           wallet: wallet,
+                                           preRequestedAction: action,
+                                           dismissCallback: nil)
+        case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
+            router.showPublicDomainProfile(of: publicDomainDisplayInfo,
+                                           by: wallet,
+                                           preRequestedAction: action)
         }
     }
 }

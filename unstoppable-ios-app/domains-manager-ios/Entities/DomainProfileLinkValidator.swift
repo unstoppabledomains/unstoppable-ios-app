@@ -35,15 +35,15 @@ struct DomainProfileLinkValidator {
         return nil
     }
     
-    static func getShowDomainProfileResultFor(url: URL) async -> ShowDomainProfileResult {
+    static func getShowDomainProfilePresentationDetailsFor(url: URL) async -> ShowDomainProfilePresentationDetails? {
         guard let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
-              let domainName = getUDmeDomainName(in: components) else { return .none }
+              let domainName = getUDmeDomainName(in: components) else { return nil }
         
-        return await getShowDomainProfileResultFor(domainName: domainName, params: components.queryItems)
+        return await getShowDomainProfilePresentationDetailsFor(domainName: domainName, params: components.queryItems)
     }
     
-    static func getShowDomainProfileResultFor(domainName: String,
-                                              params: [URLQueryItem]?) async -> ShowDomainProfileResult {
+    static func getShowDomainProfilePresentationDetailsFor(domainName: String,
+                                                           params: [URLQueryItem]?) async -> ShowDomainProfilePresentationDetails? {
         
         var preRequestedAction: PreRequestedProfileAction?
         if let params,
@@ -66,11 +66,10 @@ struct DomainProfileLinkValidator {
                                             action: preRequestedAction)
         }
         
-        return .none
+        return nil
     }
     
-    enum ShowDomainProfileResult {
-        case none
+    enum ShowDomainProfilePresentationDetails {
         case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
         case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     }
