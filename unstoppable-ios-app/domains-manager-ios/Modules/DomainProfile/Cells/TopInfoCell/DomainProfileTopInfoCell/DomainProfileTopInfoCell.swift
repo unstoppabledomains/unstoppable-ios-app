@@ -19,7 +19,6 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
     @IBOutlet private weak var domainNameLabel: UILabel!
     @IBOutlet private weak var qrCodeButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var followersButton: SmallRaisedTertiaryWhiteButton!
-    @IBOutlet private weak var udBlueImageView: UIImageView!
     
     private let dropItemIdentifier = UTType.image.identifier
 
@@ -50,7 +49,6 @@ final class DomainProfileTopInfoCell: BaseDomainProfileTopInfoCell {
                                               lineBreakMode: .byTruncatingTail)
         
         followersButton.isHidden = false
-        udBlueImageView.isHidden = !data.isUDBlue
         let social = data.social
         let havingFollowers = social.followerCount > 0
         let havingFollowings = social.followingCount > 0
