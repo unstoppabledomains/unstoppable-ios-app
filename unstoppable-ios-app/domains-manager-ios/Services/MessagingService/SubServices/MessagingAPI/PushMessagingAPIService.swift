@@ -645,7 +645,8 @@ private extension PushMessagingAPIService {
                               receiver: String,
                               by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
         let env = getCurrentPushEnvironment()
-        let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
+        let pushMessageContent = try await getPushMessageContentFrom(displayType: messageType,
+                                                                     by: user)
         let pushMessageType = try getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let reference = getPushMessageReferenceFrom(displayType: messageType)
@@ -668,24 +669,30 @@ private extension PushMessagingAPIService {
         try MessagingAPIServiceHelper.decodeServiceMetadata(from: data)
     }
    
-    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {
+    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType,
+                                   by user: MessagingChatUserProfile) async throws -> String {
         switch displayType {
         case .text(let details):
             return details.text
         case .imageBase64(let details):
-            let entity = PushEnvironment.PushMessageContentResponse(content: details.base64)
-            guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
-            return jsonString
+            guard let data = Data(base64Encoded: details.base64) else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
+            return try await getImagePushMessageContentFrom(data: data, by: user)
         case .imageData(let details):
-            guard let base64 = details.image?.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
-            let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
-            let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
-            return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
+            return try await getImagePushMessageContentFrom(data: details.data, by: user)
         case .reaction(let details):
             return details.content
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
+    }
+    
+    func getImagePushMessageContentFrom(data: Data,
+                                        by user: MessagingChatUserProfile) async throws -> String {
+        let wallet = user.wallet
+        let url = try await MessagingAPIServiceHelper.uploadDataToWeb3Storage(data,
+                                                                              ofType: "image/png",
+                                                                              by: wallet)
+        return url.absoluteString
     }
     
     func getPushMessageReferenceFrom(displayType: MessagingChatMessageDisplayType) -> String? {
@@ -704,7 +711,7 @@ private extension PushMessagingAPIService {
         case .reaction:
             return .reaction
         case .imageBase64, .imageData:
-            return .image
+            return .mediaEmbed
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
