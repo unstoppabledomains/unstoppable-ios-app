@@ -44,6 +44,17 @@ struct MessagingAPIServiceHelper {
         return serviceMetadata
     }
     
+    static func uploadDataToWeb3Storage(_ data: Data,
+                                 ofType type: String,
+                                 by wallet: HexAddress) async throws -> URL {
+        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet)
+        let response = try await NetworkService().uploadRemoteAttachment(for: domain,
+                                                                         base64: data.base64EncodedString(),
+                                                                         type: type)
+        return response.url
+    }
+    
+    
     enum MessagingHelperError: String, LocalizedError {
         case noDomainForWallet
         case failedToDecodeServiceData

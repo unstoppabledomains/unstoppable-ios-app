@@ -145,6 +145,23 @@ extension NetworkService {
         return try await updateUserDomainProfile(for: domain, body: body)
     }
     
+    @discardableResult
+    public func uploadRemoteAttachment(for domain: DomainItem,
+                                       base64: String,
+                                       type: String) async throws -> ProfileUploadRemoteAttachmentResponse {
+        let request = ProfileUploadRemoteAttachmentRequest(base64: base64, type: type)
+        let body = try prepareRequestBodyFrom(entity: request)
+        let message = try await getGeneratedMessageToUpdate(for: domain, body: body)
+        let signature = try await domain.personalSign(message: message.message)
+        let endpoint = try Endpoint.uploadRemoteAttachment(for: domain,
+                                                           with: message,
+                                                           signature: signature,
+                                                           body: body)
+        let data = try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .post)
+        let info = try ProfileUploadRemoteAttachmentResponse.objectFromDataThrowing(data)
+        return info
+    }
+    
     public func updatePendingDomainProfiles(with requests: [UpdateProfilePendingChangesRequest]) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             for request in requests {
