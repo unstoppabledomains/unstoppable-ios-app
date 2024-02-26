@@ -41,6 +41,7 @@ struct MessageInputView: View {
             
             if !input.wrappedValue.isEmpty {
                 Button {
+                    UDVibration.buttonTap.vibrate()
                     sendCallback()
                 } label: {
                     Image.arrowUp24

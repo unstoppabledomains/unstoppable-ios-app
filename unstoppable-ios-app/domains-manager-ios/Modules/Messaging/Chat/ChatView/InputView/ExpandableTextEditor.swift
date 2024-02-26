@@ -33,7 +33,7 @@ struct ExpandableTextEditor: View {
                 .foregroundStyle(Color.foregroundDefault)
                 .frame(height: max(40, textEditorHeight))
                 .scrollContentBackground(.hidden)
-                .padding(EdgeInsets(top: 0, leading: 8,
+                .padding(EdgeInsets(top: 4, leading: 8,
                                     bottom: 0, trailing: 8))
                 .background(focused ? Color.backgroundMuted : Color.backgroundSubtle)
                 .tint(Color.foregroundAccent)
