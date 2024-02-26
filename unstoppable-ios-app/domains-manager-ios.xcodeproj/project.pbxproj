@@ -10999,7 +10999,7 @@
 			repositoryURL = "https://github.com/Oleg-Pecheneg/push-swift-sdk";
 			requirement = {
 				kind = revision;
-				revision = ff3151a6834db9ca841ee0564979298f4b0df053;
+				revision = 7aa3a1aeea89acd91dcbefcb0473a2a993a66334;
 			};
 		};
 		C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {

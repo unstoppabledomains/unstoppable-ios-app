@@ -401,8 +401,8 @@ struct UserDomainNotificationsPreferences: Codable {
 }
 
 struct UserDomainStorageDetails: Codable {
-    let apiKey: String
-    let type: StorageType
+    let apiKey: String?
+    let type: StorageType?
     
     enum StorageType: String, Codable {
         case web3 = "web3.storage"
@@ -691,4 +691,24 @@ struct WalletTokenPortfolio: Codable, Hashable {
         let balanceAmt: Double
         let value: WalletTokenPortfolio.Value?
     }
+}
+
+// MARK: Profile Update Request Structures
+struct ProfileUploadRemoteAttachmentRequest: Codable {
+    let attachment: Attachment
+    
+    init(base64: String,
+         type: String) {
+        self.attachment = .init(base64: base64, type: type)
+    }
+    
+    struct Attachment: Codable {
+        let base64: String
+        let type: String
+    }
+}
+
+// MARK: Profile Update Request Structures
+struct ProfileUploadRemoteAttachmentResponse: Codable {
+    let url: URL
 }

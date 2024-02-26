@@ -7,8 +7,12 @@
 
 import SwiftUI
 
-struct MessageInputView: View {
+struct MessageInputView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    @EnvironmentObject var viewModel: ChatViewModel
+
     let input: Binding<String>
     let placeholder: String
     @FocusState.Binding var focused: Bool
@@ -17,30 +21,13 @@ struct MessageInputView: View {
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 16) {
-            Menu {
-                ForEach(AdditionalAction.allCases.filter { $0.isAvailable }, id: \.self) { action in
-                    Button {
-                        UDVibration.buttonTap.vibrate()
-                        additionalActionCallback(action)
-                    } label: {
-                        Label(action.title, systemImage: action.icon)
-                    }
-                }
-            } label: {
-                Image.plusIcon18
-                    .resizable()
-                    .squareFrame(20)
-                    .padding(EdgeInsets(10))
-                    .foregroundStyle(Color.foregroundSecondary)
+            if viewModel.canSendAttachments {
+                additionalActionsView()
             }
-            .onButtonTap {
-//                logButtonPressedAnalyticEvents(button: action.analyticButton)
-            }
-            
             textFieldView()
-            
             if !input.wrappedValue.isEmpty {
                 Button {
+                    UDVibration.buttonTap.vibrate()
                     sendCallback()
                 } label: {
                     Image.arrowUp24
@@ -88,11 +75,45 @@ struct MessageInputView: View {
                 return UnstoppableImagePicker.isCameraAvailable
             }
         }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .takePhoto:
+                return .takePhoto
+            case .choosePhoto:
+                return .choosePhoto
+            }
+        }
     }
 }
 
 // MARK: - Private methods
 private extension MessageInputView {
+    @MainActor
+    @ViewBuilder
+    func additionalActionsView() -> some View {
+        Menu {
+            ForEach(AdditionalAction.allCases.filter { $0.isAvailable }, id: \.self) { action in
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    logButtonPressedAnalyticEvents(button: action.analyticButton)
+                    additionalActionCallback(action)
+                } label: {
+                    Label(action.title, systemImage: action.icon)
+                }
+            }
+        } label: {
+            Image.plusIcon18
+                .resizable()
+                .squareFrame(20)
+                .padding(EdgeInsets(10))
+                .foregroundStyle(Color.foregroundSecondary)
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: .chatInputActions)
+        }
+    }
+    
     @ViewBuilder
     func textFieldView() -> some View {
         ExpandableTextEditor(text: input, 
