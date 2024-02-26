@@ -269,8 +269,8 @@ private extension MessageRowView {
 
 #Preview {
     let reactions = MockEntitiesFabric.Reactions.reactionsToTest
-    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world js ",
-                                                                 isThisUser: true,
+    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello @oleg.x, here's the link: https://google.com",
+                                                                 isThisUser: false,
                                                                  deliveryState: .delivered,
                                                                  reactions: reactions)
     return MessageRowView(message: message,
