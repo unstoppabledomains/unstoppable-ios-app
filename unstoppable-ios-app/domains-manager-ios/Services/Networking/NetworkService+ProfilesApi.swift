@@ -151,11 +151,9 @@ extension NetworkService {
                                        type: String) async throws -> ProfileUploadRemoteAttachmentResponse {
         let request = ProfileUploadRemoteAttachmentRequest(base64: base64, type: type)
         let body = try prepareRequestBodyFrom(entity: request)
-        let message = try await getGeneratedMessageToUpdate(for: domain, body: body)
-        let signature = try await domain.personalSign(message: message.message)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let endpoint = try Endpoint.uploadRemoteAttachment(for: domain,
-                                                           with: message,
-                                                           signature: signature,
+                                                           with: persistedSignature,
                                                            body: body)
         let data = try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .post)
         let info = try ProfileUploadRemoteAttachmentResponse.objectFromDataThrowing(data)

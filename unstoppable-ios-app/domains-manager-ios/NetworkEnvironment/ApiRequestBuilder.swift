@@ -837,11 +837,11 @@ extension Endpoint {
     }
     
     static func uploadRemoteAttachment(for domain: DomainItem,
-                                       with message: GeneratedMessage,
-                                       signature: String,
+                                       with timedSignature: PersistedTimedSignature,
                                        body: String) throws -> Endpoint {
         // https://profile.ud-staging.com/api/user/aaron.x/attachment
-        let expires = "\(message.headers.expires)"
+        let expires = "\(timedSignature.expires)"
+        let signature = timedSignature.sign
         let headers = [
             SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
             SignatureComponentHeaders.CodingKeys.expires.rawValue: expires,
