@@ -43,11 +43,7 @@ private extension ChatListUserRowView {
     }
     
     var chatName: String {
-        if user.rrDomainName == nil {
-            return user.displayName
-        } else {
-            return user.rrDomainName ?? ""
-        }
+        user.displayName
     }
     
     func setAvatarFrom(url: URL?, name: String) {

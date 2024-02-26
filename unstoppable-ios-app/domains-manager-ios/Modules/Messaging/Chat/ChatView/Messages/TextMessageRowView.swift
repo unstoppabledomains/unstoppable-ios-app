@@ -54,15 +54,16 @@ private extension TextMessageRowView {
     func toDetectedAttributedString(_ string: String) -> AttributedString {
         var attributedString = AttributedString(string)
         
-        let types = NSTextCheckingResult.CheckingType.link.rawValue | NSTextCheckingResult.CheckingType.phoneNumber.rawValue
+        detectAndInsertLinks(to: &attributedString)
+        detectAndInsertUserMentions(to: &attributedString)
         
-        guard let detector = try? NSDataDetector(types: types) else {
-            return attributedString
-        }
+        return attributedString
+    }
+    
+    func detectAndInsertLinks(to attributedString: inout AttributedString) {
+        let linkMatches = detectLinksIn(string: NSAttributedString(attributedString).string)
         
-        let matches = detector.matches(in: string, options: [], range: NSRange(location: 0, length: string.count))
-        
-        for match in matches {
+        for match in linkMatches {
             let range = match.range
             let startIndex = attributedString.index(attributedString.startIndex, offsetByCharacters: range.lowerBound)
             let endIndex = attributedString.index(startIndex, offsetByCharacters: range.length)
@@ -70,6 +71,7 @@ private extension TextMessageRowView {
             if match.resultType == .link, let url = match.url {
                 attributedString[startIndex..<endIndex].link = url
             }
+            
             // Setting URL for phone number
             if match.resultType == .phoneNumber, let phoneNumber = match.phoneNumber {
                 let url = URL(string: "tel:\(phoneNumber)")
@@ -78,8 +80,53 @@ private extension TextMessageRowView {
             attributedString[startIndex..<endIndex].foregroundColor = .white
             attributedString[startIndex..<endIndex].underlineStyle = .single
         }
-        return attributedString
     }
+    
+    func detectLinksIn(string: String) -> [NSTextCheckingResult] {
+        let types = NSTextCheckingResult.CheckingType.link.rawValue | NSTextCheckingResult.CheckingType.phoneNumber.rawValue
+        guard let detector = try? NSDataDetector(types: types) else { return [] }
+        
+        return detector.matches(in: string, options: [], range: NSRange(location: 0, length: string.count))
+    }
+    
+    func detectAndInsertUserMentions(to attributedString: inout AttributedString) {
+        let string = NSAttributedString(attributedString).string
+        let users = viewModel.listOfGroupParticipants.compactMap { $0.anyDomainName }
+        let usernameMatches = detectUsernamesIn(string: string,
+                                                users: users)
+        let nsText = string as NSString
+
+        for match in usernameMatches {
+            let range = match.range
+            let startIndex = attributedString.index(attributedString.startIndex, offsetByCharacters: range.lowerBound)
+            let endIndex = attributedString.index(startIndex, offsetByCharacters: range.length)
+            
+            let username = nsText.substring(with: range)
+
+            attributedString[startIndex..<endIndex].link = URL(string: username)
+            attributedString[startIndex..<endIndex].foregroundColor = .white
+            attributedString[startIndex..<endIndex].backgroundColor = .white.opacity(0.3)
+        }
+    }
+    
+    func detectUsernamesIn(string: String, users: [String]) -> [NSTextCheckingResult] {
+        let pattern = "\(MessageMentionString.messageMentionPrefix)([\\w.]+)"
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let nsText = string as NSString
+        
+        let matches = regex.matches(in: string, options: [], range: NSRange(location: 0, length: string.count))
+        var detectedUsers: [NSTextCheckingResult] = []
+        for match in matches {
+            let rangeOfUsername = match.range(at: 1)
+            let username = nsText.substring(with: rangeOfUsername)
+            
+            if users.contains(username) {
+                detectedUsers.append(match)
+            }
+        }
+        return detectedUsers
+    }
+
 }
 
 #Preview {

@@ -375,6 +375,13 @@ extension MockEntitiesFabric {
             let pfpURL: URL? = !withPFP ? nil : MockEntitiesFabric.remoteImageURL
             return MessagingChatUserDisplayInfo(wallet: wallet, domainName: domainName, pfpURL: pfpURL)
         }
+        
+        static func suggestingGroupChatMembersDisplayInfo() -> [MessagingChatUserDisplayInfo] {
+            [.init(wallet: "0x1"),
+             .init(wallet: "0x2", domainName: "domain_oleg.x"),
+             .init(wallet: "0x3", rrDomainName: "rr_domain_nick.crypto", pfpURL: MockEntitiesFabric.remoteImageURL),
+             .init(wallet: "0x4", domainName: "domain_daniil.x", rrDomainName: "rr_domain_daniil.x", pfpURL: MockEntitiesFabric.remoteImageURL)]
+        }
     }
     
     enum Wallet {
