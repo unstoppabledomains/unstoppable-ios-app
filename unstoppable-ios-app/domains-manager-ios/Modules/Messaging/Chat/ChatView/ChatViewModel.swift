@@ -30,6 +30,8 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var placeholder: String = ""
     @Published private(set) var navActions: [ChatView.NavAction] = []
     @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
+    @Published private(set) var suggestingUsers: [MessagingChatUserDisplayInfo] = []
+    
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
@@ -104,7 +106,7 @@ extension ChatViewModel {
         Task {
             if case .existingChat(let chat) = conversationState,
                case .private(let details) = chat.type {
-                try? await setUser(details.otherUser, in: chat, blocked: true)
+                _ = (try? await setUser(details.otherUser, in: chat, blocked: true))
             }
         }
     }
@@ -171,10 +173,52 @@ extension ChatViewModel {
     func handleExternalLinkPressed(_ url: URL, by sender: MessagingChatSender) {
         verifyAndHandleExternalLink(url, by: sender)
     }
+    
+    func showMentionSuggestionsIfNeeded() {
+        let listOfGroupParticipants = listOfGroupParticipants
+        if !listOfGroupParticipants.isEmpty {
+            let components = input.components(separatedBy: " ")
+            if let lastComponent = components.last,
+               let mention = MessageMentionString(string: lastComponent) {
+                showMentionSuggestions(using: listOfGroupParticipants,
+                                       mention: mention)
+            }
+        }
+    }
+    
+    func didSelectMentionSuggestion(user: MessagingChatUserDisplayInfo) {
+        if let nameForMention = user.nameForMention,
+           let mention = MessageMentionString.makeMentionFrom(string: nameForMention) {
+            replaceCurrentInputWithSelectedMention(mention)
+        }
+    }
 }
 
 // MARK: - Private methods
 private extension ChatViewModel {
+    func showMentionSuggestions(using listOfGroupParticipants: [MessagingChatUserDisplayInfo],
+                                mention: MessageMentionString) {
+        let mentionUsername = mention.mentionWithoutPrefix.lowercased()
+        if mentionUsername.isEmpty {
+            suggestingUsers = listOfGroupParticipants
+        } else {
+            suggestingUsers = listOfGroupParticipants.filter {
+                let nameForMention = $0.nameForMention
+                let isMentionFullyTyped = nameForMention == mentionUsername
+                let isUsernameContainMention = nameForMention?.contains(mentionUsername) == true
+                return isUsernameContainMention && !isMentionFullyTyped
+            }
+        }
+    }
+    
+    func replaceCurrentInputWithSelectedMention(_ mention: MessageMentionString) {
+        let separator = " "
+        var userInput = input.components(separatedBy: separator).dropLast()
+        userInput.append(mention.mentionWithPrefix)
+        input = userInput.joined(separator: separator)
+        suggestingUsers.removeAll()
+    }
+    
     func verifyAndHandleExternalLink(_ url: URL, by sender: MessagingChatSender) {
         if let domainName = parseMentionDomainNameFrom(url: url) {
             handleMentionPressedTo(domainName: domainName)

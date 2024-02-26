@@ -12,7 +12,6 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
-    @State private var suggestingUsers: [MessagingChatUserDisplayInfo] = []
 
     var analyticsName: Analytics.ViewName { .chatDialog }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
@@ -38,9 +37,9 @@ struct ChatView: View, ViewAnalyticsLogger {
                 focused = keyboardFocused
             }
         }
-        .onChange(of: viewModel.input) { newValue in
+        .onChange(of: viewModel.input) { _ in
             withAnimation {
-                showMentionSuggestionsIfNeeded(in: newValue)
+                viewModel.showMentionSuggestionsIfNeeded()
             }
         }
         .toolbar {
@@ -82,34 +81,10 @@ private extension ChatView {
             }
         }
     }
-    
-    func showMentionSuggestionsIfNeeded(in text: String) {
-        let listOfGroupParticipants = viewModel.listOfGroupParticipants
-        if !listOfGroupParticipants.isEmpty {
-            let components = text.components(separatedBy: " ")
-            if let lastComponent = components.last,
-                let mention = MessageMentionString(string: lastComponent) {
-                showMentionSuggestions(using: listOfGroupParticipants,
-                                       mention: mention)
-            }
-        }
-    }
-    
-    func showMentionSuggestions(using listOfGroupParticipants: [MessagingChatUserDisplayInfo],
-                                mention: MessageMentionString) {
-        let mentionUsername = mention.mentionWithoutPrefix.lowercased()
-        if mentionUsername.isEmpty {
-            suggestingUsers = listOfGroupParticipants
-        } else {
-            suggestingUsers = listOfGroupParticipants.filter {
-                let nameForMention = $0.nameForMention
-                let isMentionFullyTyped = nameForMention == mentionUsername
-                let isUsernameContainMention = nameForMention?.contains(mentionUsername) == true
-                return isUsernameContainMention && !isMentionFullyTyped
-            }
-        }
-    }
-    
+}
+
+// MARK: - Views
+private extension ChatView {
     @ViewBuilder
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
@@ -205,7 +180,7 @@ private extension ChatView {
     @ViewBuilder
     func chatInputView() -> some View {
         VStack {
-            if !suggestingUsers.isEmpty {
+            if !viewModel.suggestingUsers.isEmpty {
                 mentionSuggestionsView()
             }
             messageInputView()
@@ -224,16 +199,8 @@ private extension ChatView {
     
     @ViewBuilder
     func mentionSuggestionsView() -> some View {
-        ChatMentionSuggestionsView(suggestingUsers: suggestingUsers,
-                                   selectionCallback: { user in
-            if let nameForMention = user.nameForMention,
-               let mention = MessageMentionString.makeMentionFrom(string: nameForMention) {
-                var userInput = viewModel.input.components(separatedBy: " ").dropLast()
-                userInput.append(mention.mentionWithPrefix)
-                viewModel.input = userInput.joined(separator: " ")
-                suggestingUsers.removeAll()
-            }
-        })
+        ChatMentionSuggestionsView(suggestingUsers: viewModel.suggestingUsers,
+                                   selectionCallback: viewModel.didSelectMentionSuggestion)
         .padding(.init(horizontal: 20))
     }
     
