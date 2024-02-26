@@ -2254,6 +2254,8 @@
 		C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */; };
 		C6FAED862B8C684700CC1844 /* MessageMentionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED852B8C684700CC1844 /* MessageMentionString.swift */; };
 		C6FAED872B8C684700CC1844 /* MessageMentionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED852B8C684700CC1844 /* MessageMentionString.swift */; };
+		C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
+		C6FAED8A2B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
@@ -3599,6 +3601,7 @@
 		C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionRowView.swift; sourceTree = "<group>"; };
 		C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionsView.swift; sourceTree = "<group>"; };
 		C6FAED852B8C684700CC1844 /* MessageMentionString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMentionString.swift; sourceTree = "<group>"; };
+		C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReplyTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
@@ -5439,6 +5442,7 @@
 				C603D7992A56B11800CEC696 /* MessagingChatMessageUnknownTypeDisplayInfo.swift */,
 				C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */,
 				C623967B2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift */,
+				C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */,
 				C631DFA62B7B530800040221 /* MessagingChatMessageReactionTypeDisplayInfo.swift */,
 				C62396802A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift */,
 				C62396852A288A9E00363F60 /* MessagingChatMessage.swift */,
@@ -8643,6 +8647,7 @@
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
+				C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */,
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
@@ -10007,6 +10012,7 @@
 				C6D645C02B1DBD2500D724AC /* KeyboardService.swift in Sources */,
 				C6C8F9462B2184E000A9834D /* MockEntitiesFabric.swift in Sources */,
 				C6D646E12B1ED49300D724AC /* ShareDomainImagePullUpView.swift in Sources */,
+				C6FAED8A2B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */,
 				C688C1992B84840700BD233A /* ChatCommonEmptyView.swift in Sources */,
 				C6C8F8802B21827700A9834D /* LoginViewPresenter.swift in Sources */,
 				C6C8F8882B21829000A9834D /* SettingsFooterView.swift in Sources */,

@@ -121,7 +121,11 @@ private extension ChatListChatRowView {
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
-        switch message.type {
+        lastMessageTextFrom(messageType: message.type)
+    }
+    
+    func lastMessageTextFrom(messageType: MessagingChatMessageDisplayType) -> String  {
+        switch messageType {
         case .text(let description):
             return description.text
         case .imageBase64, .imageData:
@@ -132,6 +136,8 @@ private extension ChatListChatRowView {
             return String.Constants.messagingRemoteContent.localized()
         case .reaction(let info):
             return info.content
+        case .reply(let info):
+            return lastMessageTextFrom(messageType: info.contentType)
         }
     }
     

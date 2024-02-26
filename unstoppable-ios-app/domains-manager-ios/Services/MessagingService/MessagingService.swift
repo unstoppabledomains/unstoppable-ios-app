@@ -328,6 +328,20 @@ extension MessagingService: MessagingServiceProtocol {
             chatMessage.displayInfo.type = loadedType
             await storageService.saveMessages([chatMessage])
             return chatMessage.displayInfo
+        case .reply(var info):
+            switch info.contentType {
+            case .text, .imageData, .imageBase64, .unknown, .reaction, .reply:
+                return message
+            case .remoteContent(let remoteInfo):
+                let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                           user: profile,
+                                                                           serviceData: remoteInfo.serviceData,
+                                                                           filesService: filesService)
+                chatMessage.displayInfo.type = .reply(.init(contentType: loadedType,
+                                                            messageId: info.messageId))
+                await storageService.saveMessages([chatMessage])
+                return chatMessage.displayInfo
+            }
         }
     }
 

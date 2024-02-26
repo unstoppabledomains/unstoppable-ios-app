@@ -43,6 +43,20 @@ enum PushEnvironment {
         let reference: String
     }
     
+    struct PushMessageReplyContent: Codable {
+        let content: ReplyContent
+        let reference: String
+        
+        struct ReplyContent: Codable {
+            let messageType: String
+            let messageObj: ReplyObjectContent
+        }
+        
+        struct ReplyObjectContent: Codable {
+            let content: String
+        }
+    }
+    
     struct PushMessageMetaContent: Codable {
         let content: String
         let info: [String : AnyCodable]

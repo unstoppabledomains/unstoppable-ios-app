@@ -330,7 +330,7 @@ private extension XMTPMessagingAPIService {
                                                       in: conversation,
                                                       client: client,
                                                       by: senderWallet)
-        case .unknown, .remoteContent, .reaction:
+        case .unknown, .remoteContent, .reaction, .reply:
             throw XMTPServiceError.unsupportedAction
         }
         

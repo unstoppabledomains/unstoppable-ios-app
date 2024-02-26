@@ -215,6 +215,8 @@ struct PushEntitiesTransformer {
         return chatMessages
     }
     
+    private static let pgpEncryptionTypes: Set<String> = ["pgp", "pgpv1:group"]
+    
     static func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                                 in chat: MessagingChat,
                                                 pgpKey: String,
@@ -261,85 +263,7 @@ struct PushEntitiesTransformer {
                                                serviceMetadata: serviceMetadata)
         return chatMessage
     }
-    
-    private static let pgpEncryptionTypes: Set<String> = ["pgp", "pgpv1:group"]
-    
-    private static func extractPushMessageType(from pushMessage: Push.Message,
-                                               messageId: String,
-                                               userId: String,
-                                               pgpKey: String,
-                                               filesService: MessagingFilesServiceProtocol,
-                                               env: Push.ENV) async throws -> MessagingChatMessageDisplayType? {
-        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
         
-        guard let (decryptedContent, messageObj) = try? await decrypt(pushMessage: pushMessage, 
-                                                                      pgpKey: pgpKey,
-                                                                      env: env) else {
-            return nil
-        }
-        
-        let type: MessagingChatMessageDisplayType
-        
-        switch messageType {
-        case .text:
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
-            type = .text(textDisplayInfo)
-        case .image:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            let base64Image = contentInfo.content
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
-            type = .imageBase64(imageBase64DisplayInfo)
-        case .reaction:
-            guard let messageObj,
-                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { return nil }
-            let messageId = contentInfo.reference.replacingOccurrences(of: "previous:", with: "") /// Push prefix
-            return .reaction(.init(content: contentInfo.content, messageId: messageId))
-        case .meta:
-            guard let messageObj,
-                  let contentInfo = PushEnvironment.PushMessageMetaContent.objectFromJSONString(messageObj) else { return nil }
-            
-            return nil
-        case .mediaEmbed:
-            guard let messageObj,
-                  let contentInfo = PushEnvironment.PushMessageMediaEmbeddedContent.objectFromJSONString(messageObj),
-                  let serviceData = try? contentInfo.jsonDataThrowing() else { return nil }
-            
-            
-            let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
-            return .remoteContent(displayInfo)
-        default:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            guard let data = contentInfo.content.data(using: .utf8) else { return nil }
-            
-            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
-            try filesService.saveData(data, fileName: fileName)
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                type: pushMessage.messageType,
-                                                                                name: contentInfo.name,
-                                                                                size: contentInfo.size)
-            type = .unknown(unknownDisplayInfo)
-        }
-        
-        return type
-    }
-    
-    private static func decrypt(pushMessage: Push.Message,
-                                pgpKey: String,
-                                env: Push.ENV) async throws -> (String, String?) {
-        
-        if let sessionKey = pushMessage.sessionKey,
-           let secretKey = PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: sessionKey) {
-            return try Push.PushChat.decryptPrivateGroupMessage(pushMessage,
-                                                                using: secretKey,
-                                                                privateKeyArmored: pgpKey,
-                                                                env: env)
-        }
-        
-        return try await Push.PushChat.decryptMessage(message: pushMessage,
-                                                      privateKeyArmored: pgpKey,
-                                                      env: env)
-    }
-    
     static func convertPushMessageToWebSocketMessageEntity(_ pushMessage: Push.Message,
                                                            pgpKey: String) -> MessagingWebSocketMessageEntity? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
@@ -446,4 +370,110 @@ struct PushEntitiesTransformer {
         return nil
     }
     
+}
+
+// MARK: - Message related methods
+private extension PushEntitiesTransformer {
+    static func extractPushMessageType(from pushMessage: Push.Message,
+                                       messageId: String,
+                                       userId: String,
+                                       pgpKey: String,
+                                       filesService: MessagingFilesServiceProtocol,
+                                       env: Push.ENV) async throws -> MessagingChatMessageDisplayType? {
+        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
+        
+        guard let (decryptedContent, messageObj) = try? await decrypt(pushMessage: pushMessage,
+                                                                      pgpKey: pgpKey,
+                                                                      env: env) else {
+            return nil
+        }
+        
+        return try parseMessageFromPushMessage(decryptedContent: decryptedContent,
+                                               messageObj: messageObj,
+                                               messageType: messageType,
+                                               messageId: messageId,
+                                               userId: userId,
+                                               filesService: filesService)
+    }
+    
+    static func parseMessageFromPushMessage(decryptedContent: String,
+                                            messageObj: String?,
+                                            messageType: PushMessageType,
+                                            messageId: String,
+                                            userId: String,
+                                            filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType? {
+        switch messageType {
+        case .text:
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
+            return .text(textDisplayInfo)
+        case .image:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            let base64Image = contentInfo.content
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
+            return .imageBase64(imageBase64DisplayInfo)
+        case .reaction:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { return nil }
+            let messageId = parseReferenceIdToMessage(from: contentInfo.reference)
+            return .reaction(.init(content: contentInfo.content, messageId: messageId))
+        case .reply:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageReplyContent.objectFromJSONString(messageObj),
+                  let messageType = PushMessageType(rawValue: contentInfo.content.messageType) else { return nil }
+            guard let contentType = try parseMessageFromPushMessage(decryptedContent: contentInfo.content.messageObj.content,
+                                                                    messageObj: nil,
+                                                                    messageType: messageType,
+                                                                    messageId: messageId,
+                                                                    userId: userId,
+                                                                    filesService: filesService) else { return nil }
+            let messageId = parseReferenceIdToMessage(from: contentInfo.reference)
+
+            return .reply(.init(contentType: contentType, messageId: messageId))
+        case .meta:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMetaContent.objectFromJSONString(messageObj) else { return nil }
+            
+            return nil
+        case .mediaEmbed:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMediaEmbeddedContent.objectFromJSONString(messageObj),
+                  let serviceData = try? contentInfo.jsonDataThrowing() else { return nil }
+            
+            
+            let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
+            return .remoteContent(displayInfo)
+        default:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            guard let data = contentInfo.content.data(using: .utf8) else { return nil }
+            
+            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
+            try filesService.saveData(data, fileName: fileName)
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                type: messageType.rawValue,
+                                                                                name: contentInfo.name,
+                                                                                size: contentInfo.size)
+            return .unknown(unknownDisplayInfo)
+        }
+    }
+    
+    static func parseReferenceIdToMessage(from reference: String) -> String {
+        reference.replacingOccurrences(of: "previous:", with: "") /// Push prefix
+    }
+    
+    static func decrypt(pushMessage: Push.Message,
+                                pgpKey: String,
+                                env: Push.ENV) async throws -> (String, String?) {
+        
+        if let sessionKey = pushMessage.sessionKey,
+           let secretKey = PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: sessionKey) {
+            return try Push.PushChat.decryptPrivateGroupMessage(pushMessage,
+                                                                using: secretKey,
+                                                                privateKeyArmored: pgpKey,
+                                                                env: env)
+        }
+        
+        return try await Push.PushChat.decryptMessage(message: pushMessage,
+                                                      privateKeyArmored: pgpKey,
+                                                      env: env)
+    }
 }

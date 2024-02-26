@@ -7,13 +7,14 @@
 
 import Foundation
 
-enum MessagingChatMessageDisplayType: Hashable {
+indirect enum MessagingChatMessageDisplayType: Hashable {
     case text(MessagingChatMessageTextTypeDisplayInfo)
     case imageBase64(MessagingChatMessageImageBase64TypeDisplayInfo)
     case imageData(MessagingChatMessageImageDataTypeDisplayInfo)
     case unknown(MessagingChatMessageUnknownTypeDisplayInfo)
     case remoteContent(MessagingChatMessageRemoteContentTypeDisplayInfo)
     case reaction(MessagingChatMessageReactionTypeDisplayInfo)
+    case reply(MessagingChatMessageReplyTypeDisplayInfo)
  
     var analyticName: String {
         switch self {
@@ -27,6 +28,8 @@ enum MessagingChatMessageDisplayType: Hashable {
             return "RemoteContent"
         case .reaction:
             return "Reaction"
+        case .reply:
+            return "Reply"
         }
     }
 }
