@@ -102,14 +102,7 @@ private extension ChatListChatRowView {
     var currentTitle: String {
         switch chat.type {
         case .private(let messagingPrivateChatDetails):
-            let userInfo = messagingPrivateChatDetails.otherUser
-            
-            
-            if userInfo.rrDomainName == nil {
-                return userInfo.displayName
-            } else {
-                return userInfo.domainName ?? ""
-            }
+            return messagingPrivateChatDetails.otherUser.displayName
         case .group(let messagingGroupChatDetails):
             return messagingGroupChatDetails.displayName
         case .community(let messagingCommunitiesChatDetails):

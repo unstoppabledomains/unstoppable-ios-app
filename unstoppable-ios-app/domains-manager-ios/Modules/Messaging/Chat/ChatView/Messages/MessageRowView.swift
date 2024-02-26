@@ -152,7 +152,7 @@ private extension MessageRowView {
     func loadAvatarForOtherUserInfo() {
         let userInfo = message.senderType.userDisplayInfo
         Task {
-            let name = userInfo.domainName ?? userInfo.wallet.droppedHexPrefix
+            let name = userInfo.displayName
             otherUserAvatar = await appContext.imageLoadingService.loadImage(from: .initials(name,
                                                                                                         size: .default,
                                                                                                         style: .accent),

@@ -12,6 +12,8 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
+    @State private var suggestingUsers: [MessagingChatUserDisplayInfo] = MockEntitiesFabric.Messaging.suggestingGroupChatMembersDisplayInfo()
+
     var analyticsName: Analytics.ViewName { .chatDialog }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
     
@@ -36,6 +38,9 @@ struct ChatView: View, ViewAnalyticsLogger {
                 focused = keyboardFocused
             }
         }
+        .onChange(of: viewModel.input) { newValue in
+            showMentionSuggestionsIfNeeded(in: newValue)
+        }
         .toolbar {
             if !viewModel.navActions.isEmpty {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -47,7 +52,6 @@ struct ChatView: View, ViewAnalyticsLogger {
             if hasBottomView {
                 bottomView()
                     .frame(maxWidth: .infinity)
-                    .background(.regularMaterial)
             }
         }
         .onAppear(perform: onAppear)
@@ -73,6 +77,23 @@ private extension ChatView {
                 return viewModel.isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted
             } else {
                 return .cantContact
+            }
+        }
+    }
+    
+    func showMentionSuggestionsIfNeeded(in text: String) {
+        let listOfGroupParticipants = viewModel.listOfGroupParticipants
+        if !listOfGroupParticipants.isEmpty {
+            let components = text.components(separatedBy: " ")
+            if let lastComponent = components.last,
+               lastComponent.first == "@" {
+                let mentionPart = String(lastComponent.dropFirst()).lowercased()
+                if mentionPart.isEmpty {
+                    suggestingUsers = listOfGroupParticipants
+                } else {
+//                    suggestingNames = listOfGroupParticipants.filter { $0.contains(mentionPart)}
+                }
+                print("Mention: \(mentionPart)")
             }
         }
     }
@@ -171,11 +192,28 @@ private extension ChatView {
     
     @ViewBuilder
     func chatInputView() -> some View {
+        VStack {
+            if !suggestingUsers.isEmpty {
+                mentionSuggestionsView()
+            }
+            messageInputView()
+                .background(.regularMaterial)
+        }
+    }
+    
+    @ViewBuilder
+    func messageInputView() -> some View {
         MessageInputView(input: $viewModel.input,
                          placeholder: viewModel.placeholder,
                          focused: $focused,
                          sendCallback: viewModel.sendPressed,
                          additionalActionCallback: viewModel.additionalActionPressed)
+    }
+    
+    @ViewBuilder
+    func mentionSuggestionsView() -> some View {
+        ChatMentionSuggestionsView(suggestingUsers: suggestingUsers)
+        .padding(.init(horizontal: 20))
     }
     
     @ViewBuilder
@@ -205,7 +243,7 @@ private extension ChatView {
 }
 
 extension ChatView {
-    enum State {
+    enum ChatState {
         case loading
         case chat
         case otherUserIsBlocked

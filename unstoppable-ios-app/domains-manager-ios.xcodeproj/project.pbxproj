@@ -2248,6 +2248,10 @@
 		C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */; };
 		C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
 		C6F9FBE82A25CB5800102F81 /* PushMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */; };
+		C6FAED802B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */; };
+		C6FAED812B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */; };
+		C6FAED832B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */; };
+		C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */; };
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
@@ -3590,6 +3594,8 @@
 		C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingChannelsWebSocketsService.swift; sourceTree = "<group>"; };
 		C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingStorageService.swift; sourceTree = "<group>"; };
 		C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessageType.swift; sourceTree = "<group>"; };
+		C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionRowView.swift; sourceTree = "<group>"; };
+		C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMentionSuggestionsView.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
@@ -6291,6 +6297,8 @@
 			children = (
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
+				C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */,
+				C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */,
 				C6D8FF2E2B8307E70094A21E /* ChatNavTitleView.swift */,
 				C688C1942B8483D700BD233A /* ChatMessagesEmptyView.swift */,
 				C6D8FF2A2B8302A40094A21E /* InputView */,
@@ -8897,6 +8905,7 @@
 				C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
 				C664B6602914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
 				C61002A0293E075300462983 /* DomainProfileDataToClipboardCopier.swift in Sources */,
+				C6FAED832B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */,
 				C6A7E1DE2B6B46F3009154F7 /* HomeWalletLinkNavigationDestination.swift in Sources */,
 				C617FDA12B58E75B00B93433 /* WalletEntity.swift in Sources */,
 				C630E4AC2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
@@ -8994,6 +9003,7 @@
 				C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C66FCD1328450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
+				C6FAED802B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift in Sources */,
 				C671E3C229014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
 				C65272662A15DEB9001A084C /* KeyboardService.swift in Sources */,
 				C6A2D51E284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
@@ -9708,6 +9718,7 @@
 				C6C8F92F2B2183C700A9834D /* DomainsListViewController.swift in Sources */,
 				C6B65F912B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
 				C6C8F8D62B21834200A9834D /* UpgradeToPolygonTutorial.swift in Sources */,
+				C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */,
 				C61807BF2B19A2CC0032E543 /* AppContextProtocol.swift in Sources */,
 				C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
 				C618084E2B19B9FD0032E543 /* PreviewFirebasePurchaseDomainsService.swift in Sources */,
@@ -9827,6 +9838,7 @@
 				C6C8F8CE2B21832F00A9834D /* MintingInProgressViewPresenter.swift in Sources */,
 				C6C8F8622B21801700A9834D /* PrivateKeyStorage.swift in Sources */,
 				C688C1A82B84A3A600BD233A /* MessagingImageView.swift in Sources */,
+				C6FAED812B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift in Sources */,
 				C6C8F8AA2B2182CF00A9834D /* EnterEmailViewPresenter.swift in Sources */,
 				C6D6470E2B1ED7D000D724AC /* MessagingChatMessage.swift in Sources */,
 				C6D645752B1D721D00D724AC /* PurchaseDomainsEnterZIPCodeView.swift in Sources */,

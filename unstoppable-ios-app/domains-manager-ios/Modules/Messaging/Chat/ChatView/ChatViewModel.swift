@@ -21,11 +21,11 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var isChannelEncrypted: Bool = true
     @Published private(set) var isAbleToContactUser: Bool = true
     @Published private(set) var messages: [MessagingChatMessageDisplayInfo] = []
-    @Published private(set) var listOfGroupParticipants: [String] = []
+    @Published private(set) var listOfGroupParticipants: [MessagingChatUserDisplayInfo] = []
     @Published private(set) var scrollToMessage: MessagingChatMessageDisplayInfo?
     @Published private(set) var messagesCache: Set<MessagingChatMessageDisplayInfo> = []
     @Published private(set) var isLoading = false
-    @Published private(set) var chatState: ChatView.State = .loading
+    @Published private(set) var chatState: ChatView.ChatState = .loading
     @Published private(set) var canSendAttachments = true
     @Published private(set) var placeholder: String = ""
     @Published private(set) var navActions: [ChatView.NavAction] = []
@@ -274,7 +274,7 @@ private extension ChatViewModel {
     }
     
     func setListOfGroupParticipantsFrom(users: [MessagingChatUserDisplayInfo]) {
-        self.listOfGroupParticipants = users.compactMap { $0.rrDomainName ?? $0.domainName }
+        self.listOfGroupParticipants = users
     }
     
     func setupTitle() {
@@ -295,7 +295,7 @@ private extension ChatViewModel {
     }
     
     func setupTitleFor(userInfo: MessagingChatUserDisplayInfo) {
-        if let domainName = userInfo.rrDomainName ?? userInfo.domainName {
+        if let domainName = userInfo.anyDomainName {
             titleType = .domainName(domainName)
         } else {
             titleType = .walletAddress(userInfo.wallet)

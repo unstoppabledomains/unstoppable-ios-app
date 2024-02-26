@@ -14,7 +14,11 @@ struct MessagingChatUserDisplayInfo: Hashable, Codable {
     var pfpURL: URL?
     
     var displayName: String {
-        rrDomainName ?? domainName ?? wallet.walletAddressTruncated
+        anyDomainName ?? wallet.walletAddressTruncated
+    }
+    
+    var anyDomainName: String? {
+        rrDomainName ?? domainName
     }
     
     var isUDDomain: Bool {

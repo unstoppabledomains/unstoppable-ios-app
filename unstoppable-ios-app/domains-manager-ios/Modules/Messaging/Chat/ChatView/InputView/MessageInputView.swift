@@ -101,3 +101,20 @@ private extension MessageInputView {
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
+
+#Preview {
+    struct Preview: View {
+        @State var text = ""
+        @FocusState var focused: Bool
+        
+        var body: some View {
+            MessageInputView(input: $text,
+                             placeholder: "Placeholder",
+                             focused: $focused,
+                             sendCallback: { },
+                             additionalActionCallback: { _ in })
+        }
+    }
+    
+    return Preview()
+}

@@ -91,8 +91,9 @@ private extension TextMessageRowView {
     
     func detectAndInsertUserMentions(to attributedString: inout AttributedString) {
         let string = NSAttributedString(attributedString).string
+        let users = viewModel.listOfGroupParticipants.compactMap { $0.anyDomainName }
         let usernameMatches = detectUsernamesIn(string: string,
-                                                users: viewModel.listOfGroupParticipants)
+                                                users: users)
         let nsText = string as NSString
 
         for match in usernameMatches {
