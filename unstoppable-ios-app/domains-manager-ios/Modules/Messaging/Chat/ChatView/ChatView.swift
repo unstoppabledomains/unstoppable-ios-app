@@ -28,7 +28,6 @@ struct ChatView: View, ViewAnalyticsLogger {
                 ProgressView()
             }
         }
-        .environmentObject(viewModel)
         .displayError($viewModel.error)
         .background(Color.backgroundMuted2)
         .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
@@ -50,6 +49,9 @@ struct ChatView: View, ViewAnalyticsLogger {
                     .background(.regularMaterial)
             }
         }
+        .environmentObject(viewModel)
+        .environment(\.analyticsViewName, analyticsName)
+        .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
         .onAppear(perform: onAppear)
     }
 }

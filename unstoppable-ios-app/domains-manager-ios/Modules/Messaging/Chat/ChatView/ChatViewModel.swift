@@ -63,7 +63,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         chatState = .loading
         setupTitle()
         setupPlaceholder()
-        setupFunctionality()
+        setIfUserCanSendAttachments()
         loadAndShowData()
     }
     
@@ -258,9 +258,13 @@ private extension ChatViewModel {
         }
     }
     
-    func setupFunctionality() {
+    func setIfUserCanSendAttachments() {
+        let isProfileHasDomain = appContext.walletsDataService.wallets.findWithAddress(profile.wallet)?.rrDomain != nil
         if isCommunityChat() {
-            canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+            let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+            canSendAttachments = isCommunityMediaEnabled && isProfileHasDomain
+        } else {
+            canSendAttachments = isProfileHasDomain
         }
     }
     
@@ -899,7 +903,7 @@ extension ChatViewModel: UDFeatureFlagsListener {
         switch flag {
         case .communityMediaEnabled:
             if isCommunityChat() {
-                canSendAttachments = newValue
+                setIfUserCanSendAttachments()
                 reloadCachedMessages()
             }
         default:
