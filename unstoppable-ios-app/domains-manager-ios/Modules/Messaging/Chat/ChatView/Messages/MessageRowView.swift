@@ -48,6 +48,7 @@ struct MessageRowView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color.clear)
+        .modifier(SwipeToReplyGestureModifier(message: message))
     }
 }
 
@@ -261,6 +262,75 @@ private extension MessageRowView {
                     .scaleEffect(x: -1, y: 1, anchor: .center)
             } else {
                 content
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension MessageRowView {
+    struct SwipeToReplyGestureModifier: ViewModifier {
+        
+        @EnvironmentObject var viewModel: ChatViewModel
+
+        let message: MessagingChatMessageDisplayInfo
+        @State private var offset: CGFloat = 0
+        private let offsetToStartReply: CGFloat = 50
+        
+        func body(content: Content) -> some View {
+            if message.senderType.isThisUser {
+                content
+            } else {
+                content
+                    .animation(.default, value: offset)
+                    .offset(x: offset)
+                    .simultaneousGesture(
+                        DragGesture()
+                            .onChanged { gesture in
+                                let translation = gesture.translation.width
+                                calculateOffsetFor(xTranslation: translation)
+                            }
+                            .onEnded { _ in
+                                didFinishSwipe()
+                            }
+                    )
+            }
+        }
+        
+        private func calculateOffsetFor(xTranslation: CGFloat) {
+            if xTranslation >= 0 {
+                offset = 0
+                return
+            }
+            let frictionlessOffset: CGFloat = offsetToStartReply
+            
+            let absXTranslation = abs(xTranslation)
+            if absXTranslation <= frictionlessOffset {
+                offset = -absXTranslation
+            } else {
+                offset = -(frictionlessOffset + (absXTranslation - frictionlessOffset) / 3)
+            }
+        }
+        
+        private func didFinishSwipe() {
+            if isSwipeOffsetEnoughToReply() {
+                didSwipeToReply()
+            }
+            resetOffset()
+        }
+        
+        private func isSwipeOffsetEnoughToReply() -> Bool {
+            abs(offset) > offsetToStartReply
+        }
+        
+        private func didSwipeToReply() {
+            viewModel.handleChatMessageAction(.reply(message))
+            Vibration.success.vibrate()
+        }
+        
+        private func resetOffset() {
+            withAnimation {
+                offset = .zero
             }
         }
     }
