@@ -33,3 +33,23 @@ indirect enum MessagingChatMessageDisplayType: Hashable {
         }
     }
 }
+
+// MARK: - Open methods
+extension MessagingChatMessageDisplayType {
+    func getContentDescriptionText() -> String  {
+        switch self {
+        case .text(let description):
+            return description.text
+        case .imageBase64, .imageData:
+            return String.Constants.photo.localized()
+        case .unknown:
+            return String.Constants.messageNotSupported.localized()
+        case .remoteContent:
+            return String.Constants.messagingRemoteContent.localized()
+        case .reaction(let info):
+            return info.content
+        case .reply(let info):
+            return info.contentType.getContentDescriptionText()
+        }
+    }
+}

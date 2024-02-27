@@ -11,8 +11,9 @@ struct ImageMessageRowView: View {
     
     @EnvironmentObject var viewModel: ChatViewModel
 
+    let message: MessagingChatMessageDisplayInfo
     var image: UIImage?
-    let sender: MessagingChatSender
+    var sender: MessagingChatSender { message.senderType }
 
     var body: some View {
         ZStack {
@@ -32,6 +33,9 @@ struct ImageMessageRowView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contextMenu {
+            if !sender.isThisUser {
+                MessageActionReplyButtonView(message: message)
+            }
             if let image = self.image {
                 Button {
                     viewModel.handleChatMessageAction(.saveImage(image))
@@ -45,7 +49,7 @@ struct ImageMessageRowView: View {
                 MessageActionBlockUserButtonView(sender: sender)
             }
         } preview: {
-            ImageMessageRowView(image: image, sender: sender)
+            ImageMessageRowView(message: message, image: image)
         }
     }
 }
@@ -73,5 +77,7 @@ private extension ImageMessageRowView {
 }
 
 #Preview {
-    ImageMessageRowView(image: .appleIcon, sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false))
+    ImageMessageRowView(message: MockEntitiesFabric.Messaging.createImageMessage(image: .appleIcon,
+                                                                                 isThisUser: false),
+                        image: .appleIcon)
 }

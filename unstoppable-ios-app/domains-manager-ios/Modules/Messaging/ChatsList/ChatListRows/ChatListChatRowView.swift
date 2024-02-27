@@ -135,24 +135,7 @@ private extension ChatListChatRowView {
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
-        lastMessageTextFrom(messageType: message.type)
-    }
-    
-    func lastMessageTextFrom(messageType: MessagingChatMessageDisplayType) -> String  {
-        switch messageType {
-        case .text(let description):
-            return description.text
-        case .imageBase64, .imageData:
-            return String.Constants.photo.localized()
-        case .unknown:
-            return String.Constants.messageNotSupported.localized()
-        case .remoteContent:
-            return String.Constants.messagingRemoteContent.localized()
-        case .reaction(let info):
-            return info.content
-        case .reply(let info):
-            return lastMessageTextFrom(messageType: info.contentType)
-        }
+        message.type.getContentDescriptionText()
     }
     
     @ViewBuilder

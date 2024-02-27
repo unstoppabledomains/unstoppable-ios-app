@@ -11,8 +11,9 @@ struct TextMessageRowView: View {
     
     @EnvironmentObject var viewModel: ChatViewModel
 
+    let message: MessagingChatMessageDisplayInfo
     let info: MessagingChatMessageTextTypeDisplayInfo
-    let sender: MessagingChatSender
+    var sender: MessagingChatSender { message.senderType }
     let isFailed: Bool
     @Environment(\.openURL) private var openURL
 
@@ -28,11 +29,15 @@ struct TextMessageRowView: View {
                 return .discarded
             })
             .contextMenu {
+                if !sender.isThisUser {
+                    MessageActionReplyButtonView(message: message)
+                }
                 Button {
                     viewModel.handleChatMessageAction(.copyText(info.text))
                 } label: {
                     Label(String.Constants.copy.localized(), systemImage: "doc.on.doc")
                 }
+                
                 
                 if !sender.isThisUser {
                     Divider()
@@ -130,7 +135,7 @@ private extension TextMessageRowView {
 }
 
 #Preview {
-    TextMessageRowView(info: .init(text: "Hello world"),
-                       sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false),
+    TextMessageRowView(message: MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world", isThisUser: false),
+                       info: .init(text: "Hello world"),
                        isFailed: true)
 }

@@ -683,7 +683,11 @@ private extension PushMessagingAPIService {
             return details.content
         case .reply(let info):
             let replyType = info.contentType
-            return try getPushMessageContentFrom(displayType: replyType)
+            if case .text = replyType {
+                return try await getPushMessageContentFrom(displayType: replyType,
+                                                           by: user)
+            }
+            throw PushMessagingAPIServiceError.canReplyOnlyWithText
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
@@ -752,6 +756,7 @@ extension PushMessagingAPIService {
         case blockUserInGroupChatsNotSupported
         case unsupportedType
         case groupChatWithGivenIdNotFound
+        case canReplyOnlyWithText
         
         case failedToDecodeServiceData
         case failedToConvertPushChat

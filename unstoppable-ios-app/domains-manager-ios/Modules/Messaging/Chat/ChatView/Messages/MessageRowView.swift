@@ -63,21 +63,20 @@ private extension MessageRowView {
     func messageContentView() -> some View {
         switch message.type {
         case .text(let info):
-            TextMessageRowView(info: info,
-                               sender: sender,
+            TextMessageRowView(message: message, 
+                               info: info,
                                isFailed: isFailedMessage)
         case .imageData(let info):
-            ImageMessageRowView(image: info.image,
-                                sender: sender)
+            ImageMessageRowView(message: message,
+                                image: info.image)
         case .imageBase64(let info):
-            ImageMessageRowView(image: info.image,
-                                sender: sender)
+            ImageMessageRowView(message: message,
+                                image: info.image)
         case .remoteContent:
             RemoteContentMessageRowView(sender: sender)
         case .unknown(let info):
             UnknownMessageRowView(message: message,
-                                  info: info,
-                                  sender: sender)
+                                  info: info)
         default:
             Text("Hello world")
         }

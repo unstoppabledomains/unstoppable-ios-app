@@ -31,6 +31,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var navActions: [ChatView.NavAction] = []
     @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
     @Published private(set) var suggestingUsers: [MessagingChatUserDisplayInfo] = []
+    @Published private(set) var messageToReply: MessagingChatMessageDisplayInfo? 
     
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
@@ -62,6 +63,9 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
             if isActive {
                 self?.scrollToBottom()
             }
+        }.store(in: &cancellables)
+        $messageToReply.sink { [weak self] _ in
+            self?.setIfUserCanSendAttachments()
         }.store(in: &cancellables)
         chatState = .loading
         setupTitle()
@@ -167,6 +171,8 @@ extension ChatViewModel {
             }
         case .sendReaction(let content, let toMessage):
             sendReactionMessage(content, toMessage: toMessage)
+        case .reply(let message):
+            messageToReply = message
         }
     }
     
@@ -191,6 +197,15 @@ extension ChatViewModel {
            let mention = MessageMentionString.makeMentionFrom(string: nameForMention) {
             replaceCurrentInputWithSelectedMention(mention)
         }
+    }
+    
+    func didTapJumpToReplyButton() {
+        scrollToMessage = nil
+        scrollToMessage = messageToReply
+    }
+    
+    func didTapRemoveReplyButton() {
+        messageToReply = nil
     }
 }
 
@@ -357,12 +372,18 @@ private extension ChatViewModel {
     }
     
     func setIfUserCanSendAttachments() {
+        let isReplying = self.messageToReply != nil
         let isProfileHasDomain = appContext.walletsDataService.wallets.findWithAddress(profile.wallet)?.rrDomain != nil
-        if isCommunityChat() {
-            let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
-            canSendAttachments = isCommunityMediaEnabled && isProfileHasDomain
+        if !isReplying,
+           isProfileHasDomain {
+            if isCommunityChat() {
+                let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+                canSendAttachments = isCommunityMediaEnabled
+            } else {
+                canSendAttachments = true
+            }
         } else {
-            canSendAttachments = isProfileHasDomain
+            canSendAttachments = false
         }
     }
     
@@ -911,7 +932,7 @@ private extension ChatViewModel {
     func sendTextMesssage(_ text: String) {
         let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
-        sendMessageOfType(messageType)
+        wrapMessageInReplyIfNeededAndSend(messageType: messageType)
     }
     
     func sendReactionMessage(_ content: String, toMessage: MessagingChatMessageDisplayInfo) {
@@ -924,6 +945,17 @@ private extension ChatViewModel {
         guard let data = image.dataToUpload else { return }
         let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(data: data, image: image)
         sendMessageOfType(.imageData(imageTypeDetails))
+    }
+    
+    func wrapMessageInReplyIfNeededAndSend(messageType: MessagingChatMessageDisplayType) {
+        if let messageToReply {
+            let replyDetails = MessagingChatMessageReplyTypeDisplayInfo(contentType: messageType,
+                                                                        messageId: messageToReply.id)
+            let replyType = MessagingChatMessageDisplayType.reply(replyDetails)
+            sendMessageOfType(replyType)
+        } else {
+            sendMessageOfType(messageType)
+        }
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
@@ -985,7 +1017,7 @@ extension ChatViewModel: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats(let chats, let profile):
+            case .chats:
                 return
             case .messagesAdded(let messages, let chatId, let userId):
                 if userId == self.profile.id,

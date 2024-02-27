@@ -185,8 +185,14 @@ private extension ChatView {
             if !viewModel.suggestingUsers.isEmpty {
                 mentionSuggestionsView()
             }
-            messageInputView()
-                .background(.regularMaterial)
+            
+            VStack(spacing: 0) {
+                if let messageToReply = viewModel.messageToReply {
+                    ChatReplyInfoView(messageToReply: messageToReply)
+                }
+                messageInputView()
+                    .background(.regularMaterial)
+            }
         }
     }
     
