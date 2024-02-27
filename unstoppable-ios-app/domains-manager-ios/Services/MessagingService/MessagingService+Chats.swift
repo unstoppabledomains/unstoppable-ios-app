@@ -70,6 +70,7 @@ extension MessagingService {
                 group.addTask {
                     if !apiService.capabilities.isRequiredToReloadLastMessage,
                        let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
+                       localChat.displayInfo.lastMessage != nil,
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {

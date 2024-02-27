@@ -25,7 +25,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
             time = Date() 
         }
         switch type {
-        case .text, .unknown, .remoteContent, .reaction:
+        case .text, .unknown, .remoteContent, .reaction, .reply:
             return
         case .imageData(var info):
             if info.image == nil {
@@ -43,6 +43,10 @@ struct MessagingChatMessageDisplayInfo: Hashable {
 
 // MARK: - Open methods
 extension MessagingChatMessageDisplayInfo {
+    var isFailedMessage: Bool {
+        deliveryState == .failedToSend
+    }
+    
     enum DeliveryState: Int {
         case delivered, sending, failedToSend
     }

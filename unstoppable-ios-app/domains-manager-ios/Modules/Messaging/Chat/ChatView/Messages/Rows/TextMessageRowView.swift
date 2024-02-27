@@ -11,13 +11,17 @@ struct TextMessageRowView: View {
     
     @EnvironmentObject var viewModel: ChatViewModel
 
+    let message: MessagingChatMessageDisplayInfo
     let info: MessagingChatMessageTextTypeDisplayInfo
-    let sender: MessagingChatSender
-    let isFailed: Bool
+    let referenceMessageId: String? 
+    var sender: MessagingChatSender { message.senderType }
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        Text(toDetectedAttributedString(info.text))
+        VStack(alignment: .leading) {
+            replyReferenceView()
+            Text(toDetectedAttributedString(info.text))
+        }
             .padding(.init(horizontal: 12))
             .padding(.init(vertical: 6))
             .foregroundStyle(foregroundColor)
@@ -28,12 +32,12 @@ struct TextMessageRowView: View {
                 return .discarded
             })
             .contextMenu {
+                MessageActionReplyButtonView(message: message)
                 Button {
                     viewModel.handleChatMessageAction(.copyText(info.text))
                 } label: {
                     Label(String.Constants.copy.localized(), systemImage: "doc.on.doc")
                 }
-                
                 if !sender.isThisUser {
                     Divider()
                     MessageActionBlockUserButtonView(sender: sender)
@@ -45,7 +49,7 @@ struct TextMessageRowView: View {
 // MARK: - Private methods
 private extension TextMessageRowView {
     var foregroundColor: Color {
-        if isFailed {
+        if message.isFailedMessage {
             return .foregroundOnEmphasisOpacity
         }
         return sender.isThisUser ? .foregroundOnEmphasis : .foregroundDefault
@@ -129,8 +133,51 @@ private extension TextMessageRowView {
 
 }
 
+// MARK: - Private methods
+private extension TextMessageRowView {
+    @ViewBuilder
+    func replyReferenceView() -> some View {
+        if let referenceMessageId,
+           let message = viewModel.getReferenceMessageWithId(referenceMessageId) {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                viewModel.didTapJumpToMessage(message)
+            } label: {
+                HStack(spacing: 2) {
+                    Line(direction: .vertical)
+                        .stroke(lineWidth: 6)
+                        .foregroundStyle(Color.brandUnstoppableBlue)
+                        .frame(width: 6)
+                        .padding(.init(vertical: -8))
+                        .offset(x: -6)
+                        .frame(height: 30)
+                    VStack(alignment: .leading) {
+                        Text(message.senderType.userDisplayInfo.displayName)
+                            .font(.currentFont(size: 14, weight: .semibold))
+                        Text(message.type.getContentDescriptionText())
+                            .font(.currentFont(size: 14))
+                    }
+                    .lineLimit(1)
+                    Spacer()
+                }
+                .padding(.init(horizontal: 8, vertical: 8))
+                .background(Color.white.opacity(0.15))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    struct ReferenceWidthKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = value + nextValue()
+        }
+    }
+}
+
 #Preview {
-    TextMessageRowView(info: .init(text: "Hello world"),
-                       sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false),
-                       isFailed: true)
+    TextMessageRowView(message: MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world", isThisUser: false),
+                       info: .init(text: "Hello world"),
+                       referenceMessageId: nil)
 }

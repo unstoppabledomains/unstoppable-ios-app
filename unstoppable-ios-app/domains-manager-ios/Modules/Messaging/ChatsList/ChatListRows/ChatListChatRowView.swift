@@ -123,7 +123,8 @@ private extension ChatListChatRowView {
     func getSubtitleText() -> String? {
         if let lastMessage = chat.lastMessage {
             return lastMessageTextFrom(message: lastMessage)
-        } else if case .community(let details) = chat.type {
+        } else if case .community(let details) = chat.type,
+                  !details.isJoined {
             switch details.type {
             case .badge(let badgeDetailedInfo):
                 let holders = badgeDetailedInfo.usage.holders
@@ -135,18 +136,7 @@ private extension ChatListChatRowView {
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
-        switch message.type {
-        case .text(let description):
-            return description.text
-        case .imageBase64, .imageData:
-            return String.Constants.photo.localized()
-        case .unknown:
-            return String.Constants.messageNotSupported.localized()
-        case .remoteContent:
-            return String.Constants.messagingRemoteContent.localized()
-        case .reaction(let info):
-            return info.content
-        }
+        message.type.getContentDescriptionText()
     }
     
     @ViewBuilder

@@ -299,7 +299,7 @@ extension MockEntitiesFabric {
                                        image: UIImage?,
                                        isThisUser: Bool,
                                        deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
-            let sender = chatSenderFor(isThisUser: isThisUser)
+            let sender = chatSenderFor(isThisUser: false)
 
             var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
             imageDetails.image = image

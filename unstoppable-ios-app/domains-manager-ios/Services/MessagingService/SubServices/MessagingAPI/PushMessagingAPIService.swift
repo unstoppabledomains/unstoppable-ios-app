@@ -681,6 +681,13 @@ private extension PushMessagingAPIService {
             return try await getImagePushMessageContentFrom(data: details.data, by: user)
         case .reaction(let details):
             return details.content
+        case .reply(let info):
+            let replyType = info.contentType
+            if case .text = replyType {
+                return try await getPushMessageContentFrom(displayType: replyType,
+                                                           by: user)
+            }
+            throw PushMessagingAPIServiceError.canReplyOnlyWithText
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
@@ -699,6 +706,8 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .reaction(let details):
             return details.messageId
+        case .reply(let info):
+            return info.messageId
         case .text, .imageBase64, .imageData, .unknown, .remoteContent:
             return nil
         }
@@ -712,6 +721,8 @@ private extension PushMessagingAPIService {
             return .reaction
         case .imageBase64, .imageData:
             return .mediaEmbed
+        case .reply:
+            return .reply
         case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
@@ -745,6 +756,7 @@ extension PushMessagingAPIService {
         case blockUserInGroupChatsNotSupported
         case unsupportedType
         case groupChatWithGivenIdNotFound
+        case canReplyOnlyWithText
         
         case failedToDecodeServiceData
         case failedToConvertPushChat

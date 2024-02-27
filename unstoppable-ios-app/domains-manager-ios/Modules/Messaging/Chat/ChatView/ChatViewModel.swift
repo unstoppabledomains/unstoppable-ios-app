@@ -11,6 +11,8 @@ import Combine
 @MainActor
 final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     
+    typealias LoadMoreMessagesTask = Task<[MessagingChatMessageDisplayInfo], Error>
+    
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
@@ -31,11 +33,13 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var navActions: [ChatView.NavAction] = []
     @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
     @Published private(set) var suggestingUsers: [MessagingChatUserDisplayInfo] = []
+    @Published private(set) var messageToReply: MessagingChatMessageDisplayInfo? 
     
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
     var isGroupChatMessage: Bool { conversationState.isGroupConversation }
+    var isAbleToReply: Bool { isGroupChatMessage }
     
     var analyticsName: Analytics.ViewName { .chatDialog }
     
@@ -43,6 +47,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
     private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
     private var cancellables: Set<AnyCancellable> = []
+    private var loadMoreMessagesTask: LoadMoreMessagesTask?
 
     init(profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
@@ -61,6 +66,11 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
         $keyboardFocused.sink { [weak self] isActive in
             if isActive {
                 self?.scrollToBottom()
+            }
+        }.store(in: &cancellables)
+        $messageToReply.sink { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.setIfUserCanSendAttachments()
             }
         }.store(in: &cancellables)
         chatState = .loading
@@ -88,8 +98,7 @@ extension ChatViewModel {
         }
         
         if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
-           let last = messagesCache.lazy.sorted(by: { $0.time > $1.time }).last,
-           !last.isFirstInChat {
+           let last = getLatestMessageToLoadMore() {
             loadMoreMessagesBefore(message: last)
         }
     }
@@ -167,6 +176,9 @@ extension ChatViewModel {
             }
         case .sendReaction(let content, let toMessage):
             sendReactionMessage(content, toMessage: toMessage)
+        case .reply(let message):
+            messageToReply = message
+            keyboardFocused = true
         }
     }
     
@@ -192,10 +204,43 @@ extension ChatViewModel {
             replaceCurrentInputWithSelectedMention(mention)
         }
     }
+    
+    func didTapJumpToReplyButton() {
+        scrollToMessage = messageToReply
+    }
+    
+    func didTapRemoveReplyButton() {
+        messageToReply = nil
+    }
+    
+    func getReferenceMessageWithId(_ messageId: String) -> MessagingChatMessageDisplayInfo? {
+        if let message = messages.first(where: { $0.id == messageId }) {
+            return message
+        } else {
+            loadMessagesToReach(messageId: messageId)
+            return nil
+        }
+    }
+    
+    func didTapJumpToMessage(_ message: MessagingChatMessageDisplayInfo) {
+        scrollToMessage = message
+    }
 }
 
 // MARK: - Private methods
 private extension ChatViewModel {
+    func getLastMessageInCache() -> MessagingChatMessageDisplayInfo? {
+        messagesCache.lazy.sorted(by: { $0.time > $1.time }).last
+    }
+    
+    func getLatestMessageToLoadMore() -> MessagingChatMessageDisplayInfo? {
+        if let message = getLastMessageInCache(),
+           !message.isFirstInChat {
+            return message
+        }
+        return nil
+    }
+    
     func showMentionSuggestions(using listOfGroupParticipants: [MessagingChatUserDisplayInfo],
                                 mention: MessageMentionString) {
         let mentionUsername = mention.mentionWithoutPrefix.lowercased()
@@ -357,12 +402,18 @@ private extension ChatViewModel {
     }
     
     func setIfUserCanSendAttachments() {
+        let isReplying = self.messageToReply != nil
         let isProfileHasDomain = appContext.walletsDataService.wallets.findWithAddress(profile.wallet)?.rrDomain != nil
-        if isCommunityChat() {
-            let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
-            canSendAttachments = isCommunityMediaEnabled && isProfileHasDomain
+        if !isReplying,
+           isProfileHasDomain {
+            if isCommunityChat() {
+                let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+                canSendAttachments = isCommunityMediaEnabled
+            } else {
+                canSendAttachments = true
+            }
         } else {
-            canSendAttachments = isProfileHasDomain
+            canSendAttachments = false
         }
     }
     
@@ -407,16 +458,54 @@ private extension ChatViewModel {
         isLoadingMessages = true
         Task {
             do {
-                let unreadMessages = try await messagingService.getMessagesForChat(chat,
-                                                                                   before: message,
-                                                                                   cachedOnly: false,
-                                                                                   limit: fetchLimit)
+                let unreadMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                               beforeMessage: message)
+                
                 await addMessages(unreadMessages, scrollToBottom: false)
             } catch {
                 self.error = error
             }
             isLoadingMessages = false
         }
+    }
+    
+    func loadMessagesToReach(messageId: String) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            isLoadingMessages = true
+
+            while messages.first(where: { $0.id == messageId }) == nil {
+                guard let lastMessage = getLatestMessageToLoadMore() else { return }
+                
+                do {
+                    
+                    let newMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                                beforeMessage: lastMessage)
+                    
+                    await addMessages(newMessages, scrollToBottom: false)
+                } catch { break }
+            }
+            
+            isLoadingMessages = false
+        }
+    }
+    
+    func createTaskAndLoadMoreMessagesIn(chat: MessagingChatDisplayInfo,
+                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]{
+        if let loadMoreMessagesTask {
+            return try await loadMoreMessagesTask.value
+        }
+        let task: Task<[MessagingChatMessageDisplayInfo], Error> = Task {
+            try await messagingService.getMessagesForChat(chat,
+                                                          before: beforeMessage,
+                                                          cachedOnly: false,
+                                                          limit: fetchLimit)
+        }
+        self.loadMoreMessagesTask = task
+        let result = try await task.value
+        loadMoreMessagesTask = nil
+        return result
     }
    
     func reloadCachedMessages() {
@@ -911,7 +1000,7 @@ private extension ChatViewModel {
     func sendTextMesssage(_ text: String) {
         let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
-        sendMessageOfType(messageType)
+        wrapMessageInReplyIfNeededAndSend(messageType: messageType)
     }
     
     func sendReactionMessage(_ content: String, toMessage: MessagingChatMessageDisplayInfo) {
@@ -926,9 +1015,21 @@ private extension ChatViewModel {
         sendMessageOfType(.imageData(imageTypeDetails))
     }
     
+    func wrapMessageInReplyIfNeededAndSend(messageType: MessagingChatMessageDisplayType) {
+        if let messageToReply {
+            let replyDetails = MessagingChatMessageReplyTypeDisplayInfo(contentType: messageType,
+                                                                        messageId: messageToReply.id)
+            let replyType = MessagingChatMessageDisplayType.reply(replyDetails)
+            sendMessageOfType(replyType)
+        } else {
+            sendMessageOfType(messageType)
+        }
+    }
+    
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         logAnalytic(event: .willSendMessage,
                     parameters: [.messageType: type.analyticName])
+        self.messageToReply = nil
         Task {
             do {
                 var newMessage: MessagingChatMessageDisplayInfo
@@ -985,7 +1086,7 @@ extension ChatViewModel: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats(let chats, let profile):
+            case .chats:
                 return
             case .messagesAdded(let messages, let chatId, let userId):
                 if userId == self.profile.id,

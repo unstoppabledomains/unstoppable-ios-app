@@ -14,10 +14,12 @@ struct MessageActionBlockUserButtonView: View {
     let sender: MessagingChatSender
     
     var body: some View {
-        Button(role: .destructive) {
-            viewModel.handleChatMessageAction(.blockUserInGroup(sender.userDisplayInfo))
-        } label: {
-            Label(String.Constants.blockUser.localized(), systemImage: "xmark.circle")
+        if !sender.isThisUser {
+            Button(role: .destructive) {
+                viewModel.handleChatMessageAction(.blockUserInGroup(sender.userDisplayInfo))
+            } label: {
+                Label(String.Constants.blockUser.localized(), systemImage: "xmark.circle")
+            }
         }
     }
 }
