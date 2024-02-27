@@ -123,7 +123,8 @@ private extension ChatListChatRowView {
     func getSubtitleText() -> String? {
         if let lastMessage = chat.lastMessage {
             return lastMessageTextFrom(message: lastMessage)
-        } else if case .community(let details) = chat.type {
+        } else if case .community(let details) = chat.type,
+                  !details.isJoined {
             switch details.type {
             case .badge(let badgeDetailedInfo):
                 let holders = badgeDetailedInfo.usage.holders
