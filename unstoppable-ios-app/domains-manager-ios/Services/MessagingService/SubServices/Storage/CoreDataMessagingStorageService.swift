@@ -674,7 +674,7 @@ private extension CoreDataMessagingStorageService {
         
         func getDecryptedContent() -> String? {
             guard let messageContent = coreDataMessage.messageContent,
-                  let decrypted = try? decrypterService.decryptText(messageContent) else { return nil }
+                  let decrypted = try? decryptMessageContent(messageContent) else { return nil }
             
             return decrypted
         }
@@ -683,6 +683,10 @@ private extension CoreDataMessagingStorageService {
         return getMessageDisplayTypeFor(coreDataMessageType: coreDataMessageType,
                                         decryptedContent: decryptedContent,
                                         genericMessageDetails: genericMessageDetails)
+    }
+    
+    func decryptMessageContent(_ content: String) throws -> String {
+        try decrypterService.decryptText(content)
     }
     
     func getMessageDisplayTypeFor(coreDataMessageType: CoreDataMessageTypeWrapper,
@@ -725,8 +729,9 @@ private extension CoreDataMessagingStorageService {
         case .reply:
             guard let decryptedContent,
                   let decryptedData = CoreDataMessageReplyDetails.objectFromJSONString(decryptedContent),
+                  let decryptedDataContent = try? decryptMessageContent(decryptedData.content),
                   let displayType = getMessageDisplayTypeFor(coreDataMessageType: decryptedData.contentMessageType,
-                                                             decryptedContent: decryptedData.content,
+                                                             decryptedContent: decryptedDataContent,
                                                              genericMessageDetails: nil) else { return nil }
             let reactionDisplayInfo = MessagingChatMessageReplyTypeDisplayInfo(contentType: displayType,
                                                                                messageId: decryptedData.messageId)
@@ -772,7 +777,7 @@ private extension CoreDataMessagingStorageService {
             return try decrypterService.encryptText(content)
         case .reply(let info):
             let messageContent = try getEncryptedContentToSaveToCoreDataMessage(from: info.contentType)
-            let contentMessageType = CoreDataMessageTypeWrapper.valueFor(messageType)
+            let contentMessageType = CoreDataMessageTypeWrapper.valueFor(info.contentType)
             let content = try CoreDataMessageReplyDetails(content: messageContent,
                                                           contentMessageType: contentMessageType,
                                                           messageId: info.messageId).jsonStringThrowing()
