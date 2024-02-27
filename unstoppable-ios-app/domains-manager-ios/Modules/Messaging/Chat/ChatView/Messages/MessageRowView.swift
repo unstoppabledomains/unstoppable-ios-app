@@ -62,34 +62,41 @@ private extension MessageRowView {
     
     @ViewBuilder
     func messageContentView() -> some View {
-        contentViewFor(messageType: message.type,
-                       referenceMessageId: nil)
+        MessageRowContentView(message: message,
+                              messageType: message.type,
+                              referenceMessageId: nil)
     }
     
-    @ViewBuilder
-    func contentViewFor(messageType: MessagingChatMessageDisplayType,
-                        referenceMessageId: String?) -> some View {
-        switch messageType {
-        case .text(let info):
-            TextMessageRowView(message: message,
-                               info: info, 
-                               referenceMessageId: referenceMessageId)
-        case .imageData(let info):
-            ImageMessageRowView(message: message,
-                                image: info.image)
-        case .imageBase64(let info):
-            ImageMessageRowView(message: message,
-                                image: info.image)
-        case .remoteContent:
-            RemoteContentMessageRowView(sender: sender)
-        case .unknown(let info):
-            UnknownMessageRowView(message: message,
-                                  info: info)
-        case .reply(let info):
-            contentViewFor(messageType: info.contentType,
-                           referenceMessageId: info.messageId)
-        case .reaction(let info):
-            Text(info.content)
+    struct MessageRowContentView: View {
+        
+        let message: MessagingChatMessageDisplayInfo
+        let messageType: MessagingChatMessageDisplayType
+        let referenceMessageId: String?
+        
+        var body: some View {
+            switch messageType {
+            case .text(let info):
+                TextMessageRowView(message: message,
+                                   info: info,
+                                   referenceMessageId: referenceMessageId)
+            case .imageData(let info):
+                ImageMessageRowView(message: message,
+                                    image: info.image)
+            case .imageBase64(let info):
+                ImageMessageRowView(message: message,
+                                    image: info.image)
+            case .remoteContent:
+                RemoteContentMessageRowView(sender: message.senderType)
+            case .unknown(let info):
+                UnknownMessageRowView(message: message,
+                                      info: info)
+            case .reply(let info):
+                MessageRowContentView(message: message,
+                                      messageType: info.contentType,
+                                      referenceMessageId: info.messageId)
+            case .reaction(let info):
+                Text(info.content)
+            }
         }
     }
     

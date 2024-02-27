@@ -458,10 +458,9 @@ private extension ChatViewModel {
         isLoadingMessages = true
         Task {
             do {
-                let unreadMessages = try await messagingService.getMessagesForChat(chat,
-                                                                                   before: message,
-                                                                                   cachedOnly: false,
-                                                                                   limit: fetchLimit)
+                let unreadMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                               beforeMessage: message)
+                
                 await addMessages(unreadMessages, scrollToBottom: false)
             } catch {
                 self.error = error
@@ -480,10 +479,10 @@ private extension ChatViewModel {
                 guard let lastMessage = getLatestMessageToLoadMore() else { return }
                 
                 do {
-                    let newMessages = try await messagingService.getMessagesForChat(chat,
-                                                                                    before: lastMessage,
-                                                                                    cachedOnly: false,
-                                                                                    limit: fetchLimit)
+                    
+                    let newMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                                beforeMessage: lastMessage)
+                    
                     await addMessages(newMessages, scrollToBottom: false)
                 } catch { break }
             }
