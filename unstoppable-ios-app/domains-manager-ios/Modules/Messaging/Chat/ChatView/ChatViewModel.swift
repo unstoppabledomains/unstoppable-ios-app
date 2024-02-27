@@ -65,7 +65,9 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
             }
         }.store(in: &cancellables)
         $messageToReply.sink { [weak self] _ in
-            self?.setIfUserCanSendAttachments()
+            DispatchQueue.main.async {
+                self?.setIfUserCanSendAttachments()
+            }
         }.store(in: &cancellables)
         chatState = .loading
         setupTitle()

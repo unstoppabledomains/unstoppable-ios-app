@@ -275,14 +275,20 @@ private extension MessageRowView {
 
         let message: MessagingChatMessageDisplayInfo
         @State private var offset: CGFloat = 0
-        private let offsetToStartReply: CGFloat = 50
+        @State private var didNotifyWithHapticForCurrentSwipeSession: Bool = false
+        private let offsetToStartReply: CGFloat = 100
+        private var progressToStartReply: CGFloat { abs(offset) / offsetToStartReply }
         
         func body(content: Content) -> some View {
             if message.senderType.isThisUser {
                 content
             } else {
-                content
-                    .animation(.default, value: offset)
+                HStack(spacing: 10) {
+                    content
+                    replyIndicatorView()
+                    Spacer()
+                }
+                    .animation(.linear, value: offset)
                     .offset(x: offset)
                     .simultaneousGesture(
                         DragGesture()
@@ -297,6 +303,23 @@ private extension MessageRowView {
             }
         }
         
+        @ViewBuilder
+        func replyIndicatorView() -> some View {
+            Image(systemName: "arrowshape.turn.up.left")
+                .foregroundStyle(.white)
+                .padding(.init(8))
+                .background(Color.white.opacity(0.2))
+                .clipShape(Circle())
+                .overlay {
+                    Circle()
+                        .stroke(lineWidth: 0.5)
+                        .foregroundStyle(Color.white.opacity(0.3))
+                    
+                }
+                .offset(y: -30)
+                .opacity(progressToStartReply)
+        }
+        
         private func calculateOffsetFor(xTranslation: CGFloat) {
             if xTranslation >= 0 {
                 offset = 0
@@ -308,6 +331,10 @@ private extension MessageRowView {
             if absXTranslation <= frictionlessOffset {
                 offset = -absXTranslation
             } else {
+                if !didNotifyWithHapticForCurrentSwipeSession {
+                    Vibration.success.vibrate()
+                    didNotifyWithHapticForCurrentSwipeSession = true
+                }
                 offset = -(frictionlessOffset + (absXTranslation - frictionlessOffset) / 3)
             }
         }
@@ -317,6 +344,7 @@ private extension MessageRowView {
                 didSwipeToReply()
             }
             resetOffset()
+            didNotifyWithHapticForCurrentSwipeSession = false
         }
         
         private func isSwipeOffsetEnoughToReply() -> Bool {
@@ -325,13 +353,10 @@ private extension MessageRowView {
         
         private func didSwipeToReply() {
             viewModel.handleChatMessageAction(.reply(message))
-            Vibration.success.vibrate()
         }
         
         private func resetOffset() {
-            withAnimation {
-                offset = .zero
-            }
+            offset = .zero
         }
     }
 }

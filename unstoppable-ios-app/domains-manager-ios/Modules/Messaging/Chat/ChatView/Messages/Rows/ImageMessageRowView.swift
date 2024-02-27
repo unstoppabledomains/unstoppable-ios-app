@@ -58,7 +58,7 @@ struct ImageMessageRowView: View {
 private extension ImageMessageRowView {
     func imageSize() -> CGSize {
         if let imageSize = image?.size {
-            let maxSize: CGFloat = (294/390) * UIScreen.main.bounds.width
+            let maxSize: CGFloat = (224/390) * UIScreen.main.bounds.width
             
             if imageSize.width > imageSize.height {
                 let height = maxSize * (imageSize.height / imageSize.width)
