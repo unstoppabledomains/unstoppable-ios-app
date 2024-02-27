@@ -137,9 +137,11 @@ private extension TextMessageRowView {
 private extension TextMessageRowView {
     @ViewBuilder
     func replyReferenceView() -> some View {
-        if let referenceMessageId {
+        if let referenceMessageId,
+           let message = viewModel.getReferenceMessageWithId(referenceMessageId) {
             Button {
-                
+                UDVibration.buttonTap.vibrate()
+                viewModel.didTapJumpToMessage(message)
             } label: {
                 HStack(spacing: 2) {
                     Line(direction: .vertical)
@@ -150,9 +152,9 @@ private extension TextMessageRowView {
                         .offset(x: -6)
                         .frame(height: 30)
                     VStack(alignment: .leading) {
-                        Text("Hello there")
+                        Text(message.senderType.userDisplayInfo.displayName)
                             .font(.currentFont(size: 14, weight: .semibold))
-                        Text("Hello there")
+                        Text(message.type.getContentDescriptionText())
                             .font(.currentFont(size: 14))
                     }
                     .lineLimit(1)

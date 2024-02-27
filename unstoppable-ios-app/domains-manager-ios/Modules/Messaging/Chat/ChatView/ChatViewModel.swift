@@ -11,6 +11,8 @@ import Combine
 @MainActor
 final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     
+    typealias LoadMoreMessagesTask = Task<[MessagingChatMessageDisplayInfo], Error>
+    
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
@@ -45,6 +47,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
     private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
     private var cancellables: Set<AnyCancellable> = []
+    private var loadMoreMessagesTask: LoadMoreMessagesTask?
 
     init(profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
@@ -95,8 +98,7 @@ extension ChatViewModel {
         }
         
         if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
-           let last = messagesCache.lazy.sorted(by: { $0.time > $1.time }).last,
-           !last.isFirstInChat {
+           let last = getLatestMessageToLoadMore() {
             loadMoreMessagesBefore(message: last)
         }
     }
@@ -210,10 +212,35 @@ extension ChatViewModel {
     func didTapRemoveReplyButton() {
         messageToReply = nil
     }
+    
+    func getReferenceMessageWithId(_ messageId: String) -> MessagingChatMessageDisplayInfo? {
+        if let message = messages.first(where: { $0.id == messageId }) {
+            return message
+        } else {
+            loadMessagesToReach(messageId: messageId)
+            return nil
+        }
+    }
+    
+    func didTapJumpToMessage(_ message: MessagingChatMessageDisplayInfo) {
+        scrollToMessage = message
+    }
 }
 
 // MARK: - Private methods
 private extension ChatViewModel {
+    func getLastMessageInCache() -> MessagingChatMessageDisplayInfo? {
+        messagesCache.lazy.sorted(by: { $0.time > $1.time }).last
+    }
+    
+    func getLatestMessageToLoadMore() -> MessagingChatMessageDisplayInfo? {
+        if let message = getLastMessageInCache(),
+           !message.isFirstInChat {
+            return message
+        }
+        return nil
+    }
+    
     func showMentionSuggestions(using listOfGroupParticipants: [MessagingChatUserDisplayInfo],
                                 mention: MessageMentionString) {
         let mentionUsername = mention.mentionWithoutPrefix.lowercased()
@@ -441,6 +468,45 @@ private extension ChatViewModel {
             }
             isLoadingMessages = false
         }
+    }
+    
+    func loadMessagesToReach(messageId: String) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            isLoadingMessages = true
+
+            while messages.first(where: { $0.id == messageId }) == nil {
+                guard let lastMessage = getLatestMessageToLoadMore() else { return }
+                
+                do {
+                    let newMessages = try await messagingService.getMessagesForChat(chat,
+                                                                                    before: lastMessage,
+                                                                                    cachedOnly: false,
+                                                                                    limit: fetchLimit)
+                    await addMessages(newMessages, scrollToBottom: false)
+                } catch { break }
+            }
+            
+            isLoadingMessages = false
+        }
+    }
+    
+    func createTaskAndLoadMoreMessagesIn(chat: MessagingChatDisplayInfo,
+                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]{
+        if let loadMoreMessagesTask {
+            return try await loadMoreMessagesTask.value
+        }
+        let task: Task<[MessagingChatMessageDisplayInfo], Error> = Task {
+            try await messagingService.getMessagesForChat(chat,
+                                                          before: beforeMessage,
+                                                          cachedOnly: false,
+                                                          limit: fetchLimit)
+        }
+        self.loadMoreMessagesTask = task
+        let result = try await task.value
+        loadMoreMessagesTask = nil
+        return result
     }
    
     func reloadCachedMessages() {

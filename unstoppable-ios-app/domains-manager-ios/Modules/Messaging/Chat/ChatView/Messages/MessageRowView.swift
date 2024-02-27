@@ -88,8 +88,8 @@ private extension MessageRowView {
         case .reply(let info):
             contentViewFor(messageType: info.contentType,
                            referenceMessageId: info.messageId)
-        default:
-            Text("Hello world")
+        case .reaction(let info):
+            Text(info.content)
         }
     }
     
