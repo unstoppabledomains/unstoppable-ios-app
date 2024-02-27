@@ -43,6 +43,10 @@ struct MessagingChatMessageDisplayInfo: Hashable {
 
 // MARK: - Open methods
 extension MessagingChatMessageDisplayInfo {
+    var isFailedMessage: Bool {
+        deliveryState == .failedToSend
+    }
+    
     enum DeliveryState: Int {
         case delivered, sending, failedToSend
     }

@@ -55,18 +55,25 @@ struct MessageRowView: View {
 // MARK: - Private methods
 private extension MessageRowView {
     var isFailedMessage: Bool {
-        message.deliveryState == .failedToSend
+        message.isFailedMessage
     }
     var sender: MessagingChatSender { message.senderType }
     var isThisUser: Bool { sender.isThisUser }
     
     @ViewBuilder
     func messageContentView() -> some View {
-        switch message.type {
+        contentViewFor(messageType: message.type,
+                       referenceMessageId: nil)
+    }
+    
+    @ViewBuilder
+    func contentViewFor(messageType: MessagingChatMessageDisplayType,
+                        referenceMessageId: String?) -> some View {
+        switch messageType {
         case .text(let info):
-            TextMessageRowView(message: message, 
-                               info: info,
-                               isFailed: isFailedMessage)
+            TextMessageRowView(message: message,
+                               info: info, 
+                               referenceMessageId: referenceMessageId)
         case .imageData(let info):
             ImageMessageRowView(message: message,
                                 image: info.image)
@@ -78,6 +85,9 @@ private extension MessageRowView {
         case .unknown(let info):
             UnknownMessageRowView(message: message,
                                   info: info)
+        case .reply(let info):
+            contentViewFor(messageType: info.contentType,
+                           referenceMessageId: info.messageId)
         default:
             Text("Hello world")
         }
@@ -363,11 +373,17 @@ private extension MessageRowView {
 
 #Preview {
     let reactions = MockEntitiesFabric.Reactions.reactionsToTest
-    let message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello @oleg.x, here's the link: https://google.com",
+    var message = MockEntitiesFabric.Messaging.createTextMessage(text: "Hello @oleg.x, here's the link: https://google.com",
                                                                  isThisUser: false,
                                                                  deliveryState: .delivered,
                                                                  reactions: reactions)
+    message.type = .reply(.init(contentType: message.type, messageId: "1"))
     return MessageRowView(message: message,
                    isGroupChatMessage: true)
+    .environmentObject(ChatViewModel(profile: .init(id: "",
+                                            wallet: "",
+                                            serviceIdentifier: .push),
+                             conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
+                             router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
     .padding()
 }
