@@ -280,7 +280,7 @@ private extension MessageRowView {
         private var progressToStartReply: CGFloat { abs(offset) / offsetToStartReply }
         
         func body(content: Content) -> some View {
-            if message.senderType.isThisUser {
+            if message.senderType.isThisUser || !viewModel.isAbleToReply {
                 content
             } else {
                 HStack(spacing: 10) {

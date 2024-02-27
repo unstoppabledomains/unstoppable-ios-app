@@ -31,10 +31,8 @@ struct UnknownMessageRowView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .displayError($error)
         .contextMenu {
-            if !sender.isThisUser {
-                MessageActionReplyButtonView(message: message)
-                MessageActionBlockUserButtonView(sender: sender)
-            }
+            MessageActionReplyButtonView(message: message)
+            MessageActionBlockUserButtonView(sender: sender)
         }
     }
 }

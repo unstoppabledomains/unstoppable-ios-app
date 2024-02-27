@@ -37,6 +37,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
     var isGroupChatMessage: Bool { conversationState.isGroupConversation }
+    var isAbleToReply: Bool { isGroupChatMessage }
     
     var analyticsName: Analytics.ViewName { .chatDialog }
     
@@ -203,7 +204,6 @@ extension ChatViewModel {
     }
     
     func didTapJumpToReplyButton() {
-        scrollToMessage = nil
         scrollToMessage = messageToReply
     }
     

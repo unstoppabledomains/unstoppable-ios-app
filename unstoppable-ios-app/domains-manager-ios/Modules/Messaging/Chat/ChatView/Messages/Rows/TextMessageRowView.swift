@@ -29,16 +29,12 @@ struct TextMessageRowView: View {
                 return .discarded
             })
             .contextMenu {
-                if !sender.isThisUser {
-                    MessageActionReplyButtonView(message: message)
-                }
+                MessageActionReplyButtonView(message: message)
                 Button {
                     viewModel.handleChatMessageAction(.copyText(info.text))
                 } label: {
                     Label(String.Constants.copy.localized(), systemImage: "doc.on.doc")
                 }
-                
-                
                 if !sender.isThisUser {
                     Divider()
                     MessageActionBlockUserButtonView(sender: sender)

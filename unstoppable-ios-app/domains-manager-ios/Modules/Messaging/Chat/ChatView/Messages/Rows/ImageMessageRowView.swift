@@ -33,9 +33,7 @@ struct ImageMessageRowView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contextMenu {
-            if !sender.isThisUser {
-                MessageActionReplyButtonView(message: message)
-            }
+            MessageActionReplyButtonView(message: message)
             if let image = self.image {
                 Button {
                     viewModel.handleChatMessageAction(.saveImage(image))

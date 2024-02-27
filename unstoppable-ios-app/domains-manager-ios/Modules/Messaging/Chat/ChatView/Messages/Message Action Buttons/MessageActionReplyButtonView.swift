@@ -14,10 +14,13 @@ struct MessageActionReplyButtonView: View {
     let message: MessagingChatMessageDisplayInfo
     
     var body: some View {
-        Button {
-            viewModel.handleChatMessageAction(.reply(message))
-        } label: {
-            Label(String.Constants.reply.localized(), systemImage: "arrowshape.turn.up.left.fill")
+        if viewModel.isAbleToReply,
+           !message.senderType.isThisUser {
+            Button {
+                viewModel.handleChatMessageAction(.reply(message))
+            } label: {
+                Label(String.Constants.reply.localized(), systemImage: "arrowshape.turn.up.left.fill")
+            }
         }
     }
 }

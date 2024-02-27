@@ -15,9 +15,7 @@ struct RemoteContentMessageRowView: View {
         ProgressView()
             .squareFrame(50)
             .contextMenu {
-                if !sender.isThisUser {
-                    MessageActionBlockUserButtonView(sender: sender)
-                }
+                MessageActionBlockUserButtonView(sender: sender)
             }
     }
 }
