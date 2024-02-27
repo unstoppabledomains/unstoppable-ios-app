@@ -41,6 +41,11 @@ enum PushEnvironment {
     struct PushMessageReactionContent: Codable {
         let content: String
         let reference: String
+        
+        enum CodingKeys: String, CodingKey {
+            case content
+            case reference = "refrence"
+        }
     }
     
     struct PushMessageReplyContent: Codable {
