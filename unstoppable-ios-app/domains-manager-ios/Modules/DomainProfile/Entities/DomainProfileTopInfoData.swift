@@ -13,12 +13,10 @@ struct DomainProfileTopInfoData {
     var imagePathPublic: Bool
     var coverPathPublic: Bool
     let social: DomainProfileSocialInfo
-    let isUDBlue: Bool
     
     init(profile: SerializedUserDomainProfile) {
         imagePathPublic = profile.profile.imagePathPublic
         coverPathPublic = profile.profile.coverPathPublic
-        isUDBlue = profile.profile.udBlue ?? false
         social = profile.social
         
         if let avatarPath = profile.profile.imagePath,

@@ -113,8 +113,7 @@ extension MockEntitiesFabric {
                                           imageType: nil,
                                           coverPath: nil,
                                           phoneNumber: nil,
-                                          domainPurchased: nil,
-                                          udBlue: false)
+                                          domainPurchased: nil)
         }
         
         static func createPublicProfileAttributes(displayName: String = "Oleg Kuplin",
@@ -128,8 +127,7 @@ extension MockEntitiesFabric {
                                           imageType: .onChain,
                                           coverPath: coverPath,
                                           phoneNumber: nil,
-                                          domainPurchased: nil,
-                                          udBlue: false)
+                                          domainPurchased: nil)
         }
         
         static func createSocialAccounts() -> SocialAccounts {

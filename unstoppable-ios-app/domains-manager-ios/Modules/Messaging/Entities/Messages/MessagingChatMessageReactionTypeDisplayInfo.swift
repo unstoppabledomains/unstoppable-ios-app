@@ -11,4 +11,3 @@ struct MessagingChatMessageReactionTypeDisplayInfo: Hashable {
     let content: String
     let messageId: String
 }
-

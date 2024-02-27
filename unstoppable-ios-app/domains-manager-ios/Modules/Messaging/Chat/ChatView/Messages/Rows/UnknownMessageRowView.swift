@@ -11,7 +11,7 @@ struct UnknownMessageRowView: View {
     
     let message: MessagingChatMessageDisplayInfo
     let info: MessagingChatMessageUnknownTypeDisplayInfo
-    let sender: MessagingChatSender
+    var sender: MessagingChatSender { message.senderType }
     @State private var error: Error?
 
     var body: some View {
@@ -31,9 +31,8 @@ struct UnknownMessageRowView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .displayError($error)
         .contextMenu {
-            if !sender.isThisUser {
-                MessageActionBlockUserButtonView(sender: sender)
-            }
+            MessageActionReplyButtonView(message: message)
+            MessageActionBlockUserButtonView(sender: sender)
         }
     }
 }
@@ -108,5 +107,5 @@ private extension UnknownMessageRowView {
 
 #Preview {
     UnknownMessageRowView(message: MockEntitiesFabric.Messaging.createUnknownContentMessage(isThisUser: false),
-                          info: .init(fileName: "Filename", type: "zip"), sender: MockEntitiesFabric.Messaging.chatSenderFor(isThisUser: false))
+                          info: .init(fileName: "Filename", type: "zip"))
 }

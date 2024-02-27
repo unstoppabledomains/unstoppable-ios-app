@@ -836,6 +836,25 @@ extension Endpoint {
         )
     }
     
+    static func uploadRemoteAttachment(for domain: DomainItem,
+                                       with timedSignature: PersistedTimedSignature,
+                                       body: String) throws -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x/attachment
+        let expires = "\(timedSignature.expires)"
+        let signature = timedSignature.sign
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expires,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/user/\(domain.name)/attachment",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
 }
 
 // MARK: - Open methods

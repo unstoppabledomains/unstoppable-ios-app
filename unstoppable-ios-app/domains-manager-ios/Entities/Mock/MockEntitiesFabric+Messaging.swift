@@ -294,7 +294,6 @@ extension MockEntitiesFabric {
                                        isThisUser: Bool,
                                        deliveryState: MessagingChatMessageDisplayInfo.DeliveryState = .delivered) -> MessagingChatMessageDisplayInfo {
             let sender = chatSenderFor(isThisUser: isThisUser)
-            
             var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
             imageDetails.image = image
             return MessagingChatMessageDisplayInfo(id: id,
@@ -368,6 +367,13 @@ extension MockEntitiesFabric {
                                                  withPFP: Bool) -> MessagingChatUserDisplayInfo {
             let pfpURL: URL? = !withPFP ? nil : MockEntitiesFabric.ImageURLs.sunset.url
             return MessagingChatUserDisplayInfo(wallet: wallet, domainName: domainName, pfpURL: pfpURL)
+        }
+        
+        static func suggestingGroupChatMembersDisplayInfo() -> [MessagingChatUserDisplayInfo] {
+            [.init(wallet: "0x1"),
+             .init(wallet: "0x2", domainName: "domain_oleg.x"),
+             .init(wallet: "0x3", rrDomainName: "rr_domain_nick.crypto", pfpURL: MockEntitiesFabric.ImageURLs.sunset.url),
+             .init(wallet: "0x4", domainName: "domain_daniil.x", rrDomainName: "rr_domain_daniil.x", pfpURL: MockEntitiesFabric.ImageURLs.aiAvatar.url)]
         }
     }
 }

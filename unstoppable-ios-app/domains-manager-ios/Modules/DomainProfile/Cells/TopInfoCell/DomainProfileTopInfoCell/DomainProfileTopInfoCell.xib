@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -72,21 +72,12 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udBlueGrayIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gBz-m9-G14">
-                                                <rect key="frame" x="56" y="56" width="24" height="24"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="24" id="SKV-pX-Qde"/>
-                                                    <constraint firstAttribute="width" constant="24" id="vfO-s1-Pxs"/>
-                                                </constraints>
-                                            </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="8KU-Uo-7G0" firstAttribute="leading" secondItem="jcC-lZ-j5C" secondAttribute="leading" id="LCD-rE-dAi"/>
                                             <constraint firstAttribute="trailing" secondItem="8KU-Uo-7G0" secondAttribute="trailing" id="MNG-BG-OB5"/>
-                                            <constraint firstAttribute="bottom" secondItem="gBz-m9-G14" secondAttribute="bottom" id="NMO-BR-tY8"/>
                                             <constraint firstItem="8KU-Uo-7G0" firstAttribute="top" secondItem="jcC-lZ-j5C" secondAttribute="top" id="eVm-4H-iPV"/>
-                                            <constraint firstAttribute="trailing" secondItem="gBz-m9-G14" secondAttribute="trailing" id="lOc-Yy-u3N"/>
                                             <constraint firstAttribute="bottom" secondItem="8KU-Uo-7G0" secondAttribute="bottom" id="sed-dw-MDK"/>
                                         </constraints>
                                     </view>
@@ -188,13 +179,11 @@
                 <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
                 <outlet property="followersButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
                 <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
-                <outlet property="udBlueImageView" destination="gBz-m9-G14" id="jQ5-Pe-gh2"/>
             </connections>
             <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="udBlueGrayIcon" width="25" height="26"/>
         <namedColor name="brandUnstoppableBlue">
             <color red="0.050980392156862744" green="0.40392156862745099" blue="0.99215686274509807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -102,14 +102,7 @@ private extension ChatListChatRowView {
     var currentTitle: String {
         switch chat.type {
         case .private(let messagingPrivateChatDetails):
-            let userInfo = messagingPrivateChatDetails.otherUser
-            
-            
-            if userInfo.rrDomainName == nil {
-                return userInfo.displayName
-            } else {
-                return userInfo.domainName ?? ""
-            }
+            return messagingPrivateChatDetails.otherUser.displayName
         case .group(let messagingGroupChatDetails):
             return messagingGroupChatDetails.displayName
         case .community(let messagingCommunitiesChatDetails):
@@ -119,27 +112,31 @@ private extension ChatListChatRowView {
     
     @ViewBuilder
     func subtitleView() -> some View {
-        if let lastMessage = chat.lastMessage {
-            Text(lastMessageTextFrom(message: lastMessage))
+        if let subtitle = getSubtitleText() {
+            Text(subtitle)
                 .lineLimit(2)
                 .foregroundStyle(Color.foregroundSecondary)
                 .font(.currentFont(size: 14))
         }
     }
     
-    func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
-        switch message.type {
-        case .text(let description):
-            return description.text
-        case .imageBase64, .imageData:
-            return String.Constants.photo.localized()
-        case .unknown:
-            return String.Constants.messageNotSupported.localized()
-        case .remoteContent:
-            return String.Constants.messagingRemoteContent.localized()
-        case .reaction(let info):
-            return info.content
+    func getSubtitleText() -> String? {
+        if let lastMessage = chat.lastMessage {
+            return lastMessageTextFrom(message: lastMessage)
+        } else if case .community(let details) = chat.type,
+                  !details.isJoined {
+            switch details.type {
+            case .badge(let badgeDetailedInfo):
+                let holders = badgeDetailedInfo.usage.holders
+                let holdersKsString = holders.asFormattedKsString
+                return String.Constants.pluralNHolders.localized(holdersKsString, holders)
+            }
         }
+        return nil
+    }
+    
+    func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
+        message.type.getContentDescriptionText()
     }
     
     @ViewBuilder

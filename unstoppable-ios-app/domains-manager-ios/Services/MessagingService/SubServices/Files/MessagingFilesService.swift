@@ -39,14 +39,7 @@ extension MessagingFilesService: MessagingFilesServiceProtocol {
     }
     
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
-        let fileName: String
-        
-        switch message.type {
-        case .text, .imageBase64, .imageData, .remoteContent, .reaction:
-            return nil
-        case .unknown(let info):
-            fileName = info.fileName
-        }
+        guard let fileName = getContentFilenameFor(messageType: message.type) else { return nil }
         
         if let url = getDecryptedDataURLFor(fileName: fileName) {
             return url
@@ -157,6 +150,17 @@ private extension MessagingFilesService {
     
     func directoryPath(for directory: Directory) -> String {
         (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(directory.rawValue)
+    }
+    
+    func getContentFilenameFor(messageType: MessagingChatMessageDisplayType) -> String? {
+        switch messageType {
+        case .text, .imageBase64, .imageData, .remoteContent, .reaction:
+            return nil
+        case .unknown(let info):
+            return info.fileName
+        case .reply(let info):
+            return getContentFilenameFor(messageType: info.contentType)
+        }
     }
 }
 

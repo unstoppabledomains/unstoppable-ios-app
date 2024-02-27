@@ -22,7 +22,6 @@ final class XMTPMessagingAPIService {
     
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
     private let approvedUsersStorage = XMTPApprovedTopicsStorage.shared
-    private let cachedDataHolder = CachedDataHolder()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
                                                     isSupportChatsListPagination: false,
@@ -330,7 +329,7 @@ private extension XMTPMessagingAPIService {
                                                       in: conversation,
                                                       client: client,
                                                       by: senderWallet)
-        case .unknown, .remoteContent, .reaction:
+        case .unknown, .remoteContent, .reaction, .reply:
             throw XMTPServiceError.unsupportedAction
         }
         
@@ -530,69 +529,18 @@ private extension XMTPMessagingAPIService {
         let encryptedAttachment = try RemoteAttachment.encodeEncrypted(content: attachment,
                                                                        codec: AttachmentCodec(),
                                                                        with: client)
-        let url = try await uploadDataToWeb3Storage(encryptedAttachment.payload, by: wallet)
-        let remoteAttachment = try RemoteAttachment(url: url,
+        let url = try await MessagingAPIServiceHelper.uploadDataToWeb3Storage(encryptedAttachment.payload,
+                                                                              ofType: mimeType,
+                                                                              by: wallet)
+        let urlString = url.absoluteString
+        let remoteAttachment = try RemoteAttachment(url: urlString,
                                                     encryptedEncodedContent: encryptedAttachment)
         return try await conversation.send(content: remoteAttachment,
                                            options: .init(contentType: ContentTypeRemoteAttachment))
     }
-    
-    func uploadDataToWeb3Storage(_ data: Data,
-                                 by wallet: HexAddress) async throws -> String {
-        struct Web3StorageResponse: Codable {
-            let carCid: String
-            let cid: String
-        }
-        
-        let token = await getWeb3StorageKey(for: wallet)
-        let url = URL(string: "https://api.web3.storage/upload")!
-        var request = URLRequest(url: url)
-        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.addValue("XMTP", forHTTPHeaderField: "X-NAME")
-        request.httpMethod = "POST"
-        
-        let responseData = try await URLSession.shared.upload(for: request, from: data).0
-        let response = try Web3StorageResponse.objectFromDataThrowing(responseData)
-        
-        return "https://\(response.cid).ipfs.w3s.link"
-    }
-    
+   
     func getXMTPConversationTopicFromChat(_ chat: MessagingChat) -> String {
         chat.displayInfo.id // XMTP Chat's topic = chat's id
-    }
-    
-    func getWeb3StorageKey(for wallet: HexAddress) async -> String {
-        if let cachedKey = await cachedDataHolder.getKeyFor(wallet: wallet) {
-            return cachedKey
-        } else if let domain = try? await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet),
-                  let profile = try? await NetworkService().fetchUserDomainProfile(for: domain, fields: [.profile]),
-                  let storage = profile.storage,
-                  storage.type == .web3 {
-            let key = storage.apiKey
-            await cachedDataHolder.setKey(key, for: wallet)
-            return key
-        }
-        
-        if User.instance.getSettings().isTestnetUsed {
-            return Web3Storage.StagingAPIKey
-        } else {
-            return Web3Storage.ProductionAPIKey
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension XMTPMessagingAPIService {
-    actor CachedDataHolder {
-        var walletsToStorageKeys: [HexAddress : String] = [:]
-        
-        func getKeyFor(wallet: HexAddress) -> String? {
-            walletsToStorageKeys[wallet]
-        }
-        
-        func setKey(_ key: String, for wallet: HexAddress) {
-            walletsToStorageKeys[wallet] = key
-        }
     }
 }
 

@@ -11,6 +11,8 @@ import Combine
 @MainActor
 final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     
+    typealias LoadMoreMessagesTask = Task<[MessagingChatMessageDisplayInfo], Error>
+    
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
@@ -21,18 +23,23 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var isChannelEncrypted: Bool = true
     @Published private(set) var isAbleToContactUser: Bool = true
     @Published private(set) var messages: [MessagingChatMessageDisplayInfo] = []
+    @Published private(set) var listOfGroupParticipants: [MessagingChatUserDisplayInfo] = []
     @Published private(set) var scrollToMessage: MessagingChatMessageDisplayInfo?
     @Published private(set) var messagesCache: Set<MessagingChatMessageDisplayInfo> = []
     @Published private(set) var isLoading = false
-    @Published private(set) var chatState: ChatView.State = .loading
+    @Published private(set) var chatState: ChatView.ChatState = .loading
     @Published private(set) var canSendAttachments = true
     @Published private(set) var placeholder: String = ""
     @Published private(set) var navActions: [ChatView.NavAction] = []
     @Published private(set) var titleType: ChatNavTitleView.TitleType = .walletAddress("")
+    @Published private(set) var suggestingUsers: [MessagingChatUserDisplayInfo] = []
+    @Published private(set) var messageToReply: MessagingChatMessageDisplayInfo? 
+    
     @Published var input: String = ""
     @Published var keyboardFocused: Bool = false
     @Published var error: Error?
     var isGroupChatMessage: Bool { conversationState.isGroupConversation }
+    var isAbleToReply: Bool { isGroupChatMessage }
     
     var analyticsName: Analytics.ViewName { .chatDialog }
     
@@ -40,6 +47,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let serialQueue = DispatchQueue(label: "com.unstoppable.chat.view.serial")
     private var messagesToReactions: [String : Set<MessageReactionDescription>] = [:]
     private var cancellables: Set<AnyCancellable> = []
+    private var loadMoreMessagesTask: LoadMoreMessagesTask?
 
     init(profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
@@ -60,11 +68,17 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
                 self?.scrollToBottom()
             }
         }.store(in: &cancellables)
+        $messageToReply.sink { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.setIfUserCanSendAttachments()
+            }
+        }.store(in: &cancellables)
         chatState = .loading
         setupTitle()
         setupPlaceholder()
-        setupFunctionality()
+        setIfUserCanSendAttachments()
         loadAndShowData()
+        setListOfGroupParticipants()
     }
     
 }
@@ -84,8 +98,7 @@ extension ChatViewModel {
         }
         
         if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
-           let last = messagesCache.lazy.sorted(by: { $0.time > $1.time }).last,
-           !last.isFirstInChat {
+           let last = getLatestMessageToLoadMore() {
             loadMoreMessagesBefore(message: last)
         }
     }
@@ -99,7 +112,12 @@ extension ChatViewModel {
     }
     
     func didPressUnblockButton() {
-        setOtherUser(blocked: false)
+        Task {
+            if case .existingChat(let chat) = conversationState,
+               case .private(let details) = chat.type {
+                _ = (try? await setUser(details.otherUser, in: chat, blocked: true))
+            }
+        }
     }
     
     func additionalActionPressed(_ action: MessageInputView.AdditionalAction) {
@@ -154,20 +172,125 @@ extension ChatViewModel {
                                            parameters: [.chatId : chat.id,
                                                         .wallet: user.wallet])
             Task {
-                isLoading = true
-                try? await setGroupChatUser(user,
-                                            blocked: true,
-                                            chat: chat)
-                isLoading = false
+                try? await setUser(user, in: chat, blocked: true)
             }
         case .sendReaction(let content, let toMessage):
             sendReactionMessage(content, toMessage: toMessage)
+        case .reply(let message):
+            messageToReply = message
+            keyboardFocused = true
         }
     }
     
     func handleExternalLinkPressed(_ url: URL, by sender: MessagingChatSender) {
+        verifyAndHandleExternalLink(url, by: sender)
+    }
+    
+    func showMentionSuggestionsIfNeeded() {
+        let listOfGroupParticipants = listOfGroupParticipants
+        if !listOfGroupParticipants.isEmpty {
+            let components = input.components(separatedBy: " ")
+            if let lastComponent = components.last,
+               let mention = MessageMentionString(string: lastComponent) {
+                showMentionSuggestions(using: listOfGroupParticipants,
+                                       mention: mention)
+            }
+        }
+    }
+    
+    func didSelectMentionSuggestion(user: MessagingChatUserDisplayInfo) {
+        if let nameForMention = user.nameForMention,
+           let mention = MessageMentionString.makeMentionFrom(string: nameForMention) {
+            replaceCurrentInputWithSelectedMention(mention)
+        }
+    }
+    
+    func didTapJumpToReplyButton() {
+        scrollToMessage = messageToReply
+    }
+    
+    func didTapRemoveReplyButton() {
+        messageToReply = nil
+    }
+    
+    func getReferenceMessageWithId(_ messageId: String) -> MessagingChatMessageDisplayInfo? {
+        if let message = messages.first(where: { $0.id == messageId }) {
+            return message
+        } else {
+            loadMessagesToReach(messageId: messageId)
+            return nil
+        }
+    }
+    
+    func didTapJumpToMessage(_ message: MessagingChatMessageDisplayInfo) {
+        scrollToMessage = message
+    }
+}
+
+// MARK: - Private methods
+private extension ChatViewModel {
+    func getLastMessageInCache() -> MessagingChatMessageDisplayInfo? {
+        messagesCache.lazy.sorted(by: { $0.time > $1.time }).last
+    }
+    
+    func getLatestMessageToLoadMore() -> MessagingChatMessageDisplayInfo? {
+        if let message = getLastMessageInCache(),
+           !message.isFirstInChat {
+            return message
+        }
+        return nil
+    }
+    
+    func showMentionSuggestions(using listOfGroupParticipants: [MessagingChatUserDisplayInfo],
+                                mention: MessageMentionString) {
+        let mentionUsername = mention.mentionWithoutPrefix.lowercased()
+        if mentionUsername.isEmpty {
+            suggestingUsers = listOfGroupParticipants
+        } else {
+            suggestingUsers = listOfGroupParticipants.filter {
+                let nameForMention = $0.nameForMention
+                let isMentionFullyTyped = nameForMention == mentionUsername
+                let isUsernameContainMention = nameForMention?.contains(mentionUsername) == true
+                return isUsernameContainMention && !isMentionFullyTyped
+            }
+        }
+    }
+    
+    func replaceCurrentInputWithSelectedMention(_ mention: MessageMentionString) {
+        let separator = " "
+        var userInput = input.components(separatedBy: separator).dropLast()
+        userInput.append(mention.mentionWithPrefix)
+        input = userInput.joined(separator: separator)
+        suggestingUsers.removeAll()
+    }
+    
+    func verifyAndHandleExternalLink(_ url: URL, by sender: MessagingChatSender) {
+        if let domainName = parseMentionDomainNameFrom(url: url) {
+            handleMentionPressedTo(domainName: domainName)
+        } else {
+            handleOtherLinkPressed(url, by: sender)
+        }
+    }
+    
+    func handleMentionPressedTo(domainName: String) {
+        Task {
+            guard let presentationDetails = await DomainProfileLinkValidator.getShowDomainProfilePresentationDetailsFor(domainName: domainName, params: nil) else { return }
+            
+            UDVibration.buttonTap.vibrate()
+            await showDomainProfileWith(presentationDetails: presentationDetails)
+        }
+    }
+    
+    func parseMentionDomainNameFrom(url: URL) -> String? {
+        let string = url.absoluteString
+        if string.first == "@" {
+            return String(string.dropFirst())
+        }
+        return nil
+    }
+    
+    func handleOtherLinkPressed(_ url: URL, by sender: MessagingChatSender) {
         guard case .existingChat(let chat) = conversationState else { return }
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
         
         keyboardFocused = false
         
@@ -175,32 +298,35 @@ extension ChatViewModel {
         case .thisUser:
             openLinkOrDomainProfile(url)
         case .otherUser(let otherUser):
-            Task {
-                do {
-                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
-                    await view.dismissPullUpMenu()
-                    
-                    switch action {
-                    case .handle:
-                        openLinkOrDomainProfile(url)
-                    case .block:
-                        switch chat.type {
-                        case .private:
-                            try await messagingService.setUser(in: .chat(chat), blocked: true)
-                        case .group, .community:
-                            try await setGroupChatUser(otherUser, blocked: true, chat: chat)
-                        }
-                        
-                        view.cNavigationController?.popViewController(animated: true)
-                    }
-                } catch { }
-            }
+            handleLinkFromOtherUserPressed(url,
+                                           in: chat,
+                                           by: otherUser)
         }
     }
-}
+    
+    func handleLinkFromOtherUserPressed(_ url: URL,
+                                        in chat: MessagingChatDisplayInfo,
+                                        by otherUser: MessagingChatUserDisplayInfo) {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
 
-// MARK: - Private methods
-private extension ChatViewModel {
+        Task {
+            do {
+                let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                await view.dismissPullUpMenu()
+                
+                switch action {
+                case .handle:
+                    openLinkOrDomainProfile(url)
+                case .block:
+                    try await setUser(otherUser, in: chat, blocked: true)
+                    view.cNavigationController?.popViewController(animated: true)
+                }
+            } catch { }
+        }
+    }
+    
+//    func blockUser(_ user: MessagingChatUserDisplayInfo)
+    
     func choosePhotoButtonPressed() {
         keyboardFocused = false
         guard let view = appContext.coreAppCoordinator.topVC else { return  }
@@ -223,6 +349,23 @@ private extension ChatViewModel {
         })
     }
     
+    func setListOfGroupParticipants() {
+        if case .existingChat(let chat) = conversationState {
+            switch chat.type {
+            case .private:
+                return
+            case .group(let messagingGroupChatDetails):
+                setListOfGroupParticipantsFrom(users: messagingGroupChatDetails.members)
+            case .community(let messagingCommunitiesChatDetails):
+                setListOfGroupParticipantsFrom(users: messagingCommunitiesChatDetails.members)
+            }
+        }
+    }
+    
+    func setListOfGroupParticipantsFrom(users: [MessagingChatUserDisplayInfo]) {
+        self.listOfGroupParticipants = users
+    }
+    
     func setupTitle() {
         switch conversationState {
         case .existingChat(let chat):
@@ -241,7 +384,7 @@ private extension ChatViewModel {
     }
     
     func setupTitleFor(userInfo: MessagingChatUserDisplayInfo) {
-        if let domainName = userInfo.rrDomainName ?? userInfo.domainName {
+        if let domainName = userInfo.anyDomainName {
             titleType = .domainName(domainName)
         } else {
             titleType = .walletAddress(userInfo.wallet)
@@ -258,9 +401,19 @@ private extension ChatViewModel {
         }
     }
     
-    func setupFunctionality() {
-        if isCommunityChat() {
-            canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+    func setIfUserCanSendAttachments() {
+        let isReplying = self.messageToReply != nil
+        let isProfileHasDomain = appContext.walletsDataService.wallets.findWithAddress(profile.wallet)?.rrDomain != nil
+        if !isReplying,
+           isProfileHasDomain {
+            if isCommunityChat() {
+                let isCommunityMediaEnabled = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+                canSendAttachments = isCommunityMediaEnabled
+            } else {
+                canSendAttachments = true
+            }
+        } else {
+            canSendAttachments = false
         }
     }
     
@@ -305,16 +458,54 @@ private extension ChatViewModel {
         isLoadingMessages = true
         Task {
             do {
-                let unreadMessages = try await messagingService.getMessagesForChat(chat,
-                                                                                   before: message,
-                                                                                   cachedOnly: false,
-                                                                                   limit: fetchLimit)
+                let unreadMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                               beforeMessage: message)
+                
                 await addMessages(unreadMessages, scrollToBottom: false)
             } catch {
                 self.error = error
             }
             isLoadingMessages = false
         }
+    }
+    
+    func loadMessagesToReach(messageId: String) {
+        guard case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            isLoadingMessages = true
+
+            while messages.first(where: { $0.id == messageId }) == nil {
+                guard let lastMessage = getLatestMessageToLoadMore() else { return }
+                
+                do {
+                    
+                    let newMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                                beforeMessage: lastMessage)
+                    
+                    await addMessages(newMessages, scrollToBottom: false)
+                } catch { break }
+            }
+            
+            isLoadingMessages = false
+        }
+    }
+    
+    func createTaskAndLoadMoreMessagesIn(chat: MessagingChatDisplayInfo,
+                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]{
+        if let loadMoreMessagesTask {
+            return try await loadMoreMessagesTask.value
+        }
+        let task: Task<[MessagingChatMessageDisplayInfo], Error> = Task {
+            try await messagingService.getMessagesForChat(chat,
+                                                          before: beforeMessage,
+                                                          cachedOnly: false,
+                                                          limit: fetchLimit)
+        }
+        self.loadMoreMessagesTask = task
+        let result = try await task.value
+        loadMoreMessagesTask = nil
+        return result
     }
    
     func reloadCachedMessages() {
@@ -535,7 +726,7 @@ private extension ChatViewModel {
                     case .unblocked, .currentUserIsBlocked:
                         actions.append(.init(type: .block, callback: { [weak self] in
                                                             self?.logButtonPressedAnalyticEvents(button: .block)
-                            self?.didPressBlockButton()
+                            self?.didPressBlockPrivateChatButton(user: details.otherUser, chat: chat)
                         }))
                     case .bothBlocked, .otherUserIsBlocked:
                         Void()
@@ -652,26 +843,30 @@ private extension ChatViewModel {
             await appContext.pullUpViewService.showCommunityBlockedUsersListPullUp(communityDetails: communityDetails,
                                                                                    by: profile,
                                                                                    unblockCallback: { [weak self] user in
-                Task {
-                    self?.isLoading = true
-                    if let chat = try? await self?.setGroupChatUser(user,
-                                                                    blocked: false,
-                                                                    chat: chat),
-                       case .community(let communityDetails) = chat.type {
-                        if communityDetails.blockedUsersList.isEmpty {
-                            await view.dismissPullUpMenu()
-                        } else {
-                            self?.didPressViewBlockedUsersListButton(communityDetails: communityDetails, in: chat)
-                        }
-                    }
-                    self?.isLoading = false
-                }
+                self?.didPressUnblockGroupChat(user: user, in: chat)
             },
                                                                                    in: view)
         }
     }
     
-    func didPressBlockButton() {
+    func didPressUnblockGroupChat(user: MessagingChatUserDisplayInfo,
+                                  in chat: MessagingChatDisplayInfo) {
+        Task {
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+            if let chat = try? await setUser(user, in: chat, blocked: false),
+               case .community(let communityDetails) = chat.type {
+                if communityDetails.blockedUsersList.isEmpty {
+                    await view.dismissPullUpMenu()
+                } else {
+                    didPressViewBlockedUsersListButton(communityDetails: communityDetails, in: chat)
+                }
+            }
+        }
+    }
+    
+    func didPressBlockPrivateChatButton(user: MessagingChatUserDisplayInfo,
+                                        chat: MessagingChatDisplayInfo) {
         Task {
             do {
                 guard let view = appContext.coreAppCoordinator.topVC else { return }
@@ -679,7 +874,7 @@ private extension ChatViewModel {
                 try await appContext.pullUpViewService.showMessagingBlockConfirmationPullUp(blockUserName: conversationState.userInfo?.displayName ?? "",
                                                                                             in: view)
                 await view.dismissPullUpMenu()
-                setOtherUser(blocked: true)
+                _ = (try? await setUser(user, in: chat, blocked: true))
             } catch { }
         }
     }
@@ -699,20 +894,36 @@ private extension ChatViewModel {
         }
     }
     
-    func setOtherUser(blocked: Bool) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        
-        Task {
-            do {
-                isLoading = true
-                try await messagingService.setUser(in: .chat(chat), blocked: blocked)
-                await updateUIForChatApprovedState()
-            } catch {
-                self.error = error
+    @discardableResult
+    func setUser(_ user: MessagingChatUserDisplayInfo,
+                 in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws -> MessagingChatDisplayInfo? {
+        isLoading = true
+
+        do {
+            let updatedChat: MessagingChatDisplayInfo?
+            switch chat.type {
+            case .private:
+                updatedChat = try await setPrivateChatUser(blocked: blocked,
+                                                           in: chat)
+            case .group, .community:
+                updatedChat = try await setGroupChatUser(user, blocked: blocked, chat: chat)
             }
-            
+            await updateUIForChatApprovedState()
             isLoading = false
+            return updatedChat
+        } catch {
+            self.error = error
+            isLoading = false
+            throw error
         }
+    }
+    
+    @discardableResult
+    func setPrivateChatUser(blocked: Bool,
+                            in chat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo? {
+        try await messagingService.setUser(in: .chat(chat), blocked: blocked)
+        return nil
     }
     
     @discardableResult
@@ -741,7 +952,6 @@ private extension ChatViewModel {
             } else {
                 await addMessages(Array(messagesCache), scrollToBottom: false)
             }
-            await setupBarButtons()
             return chat
         case .private:
             return nil
@@ -750,21 +960,25 @@ private extension ChatViewModel {
     
     func openLinkOrDomainProfile(_ url: URL) {
         Task {
-            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(url: url)
-            
-            switch showDomainResult {
-            case .none:
+            if let presentationDetails = await DomainProfileLinkValidator.getShowDomainProfilePresentationDetailsFor(url: url) {
+                await showDomainProfileWith(presentationDetails: presentationDetails)
+            } else {
                 appContext.coreAppCoordinator.topVC?.openLink(.generic(url: url.absoluteString))
-            case .showUserDomainProfile(let domain, let wallet, let action):
-                await router.showDomainProfile(domain,
-                                               wallet: wallet,
-                                               preRequestedAction: action,
-                                               dismissCallback: nil)
-            case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
-                router.showPublicDomainProfile(of: publicDomainDisplayInfo,
-                                               by: wallet,
-                                               preRequestedAction: action)
             }
+        }
+    }
+    
+    func showDomainProfileWith(presentationDetails: DomainProfileLinkValidator.ShowDomainProfilePresentationDetails) async {
+        switch presentationDetails {
+        case .showUserDomainProfile(let domain, let wallet, let action):
+            await router.showDomainProfile(domain,
+                                           wallet: wallet,
+                                           preRequestedAction: action,
+                                           dismissCallback: nil)
+        case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
+            router.showPublicDomainProfile(of: publicDomainDisplayInfo,
+                                           by: wallet,
+                                           preRequestedAction: action)
         }
     }
 }
@@ -786,7 +1000,7 @@ private extension ChatViewModel {
     func sendTextMesssage(_ text: String) {
         let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
-        sendMessageOfType(messageType)
+        wrapMessageInReplyIfNeededAndSend(messageType: messageType)
     }
     
     func sendReactionMessage(_ content: String, toMessage: MessagingChatMessageDisplayInfo) {
@@ -801,9 +1015,21 @@ private extension ChatViewModel {
         sendMessageOfType(.imageData(imageTypeDetails))
     }
     
+    func wrapMessageInReplyIfNeededAndSend(messageType: MessagingChatMessageDisplayType) {
+        if let messageToReply {
+            let replyDetails = MessagingChatMessageReplyTypeDisplayInfo(contentType: messageType,
+                                                                        messageId: messageToReply.id)
+            let replyType = MessagingChatMessageDisplayType.reply(replyDetails)
+            sendMessageOfType(replyType)
+        } else {
+            sendMessageOfType(messageType)
+        }
+    }
+    
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         logAnalytic(event: .willSendMessage,
                     parameters: [.messageType: type.analyticName])
+        self.messageToReply = nil
         Task {
             do {
                 var newMessage: MessagingChatMessageDisplayInfo
@@ -860,7 +1086,7 @@ extension ChatViewModel: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats(let chats, let profile):
+            case .chats:
                 return
             case .messagesAdded(let messages, let chatId, let userId):
                 if userId == self.profile.id,
@@ -899,7 +1125,7 @@ extension ChatViewModel: UDFeatureFlagsListener {
         switch flag {
         case .communityMediaEnabled:
             if isCommunityChat() {
-                canSendAttachments = newValue
+                setIfUserCanSendAttachments()
                 reloadCachedMessages()
             }
         default:

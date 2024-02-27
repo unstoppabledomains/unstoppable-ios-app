@@ -94,7 +94,7 @@ private extension DeepLinksService {
                                           params: [URLQueryItem]?,
                                           receivedState: ExternalEventReceivedState) {
         Task {
-            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(domainName: domainName,
+            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfilePresentationDetailsFor(domainName: domainName,
                                                                                                   params: params)
             
             switch showDomainResult {

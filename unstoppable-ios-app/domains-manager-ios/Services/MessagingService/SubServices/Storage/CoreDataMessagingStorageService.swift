@@ -640,12 +640,13 @@ private extension CoreDataMessagingStorageService {
     }
     
     // Message type
-    enum CoreDataMessageTypeWrapper: Int {
+    enum CoreDataMessageTypeWrapper: Int, Codable {
         case text = 0
         case imageBase64 = 1
         case imageData = 2
         case remoteContent = 3
         case reaction = 4
+        case reply = 5
         case unknown = 999
      
         static func valueFor(_ messageType: MessagingChatMessageDisplayType) -> CoreDataMessageTypeWrapper {
@@ -662,6 +663,8 @@ private extension CoreDataMessagingStorageService {
                 return .remoteContent
             case .reaction:
                 return .reaction
+            case .reply:
+                return .reply
             }
         }
     }
@@ -671,38 +674,51 @@ private extension CoreDataMessagingStorageService {
         
         func getDecryptedContent() -> String? {
             guard let messageContent = coreDataMessage.messageContent,
-                  let decrypted = try? decrypterService.decryptText(messageContent) else { return nil }
+                  let decrypted = try? decryptMessageContent(messageContent) else { return nil }
             
             return decrypted
         }
-        
+        let decryptedContent = getDecryptedContent()
+        let genericMessageDetails = coreDataMessage.genericMessageDetails
+        return getMessageDisplayTypeFor(coreDataMessageType: coreDataMessageType,
+                                        decryptedContent: decryptedContent,
+                                        genericMessageDetails: genericMessageDetails)
+    }
+    
+    func decryptMessageContent(_ content: String) throws -> String {
+        try decrypterService.decryptText(content)
+    }
+    
+    func getMessageDisplayTypeFor(coreDataMessageType: CoreDataMessageTypeWrapper,
+                                  decryptedContent: String?,
+                                  genericMessageDetails: [String : Any]?) -> MessagingChatMessageDisplayType? {
         switch coreDataMessageType {
         case .text:
-            guard let decryptedContent = getDecryptedContent() else { return nil }
+            guard let decryptedContent else { return nil }
             let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
             return .text(textDisplayInfo)
         case .imageBase64:
-            guard let decryptedContent = getDecryptedContent() else { return nil }
+            guard let decryptedContent else { return nil }
             let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent)
             return .imageBase64(imageBase64DisplayInfo)
         case .imageData:
-            guard let decryptedContent = getDecryptedContent(),
+            guard let decryptedContent,
                   let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
             let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData)
             return .imageData(imageDataDisplayInfo)
         case .remoteContent:
-            guard let decryptedContent = getDecryptedContent(),
+            guard let decryptedContent,
                   let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
             let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
             return .remoteContent(remoteContentDisplayInfo)
         case .reaction:
-            guard let decryptedContent = getDecryptedContent(),
+            guard let decryptedContent,
                   let decryptedData = CoreDataMessageReactionDetails.objectFromJSONString(decryptedContent) else { return nil }
             let reactionDisplayInfo = MessagingChatMessageReactionTypeDisplayInfo(content: decryptedData.content,
                                                                                   messageId: decryptedData.messageId)
             return .reaction(reactionDisplayInfo)
         case .unknown:
-            guard let json = coreDataMessage.genericMessageDetails,
+            guard let json = genericMessageDetails,
                   let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
             
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
@@ -710,6 +726,16 @@ private extension CoreDataMessagingStorageService {
                                                                                 name: details.name,
                                                                                 size: details.size)
             return .unknown(unknownDisplayInfo)
+        case .reply:
+            guard let decryptedContent,
+                  let decryptedData = CoreDataMessageReplyDetails.objectFromJSONString(decryptedContent),
+                  let decryptedDataContent = try? decryptMessageContent(decryptedData.content),
+                  let displayType = getMessageDisplayTypeFor(coreDataMessageType: decryptedData.contentMessageType,
+                                                             decryptedContent: decryptedDataContent,
+                                                             genericMessageDetails: nil) else { return nil }
+            let reactionDisplayInfo = MessagingChatMessageReplyTypeDisplayInfo(contentType: displayType,
+                                                                               messageId: decryptedData.messageId)
+            return .reply(reactionDisplayInfo)
         }
     }
     
@@ -723,30 +749,51 @@ private extension CoreDataMessagingStorageService {
         
         let coreDataMessageType = CoreDataMessageTypeWrapper.valueFor(messageType)
         coreDataMessage.messageType = Int64(coreDataMessageType.rawValue)
+        coreDataMessage.messageContent = try getEncryptedContentToSaveToCoreDataMessage(from: messageType)
+        coreDataMessage.genericMessageDetails = getGenericMessageDetailsToSaveToCoreDataMessage(from: messageType)
+    }
+    
+    func getEncryptedContentToSaveToCoreDataMessage(from messageType: MessagingChatMessageDisplayType) throws -> String {
+        func encryptDataContent(_ data: Data) throws -> String {
+            let content = data.base64EncodedString()
+            let encryptedContent = try decrypterService.encryptText(content)
+            return encryptedContent
+        }
         
         switch messageType {
         case .text(let info):
-            let encryptedContent = try decrypterService.encryptText(info.text)
-            coreDataMessage.messageContent = encryptedContent
+            return try decrypterService.encryptText(info.text)
         case .imageBase64(let info):
-            let encryptedContent = try decrypterService.encryptText(info.base64)
-            coreDataMessage.messageContent = encryptedContent
+            return try decrypterService.encryptText(info.base64)
         case .imageData(let info):
-            let encryptedContent = try encryptDataContent(info.data)
-            coreDataMessage.messageContent = encryptedContent
+            return try encryptDataContent(info.data)
         case .remoteContent(let info):
-            let encryptedContent = try encryptDataContent(info.serviceData)
-            coreDataMessage.messageContent = encryptedContent
-        case .unknown(let info):
-            coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
-                                                                                  fileName: info.fileName,
-                                                                                  name: info.name,
-                                                                                  size: info.size).jsonRepresentation()
+            return try encryptDataContent(info.serviceData)
+        case .unknown:
+            return ""
         case .reaction(let info):
             let content = try CoreDataMessageReactionDetails(content: info.content,
                                                              messageId: info.messageId).jsonStringThrowing()
-            let encryptedContent = try decrypterService.encryptText(content)
-            coreDataMessage.messageContent = encryptedContent
+            return try decrypterService.encryptText(content)
+        case .reply(let info):
+            let messageContent = try getEncryptedContentToSaveToCoreDataMessage(from: info.contentType)
+            let contentMessageType = CoreDataMessageTypeWrapper.valueFor(info.contentType)
+            let content = try CoreDataMessageReplyDetails(content: messageContent,
+                                                          contentMessageType: contentMessageType,
+                                                          messageId: info.messageId).jsonStringThrowing()
+            return try decrypterService.encryptText(content)
+        }
+    }
+    
+    func getGenericMessageDetailsToSaveToCoreDataMessage(from messageType: MessagingChatMessageDisplayType) -> [String : Any]? {
+        switch messageType {
+        case .unknown(let info):
+            return CoreDataUnknownMessageDetails(type: info.type,
+                                                 fileName: info.fileName,
+                                                 name: info.name,
+                                                 size: info.size).jsonRepresentation()
+        default:
+            return nil
         }
     }
     
@@ -982,6 +1029,12 @@ private extension CoreDataMessagingStorageService {
     
     struct CoreDataMessageReactionDetails: Codable {
         var content: String
+        var messageId: String
+    }
+    
+    struct CoreDataMessageReplyDetails: Codable {
+        var content: String
+        var contentMessageType: CoreDataMessageTypeWrapper
         var messageId: String
     }
     

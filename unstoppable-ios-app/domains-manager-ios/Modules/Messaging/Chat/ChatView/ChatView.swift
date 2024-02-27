@@ -12,6 +12,7 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
+
     var analyticsName: Analytics.ViewName { .chatDialog }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
     
@@ -28,12 +29,16 @@ struct ChatView: View, ViewAnalyticsLogger {
                 ProgressView()
             }
         }
-        .environmentObject(viewModel)
         .displayError($viewModel.error)
         .background(Color.backgroundMuted2)
         .onChange(of: viewModel.keyboardFocused) { keyboardFocused in
             withAnimation {
                 focused = keyboardFocused
+            }
+        }
+        .onChange(of: viewModel.input) { _ in
+            withAnimation {
+                viewModel.showMentionSuggestionsIfNeeded()
             }
         }
         .toolbar {
@@ -47,9 +52,11 @@ struct ChatView: View, ViewAnalyticsLogger {
             if hasBottomView {
                 bottomView()
                     .frame(maxWidth: .infinity)
-                    .background(.regularMaterial)
             }
         }
+        .environmentObject(viewModel)
+        .environment(\.analyticsViewName, analyticsName)
+        .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
         .onAppear(perform: onAppear)
     }
 }
@@ -76,7 +83,10 @@ private extension ChatView {
             }
         }
     }
-    
+}
+
+// MARK: - Views
+private extension ChatView {
     @ViewBuilder
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
@@ -171,11 +181,35 @@ private extension ChatView {
     
     @ViewBuilder
     func chatInputView() -> some View {
+        VStack {
+            if !viewModel.suggestingUsers.isEmpty {
+                mentionSuggestionsView()
+            }
+            
+            VStack(spacing: 0) {
+                if let messageToReply = viewModel.messageToReply {
+                    ChatReplyInfoView(messageToReply: messageToReply)
+                }
+                messageInputView()
+                    .background(.regularMaterial)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func messageInputView() -> some View {
         MessageInputView(input: $viewModel.input,
                          placeholder: viewModel.placeholder,
                          focused: $focused,
                          sendCallback: viewModel.sendPressed,
                          additionalActionCallback: viewModel.additionalActionPressed)
+    }
+    
+    @ViewBuilder
+    func mentionSuggestionsView() -> some View {
+        ChatMentionSuggestionsView(suggestingUsers: viewModel.suggestingUsers,
+                                   selectionCallback: viewModel.didSelectMentionSuggestion)
+        .padding(.init(horizontal: 20))
     }
     
     @ViewBuilder
@@ -205,7 +239,7 @@ private extension ChatView {
 }
 
 extension ChatView {
-    enum State {
+    enum ChatState {
         case loading
         case chat
         case otherUserIsBlocked

@@ -34,7 +34,6 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         let domain = generalData.domain
         let social = topInfoData.social
-        let isUDBlue = topInfoData.isUDBlue
         
         let isEnabled = state == .default || state == .updatingRecords
         snapshot.appendSections([.topInfo])
@@ -42,7 +41,6 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
         let itemData = DomainProfileViewController.ItemTopInfoData(id: id,
                                                                    domain: domain,
                                                                    social: social,
-                                                                   isUDBlue: isUDBlue,
                                                                    isEnabled: isEnabled,
                                                                    avatarImageState: editingTopInfoData.avatarImageState,
                                                                    bannerImageState: editingTopInfoData.bannerImageState,

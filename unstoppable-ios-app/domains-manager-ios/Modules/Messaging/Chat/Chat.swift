@@ -57,5 +57,6 @@ extension Chat {
         case sendReaction(content: String, toMessage: MessagingChatMessageDisplayInfo)
         case saveImage(UIImage)
         case blockUserInGroup(MessagingChatUserDisplayInfo)
+        case reply(MessagingChatMessageDisplayInfo)
     }
 }

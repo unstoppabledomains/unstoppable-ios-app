@@ -50,8 +50,10 @@ struct ChatListView: View, ViewAnalyticsLogger {
             }
             .onChange(of: viewModel.isSearchActive) { keyboardFocused in
                 setSearchFieldActive(keyboardFocused)
-                withAnimation {
-                    navigationState?.isTitleVisible = !keyboardFocused
+                if !isOtherScreenPushed {
+                    withAnimation {
+                        navigationState?.isTitleVisible = !keyboardFocused
+                    }
                 }
             }
             .onChange(of: tabRouter.chatTabNavPath) { path in
