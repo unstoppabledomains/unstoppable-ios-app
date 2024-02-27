@@ -173,6 +173,7 @@ extension ChatViewModel {
             sendReactionMessage(content, toMessage: toMessage)
         case .reply(let message):
             messageToReply = message
+            keyboardFocused = true
         }
     }
     
@@ -961,6 +962,7 @@ private extension ChatViewModel {
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         logAnalytic(event: .willSendMessage,
                     parameters: [.messageType: type.analyticName])
+        self.messageToReply = nil
         Task {
             do {
                 var newMessage: MessagingChatMessageDisplayInfo
