@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct MessageRowView: View {
+struct MessageRowView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: ChatViewModel
-
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     let message: MessagingChatMessageDisplayInfo
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
@@ -236,6 +238,7 @@ private extension MessageRowView {
     func addReactionButtonView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .selectReaction)
             showingReactionsPopover = true
         } label: {
             HStack(spacing: 2) {
@@ -286,9 +289,11 @@ private extension MessageRowView {
 
 // MARK: - Private methods
 private extension MessageRowView {
-    struct SwipeToReplyGestureModifier: ViewModifier {
+    struct SwipeToReplyGestureModifier: ViewModifier, ViewAnalyticsLogger {
         
         @EnvironmentObject var viewModel: ChatViewModel
+        @Environment(\.analyticsViewName) var analyticsName
+        @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
 
         let message: MessagingChatMessageDisplayInfo
         @State private var offset: CGFloat = 0
@@ -369,6 +374,7 @@ private extension MessageRowView {
         }
         
         private func didSwipeToReply() {
+            logButtonPressedAnalyticEvents(button: .didSwipeToReply)
             viewModel.handleChatMessageAction(.reply(message))
         }
         

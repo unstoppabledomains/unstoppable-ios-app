@@ -181,6 +181,7 @@ extension ChatViewModel {
             logButtonPressedAnalyticEvents(button: .sendReaction, parameters: [.value: content])
             sendReactionMessage(content, toMessage: toMessage)
         case .reply(let message):
+            logButtonPressedAnalyticEvents(button: .replyToMessage)
             messageToReply = message
             keyboardFocused = true
         }
@@ -270,8 +271,10 @@ private extension ChatViewModel {
     
     func verifyAndHandleExternalLink(_ url: URL, by sender: MessagingChatSender) {
         if let domainName = parseMentionDomainNameFrom(url: url) {
+            logButtonPressedAnalyticEvents(button: .mentionWithinMessage, parameters: [.value: domainName])
             handleMentionPressedTo(domainName: domainName)
         } else {
+            logButtonPressedAnalyticEvents(button: .linkWithinMessage)
             handleOtherLinkPressed(url, by: sender)
         }
     }

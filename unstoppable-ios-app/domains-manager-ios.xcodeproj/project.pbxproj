@@ -1282,6 +1282,7 @@
 		C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */; };
 		C6BF0C5B2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */; };
 		C6BF0C5C2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */; };
+		C6BF6BDA2B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */; };
 		C6C1E9342B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1E9352B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
@@ -3339,6 +3340,7 @@
 		C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+DomainProfile.swift"; sourceTree = "<group>"; };
 		C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetworkConfig.swift; sourceTree = "<group>"; };
 		C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPendingEventsOnAppearViewModifier.swift; sourceTree = "<group>"; };
+		C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassViewAnalyticsDetailsViewModifier.swift; sourceTree = "<group>"; };
 		C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticAppearanceTrackerModifier.swift; sourceTree = "<group>"; };
 		C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuDomainAvatarLoader.swift; sourceTree = "<group>"; };
 		C6C1EC5E2A3AD483005EB37D /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
@@ -6529,6 +6531,7 @@
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
 				C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */,
 				C663A4D82B7F2FAC0099BCE8 /* PresentationStyleCheckerModifier.swift */,
+				C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */,
 				C631DFA02B7B1ED500040221 /* InfiniteRotationModifier.swift */,
 				C6493A012B63A8B700457363 /* TrackingPressingStateModifier.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
@@ -9122,6 +9125,7 @@
 				C6B65F502B54DA84006D1812 /* HomeWalletViewModel.swift in Sources */,
 				C685A97B2840BF6200E54044 /* InfoScreen.swift in Sources */,
 				C630BC7B2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
+				C6BF6BDA2B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */,
 				C630E4B32B7F5835008F3269 /* ExpandableTextEditor.swift in Sources */,
 				C63095EF2B0DA66400205054 /* FirebaseAuthenticationService.swift in Sources */,
 				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,

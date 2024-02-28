@@ -40,6 +40,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     ProgressView()
                 }
             }
+            .trackAppearanceAnalytics(analyticsLogger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
@@ -83,6 +84,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                                                           tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
+            .passViewAnalyticsDetails(logger: self)
             .checkPendingEventsOnAppear()
         }, navigationStateProvider: { state in
             self.navigationState = state

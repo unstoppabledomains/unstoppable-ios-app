@@ -32,8 +32,7 @@ struct HomeView: View, ViewAnalyticsLogger {
                         .ignoresSafeArea()
                 }
                 .trackAppearanceAnalytics(analyticsLogger: self)
-                .environment(\.analyticsViewName, analyticsName)
-                .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
+                .passViewAnalyticsDetails(logger: self)
                 .checkPendingEventsOnAppear()
 
         }, navigationStateProvider: { state in
