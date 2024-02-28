@@ -165,7 +165,8 @@ private extension ChatListView {
                          icon: bioImage,
                          style: .large(.raisedPrimary),
                          callback: {
-                
+                logButtonPressedAnalyticEvents(button: .createMessagingProfile)
+                viewModel.createProfilePressed()
             })
             .padding()
         }
@@ -194,8 +195,8 @@ private extension ChatListView {
                        buttonIcon: .plusIcon18,
                        buttonStyle: .medium(.raisedPrimary),
                        buttonCallback: {
-            logButtonPressedAnalyticEvents(button: .createMessagingProfile)
-            viewModel.createProfilePressed()
+            logButtonPressedAnalyticEvents(button: .addWallet)
+            viewModel.addWalletButtonPressed()
         })
     }
     

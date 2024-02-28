@@ -167,6 +167,10 @@ extension ChatListViewModel {
         }
     }
     
+    func addWalletButtonPressed() {
+        router.runAddWalletFlow(initialAction: .showAllAddWalletOptionsPullUp)
+    }
+    
     func createCommunitiesProfileButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
