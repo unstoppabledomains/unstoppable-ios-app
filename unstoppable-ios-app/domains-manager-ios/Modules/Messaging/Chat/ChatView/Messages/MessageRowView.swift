@@ -312,7 +312,7 @@ private extension MessageRowView {
                 }
                     .animation(.linear, value: offset)
                     .offset(x: offset)
-                    .simultaneousGesture(
+                    .highPriorityGesture(
                         DragGesture()
                             .onChanged { gesture in
                                 let translation = gesture.translation.width
