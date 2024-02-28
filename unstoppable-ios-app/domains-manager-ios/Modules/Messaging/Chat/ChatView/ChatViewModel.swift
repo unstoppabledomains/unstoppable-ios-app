@@ -290,10 +290,7 @@ private extension ChatViewModel {
     
     func parseMentionDomainNameFrom(url: URL) -> String? {
         let string = url.absoluteString
-        if string.first == "@" {
-            return String(string.dropFirst())
-        }
-        return nil
+        return MessageMentionString(string: string)?.mentionWithoutPrefix
     }
     
     func handleOtherLinkPressed(_ url: URL, by sender: MessagingChatSender) {
