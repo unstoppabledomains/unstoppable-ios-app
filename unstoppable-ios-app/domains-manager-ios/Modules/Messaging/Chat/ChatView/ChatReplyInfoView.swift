@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct ChatReplyInfoView: View {
+struct ChatReplyInfoView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: ChatViewModel
-
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    
     let messageToReply: MessagingChatMessageDisplayInfo
     
     var body: some View {
@@ -48,6 +50,7 @@ private extension ChatReplyInfoView {
     func clickableMessageDescriptionView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .jumpToMessageToReply)
             withAnimation {
                 viewModel.didTapJumpToReplyButton()
             }
@@ -85,6 +88,7 @@ private extension ChatReplyInfoView {
     @ViewBuilder
     func removeReplyView() -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .cancelReply)
             UDVibration.buttonTap.vibrate()
             withAnimation {
                 viewModel.didTapRemoveReplyButton()

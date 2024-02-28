@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct ChatMentionSuggestionsView: View {
+struct ChatMentionSuggestionsView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     let suggestingUsers: [MessagingChatUserDisplayInfo]
     let selectionCallback: (MessagingChatUserDisplayInfo)->()
@@ -36,6 +39,7 @@ private extension ChatMentionSuggestionsView {
     @ViewBuilder
     func selectableRowViewFor(user: MessagingChatUserDisplayInfo) -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .messagingMentionSuggestion)
             UDVibration.buttonTap.vibrate()
             selectionCallback(user)
         } label: {

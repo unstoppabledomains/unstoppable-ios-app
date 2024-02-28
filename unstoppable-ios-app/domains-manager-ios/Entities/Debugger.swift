@@ -31,7 +31,7 @@ public struct Debugger {
         case WalletConnect = "WC"
         case WalletConnectV2 = "WC_V2"
         case UI = "=UI="
-        case Analytics = "Analtyics"
+        case Analytics = "Analytics"
         case LocalNotification = "LN"
         case Images = "IMG"
         case CoreData = "CD"

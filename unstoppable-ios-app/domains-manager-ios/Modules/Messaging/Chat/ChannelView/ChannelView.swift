@@ -27,8 +27,6 @@ struct ChannelView: View, ViewAnalyticsLogger {
                 ProgressView()
             }
         }
-        .environment(\.analyticsViewName, analyticsName)
-        .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
         .displayError($viewModel.error)
         .background(Color.backgroundMuted2)
         .toolbar {
@@ -45,6 +43,7 @@ struct ChannelView: View, ViewAnalyticsLogger {
                     .background(.regularMaterial)
             }
         }
+        .passViewAnalyticsDetails(logger: self)
         .onAppear(perform: onAppear)
     }
     

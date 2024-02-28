@@ -44,7 +44,26 @@ enum PushEnvironment {
         
         enum CodingKeys: String, CodingKey {
             case content
-            case reference = "refrence"
+            case reference
+            case alternateReference = "refrence"
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            self.content = try container.decode(String.self, forKey: .content)
+            if let primaryReference = try? container.decodeIfPresent(String.self, forKey: .reference) {
+                self.reference = primaryReference
+            } else {
+                self.reference = try container.decode(String.self, forKey: .alternateReference)
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            try container.encode(content, forKey: .content)
+            try container.encode(reference, forKey: .reference)
         }
     }
     

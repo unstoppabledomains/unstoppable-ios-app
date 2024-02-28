@@ -84,11 +84,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                                       selectedWalletCallback: { wallet in warnUserIfNeededAndSelectWallet(wallet) }))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
-                .environment(\.analyticsViewName, analyticsName)
+                .passViewAnalyticsDetails(logger: self)
         })
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
-                .environment(\.analyticsViewName, analyticsName)
+                .passViewAnalyticsDetails(logger: self)
         })
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
@@ -500,6 +500,7 @@ private extension PurchaseDomainsCheckoutView {
         Task {
             setLoading(true)
             do {
+                let totalPrice = cartStatus.totalPrice
                 let walletsToMint = try await purchaseDomainsService.getSupportedWalletsToMint()
                 guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.address }) else {
                     throw PurchaseError.failedToGetWalletToMint
@@ -507,7 +508,7 @@ private extension PurchaseDomainsCheckoutView {
                         
                 try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
                 purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
-                logAnalytic(event: .didPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
+                logAnalytic(event: .didPurchaseDomains, parameters: [.value : String(totalPrice),
                                                                      .count: String(1)])
                 let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
                                                                     walletAddress: walletToMint.address)
