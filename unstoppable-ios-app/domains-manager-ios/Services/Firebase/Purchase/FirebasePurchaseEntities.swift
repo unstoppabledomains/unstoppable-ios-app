@@ -247,27 +247,6 @@ extension FirebasePurchaseDomainsService {
         let referralCode: String
         let storeCredits: Int
         let uid: String
-        
-        struct Subscription: Codable {
-            let id: Int
-            let cancelledAt: String?
-            let createdAt: String
-            let expiresAt: String
-            let price: Int
-            let status: String
-            let userId: Int
-            let trial: Bool
-            let type: String
-            let domain: String?
-            let billingType: String
-            let externalProviderId: String?
-            let externalProvider: String?
-        }
-        
-        struct Domain: Codable {
-            let name: String
-            let address: String
-        }
     }
     
     struct UDUserAccountCryptWalletsResponse: Codable {

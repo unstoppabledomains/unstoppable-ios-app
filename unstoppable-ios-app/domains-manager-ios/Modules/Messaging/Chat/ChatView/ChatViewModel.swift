@@ -17,7 +17,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
     private(set) var conversationState: MessagingChatConversationState
-    private let fetchLimit: Int = 20
+    private let fetchLimit: Int = 30
     @Published private(set) var isLoadingMessages = false
     @Published private(set) var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     @Published private(set) var isChannelEncrypted: Bool = true
@@ -1089,20 +1089,9 @@ extension ChatViewModel: MessagingServiceListener {
             case .chats:
                 return
             case .messagesAdded(let messages, let chatId, let userId):
-                if userId == self.profile.id,
-                   case .existingChat(let chat) = conversationState,
-                   chatId == chat.id,
-                   !messages.isEmpty {
-                    await self.addMessages(messages, scrollToBottom: true)
-                }
+                await addMessagesFromUpdatedData(messages, chatId: chatId, userId: userId)
             case .messageUpdated(let updatedMessage, var newMessage):
-                if case .existingChat(let chat) = conversationState,
-                   updatedMessage.chatId == chat.id,
-                   let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
-                    await newMessage.prepareToDisplay()
-                    self.messages[i] = newMessage
-                    messagesCache.insert(newMessage)
-                }
+                await updateMessageFromUpdatedData(updatedMessage, with: newMessage)
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
                    chatId == chat.id {
@@ -1117,6 +1106,27 @@ extension ChatViewModel: MessagingServiceListener {
             }
         }
     }
+    
+    private func addMessagesFromUpdatedData(_ messages: [MessagingChatMessageDisplayInfo], chatId: String, userId: String) async {
+        if userId == self.profile.id,
+           case .existingChat(let chat) = conversationState,
+           chatId == chat.id,
+           !messages.isEmpty {
+            let messages = messages.filter { !$0.isReactionMessage }
+            await self.addMessages(messages, scrollToBottom: true)
+        }
+    }
+    
+    private func updateMessageFromUpdatedData(_ updatedMessage: MessagingChatMessageDisplayInfo, with newMessage: MessagingChatMessageDisplayInfo) async {
+        if case .existingChat(let chat) = conversationState,
+           updatedMessage.chatId == chat.id,
+           let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+            var newMessage = newMessage
+            await newMessage.prepareToDisplay()
+            self.messages[i] = newMessage
+            messagesCache.insert(newMessage)
+        }
+    }
 }
 
 // MARK: - UDFeatureFlagsListener
@@ -1128,8 +1138,6 @@ extension ChatViewModel: UDFeatureFlagsListener {
                 setIfUserCanSendAttachments()
                 reloadCachedMessages()
             }
-        default:
-            return
         }
     }
 }
