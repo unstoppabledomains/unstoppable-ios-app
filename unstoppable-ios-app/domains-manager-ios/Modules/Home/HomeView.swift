@@ -34,6 +34,7 @@ struct HomeView: View, ViewAnalyticsLogger {
                 .trackAppearanceAnalytics(analyticsLogger: self)
                 .environment(\.analyticsViewName, analyticsName)
                 .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
+                .checkPendingEventsOnAppear()
 
         }, navigationStateProvider: { state in
             self.navigationState = state

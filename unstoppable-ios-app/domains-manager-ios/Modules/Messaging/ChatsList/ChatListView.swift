@@ -83,6 +83,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                                                           tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
+            .checkPendingEventsOnAppear()
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.chatTabNavPath)
