@@ -24,9 +24,10 @@ struct ChatNavTitleView: View {
                 .foregroundStyle(Color.foregroundDefault)
                 .font(.currentFont(size: 16, weight: .semibold))
         }
-        .task {
-            await loadIcon()
-        }
+        .onChange(of: titleType, perform: { newValue in
+            loadIconNonBlocking()
+        })
+        .onAppear(perform: loadIconNonBlocking)
     }
     
     private var title: String {
@@ -41,6 +42,12 @@ struct ChatNavTitleView: View {
             return messagingGroupChatDetails.displayName
         case .community(let messagingCommunitiesChatDetails):
             return messagingCommunitiesChatDetails.displayName
+        }
+    }
+    
+    private func loadIconNonBlocking() {
+        Task {
+            await loadIcon()
         }
     }
     
@@ -64,7 +71,7 @@ struct ChatNavTitleView: View {
         }
     }
     
-    enum TitleType {
+    enum TitleType: Hashable {
         case domainName(DomainName)
         case walletAddress(HexAddress)
         case channel(MessagingNewsChannel)
