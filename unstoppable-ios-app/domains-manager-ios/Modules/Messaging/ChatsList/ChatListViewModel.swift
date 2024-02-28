@@ -257,8 +257,23 @@ extension ChatListViewModel: ChatsListCoordinator {
                         tryAutoOpenChannel(channelId, profile: profile)
                     }
                 }
+                syncSelectedProfileWithMessaging()
             } catch {
                 self.error = error
+            }
+        }
+    }
+    
+    private func syncSelectedProfileWithMessaging() {
+        switch selectedProfile {
+        case .wallet(let wallet):
+            if let selectedMessagingWallet = selectedProfileWalletPair?.wallet,
+               wallet.address != selectedMessagingWallet.address  {
+                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
+            }
+        case .webAccount:
+            if let selectedMessagingWallet = selectedProfileWalletPair?.wallet {
+                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
             }
         }
     }
