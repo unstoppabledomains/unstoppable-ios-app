@@ -274,7 +274,7 @@
 		C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */; };
 		C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
 		C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */; };
-		C61236F0292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EF292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift */; };
+		C61236F0292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */; };
 		C61236F5292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236F4292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift */; };
 		C6124CBA2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CB72922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift */; };
 		C6124CBE2922283D005E6537 /* DomainProfileActionCoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CB82922283D005E6537 /* DomainProfileActionCoverViewController.swift */; };
@@ -341,7 +341,6 @@
 		C61807C22B19A2E70032E543 /* PermissionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D527284DC45B00327C47 /* PermissionsService.swift */; };
 		C61807C32B19A2F80032E543 /* SafeContinuation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6166CBE28EC179E00004252 /* SafeContinuation.swift */; };
 		C61807C52B19A3580032E543 /* PreviewAppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807C42B19A3580032E543 /* PreviewAppContext.swift */; };
-		C61807C82B19A3920032E543 /* PreviewDataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807C72B19A3920032E543 /* PreviewDataAggregatorService.swift */; };
 		C61807CA2B19A3B00032E543 /* PullUpViewServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807C92B19A3B00032E543 /* PullUpViewServiceProtocol.swift */; };
 		C61807CF2B19A3FA0032E543 /* ExternalEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */; };
 		C61807D02B19A4040032E543 /* AnalyticsServiceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */; };
@@ -349,7 +348,6 @@
 		C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807D42B19A4450032E543 /* ExternalEventsServiceProtocol.swift */; };
 		C61807D72B19A46D0032E543 /* AuthentificationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2528E5AB310027D5D8 /* AuthentificationServiceProtocol.swift */; };
 		C61807D92B19A48F0032E543 /* PreviewAuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807D82B19A48F0032E543 /* PreviewAuthentificationService.swift */; };
-		C61807DB2B19A4C60032E543 /* DataAggregatorServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */; };
 		C61807DD2B19A4D50032E543 /* PreviewUDWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61807DC2B19A4D50032E543 /* PreviewUDWallet.swift */; };
 		C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B042296FF7D600D4E30F /* DomainsSortOrderStorage.swift */; };
 		C61807E42B19A5800032E543 /* SortDomainsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B03D296FF74400D4E30F /* SortDomainsManager.swift */; };
@@ -772,9 +770,6 @@
 		C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */; };
 		C655CAA92B16E82800FDA063 /* PurchaseDomainsEnterZIPCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */; };
 		C655CAAD2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */; };
-		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
-		C655D024284630A700E80A65 /* DataAggregatorServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */; };
-		C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */; };
 		C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
 		C6568EFA2B204E4C0022B598 /* UIImageBridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */; };
 		C658D44E2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */; };
@@ -814,7 +809,6 @@
 		C664310C28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664310A28D8BEB600A9C734 /* ConnectExternalWalletCell.swift */; };
 		C664311028D8BEB600A9C734 /* ConnectExternalWalletCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C664310B28D8BEB600A9C734 /* ConnectExternalWalletCell.xib */; };
 		C664311528D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664311428D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift */; };
-		C664311E28DAB64800A9C734 /* ReverseResolutionInfoMapStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664311D28DAB64700A9C734 /* ReverseResolutionInfoMapStorage.swift */; };
 		C664312328DACB4100A9C734 /* RaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664312228DACB4100A9C734 /* RaisedTertiaryButton.swift */; };
 		C66435B7288E4FC00098E1B8 /* SpecificStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435B6288E4FC00098E1B8 /* SpecificStorage.swift */; };
 		C66435C1288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435C0288E58E90098E1B8 /* AppGroupsBridgeService.swift */; };
@@ -2585,7 +2579,7 @@
 		C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTheme.swift; sourceTree = "<group>"; };
 		C61236E6292C88D1002BA97B /* ImagesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesStorage.swift; sourceTree = "<group>"; };
 		C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationImageLoadingService.swift; sourceTree = "<group>"; };
-		C61236EF292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsBridgeFromDataAggregatorService.swift; sourceTree = "<group>"; };
+		C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsDomainsPFPBridgeService.swift; sourceTree = "<group>"; };
 		C61236F4292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainImageDetailsViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CB72922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileActionCoverViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CB82922283D005E6537 /* DomainProfileActionCoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileActionCoverViewController.swift; sourceTree = "<group>"; };
@@ -2630,7 +2624,6 @@
 		C61807BA2B199FD10032E543 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
 		C61807BC2B19A0AA0032E543 /* Extension-String+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String+Preview.swift"; sourceTree = "<group>"; };
 		C61807C42B19A3580032E543 /* PreviewAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppContext.swift; sourceTree = "<group>"; };
-		C61807C72B19A3920032E543 /* PreviewDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDataAggregatorService.swift; sourceTree = "<group>"; };
 		C61807C92B19A3B00032E543 /* PullUpViewServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewServiceProtocol.swift; sourceTree = "<group>"; };
 		C61807D42B19A4450032E543 /* ExternalEventsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsServiceProtocol.swift; sourceTree = "<group>"; };
 		C61807D82B19A48F0032E543 /* PreviewAuthentificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAuthentificationService.swift; sourceTree = "<group>"; };
@@ -2939,9 +2932,6 @@
 		C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsSelectWalletView.swift; sourceTree = "<group>"; };
 		C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsEnterZIPCodeView.swift; sourceTree = "<group>"; };
 		C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutViewController.swift; sourceTree = "<group>"; };
-		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
-		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
-		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
 		C6568EF82B204E4C0022B598 /* UIImageBridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageBridgeView.swift; sourceTree = "<group>"; };
 		C658D44D2B16F47C0057BE12 /* FirebaseAuthTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthTokenStorage.swift; sourceTree = "<group>"; };
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
@@ -2971,7 +2961,6 @@
 		C664310A28D8BEB600A9C734 /* ConnectExternalWalletCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletCell.swift; sourceTree = "<group>"; };
 		C664310B28D8BEB600A9C734 /* ConnectExternalWalletCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConnectExternalWalletCell.xib; sourceTree = "<group>"; };
 		C664311428D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingConnectExternalWalletPresenter.swift; sourceTree = "<group>"; };
-		C664311D28DAB64700A9C734 /* ReverseResolutionInfoMapStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionInfoMapStorage.swift; sourceTree = "<group>"; };
 		C664312228DACB4100A9C734 /* RaisedTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaisedTertiaryButton.swift; sourceTree = "<group>"; };
 		C66435B6288E4FC00098E1B8 /* SpecificStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecificStorage.swift; sourceTree = "<group>"; };
 		C66435BC288E57550098E1B8 /* NotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationServiceExtension.entitlements; sourceTree = "<group>"; };
@@ -3919,7 +3908,6 @@
 				29BECD0D2979BD7B00662FC1 /* CloudStorage.swift */,
 				30972CC3258A62A700D7E229 /* LocalStorage.swift */,
 				C606B73B2863545000DC562B /* MintingDomainsStorage.swift */,
-				C664311D28DAB64700A9C734 /* ReverseResolutionInfoMapStorage.swift */,
 				C6B6B042296FF7D600D4E30F /* DomainsSortOrderStorage.swift */,
 				C66435B6288E4FC00098E1B8 /* SpecificStorage.swift */,
 				306486D125273DD400388026 /* Storage.swift */,
@@ -4551,7 +4539,7 @@
 			isa = PBXGroup;
 			children = (
 				C66435C0288E58E90098E1B8 /* AppGroupsBridgeService.swift */,
-				C61236EF292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift */,
+				C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */,
 			);
 			path = AppGroupsBridge;
 			sourceTree = "<group>";
@@ -4657,7 +4645,6 @@
 				C61808472B19B9680032E543 /* PreviewAppLaunchService.swift */,
 				C61807D82B19A48F0032E543 /* PreviewAuthentificationService.swift */,
 				C61808312B19ADF10032E543 /* PreviewCoreAppCoordinator.swift */,
-				C61807C72B19A3920032E543 /* PreviewDataAggregatorService.swift */,
 				C618083D2B19B0680032E543 /* PreviewDeepLinksService.swift */,
 				C61808492B19B9930032E543 /* PreviewDomainRecordsService.swift */,
 				C618083F2B19B0870032E543 /* PreviewDomainTransactionsService.swift */,
@@ -5586,16 +5573,6 @@
 			path = Checkout;
 			sourceTree = "<group>";
 		};
-		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
-			isa = PBXGroup;
-			children = (
-				C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */,
-				C655D01E284630A100E80A65 /* DataAggregatorService.swift */,
-				C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */,
-			);
-			path = DataAggregatorService;
-			sourceTree = "<group>";
-		};
 		C65DEA6E29B5834B00FF142B /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -6124,7 +6101,6 @@
 				C6109E2328E5AB310027D5D8 /* AuthentificationService */,
 				C6D6478D2B1EE73600D724AC /* CoinRecordsService */,
 				C6FE49DF285CBAB60058F9D1 /* CoreAppCoordinator */,
-				C655D01D2846308E00E80A65 /* DataAggregatorService */,
 				C62C3F9F283F606C0094FC93 /* DeepLinksService */,
 				C6EECE952833A2F700978ED5 /* DomainRecordsService */,
 				C62247AE283CFF07002A0CBD /* DomainTransactionsService */,
@@ -8225,7 +8201,7 @@
 				C628E30927FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
 				C6124CBE2922283D005E6537 /* DomainProfileActionCoverViewController.swift in Sources */,
 				C624D79F281BCB9B00F55530 /* UDRouter.swift in Sources */,
-				C61236F0292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */,
+				C61236F0292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift in Sources */,
 				C6124CE62924C2B8005E6537 /* DomainProfileInfoStorage.swift in Sources */,
 				C673BA1E2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */,
 				C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */,
@@ -8584,7 +8560,6 @@
 				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
-				C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */,
 				C63F1CFF28AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */,
 				C635195628D048D700FC6AF8 /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				309BD85F265679EA00CB0C49 /* PaymentConfiguration.swift in Sources */,
@@ -8627,8 +8602,6 @@
 				C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
 				C60E9B872821193400CD7593 /* WalletsListViewPresenter.swift in Sources */,
 				C6DF46252AA18D4000D124E7 /* Error.swift in Sources */,
-				C655D024284630A700E80A65 /* DataAggregatorServiceProtocol.swift in Sources */,
-				C664311E28DAB64800A9C734 /* ReverseResolutionInfoMapStorage.swift in Sources */,
 				29AEA05529367785003BB5B4 /* UDWallet+Signing.swift in Sources */,
 				C6E69FE1288AD264000A8346 /* String+Localization.swift in Sources */,
 				C6ECBF6628D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
@@ -9124,7 +9097,6 @@
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C685D8182AA978DE00212879 /* UBTDomainCardView.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
-				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C6170EC42B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
@@ -9648,7 +9620,6 @@
 				C6C8F8C62B2182E400A9834D /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				C61808602B19BBFE0032E543 /* OffsetObservingScrollView.swift in Sources */,
 				C6D645CF2B1DBD4100D724AC /* DashesProgressNavBarPopAnimation.swift in Sources */,
-				C61807DB2B19A4C60032E543 /* DataAggregatorServiceProtocol.swift in Sources */,
 				C6D647092B1ED7CA00D724AC /* MessagingChatUserProfile.swift in Sources */,
 				C64F8E052B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift in Sources */,
 				C6D646372B1DC45100D724AC /* ApplePayButton.swift in Sources */,
@@ -10051,7 +10022,6 @@
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
 				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
 				C6D645CB2B1DBD3C00D724AC /* CNavigationControllerChildTransitioning.swift in Sources */,
-				C61807C82B19A3920032E543 /* PreviewDataAggregatorService.swift in Sources */,
 				C61808092B19A9EE0032E543 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6C8F8942B21829000A9834D /* AppearanceSettingsViewController.swift in Sources */,
 				C6D647242B1ED91F00D724AC /* PullUpViewService+ExternalWallets.swift in Sources */,

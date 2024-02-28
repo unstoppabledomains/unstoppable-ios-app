@@ -25,9 +25,7 @@ final class AppContext: AppContextProtocol {
     var authentificationService: AuthentificationServiceProtocol = AuthentificationService()
     
     var coreAppCoordinator: CoreAppCoordinatorProtocol = CoreAppCoordinator()
-    
-    var dataAggregatorService: DataAggregatorServiceProtocol = DataAggregatorService()
-    
+        
     var deepLinksService: DeepLinksServiceProtocol = DeepLinksService()
     
     var domainTransactionsService: DomainTransactionsServiceProtocol = DomainTransactionsService()
