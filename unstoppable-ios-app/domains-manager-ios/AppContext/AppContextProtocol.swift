@@ -16,7 +16,6 @@ protocol AppContextProtocol {
     var externalEventsService: ExternalEventsServiceProtocol { get }
     var authentificationService: AuthentificationServiceProtocol { get }
     var coreAppCoordinator: CoreAppCoordinatorProtocol { get }
-    var dataAggregatorService: DataAggregatorServiceProtocol { get }
     var deepLinksService: DeepLinksServiceProtocol { get }
     var domainTransactionsService: DomainTransactionsServiceProtocol { get }
     var udDomainsService: UDDomainsServiceProtocol { get }

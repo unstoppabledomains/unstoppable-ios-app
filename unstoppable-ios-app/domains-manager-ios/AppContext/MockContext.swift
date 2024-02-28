@@ -38,11 +38,6 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var coreAppCoordinator: CoreAppCoordinatorProtocol =  {
         CoreAppCoordinator(pullUpViewService: pullUpViewService)
     }()
-    private(set) lazy var dataAggregatorService: DataAggregatorServiceProtocol = {
-        MockDataAggregatorService(domainsService: udDomainsService,
-                                  walletsService: udWalletsService,
-                                  transactionsService: domainTransactionsService)
-    }()
     private(set) lazy var deepLinksService: DeepLinksServiceProtocol = DeepLinksService(externalEventsService: externalEventsService, coreAppCoordinator: coreAppCoordinator)
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = MockDomainRecordsService()
     private(set) lazy var domainTransactionsService: DomainTransactionsServiceProtocol = MockDomainTransactionsService()

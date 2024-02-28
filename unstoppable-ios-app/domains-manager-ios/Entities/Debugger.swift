@@ -34,7 +34,6 @@ public struct Debugger {
         case Analytics = "Analytics"
         case LocalNotification = "LN"
         case Images = "IMG"
-        case DataAggregation = "AGGR"
         case CoreData = "CD"
         case WebSockets = "SOCKETS"
         case Messaging = "MS"

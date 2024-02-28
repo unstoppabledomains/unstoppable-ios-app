@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 
-final class AppGroupsBridgeFromDataAggregatorService {
+final class AppGroupsDomainsPFPBridgeService {
     
-    static let shared = AppGroupsBridgeFromDataAggregatorService()
+    static let shared = AppGroupsDomainsPFPBridgeService()
     private var cancellables: Set<AnyCancellable> = []
 
     private init() {
@@ -23,7 +23,7 @@ final class AppGroupsBridgeFromDataAggregatorService {
 }
 
 // MARK: - Private methods
-private extension AppGroupsBridgeFromDataAggregatorService {
+private extension AppGroupsDomainsPFPBridgeService {
     func updateDomainsPFPInBridge(_ domains: [DomainDisplayInfo]) {
         @Sendable
         func pfpPath(for domain: DomainDisplayInfo) -> String? {
