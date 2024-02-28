@@ -346,6 +346,8 @@ extension Analytics {
         case saveChatImage
         case blockUserInGroupChat
         case chatInputActions, takePhoto, choosePhoto
+        case viewMessagePhoto
+        case selectReaction, sendReaction
 
         // Public profile
         case follow, unfollow

@@ -167,6 +167,9 @@ extension ChatViewModel {
             logButtonPressedAnalyticEvents(button: .saveChatImage)
             let saver = PhotoLibraryImageSaver()
             saver.saveImage(image)
+        case .showImage(let image):
+            logButtonPressedAnalyticEvents(button: .viewMessagePhoto)
+            showMessageImageViewWith(image: image, mode: .view)
         case .blockUserInGroup(let user):
             logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
                                            parameters: [.chatId : chat.id,
@@ -175,6 +178,7 @@ extension ChatViewModel {
                 try? await setUser(user, in: chat, blocked: true)
             }
         case .sendReaction(let content, let toMessage):
+            logButtonPressedAnalyticEvents(button: .sendReaction, parameters: [.value: content])
             sendReactionMessage(content, toMessage: toMessage)
         case .reply(let message):
             messageToReply = message
@@ -987,11 +991,14 @@ private extension ChatViewModel {
 private extension ChatViewModel {
     func didPickImageToSend(_ image: UIImage) {
         let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
-        
-        let confirmationVC = MessagingImageView.instantiate(mode: .confirmSending(callback: { [weak self] in
+        showMessageImageViewWith(image: resizedImage, mode: .confirmSending(callback: { [weak self] in
             self?.sendImageMessage(resizedImage)
-        }), image: resizedImage)
-        appContext.coreAppCoordinator.topVC?.present(confirmationVC, animated: true)
+        }))
+    }
+    
+    func showMessageImageViewWith(image: UIImage, mode: MessagingImageView.Mode) {
+        let messagingImageVC = MessagingImageView.instantiate(mode: mode, image: image)
+        appContext.coreAppCoordinator.topVC?.present(messagingImageVC, animated: true)
     }
 }
 
