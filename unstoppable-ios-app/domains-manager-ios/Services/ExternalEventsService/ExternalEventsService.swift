@@ -52,20 +52,23 @@ extension ExternalEventsService: ExternalEventsServiceProtocol {
     }
     
     func checkPendingEvents() {
-        guard !udWalletsService.getUserWallets().isEmpty else { return }
-        
-        let pendingEvents = eventsStorage.getExternalEvents()
-        if let pendingEvent = pendingEvents.first {
-            guard pendingEvent != processingEvent else { return }
+        Task {
+            guard !udWalletsService.getUserWallets().isEmpty,
+                  await coreAppCoordinator.isReadyToHandleExternalEvents else { return }
             
-            processingEvent = pendingEvent
-            receiveEventCompletion = { [unowned self] in
-                self.processingEvent = nil
-                self.eventsStorage.deleteEvent(pendingEvent)
-                self.receiveEventCompletion = nil
-                self.checkPendingEvents()
+            let pendingEvents = eventsStorage.getExternalEvents()
+            if let pendingEvent = pendingEvents.first {
+                guard pendingEvent != processingEvent else { return }
+                
+                processingEvent = pendingEvent
+                receiveEventCompletion = { [unowned self] in
+                    self.processingEvent = nil
+                    self.eventsStorage.deleteEvent(pendingEvent)
+                    self.receiveEventCompletion = nil
+                    self.checkPendingEvents()
+                }
+                self.handle(event: pendingEvent)
             }
-            self.handle(event: pendingEvent)
         }
     }
     

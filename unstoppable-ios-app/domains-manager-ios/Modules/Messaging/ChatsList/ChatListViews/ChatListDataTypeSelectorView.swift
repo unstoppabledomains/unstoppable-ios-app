@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct ChatListDataTypeSelectorView: View {
+struct ChatListDataTypeSelectorView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: ChatListViewModel
+    @Environment(\.analyticsViewName) var analyticsName
     @Binding var dataType: ChatsList.DataType
+    
 
     private let indicatorSize: CGFloat = 4
     
@@ -81,6 +83,7 @@ private extension ChatListDataTypeSelectorView {
     func viewForSegmentWith(dataType: ChatsList.DataType) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value : dataType.rawValue])
             if self.dataType != dataType {
                 self.dataType = dataType
             }

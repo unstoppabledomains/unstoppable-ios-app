@@ -17,7 +17,7 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
     private(set) var conversationState: MessagingChatConversationState
-    private let fetchLimit: Int = 20
+    private let fetchLimit: Int = 30
     @Published private(set) var isLoadingMessages = false
     @Published private(set) var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     @Published private(set) var isChannelEncrypted: Bool = true
@@ -167,6 +167,9 @@ extension ChatViewModel {
             logButtonPressedAnalyticEvents(button: .saveChatImage)
             let saver = PhotoLibraryImageSaver()
             saver.saveImage(image)
+        case .showImage(let image):
+            logButtonPressedAnalyticEvents(button: .viewMessagePhoto)
+            showMessageImageViewWith(image: image, mode: .view)
         case .blockUserInGroup(let user):
             logButtonPressedAnalyticEvents(button: .blockUserInGroupChat,
                                            parameters: [.chatId : chat.id,
@@ -175,8 +178,10 @@ extension ChatViewModel {
                 try? await setUser(user, in: chat, blocked: true)
             }
         case .sendReaction(let content, let toMessage):
+            logButtonPressedAnalyticEvents(button: .sendReaction, parameters: [.value: content])
             sendReactionMessage(content, toMessage: toMessage)
         case .reply(let message):
+            logButtonPressedAnalyticEvents(button: .replyToMessage)
             messageToReply = message
             keyboardFocused = true
         }
@@ -266,8 +271,10 @@ private extension ChatViewModel {
     
     func verifyAndHandleExternalLink(_ url: URL, by sender: MessagingChatSender) {
         if let domainName = parseMentionDomainNameFrom(url: url) {
+            logButtonPressedAnalyticEvents(button: .mentionWithinMessage, parameters: [.value: domainName])
             handleMentionPressedTo(domainName: domainName)
         } else {
+            logButtonPressedAnalyticEvents(button: .linkWithinMessage)
             handleOtherLinkPressed(url, by: sender)
         }
     }
@@ -283,10 +290,7 @@ private extension ChatViewModel {
     
     func parseMentionDomainNameFrom(url: URL) -> String? {
         let string = url.absoluteString
-        if string.first == "@" {
-            return String(string.dropFirst())
-        }
-        return nil
+        return MessageMentionString(string: string)?.mentionWithoutPrefix
     }
     
     func handleOtherLinkPressed(_ url: URL, by sender: MessagingChatSender) {
@@ -974,6 +978,7 @@ private extension ChatViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: action,
+                                           shouldResetNavigation: false,
                                            dismissCallback: nil)
         case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
             router.showPublicDomainProfile(of: publicDomainDisplayInfo,
@@ -987,11 +992,14 @@ private extension ChatViewModel {
 private extension ChatViewModel {
     func didPickImageToSend(_ image: UIImage) {
         let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
-        
-        let confirmationVC = MessagingImageView.instantiate(mode: .confirmSending(callback: { [weak self] in
+        showMessageImageViewWith(image: resizedImage, mode: .confirmSending(callback: { [weak self] in
             self?.sendImageMessage(resizedImage)
-        }), image: resizedImage)
-        appContext.coreAppCoordinator.topVC?.present(confirmationVC, animated: true)
+        }))
+    }
+    
+    func showMessageImageViewWith(image: UIImage, mode: MessagingImageView.Mode) {
+        let messagingImageVC = MessagingImageView.instantiate(mode: mode, image: image)
+        appContext.coreAppCoordinator.topVC?.present(messagingImageVC, animated: true)
     }
 }
 
@@ -1089,20 +1097,9 @@ extension ChatViewModel: MessagingServiceListener {
             case .chats:
                 return
             case .messagesAdded(let messages, let chatId, let userId):
-                if userId == self.profile.id,
-                   case .existingChat(let chat) = conversationState,
-                   chatId == chat.id,
-                   !messages.isEmpty {
-                    await self.addMessages(messages, scrollToBottom: true)
-                }
+                await addMessagesFromUpdatedData(messages, chatId: chatId, userId: userId)
             case .messageUpdated(let updatedMessage, var newMessage):
-                if case .existingChat(let chat) = conversationState,
-                   updatedMessage.chatId == chat.id,
-                   let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
-                    await newMessage.prepareToDisplay()
-                    self.messages[i] = newMessage
-                    messagesCache.insert(newMessage)
-                }
+                await updateMessageFromUpdatedData(updatedMessage, with: newMessage)
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
                    chatId == chat.id {
@@ -1117,6 +1114,27 @@ extension ChatViewModel: MessagingServiceListener {
             }
         }
     }
+    
+    private func addMessagesFromUpdatedData(_ messages: [MessagingChatMessageDisplayInfo], chatId: String, userId: String) async {
+        if userId == self.profile.id,
+           case .existingChat(let chat) = conversationState,
+           chatId == chat.id,
+           !messages.isEmpty {
+            let messages = messages.filter { !$0.isReactionMessage }
+            await self.addMessages(messages, scrollToBottom: true)
+        }
+    }
+    
+    private func updateMessageFromUpdatedData(_ updatedMessage: MessagingChatMessageDisplayInfo, with newMessage: MessagingChatMessageDisplayInfo) async {
+        if case .existingChat(let chat) = conversationState,
+           updatedMessage.chatId == chat.id,
+           let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+            var newMessage = newMessage
+            await newMessage.prepareToDisplay()
+            self.messages[i] = newMessage
+            messagesCache.insert(newMessage)
+        }
+    }
 }
 
 // MARK: - UDFeatureFlagsListener
@@ -1128,8 +1146,6 @@ extension ChatViewModel: UDFeatureFlagsListener {
                 setIfUserCanSendAttachments()
                 reloadCachedMessages()
             }
-        default:
-            return
         }
     }
 }

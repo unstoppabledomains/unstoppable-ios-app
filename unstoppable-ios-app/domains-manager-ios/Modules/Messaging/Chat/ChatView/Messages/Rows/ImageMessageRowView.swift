@@ -17,19 +17,7 @@ struct ImageMessageRowView: View {
 
     var body: some View {
         ZStack {
-            if let image {
-                UIImageBridgeView(image: image,
-                                  width: 20,
-                                  height: 20)
-                .frame(width: imageSize().width,
-                       height: imageSize().height)
-            } else {
-                Image.framesIcon
-                    .resizable()
-                    .squareFrame(80)
-                    .padding(60)
-                    .background(Color.backgroundMuted)
-            }
+            messageImageView()
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contextMenu {
@@ -54,6 +42,34 @@ struct ImageMessageRowView: View {
 
 // MARK: - Private methods
 private extension ImageMessageRowView {
+    @ViewBuilder
+    func messageImageView() -> some View {
+        if let image {
+            clickableMessageImageView(image: image)
+        } else {
+            Image.framesIcon
+                .resizable()
+                .squareFrame(80)
+                .padding(60)
+                .background(Color.backgroundMuted)
+        }
+    }
+    
+    @ViewBuilder
+    func clickableMessageImageView(image: UIImage) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            viewModel.handleChatMessageAction(.showImage(image))
+        } label: {
+            UIImageBridgeView(image: image,
+                              width: 20,
+                              height: 20)
+            .frame(width: imageSize().width,
+                   height: imageSize().height)
+        }
+        .buttonStyle(.plain)
+    }
+    
     func imageSize() -> CGSize {
         if let imageSize = image?.size {
             let maxSize: CGFloat = (224/390) * UIScreen.main.bounds.width

@@ -389,7 +389,7 @@ private extension PushEntitiesTransformer {
         }
         
         return try parseMessageFromPushMessage(decryptedContent: decryptedContent,
-                                               messageObj: messageObj,
+                                               messageObj: messageObj ?? pushMessage.messageObj,
                                                messageType: messageType,
                                                messageId: messageId,
                                                userId: userId,
@@ -413,13 +413,15 @@ private extension PushEntitiesTransformer {
             return .imageBase64(imageBase64DisplayInfo)
         case .reaction:
             guard let messageObj,
-                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { return nil }
+                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { 
+                return nil }
             let messageId = parseReferenceIdToMessage(from: contentInfo.reference)
             return .reaction(.init(content: contentInfo.content, messageId: messageId))
         case .reply:
             guard let messageObj,
                   let contentInfo = PushEnvironment.PushMessageReplyContent.objectFromJSONString(messageObj),
-                  let messageType = PushMessageType(rawValue: contentInfo.content.messageType) else { return nil }
+                  let messageType = PushMessageType(rawValue: contentInfo.content.messageType) else { 
+                return nil }
             guard let contentType = try parseMessageFromPushMessage(decryptedContent: contentInfo.content.messageObj.content,
                                                                     messageObj: nil,
                                                                     messageType: messageType,

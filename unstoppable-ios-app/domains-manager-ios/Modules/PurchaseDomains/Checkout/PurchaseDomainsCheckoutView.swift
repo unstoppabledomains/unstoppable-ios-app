@@ -84,11 +84,11 @@ struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
                                       selectedWalletCallback: { wallet in warnUserIfNeededAndSelectWallet(wallet) }))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
-                .environment(\.analyticsViewName, analyticsName)
+                .passViewAnalyticsDetails(logger: self)
         })
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
-                .environment(\.analyticsViewName, analyticsName)
+                .passViewAnalyticsDetails(logger: self)
         })
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
