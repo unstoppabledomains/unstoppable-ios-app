@@ -45,6 +45,7 @@ extension Analytics {
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
         case searchProfilePressed
+        case trendingProfilePressed
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome

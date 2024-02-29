@@ -21,6 +21,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
+    @Published private(set) var trendingProfiles: [HomeExplore.TrendingProfile] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
@@ -62,11 +63,9 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 // MARK: - Open methods
 extension HomeExploreViewModel {
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
-        guard let walletAddress = profile.ownerAddress,
-              let selectedWallet = walletsDataService.selectedWallet else { return }
+        guard let walletAddress = profile.ownerAddress else { return }
         
-        let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: profile.name)
-        router.showPublicDomainProfile(of: domainPublicInfo, by: selectedWallet, preRequestedAction: nil)
+        openPublicDomainProfile(domainName: profile.name, walletAddress: walletAddress)
     }
     
     func didTapUserDomainProfile(_ domain: DomainDisplayInfo) {
@@ -79,11 +78,16 @@ extension HomeExploreViewModel {
                                            dismissCallback: nil)
         }
     }
+    
+    func didTapTrendingProfile(_ profile: HomeExplore.TrendingProfile) {
+        openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
+    }
 }
 
 // MARK: - Private methods
 private extension HomeExploreViewModel {
     func loadAndShowData() {
+        loadTrendingProfiles()
         if case .wallet(let wallet) = selectedProfile {
             loadFollowersFor(wallet: wallet)
         }
@@ -92,6 +96,17 @@ private extension HomeExploreViewModel {
     func loadFollowersFor(wallet: WalletEntity) {
         followersList = MockEntitiesFabric.Explore.createFollowersProfiles()
         followingsList = MockEntitiesFabric.Explore.createFollowersProfiles()
+    }
+    
+    func loadTrendingProfiles() {
+        trendingProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+    }
+    
+    func openPublicDomainProfile(domainName: String, walletAddress: String) {
+        guard let selectedWallet = walletsDataService.selectedWallet else { return }
+        
+        let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domainName)
+        router.showPublicDomainProfile(of: domainPublicInfo, by: selectedWallet, preRequestedAction: nil)
     }
 }
 

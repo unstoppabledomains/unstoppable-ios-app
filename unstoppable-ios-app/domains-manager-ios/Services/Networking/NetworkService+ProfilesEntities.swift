@@ -9,6 +9,7 @@ import Foundation
 
 struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
+    let metadata: PublicDomainProfileMetaData
     let socialAccounts: SocialAccounts?
     let referralCode: String?
     let social: DomainProfileSocialInfo?
@@ -106,6 +107,13 @@ struct PublicDomainProfileAttributes: Decodable {
         case phoneNumber
         case domainPurchased
     }
+}
+
+struct PublicDomainProfileMetaData: Decodable {
+    let domain: String
+    let blockchain: String
+    let networkId: String
+    let owner: String
 }
 
 // MARK: - PublicDomainProfileAttributes init(from decoder:

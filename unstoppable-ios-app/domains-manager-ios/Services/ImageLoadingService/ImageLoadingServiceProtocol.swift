@@ -43,6 +43,7 @@ enum ImageSource: Sendable {
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case domain(_ domainItem: DomainDisplayInfo)
     case domainPFPSource(_ domainPFPSource: DomainPFPInfo.PFPSource)
+    case domainNameInitials(_ domainName: String, size: InitialsView.InitialsSize)
     case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
@@ -66,8 +67,10 @@ enum ImageSource: Sendable {
             return ImageSource.domainPFPSource(domainItem.pfpSource).key
         case .domainPFPSource(let pfpSource):
             return pfpSource.value
+        case .domainNameInitials(let domainName, let size):
+            return ImageSource.initials(domainName, size: size, style: .accent).key
         case .domainInitials(let domainItem, let size):
-            return ImageSource.initials(domainItem.name, size: size, style: .accent).key
+            return ImageSource.domainNameInitials(domainItem.name, size: size).key
         case .domainItemOrInitials(let domainItem, let size):
             if domainItem.pfpSource != .none {
                 return ImageSource.domain(domainItem).key

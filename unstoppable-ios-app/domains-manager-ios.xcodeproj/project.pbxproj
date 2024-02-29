@@ -479,6 +479,10 @@
 		C61C33282B904FC600BD11F5 /* HomeExplore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33262B904FC600BD11F5 /* HomeExplore.swift */; };
 		C61C332A2B90527200BD11F5 /* UDSegmentedControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */; };
 		C61C332B2B90527200BD11F5 /* UDSegmentedControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */; };
+		C61C332D2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */; };
+		C61C332E2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */; };
+		C61C33302B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */; };
+		C61C33312B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */; };
 		C61C50002820E39600D1110A /* PullUpSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */; };
 		C61C50052820FC5E00D1110A /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C50042820FC5E00D1110A /* UISearchBar.swift */; };
 		C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
@@ -2692,6 +2696,8 @@
 		C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreDomainSearchTypePickerView.swift; sourceTree = "<group>"; };
 		C61C33262B904FC600BD11F5 /* HomeExplore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExplore.swift; sourceTree = "<group>"; };
 		C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControlView.swift; sourceTree = "<group>"; };
+		C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Explore.swift"; sourceTree = "<group>"; };
+		C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreTrendingProfileRowView.swift; sourceTree = "<group>"; };
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
@@ -4520,6 +4526,7 @@
 				C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */,
 				C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */,
 				C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */,
+				C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */,
 				C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */,
 			);
 			path = Mock;
@@ -4836,6 +4843,7 @@
 				C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */,
 				C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */,
 				C6203A4D2B882959000A1A8E /* HomeExploreView.swift */,
+				C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */,
 				C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */,
 				C6203A612B883FCF000A1A8E /* Subviews */,
 			);
@@ -8484,6 +8492,7 @@
 				C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
 				C63095EA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift in Sources */,
 				C6D6E5A32819945C008C66BB /* StatusMessage.swift in Sources */,
+				C61C332D2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */,
 				C6203A4E2B882959000A1A8E /* HomeExploreView.swift in Sources */,
 				C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */,
 				C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */,
@@ -8816,6 +8825,7 @@
 				C664312328DACB4100A9C734 /* RaisedTertiaryButton.swift in Sources */,
 				C664B6502914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C6D8FF392B831BC40094A21E /* HomeProfileSelectorNavTitleView.swift in Sources */,
+				C61C33302B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */,
 				C6456F152800212000A517D5 /* UIStackView.swift in Sources */,
 				C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
@@ -9575,6 +9585,7 @@
 				C61808372B19AF120032E543 /* UITextField.swift in Sources */,
 				C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */,
 				C61C33252B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */,
+				C61C33312B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */,
 				C6C8F8112B217CC000A9834D /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				C6B65F982B566B37006D1812 /* NFTDisplayInfo.swift in Sources */,
 				C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */,
@@ -9992,6 +10003,7 @@
 				C6D6471F2B1ED89A00D724AC /* ViewErrorHolder.swift in Sources */,
 				C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */,
 				C61807E92B19A6290032E543 /* DomainPFPInfo.swift in Sources */,
+				C61C332E2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */,
 				C6C8F8D22B21833D00A9834D /* UBTSearchingView.swift in Sources */,
 				C6FAED872B8C684700CC1844 /* MessageMentionString.swift in Sources */,
 				C6D646722B1ED11B00D724AC /* DomainProfileUpdatingRecordsData.swift in Sources */,

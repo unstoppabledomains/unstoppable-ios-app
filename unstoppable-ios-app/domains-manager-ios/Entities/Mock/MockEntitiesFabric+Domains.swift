@@ -95,11 +95,13 @@ extension MockEntitiesFabric {
 // MARK: - Domains profiles
 extension MockEntitiesFabric {
     enum DomainProfile {
-        static func createPublicProfile(attributes: PublicDomainProfileAttributes = DomainProfile.createEmptyPublicProfileAttributes()) -> SerializedPublicDomainProfile {
+        static func createPublicProfile(attributes: PublicDomainProfileAttributes = DomainProfile.createEmptyPublicProfileAttributes(),
+                                        socialAccounts: SocialAccounts? = nil,
+                                        social: DomainProfileSocialInfo? = nil) -> SerializedPublicDomainProfile {
             .init(profile: attributes,
-                  socialAccounts: nil,
+                  socialAccounts: socialAccounts,
                   referralCode: nil,
-                  social: nil,
+                  social: social,
                   records: nil,
                   walletBalances: nil)
         }
@@ -160,23 +162,6 @@ extension MockEntitiesFabric {
                                            relationshipType: relationshipType,
                                            meta: .init(totalCount: followerNames.count,
                                                        pagination: .init(cursor: nil, take: followerNames.count)))
-        }
-    }
-}
-
-// MARK: - Explore
-extension MockEntitiesFabric {
-    enum Explore {
-        @MainActor
-        static func createViewModel() -> HomeExploreViewModel {
-            .init(router: Home.createHomeTabRouter())
-        }
-        
-        static func createFollowersProfiles() -> [SerializedPublicDomainProfile] {
-            [DomainProfile.createPublicProfile(), // Empty
-             DomainProfile.createPublicProfile(attributes: DomainProfile.createPublicProfileAttributes(imagePath: ImageURLs.aiAvatar.rawValue)), // Avatar
-             DomainProfile.createPublicProfile(attributes: DomainProfile.createPublicProfileAttributes(coverPath: ImageURLs.sunset.rawValue)), // Cover path
-             DomainProfile.createPublicProfile(attributes: DomainProfile.createPublicProfileAttributes(imagePath: ImageURLs.aiAvatar.rawValue, coverPath: ImageURLs.sunset.rawValue))] // Avatar and cover 1
         }
     }
 }

@@ -19,7 +19,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             VStack(spacing: 0) {
-                if !viewModel.isSearchActive {
+                if viewModel.isSearchActive {
                     domainSearchTypeSelector()
                 }
                 contentList()
@@ -114,6 +114,7 @@ private extension HomeExploreView {
     @ViewBuilder
     func contentList() -> some View {
         List {
+            trendingProfilesSection()
             //                    domainsList()
             followersSection(relationshipType: .following)
             sectionSeparatorView()
@@ -125,6 +126,22 @@ private extension HomeExploreView {
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: Text(String.Constants.search.localized()))
         .clearListBackground()
+    }
+    
+    @ViewBuilder
+    func trendingProfilesSection() -> some View {
+        Section {
+            ForEach(viewModel.trendingProfiles) { profile in
+                HomeExploreTrendingProfileRowView(profile: profile)
+            }
+        } header: {
+            Text("Trending")
+                .foregroundStyle(Color.foregroundDefault)
+                .padding(.init(vertical: 4))
+        }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .unstoppableListRowInset()
     }
     
     @ViewBuilder
