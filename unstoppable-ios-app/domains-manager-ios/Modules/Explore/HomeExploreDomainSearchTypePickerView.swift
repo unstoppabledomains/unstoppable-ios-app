@@ -12,16 +12,10 @@ struct HomeExploreDomainSearchTypePickerView: View {
     @EnvironmentObject var viewModel: HomeExploreViewModel
     
     var body: some View {
-        Picker(selection: $viewModel.searchDomainsType) {
-            ForEach(HomeExplore.SearchDomainsType.allCases, id: \.self) { type in
-                Label(
-                    title: { Text("Item \(type.rawValue)") },
-                    icon: { Image.docsIcon }
-                )
-            }
-        } label: { }
-        .pickerStyle(.segmented)
+        UDSegmentedControlView(selection: $viewModel.searchDomainsType,
+                               items: HomeExplore.SearchDomainsType.allCases)
         .padding(.horizontal)
+        .frame(height: 36)
     }
 }
 

@@ -220,6 +220,8 @@ extension String {
         static let messages = "MESSAGES"
         static let explore = "EXPLORE"
         static let reply = "REPLY"
+        static let global = "GLOBAL"
+        static let yours = "YOURS"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

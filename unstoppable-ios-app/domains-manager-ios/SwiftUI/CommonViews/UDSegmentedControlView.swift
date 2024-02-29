@@ -20,12 +20,12 @@ struct UDSegmentedControlView<Selection: UDSegmentedControlItem>: View, ViewAnal
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 backgroundView()
-                selectedBackgroundView(width: proxy.size.width / 3)
+                selectedBackgroundView(width: proxy.size.width / CGFloat(items.count))
                 viewForItems(items)
             }
             .frame(height: 36)
-            .frame(maxWidth: .infinity)
             .animation(.easeInOut(duration: 0.25), value: selection)
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -35,7 +35,7 @@ private extension UDSegmentedControlView {
     @ViewBuilder
     func backgroundView() -> some View {
         Color.white.opacity(0.1)
-            .clipShape(Capsule())
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay {
                 Capsule()
                     .stroke(lineWidth: 1)
@@ -46,7 +46,7 @@ private extension UDSegmentedControlView {
     @ViewBuilder
     func selectedBackgroundView(width: CGFloat) -> some View {
         Color.white
-            .clipShape(Capsule())
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             .frame(width: width, height: 28)
             .offset(x: selectedIndexXOffset + selectedIndexOffset(width: width),
                     y: 0)
@@ -98,10 +98,8 @@ private extension UDSegmentedControlView {
                             .resizable()
                             .squareFrame(16)
                     }
-                    if let title = dataType.title {
-                        Text(title)
-                            .font(.currentFont(size: 14, weight: .semibold))
-                    }
+                    Text(dataType.title)
+                        .font(.currentFont(size: 14, weight: .semibold))
                 }
                 .foregroundStyle(dataType == self.selection ? Color.black : Color.foregroundDefault)
                 .frame(maxWidth: .infinity)
@@ -112,7 +110,7 @@ private extension UDSegmentedControlView {
 }
 
 protocol UDSegmentedControlItem: Hashable, RawRepresentable where RawValue == String {
-    var title: String? { get }
+    var title: String { get }
     var icon: Image? { get }
     var analyticButton: Analytics.Button { get }
 }

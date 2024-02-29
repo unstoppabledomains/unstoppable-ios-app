@@ -166,6 +166,8 @@
 "MESSAGES" = "Messages";
 "EXPLORE" = "Explore";
 "REPLY" = "Reply";
+"GLOBAL" = "Global";
+"YOURS" = "Yours";
 
 /* ONBOARDING */
 // Tutorial screens

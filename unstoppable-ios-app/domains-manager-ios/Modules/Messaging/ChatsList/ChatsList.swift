@@ -36,7 +36,7 @@ extension ChatsList {
     enum DataType: String, Hashable, CaseIterable, UDSegmentedControlItem {
         case chats, communities, channels
         
-        var title: String? {
+        var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()

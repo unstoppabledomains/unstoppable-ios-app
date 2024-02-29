@@ -389,6 +389,7 @@ extension Analytics {
         case subdomainsSectionHeader, domainsSectionHeader
         case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
         case followerTile
+        case exploreDomainsSearchType
     }
 }
 

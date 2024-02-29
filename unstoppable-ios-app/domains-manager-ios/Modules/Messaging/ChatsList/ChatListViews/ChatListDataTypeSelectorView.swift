@@ -17,7 +17,7 @@ struct ChatListDataTypeSelectorView: View {
         UDSegmentedControlView(selection: $viewModel.selectedDataType,
                                items: ChatsList.DataType.allCases) { dataType in
             ZStack(alignment: .topTrailing) {
-                Text(dataType.title ?? "")
+                Text(dataType.title)
                     .font(.currentFont(size: 14, weight: .semibold))
                     .foregroundStyle(dataType == viewModel.selectedDataType ? Color.black : Color.foregroundDefault)
                 
