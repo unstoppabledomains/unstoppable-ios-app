@@ -193,14 +193,15 @@ extension ChatViewModel {
     
     func showMentionSuggestionsIfNeeded() {
         let listOfGroupParticipants = listOfGroupParticipants
-        if !listOfGroupParticipants.isEmpty {
-            let components = input.components(separatedBy: " ")
-            if let lastComponent = components.last,
-               let mention = MessageMentionString(string: lastComponent) {
-                showMentionSuggestions(using: listOfGroupParticipants,
-                                       mention: mention)
-            }
+        guard !listOfGroupParticipants.isEmpty,
+              let lastComponent = input.components(separatedBy: " ").last,
+              let mention = MessageMentionString(string: lastComponent) else {
+            suggestingUsers = []
+            return
         }
+        
+        showMentionSuggestions(using: listOfGroupParticipants,
+                               mention: mention)
     }
     
     func didSelectMentionSuggestion(user: MessagingChatUserDisplayInfo) {
@@ -1155,7 +1156,7 @@ extension ChatViewModel: UDFeatureFlagsListener {
         ChatView(viewModel: .init(profile: .init(id: "",
                                                  wallet: "",
                                                  serviceIdentifier: .push),
-                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
                                   router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in
