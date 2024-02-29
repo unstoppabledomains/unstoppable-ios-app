@@ -89,7 +89,7 @@ private extension ChatView {
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack {
+                LazyVStack(spacing: 16) {
                     if viewModel.isLoadingMessages {
                         topLoadingView()
                     }

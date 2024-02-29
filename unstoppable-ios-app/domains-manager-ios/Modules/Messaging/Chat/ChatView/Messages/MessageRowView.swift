@@ -20,7 +20,7 @@ struct MessageRowView: View, ViewAnalyticsLogger {
     private let groupChatImageXOffset: CGFloat = 46
     
     var body: some View {
-        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
+        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading, spacing: 2) {
             HStack(alignment: .bottom, spacing: 8) {
                 if message.senderType.isThisUser {
                     Spacer()
@@ -265,7 +265,7 @@ private extension MessageRowView {
             .foregroundStyle(Color.foregroundDefault)
             .padding(.init(horizontal: 8, vertical: 8))
             .background(Color.backgroundMuted)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
         .alwaysPopover(isPresented: $showingReactionsPopover) {
