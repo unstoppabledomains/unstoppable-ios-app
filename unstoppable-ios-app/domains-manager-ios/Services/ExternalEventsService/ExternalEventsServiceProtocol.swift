@@ -44,5 +44,6 @@ typealias ExternalEventUIHandleCompletion = (Bool) -> ()
 
 @MainActor
 protocol ExternalEventsUIHandler {
+    var isReadyToHandleExternalEvents: Bool { get }
     func handle(uiFlow: ExternalEventUIFlow) async throws
 }

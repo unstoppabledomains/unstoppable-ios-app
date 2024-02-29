@@ -109,9 +109,12 @@ extension HomeTabRouter {
     func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: WalletEntity,
                            preRequestedAction: PreRequestedProfileAction?,
+                           shouldResetNavigation: Bool = true,
                            dismissCallback: EmptyCallback?) async {
-        await popToRootAndWait()
-        tabViewSelection = .wallets
+        if shouldResetNavigation {
+            await popToRootAndWait()
+            tabViewSelection = .wallets
+        }
         await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
         guard let topVC = appContext.coreAppCoordinator.topVC else { return }
 

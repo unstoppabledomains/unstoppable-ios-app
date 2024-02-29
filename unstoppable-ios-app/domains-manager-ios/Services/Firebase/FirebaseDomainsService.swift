@@ -9,10 +9,14 @@ import Foundation
 
 final class FirebaseDomainsService: BaseFirebaseInteractionService {
     
+    typealias LoadDomainsTask = TaskWithDeadline<[FirebaseDomain]>
+    
     private let storage = FirebaseDomainsStorage.instance
 
     @Published private(set) var parkedDomains: [FirebaseDomainDisplayInfo] = []
     var parkedDomainsPublisher: Published<[FirebaseDomainDisplayInfo]>.Publisher  { $parkedDomains }
+    private var loadDomainsTask: LoadDomainsTask?
+    private let loadDomainsRequestTimeout: TimeInterval = 60
     
     override init(firebaseAuthService: FirebaseAuthService,
                   firebaseSigner: UDFirebaseSigner) {
@@ -33,21 +37,34 @@ extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
     }
     
     func getParkedDomains() async throws -> [FirebaseDomain] {
-        var result = [FirebaseDomain]()
-        var isThereDomainsToLoad = true
-        var page = 1
-        let perPage = 200
-        
-        while isThereDomainsToLoad {
-            let domains = try await loadParkedDomainsFor(page: page, perPage: perPage)
-            result += domains
-            page += 1
-            isThereDomainsToLoad = domains.count >= perPage
+        if let loadDomainsTask {
+            return try await loadDomainsTask.value
         }
-        storage.saveFirebaseDomains(result)
-        setDomains(result)
         
-        return result
+        let loadDomainsTask: LoadDomainsTask = TaskWithDeadline(deadline: loadDomainsRequestTimeout) { [weak self] in
+            guard let self else { throw CancellationError() }
+            
+            var result = [FirebaseDomain]()
+            var isThereDomainsToLoad = true
+            var page = 1
+            let perPage = 200
+            
+            while isThereDomainsToLoad {
+                let domains = try await self.loadParkedDomainsFor(page: page, perPage: perPage)
+                result += domains
+                page += 1
+                isThereDomainsToLoad = domains.count >= perPage
+            }
+            self.storage.saveFirebaseDomains(result)
+            self.setDomains(result)
+            
+            return result
+        }
+
+        self.loadDomainsTask = loadDomainsTask
+        let domains = try await loadDomainsTask.value
+        self.loadDomainsTask = nil
+        return domains
     }
 }
 

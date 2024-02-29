@@ -14,7 +14,6 @@ struct ChatView: View, ViewAnalyticsLogger {
     @FocusState var focused: Bool
 
     var analyticsName: Analytics.ViewName { .chatDialog }
-    var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
     
     var body: some View {
         ZStack {
@@ -55,8 +54,7 @@ struct ChatView: View, ViewAnalyticsLogger {
             }
         }
         .environmentObject(viewModel)
-        .environment(\.analyticsViewName, analyticsName)
-        .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
+        .passViewAnalyticsDetails(logger: self)
         .onAppear(perform: onAppear)
     }
 }

@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct MessagingImageView: View {
+struct MessagingImageView: View, ViewAnalyticsLogger {
+    
+    
+    var analyticsName: Analytics.ViewName { .viewMessagingImage }
+    
     
     @MainActor
     static func instantiate(mode: MessagingImageView.Mode,
@@ -36,10 +40,12 @@ struct MessagingImageView: View {
                             .aspectRatio(contentMode: .fit)
                     }
                 }
+                .trackAppearanceAnalytics(analyticsLogger: self)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
                             UDVibration.buttonTap.vibrate()
+                            logButtonPressedAnalyticEvents(button: .cancel)
                             dismiss()
                         }) {
                             Text(String.Constants.cancel.localized())
@@ -53,6 +59,7 @@ struct MessagingImageView: View {
                         case .confirmSending(let callback):
                             Button(action: {
                                 UDVibration.buttonTap.vibrate()
+                                logButtonPressedAnalyticEvents(button: .send)
                                 dismiss()
                                 callback()
                             }) {
@@ -66,6 +73,7 @@ struct MessagingImageView: View {
                             }
                         case .view:
                             Button(action: {
+                                logButtonPressedAnalyticEvents(button: .savePhoto)
                                 UDVibration.buttonTap.vibrate()
                                 let saver = PhotoLibraryImageSaver()
                                 saver.saveImage(image)

@@ -47,6 +47,13 @@ extension MessagingChatMessageDisplayInfo {
         deliveryState == .failedToSend
     }
     
+    var isReactionMessage: Bool {
+        if case .reaction = type {
+            return true
+        }
+        return false
+    }
+    
     enum DeliveryState: Int {
         case delivered, sending, failedToSend
     }

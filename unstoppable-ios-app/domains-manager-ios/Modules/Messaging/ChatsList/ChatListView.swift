@@ -40,6 +40,7 @@ struct ChatListView: View, ViewAnalyticsLogger {
                     ProgressView()
                 }
             }
+            .trackAppearanceAnalytics(analyticsLogger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
@@ -83,6 +84,8 @@ struct ChatListView: View, ViewAnalyticsLogger {
                                                           tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
+            .passViewAnalyticsDetails(logger: self)
+            .checkPendingEventsOnAppear()
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.chatTabNavPath)
@@ -162,7 +165,8 @@ private extension ChatListView {
                          icon: bioImage,
                          style: .large(.raisedPrimary),
                          callback: {
-                
+                logButtonPressedAnalyticEvents(button: .createMessagingProfile)
+                viewModel.createProfilePressed()
             })
             .padding()
         }
@@ -191,8 +195,8 @@ private extension ChatListView {
                        buttonIcon: .plusIcon18,
                        buttonStyle: .medium(.raisedPrimary),
                        buttonCallback: {
-            logButtonPressedAnalyticEvents(button: .createMessagingProfile)
-            viewModel.createProfilePressed()
+            logButtonPressedAnalyticEvents(button: .addWallet)
+            viewModel.addWalletButtonPressed()
         })
     }
     

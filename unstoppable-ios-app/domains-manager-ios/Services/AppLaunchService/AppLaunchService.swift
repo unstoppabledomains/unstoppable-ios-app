@@ -191,7 +191,7 @@ private extension AppLaunchService {
     
     func wakeUpServices(walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         walletConnectServiceV2.setWalletUIHandler(coreAppCoordinator) // wake up
-        _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
+        _ = AppGroupsDomainsPFPBridgeService.shared // wake up
     }
     
     func checkFirstLaunchAfterGIFSupportReleased() {
