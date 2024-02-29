@@ -17,6 +17,7 @@ struct MessageRowView: View, ViewAnalyticsLogger {
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
     @State private var showingReactionsPopover = false
+    private let groupChatImageXOffset: CGFloat = 46
     
     var body: some View {
         VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
@@ -36,17 +37,17 @@ struct MessageRowView: View, ViewAnalyticsLogger {
             }
             
             HStack {
-                if isGroupChatMessage, !isThisUser {
-                    Spacer()
-                        .frame(width: 46)
-                }
-                timeView()
+                groupAvatarXOffsetViewOfNeeded()
+                underMessageView()
                 if isFailedMessage, isThisUser {
                     Spacer()
                         .frame(width: 40)
                 }
             }
-            reactionsView()
+            HStack {
+                groupAvatarXOffsetViewOfNeeded()
+                reactionsView()
+            }
         }
         .frame(maxWidth: .infinity)
         .background(Color.clear)
@@ -61,6 +62,7 @@ private extension MessageRowView {
     }
     var sender: MessagingChatSender { message.senderType }
     var isThisUser: Bool { sender.isThisUser }
+    var isNeedToAddGroupAvatarXOffset: Bool { isGroupChatMessage && !isThisUser }
     
     @ViewBuilder
     func messageContentView() -> some View {
@@ -103,12 +105,25 @@ private extension MessageRowView {
     }
     
     @ViewBuilder
-    func timeView() -> some View {
+    func underMessageView() -> some View {
         if isFailedMessage {
             failedToSendMessageView()
         } else {
             timeLabelView()
         }
+    }
+    
+    @ViewBuilder
+    func groupAvatarXOffsetViewOfNeeded() -> some View {
+        if isNeedToAddGroupAvatarXOffset {
+            groupAvatarXOffsetView()
+        }
+    }
+    
+    @ViewBuilder
+    func groupAvatarXOffsetView() -> some View {
+        Spacer()
+            .frame(width: groupChatImageXOffset)
     }
     
     var timeLabelText: String {
