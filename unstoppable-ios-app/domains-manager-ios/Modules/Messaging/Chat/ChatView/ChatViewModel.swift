@@ -443,7 +443,6 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     isLoadingMessages = false
                     await addMessages(updateMessages, scrollToBottom: true)
-                    scrollToBottom()
                 case .newChat:
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
