@@ -112,7 +112,7 @@ struct PublicDomainProfileAttributes: Decodable {
 struct PublicDomainProfileMetaData: Decodable {
     let domain: String
     let blockchain: String
-    let networkId: String
+    let networkId: Int
     let owner: String
 }
 

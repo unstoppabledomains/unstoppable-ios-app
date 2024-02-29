@@ -23,12 +23,12 @@ extension MockEntitiesFabric {
         }
         
         static func createTrendingProfiles() -> [HomeExplore.TrendingProfile] {
-            [.init(domainName: "trendingprofile.x", avatarURL: nil, profileName: "", followersCount: 0),
-             .init(domainName: "trendingprofile.crypto", avatarURL: ImageURLs.aiAvatar.url, profileName: "", followersCount: 0),
-             .init(domainName: "trendingprofile.wallet", avatarURL: ImageURLs.sunset.url, profileName: "Captain bitcoin", followersCount: 0),
-             .init(domainName: "trendingprofile.pudgy", avatarURL: nil, profileName: "", followersCount: 18768),
-             .init(domainName: "trendingprofilewithlonglongdomainnamethatcantfitAnywhere.wallet", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin", followersCount: 1),
-             .init(domainName: "hey.hi", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin withlonglongdomainnamethatcantfitAnywhere", followersCount: 173)]
+            [.init(domainName: "trendingprofile.x", walletAddress: "1", avatarURL: nil, profileName: "", followersCount: 0),
+             .init(domainName: "trendingprofile.crypto", walletAddress: "2", avatarURL: ImageURLs.aiAvatar.url, profileName: "", followersCount: 0),
+             .init(domainName: "trendingprofile.wallet", walletAddress: "3", avatarURL: ImageURLs.sunset.url, profileName: "Captain bitcoin", followersCount: 0),
+             .init(domainName: "trendingprofile.pudgy", walletAddress: "4", avatarURL: nil, profileName: "", followersCount: 18768),
+             .init(domainName: "trendingprofilewithlonglongdomainnamethatcantfitAnywhere.wallet", walletAddress: "5", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin", followersCount: 1),
+             .init(domainName: "hey.hi", walletAddress: "6", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin withlonglongdomainnamethatcantfitAnywhere", followersCount: 173)]
         }
     }
 }

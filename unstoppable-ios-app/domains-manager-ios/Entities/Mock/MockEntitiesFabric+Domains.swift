@@ -95,10 +95,13 @@ extension MockEntitiesFabric {
 // MARK: - Domains profiles
 extension MockEntitiesFabric {
     enum DomainProfile {
-        static func createPublicProfile(attributes: PublicDomainProfileAttributes = DomainProfile.createEmptyPublicProfileAttributes(),
+        static func createPublicProfile(domain: String = "mock.x",
+                                        walletAddress: String = "0x1",
+                                        attributes: PublicDomainProfileAttributes = DomainProfile.createEmptyPublicProfileAttributes(),
                                         socialAccounts: SocialAccounts? = nil,
                                         social: DomainProfileSocialInfo? = nil) -> SerializedPublicDomainProfile {
             .init(profile: attributes,
+                  metadata: createPublicDomainMetadata(domain: domain, walletAddress: walletAddress),
                   socialAccounts: socialAccounts,
                   referralCode: nil,
                   social: social,
@@ -116,6 +119,10 @@ extension MockEntitiesFabric {
                                           coverPath: nil,
                                           phoneNumber: nil,
                                           domainPurchased: nil)
+        }
+        
+        static func createPublicDomainMetadata(domain: String, walletAddress: String) -> PublicDomainProfileMetaData {
+            PublicDomainProfileMetaData(domain: domain, blockchain: "MATIC", networkId: 80001, owner: walletAddress)
         }
         
         static func createPublicProfileAttributes(displayName: String = "Oleg Kuplin",

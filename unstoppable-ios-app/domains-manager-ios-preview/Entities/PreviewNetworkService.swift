@@ -178,6 +178,7 @@ extension NetworkService {
                              coverPath: nil,
                              phoneNumber: nil,
                              domainPurchased: nil),
+              metadata: MockEntitiesFabric.DomainProfile.createPublicDomainMetadata(domain: domainName, walletAddress: "0x1"),
               socialAccounts: nil,
               referralCode: nil,
               social: nil,
