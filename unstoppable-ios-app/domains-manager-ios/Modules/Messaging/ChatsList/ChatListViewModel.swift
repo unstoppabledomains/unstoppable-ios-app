@@ -326,7 +326,7 @@ extension ChatListViewModel: MessagingServiceListener {
                         prepareData()
                     }
                 }
-            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated, .refreshOfUserProfile:
+            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated, .refreshOfUserProfile, .userInfoRefreshed:
                 return
             }
         }

@@ -80,7 +80,7 @@ extension ChannelViewModel: MessagingServiceListener {
                 if channelId == channel.id {
                     addFeed([feed])
                 }
-            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
+            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated, .userInfoRefreshed:
                 return
             }
         }

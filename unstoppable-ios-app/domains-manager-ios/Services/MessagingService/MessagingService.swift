@@ -267,6 +267,7 @@ extension MessagingService: MessagingServiceProtocol {
         if storageService.isNeedToRefreshMessagingUserInfo(user),
            let refreshedUser = await loadUserInfoFor(wallet: user.wallet) {
             await storageService.saveMessagingUserInfo(refreshedUser)
+            notifyListenersChangedDataType(.userInfoRefreshed(refreshedUser))
             return refreshedUser
         }
         return user
