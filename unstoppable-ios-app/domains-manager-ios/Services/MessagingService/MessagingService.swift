@@ -264,7 +264,9 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo {
-        if let refreshedUser = await loadUserInfoFor(wallet: user.wallet) {
+        if storageService.isNeedToRefreshMessagingUserInfo(user),
+           let refreshedUser = await loadUserInfoFor(wallet: user.wallet) {
+            await storageService.saveMessagingUserInfo(refreshedUser)
             return refreshedUser
         }
         return user

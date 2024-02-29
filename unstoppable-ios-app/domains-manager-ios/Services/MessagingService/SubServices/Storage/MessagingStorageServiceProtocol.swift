@@ -47,6 +47,7 @@ protocol MessagingStorageServiceProtocol {
                     filesService: MessagingFilesServiceProtocol)
     
     // User info
+    func isNeedToRefreshMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) -> Bool
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async
     
     // Channels

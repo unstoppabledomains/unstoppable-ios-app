@@ -220,6 +220,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // User info
+    func isNeedToRefreshMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) -> Bool {
+        coreDataQueue.sync {
+            if let userInfo = getCoreDataUserInfoFor(wallet: info.wallet),
+               let lastUpdated = userInfo.lastUpdated {
+                return lastUpdated.isSameDayAs(Date()) // Refresh once in a day
+            }
+            return true
+        }
+    }
+    
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async {
         coreDataQueue.sync {
             let _ = try? convertChatUserDisplayInfoToMessagingUserInfo(info)
@@ -500,7 +510,7 @@ private extension CoreDataMessagingStorageService {
         if coreDataChat.type == 0,
            let otherUserWallet = coreDataChat.otherUserWallet {
             var otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
-            if let userInfo = getCoreDataDomainInfoFor(wallet: otherUserWallet) {
+            if let userInfo = getCoreDataUserInfoFor(wallet: otherUserWallet) {
                 otherUserInfo.domainName = userInfo.name
                 otherUserInfo.pfpURL = userInfo.pfpURL
             }
@@ -553,7 +563,7 @@ private extension CoreDataMessagingStorageService {
     }
     
     func getChatUserDisplayInfoMapFor(wallets: [String]) -> [String : CoreDataMessagingUserInfo] {
-        let cachedUserInfos = getCoreDataDomainInfosFor(wallets: wallets)
+        let cachedUserInfos = getCoreDataUserInfosFor(wallets: wallets)
         let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
             var dict = dict
             dict[userInfo.wallet!] = userInfo
@@ -926,17 +936,18 @@ private extension CoreDataMessagingStorageService {
         coreDataUserInfo.wallet = displayInfo.wallet
         coreDataUserInfo.name = displayInfo.domainName
         coreDataUserInfo.pfpURL = displayInfo.pfpURL
+        coreDataUserInfo.lastUpdated = Date()
         
         return coreDataUserInfo
     }
     
-    func getCoreDataDomainInfoFor(wallet: String) -> CoreDataMessagingUserInfo? {
+    func getCoreDataUserInfoFor(wallet: String) -> CoreDataMessagingUserInfo? {
         let predicate = NSPredicate(format: "wallet == %@", wallet)
         let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate, from: backgroundContext)
         return infos?.first
     }
     
-    func getCoreDataDomainInfosFor(wallets: [String]) -> [CoreDataMessagingUserInfo] {
+    func getCoreDataUserInfosFor(wallets: [String]) -> [CoreDataMessagingUserInfo] {
         let predicate = NSPredicate(format: "ANY wallet IN %@", wallets)
         let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate, from: backgroundContext)
         return infos ?? []
