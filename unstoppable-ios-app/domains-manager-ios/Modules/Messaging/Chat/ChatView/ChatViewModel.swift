@@ -1120,19 +1120,26 @@ extension ChatViewModel: MessagingServiceListener {
            case .existingChat(let chat) = conversationState,
            chatId == chat.id,
            !messages.isEmpty {
-            let messages = messages.filter { !$0.isReactionMessage }
             await self.addMessages(messages, scrollToBottom: true)
         }
     }
     
     private func updateMessageFromUpdatedData(_ updatedMessage: MessagingChatMessageDisplayInfo, with newMessage: MessagingChatMessageDisplayInfo) async {
-        if case .existingChat(let chat) = conversationState,
-           updatedMessage.chatId == chat.id,
-           let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+        guard case .existingChat(let chat) = conversationState,
+              updatedMessage.chatId == chat.id else { return }
+        
+        if let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
             var newMessage = newMessage
             await newMessage.prepareToDisplay()
             self.messages[i] = newMessage
+            messagesCache.remove(updatedMessage)
             messagesCache.insert(newMessage)
+        }
+        
+        if case .reaction(let info) = updatedMessage.type {
+            let currentReactions = messagesToReactions[info.messageId] ?? []
+            let filteredReactions = currentReactions.filter({ $0.messageId == updatedMessage.id })
+            messagesToReactions[info.messageId] = filteredReactions
         }
     }
 }
