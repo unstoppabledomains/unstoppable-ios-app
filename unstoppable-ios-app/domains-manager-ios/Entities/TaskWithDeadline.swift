@@ -14,17 +14,24 @@ final class TaskWithDeadline<Value> {
     let taskPublisher: Future<Value, Error>
     private var cancellables: [AnyCancellable] = []
     private var ongoingTask: Task<Value, Error>?
+    private let responseQueue: DispatchQueue
     
     init(deadline: TimeInterval,
+         responseQueue: DispatchQueue = .main,
          operation: @escaping @Sendable () async throws -> Value) {
         self.deadline = deadline
+        self.responseQueue = responseQueue
         taskPublisher = Future<Value, Error> { promise in
             Task {
                 do {
                     let value = try await operation()
-                    promise(.success(value))
+                    responseQueue.async {
+                        promise(.success(value))
+                    }
                 } catch {
-                    promise(.failure(error))
+                    responseQueue.async {
+                        promise(.failure(error))
+                    }
                 }
             }
         }
@@ -51,7 +58,7 @@ final class TaskWithDeadline<Value> {
             taskPublisher
                 .timeout(
                     .seconds(deadline),
-                    scheduler: DispatchQueue.main,
+                    scheduler: responseQueue,
                     options: nil,
                     customError: {
                         TaskError.timeout
