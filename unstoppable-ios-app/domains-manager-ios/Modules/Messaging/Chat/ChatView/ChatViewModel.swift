@@ -193,18 +193,15 @@ extension ChatViewModel {
     
     func showMentionSuggestionsIfNeeded() {
         let listOfGroupParticipants = listOfGroupParticipants
-        if !listOfGroupParticipants.isEmpty {
-            let components = input.components(separatedBy: " ")
-            if let lastComponent = components.last,
-               let mention = MessageMentionString(string: lastComponent) {
-                showMentionSuggestions(using: listOfGroupParticipants,
-                                       mention: mention)
-            } else {
-                suggestingUsers = []
-            }
-        } else {
+        guard !listOfGroupParticipants.isEmpty,
+              let lastComponent = input.components(separatedBy: " ").last,
+              let mention = MessageMentionString(string: lastComponent) else {
             suggestingUsers = []
+            return
         }
+        
+        showMentionSuggestions(using: listOfGroupParticipants,
+                               mention: mention)
     }
     
     func didSelectMentionSuggestion(user: MessagingChatUserDisplayInfo) {
