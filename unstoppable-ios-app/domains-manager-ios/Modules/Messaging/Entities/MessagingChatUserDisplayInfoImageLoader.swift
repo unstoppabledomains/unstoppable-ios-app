@@ -11,15 +11,16 @@ final class MessagingChatUserDisplayInfoImageLoader {
     
     static let shared = MessagingChatUserDisplayInfoImageLoader()
     private let initialsSize: InitialsView.InitialsSize = .default
-    private var cacheStorage = MessagingChatUserDisplayInfoImageLoaderCacheStorage()
+    private var cacheStorage = MessagingChatUserDisplayInfoImageLoaderCacheTracker()
 
     private init() { }
     
     func getLatestProfileImage(for userInfo: MessagingChatUserDisplayInfo) -> AsyncStream<UIImage?> {
         AsyncStream { continuation in
             Task {
-                if let cachedImage = cacheStorage.getImageFromCache(for: userInfo) {
-                    continuation.yield(cachedImage)
+                if cacheStorage.isInfoCached(for: userInfo) {
+                    let image = await loadUserImage(for: userInfo)
+                    continuation.yield(image)
                     continuation.finish()
                     return
                 }
@@ -30,7 +31,7 @@ final class MessagingChatUserDisplayInfoImageLoader {
                 let refreshedImage = await loadRefreshedUserImage(for: userInfo)
                 continuation.yield(refreshedImage)
                 
-                cacheStorage.saveImageToCache(for: userInfo, image: refreshedImage)
+                cacheStorage.saveInfoCached(for: userInfo)
                 
                 continuation.finish()
             }
@@ -48,27 +49,32 @@ final class MessagingChatUserDisplayInfoImageLoader {
     
     private func loadRefreshedUserImage(for userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
         let refreshedProfile = await appContext.messagingService.refreshUserDisplayInfo(of: userInfo)
-        let refreshedImage = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(refreshedProfile,
-                                                                                                              size: initialsSize), downsampleDescription: .mid)
+        let refreshedImage = await loadUserImage(for: refreshedProfile)
         return refreshedImage
+    }
+    
+    private func loadUserImage(for userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
+        let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
+                                                                                                     size: initialsSize), 
+                                                                   downsampleDescription: .mid)
+        return image
     }
 }
 
-private final class MessagingChatUserDisplayInfoImageLoaderCacheStorage {
+private final class MessagingChatUserDisplayInfoImageLoaderCacheTracker {
     private let serialQueue = DispatchQueue(label: "com.messaging.image.loader")
-    private var imagesCache: [HexAddress : UIImage?] = [:]
+    private var cache: Set<HexAddress> = []
     
-    func getImageFromCache(for userInfo: MessagingChatUserDisplayInfo) -> Optional<UIImage?> {
+    func isInfoCached(for userInfo: MessagingChatUserDisplayInfo) -> Bool {
         let cacheKey = getCacheKey(for: userInfo)
         
-        return serialQueue.sync { imagesCache[cacheKey] }
+        return serialQueue.sync { cache.contains(cacheKey) }
     }
     
-    func saveImageToCache(for userInfo: MessagingChatUserDisplayInfo,
-                                  image: UIImage?) {
+    func saveInfoCached(for userInfo: MessagingChatUserDisplayInfo) {
         let cacheKey = getCacheKey(for: userInfo)
         
-        serialQueue.sync { imagesCache[cacheKey] = image }
+        _ = serialQueue.sync { cache.insert(cacheKey) }
     }
     
     private func getCacheKey(for userInfo: MessagingChatUserDisplayInfo) -> String {
