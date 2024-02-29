@@ -18,25 +18,17 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            List {
-                domainsView()
-                    .listRowInsets(.init(horizontal: 16))
-                followersSection(relationshipType: .following)
-                sectionSeparatorView()
-                followersSection(relationshipType: .followers)
+            VStack(spacing: 0) {
+                if !viewModel.isSearchActive {
+                    domainSearchTypeSelector()
+                }
+                contentList()
             }
-            .listStyle(.plain)
-            .listRowSpacing(0)
-            .clearListBackground()
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $viewModel.searchKey,
-                        placement: .navigationBarDrawer(displayMode: .always),
-                        prompt: Text(String.Constants.search.localized()))
             .environmentObject(viewModel)
-            .environment(\.analyticsViewName, analyticsName)
-            .environment(\.analyticsAdditionalProperties, additionalAppearAnalyticParameters)
+            .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
@@ -113,6 +105,34 @@ private extension HomeExploreView {
 
 // MARK: - Domains views
 private extension HomeExploreView {
+    @ViewBuilder
+    func domainSearchTypeSelector() -> some View {
+        HomeExploreDomainSearchTypePickerView()
+            .background(.regularMaterial)
+    }
+    
+    @ViewBuilder
+    func contentList() -> some View {
+        List {
+            //                    domainsList()
+            followersSection(relationshipType: .following)
+            sectionSeparatorView()
+            followersSection(relationshipType: .followers)
+        }
+        .listStyle(.plain)
+        .listRowSpacing(0)
+        .searchable(text: $viewModel.searchKey,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: Text(String.Constants.search.localized()))
+        .clearListBackground()
+    }
+    
+    @ViewBuilder
+    func domainsList() -> some View {
+        domainsView()
+            .listRowInsets(.init(horizontal: 16))
+    }
+    
     @ViewBuilder
     func domainsView() -> some View {
         if viewModel.domainsToShow.isEmpty && viewModel.globalProfiles.isEmpty && !viewModel.isLoadingGlobalProfiles {

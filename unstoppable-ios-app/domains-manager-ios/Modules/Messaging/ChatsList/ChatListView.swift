@@ -225,7 +225,7 @@ private extension ChatListView {
             case .noWallet, .createProfile, .loading:
                 if true { }
             case .chatsList:
-                ChatListDataTypeSelectorView(dataType: $viewModel.selectedDataType)
+                ChatListDataTypeSelectorView()
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(0))
