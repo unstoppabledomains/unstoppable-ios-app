@@ -199,7 +199,11 @@ extension ChatViewModel {
                let mention = MessageMentionString(string: lastComponent) {
                 showMentionSuggestions(using: listOfGroupParticipants,
                                        mention: mention)
+            } else {
+                suggestingUsers = []
             }
+        } else {
+            suggestingUsers = []
         }
     }
     
@@ -1155,7 +1159,7 @@ extension ChatViewModel: UDFeatureFlagsListener {
         ChatView(viewModel: .init(profile: .init(id: "",
                                                  wallet: "",
                                                  serviceIdentifier: .push),
-                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
                                   router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in
