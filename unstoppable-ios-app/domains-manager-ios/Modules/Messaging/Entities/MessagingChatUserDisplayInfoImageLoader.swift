@@ -7,18 +7,30 @@
 
 import UIKit
 
-struct MessagingChatUserDisplayInfoImageLoader {
+final class MessagingChatUserDisplayInfoImageLoader {
     
+    static let shared = MessagingChatUserDisplayInfoImageLoader()
     private let initialsSize: InitialsView.InitialsSize = .default
+    private var cacheStorage = MessagingChatUserDisplayInfoImageLoaderCacheStorage()
+
+    private init() { }
     
     func getLatestProfileImage(for userInfo: MessagingChatUserDisplayInfo) -> AsyncStream<UIImage?> {
         AsyncStream { continuation in
             Task {
+                if let cachedImage = cacheStorage.getImageFromCache(for: userInfo) {
+                    continuation.yield(cachedImage)
+                    continuation.finish()
+                    return
+                }
+                
                 let initialsImage = await loadInitialsImage(for: userInfo)
                 continuation.yield(initialsImage)
                 
                 let refreshedImage = await loadRefreshedUserImage(for: userInfo)
                 continuation.yield(refreshedImage)
+                
+                cacheStorage.saveImageToCache(for: userInfo, image: refreshedImage)
                 
                 continuation.finish()
             }
@@ -39,5 +51,27 @@ struct MessagingChatUserDisplayInfoImageLoader {
         let refreshedImage = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(refreshedProfile,
                                                                                                               size: initialsSize), downsampleDescription: .mid)
         return refreshedImage
+    }
+}
+
+private final class MessagingChatUserDisplayInfoImageLoaderCacheStorage {
+    private let serialQueue = DispatchQueue(label: "com.messaging.image.loader")
+    private var imagesCache: [HexAddress : UIImage?] = [:]
+    
+    func getImageFromCache(for userInfo: MessagingChatUserDisplayInfo) -> Optional<UIImage?> {
+        let cacheKey = getCacheKey(for: userInfo)
+        
+        return serialQueue.sync { imagesCache[cacheKey] }
+    }
+    
+    func saveImageToCache(for userInfo: MessagingChatUserDisplayInfo,
+                                  image: UIImage?) {
+        let cacheKey = getCacheKey(for: userInfo)
+        
+        serialQueue.sync { imagesCache[cacheKey] = image }
+    }
+    
+    private func getCacheKey(for userInfo: MessagingChatUserDisplayInfo) -> String {
+        userInfo.wallet
     }
 }

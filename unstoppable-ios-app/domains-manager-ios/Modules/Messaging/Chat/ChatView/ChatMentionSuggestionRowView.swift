@@ -33,7 +33,7 @@ private extension ChatMentionSuggestionRowView {
     
     func loadAvatar() {
         Task {
-            let imageLoader = MessagingChatUserDisplayInfoImageLoader()
+            let imageLoader = MessagingChatUserDisplayInfoImageLoader.shared
 
             for await image in imageLoader.getLatestProfileImage(for: user) {
                 avatar = image
