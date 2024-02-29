@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - Internal functions
 extension MessagingService {
     func refreshUsersInfoFor(profile: MessagingChatUserProfile) async{
         do {

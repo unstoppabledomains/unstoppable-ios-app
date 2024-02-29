@@ -184,19 +184,11 @@ private extension MessageRowView {
     }
     
     func loadAvatarForOtherUserInfo() {
-        let userInfo = message.senderType.userDisplayInfo
         Task {
-            let name = userInfo.displayName
-            otherUserAvatar = await appContext.imageLoadingService.loadImage(from: .initials(name,
-                                                                                                        size: .default,
-                                                                                                        style: .accent),
-                                                                                        downsampleDescription: nil)
+            let userInfo = message.senderType.userDisplayInfo
+            let imageLoader = MessagingChatUserDisplayInfoImageLoader.shared
             
-            let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
-                                                                                                         size: .default),
-                                                                       downsampleDescription: .icon)
-            if let image,
-               userInfo.wallet == message.senderType.userDisplayInfo.wallet {
+            for await image in imageLoader.getLatestProfileImage(for: userInfo) {
                 otherUserAvatar = image
             }
         }

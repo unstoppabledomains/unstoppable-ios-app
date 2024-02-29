@@ -1098,7 +1098,7 @@ extension ChatViewModel: MessagingServiceListener {
                 return
             case .messagesAdded(let messages, let chatId, let userId):
                 await addMessagesFromUpdatedData(messages, chatId: chatId, userId: userId)
-            case .messageUpdated(let updatedMessage, var newMessage):
+            case .messageUpdated(let updatedMessage, let newMessage):
                 await updateMessageFromUpdatedData(updatedMessage, with: newMessage)
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
@@ -1108,6 +1108,10 @@ extension ChatViewModel: MessagingServiceListener {
                     for message in messages {
                         messagesCache.remove(message)
                     }
+                }
+            case .userInfoRefreshed(let user):
+                if let i = listOfGroupParticipants.firstIndex(where: { $0.wallet == user.wallet }) {
+                    listOfGroupParticipants[i] = user
                 }
             case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
                 return

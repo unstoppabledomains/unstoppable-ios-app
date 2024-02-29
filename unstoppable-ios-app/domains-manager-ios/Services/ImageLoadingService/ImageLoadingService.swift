@@ -218,15 +218,12 @@ fileprivate extension ImageLoadingService {
             }
             return nil
         case .messagingUserPFPOrInitials(let userInfo, let size):
-            let domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: userInfo.wallet.normalized))?.name
-            if let domainName,
-               !domainName.isEmpty,
-               let urlString = await appContext.udDomainsService.loadPFP(for: domainName)?.pfpURL,
-               let url = URL(string: urlString),
+            if let url = userInfo.pfpURL,
                let image = await fetchImageFor(source: .url(url), downsampleDescription: downsampleDescription) {
                 cacheStorage.cache(image: image, forKey: source.key)
                 return image
             }
+            let domainName = userInfo.anyDomainName
             return await fetchImageFor(source: .initials(domainName ?? userInfo.wallet.droppedHexPrefix,
                                                          size: size,
                                                          style: .accent),
