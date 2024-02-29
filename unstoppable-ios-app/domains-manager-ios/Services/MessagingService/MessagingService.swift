@@ -130,7 +130,7 @@ extension MessagingService: MessagingServiceProtocol {
             let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
             return communitiesProfile != nil
         }
-        return false 
+        return false
     }
     
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
@@ -149,7 +149,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func isNewMessagesAvailable() async throws -> Bool {
         let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
-        return totalNumberOfUnreadMessages > 0 
+        return totalNumberOfUnreadMessages > 0
     }
     
     func logout() {
@@ -261,6 +261,13 @@ extension MessagingService: MessagingServiceProtocol {
             notifyChatsChanged(wallet: profile.wallet,
                                serviceIdentifier: serviceIdentifier)
         }
+    }
+    
+    func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo {
+        if let refreshedUser = await loadUserInfoFor(wallet: user.wallet) {
+            return refreshedUser
+        }
+        return user
     }
     
     // Messages
@@ -532,7 +539,7 @@ extension MessagingService: MessagingServiceProtocol {
         notifyChannelsChanged(userId: user.id)
     }
     
-    // Search
+    // MARK: - Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
         if searchKey.isValidAddress() {
             let wallet = searchKey

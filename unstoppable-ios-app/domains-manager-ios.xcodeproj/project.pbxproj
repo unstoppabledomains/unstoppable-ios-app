@@ -473,6 +473,8 @@
 		C61B3E90283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E8A283E708500500B6D /* EnterEmailVerificationCodeViewController.swift */; };
 		C61B3E94283E708500500B6D /* EnterEmailVerificationCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C61B3E8B283E708500500B6D /* EnterEmailVerificationCodeViewController.xib */; };
 		C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */; };
+		C61C333A2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */; };
+		C61C333B2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */; };
 		C61C50002820E39600D1110A /* PullUpSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */; };
 		C61C50052820FC5E00D1110A /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C50042820FC5E00D1110A /* UISearchBar.swift */; };
 		C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
@@ -2670,6 +2672,7 @@
 		C61B3E8A283E708500500B6D /* EnterEmailVerificationCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailVerificationCodeViewController.swift; sourceTree = "<group>"; };
 		C61B3E8B283E708500500B6D /* EnterEmailVerificationCodeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EnterEmailVerificationCodeViewController.xib; sourceTree = "<group>"; };
 		C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailVerificationCodeToMintDomainsPresenter.swift; sourceTree = "<group>"; };
+		C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserDisplayInfoImageLoader.swift; sourceTree = "<group>"; };
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
@@ -5423,6 +5426,7 @@
 				C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */,
 				C652727F2A165A3D001A084C /* MessagingChatSender.swift */,
 				C6F9FBD32A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift */,
+				C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */,
 				C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */,
 				C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */,
 				C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */,
@@ -8498,6 +8502,7 @@
 				C666E0AF29CB41960003DECB /* DomainParkingStatus.swift in Sources */,
 				C609825C2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6E0415B295053DC0080F8E3 /* UIScrollView.swift in Sources */,
+				C61C333A2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */,
 				C623969A2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
 				C61236F5292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C65CEB8B2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
@@ -9690,6 +9695,7 @@
 				C6D647642B1EDEDA00D724AC /* ResizableRoundedWalletImageView.swift in Sources */,
 				C6D8FF3A2B831BC40094A21E /* ChatListNavTitleView.swift in Sources */,
 				C663A4DA2B7F2FB00099BCE8 /* PresentationStyleCheckerModifier.swift in Sources */,
+				C61C333B2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */,
 				C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */,
 				C6C8F8702B21822700A9834D /* TutorialViewPresenter.swift in Sources */,
 				C61807EC2B19A6980032E543 /* PreviewUDWalletsService.swift in Sources */,
