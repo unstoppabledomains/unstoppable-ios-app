@@ -141,7 +141,6 @@ extension ChatListViewModel {
         }
         
         stopSearching()
-        isSearchActive = false
         router.chatTabNavPath.append(HomeChatNavigationDestination.chat(profile: profile,
                                                                         conversationState: conversationState))
     }
@@ -734,8 +733,8 @@ private extension ChatListViewModel {
     }
     
     func stopSearching() {
-        isSearchActive = false
         searchText = ""
+        isSearchActive = false
     }
 }
 
