@@ -45,14 +45,15 @@ import Foundation
     return res
 }
 
-@inlinable func withSafeCheckedThrowingContinuation<T>(function: String = #function,
+@inlinable func withSafeCheckedThrowingContinuation<T>(critical: Bool = true,
+                                                       function: String = #function,
                                             _ block: ( @Sendable (@escaping (Result<T, any Error>)->())->()) ) async throws -> T {
     var didFireContinuation = false
     
     let res = try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<T, Error>) in
         block { result in
             guard !didFireContinuation else {
-                Debugger.printFailure("Second resume in \(function)", critical: true)
+                Debugger.printFailure("Second resume in \(function)", critical: critical)
                 return }
             
             didFireContinuation = true

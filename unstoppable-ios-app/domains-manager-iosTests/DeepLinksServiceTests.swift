@@ -165,6 +165,14 @@ private final class PrivateMockExternalEventsService: ExternalEventsServiceProto
 }
 
 private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
+    func showHome(profile: domains_manager_ios.UserProfile) {
+        
+    }
+    
+    var topVC: UIViewController? = nil
+    
+    var isReadyToHandleExternalEvents: Bool { true }
+    
     func didRegisterShakeDevice() {
         
     }
@@ -184,10 +192,6 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
     }
     
     func showOnboarding(_ flow: domains_manager_ios.OnboardingNavigationController.OnboardingFlow) {
-        
-    }
-    
-    func showHome(mintingState: domains_manager_ios.DomainsCollectionMintingState, wallet: WalletEntity) {
         
     }
     

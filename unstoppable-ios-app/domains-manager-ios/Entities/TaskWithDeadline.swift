@@ -6,14 +6,12 @@
 //
 
 import Foundation
-import Combine
 
 final class TaskWithDeadline<Value> {
         
     let deadline: TimeInterval
-    let taskPublisher: Future<Value, Error>
-    private var cancellables: [AnyCancellable] = []
     private var ongoingTask: Task<Value, Error>?
+    private var operation: @Sendable () async throws -> Value
     private let responseQueue: DispatchQueue
     
     init(deadline: TimeInterval,
@@ -21,20 +19,7 @@ final class TaskWithDeadline<Value> {
          operation: @escaping @Sendable () async throws -> Value) {
         self.deadline = deadline
         self.responseQueue = responseQueue
-        taskPublisher = Future<Value, Error> { promise in
-            Task {
-                do {
-                    let value = try await operation()
-                    responseQueue.async {
-                        promise(.success(value))
-                    }
-                } catch {
-                    responseQueue.async {
-                        promise(.failure(error))
-                    }
-                }
-            }
-        }
+        self.operation = operation
     }
     
     var value: Value {
@@ -54,26 +39,38 @@ final class TaskWithDeadline<Value> {
     }
     
     private func performOperationWithDelay() async throws -> Value {
-        try await withSafeCheckedThrowingContinuation { continuation in
-            taskPublisher
-                .timeout(
-                    .seconds(deadline),
-                    scheduler: responseQueue,
-                    options: nil,
-                    customError: {
-                        TaskError.timeout
-                    })
-                .sink(
-                    receiveCompletion: { completion in
-                        if case .failure(let error) = completion {
-                            continuation(.failure(error))
-                        }
-                    },
-                    receiveValue: { value in
+        let responseQueue = self.responseQueue
+       
+        return try await withSafeCheckedThrowingContinuation(critical: false) { continuation in
+            
+            runOperation { result in
+                responseQueue.async {
+                    switch result {
+                    case .success(let value):
                         continuation(.success(value))
+                    case .failure(let error):
+                        continuation(.failure(error))
                     }
-                )
-                .store(in: &cancellables)
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + deadline) {
+                responseQueue.async {
+                    continuation(.failure(TaskError.timeout))
+                }
+            }
+        }
+    }
+    
+    private func runOperation(completion: @escaping (Result<Value, Error>)->()) {
+        Task {
+            do {
+                let value = try await operation()
+                completion(.success(value))
+               
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
     
