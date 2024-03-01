@@ -20,7 +20,7 @@ struct MessageRowView: View, ViewAnalyticsLogger {
     private let groupChatImageXOffset: CGFloat = 46
     
     var body: some View {
-        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading, spacing: 2) {
+        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading, spacing: 6) {
             HStack(alignment: .bottom, spacing: 8) {
                 if message.senderType.isThisUser {
                     Spacer()
@@ -223,11 +223,13 @@ private extension MessageRowView {
     func reactionsView() -> some View {
         if isGroupChatMessage,
            !reactionsList.isEmpty {
-            FlowLayoutView(reactionsList) { reactionType in
+            FlowLayoutView(reactionsList,
+                           spacing: 4) { reactionType in
                 reactionTypeView(reactionType)
             }
             .modifier(ReactionMirroredModifier(sender: sender))
             .frame(minHeight: 50)
+            .padding(EdgeInsets(top: -4, leading: 0, bottom: 0, trailing: 0))
         }
     }
     
