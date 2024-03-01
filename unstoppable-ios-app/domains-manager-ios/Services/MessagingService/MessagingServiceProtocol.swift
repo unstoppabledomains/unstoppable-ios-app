@@ -39,6 +39,7 @@ protocol MessagingServiceProtocol {
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
     func joinCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo
     func leaveCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo
+    func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo
     
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
@@ -123,6 +124,7 @@ enum MessagingDataType {
     case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
     case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
     case totalUnreadMessagesCountUpdated(_ havingUnreadMessages: Bool)
+    case userInfoRefreshed(_ userInfo: MessagingChatUserDisplayInfo)
     
     var debugDescription: String {
         switch self {
@@ -144,6 +146,8 @@ enum MessagingDataType {
             return "Refresh of profile \(profile.id) in progress: \(isInProgress)"
         case .totalUnreadMessagesCountUpdated(let havingUnreadMessages):
             return "TotalUnreadMessagesCountUpdated to havingUnreadMessages: \(havingUnreadMessages)"
+        case .userInfoRefreshed(let user):
+            return "User Info Refreshed to \(user)"
         }
     }
 }

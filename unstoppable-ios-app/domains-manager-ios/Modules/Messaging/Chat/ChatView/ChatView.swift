@@ -12,6 +12,7 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
+    @State private var scrollViewHandler: ChatViewScrollHandler?
 
     var analyticsName: Analytics.ViewName { .chatDialog }
     
@@ -67,6 +68,12 @@ private extension ChatView {
                                            id: UUID().uuidString)
             navigationState.isTitleVisible = true
         }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard let scrollView = findFirstUIViewOfType(UIScrollView.self) else { return }
+            
+            scrollViewHandler = ChatViewScrollHandler(scrollView: scrollView, viewModel: viewModel)
+        }
     }
     
     var emptyStateMode: ChatMessagesEmptyView.Mode {
@@ -89,7 +96,7 @@ private extension ChatView {
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack {
+                LazyVStack(spacing: 16) {
                     if viewModel.isLoadingMessages {
                         topLoadingView()
                     }

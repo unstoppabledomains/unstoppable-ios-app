@@ -193,14 +193,15 @@ extension ChatViewModel {
     
     func showMentionSuggestionsIfNeeded() {
         let listOfGroupParticipants = listOfGroupParticipants
-        if !listOfGroupParticipants.isEmpty {
-            let components = input.components(separatedBy: " ")
-            if let lastComponent = components.last,
-               let mention = MessageMentionString(string: lastComponent) {
-                showMentionSuggestions(using: listOfGroupParticipants,
-                                       mention: mention)
-            }
+        guard !listOfGroupParticipants.isEmpty,
+              let lastComponent = input.components(separatedBy: " ").last,
+              let mention = MessageMentionString(string: lastComponent) else {
+            suggestingUsers = []
+            return
         }
+        
+        showMentionSuggestions(using: listOfGroupParticipants,
+                               mention: mention)
     }
     
     func didSelectMentionSuggestion(user: MessagingChatUserDisplayInfo) {
@@ -222,7 +223,6 @@ extension ChatViewModel {
         if let message = messages.first(where: { $0.id == messageId }) {
             return message
         } else {
-            loadMessagesToReach(messageId: messageId)
             return nil
         }
     }
@@ -442,7 +442,6 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     isLoadingMessages = false
                     await addMessages(updateMessages, scrollToBottom: true)
-                    scrollToBottom()
                 case .newChat:
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
@@ -469,34 +468,13 @@ private extension ChatViewModel {
             } catch {
                 self.error = error
             }
-            isLoadingMessages = false
-        }
-    }
-    
-    func loadMessagesToReach(messageId: String) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        
-        Task {
-            isLoadingMessages = true
-
-            while messages.first(where: { $0.id == messageId }) == nil {
-                guard let lastMessage = getLatestMessageToLoadMore() else { return }
-                
-                do {
-                    
-                    let newMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
-                                                                                beforeMessage: lastMessage)
-                    
-                    await addMessages(newMessages, scrollToBottom: false)
-                } catch { break }
-            }
             
             isLoadingMessages = false
         }
     }
     
     func createTaskAndLoadMoreMessagesIn(chat: MessagingChatDisplayInfo,
-                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]{
+                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
         if let loadMoreMessagesTask {
             return try await loadMoreMessagesTask.value
         }
@@ -550,7 +528,6 @@ private extension ChatViewModel {
         
         for message in messages {
             var message = message
-            message.reactions = Array(messagesToReactions[message.id] ?? [])
             await message.prepareToDisplay()
             if let i = self.messages.firstIndex(where: { $0.id == message.id }) {
                 self.messages[i] = message
@@ -1098,7 +1075,7 @@ extension ChatViewModel: MessagingServiceListener {
                 return
             case .messagesAdded(let messages, let chatId, let userId):
                 await addMessagesFromUpdatedData(messages, chatId: chatId, userId: userId)
-            case .messageUpdated(let updatedMessage, var newMessage):
+            case .messageUpdated(let updatedMessage, let newMessage):
                 await updateMessageFromUpdatedData(updatedMessage, with: newMessage)
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
@@ -1108,6 +1085,10 @@ extension ChatViewModel: MessagingServiceListener {
                     for message in messages {
                         messagesCache.remove(message)
                     }
+                }
+            case .userInfoRefreshed(let user):
+                if let i = listOfGroupParticipants.firstIndex(where: { $0.wallet == user.wallet }) {
+                    listOfGroupParticipants[i] = user
                 }
             case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
                 return
@@ -1120,19 +1101,26 @@ extension ChatViewModel: MessagingServiceListener {
            case .existingChat(let chat) = conversationState,
            chatId == chat.id,
            !messages.isEmpty {
-            let messages = messages.filter { !$0.isReactionMessage }
             await self.addMessages(messages, scrollToBottom: true)
         }
     }
     
     private func updateMessageFromUpdatedData(_ updatedMessage: MessagingChatMessageDisplayInfo, with newMessage: MessagingChatMessageDisplayInfo) async {
-        if case .existingChat(let chat) = conversationState,
-           updatedMessage.chatId == chat.id,
-           let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+        guard case .existingChat(let chat) = conversationState,
+              updatedMessage.chatId == chat.id else { return }
+        
+        if let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
             var newMessage = newMessage
             await newMessage.prepareToDisplay()
             self.messages[i] = newMessage
+            messagesCache.remove(updatedMessage)
             messagesCache.insert(newMessage)
+        }
+        
+        if case .reaction(let info) = updatedMessage.type {
+            let currentReactions = messagesToReactions[info.messageId] ?? []
+            let filteredReactions = currentReactions.filter({ $0.messageId != updatedMessage.id })
+            messagesToReactions[info.messageId] = filteredReactions
         }
     }
 }
@@ -1155,7 +1143,7 @@ extension ChatViewModel: UDFeatureFlagsListener {
         ChatView(viewModel: .init(profile: .init(id: "",
                                                  wallet: "",
                                                  serviceIdentifier: .push),
-                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: false),
+                                  conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
                                   router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
         
     }, navigationStateProvider: { state in

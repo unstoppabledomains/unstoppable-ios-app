@@ -78,6 +78,10 @@ final class MessagingService: MessagingServiceProtocol {
         throw NSError()
     }
     
+    func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo {
+        user
+    }
+    
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo, before message: MessagingChatMessageDisplayInfo?, cachedOnly: Bool, limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         await Task.sleep(seconds: 0.2)
         return MockEntitiesFabric.Messaging.createMessagesForUITesting(isFixedID: false)

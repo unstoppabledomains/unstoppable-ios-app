@@ -131,6 +131,7 @@ private extension LoginFlowNavigationController {
             await MainActor.run {
                 moveToStep(.fetchingDomains)
             }
+            await Task.sleep(seconds: CNavigationController.animationDuration)
             let parkedDomains = try await appContext.firebaseParkedDomainsService.getParkedDomains()
             let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
             

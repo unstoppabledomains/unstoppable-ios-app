@@ -24,6 +24,7 @@ struct TextMessageRowView: View {
         }
             .padding(.init(horizontal: 12))
             .padding(.init(vertical: 6))
+            .frame(minHeight: 46)
             .foregroundStyle(foregroundColor)
             .background(sender.isThisUser ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
             .clipShape(RoundedRectangle(cornerRadius: 12))

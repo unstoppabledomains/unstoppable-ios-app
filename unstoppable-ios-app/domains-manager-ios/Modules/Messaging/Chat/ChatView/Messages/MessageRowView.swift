@@ -17,9 +17,10 @@ struct MessageRowView: View, ViewAnalyticsLogger {
     let isGroupChatMessage: Bool
     @State private var otherUserAvatar: UIImage?
     @State private var showingReactionsPopover = false
+    private let groupChatImageXOffset: CGFloat = 46
     
     var body: some View {
-        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading) {
+        VStack(alignment: message.senderType.isThisUser ? .trailing : .leading, spacing: 6) {
             HStack(alignment: .bottom, spacing: 8) {
                 if message.senderType.isThisUser {
                     Spacer()
@@ -36,17 +37,17 @@ struct MessageRowView: View, ViewAnalyticsLogger {
             }
             
             HStack {
-                if isGroupChatMessage, !isThisUser {
-                    Spacer()
-                        .frame(width: 46)
-                }
-                timeView()
+                groupAvatarXOffsetViewOfNeeded()
+                underMessageView()
                 if isFailedMessage, isThisUser {
                     Spacer()
                         .frame(width: 40)
                 }
             }
-            reactionsView()
+            HStack {
+                groupAvatarXOffsetViewOfNeeded()
+                reactionsView()
+            }
         }
         .frame(maxWidth: .infinity)
         .background(Color.clear)
@@ -61,6 +62,7 @@ private extension MessageRowView {
     }
     var sender: MessagingChatSender { message.senderType }
     var isThisUser: Bool { sender.isThisUser }
+    var isNeedToAddGroupAvatarXOffset: Bool { isGroupChatMessage && !isThisUser }
     
     @ViewBuilder
     func messageContentView() -> some View {
@@ -103,12 +105,25 @@ private extension MessageRowView {
     }
     
     @ViewBuilder
-    func timeView() -> some View {
+    func underMessageView() -> some View {
         if isFailedMessage {
             failedToSendMessageView()
         } else {
             timeLabelView()
         }
+    }
+    
+    @ViewBuilder
+    func groupAvatarXOffsetViewOfNeeded() -> some View {
+        if isNeedToAddGroupAvatarXOffset {
+            groupAvatarXOffsetView()
+        }
+    }
+    
+    @ViewBuilder
+    func groupAvatarXOffsetView() -> some View {
+        Spacer()
+            .frame(width: groupChatImageXOffset)
     }
     
     var timeLabelText: String {
@@ -169,19 +184,11 @@ private extension MessageRowView {
     }
     
     func loadAvatarForOtherUserInfo() {
-        let userInfo = message.senderType.userDisplayInfo
         Task {
-            let name = userInfo.displayName
-            otherUserAvatar = await appContext.imageLoadingService.loadImage(from: .initials(name,
-                                                                                                        size: .default,
-                                                                                                        style: .accent),
-                                                                                        downsampleDescription: nil)
+            let userInfo = message.senderType.userDisplayInfo
+            let imageLoader = MessagingChatUserDisplayInfoImageLoader.shared
             
-            let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
-                                                                                                         size: .default),
-                                                                       downsampleDescription: .icon)
-            if let image,
-               userInfo.wallet == message.senderType.userDisplayInfo.wallet {
+            for await image in imageLoader.getLatestProfileImage(for: userInfo) {
                 otherUserAvatar = image
             }
         }
@@ -216,11 +223,13 @@ private extension MessageRowView {
     func reactionsView() -> some View {
         if isGroupChatMessage,
            !reactionsList.isEmpty {
-            FlowLayoutView(reactionsList) { reactionType in
+            FlowLayoutView(reactionsList,
+                           spacing: 4) { reactionType in
                 reactionTypeView(reactionType)
             }
             .modifier(ReactionMirroredModifier(sender: sender))
             .frame(minHeight: 50)
+            .padding(EdgeInsets(top: -4, leading: 0, bottom: 0, trailing: 0))
         }
     }
     
@@ -250,7 +259,7 @@ private extension MessageRowView {
             .foregroundStyle(Color.foregroundDefault)
             .padding(.init(horizontal: 8, vertical: 8))
             .background(Color.backgroundMuted)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
         .alwaysPopover(isPresented: $showingReactionsPopover) {

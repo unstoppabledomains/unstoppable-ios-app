@@ -46,6 +46,10 @@ extension MockMessagingService: MessagingServiceProtocol {
          return chats
          */
     }
+    func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo {
+        user
+    }
+
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus { .unblocked }
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
     func setUser(in chatType: MessagingBlockUserInChatType,

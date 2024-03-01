@@ -35,7 +35,7 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
     }
     
     private func configureWC2() {
-        Networking.configure(projectId: AppIdentificators.wc2ProjectId,
+        Networking.configure(groupIdentifier: "", projectId: AppIdentificators.wc2ProjectId,
                              socketFactory: SocketFactory())
         
         let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),
@@ -186,8 +186,8 @@ private extension WCRequestsHandlingServiceTests {
         try await waitFor(interval: 0.1)
     }
     
-    func getConnectionTarget() -> (UDWallet, DomainItem) {
-        (createLocallyGeneratedBackedUpUDWallet(), createMockDomainItem())
+    func getConnectionTarget() -> (UDWallet) {
+        (createLocallyGeneratedBackedUpUDWallet())
     }
     
     func getWCV2URI(topic: String) -> WalletConnectSign.WalletConnectURI {
