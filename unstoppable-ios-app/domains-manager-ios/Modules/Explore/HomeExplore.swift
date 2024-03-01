@@ -35,7 +35,7 @@ extension HomeExplore {
         var analyticButton: Analytics.Button { .exploreDomainsSearchType }
     }
     
-    struct TrendingProfile: Hashable, Identifiable {
+    struct ExploreDomainProfile: Hashable, Identifiable {
         var id: String { domainName }
         
         let domainName: String

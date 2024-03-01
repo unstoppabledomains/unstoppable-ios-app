@@ -15,12 +15,10 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
         
     var body: some View {
-        if !followersList.isEmpty {
-            Section {
-                gridWithFollowers(followersList)
-            } header: {
-                sectionHeaderView()
-            }
+        Section {
+            gridWithFollowers(viewModel.profilesListForSelectedRelationshipType())
+        } header: {
+            sectionHeaderView()
         }
     }
     
@@ -28,15 +26,6 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension HomeExploreFollowersSectionView {
-    var followersList: [SerializedPublicDomainProfile] {
-        switch viewModel.relationshipType {
-        case .followers:
-            viewModel.followersList
-        case .following:
-            viewModel.followingsList
-        }
-    }
-    
     @ViewBuilder
     func gridWithFollowers(_ followers: [SerializedPublicDomainProfile]) -> some View {
         ListVGrid(data: followers,
@@ -57,6 +46,7 @@ private extension HomeExploreFollowersSectionView {
     @ViewBuilder
     func sectionHeaderView() -> some View {
         HomeExploreFollowerRelationshipTypePickerView(relationshipType: $viewModel.relationshipType)
+            .padding(.init(vertical: 4))
     }
 }
 

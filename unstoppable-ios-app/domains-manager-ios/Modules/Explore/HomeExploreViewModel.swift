@@ -21,7 +21,8 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
-    @Published private(set) var trendingProfiles: [HomeExplore.TrendingProfile] = []
+    @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
@@ -79,8 +80,21 @@ extension HomeExploreViewModel {
         }
     }
     
-    func didTapTrendingProfile(_ profile: HomeExplore.TrendingProfile) {
+    func didTapTrendingProfile(_ profile: HomeExplore.ExploreDomainProfile) {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
+    }
+    
+    func profilesListForSelectedRelationshipType() -> [SerializedPublicDomainProfile] {
+        profilesListFor(relationshipType: self.relationshipType)
+    }
+    
+    func profilesListFor(relationshipType: DomainProfileFollowerRelationshipType) -> [SerializedPublicDomainProfile] {
+        switch relationshipType {
+        case .followers:
+            return followersList
+        case .following:
+            return followingsList
+        }
     }
 }
 
@@ -88,6 +102,7 @@ extension HomeExploreViewModel {
 private extension HomeExploreViewModel {
     func loadAndShowData() {
         loadTrendingProfiles()
+        loadRecentProfiles()
         if case .wallet(let wallet) = selectedProfile {
             loadFollowersFor(wallet: wallet)
         }
@@ -107,6 +122,10 @@ private extension HomeExploreViewModel {
         
         let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domainName)
         router.showPublicDomainProfile(of: domainPublicInfo, by: selectedWallet, preRequestedAction: nil)
+    }
+    
+    func loadRecentProfiles() {
+        recentProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
     }
 }
 

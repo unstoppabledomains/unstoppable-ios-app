@@ -114,9 +114,11 @@ private extension HomeExploreView {
     @ViewBuilder
     func contentList() -> some View {
         List {
-            trendingProfilesSection()
-            //                    domainsList()
-            followersSection()
+            if viewModel.isSearchActive {
+                listContentForSearchActive()
+            } else {
+                listContentForSearchInactive()
+            }
         }
         .listStyle(.plain)
         .listRowSpacing(0)
@@ -124,6 +126,15 @@ private extension HomeExploreView {
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: Text(String.Constants.search.localized()))
         .clearListBackground()
+    }
+}
+   
+// MARK: - Search inactive views
+private extension HomeExploreView {
+    @ViewBuilder
+    func listContentForSearchInactive() -> some View {
+        trendingProfilesSection()
+        followersSection()
     }
     
     @ViewBuilder
@@ -140,6 +151,40 @@ private extension HomeExploreView {
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
         .unstoppableListRowInset()
+    }
+    
+    @ViewBuilder
+    func followersSection() -> some View {
+        HomeExploreFollowersSectionView()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init(horizontal: 16))
+    }
+    
+    @ViewBuilder
+    func sectionSeparatorView() -> some View {
+        Line(direction: .horizontal)
+            .stroke(style: StrokeStyle(lineWidth: 1))
+            .foregroundStyle(Color.white.opacity(0.08))
+            .shadow(color: .black, radius: 0, x: 0, y: -1)
+            .frame(height: 1)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init(horizontal: 16))
+    }
+}
+
+// MARK: - Search Active views
+private extension HomeExploreView {
+    @ViewBuilder
+    func listContentForSearchActive() -> some View {
+        recentProfilesList()
+        domainsList()
+    }
+    
+    @ViewBuilder
+    func recentProfilesList() -> some View {
+        
     }
     
     @ViewBuilder
@@ -265,29 +310,6 @@ private extension HomeExploreView {
                 return nil
             }
         }
-    }
-}
-   
-// MARK: - Followers views
-private extension HomeExploreView {
-    @ViewBuilder
-    func followersSection() -> some View {
-        HomeExploreFollowersSectionView()
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .listRowInsets(.init(horizontal: 16))
-    }
-    
-    @ViewBuilder
-    func sectionSeparatorView() -> some View {
-        Line(direction: .horizontal)
-            .stroke(style: StrokeStyle(lineWidth: 1))
-            .foregroundStyle(Color.white.opacity(0.08))
-            .shadow(color: .black, radius: 0, x: 0, y: -1)
-            .frame(height: 1)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .listRowInsets(.init(horizontal: 16))
     }
 }
 

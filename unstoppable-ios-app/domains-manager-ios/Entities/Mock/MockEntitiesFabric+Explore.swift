@@ -22,7 +22,7 @@ extension MockEntitiesFabric {
              DomainProfile.createPublicProfile(attributes: DomainProfile.createPublicProfileAttributes(imagePath: ImageURLs.aiAvatar.rawValue, coverPath: ImageURLs.sunset.rawValue))] // Avatar and cover 1
         }
         
-        static func createTrendingProfiles() -> [HomeExplore.TrendingProfile] {
+        static func createTrendingProfiles() -> [HomeExplore.ExploreDomainProfile] {
             [.init(domainName: "trendingprofile.x", walletAddress: "1", avatarURL: nil, profileName: "", followersCount: 0),
              .init(domainName: "trendingprofile.crypto", walletAddress: "2", avatarURL: ImageURLs.aiAvatar.url, profileName: "", followersCount: 0),
              .init(domainName: "trendingprofile.wallet", walletAddress: "3", avatarURL: ImageURLs.sunset.url, profileName: "Captain bitcoin", followersCount: 0),

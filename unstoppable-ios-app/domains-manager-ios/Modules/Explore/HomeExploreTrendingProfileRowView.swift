@@ -12,7 +12,7 @@ struct HomeExploreTrendingProfileRowView: View, ViewAnalyticsLogger {
     @EnvironmentObject var viewModel: HomeExploreViewModel
     @Environment(\.imageLoadingService) var imageLoadingService
     @Environment(\.analyticsViewName) var analyticsName
-    let profile: HomeExplore.TrendingProfile
+    let profile: HomeExplore.ExploreDomainProfile
     
     @State private var avatar: UIImage?
     
