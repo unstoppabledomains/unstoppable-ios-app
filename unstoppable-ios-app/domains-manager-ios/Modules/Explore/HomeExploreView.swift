@@ -170,7 +170,7 @@ private extension HomeExploreView {
             HomeExploreRecentProfilesSectionView()
             domainsList()
         case .local:
-            domainsList()
+            HomeExploreUserWalletDomainsView()
         }
     }
     

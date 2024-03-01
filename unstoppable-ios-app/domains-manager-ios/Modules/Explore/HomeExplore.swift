@@ -60,4 +60,25 @@ extension HomeExplore {
             self.followersCount = publicProfile.social?.followerCount ?? 0
         }
     }
+    
+    struct UserWalletSearchResult: Identifiable {
+        var id: String { wallet.address }
+        
+        let wallet: WalletDisplayInfo
+        let domains: [DomainDisplayInfo]
+        
+        init?(wallet: WalletEntity, searchKey: String) {
+            let domains: [DomainDisplayInfo]
+            if searchKey.isEmpty {
+                domains = wallet.domains
+            } else {
+                domains = wallet.domains.filter({ $0.name.contains(searchKey) })
+            }
+            
+            guard !domains.isEmpty else { return nil }
+            
+            self.domains = domains
+            self.wallet = wallet.displayInfo
+        }
+    }
 }

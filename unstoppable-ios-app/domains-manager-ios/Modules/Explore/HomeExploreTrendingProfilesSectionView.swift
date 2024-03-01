@@ -17,7 +17,8 @@ struct HomeExploreTrendingProfilesSectionView: View {
                 HomeExploreTrendingProfileRowView(profile: profile)
             }
         } header: {
-            Text("Trending")
+            Text(String.Constants.trending.localized())
+                .font(.currentFont(size: 16, weight: .medium))
                 .foregroundStyle(Color.foregroundDefault)
                 .padding(.init(vertical: 4))
         }

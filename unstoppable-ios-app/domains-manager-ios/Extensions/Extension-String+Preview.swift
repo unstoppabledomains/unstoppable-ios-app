@@ -222,6 +222,7 @@ extension String {
         static let reply = "REPLY"
         static let global = "GLOBAL"
         static let yours = "YOURS"
+        static let recent = "RECENT"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

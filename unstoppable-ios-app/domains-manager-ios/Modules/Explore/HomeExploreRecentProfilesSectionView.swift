@@ -34,24 +34,29 @@ private extension HomeExploreRecentProfilesSectionView {
     @ViewBuilder
     func recentProfilesSectionHeaderView() -> some View {
         HStack {
-            Text("Recent")
+            Text(String.Constants.recent.localized())
                 .font(.currentFont(size: 16, weight: .medium))
                 .foregroundStyle(Color.foregroundDefault)
             
             Spacer()
             
-            Button {
-                UDVibration.buttonTap.vibrate()
-                viewModel.clearRecentSearchButtonPressed()
-            } label: {
-                Image.searchClearIcon
-                    .resizable()
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundSecondary)
-                    .padding(6)
-            }
-            .buttonStyle(.plain)
+            clearRecentButtonView()
         }
+    }
+    
+    @ViewBuilder
+    func clearRecentButtonView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            viewModel.clearRecentSearchButtonPressed()
+        } label: {
+            Image.searchClearIcon
+                .resizable()
+                .squareFrame(20)
+                .foregroundStyle(Color.foregroundSecondary)
+                .padding(6)
+        }
+        .buttonStyle(.plain)
     }
 }
 

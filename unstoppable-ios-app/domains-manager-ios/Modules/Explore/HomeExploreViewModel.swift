@@ -23,13 +23,14 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var userWalletSearchResults: [HomeExplore.UserWalletSearchResult] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
     @Published var error: Error?
-    @Published var isSearchActive: Bool = false
+    @Published var isSearchActive: Bool = true
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
@@ -107,6 +108,7 @@ private extension HomeExploreViewModel {
     func loadAndShowData() {
         loadTrendingProfiles()
         loadRecentProfiles()
+        setUserWalletSearchResults()
         if case .wallet(let wallet) = selectedProfile {
             loadFollowersFor(wallet: wallet)
         }
@@ -130,6 +132,11 @@ private extension HomeExploreViewModel {
     
     func loadRecentProfiles() {
         recentProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+    }
+    
+    func setUserWalletSearchResults() {
+        let userWallets = walletsDataService.wallets
+        userWalletSearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: searchKey) })
     }
 }
 

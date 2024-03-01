@@ -168,6 +168,7 @@
 "REPLY" = "Reply";
 "GLOBAL" = "Global";
 "YOURS" = "Yours";
+"RECENT" = "Recent";
 
 /* ONBOARDING */
 // Tutorial screens
