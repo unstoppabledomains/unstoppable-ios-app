@@ -114,11 +114,10 @@ private extension HomeExploreView {
     @ViewBuilder
     func contentList() -> some View {
         List {
-            if viewModel.isSearchActive {
-                listContentForSearchActive()
-            } else {
-                listContentForSearchInactive()
-            }
+            currentListContent()
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .unstoppableListRowInset()
         }
         .listStyle(.plain)
         .listRowSpacing(0)
@@ -127,37 +126,27 @@ private extension HomeExploreView {
                     prompt: Text(String.Constants.search.localized()))
         .clearListBackground()
     }
+    @ViewBuilder
+    func currentListContent() -> some View {
+        if viewModel.isSearchActive {
+            listContentForSearchActive()
+        } else {
+            listContentForSearchInactive()
+        }
+    }
 }
    
-// MARK: - Search inactive views
+// MARK: - Search Inactive views
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
-        trendingProfilesSection()
+        HomeExploreTrendingProfilesSectionView()
         followersSection()
-    }
-    
-    @ViewBuilder
-    func trendingProfilesSection() -> some View {
-        Section {
-            ForEach(viewModel.trendingProfiles) { profile in
-                HomeExploreTrendingProfileRowView(profile: profile)
-            }
-        } header: {
-            Text("Trending")
-                .foregroundStyle(Color.foregroundDefault)
-                .padding(.init(vertical: 4))
-        }
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-        .unstoppableListRowInset()
     }
     
     @ViewBuilder
     func followersSection() -> some View {
         HomeExploreFollowersSectionView()
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
             .listRowInsets(.init(horizontal: 16))
     }
     
@@ -168,8 +157,6 @@ private extension HomeExploreView {
             .foregroundStyle(Color.white.opacity(0.08))
             .shadow(color: .black, radius: 0, x: 0, y: -1)
             .frame(height: 1)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
             .listRowInsets(.init(horizontal: 16))
     }
 }
@@ -178,13 +165,8 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchActive() -> some View {
-        recentProfilesList()
+        HomeExploreRecentProfilesSectionView()
         domainsList()
-    }
-    
-    @ViewBuilder
-    func recentProfilesList() -> some View {
-        
     }
     
     @ViewBuilder

@@ -18,6 +18,7 @@ struct HomeExploreTrendingProfileRowView: View, ViewAnalyticsLogger {
     
     var body: some View {
         clickableContentView()
+            .padding(.init(vertical: 4))
         .onAppear(perform: onAppear)
     }
     

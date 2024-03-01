@@ -2291,6 +2291,10 @@
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
 		C6FBCA9F2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */; };
 		C6FBCAA02B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */; };
+		C6FBCAA22B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCAA12B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift */; };
+		C6FBCAA32B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCAA12B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift */; };
+		C6FBCAA52B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCAA42B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift */; };
+		C6FBCAA62B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCAA42B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
 		C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */; };
@@ -3652,6 +3656,8 @@
 		C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReplyTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerRelationshipTypePickerView.swift; sourceTree = "<group>"; };
+		C6FBCAA12B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreRecentProfilesSectionView.swift; sourceTree = "<group>"; };
+		C6FBCAA42B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreTrendingProfilesSectionView.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackupDisplayInfo.swift; sourceTree = "<group>"; };
@@ -4855,6 +4861,8 @@
 				C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */,
 				C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */,
 				C6203A4D2B882959000A1A8E /* HomeExploreView.swift */,
+				C6FBCAA42B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift */,
+				C6FBCAA12B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift */,
 				C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */,
 				C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */,
 				C6203A612B883FCF000A1A8E /* Subviews */,
@@ -8585,6 +8593,7 @@
 				C6102FC02B69361D0098AF75 /* HomeWalletExpandableSectionHeaderView.swift in Sources */,
 				C6F9FBB82A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */,
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
+				C6FBCAA22B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */,
 				C6B40E902B5F83370038CEB0 /* UserProfileSelectionRowView.swift in Sources */,
 				C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C6F060C02ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift in Sources */,
@@ -9171,6 +9180,7 @@
 				C6D5DAC828365A3400379C38 /* FABCounterButton.swift in Sources */,
 				C673D59629FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
 				C688C1792B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */,
+				C6FBCAA52B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift in Sources */,
 				C60DCEE2282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */,
 				C61808822B19BC680032E543 /* TransactionError.swift in Sources */,
 				C6D647442B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift in Sources */,
@@ -9645,6 +9655,7 @@
 				C6D646A82B1ED15A00D724AC /* PublicProfileCryptoListView.swift in Sources */,
 				C630E4AD2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				C6D646E22B1ED49D00D724AC /* TableViewSelectionCell.swift in Sources */,
+				C6FBCAA32B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */,
 				C6C8F8262B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6D647182B1ED83800D724AC /* CollectionTextFooterReusableView.swift in Sources */,
 				C6D647562B1EDBF800D724AC /* UserProfileAction.swift in Sources */,
@@ -9683,6 +9694,7 @@
 				C6960C1F2B19939E00B79E28 /* ViewController.swift in Sources */,
 				C6C8F8382B217E9600A9834D /* EnterBackupOnboardingPresenter.swift in Sources */,
 				C6D6466C2B1ED11B00D724AC /* CachedDomainProfileInfo.swift in Sources */,
+				C6FBCAA62B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift in Sources */,
 				C61807DD2B19A4D50032E543 /* PreviewUDWallet.swift in Sources */,
 				C6C8F85A2B217FA600A9834D /* CloudStorage.swift in Sources */,
 				C688C17A2B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */,
