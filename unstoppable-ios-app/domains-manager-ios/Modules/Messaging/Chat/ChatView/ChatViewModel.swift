@@ -528,7 +528,6 @@ private extension ChatViewModel {
         
         for message in messages {
             var message = message
-            message.reactions = Array(messagesToReactions[message.id] ?? [])
             await message.prepareToDisplay()
             if let i = self.messages.firstIndex(where: { $0.id == message.id }) {
                 self.messages[i] = message
@@ -1120,7 +1119,7 @@ extension ChatViewModel: MessagingServiceListener {
         
         if case .reaction(let info) = updatedMessage.type {
             let currentReactions = messagesToReactions[info.messageId] ?? []
-            let filteredReactions = currentReactions.filter({ $0.messageId == updatedMessage.id })
+            let filteredReactions = currentReactions.filter({ $0.messageId != updatedMessage.id })
             messagesToReactions[info.messageId] = filteredReactions
         }
     }
