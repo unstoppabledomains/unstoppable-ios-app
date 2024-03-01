@@ -14,7 +14,7 @@ struct HomeExploreDomainSearchTypePickerView: View {
     var body: some View {
         UDSegmentedControlView(selection: $viewModel.searchDomainsType,
                                items: HomeExplore.SearchDomainsType.allCases)
-        .padding(.horizontal)
+        .padding(.init(horizontal: 16))
         .frame(height: 36)
     }
 }

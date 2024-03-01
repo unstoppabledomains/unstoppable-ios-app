@@ -165,8 +165,13 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchActive() -> some View {
-        HomeExploreRecentProfilesSectionView()
-        domainsList()
+        switch viewModel.searchDomainsType {
+        case .global:
+            HomeExploreRecentProfilesSectionView()
+            domainsList()
+        case .local:
+            domainsList()
+        }
     }
     
     @ViewBuilder

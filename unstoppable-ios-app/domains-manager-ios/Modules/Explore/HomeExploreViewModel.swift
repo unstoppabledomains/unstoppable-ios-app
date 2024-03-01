@@ -96,6 +96,10 @@ extension HomeExploreViewModel {
             return followingsList
         }
     }
+    
+    func clearRecentSearchButtonPressed() {
+        
+    }
 }
 
 // MARK: - Private methods

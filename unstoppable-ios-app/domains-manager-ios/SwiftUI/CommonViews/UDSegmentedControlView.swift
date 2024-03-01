@@ -86,7 +86,9 @@ private extension UDSegmentedControlView {
             logButtonPressedAnalyticEvents(button: dataType.analyticButton,
                                            parameters: [.value : dataType.rawValue])
             if self.selection != dataType {
-                self.selection = dataType
+                withAnimation {
+                    self.selection = dataType
+                }
             }
         } label: {
             if let customLabel = customSegmentLabel?(dataType) {
