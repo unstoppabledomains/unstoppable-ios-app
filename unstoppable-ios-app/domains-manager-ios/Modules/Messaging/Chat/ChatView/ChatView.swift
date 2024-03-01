@@ -12,6 +12,7 @@ struct ChatView: View, ViewAnalyticsLogger {
     @EnvironmentObject var navigationState: NavigationStateManager
     @StateObject var viewModel: ChatViewModel
     @FocusState var focused: Bool
+    @State private var scrollViewHandler: ChatViewScrollHandler?
 
     var analyticsName: Analytics.ViewName { .chatDialog }
     
@@ -66,6 +67,12 @@ private extension ChatView {
             navigationState.setCustomTitle(customTitle: { ChatNavTitleView(titleType: viewModel.titleType) },
                                            id: UUID().uuidString)
             navigationState.isTitleVisible = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard let scrollView = findFirstUIViewOfType(UIScrollView.self) else { return }
+            
+            scrollViewHandler = ChatViewScrollHandler(scrollView: scrollView, viewModel: viewModel)
         }
     }
     

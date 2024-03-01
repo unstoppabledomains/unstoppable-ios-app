@@ -223,7 +223,6 @@ extension ChatViewModel {
         if let message = messages.first(where: { $0.id == messageId }) {
             return message
         } else {
-            loadMessagesToReach(messageId: messageId)
             return nil
         }
     }
@@ -469,34 +468,13 @@ private extension ChatViewModel {
             } catch {
                 self.error = error
             }
-            isLoadingMessages = false
-        }
-    }
-    
-    func loadMessagesToReach(messageId: String) {
-        guard case .existingChat(let chat) = conversationState else { return }
-        
-        Task {
-            isLoadingMessages = true
-
-            while messages.first(where: { $0.id == messageId }) == nil {
-                guard let lastMessage = getLatestMessageToLoadMore() else { return }
-                
-                do {
-                    
-                    let newMessages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
-                                                                                beforeMessage: lastMessage)
-                    
-                    await addMessages(newMessages, scrollToBottom: false)
-                } catch { break }
-            }
             
             isLoadingMessages = false
         }
     }
     
     func createTaskAndLoadMoreMessagesIn(chat: MessagingChatDisplayInfo,
-                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]{
+                                         beforeMessage: MessagingChatMessageDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
         if let loadMoreMessagesTask {
             return try await loadMoreMessagesTask.value
         }
