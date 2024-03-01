@@ -434,7 +434,6 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     await addMessages(cachedMessages, scrollToBottom: true)
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
-                    isLoading = false
                     await updateUIForChatApprovedState()
                     let updateMessages = try await messagingService.getMessagesForChat(chat,
                                                                                        before: nil,
@@ -442,6 +441,7 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     isLoadingMessages = false
                     await addMessages(updateMessages, scrollToBottom: true)
+                    isLoading = false
                 case .newChat:
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
