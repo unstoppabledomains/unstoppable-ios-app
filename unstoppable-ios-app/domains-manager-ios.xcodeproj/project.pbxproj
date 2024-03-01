@@ -1037,6 +1037,8 @@
 		C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */; };
 		C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */; };
 		C689C17E2ADE767500AA0186 /* MockUDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C17D2ADE767500AA0186 /* MockUDFeatureFlagsService.swift */; };
+		C68BAC922B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */; };
+		C68BAC932B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
@@ -3161,6 +3163,7 @@
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
 		C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlag.swift; sourceTree = "<group>"; };
 		C689C17D2ADE767500AA0186 /* MockUDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUDFeatureFlagsService.swift; sourceTree = "<group>"; };
+		C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewScrollHandler.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
@@ -6304,6 +6307,7 @@
 			children = (
 				C630E4A82B7F4959008F3269 /* ChatViewModel.swift */,
 				C630E4A52B7F4918008F3269 /* ChatView.swift */,
+				C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */,
 				C6F7D9D22B8D766500764708 /* ChatReplyInfoView.swift */,
 				C6FAED822B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift */,
 				C6FAED7F2B8C5B4C00CC1844 /* ChatMentionSuggestionRowView.swift */,
@@ -8707,6 +8711,7 @@
 				C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
 				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
+				C68BAC922B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */,
 				C61807F82B19A7D80032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
 				C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */,
 				C6A2D528284DC45B00327C47 /* PermissionsService.swift in Sources */,
@@ -9374,6 +9379,7 @@
 				C6C8F9A72B2191CC00A9834D /* PreviewGIFAnimationsService.swift in Sources */,
 				C6F7D9D02B8D6EFC00764708 /* MessageActionReplyButtonView.swift in Sources */,
 				C6C8F92C2B2183C700A9834D /* DomainsCollectionListCell.swift in Sources */,
+				C68BAC932B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */,
 				C618080F2B19AA420032E543 /* UserDataServiceProtocol.swift in Sources */,
 				C618083A2B19AF800032E543 /* PreviewExternalEventsService.swift in Sources */,
 				C61808402B19B0870032E543 /* PreviewDomainTransactionsService.swift in Sources */,
