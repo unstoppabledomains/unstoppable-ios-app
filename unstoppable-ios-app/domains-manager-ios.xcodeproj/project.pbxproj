@@ -2289,6 +2289,8 @@
 		C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
 		C6FAED8A2B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
+		C6FBCA9F2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */; };
+		C6FBCAA02B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
 		C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */; };
@@ -3649,6 +3651,7 @@
 		C6FAED852B8C684700CC1844 /* MessageMentionString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMentionString.swift; sourceTree = "<group>"; };
 		C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReplyTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
+		C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerRelationshipTypePickerView.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackupDisplayInfo.swift; sourceTree = "<group>"; };
@@ -4864,6 +4867,7 @@
 			children = (
 				C6203A5E2B883EF3000A1A8E /* HomeExploreFollowersSectionView.swift */,
 				C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */,
+				C6FBCA9E2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -8687,6 +8691,7 @@
 				C6D6457A2B1D7C2F00D724AC /* PullUpError.swift in Sources */,
 				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
+				C6FBCA9F2B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */,
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C6DF462C2AA196C100D124E7 /* ViewErrorHolder.swift in Sources */,
 				C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
@@ -9823,6 +9828,7 @@
 				C61808512B19BA670032E543 /* MockFirebaseInteractionsService.swift in Sources */,
 				C6D645DD2B1DBD7000D724AC /* InfoScreen.swift in Sources */,
 				C6D646B42B1ED18F00D724AC /* WallpaperDomainImagePreviewView.swift in Sources */,
+				C6FBCAA02B91C06600BA39DF /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */,
 				C6C8F9892B21893600A9834D /* WCRequestsHandlingServiceProtocol.swift in Sources */,
 				C6D645D52B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
 				C6D6460A2B1DC06300D724AC /* UserDefaults.swift in Sources */,

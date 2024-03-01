@@ -13,13 +13,11 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
-    
-    var relationshipType: DomainProfileFollowerRelationshipType
-    
+        
     var body: some View {
         if !followersList.isEmpty {
             Section {
-                gridWithFollowers(Array(followersList.prefix(numberOfFollowersToShow)))
+                gridWithFollowers(followersList)
             } header: {
                 sectionHeaderView()
             }
@@ -31,16 +29,12 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeExploreFollowersSectionView {
     var followersList: [SerializedPublicDomainProfile] {
-        switch relationshipType {
+        switch viewModel.relationshipType {
         case .followers:
             viewModel.followersList
         case .following:
             viewModel.followingsList
         }
-    }
-    
-    var numberOfFollowersToShow: Int {
-        isExpanded ? followersList.count : 2
     }
     
     @ViewBuilder
@@ -60,37 +54,13 @@ private extension HomeExploreFollowersSectionView {
         }
     }
     
-    var sectionTitle: String {
-        switch relationshipType {
-        case .followers:
-            String.Constants.followers.localized()
-        case .following:
-            String.Constants.following.localized()
-        }
-    }
-    
-    var isExpanded: Bool {
-        viewModel.expandedFollowerTypes.contains(relationshipType)
-    }
-    
     @ViewBuilder
     func sectionHeaderView() -> some View {
-        HomeWalletExpandableSectionHeaderView(title: sectionTitle,
-                                              titleValue: nil,
-                                              isExpandable: true,
-                                              numberOfItemsInSection: followersList.count,
-                                              isExpanded: isExpanded,
-                                              actionCallback: {
-            if isExpanded {
-                viewModel.expandedFollowerTypes.remove(relationshipType)
-            } else {
-                viewModel.expandedFollowerTypes.insert(relationshipType)
-            }
-        })
+        HomeExploreFollowerRelationshipTypePickerView(relationshipType: $viewModel.relationshipType)
     }
 }
 
 #Preview {
-    HomeExploreFollowersSectionView(relationshipType: .followers)
+    HomeExploreFollowersSectionView()
         .environmentObject(MockEntitiesFabric.Explore.createViewModel())
 }

@@ -25,10 +25,10 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
+    @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
     @Published var error: Error?
     @Published var isSearchActive: Bool = false
-    @Published var expandedFollowerTypes: Set<DomainProfileFollowerRelationshipType> = []
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []

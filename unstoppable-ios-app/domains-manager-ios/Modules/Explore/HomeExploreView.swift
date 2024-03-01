@@ -116,9 +116,7 @@ private extension HomeExploreView {
         List {
             trendingProfilesSection()
             //                    domainsList()
-            followersSection(relationshipType: .following)
-            sectionSeparatorView()
-            followersSection(relationshipType: .followers)
+            followersSection()
         }
         .listStyle(.plain)
         .listRowSpacing(0)
@@ -273,8 +271,8 @@ private extension HomeExploreView {
 // MARK: - Followers views
 private extension HomeExploreView {
     @ViewBuilder
-    func followersSection(relationshipType: DomainProfileFollowerRelationshipType) -> some View {
-        HomeExploreFollowersSectionView(relationshipType: relationshipType)
+    func followersSection() -> some View {
+        HomeExploreFollowersSectionView()
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .listRowInsets(.init(horizontal: 16))
