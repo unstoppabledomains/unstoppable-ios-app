@@ -35,18 +35,6 @@ final class CropImageViewController: BaseViewController {
         setupUI()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        if currentFrame != cropZoneView.frame {
-            currentFrame = cropZoneView.frame
-            DispatchQueue.main.async { [weak self] in
-                self?.setupOverlayView()
-                self?.setupDefaultScrollViewValues()
-            }
-        }
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -119,9 +107,7 @@ fileprivate extension CropImageViewController {
     
     func setupScrollView() {
         imageView.contentMode = .scaleAspectFit
-
         imageView.image = image
-        scrollView.contentSize = CGSize.init(width: imageView.frame.width, height: imageView.frame.height)
         scrollView.minimumZoomScale = 1
         scrollView.maximumZoomScale = 5
         scrollView.delegate = self
@@ -164,7 +150,7 @@ fileprivate extension CropImageViewController {
         
         if image.size.width > image.size.height {  // landscape photo
             // if photo height is less then crop zone, we need to scale photo to fix crop zone
-            let visibleImageHeight = image.size.height * (imageView.frame.width / image.size.width)
+            let visibleImageHeight = image.size.height * (scrollView.frame.width / image.size.width)
             if visibleImageHeight < cropZoneView.frame.height {
                 let multiplier = cropZoneView.frame.height / visibleImageHeight
                 scrollView.minimumZoomScale = multiplier
@@ -315,5 +301,5 @@ extension CropImageViewController {
 
 @available(iOS 17, *)
 #Preview {
-    CropImageViewController.instantiate(with: UIImage.Preview.previewSquare!, croppingStyle: .avatar)
+    CropImageViewController.instantiate(with: UIImage.Preview.previewLandscape!, croppingStyle: .avatar)
 }
