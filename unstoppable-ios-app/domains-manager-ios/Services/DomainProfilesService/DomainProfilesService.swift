@@ -9,19 +9,26 @@ import Foundation
 
 final class DomainProfilesService {
    
+    private let storage = PublicDomainProfileDisplayInfoStorageService()
+    
 }
 
 // MARK: - DomainProfilesServiceProtocol
 extension DomainProfilesService: DomainProfilesServiceProtocol {
+    func getCachedPublicDomainProfileDisplayInfo(for domainName: String) -> PublicDomainProfileDisplayInfo? {
+        try? storage.retrieveProfileFor(domainName: domainName)
+    }
+    
     func getPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo {
         let serializedProfile = try await NetworkService().fetchPublicProfile(for: domainName,
                                                                               fields: [.profile, .records])
-        
-        return PublicDomainProfileDisplayInfo(serializedProfile: serializedProfile)
+        let profile = PublicDomainProfileDisplayInfo(serializedProfile: serializedProfile)
+        storage.store(profile: profile)
+        return profile
     }
     
-    func loadListOfFollowersFor(domainName: DomainName, 
-                                relationshipType: DomainProfileFollowerRelationshipType) async throws -> [DomainName] {
+    func loadFullListOfFollowersFor(domainName: DomainName, 
+                                    relationshipType: DomainProfileFollowerRelationshipType) async throws -> [DomainName] {
         let numberOfFollowersToTake = 50
         var cursor: Int?
         var followersList: [DomainName] = []

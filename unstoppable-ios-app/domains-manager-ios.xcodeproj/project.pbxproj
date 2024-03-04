@@ -1251,6 +1251,8 @@
 		C6AE670D2AA1CA260061D87D /* Debug-Tools-Dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302EAF3126332DC200CAFE8B /* Debug-Tools-Dev.swift */; };
 		C6AF12402A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */; };
 		C6B0A8CD2A4D7DDA00284022 /* MessagingImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */; };
+		C6B2E1FC2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */; };
+		C6B2E1FD2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */; };
 		C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
 		C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
 		C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */; };
@@ -3371,6 +3373,7 @@
 		C6AD180E28D319BF0008A479 /* CollectionViewShowHideCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewShowHideCell.xib; sourceTree = "<group>"; };
 		C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceDataRefreshManager.swift; sourceTree = "<group>"; };
 		C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingImageLoader.swift; sourceTree = "<group>"; };
+		C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfoStorageService.swift; sourceTree = "<group>"; };
 		C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarItemsTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarBackButtonTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRESTAPIService.swift; sourceTree = "<group>"; };
@@ -4877,6 +4880,7 @@
 			children = (
 				C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */,
 				C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */,
+				C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */,
 			);
 			path = DomainProfilesService;
 			sourceTree = "<group>";
@@ -9168,6 +9172,7 @@
 				C6526DDE29D2DF7800D6F2EB /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
 				C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
+				C6B2E1FC2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */,
 				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
 				307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
@@ -9840,6 +9845,7 @@
 				C61807D72B19A46D0032E543 /* AuthentificationServiceProtocol.swift in Sources */,
 				C6D646942B1ED14400D724AC /* DomainProfileActionCoverViewController.swift in Sources */,
 				C6C8F91A2B2183A400A9834D /* LaunchViewController.swift in Sources */,
+				C6B2E1FD2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */,
 				C6493A002B6399EA00457363 /* ReverseResolutionSelectionRowView.swift in Sources */,
 				C61808692B19BC050032E543 /* ControllableButtonStyle.swift in Sources */,
 				C6C8F8D32B21833D00A9834D /* UBTDomainCardView.swift in Sources */,

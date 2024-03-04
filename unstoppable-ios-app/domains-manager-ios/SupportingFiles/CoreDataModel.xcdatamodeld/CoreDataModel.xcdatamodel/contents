@@ -108,4 +108,12 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="CoreDataPublicDomainProfile" representedClassName="CoreDataPublicDomainProfile" syncable="YES" codeGenerationType="class">
+        <attribute name="bannerURL" optional="YES" attributeType="URI"/>
+        <attribute name="domainName" optional="YES" attributeType="String"/>
+        <attribute name="imageType" optional="YES" attributeType="String"/>
+        <attribute name="owner" optional="YES" attributeType="String"/>
+        <attribute name="pfpURL" optional="YES" attributeType="URI"/>
+        <attribute name="profileName" optional="YES" attributeType="String"/>
+    </entity>
 </model>
