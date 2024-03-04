@@ -28,7 +28,7 @@ extension Analytics {
         case didAddWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
-        case domainPressed, domainMoved
+        case domainPressed, domainMoved, userDomainPressed
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme

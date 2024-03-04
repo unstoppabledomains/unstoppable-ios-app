@@ -36,6 +36,12 @@ private extension HomeExploreUserWalletDomainsSectionView {
     }
     var isCollapsed: Bool { viewModel.userWalletCollapsedAddresses.contains(wallet.address) }
     
+    func didSelectDomain(_ domain: DomainDisplayInfo) {
+        logAnalytic(event: .userDomainPressed,
+                    parameters: [.domainName : domain.name])
+        viewModel.didTapUserDomainProfile(domain)
+    }
+    
     @ViewBuilder
     func sectionHeaderView() -> some View {
         HomeWalletExpandableSectionHeaderView(title: sectionTitle,
@@ -61,7 +67,8 @@ private extension HomeExploreUserWalletDomainsSectionView {
     @ViewBuilder
     func domainsListView() -> some View {
         ForEach(searchResult.domains, id: \.name) { domain in
-            HomeExploreDomainRowView(domain: domain)
+            HomeExploreDomainRowView(domain: domain,
+                                     selectionCallback: didSelectDomain)
         }
     }
 }

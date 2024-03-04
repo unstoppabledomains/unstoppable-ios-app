@@ -11,6 +11,7 @@ struct HomeExploreDomainRowView: View {
     
     @Environment(\.imageLoadingService) var imageLoadingService
     let domain: DomainDisplayInfo
+    let selectionCallback: (DomainDisplayInfo)->()
     
     @State private var avatar: UIImage?
     
@@ -23,7 +24,7 @@ struct HomeExploreDomainRowView: View {
 
 // MARK: - Private methods
 private extension HomeExploreDomainRowView {
-    var followersForDomain: Int? { 10 }
+    var followersForDomain: Int? { nil }
     func onAppear() {
         loadAvatar()
     }
@@ -45,8 +46,7 @@ private extension HomeExploreDomainRowView {
             contentView()
         }, callback: {
             UDVibration.buttonTap.vibrate()
-//            logAnalytic(event: .trendingProfilePressed, parameters: [.domainName : profile.domainName])
-//            viewModel.didTapTrendingProfile(profile)
+            selectionCallback(domain)
         })
     }
     
@@ -103,5 +103,6 @@ private extension HomeExploreDomainRowView {
 }
 
 #Preview {
-    HomeExploreDomainRowView(domain: MockEntitiesFabric.Domains.mockDomainDisplayInfo())
+    HomeExploreDomainRowView(domain: MockEntitiesFabric.Domains.mockDomainDisplayInfo(),
+                             selectionCallback: { _ in })
 }
