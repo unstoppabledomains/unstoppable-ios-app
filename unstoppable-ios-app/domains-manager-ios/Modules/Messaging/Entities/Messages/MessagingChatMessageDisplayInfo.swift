@@ -70,6 +70,14 @@ extension MessagingChatMessageDisplayInfo {
         return groupedByContent.map { .init(content: $0.key,
                                             count: $0.value.count,
                                             containsUserReaction: $0.value.first(where: { $0.isUserReaction }) != nil) }
-        .sorted(by: { $0.count > $1.count })
+        .sorted(by: {
+            if $0.count != $1.count {
+                // Sort descending by count
+                return $0.count > $1.count
+            } else {
+                // Sort alphabetically by content
+                return $0.content < $1.content
+            }
+        })
     }
 }
