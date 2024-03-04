@@ -32,7 +32,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
             .onReceive(keyboardPublisher) { value in
-                viewModel.isSearchActive = value
+                viewModel.isKeyboardActive = value
                 if !value {
                     UDVibration.buttonTap.vibrate()
                 }
@@ -88,7 +88,7 @@ private extension HomeExploreView {
          @available(iOS 17, *)
          Bind isPresented to viewModel.keyboardFocused
          .searchable(text: $viewModel.searchText,
-         isPresented: $viewModel.isSearchActive,
+         isPresented: $viewModel.isKeyboardActive,
          placement: .navigationBarDrawer(displayMode: .automatic),
          prompt: Text(String.Constants.search.localized()))
          */
@@ -142,6 +142,7 @@ private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
         HomeExploreTrendingProfilesSectionView()
+        HomeExploreSeparatorView()
         followersSection()
     }
     

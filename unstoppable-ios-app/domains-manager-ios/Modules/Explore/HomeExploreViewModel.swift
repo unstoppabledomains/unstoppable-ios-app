@@ -32,12 +32,13 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
     @Published var error: Error?
-    @Published var isSearchActive: Bool = true
+    @Published var isKeyboardActive: Bool = false
+    var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
     private let walletsDataService: WalletsDataServiceProtocol
-
+    
     init(router: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
         self.selectedProfile = router.profile
@@ -53,11 +54,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
         $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
             self?.didSearchDomains()
         }.store(in: &cancellables)
-//        $isSearchActive.sink { [weak self] isActive in
-//            if !isActive {
-//                self?.didStopSearch()
-//            }
-//        }.store(in: &cancellables)
         
         loadAndShowData()
     }
@@ -78,6 +74,7 @@ extension HomeExploreViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: nil,
+                                           shouldResetNavigation: false,
                                            dismissCallback: nil)
         }
     }
@@ -137,7 +134,7 @@ private extension HomeExploreViewModel {
     
     func setUserWalletSearchResults() {
         let userWallets = walletsDataService.wallets
-        userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: searchKey) })
+        userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: getLowercasedTrimmedSearchKey()) })
     }
 }
 

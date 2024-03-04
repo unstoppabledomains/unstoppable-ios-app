@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct HomeExploreGlobalSearchResultSectionView: View {
+struct HomeExploreGlobalSearchResultSectionView: View, ViewAnalyticsLogger {
 
     @EnvironmentObject var viewModel: HomeExploreViewModel
+    @Environment(\.analyticsViewName) var analyticsName
 
     var body: some View {
         domainsView()
@@ -41,9 +42,9 @@ private extension HomeExploreGlobalSearchResultSectionView {
         UDCollectionListRowButton(content: {
             DomainSearchResultProfileRowView(profile: profile)
         }, callback: {
-//            UDVibration.buttonTap.vibrate()
-//            logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])
-//            viewModel.didTapSearchDomainProfile(profile)
+            UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])
+            viewModel.didTapSearchDomainProfile(profile)
         })
     }
 }

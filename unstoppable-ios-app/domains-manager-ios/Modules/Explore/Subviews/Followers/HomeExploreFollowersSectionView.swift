@@ -17,8 +17,10 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     var body: some View {
         Section {
             gridWithFollowers(viewModel.profilesListForSelectedRelationshipType())
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
         } header: {
             sectionHeaderView()
+                .padding(.init(vertical: 6))
         }
     }
     
@@ -29,7 +31,7 @@ private extension HomeExploreFollowersSectionView {
     @ViewBuilder
     func gridWithFollowers(_ followers: [SerializedPublicDomainProfile]) -> some View {
         ListVGrid(data: followers,
-                  verticalSpacing: 16,
+                  verticalSpacing: 0,
                   horizontalSpacing: 16) { follower in
             Button {
                 UDVibration.buttonTap.vibrate()
