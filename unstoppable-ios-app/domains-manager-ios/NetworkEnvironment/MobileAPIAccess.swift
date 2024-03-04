@@ -271,12 +271,6 @@ extension NetworkService {
         return try await fetchDomains(for: ownerUnsAddresses)
     }
     
-    public func fetchZilDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
-        let ownerZilAddresses = wallets.compactMap({ $0.extractZilWallet()?.address.normalized})
-        guard !ownerZilAddresses.isEmpty else { return [] }
-        return try await fetchDomains(for: ownerZilAddresses)
-    }
-    
     private func fetchDomains(for ownerAddresses: [HexAddress]) async throws -> [DomainItem] {
         try await fetchAllPagesWithLimit(for: ownerAddresses, limit: Self.postRequestLimit)
     }

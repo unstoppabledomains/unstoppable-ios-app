@@ -31,21 +31,16 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         guard !wallets.isEmpty else { return [] }
         
         async let fetchUNSDomainsTask = NetworkService().fetchUnsDomains(for: wallets)
-        async let fetchZILDomainsTask = NetworkService().fetchZilDomains(for: wallets)
 
         let start = Date()
-        let (unsDomainArray, zilDomainsArray) = try await (fetchUNSDomainsTask, fetchZILDomainsTask)
-        let combinedDomains = unsDomainArray + zilDomainsArray
+        let unsDomainArray = try await fetchUNSDomainsTask
         Debugger.printTimeSensitiveInfo(topic: .Domain,
-                                        "to load \((combinedDomains).count) domains for \(wallets.count) wallets",
+                                        "to load \((unsDomainArray).count) domains for \(wallets.count) wallets",
                                         startDate: start,
                                         timeout: 2)
 
         try await storage.updateDomainsToCache_Blocking(unsDomainArray,
                                                         of: .UNS,
-                                                        for: wallets)
-        try await storage.updateDomainsToCache_Blocking(zilDomainsArray,
-                                                        of: .ZNS,
                                                         for: wallets)
         let domains = getCachedDomainsFor(wallets: wallets)
         
