@@ -19,5 +19,5 @@ struct PublicProfileLargeTextView: View {
 }
 
 #Preview {
-    PublicProfileLargeTextView()
+    PublicProfileLargeTextView(text: "Preview")
 }

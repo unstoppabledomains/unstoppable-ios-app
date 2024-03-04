@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct PublicProfilePrimaryLargeTextView: View {
+    
+    let text: String
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        PublicProfileLargeTextView(text: text)
+            .foregroundColor(.white)
     }
 }
 
 #Preview {
-    PublicProfilePrimaryLargeTextView()
+    PublicProfilePrimaryLargeTextView(text: "Preview")
 }
+

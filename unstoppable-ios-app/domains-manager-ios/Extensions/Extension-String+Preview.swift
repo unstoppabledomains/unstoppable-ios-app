@@ -224,7 +224,8 @@ extension String {
         static let yours = "YOURS"
         static let recent = "RECENT"
         static let primary = "PRIMARY"
-
+        static let collapse = "COLLAPSE"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
@@ -1118,6 +1119,7 @@ extension String {
         static let introBalanceBody = "INTRO_BALANCE_BODY"
         static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
         static let introMessagesBody = "INTRO_MESSAGES_BODY"
+        static let totalN = "TOTAL_N"
         
     }
     

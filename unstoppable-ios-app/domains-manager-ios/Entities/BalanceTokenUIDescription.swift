@@ -133,3 +133,11 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         }
     }
 }
+
+extension Array where Element == BalanceTokenUIDescription {
+    
+    func totalBalanceUSD() -> Double {
+        self.reduce(0.0, { $0 + $1.balanceUsd })
+    }
+    
+}

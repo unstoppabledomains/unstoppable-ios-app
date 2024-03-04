@@ -170,6 +170,7 @@
 "YOURS" = "Yours";
 "RECENT" = "Recent";
 "PRIMARY" = "Primary";
+"COLLAPSE" = "Collapse";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -1020,3 +1021,4 @@
 "INTRO_COLLECTIBLES_BODY" = "Keep an eye on your NFT collection and stay updated with market prices.";
 "INTRO_MESSAGES_BODY" = "Messages now have a dedicated tab.
 More tabs are coming in the next updates.";
+"TOTAL_N" = "Total: %@";

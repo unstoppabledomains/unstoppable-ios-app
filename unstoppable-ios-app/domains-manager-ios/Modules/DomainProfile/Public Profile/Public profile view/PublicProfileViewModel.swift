@@ -41,6 +41,7 @@ extension PublicProfileView {
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
         @Published var tokens: [BalanceTokenUIDescription]?
+        @Published var isTokensCollapsed = true
         @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var isUserDomainSelected = true

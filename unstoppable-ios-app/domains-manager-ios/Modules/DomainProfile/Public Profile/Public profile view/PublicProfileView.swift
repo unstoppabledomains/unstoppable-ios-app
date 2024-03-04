@@ -55,6 +55,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
             }
         }
         .environmentObject(viewModel)
+        .passViewAnalyticsDetails(logger: self)
         .animation(.easeInOut(duration: 0.3), value: UUID())
         .displayError($viewModel.error)
         .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
@@ -135,7 +136,7 @@ private extension PublicProfileView {
                 followersView()
                 PublicProfileTokensSectionView()
                 if let badges = viewModel.badgesDisplayInfo {
-                    profileDashSeparator()
+                    PublicProfileSeparatorView()
                     badgesView(badges: badges)
                 }
             }
@@ -284,7 +285,7 @@ private extension PublicProfileView {
                        spacing: 0) {
                     if let displayName = viewModel.profile?.profile.displayName,
                        !displayName.trimmedSpaces.isEmpty {
-                        primaryLargeText(displayName)
+                        PublicProfilePrimaryLargeTextView(text: displayName)
                         profileNameButton(isPrimary: false)
                     } else {
                         profileNameButton(isPrimary: true)
@@ -306,9 +307,9 @@ private extension PublicProfileView {
         } label: {
             HStack(alignment: .center) {
                 if isPrimary {
-                    primaryLargeText(viewModel.domain.name)
+                    PublicProfilePrimaryLargeTextView(text: viewModel.domain.name)
                 } else {
-                    secondaryLargeText(viewModel.domain.name)
+                    PublicProfileSecondaryLargeTextView(text: viewModel.domain.name)
                 }
                 Image.systemGlobe
                     .renderingMode(.template)
@@ -614,16 +615,6 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func profileDashSeparator() -> some View {
-        Line()
-            .stroke(style: StrokeStyle(lineWidth: 1, dash: [3]))
-            .foregroundColor(.white)
-            .opacity(0.08)
-            .frame(height: 1)
-            .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-    }
-    
-    @ViewBuilder
     func badgesView(badges: [DomainProfileBadgeDisplayInfo]) -> some View {
         VStack(spacing: sidePadding) {
             badgesTitle(badges: badges)
@@ -634,8 +625,8 @@ private extension PublicProfileView {
     @ViewBuilder
     func badgesTitle(badges: [DomainProfileBadgeDisplayInfo]) -> some View {
         HStack {
-            primaryLargeText(String.Constants.domainProfileSectionBadgesName.localized())
-            secondaryLargeText("\(badges.count)")
+            PublicProfilePrimaryLargeTextView(text: String.Constants.domainProfileSectionBadgesName.localized())
+            PublicProfileSecondaryLargeTextView(text: "\(badges.count)")
             Spacer()
             Button {
                 UDVibration.buttonTap.vibrate()
@@ -693,25 +684,6 @@ private extension PublicProfileView {
         .task {
             viewModel.loadIconIfNeededFor(badge: badge)
         }
-    }
-    
-    @ViewBuilder
-    func largeText(_ text: String) -> some View {
-        Text(text)
-            .font(.currentFont(size: 22, weight: .bold))
-            .frame(height: 28)
-    }
-    
-    @ViewBuilder
-    func primaryLargeText(_ text: String) -> some View {
-        largeText(text)
-            .foregroundColor(.white)
-    }
-    
-    @ViewBuilder
-    func secondaryLargeText(_ text: String) -> some View {
-        primaryLargeText(text)
-            .opacity(0.56)
     }
 }
 

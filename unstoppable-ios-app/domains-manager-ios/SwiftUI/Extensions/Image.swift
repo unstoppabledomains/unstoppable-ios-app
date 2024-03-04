@@ -21,6 +21,7 @@ extension Image {
     static let grimaseIcon = Image(uiImage: .grimaseIcon)
     static let cellChevron = Image(uiImage: .cellChevron)
     static let chevronDown = Image(uiImage: .chevronDown)
+    static let chevronUp = Image(uiImage: .chevronUp)
     static let checkCircle = Image(uiImage: .checkCircle)
     static let udCartLogoRaster = Image(uiImage: .udCartLogoRaster)
     static let crossWhite = Image(uiImage: .crossWhite)
