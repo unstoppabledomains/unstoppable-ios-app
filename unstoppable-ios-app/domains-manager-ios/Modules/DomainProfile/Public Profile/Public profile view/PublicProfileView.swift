@@ -407,7 +407,7 @@ private extension PublicProfileView {
     func carouselCryptoRecordsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
         if let records = viewModel.records,
            !records.isEmpty {
-            carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
+            carouselItem(text: String.Constants.pluralNAddresses.localized(records.count, records.count),
                          icon: .walletBTCIcon20,
                          button: .cryptoList,
                          callback: { showCryptoList() })
