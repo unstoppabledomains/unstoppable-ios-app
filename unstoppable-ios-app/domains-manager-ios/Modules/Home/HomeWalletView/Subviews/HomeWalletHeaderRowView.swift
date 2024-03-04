@@ -131,9 +131,7 @@ private extension HomeWalletHeaderRowView {
             didSelectDomainCallback()
             logButtonPressedAnalyticEvents(button: .rrDomainAvatar)
         } label: {
-            UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
-                              width: 20,
-                              height: 20)
+            UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder)
         }
         .buttonStyle(.plain)
     }

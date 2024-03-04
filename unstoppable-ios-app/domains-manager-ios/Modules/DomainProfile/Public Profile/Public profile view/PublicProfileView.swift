@@ -174,8 +174,7 @@ private extension PublicProfileView {
     @ViewBuilder
     func bannerView() -> some View {
         if let coverImage = viewModel.coverImage {
-            UIImageBridgeView(image: coverImage,
-                              height: 90)
+            UIImageBridgeView(image: coverImage)
         } else {
             Color.black.opacity(0.32)
         }
@@ -184,9 +183,7 @@ private extension PublicProfileView {
     @ViewBuilder
     func avatarView() -> some View {
         ZStack(alignment: .bottomTrailing) {
-            UIImageBridgeView(image: viewModel.avatarImage ?? .domainSharePlaceholder,
-                              width: avatarSize,
-                              height: avatarSize)
+            UIImageBridgeView(image: viewModel.avatarImage ?? .domainSharePlaceholder)
                 .squareFrame(avatarSize)
                 .clipForAvatarStyle(avatarStyle)
         }

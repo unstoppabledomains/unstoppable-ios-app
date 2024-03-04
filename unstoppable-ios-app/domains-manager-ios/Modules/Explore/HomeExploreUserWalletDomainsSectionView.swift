@@ -7,13 +7,17 @@
 
 import SwiftUI
 
-struct HomeExploreUserWalletDomainsSectionView: View {
+struct HomeExploreUserWalletDomainsSectionView: View, ViewAnalyticsLogger {
     
-    let searchResult: HomeExplore.UserWalletSearchResult
-    
+    @EnvironmentObject var viewModel: HomeExploreViewModel
+    @Environment(\.analyticsViewName) var analyticsName
+    let searchResult: HomeExplore.UserWalletNonEmptySearchResult
+
     var body: some View {
         Section {
-            Text("Hello")
+            if !isCollapsed {
+                domainsListView()
+            }
         } header: {
             sectionHeaderView()
         }
@@ -30,6 +34,7 @@ private extension HomeExploreUserWalletDomainsSectionView {
         }
         return nil
     }
+    var isCollapsed: Bool { viewModel.userWalletCollapsedAddresses.contains(wallet.address) }
     
     @ViewBuilder
     func sectionHeaderView() -> some View {
@@ -37,26 +42,32 @@ private extension HomeExploreUserWalletDomainsSectionView {
                                               titleValue: sectionTitleValue,
                                               isExpandable: true,
                                               numberOfItemsInSection: searchResult.domains.count,
-                                              isExpanded: true,
+                                              isExpanded: !isCollapsed,
                                               actionCallback: {
-//            logButtonPressedAnalyticEvents(button: .collectiblesSectionHeader,
-//                                           parameters: [.expand : String(!isExpanded),
-//                                                        .collectionName : collection.collectionName,
-//                                                        .numberOfItemsInSection: String(collection.numberOfNFTs)])
-//            let id = collection.id
-//            if isExpanded {
-//                nftsCollectionsExpandedIds.remove(id)
-//            } else {
-//                nftsCollectionsExpandedIds.insert(id)
-//            }
+            logButtonPressedAnalyticEvents(button: .exploreUserWalletsSectionHeader,
+                                           parameters: [.expand : String(isCollapsed),
+                                                        .numberOfItemsInSection: String(searchResult.domains.count)])
+            let walletAddress = wallet.address
+            withAnimation {
+                if isCollapsed {
+                    viewModel.userWalletCollapsedAddresses.remove(walletAddress)
+                } else {
+                    viewModel.userWalletCollapsedAddresses.insert(walletAddress)
+                }
+            }
         })
     }
     
-    
+    @ViewBuilder
+    func domainsListView() -> some View {
+        ForEach(searchResult.domains, id: \.name) { domain in
+            HomeExploreDomainRowView(domain: domain)
+        }
+    }
 }
 
 #Preview {
     let wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
-   let searchResult = HomeExplore.UserWalletSearchResult(wallet: wallet, searchKey: "")!
+   let searchResult = HomeExplore.UserWalletNonEmptySearchResult(wallet: wallet, searchKey: "")!
     return HomeExploreUserWalletDomainsSectionView(searchResult: searchResult)
 }

@@ -223,7 +223,8 @@ extension String {
         static let global = "GLOBAL"
         static let yours = "YOURS"
         static let recent = "RECENT"
-        
+        static let primary = "PRIMARY"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"

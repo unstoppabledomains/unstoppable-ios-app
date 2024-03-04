@@ -105,9 +105,7 @@ private extension HomeProfileSelectorNavTitleView {
     func contentForWallet(_ wallet: WalletEntity) -> some View {
         if let rrDomain = wallet.rrDomain {
             HStack {
-                UIImageBridgeView(image: avatar ?? .domainSharePlaceholder,
-                                  width: 20,
-                                  height: 20)
+                UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
                 .squareFrame(20)
                 .clipShape(Circle())
                 Text(rrDomain.name)

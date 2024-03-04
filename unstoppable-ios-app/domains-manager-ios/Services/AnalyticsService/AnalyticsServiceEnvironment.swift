@@ -391,6 +391,7 @@ extension Analytics {
         case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
         case followerTile
         case exploreDomainsSearchType
+        case exploreUserWalletsSectionHeader
     }
 }
 

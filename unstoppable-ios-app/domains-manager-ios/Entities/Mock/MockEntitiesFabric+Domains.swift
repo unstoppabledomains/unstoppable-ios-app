@@ -10,7 +10,7 @@ import UIKit
 // MARK: - Domains
 extension MockEntitiesFabric {
     enum Domains {
-        static func mockDomainDisplayInfo(ownerWallet: String) -> [DomainDisplayInfo] {
+        static func mockDomainsDisplayInfo(ownerWallet: String) -> [DomainDisplayInfo] {
             var domains = [DomainDisplayInfo]()
             let tlds: [String] = ["x", "nft", "unstoppable"]
             
@@ -19,20 +19,32 @@ extension MockEntitiesFabric {
                     let domain = DomainDisplayInfo(name: "oleg_\(i)_\(ownerWallet.last!).\(tld)",
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
-                                                   isSetForRR: false)
+                                                   isSetForRR: i == 0)
                     domains.append(domain)
                 }
                 
                 for i in 0..<5 {
-                    let domain = DomainDisplayInfo(name: "subdomain_\(i).oleg_0.\(tld)",
+                    var name = "subdomain_\(i).oleg_0.\(tld)"
+                    if i == 3 {
+                        name = "long_long_long_long_long_" + name
+                    }
+                    let domain = DomainDisplayInfo(name: name,
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
                                                    isSetForRR: false)
                     domains.append(domain)
                 }
             }
-            
+                        
             return domains
+        }
+        
+        static func mockDomainDisplayInfo(ownerWallet: String = "0x1",
+                                          name: String = "preview.x",
+                                          isSetForRR: Bool = false) -> DomainDisplayInfo {
+            DomainDisplayInfo(name: name,
+                              ownerWallet: ownerWallet,
+                              isSetForRR: isSetForRR)
         }
         
         static func mockFirebaseDomains() -> [FirebaseDomain] {

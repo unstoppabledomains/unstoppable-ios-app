@@ -10,8 +10,8 @@ import SwiftUI
 struct UIImageBridgeView: UIViewRepresentable {
     
     let image: UIImage?
-    var width: CGFloat?
-    var height: CGFloat?
+    var flexibleWidth: Bool = true
+    var flexibleHeight: Bool = true
     
     private let serialQueue = DispatchQueue(label: "com.UIImageBridgeView.serial")
     
@@ -22,13 +22,11 @@ struct UIImageBridgeView: UIViewRepresentable {
         imageView.contentMode = contentMode
         imageView.clipsToBounds = true
         
-        if let width {
-            imageView.frame.size.width = width
+        if flexibleWidth {
             imageView.setContentHuggingPriority(.defaultLow, for: .horizontal)
             imageView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         }
-        if let height {
-//            imageView.frame.size.height = height
+        if flexibleHeight {
             imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
             imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         }

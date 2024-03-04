@@ -69,9 +69,7 @@ private extension HomeExploreTrendingProfileRowView {
     
     @ViewBuilder
     func avatarView() -> some View {
-        UIImageBridgeView(image: avatar,
-                          width: 20,
-                          height: 20)
+        UIImageBridgeView(image: avatar)
         .squareFrame(40)
         .clipShape(Circle())
     }

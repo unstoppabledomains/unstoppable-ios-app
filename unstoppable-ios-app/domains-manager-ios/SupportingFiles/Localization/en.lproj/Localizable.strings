@@ -169,6 +169,7 @@
 "GLOBAL" = "Global";
 "YOURS" = "Yours";
 "RECENT" = "Recent";
+"PRIMARY" = "Primary";
 
 /* ONBOARDING */
 // Tutorial screens

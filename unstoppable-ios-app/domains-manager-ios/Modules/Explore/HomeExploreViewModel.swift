@@ -23,7 +23,10 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
-    @Published private(set) var userWalletSearchResults: [HomeExplore.UserWalletSearchResult] = []
+    
+    @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
+    @Published var userWalletCollapsedAddresses: Set<String> = []
+    
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
@@ -136,7 +139,7 @@ private extension HomeExploreViewModel {
     
     func setUserWalletSearchResults() {
         let userWallets = walletsDataService.wallets
-        userWalletSearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: searchKey) })
+        userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: searchKey) })
     }
 }
 

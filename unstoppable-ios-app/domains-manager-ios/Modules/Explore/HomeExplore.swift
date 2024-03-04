@@ -61,7 +61,7 @@ extension HomeExplore {
         }
     }
     
-    struct UserWalletSearchResult: Identifiable {
+    struct UserWalletNonEmptySearchResult: Identifiable {
         var id: String { wallet.address }
         
         let wallet: WalletDisplayInfo

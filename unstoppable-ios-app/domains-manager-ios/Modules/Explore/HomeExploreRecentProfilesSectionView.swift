@@ -42,6 +42,7 @@ private extension HomeExploreRecentProfilesSectionView {
             
             clearRecentButtonView()
         }
+        .padding(.init(vertical: 5))
     }
     
     @ViewBuilder

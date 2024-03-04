@@ -52,7 +52,7 @@ extension MockEntitiesFabric {
     enum Wallet {
         static func mockEntities() -> [WalletEntity] {
             WalletWithInfo.mock.map {
-                let domains = Domains.mockDomainDisplayInfo(ownerWallet: $0.wallet.address)
+                let domains = Domains.mockDomainsDisplayInfo(ownerWallet: $0.wallet.address)
                 let numOfNFTs = Int(arc4random_uniform(10) + 1)
                 let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
                 let addr = $0.wallet.address

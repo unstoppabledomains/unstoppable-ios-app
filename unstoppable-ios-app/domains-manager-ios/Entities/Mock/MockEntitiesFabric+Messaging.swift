@@ -20,6 +20,15 @@ extension MockEntitiesFabric {
     }
     
     enum Messaging {
+        @MainActor
+        static func mockChatViewModel(isGroup: Bool = true) -> ChatViewModel {
+            ChatViewModel(profile: .init(id: "",
+                                         wallet: "",
+                                         serviceIdentifier: .push),
+                          conversationState: Messaging.existingChatConversationState(isGroup: isGroup),
+                          router: HomeTabRouter(profile: .wallet(Wallet.mockEntities().first!)))
+        }
+        
         static func createProfileDisplayInfo(wallet: String = "0x",
                                              serviceIdentifier: MessagingServiceIdentifier = .xmtp) -> MessagingChatUserProfileDisplayInfo {
             MessagingChatUserProfileDisplayInfo(id: UUID().uuidString,

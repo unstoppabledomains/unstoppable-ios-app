@@ -19,11 +19,8 @@ struct ChatCreateMessagingProfileView: View {
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
-            Line(direction: .horizontal)
-                .stroke(style: StrokeStyle(lineWidth: 1,
-                                           dash: [5]))
+            LineView(direction: .horizontal, dashed: true)
                 .foregroundStyle(Color.borderMuted)
-                .frame(height: 1)
             
             VStack(alignment: .leading, spacing: 16) {
                 ForEach(CreateProfileHint.allCases, id: \.self) { hint in

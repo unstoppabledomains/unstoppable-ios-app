@@ -70,18 +70,14 @@ private extension HomeExploreFollowerCellView {
     
     @ViewBuilder
     func followerBackgroundView() -> some View {
-        UIImageBridgeView(image: cover,
-                          width: 20,
-                          height: 60)
+        UIImageBridgeView(image: cover)
         .frame(height: 60)
         .background(Color.backgroundDefault)
     }
     
     @ViewBuilder
     func followerAvatarView() -> some View {
-        UIImageBridgeView(image: icon,
-                          width: 80,
-                          height: 80)
+        UIImageBridgeView(image: icon)
         .squareFrame(80)
         .clipShape(Circle())
         .overlay {
