@@ -693,6 +693,10 @@
 		C63AD0A12B956DEC00BF8C83 /* HomeExploreEmptySearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD09F2B956DEC00BF8C83 /* HomeExploreEmptySearchResultView.swift */; };
 		C63AD0A72B9575D500BF8C83 /* HomeExploreSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0A62B9575D500BF8C83 /* HomeExploreSeparatorView.swift */; };
 		C63AD0A82B9575D500BF8C83 /* HomeExploreSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0A62B9575D500BF8C83 /* HomeExploreSeparatorView.swift */; };
+		C63AD0AA2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */; };
+		C63AD0AB2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */; };
+		C63AD0AD2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */; };
+		C63AD0AE2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */; };
 		C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */; };
 		C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
 		C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
@@ -2905,6 +2909,8 @@
 		C63AD09C2B956D2A00BF8C83 /* HomeExploreGlobalSearchResultSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreGlobalSearchResultSectionView.swift; sourceTree = "<group>"; };
 		C63AD09F2B956DEC00BF8C83 /* HomeExploreEmptySearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreEmptySearchResultView.swift; sourceTree = "<group>"; };
 		C63AD0A62B9575D500BF8C83 /* HomeExploreSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSeparatorView.swift; sourceTree = "<group>"; };
+		C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileTokensSectionView.swift; sourceTree = "<group>"; };
+		C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenUIDescription.swift; sourceTree = "<group>"; };
 		C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64DataTransformer.swift; sourceTree = "<group>"; };
 		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
 		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -6713,6 +6719,7 @@
 			children = (
 				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
 				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
+				C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */,
 				C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */,
 			);
 			path = "Public profile view";
@@ -6983,6 +6990,7 @@
 				C631DFA32B7B4F4800040221 /* AnyCodable.swift */,
 				C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */,
 				29BECD122979BDF800662FC1 /* BackedUpWallet.swift */,
+				C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */,
 				C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */,
 				C6EECE962833A3E400978ED5 /* CoinRecord.swift */,
 				C6C9DEAD2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift */,
@@ -8386,6 +8394,7 @@
 				C631DFA42B7B4F4800040221 /* AnyCodable.swift in Sources */,
 				C6A931042B17796B0078CB9E /* WalletWithInfo+Mock.swift in Sources */,
 				C60DCEEF282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
+				C63AD0AD2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */,
 				C61308642A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C66107992A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,
 				C6538DB22A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
@@ -9278,6 +9287,7 @@
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C685D8182AA978DE00212879 /* UBTDomainCardView.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
+				C63AD0AA2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */,
 				C6170EC42B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
 				C6203A5C2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
@@ -9513,6 +9523,7 @@
 				C6C8F92E2B2183C700A9834D /* DomainsCollectionSearchEmptyCell.swift in Sources */,
 				C6C8F8222B217CC000A9834D /* ConnectExternalWalletViewController.swift in Sources */,
 				C6C8F8C32B2182E400A9834D /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
+				C63AD0AE2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */,
 				C6C8F8752B21822700A9834D /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D647662B1EDEF600D724AC /* UDCarouselFeature.swift in Sources */,
 				C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */,
@@ -9993,6 +10004,7 @@
 				C6D646932B1ED14400D724AC /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C61808482B19B9680032E543 /* PreviewAppLaunchService.swift in Sources */,
 				C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
+				C63AD0AB2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */,
 				C6D647822B1EE22D00D724AC /* UITableView.swift in Sources */,
 				C6C8F9952B218BBB00A9834D /* Double.swift in Sources */,
 				C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */,

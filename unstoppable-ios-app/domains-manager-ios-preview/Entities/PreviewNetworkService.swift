@@ -169,21 +169,8 @@ extension NetworkService {
     }
     
     public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
-        .init(profile: .init(displayName: nil,
-                             description: nil,
-                             location: nil,
-                             web2Url: nil,
-                             imagePath: nil,
-                             imageType: nil,
-                             coverPath: nil,
-                             phoneNumber: nil,
-                             domainPurchased: nil),
-              metadata: MockEntitiesFabric.DomainProfile.createPublicDomainMetadata(domain: domainName, walletAddress: "0x1"),
-              socialAccounts: nil,
-              referralCode: nil,
-              social: nil,
-              records: nil,
-              walletBalances: [])
+        MockEntitiesFabric.DomainProfile.createPublicProfile(domain: domainName,
+                                                             walletBalance: MockEntitiesFabric.DomainProfile.createPublicProfileWalletBalances())
     }
     
     public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {

@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeWalletTokenRowView: View {
     
     static let height: CGFloat = 64
-    let token: HomeWalletView.TokenDescription
+    let token: BalanceTokenUIDescription
     @State private var icon: UIImage?
     @State private var parentIcon: UIImage?
     
@@ -93,7 +93,7 @@ private extension HomeWalletTokenRowView {
         loadIconFor(token: token)
     }
     
-    func loadIconFor(token: HomeWalletView.TokenDescription) {
+    func loadIconFor(token: BalanceTokenUIDescription) {
         guard !token.isSkeleton else {
             icon = nil
             parentIcon = nil

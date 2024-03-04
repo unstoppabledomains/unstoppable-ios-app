@@ -18,7 +18,7 @@ extension HomeWalletView {
     final class HomeWalletViewModel: ObservableObject, HomeWalletViewCoordinator {
         
         @Published private(set) var selectedWallet: WalletEntity
-        @Published private(set) var tokens: [TokenDescription] = []
+        @Published private(set) var tokens: [BalanceTokenUIDescription] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = []
         @Published private(set) var domainsGroups: [DomainsGroup] = []
         @Published private(set) var subdomains: [DomainDisplayInfo] = []
@@ -133,7 +133,7 @@ extension HomeWalletView {
 fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
-        tokens = wallet.balance.map { HomeWalletView.TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
+        tokens = wallet.balance.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
         let domains = wallet.domains.filter({ !$0.isSubdomain })
         self.domainsGroups = [String : [DomainDisplayInfo]].init(grouping: domains, by: { $0.name.getTldName() ?? "" }).map { HomeWalletView.DomainsGroup(domains: $0.value, tld: $0.key) }
         subdomains = wallet.domains.filter({ $0.isSubdomain })

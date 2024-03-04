@@ -54,6 +54,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
                 ProgressView()
             }
         }
+        .environmentObject(viewModel)
         .animation(.easeInOut(duration: 0.3), value: UUID())
         .displayError($viewModel.error)
         .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
@@ -132,6 +133,7 @@ private extension PublicProfileView {
                     infoCarouselView(for: profile)
                 }
                 followersView()
+                PublicProfileTokensSectionView()
                 if let badges = viewModel.badgesDisplayInfo {
                     profileDashSeparator()
                     badgesView(badges: badges)
