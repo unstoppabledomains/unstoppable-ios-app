@@ -28,7 +28,7 @@ private extension HomeExploreUserWalletDomainsView {
     @ViewBuilder
     func sectionSeparatorView() -> some View {
         HomeExploreSeparatorView()
-            .padding(.init(vertical: -4))
+            .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
     }
 }
 
