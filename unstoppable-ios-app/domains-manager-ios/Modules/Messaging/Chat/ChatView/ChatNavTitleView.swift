@@ -23,6 +23,7 @@ struct ChatNavTitleView: View {
             Text(title)
                 .foregroundStyle(Color.foregroundDefault)
                 .font(.currentFont(size: 16, weight: .semibold))
+                .lineLimit(1)
         }
         .onChange(of: titleType, perform: { newValue in
             loadIconNonBlocking()
