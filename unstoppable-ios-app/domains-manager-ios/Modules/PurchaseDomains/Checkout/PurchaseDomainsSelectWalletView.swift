@@ -54,6 +54,7 @@ private extension PurchaseDomainsSelectWalletView {
                            imageType: .image(walletDisplayInfo.image),
                            imageStyle: walletDisplayInfo.imageStyle,
                            rightViewStyle: walletDisplayInfo.rightViewStyle)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
 

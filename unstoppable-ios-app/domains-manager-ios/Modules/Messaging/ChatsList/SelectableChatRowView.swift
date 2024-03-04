@@ -38,6 +38,7 @@ private extension SelectableChatRowView {
     func chatDefaultSelectableRowView(chat: MessagingChatDisplayInfo) -> some View {
         UDCollectionListRowButton(content: {
             ChatListChatRowView(chat: chat)
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             switch chat.type {

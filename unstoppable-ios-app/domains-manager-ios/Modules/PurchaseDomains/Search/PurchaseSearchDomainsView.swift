@@ -131,6 +131,7 @@ private extension PurchaseSearchDomainsView {
                 ForEach(searchResult, id: \.name) { domainInfo in
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
+                            .udListItemInCollectionButtonPadding()
                     }, callback: {
                         logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
                                                                                             .price: String(domainInfo.price),

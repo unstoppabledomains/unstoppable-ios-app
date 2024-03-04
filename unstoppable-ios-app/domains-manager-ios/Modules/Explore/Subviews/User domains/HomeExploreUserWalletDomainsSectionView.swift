@@ -17,6 +17,7 @@ struct HomeExploreUserWalletDomainsSectionView: View, ViewAnalyticsLogger {
         Section {
             if !isCollapsed {
                 domainsListView()
+                    .padding(.init(horizontal: -12, vertical: -8))
             }
         } header: {
             sectionHeaderView()

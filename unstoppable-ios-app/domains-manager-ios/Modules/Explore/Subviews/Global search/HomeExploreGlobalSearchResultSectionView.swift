@@ -35,12 +35,14 @@ private extension HomeExploreGlobalSearchResultSectionView {
                 discoveredProfileRowView(profile)
             }
         }
+        .padding(.init(horizontal: -12, vertical: -8))
     }
     
     @ViewBuilder
     func discoveredProfileRowView(_ profile: SearchDomainProfile) -> some View {
         UDCollectionListRowButton(content: {
             DomainSearchResultProfileRowView(profile: profile)
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])

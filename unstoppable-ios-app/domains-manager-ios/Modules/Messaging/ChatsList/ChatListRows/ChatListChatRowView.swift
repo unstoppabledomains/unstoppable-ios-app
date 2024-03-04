@@ -33,7 +33,7 @@ struct ChatListChatRowView: View, ViewAnalyticsLogger {
                 trailingView()
             }
         }
-        .frame(height: 60)
+        .frame(height: 52)
         .onAppear(perform: onAppear)
     }
 }
