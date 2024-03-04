@@ -124,34 +124,7 @@ private extension PublicProfileView {
                 })
                 .sideInsets(-sidePadding)
             
-            HStack {
-                avatarView()
-                    .offset(y: -32)
-                Spacer()
-                HStack(spacing: 8) {
-                    CircleIconButton(icon: .uiImage(.shareIcon),
-                                     size: .medium,
-                                     callback: {
-                        logButtonPressedAnalyticEvents(button: .share)
-                        delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
-                    })
-                    if !viewModel.isUserDomainSelected {
-                        CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                                         size: .medium,
-                                         callback: {
-                            logButtonPressedAnalyticEvents(button: .messaging)
-                            presentationMode.wrappedValue.dismiss()
-                            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.wallet)
-                        })
-                        if let viewingDomain = viewModel.viewingDomain,
-                           let isFollowing = viewModel.isFollowing,
-                           viewModel.domain.name != viewingDomain.name { // Can't follow myself
-                            followButton(isFollowing: isFollowing)
-                        }
-                    }
-                }
-                .offset(y: -18)
-            }
+            avatarWithActionsView()
             
             VStack(spacing: 16) {
                 profileInfoView()
@@ -169,6 +142,59 @@ private extension PublicProfileView {
         }
         .sideInsets(sidePadding)
         .frame(width: UIScreen.main.bounds.width)
+    }
+    
+    @ViewBuilder
+    func avatarWithActionsView() -> some View {
+        HStack {
+            avatarView()
+                .offset(y: -32)
+            Spacer()
+            HStack(spacing: 8) {
+                shareProfileButtonView()
+                if !viewModel.isUserDomainSelected {
+                    startMessagingButtonView()
+                    followButtonIfAvailable()
+                }
+            }
+            .offset(y: -18)
+        }
+    }
+    
+    @ViewBuilder
+    func followButtonIfAvailable() -> some View {
+        if isCanFollowThisProfile,
+           let isFollowing = viewModel.isFollowing {
+            followButton(isFollowing: isFollowing)
+        }
+    }
+    
+    var isCanFollowThisProfile: Bool {
+        if let viewingDomain = viewModel.viewingDomain {
+          return viewModel.domain.name != viewingDomain.name // Can't follow myself
+        }
+        return false
+    }
+    
+    @ViewBuilder
+    func shareProfileButtonView() -> some View {
+        CircleIconButton(icon: .uiImage(.shareIcon),
+                         size: .medium,
+                         callback: {
+            logButtonPressedAnalyticEvents(button: .share)
+            delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
+        })
+    }
+    
+    @ViewBuilder
+    func startMessagingButtonView() -> some View {
+        CircleIconButton(icon: .uiImage(.messageCircleIcon24),
+                         size: .medium,
+                         callback: {
+            logButtonPressedAnalyticEvents(button: .messaging)
+            presentationMode.wrappedValue.dismiss()
+            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.wallet)
+        })
     }
     
     @ViewBuilder
@@ -192,29 +218,7 @@ private extension PublicProfileView {
     @ViewBuilder
     func followButton(isFollowing: Bool) -> some View {
         Menu {
-            Button {
-                UDVibration.buttonTap.vibrate()
-                showDomainsList()
-            } label: {
-                Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
-            }
-            Divider()
-            if let viewingDomain = viewModel.viewingDomain {
-                Button(role: isFollowing ? .destructive : .cancel) {
-                    UDVibration.buttonTap.vibrate()
-                    viewModel.followButtonPressed()
-                    logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
-                } label: {
-                    if isFollowing {
-                        Text(String.Constants.unfollowAsDomain.localized(viewingDomain.name))
-                    } else {
-                        Text(String.Constants.followAsDomain.localized(viewingDomain.name))
-                    }
-                    if let viewingDomainImage = viewModel.viewingDomainImage {
-                        Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
-                    }
-                }
-            }
+            followButtonMenuContent(isFollowing: isFollowing)
         } label: {
             HStack(spacing: 8) {
                 if !isFollowing {
@@ -239,6 +243,33 @@ private extension PublicProfileView {
             .clipShape(Capsule())
         }
         .onButtonTap()
+    }
+    
+    @ViewBuilder
+    func followButtonMenuContent(isFollowing: Bool) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            showDomainsList()
+        } label: {
+            Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
+        }
+        Divider()
+        if let viewingDomain = viewModel.viewingDomain {
+            Button(role: isFollowing ? .destructive : .cancel) {
+                UDVibration.buttonTap.vibrate()
+                viewModel.followButtonPressed()
+                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+            } label: {
+                if isFollowing {
+                    Text(String.Constants.unfollowAsDomain.localized(viewingDomain.name))
+                } else {
+                    Text(String.Constants.followAsDomain.localized(viewingDomain.name))
+                }
+                if let viewingDomainImage = viewModel.viewingDomainImage {
+                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
+                }
+            }
+        }
     }
     
     // Profile info
@@ -343,29 +374,44 @@ private extension PublicProfileView {
     func infoCarouselView(for profile: SerializedPublicDomainProfile) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                if let social = profile.social {
-                    carouselFollowersItem(for: social, callback: { showFollowersList() })
-                }
-                if let social = profile.socialAccounts {
-                    let accounts = SocialDescription.typesFrom(accounts: social)
-                    if !accounts.isEmpty {
-                        carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
-                                     icon: .twitterIcon24,
-                                     button: .socialsList,
-                                     callback: { showSocialsList() })
-                    }
-                }
-                if let records = viewModel.records,
-                   !records.isEmpty {
-                    carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
-                                 icon: .walletBTCIcon20,
-                                 button: .cryptoList,
-                                 callback: { showCryptoList() })
-                }
+                carouselSocialItemIfAvailable(in: profile)
+                carouselSocialAccountsItemIfAvailable(in: profile)
+                carouselCryptoRecordsItemIfAvailable(in: profile)
             }
             .sideInsets(sidePadding)
         }
         .sideInsets(-sidePadding)
+    }
+    
+    @ViewBuilder
+    func carouselSocialItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
+        if let social = profile.social {
+            carouselFollowersItem(for: social, callback: { showFollowersList() })
+        }
+    }
+    
+    @ViewBuilder
+    func carouselSocialAccountsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
+        if let social = profile.socialAccounts {
+            let accounts = SocialDescription.typesFrom(accounts: social)
+            if !accounts.isEmpty {
+                carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
+                             icon: .twitterIcon24,
+                             button: .socialsList,
+                             callback: { showSocialAccountsList() })
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func carouselCryptoRecordsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
+        if let records = viewModel.records,
+           !records.isEmpty {
+            carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
+                         icon: .walletBTCIcon20,
+                         button: .cryptoList,
+                         callback: { showCryptoList() })
+        }
     }
     
     enum PresentingModalsOption: CaseIterable, Hashable {
@@ -410,7 +456,7 @@ private extension PublicProfileView {
         present(modal: .crypto)
     }
     
-    func showSocialsList() {
+    func showSocialAccountsList() {
         present(modal: .socials)
     }
     
