@@ -14,7 +14,6 @@ final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
-    @Published var isSearchingDomains: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
@@ -271,7 +270,7 @@ extension HomeTabRouter {
     
     func isChannelOpenedWith(channelId: String) -> Bool {
         chatTabNavPath.first(where: { screen in
-            if case .channel(let profile, let channel) = screen {
+            if case .channel(_, let channel) = screen {
                 return channel.channel.normalized.contains(channelId.normalized)
             }
             return false
@@ -281,7 +280,6 @@ extension HomeTabRouter {
     func popToRoot() {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
-        isSearchingDomains = false
         showingUpdatedToWalletGreetings = false
         presentedNFT = nil
         presentedDomain = nil

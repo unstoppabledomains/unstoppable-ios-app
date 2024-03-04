@@ -299,10 +299,6 @@
 		C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6166CC528ED748100004252 /* CollectionViewTitleSwitcherCell.swift */; };
 		C6166CCB28ED748100004252 /* CollectionViewTitleSwitcherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6166CC628ED748100004252 /* CollectionViewTitleSwitcherCell.xib */; };
 		C616C2D82806DBC600C212DC /* ExternalWalletMake.swift in Sources */ = {isa = PBXBuildFile; fileRef = C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */; };
-		C6170EB82B79D311008E9C93 /* DomainsSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EB72B79D311008E9C93 /* DomainsSearchView.swift */; };
-		C6170EB92B79D311008E9C93 /* DomainsSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EB72B79D311008E9C93 /* DomainsSearchView.swift */; };
-		C6170EBB2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EBA2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift */; };
-		C6170EBC2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EBA2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift */; };
 		C6170EBE2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EBD2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift */; };
 		C6170EBF2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EBD2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift */; };
 		C6170EC12B79E8E9008E9C93 /* UDListSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EC02B79E8E9008E9C93 /* UDListSectionView.swift */; };
@@ -2673,8 +2669,6 @@
 		C6166CC528ED748100004252 /* CollectionViewTitleSwitcherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTitleSwitcherCell.swift; sourceTree = "<group>"; };
 		C6166CC628ED748100004252 /* CollectionViewTitleSwitcherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewTitleSwitcherCell.xib; sourceTree = "<group>"; };
 		C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalWalletMake.swift; sourceTree = "<group>"; };
-		C6170EB72B79D311008E9C93 /* DomainsSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsSearchView.swift; sourceTree = "<group>"; };
-		C6170EBA2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSearchResultDomainRowView.swift; sourceTree = "<group>"; };
 		C6170EBD2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSearchResultProfileRowView.swift; sourceTree = "<group>"; };
 		C6170EC02B79E8E9008E9C93 /* UDListSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDListSectionView.swift; sourceTree = "<group>"; };
 		C6170EC32B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowingWalletSelectionModifier.swift; sourceTree = "<group>"; };
@@ -4712,15 +4706,6 @@
 				C617FDA02B58E75B00B93433 /* WalletEntity.swift */,
 			);
 			path = Wallets;
-			sourceTree = "<group>";
-		};
-		C6170EB62B79D306008E9C93 /* DomainsSearchView */ = {
-			isa = PBXGroup;
-			children = (
-				C6170EB72B79D311008E9C93 /* DomainsSearchView.swift */,
-				C6170EBA2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift */,
-			);
-			path = DomainsSearchView;
 			sourceTree = "<group>";
 		};
 		C617FD952B58BB6200B93433 /* WalletsDataService */ = {
@@ -7077,7 +7062,6 @@
 			isa = PBXGroup;
 			children = (
 				C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */,
-				C6170EB62B79D306008E9C93 /* DomainsSearchView */,
 				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 				C6E0DC5B2B71E20C0069E100 /* ShareWalletInfoView */,
 				C6102FC52B6A338D0098AF75 /* HomeWebAccountView */,
@@ -9020,7 +9004,6 @@
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
 				C630E4A32B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */,
 				C63095ED2B0DA66400205054 /* BaseFirebaseInteractionService.swift in Sources */,
-				C6170EB82B79D311008E9C93 /* DomainsSearchView.swift in Sources */,
 				C666895528117C66002062B4 /* BaseViewController.swift in Sources */,
 				C685803B2B357EF400907568 /* NavBarVisibleModifier.swift in Sources */,
 				C6DF46272AA18F8900D124E7 /* DisplayError.swift in Sources */,
@@ -9151,7 +9134,6 @@
 				3026FA1727E7678200FE058B /* CreateWalletViewController.swift in Sources */,
 				C609827628251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
 				C630E4B62B7F58BC008F3269 /* MessageInputView.swift in Sources */,
-				C6170EBB2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift in Sources */,
 				C62C3F90283F35610094FC93 /* CodeVerificationView.swift in Sources */,
 				C6010D1F287FC99400FBD401 /* Task.swift in Sources */,
 				C61808152B19AAAF0032E543 /* FirebaseAuthenticationServiceProtocol.swift in Sources */,
@@ -9678,7 +9660,6 @@
 				C6C8F9962B218BE100A9834D /* GhostPrimaryButton.swift in Sources */,
 				C6D6471D2B1ED85C00D724AC /* WalletError.swift in Sources */,
 				C6D646982B1ED14400D724AC /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
-				C6170EB92B79D311008E9C93 /* DomainsSearchView.swift in Sources */,
 				C6D6469C2B1ED14E00D724AC /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
 				C6D645D62B1DBD4900D724AC /* CBaseTransitioningAnimation.swift in Sources */,
 				C6D645D02B1DBD4100D724AC /* BackToSettingsNavBarPopAnimation.swift in Sources */,
@@ -10275,7 +10256,6 @@
 				C61808752B19BC290032E543 /* UDTitleText.swift in Sources */,
 				C6D646512B1ED10100D724AC /* DomainProfileTopInfoCell.swift in Sources */,
 				C6C8F9732B2188FA00A9834D /* QRScannerSightView.swift in Sources */,
-				C6170EBC2B79D698008E9C93 /* DomainSearchResultDomainRowView.swift in Sources */,
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
 				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
 				C6D645CB2B1DBD3C00D724AC /* CNavigationControllerChildTransitioning.swift in Sources */,

@@ -77,9 +77,6 @@ struct HomeTabView: View {
                                            domainSetCallback: presentationDetails.domainSetCallback)
             .interactiveDismissDisabled(presentationDetails.mode == .selectFirst)
         })
-        .sheet(isPresented: $router.isSearchingDomains, content: {
-            DomainsSearchView()
-        })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
                                                wallet: presentationDetails.wallet,
