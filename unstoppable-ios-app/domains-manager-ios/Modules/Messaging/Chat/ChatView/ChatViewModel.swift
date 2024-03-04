@@ -234,12 +234,12 @@ extension ChatViewModel {
 
 // MARK: - Private methods
 private extension ChatViewModel {
-    func getLastMessageInCache() -> MessagingChatMessageDisplayInfo? {
+    func getEarliestMessageInCache() -> MessagingChatMessageDisplayInfo? {
         messagesCache.lazy.sorted(by: { $0.time > $1.time }).last
     }
     
     func getLatestMessageToLoadMore() -> MessagingChatMessageDisplayInfo? {
-        if let message = getLastMessageInCache(),
+        if let message = getEarliestMessageInCache(),
            !message.isFirstInChat {
             return message
         }
@@ -434,7 +434,6 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     await addMessages(cachedMessages, scrollToBottom: true)
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
-                    isLoading = false
                     await updateUIForChatApprovedState()
                     let updateMessages = try await messagingService.getMessagesForChat(chat,
                                                                                        before: nil,
@@ -442,6 +441,8 @@ private extension ChatViewModel {
                                                                                        limit: fetchLimit)
                     isLoadingMessages = false
                     await addMessages(updateMessages, scrollToBottom: true)
+                    try await loadMoreInitialMessagesIfNeeded(in: chat)
+                    isLoading = false
                 case .newChat:
                     isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
@@ -452,6 +453,26 @@ private extension ChatViewModel {
                 isLoading = false
             }
         }
+    }
+    
+    func loadMoreInitialMessagesIfNeeded(in chat: MessagingChatDisplayInfo) async throws {
+        guard isNeedToLoadMoreInitialMessages(),
+            let earliestMessage = getEarliestMessageInCache() else { return }
+        
+        let messages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
+                                                                 beforeMessage: earliestMessage)
+        await addMessages(messages, scrollToBottom: true)
+        try await loadMoreInitialMessagesIfNeeded(in: chat) // Call recursively until sufficient number of visible messages is loaded
+    }
+    
+    func isNeedToLoadMoreInitialMessages() -> Bool {
+        // Number of visible messages (not including reactions, system messages, etc.) should be at least 20
+        messages.count < 20 &&
+        !didReachFirstMessageInChat()
+    }
+    
+    func didReachFirstMessageInChat() -> Bool {
+        getEarliestMessageInCache()?.isFirstInChat == true
     }
     
     func loadMoreMessagesBefore(message: MessagingChatMessageDisplayInfo) {
