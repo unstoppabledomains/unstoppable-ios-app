@@ -32,7 +32,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
     @Published var error: Error?
-    @Published var isKeyboardActive: Bool = true
+    @Published var isKeyboardActive: Bool = false
     var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
     private var router: HomeTabRouter

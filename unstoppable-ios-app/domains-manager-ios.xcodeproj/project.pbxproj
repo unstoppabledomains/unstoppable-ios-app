@@ -495,6 +495,12 @@
 		C61DB10F2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB10D2B95925C00CDA243 /* BalanceStringFormatter.swift */; };
 		C61DB1112B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1102B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift */; };
 		C61DB1122B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1102B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift */; };
+		C61DB1152B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */; };
+		C61DB1162B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */; };
+		C61DB1182B95BCFD00CDA243 /* DomainProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */; };
+		C61DB1192B95BCFD00CDA243 /* DomainProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */; };
+		C61DB11B2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */; };
+		C61DB11C2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */; };
 		C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
 		C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
 		C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
@@ -2742,6 +2748,9 @@
 		C61DB10A2B9588B300CDA243 /* PublicProfileSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileSeparatorView.swift; sourceTree = "<group>"; };
 		C61DB10D2B95925C00CDA243 /* BalanceStringFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceStringFormatter.swift; sourceTree = "<group>"; };
 		C61DB1102B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDListItemInCollectionButtonPaddingModifier.swift; sourceTree = "<group>"; };
+		C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesServiceProtocol.swift; sourceTree = "<group>"; };
+		C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesService.swift; sourceTree = "<group>"; };
+		C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
 		C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessage.swift; sourceTree = "<group>"; };
 		C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatDTO.swift; sourceTree = "<group>"; };
@@ -4863,6 +4872,15 @@
 			path = TextViews;
 			sourceTree = "<group>";
 		};
+		C61DB1132B95BCE600CDA243 /* DomainProfilesService */ = {
+			isa = PBXGroup;
+			children = (
+				C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */,
+				C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */,
+			);
+			path = DomainProfilesService;
+			sourceTree = "<group>";
+		};
 		C61ECD582A207BC500E97D70 /* Push */ = {
 			isa = PBXGroup;
 			children = (
@@ -6265,6 +6283,7 @@
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
 				C6D647A12B1F187600D724AC /* UDRouter+Common.swift */,
+				C61DB1132B95BCE600CDA243 /* DomainProfilesService */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
 				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
@@ -7025,6 +7044,7 @@
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
+				C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */,
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
 				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
 				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
@@ -8725,6 +8745,7 @@
 				C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */,
 				C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
+				C61DB11B2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
 				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */,
@@ -9122,6 +9143,7 @@
 				C624D78A281BBB8C00F55530 /* UDDomainsServiceProtocol.swift in Sources */,
 				C63AD0A02B956DEC00BF8C83 /* HomeExploreEmptySearchResultView.swift in Sources */,
 				C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */,
+				C61DB1182B95BCFD00CDA243 /* DomainProfilesService.swift in Sources */,
 				C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */,
 				C64939F52B6373C700457363 /* UIWindow.swift in Sources */,
 				C6B6B023296D2CDC00D4E30F /* MintingDomain.swift in Sources */,
@@ -9273,6 +9295,7 @@
 				C679B600291936FD00F543A7 /* DomainProfileUpdateDataRequestType.swift in Sources */,
 				C6B5136228320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift in Sources */,
 				C6A2D58E284FA0AB00327C47 /* WalletConnectServiceProtocol.swift in Sources */,
+				C61DB1152B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */,
 				C6D5DAC828365A3400379C38 /* FABCounterButton.swift in Sources */,
 				C673D59629FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
 				C688C1792B843BC000BD233A /* ChatListRequestsRowView.swift in Sources */,
@@ -9533,6 +9556,7 @@
 				C6D646A62B1ED15A00D724AC /* PublicProfileViewModel.swift in Sources */,
 				C61808802B19BC530032E543 /* Error.swift in Sources */,
 				C61DB1092B9587B600CDA243 /* PublicProfileSecondaryLargeTextView.swift in Sources */,
+				C61DB11C2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */,
 				C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */,
 				C6C8F8142B217CC000A9834D /* WalletConnectedViewController.swift in Sources */,
 				C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */,
@@ -10064,6 +10088,7 @@
 				C6C8F9302B2183C700A9834D /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6C8F8782B21827700A9834D /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				C6BF0C5C2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */,
+				C61DB1162B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */,
 				C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */,
 				C63AD09E2B956D2A00BF8C83 /* HomeExploreGlobalSearchResultSectionView.swift in Sources */,
 				C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */,
@@ -10308,6 +10333,7 @@
 				C61808382B19AF150032E543 /* UITextView.swift in Sources */,
 				C6D6475D2B1EDD8300D724AC /* WalletConnectRequestError.swift in Sources */,
 				C6960C312B1994EC00B79E28 /* PreviewDebugger.swift in Sources */,
+				C61DB1192B95BCFD00CDA243 /* DomainProfilesService.swift in Sources */,
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,
 				C6D6467B2B1ED12100D724AC /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C6C8F8922B21829000A9834D /* AppearanceSettingsCell.swift in Sources */,
