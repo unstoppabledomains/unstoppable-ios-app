@@ -12,9 +12,13 @@ struct HomeExploreUserWalletDomainsView: View {
     @EnvironmentObject var viewModel: HomeExploreViewModel
 
     var body: some View {
-        ForEach(viewModel.userWalletNonEmptySearchResults) { searchResult in
-            HomeExploreUserWalletDomainsSectionView(searchResult: searchResult)
-            sectionSeparatorView()
+        if viewModel.userWalletNonEmptySearchResults.isEmpty {
+            HomeExploreEmptySearchResultView()
+        } else {
+            ForEach(viewModel.userWalletNonEmptySearchResults) { searchResult in
+                HomeExploreUserWalletDomainsSectionView(searchResult: searchResult)
+                sectionSeparatorView()
+            }
         }
     }
 }

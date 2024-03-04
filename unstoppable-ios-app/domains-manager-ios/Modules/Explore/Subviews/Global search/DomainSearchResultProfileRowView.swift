@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DomainSearchResultProfileRowView: View {
     
-    
     @Environment(\.imageLoadingService) private var imageLoadingService
     
     let profile: SearchDomainProfile

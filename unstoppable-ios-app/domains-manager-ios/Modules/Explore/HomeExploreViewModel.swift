@@ -20,7 +20,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var followingsList: [SerializedPublicDomainProfile] = []
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
-    @Published private(set) var domainsToShow: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
     
@@ -45,7 +44,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
         self.router = router
         self.walletsDataService = walletsDataService
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
-        domainsToShow = userDomains
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile {
                 self?.selectedProfile = selectedProfile
@@ -146,11 +144,7 @@ private extension HomeExploreViewModel {
 // MARK: - Search methods
 private extension HomeExploreViewModel {
     func didSearchDomains() {
-        if searchKey.isEmpty {
-            domainsToShow = userDomains
-        } else {
-            domainsToShow = userDomains.filter({ $0.name.lowercased().contains(getLowercasedTrimmedSearchKey()) })
-        }
+        setUserWalletSearchResults()
         globalProfiles.removeAll()
         scheduleSearchGlobalProfiles()
     }
