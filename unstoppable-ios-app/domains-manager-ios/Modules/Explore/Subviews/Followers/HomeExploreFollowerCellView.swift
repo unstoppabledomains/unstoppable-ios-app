@@ -126,6 +126,8 @@ private extension HomeExploreFollowerCellView {
                     .foregroundStyle(Color.foregroundSecondary)
             }
         }
+        .padding(.init(horizontal: 8))
+        .lineLimit(1)
     }
 }
 
