@@ -315,7 +315,7 @@ extension ChatView {
                                                  wallet: "",
                                                  serviceIdentifier: .push),
                                   conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
-                                  router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
+                                  router: MockEntitiesFabric.Home.createHomeTabRouter()))
         
     }, navigationStateProvider: { state in
     }, path: .constant(EmptyNavigationPath()))

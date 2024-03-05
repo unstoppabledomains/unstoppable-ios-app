@@ -85,9 +85,7 @@ private extension NFTDetailsView {
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
                     if let nftImage {
-                        UIImageBridgeView(image: nftImage,
-                                          width: 20,
-                                          height: 20)
+                        UIImageBridgeView(image: nftImage)
                             .squareFrame(20)
                             .clipShape(Circle())
                     }
@@ -113,9 +111,7 @@ private extension NFTDetailsView {
     @ViewBuilder
     func nftImageView() -> some View {
         ZStack {
-            UIImageBridgeView(image: nftImage ?? .init(),
-                              width: 20,
-                              height: 20)
+            UIImageBridgeView(image: nftImage ?? .init())
             .aspectRatio(1, contentMode: .fill)
             .background(Color.backgroundSubtle)
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -128,9 +124,7 @@ private extension NFTDetailsView {
     @ViewBuilder
     func separatorView(direction: Line.Direction = .horizontal,
                        dashed: Bool = false) -> some View {
-        Line(direction: direction)
-            .stroke(style: StrokeStyle(lineWidth: 1, 
-                                       dash: dashed ? [5] : []))
+        LineView(direction: direction, dashed: dashed)
             .foregroundStyle(Color.white.opacity(0.08))
             .shadow(color: .black, radius: 0, x: 0, y: -1)
     }
@@ -146,9 +140,7 @@ private extension NFTDetailsView {
             }
             HStack(spacing: 8) {
                 if let collectionImage {
-                    UIImageBridgeView(image: collectionImage,
-                                      width: 20,
-                                      height: 20)
+                    UIImageBridgeView(image: collectionImage)
                     .aspectRatio(1, contentMode: .fill)
                     .squareFrame(24)
                     .background(Color.backgroundSubtle)
@@ -203,7 +195,6 @@ private extension NFTDetailsView {
             nftPriceValueView(title: String.Constants.lastSalePrice.localized(),
                               value: nft.lastSalePrice)
             separatorView(direction: .vertical)
-                .frame(width: 1)
             nftPriceValueView(title: String.Constants.floorPrice.localized(),
                               value: floorPriceValue)
             Spacer()

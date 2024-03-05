@@ -298,20 +298,3 @@ extension DomainProfileSocialsSection {
         }
     }
 }
-
-extension SocialAccounts {
-    static func mock() -> SocialAccounts {
-        .init(twitter: .mock(value: "lastsummer"),
-              discord: .mock(),
-              youtube: .mock(value: "https://www.youtube.com/channel/UCH7R3uNh4yqL0FmBLHXHLDg"),
-              reddit: .mock(value:"TopTrending2022"),
-              telegram: .mock(value: "lastsummersix"))
-    }
-}
-
-extension SerializedDomainSocialAccount {
-    static func mock(value: String = "") -> SerializedDomainSocialAccount {
-        .init(location: value, verified: true, public: true)
-    }
-}
- 

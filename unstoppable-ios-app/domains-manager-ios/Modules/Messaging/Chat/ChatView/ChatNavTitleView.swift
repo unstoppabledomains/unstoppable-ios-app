@@ -15,9 +15,7 @@ struct ChatNavTitleView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            UIImageBridgeView(image: icon,
-                              width: iconSize,
-                              height: iconSize)
+            UIImageBridgeView(image: icon)
             .squareFrame(iconSize)
             .clipShape(Circle())
             Text(title)

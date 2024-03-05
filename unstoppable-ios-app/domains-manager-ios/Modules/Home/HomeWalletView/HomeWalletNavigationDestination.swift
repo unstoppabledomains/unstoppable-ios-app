@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 31.01.2024.
 //
 
-import Foundation
+import SwiftUI
 
 enum HomeWalletNavigationDestination: Hashable {
     case settings
@@ -46,6 +46,39 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("purchaseDomains")
         case .walletsList:
             hasher.combine("walletsList")
+        }
+    }
+    
+}
+
+struct HomeWalletLinkNavigationDestination {
+    
+    @ViewBuilder
+    static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
+        switch navigationDestination {
+        case .settings:
+            SettingsViewControllerWrapper()
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: SettingsNavigationDestination.self) { destination in
+                    SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
+                        .ignoresSafeArea()
+                }
+        case .qrScanner(let selectedWallet):
+            QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
+                .navigationTitle(String.Constants.scanQRCodeTitle.localized())
+                .navigationBarTitleDisplayMode(.inline)
+        case .minting(let mode, let mintedDomains, let domainsMintedCallback, let mintingNavProvider):
+            MintDomainsNavigationControllerWrapper(mode: mode,
+                                                   mintedDomains: mintedDomains,
+                                                   domainsMintedCallback: domainsMintedCallback,
+                                                   mintingNavProvider: mintingNavProvider)
+            .toolbar(.hidden, for: .navigationBar)
+        case .purchaseDomains(let callback):
+            PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
+                .toolbar(.hidden, for: .navigationBar)
+        case .walletsList(let initialAction):
+            WalletsListViewControllerWrapper(initialAction: initialAction)
+                .toolbar(.hidden, for: .navigationBar)
         }
     }
     

@@ -172,9 +172,7 @@ private extension HomeWalletDomainCellView {
     
     @ViewBuilder
     func domainAvatarView(cornerRadius: CGFloat) -> some View {
-        UIImageBridgeView(image: icon ?? .domainSharePlaceholder,
-                          width: 20,
-                          height: 20)
+        UIImageBridgeView(image: icon ?? .domainSharePlaceholder)
         .aspectRatio(1, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }

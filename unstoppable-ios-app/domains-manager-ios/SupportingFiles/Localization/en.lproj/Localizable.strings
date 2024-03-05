@@ -164,7 +164,12 @@
 "MORE" = "More";
 "HOME" = "Home";
 "MESSAGES" = "Messages";
+"EXPLORE" = "Explore";
 "REPLY" = "Reply";
+"GLOBAL" = "Global";
+"YOURS" = "Yours";
+"RECENT" = "Recent";
+"PRIMARY" = "Primary";
 
 /* ONBOARDING */
 // Tutorial screens

@@ -289,28 +289,6 @@ extension PublicProfileView {
     
 }
 
-extension PublicDomainProfileAttributes {
-    static let empty = PublicDomainProfileAttributes(displayName: nil,
-                                                     description: nil,
-                                                     location: nil,
-                                                     web2Url: nil,
-                                                     imagePath: nil,
-                                                     imageType: nil,
-                                                     coverPath: nil,
-                                                     phoneNumber: nil,
-                                                     domainPurchased: nil)
-    
-    static let filled = PublicDomainProfileAttributes(displayName: "Oleg Kuplin",
-                                                      description: "Unstoppable iOS developer",
-                                                      location: "Danang",
-                                                      web2Url: "ud.me/oleg.x",
-                                                      imagePath: "nil",
-                                                      imageType: .onChain,
-                                                      coverPath: "nil",
-                                                      phoneNumber: nil,
-                                                      domainPurchased: nil)
-}
-
 func loadImageFrom(url: URL) async -> UIImage? {
     let urlRequest = URLRequest(url: url)
     guard let (imageData, _) = try? await URLSession.shared.data(for: urlRequest) else { return nil }

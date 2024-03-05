@@ -464,7 +464,7 @@ private extension ChatListViewModel {
     
     func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo,
                           usingWallets wallets: [WalletEntity]) async throws {
-        guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
+        guard let wallet = wallets.findWithAddress(profile.wallet) else {
             try await resolveInitialProfileWith(wallets: wallets)
             return
         }

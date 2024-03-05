@@ -61,9 +61,7 @@ private extension ImageMessageRowView {
             UDVibration.buttonTap.vibrate()
             viewModel.handleChatMessageAction(.showImage(image))
         } label: {
-            UIImageBridgeView(image: image,
-                              width: 20,
-                              height: 20)
+            UIImageBridgeView(image: image)
             .frame(width: imageSize().width,
                    height: imageSize().height)
         }

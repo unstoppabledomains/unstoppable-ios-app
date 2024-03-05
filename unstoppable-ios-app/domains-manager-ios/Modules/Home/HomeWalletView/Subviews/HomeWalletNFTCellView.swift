@@ -13,9 +13,7 @@ struct HomeWalletNFTCellView: View {
     @State private var icon: UIImage?
     
     var body: some View {
-        UIImageBridgeView(image: icon ?? .init(),
-                          width: 20,
-                          height: 20)
+        UIImageBridgeView(image: icon ?? .init())
             .background(icon == nil ? Color.backgroundSubtle : Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .aspectRatio(1, contentMode: .fit)

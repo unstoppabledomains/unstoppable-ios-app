@@ -147,9 +147,7 @@ extension ChatRequestsListView {
 }
 
 #Preview {
-    let wallet = MockEntitiesFabric.Wallet.mockEntities().first!
-    let profile = UserProfile.wallet(wallet)
-    let router = HomeTabRouter(profile: profile)
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
     
     return NavigationStack {
         ChatRequestsListView(viewModel: .init(dataType: .channelsSpam(MockEntitiesFabric.Messaging.createChannelsForUITesting()),

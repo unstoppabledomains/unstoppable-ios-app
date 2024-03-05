@@ -100,7 +100,7 @@ private extension ChatListView {
     }
     
     func setupTitle() {
-        navigationState?.setCustomTitle(customTitle: { ChatListNavTitleView(profile: viewModel.selectedProfile) },
+        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
     }
@@ -225,7 +225,7 @@ private extension ChatListView {
             case .noWallet, .createProfile, .loading:
                 if true { }
             case .chatsList:
-                ChatListDataTypeSelectorView(dataType: $viewModel.selectedDataType)
+                ChatListDataTypeSelectorView()
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(0))
@@ -538,9 +538,7 @@ extension ChatListView {
 }
 
 #Preview {
-    let wallet = MockEntitiesFabric.Wallet.mockEntities().first!
-    let profile = UserProfile.wallet(wallet)
-    let router = HomeTabRouter(profile: profile)
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
     
     return ChatListView(viewModel: .init(presentOptions: .default,
                                          router: router))

@@ -58,7 +58,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(.init(horizontal: 16))
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
@@ -125,9 +125,7 @@ private extension HomeWalletView {
         private func content() -> some View {
             if let rrDomain = wallet.rrDomain {
                 HStack {
-                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder,
-                                      width: 20,
-                                      height: 20)
+                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
                     .squareFrame(20)
                     .clipShape(Circle())
                     Text(rrDomain.name)
