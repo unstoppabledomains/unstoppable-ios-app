@@ -11,12 +11,12 @@ import Combine
 final class DomainProfilesService {
    
     private let storage: PublicDomainProfileDisplayInfoStorageServiceProtocol
-    private let networkService: NetworkService
+    private let networkService: PublicDomainProfileNetworkServiceProtocol
     private let numberOfFollowersToTake = 40
     private let serialQueue = DispatchQueue(label: "com.domain_profiles_service.unstoppable")
     private var profilesSocialDetailsCache: [HexAddress : PublishableDomainProfileSocialRelationshipDetails] = [:]
 
-    init(networkService: NetworkService = NetworkService(),
+    init(networkService: PublicDomainProfileNetworkServiceProtocol = NetworkService(),
          storage: PublicDomainProfileDisplayInfoStorageServiceProtocol) {
         self.networkService = networkService
         self.storage = storage
@@ -46,10 +46,13 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
                     continuation.yield(cachedProfile)
                 }
                 
-                let refreshedProfile = try await fetchPublicDomainProfileDisplayInfo(for: domainName)
-                continuation.yield(refreshedProfile)
-                                
-                continuation.finish()
+                do {
+                    let refreshedProfile = try await fetchPublicDomainProfileDisplayInfo(for: domainName)
+                    continuation.yield(refreshedProfile)
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
             }
         }
     }
@@ -62,9 +65,6 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         try await networkService.unfollow(domainName, by: domain.toDomainItem())
     }
     
-    ///Get follower details
-    ///Load more followers
-    ///Subscribe for changes
     func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never> {
         getOrCreateProfileSocialDetailsFor(wallet: wallet).publisher
     }

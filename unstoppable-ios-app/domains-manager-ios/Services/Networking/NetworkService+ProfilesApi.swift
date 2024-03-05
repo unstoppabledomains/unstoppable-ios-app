@@ -7,14 +7,14 @@
 
 import Foundation
 
-extension NetworkService {
+extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
     
     //MARK: public methods
     public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         try await fetchPublicProfile(for: domain.name, fields: fields)
     }
     
-    public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+    func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         struct SerializedNullableRecordValue: Decodable {
             let records: [String : String?]?
         }
