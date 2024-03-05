@@ -76,7 +76,7 @@ final class AppContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
     var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
-    var domainProfilesService: DomainProfilesServiceProtocol = PreviewDomainProfilesService()
+    var domainProfilesService: DomainProfilesServiceProtocol = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService())
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))

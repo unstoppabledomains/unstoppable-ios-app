@@ -9,7 +9,14 @@ import Foundation
 
 final class DomainProfilesService {
    
-    private let storage = PublicDomainProfileDisplayInfoStorageService()
+    private let storage: PublicDomainProfileDisplayInfoStorageServiceProtocol
+    private let networkService: NetworkService
+    
+    init(networkService: NetworkService = NetworkService(),
+         storage: PublicDomainProfileDisplayInfoStorageServiceProtocol) {
+        self.networkService = networkService
+        self.storage = storage
+    }
     
 }
 
@@ -28,7 +35,22 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         return profile
     }
     
-    func loadFullListOfFollowersFor(domainName: DomainName, 
+    func getCachedAndRefreshProfileStream(for domainName: DomainName) -> AsyncThrowingStream<PublicDomainProfileDisplayInfo, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                if let cachedProfile = getCachedPublicDomainProfileDisplayInfo(for: domainName) {
+                    continuation.yield(cachedProfile)
+                }
+                
+                let refreshedProfile = try await fetchPublicDomainProfileDisplayInfo(for: domainName)
+                continuation.yield(refreshedProfile)
+                                
+                continuation.finish()
+            }
+        }
+    }
+    
+    func loadFullListOfFollowersFor(domainName: DomainName,
                                     relationshipType: DomainProfileFollowerRelationshipType) async throws -> [DomainName] {
         let numberOfFollowersToTake = 50
         var cursor: Int?
@@ -36,10 +58,10 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         var canLoadMore = true
         
         while canLoadMore {
-            let response = try await NetworkService().fetchListOfFollowers(for: domainName,
-                                                                           relationshipType: relationshipType,
-                                                                           count: numberOfFollowersToTake,
-                                                                           cursor: cursor)
+            let response = try await networkService.fetchListOfFollowers(for: domainName,
+                                                                         relationshipType: relationshipType,
+                                                                         count: numberOfFollowersToTake,
+                                                                         cursor: cursor)
             let responseDomainNames = response.data.map { $0.domain }
             followersList.append(contentsOf: responseDomainNames)
             
@@ -54,8 +76,8 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
 // MARK: - Private methods
 private extension DomainProfilesService {
     func getSerializedPublicDomainProfile(for domainName: DomainName) async throws -> SerializedPublicDomainProfile {
-        let serializedProfile = try await NetworkService().fetchPublicProfile(for: domainName,
-                                                                              fields: [.profile, .records, .socialAccounts])
+        let serializedProfile = try await networkService.fetchPublicProfile(for: domainName,
+                                                                            fields: [.profile, .records, .socialAccounts])
         return serializedProfile
     }
 }

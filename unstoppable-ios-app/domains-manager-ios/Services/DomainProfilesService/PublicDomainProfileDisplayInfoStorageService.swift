@@ -15,8 +15,8 @@ final class PublicDomainProfileDisplayInfoStorageService: CoreDataService {
     
 }
 
-// MARK: - Open methods
-extension PublicDomainProfileDisplayInfoStorageService {
+// MARK: - PublicDomainProfileDisplayInfoStorageServiceProtocol
+extension PublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDisplayInfoStorageServiceProtocol {
     func store(profile: PublicDomainProfileDisplayInfo) {
         coreDataQueue.sync {
             let _ = try? convertPublicProfileToCoreDataPublicProfile(profile)
