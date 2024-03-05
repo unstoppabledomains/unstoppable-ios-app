@@ -688,7 +688,7 @@ private extension PushMessagingAPIService {
                                                            by: user)
             }
             throw PushMessagingAPIServiceError.canReplyOnlyWithText
-        case .unknown, .remoteContent:
+        case .unknown, .remoteContent, .unsupported:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -708,7 +708,7 @@ private extension PushMessagingAPIService {
             return details.messageId
         case .reply(let info):
             return info.messageId
-        case .text, .imageBase64, .imageData, .unknown, .remoteContent:
+        case .text, .imageBase64, .imageData, .unknown, .remoteContent, .unsupported:
             return nil
         }
     }
@@ -723,7 +723,7 @@ private extension PushMessagingAPIService {
             return .mediaEmbed
         case .reply:
             return .reply
-        case .unknown, .remoteContent:
+        case .unknown, .remoteContent, .unsupported:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }

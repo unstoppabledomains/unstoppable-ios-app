@@ -25,7 +25,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
             time = Date() 
         }
         switch type {
-        case .text, .unknown, .remoteContent, .reaction, .reply:
+        case .text, .unknown, .remoteContent, .reaction, .reply, .unsupported:
             return
         case .imageData(var info):
             if info.image == nil {
