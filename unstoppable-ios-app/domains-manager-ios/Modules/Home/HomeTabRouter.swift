@@ -166,7 +166,7 @@ extension HomeTabRouter {
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  by wallet: WalletEntity,
-                                 viewingDomain: DomainItem? = nil,
+                                 viewingDomain: DomainDisplayInfo? = nil,
                                  preRequestedAction: PreRequestedProfileAction?) {
         presentedPublicDomain = .init(domain: domain,
                                       wallet: wallet,
@@ -511,7 +511,7 @@ extension HomeTabRouter {
         
         let domain: PublicDomainDisplayInfo
         let wallet: WalletEntity
-        let viewingDomain: DomainItem?
+        let viewingDomain: DomainDisplayInfo?
         var preRequestedAction: PreRequestedProfileAction? = nil
         var delegate: PublicProfileViewDelegate
     }

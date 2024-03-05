@@ -35,8 +35,7 @@ extension PublicProfileView {
         
         private weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
-        private(set) var wallet: WalletEntity
-        private(set) var viewingDomain: DomainItem?
+        private(set) var viewingDomain: DomainDisplayInfo?
         @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: [DomainProfileSocialAccount]?
@@ -58,12 +57,11 @@ extension PublicProfileView {
         
         init(domain: PublicDomainDisplayInfo,
              wallet: WalletEntity,
-             viewingDomain: DomainItem?,
+             viewingDomain: DomainDisplayInfo?,
              preRequestedAction: PreRequestedProfileAction?,
              delegate: PublicProfileViewDelegate?) {
             self.domain = domain
-            self.wallet = wallet
-            self.viewingDomain = viewingDomain ?? wallet.getDomainToViewPublicProfile()?.toDomainItem()
+            self.viewingDomain = viewingDomain ?? wallet.getDomainToViewPublicProfile()
             self.preRequestedAction = preRequestedAction
             self.delegate = delegate
             self.appearTime = Date()
@@ -99,9 +97,9 @@ extension PublicProfileView {
             Task {
                 await performAsyncErrorCatchingBlock {
                     if isFollowing {
-                        try await NetworkService().unfollow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.unfollow(domain.name, by: viewingDomain)
                     } else {
-                        try await NetworkService().follow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.follow(domain.name, by: viewingDomain)
                     }
                     self.isFollowing = !isFollowing
                     loadPublicProfile() // Refresh social info
@@ -123,11 +121,10 @@ extension PublicProfileView {
         }
         
         func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            let domainItem = domain.toDomainItem()
             viewingDomainImage = nil
             isFollowing = nil
             loadFollowingState()
-            viewingDomain = domainItem
+            viewingDomain = domain
             loadViewingDomainData()
         }
         
@@ -263,10 +260,7 @@ extension PublicProfileView {
             guard let viewingDomain else { return }
             
             Task {
-                let domains = appContext.walletsDataService.wallets.combinedDomains()
-                guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
-                
-                let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
+                let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(viewingDomain),
                                                                                         downsampleDescription: .icon)
                 await waitForAppear()
                 self.viewingDomainImage = viewingDomainImage

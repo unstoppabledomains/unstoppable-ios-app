@@ -12,7 +12,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
                             wallet: WalletEntity,
-                            viewingDomain: DomainItem?,
+                            viewingDomain: DomainDisplayInfo?,
                             preRequestedAction: PreRequestedProfileAction?,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
         let view = PublicProfileView(domain: domain,
@@ -79,7 +79,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     
     init(domain: PublicDomainDisplayInfo,
          wallet: WalletEntity,
-         viewingDomain: DomainItem?,
+         viewingDomain: DomainDisplayInfo?,
          preRequestedAction: PreRequestedProfileAction?,
          delegate: PublicProfileViewDelegate? = nil) {
         _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, 
@@ -191,13 +191,17 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func startMessagingButtonView() -> some View {
-        CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                         size: .medium,
-                         callback: {
-            logButtonPressedAnalyticEvents(button: .messaging)
-            presentationMode.wrappedValue.dismiss()
-            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.wallet)
-        })
+        if let viewingDomain = viewModel.viewingDomain,
+           let wallet = appContext.walletsDataService.wallets.first(where: { $0.isOwningDomain(viewingDomain.name) }) {
+            CircleIconButton(icon: .uiImage(.messageCircleIcon24),
+                             size: .medium,
+                             callback: {
+                logButtonPressedAnalyticEvents(button: .messaging)
+                presentationMode.wrappedValue.dismiss()
+                delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, 
+                                                                     by: wallet)
+            })
+        }
     }
     
     @ViewBuilder
@@ -798,6 +802,6 @@ private extension PublicProfileView {
 #Preview {
     PublicProfileView(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
                       wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                      viewingDomain: .init(name: "oleg.x"),
+                      viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo(),
                       preRequestedAction: nil)
 }

@@ -9,4 +9,6 @@ import Foundation
 
 protocol DomainProfilesServiceProtocol {
     func fetchPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo
+    func follow(_ domainNameToFollow: String, by domain: DomainDisplayInfo) async throws
+    func unfollow(_ domainNameToUnfollow: String, by domain: DomainDisplayInfo) async throws
 }
