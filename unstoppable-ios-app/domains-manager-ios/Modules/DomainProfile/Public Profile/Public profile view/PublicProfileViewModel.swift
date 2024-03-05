@@ -97,9 +97,9 @@ extension PublicProfileView {
             Task {
                 await performAsyncErrorCatchingBlock {
                     if isFollowing {
-                        try await appContext.domainProfilesService.unfollow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.followProfileWith(domainName: domain.name, by: viewingDomain)
                     } else {
-                        try await appContext.domainProfilesService.follow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.unfollowProfileWith(domainName: domain.name, by: viewingDomain)
                     }
                     self.isFollowing = !isFollowing
                     loadPublicProfile() // Refresh social info

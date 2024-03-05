@@ -72,12 +72,12 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         return followersList
     }
     
-    func follow(_ domainNameToFollow: String, by domain: DomainDisplayInfo) async throws {
-        try await networkService.follow(domainNameToFollow, by: domain.toDomainItem())
+    func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
+        try await networkService.follow(domainName, by: domain.toDomainItem())
     }
     
-    func unfollow(_ domainNameToUnfollow: String, by domain: DomainDisplayInfo) async throws {
-        try await networkService.unfollow(domainNameToUnfollow, by: domain.toDomainItem())
+    func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
+        try await networkService.unfollow(domainName, by: domain.toDomainItem())
     }
 }
 
