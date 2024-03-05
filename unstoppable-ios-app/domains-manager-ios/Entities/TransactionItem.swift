@@ -9,7 +9,6 @@ import Foundation
 import BigInt
 
 enum TxType: String, Codable {
-    case zilTx = "ZilTx"
     case ethTx = "EthTx"
     case maticTx = "MaticTx"
 }

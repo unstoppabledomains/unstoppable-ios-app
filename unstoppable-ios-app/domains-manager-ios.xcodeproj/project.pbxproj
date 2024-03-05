@@ -75,7 +75,6 @@
 		30784C8E27F455350034FA4A /* UDTextView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30784C8D27F455350034FA4A /* UDTextView.xib */; };
 		307852642771FB030039FF40 /* DeepLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307852632771FB020039FF40 /* DeepLinks.swift */; };
 		307B1CEA2602775D007B14C3 /* UDWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1CE92602775C007B14C3 /* UDWallet.swift */; };
-		307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D312603C087007B14C3 /* UDWalletZil.swift */; };
 		307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */; };
 		307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 307B1D592603C8E0007B14C3 /* BigInt */; };
 		307EC19B25383EF600D62BA1 /* TransactionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307EC19A25383EF600D62BA1 /* TransactionItem.swift */; };
@@ -2396,7 +2395,6 @@
 		307852632771FB020039FF40 /* DeepLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinks.swift; sourceTree = "<group>"; };
 		307B1C7D25FA258F007B14C3 /* Env-Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Env-Demo.swift"; sourceTree = "<group>"; };
 		307B1CE92602775C007B14C3 /* UDWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWallet.swift; sourceTree = "<group>"; };
-		307B1D312603C087007B14C3 /* UDWalletZil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletZil.swift; sourceTree = "<group>"; };
 		307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletEthereum.swift; sourceTree = "<group>"; };
 		307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
 		307EC19A25383EF600D62BA1 /* TransactionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionItem.swift; sourceTree = "<group>"; };
@@ -4620,7 +4618,6 @@
 				29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */,
 				2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */,
 				307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */,
-				307B1D312603C087007B14C3 /* UDWalletZil.swift */,
 				3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */,
 				C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */,
 				C617FDA02B58E75B00B93433 /* WalletEntity.swift */,
@@ -8974,7 +8971,6 @@
 				C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
-				307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6D646DF2B1ED46200D724AC /* WalletConnectController.swift in Sources */,

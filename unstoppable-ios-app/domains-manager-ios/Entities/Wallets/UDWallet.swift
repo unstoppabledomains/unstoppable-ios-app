@@ -62,7 +62,6 @@ struct UDWallet: Codable, @unchecked Sendable {
         case failedToSignMessage = "Failed to Sign Message"
         case noWalletOwner = "No Owner Wallet Specified"
         case failedToFindWallet = "Failed to Find a Wallet"
-        case zilNotSupported = "Zilliqua not supported"
         case failedSignature
     }
     
