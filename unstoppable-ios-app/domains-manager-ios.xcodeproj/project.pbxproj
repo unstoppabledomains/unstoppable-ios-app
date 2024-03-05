@@ -1180,7 +1180,7 @@
 		C69F992B2A9F1264004B1958 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991E2A9F1264004B1958 /* Font.swift */; };
 		C69F992C2A9F1264004B1958 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991F2A9F1264004B1958 /* Color.swift */; };
 		C69F99412A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */; };
-		C69F99562A9F167F004B1958 /* SocialDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* SocialDescription.swift */; };
+		C69F99562A9F167F004B1958 /* DomainProfileSocialAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */; };
 		C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */; };
 		C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */; };
 		C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996E2A9F2206004B1958 /* PublicProfileFollowersViewModel.swift */; };
@@ -1963,7 +1963,7 @@
 		C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C38A2912632100837F21 /* SocialsVerificationViewController.swift */; };
 		C6D646D82B1ED2E700D724AC /* SocialsVerificationViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3892912632100837F21 /* SocialsVerificationViewPresenter.swift */; };
 		C6D646D92B1ED31100D724AC /* DomainProfileBadgeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */; };
-		C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* SocialDescription.swift */; };
+		C6D646DA2B1ED33400D724AC /* DomainProfileSocialAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */; };
 		C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646DB2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift */; };
 		C6D646DF2B1ED46200D724AC /* WalletConnectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646DE2B1ED46200D724AC /* WalletConnectController.swift */; };
 		C6D646E02B1ED46200D724AC /* WalletConnectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646DE2B1ED46200D724AC /* WalletConnectController.swift */; };
@@ -3310,7 +3310,7 @@
 		C69F991E2A9F1264004B1958 /* Font.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		C69F991F2A9F1264004B1958 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgeDisplayInfo.swift; sourceTree = "<group>"; };
-		C69F99552A9F167F004B1958 /* SocialDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialDescription.swift; sourceTree = "<group>"; };
+		C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialAccount.swift; sourceTree = "<group>"; };
 		C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileFollowerImageLoader.swift; sourceTree = "<group>"; };
 		C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileCryptoListView.swift; sourceTree = "<group>"; };
 		C69F996E2A9F2206004B1958 /* PublicProfileFollowersViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileFollowersViewModel.swift; sourceTree = "<group>"; };
@@ -7052,7 +7052,7 @@
 				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
-				C69F99552A9F167F004B1958 /* SocialDescription.swift */,
+				C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */,
 				C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */,
 				C6109EA128E6B1CC0027D5D8 /* Toast.swift */,
 				307EC19A25383EF600D62BA1 /* TransactionItem.swift */,
@@ -8445,7 +8445,7 @@
 				C6D3B9CF2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift in Sources */,
 				306486CD25273C4400388026 /* User.swift in Sources */,
 				C62396A92A28D7D200363F60 /* PushChannel.swift in Sources */,
-				C69F99562A9F167F004B1958 /* SocialDescription.swift in Sources */,
+				C69F99562A9F167F004B1958 /* DomainProfileSocialAccount.swift in Sources */,
 				C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C6C995C6289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
@@ -10169,7 +10169,7 @@
 				C630E4AA2B7F4959008F3269 /* ChatViewModel.swift in Sources */,
 				C6E0DC5E2B71E2410069E100 /* ShareWalletInfoView.swift in Sources */,
 				C6D6471F2B1ED89A00D724AC /* ViewErrorHolder.swift in Sources */,
-				C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */,
+				C6D646DA2B1ED33400D724AC /* DomainProfileSocialAccount.swift in Sources */,
 				C61807E92B19A6290032E543 /* DomainPFPInfo.swift in Sources */,
 				C61C332E2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */,
 				C6C8F8D22B21833D00A9834D /* UBTSearchingView.swift in Sources */,

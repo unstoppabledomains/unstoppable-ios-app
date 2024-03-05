@@ -50,6 +50,10 @@ private extension PublicDomainProfileDisplayInfoStorageService {
         coreDataProfile.pfpURL = profile.pfpURL
         coreDataProfile.imageType = profile.imageType?.rawValue
         coreDataProfile.bannerURL = profile.bannerURL
+        coreDataProfile.records = profile.records
+        coreDataProfile.socialAccounts = profile.socialAccounts.jsonData()
+        coreDataProfile.followingCount = Int64(profile.followingCount)
+        coreDataProfile.followerCount = Int64(profile.followerCount)
         
         return coreDataProfile
     }
@@ -61,13 +65,19 @@ private extension PublicDomainProfileDisplayInfoStorageService {
         if let imageTypeRaw = coreDataUserProfile.imageType {
             imageType = DomainProfileImageType(rawValue: imageTypeRaw)
         }
+        let socialAccountsData = coreDataUserProfile.socialAccounts ?? Data()
+        let socialDescription = [DomainProfileSocialAccount].objectFromData(socialAccountsData) ?? []
         
         return PublicDomainProfileDisplayInfo(domainName: domainName,
                                               ownerWallet: ownerWallet,
                                               profileName: coreDataUserProfile.profileName,
                                               pfpURL: coreDataUserProfile.pfpURL,
                                               imageType: imageType,
-                                              bannerURL: coreDataUserProfile.bannerURL)
+                                              bannerURL: coreDataUserProfile.bannerURL,
+                                              records: coreDataUserProfile.records,
+                                              socialAccounts: socialDescription,
+                                              followingCount: Int(coreDataUserProfile.followingCount),
+                                              followerCount: Int(coreDataUserProfile.followerCount))
     }
 }
 

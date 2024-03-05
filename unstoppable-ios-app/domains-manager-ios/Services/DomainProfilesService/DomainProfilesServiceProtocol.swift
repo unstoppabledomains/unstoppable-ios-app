@@ -8,5 +8,5 @@
 import Foundation
 
 protocol DomainProfilesServiceProtocol {
-    
+    func fetchPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo
 }

@@ -12,8 +12,8 @@ struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
     @Environment(\.presentationMode) private var presentationMode
 
     let domainName: DomainName
-    let accounts: [SocialDescription]
-    @State private var selectedSocial: SocialDescription?
+    let accounts: [DomainProfileSocialAccount]
+    @State private var selectedSocial: DomainProfileSocialAccount?
     var analyticsName: Analytics.ViewName { .domainSocialsList }
 
     var body: some View {
@@ -45,7 +45,7 @@ struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
     
     init(domainName: DomainName, socialAccounts: SocialAccounts) {
         self.domainName = domainName
-        self.accounts = SocialDescription.typesFrom(accounts: socialAccounts)
+        self.accounts = DomainProfileSocialAccount.typesFrom(accounts: socialAccounts)
     }
     
 }
@@ -57,7 +57,7 @@ private extension PublicProfileSocialsListView {
     }
     
     @MainActor
-    func didSelectSocial(_ social: SocialDescription?) {
+    func didSelectSocial(_ social: DomainProfileSocialAccount?) {
         selectedSocial = nil
 
         guard let social else { return }
@@ -67,7 +67,7 @@ private extension PublicProfileSocialsListView {
     }
     
     @ViewBuilder
-    func viewForSocialRow(_ social: SocialDescription) -> some View {
+    func viewForSocialRow(_ social: DomainProfileSocialAccount) -> some View {
         HStack(spacing: 16) {
             Image(uiImage: social.type.originalIcon)
                 .resizable()

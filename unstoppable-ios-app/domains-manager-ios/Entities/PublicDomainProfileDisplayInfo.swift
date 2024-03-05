@@ -7,13 +7,17 @@
 
 import Foundation
 
-struct PublicDomainProfileDisplayInfo {
+struct PublicDomainProfileDisplayInfo: Hashable {
     let domainName: String
     let ownerWallet: String
     let profileName: String?
     let pfpURL: URL?
     let imageType: DomainProfileImageType?
     let bannerURL: URL?
+    let records: [String : String]?
+    let socialAccounts: [DomainProfileSocialAccount]
+    let followingCount: Int
+    let followerCount: Int
 }
 
 extension PublicDomainProfileDisplayInfo {
@@ -24,5 +28,9 @@ extension PublicDomainProfileDisplayInfo {
         self.pfpURL = URL(string: serializedProfile.profile.imagePath ?? "")
         self.imageType = serializedProfile.profile.imageType
         self.bannerURL = URL(string: serializedProfile.profile.coverPath ?? "")
+        self.records = serializedProfile.records
+        self.socialAccounts = DomainProfileSocialAccount.typesFrom(accounts: serializedProfile.socialAccounts ?? .init())
+        self.followingCount = serializedProfile.social?.followingCount ?? 0
+        self.followerCount = serializedProfile.social?.followerCount ?? 0
     }
 }

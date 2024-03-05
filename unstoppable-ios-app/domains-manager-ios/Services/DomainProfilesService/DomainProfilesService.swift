@@ -18,12 +18,13 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
     func getCachedPublicDomainProfileDisplayInfo(for domainName: String) -> PublicDomainProfileDisplayInfo? {
         try? storage.retrieveProfileFor(domainName: domainName)
     }
-    
-    func getPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo {
-        let serializedProfile = try await NetworkService().fetchPublicProfile(for: domainName,
-                                                                              fields: [.profile, .records])
+ 
+    func fetchPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo {
+        let serializedProfile = try await getSerializedPublicDomainProfile(for: domainName)
         let profile = PublicDomainProfileDisplayInfo(serializedProfile: serializedProfile)
+        
         storage.store(profile: profile)
+        
         return profile
     }
     
@@ -47,5 +48,14 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         }
         
         return followersList
+    }
+}
+
+// MARK: - Private methods
+private extension DomainProfilesService {
+    func getSerializedPublicDomainProfile(for domainName: DomainName) async throws -> SerializedPublicDomainProfile {
+        let serializedProfile = try await NetworkService().fetchPublicProfile(for: domainName,
+                                                                              fields: [.profile, .records, .socialAccounts])
+        return serializedProfile
     }
 }

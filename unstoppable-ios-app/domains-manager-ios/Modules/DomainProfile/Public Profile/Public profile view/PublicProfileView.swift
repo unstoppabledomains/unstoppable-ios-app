@@ -396,7 +396,7 @@ private extension PublicProfileView {
     @ViewBuilder
     func carouselSocialAccountsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
         if let social = profile.socialAccounts {
-            let accounts = SocialDescription.typesFrom(accounts: social)
+            let accounts = DomainProfileSocialAccount.typesFrom(accounts: social)
             if !accounts.isEmpty {
                 carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
                              icon: .twitterIcon24,

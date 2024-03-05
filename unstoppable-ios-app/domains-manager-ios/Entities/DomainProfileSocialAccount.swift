@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct SocialDescription: Hashable, WebsiteURLValidator {
+struct DomainProfileSocialAccount: Hashable, Codable, WebsiteURLValidator {
     let type: SocialsType
     let account: SerializedDomainSocialAccount
     
@@ -84,14 +84,14 @@ struct SocialDescription: Hashable, WebsiteURLValidator {
     }
     
     func value(in accounts: SocialAccounts) -> String {
-        SocialDescription.account(of: type, in: accounts)?.location ?? ""
+        DomainProfileSocialAccount.account(of: type, in: accounts)?.location ?? ""
     }
     
-    static func typesFrom(accounts: SocialAccounts) -> [SocialDescription] {
+    static func typesFrom(accounts: SocialAccounts) -> [DomainProfileSocialAccount] {
         let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube, .gitHub, .linkedIn]
         return types.compactMap({
             if let account = account(of: $0, in: accounts) {
-                return SocialDescription(type: $0, account: account)
+                return DomainProfileSocialAccount(type: $0, account: account)
             }
             return nil
         })
