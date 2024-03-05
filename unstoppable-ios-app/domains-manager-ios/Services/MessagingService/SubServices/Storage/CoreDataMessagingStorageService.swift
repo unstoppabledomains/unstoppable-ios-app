@@ -806,12 +806,7 @@ private extension CoreDataMessagingStorageService {
                                                           messageId: info.messageId).jsonStringThrowing()
             return try decrypterService.encryptText(content)
         case .unsupported(let info):
-            do {
-                return try encryptDataContent(info.data)
-            } catch {
-                print("Failed")
-                throw error
-            }
+            return try encryptDataContent(info.data)
         }
     }
     

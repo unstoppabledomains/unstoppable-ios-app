@@ -530,7 +530,8 @@ private extension ChatViewModel {
         
         let messages = serialQueue.sync {
             messages.filter { message in
-                if case .reaction(let info) = message.type {
+                switch message.type {
+                case .reaction(let info):
                     let counter = MessageReactionDescription(content: info.content,
                                                              messageId: message.id,
                                                              referenceMessageId: info.messageId,
@@ -541,7 +542,9 @@ private extension ChatViewModel {
                         try? messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
                     }
                     return false
-                } else {
+                case .unsupported:
+                    return false
+                default:
                     return true
                 }
             }
