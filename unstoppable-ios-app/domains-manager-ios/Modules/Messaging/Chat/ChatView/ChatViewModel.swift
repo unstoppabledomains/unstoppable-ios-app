@@ -17,7 +17,6 @@ final class ChatViewModel: ObservableObject, ViewAnalyticsLogger {
     private let messagingService: MessagingServiceProtocol
     private let featureFlagsService: UDFeatureFlagsServiceProtocol
     private(set) var conversationState: MessagingChatConversationState
-    private let fetchLimit: Int = 30
     @Published private(set) var isLoadingMessages = false
     @Published private(set) var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     @Published private(set) var isChannelEncrypted: Bool = true
@@ -424,6 +423,7 @@ private extension ChatViewModel {
     func loadAndShowData() {
         Task {
             isLoading = true
+            let fetchLimit = ChatConstants.fetchLimit
             do {
                 switch conversationState {
                 case .existingChat(let chat):
@@ -455,19 +455,24 @@ private extension ChatViewModel {
         }
     }
     
-    func loadMoreInitialMessagesIfNeeded(in chat: MessagingChatDisplayInfo) async throws {
+    func loadMoreInitialMessagesIfNeeded(in chat: MessagingChatDisplayInfo, startTime: Date = Date()) async throws {
         guard isNeedToLoadMoreInitialMessages(),
-            let earliestMessage = getEarliestMessageInCache() else { return }
+            let earliestMessage = getEarliestMessageInCache(),
+            !shouldBreakLoadMoreLoopDueToTimeout(startTime: startTime) else { return }
         
         let messages = try await createTaskAndLoadMoreMessagesIn(chat: chat,
                                                                  beforeMessage: earliestMessage)
         await addMessages(messages, scrollToBottom: true)
-        try await loadMoreInitialMessagesIfNeeded(in: chat) // Call recursively until sufficient number of visible messages is loaded
+        try await loadMoreInitialMessagesIfNeeded(in: chat, startTime: startTime) // Call recursively until sufficient number of visible messages is loaded
+    }
+    
+    func shouldBreakLoadMoreLoopDueToTimeout(startTime: Date) -> Bool {
+        Date().timeIntervalSince(startTime) > ChatConstants.loadMoreMessagesLimitSec
     }
     
     func isNeedToLoadMoreInitialMessages() -> Bool {
         // Number of visible messages (not including reactions, system messages, etc.) should be at least 20
-        messages.count < 20 &&
+        messages.count < ChatConstants.minRequiredNumberOfVisibleMessagesOnLaunch &&
         !didReachFirstMessageInChat()
     }
     
@@ -503,7 +508,7 @@ private extension ChatViewModel {
             try await messagingService.getMessagesForChat(chat,
                                                           before: beforeMessage,
                                                           cachedOnly: false,
-                                                          limit: fetchLimit)
+                                                          limit: ChatConstants.fetchLimit)
         }
         self.loadMoreMessagesTask = task
         let result = try await task.value
@@ -517,7 +522,7 @@ private extension ChatViewModel {
                 let cachedMessages = try await messagingService.getMessagesForChat(chat,
                                                                                    before: nil,
                                                                                    cachedOnly: true,
-                                                                                   limit: fetchLimit)
+                                                                                   limit: ChatConstants.fetchLimit)
                 await addMessages(cachedMessages, scrollToBottom: false)
             }
         }
@@ -530,7 +535,8 @@ private extension ChatViewModel {
         
         let messages = serialQueue.sync {
             messages.filter { message in
-                if case .reaction(let info) = message.type {
+                switch message.type {
+                case .reaction(let info):
                     let counter = MessageReactionDescription(content: info.content,
                                                              messageId: message.id,
                                                              referenceMessageId: info.messageId,
@@ -541,7 +547,9 @@ private extension ChatViewModel {
                         try? messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
                     }
                     return false
-                } else {
+                case .unsupported:
+                    return false
+                default:
                     return true
                 }
             }
@@ -1156,6 +1164,15 @@ extension ChatViewModel: UDFeatureFlagsListener {
                 reloadCachedMessages()
             }
         }
+    }
+}
+
+// MARK: - Open methods
+extension ChatViewModel {
+    struct ChatConstants {
+        static let fetchLimit = 30
+        static let loadMoreMessagesLimitSec: TimeInterval = 30
+        static let minRequiredNumberOfVisibleMessagesOnLaunch = 20
     }
 }
 
