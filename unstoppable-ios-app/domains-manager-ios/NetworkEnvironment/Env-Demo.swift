@@ -20,12 +20,6 @@ extension NetworkService {
     static let mainnetMetadataAPIKey = "<mainnet-api-key>"
     static let testnetMetadataAPIKey = "<testnet-api-key>"
     
-    // Analytics API, you may keep these empty
-#if DEBUG
-    static let heapAppId = "dev-heap-key"
-#else
-    static let heapAppId = "prod-heap-key"
-#endif
 }
 
 struct AppIdentificators {
