@@ -230,9 +230,6 @@ extension UIImage {
             return .ethBGLarge
         case .Matic:
             return .maticBGLarge
-        case .Zilliqa:
-            Debugger.printFailure("Trying to connect unsupported Zilliqa network", critical: true)
-            return nil
         }
     }
     
@@ -242,9 +239,6 @@ extension UIImage {
             return .ethBGSmall
         case .Matic:
             return .maticBGSmall
-        case .Zilliqa:
-            Debugger.printFailure("Trying to connect unsupported Zilliqa network", critical: true)
-            return nil
         }
     }
     

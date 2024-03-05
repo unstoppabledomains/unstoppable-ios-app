@@ -114,7 +114,6 @@ extension NetworkService {
             
             switch blockchain {
             case .Ethereum, .Matic: return .UNS
-            case .Zilliqa: return .ZNS
             }
         }
     }

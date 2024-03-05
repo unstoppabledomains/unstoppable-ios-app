@@ -101,7 +101,7 @@ extension DomainName {
     }
     
     static func isZilByExtension(ext: String) -> Bool {
-        ext.lowercased() == NamingService.ZNS.rawValue.lowercased()
+        ext.lowercased() == "zil"
     }
 }
 

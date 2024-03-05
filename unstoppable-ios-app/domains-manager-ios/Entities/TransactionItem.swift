@@ -152,7 +152,6 @@ struct TransactionItem: Codable {
         
         switch domain.namingService {
         case .UNS: return domainName == domain.name
-        case .ZNS: return self.isPendingZilDomain(domain)
         }
     }
     

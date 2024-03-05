@@ -153,11 +153,6 @@ struct UDWallet: Codable, @unchecked Sendable {
                             type: .importedUnverified,
                             ethWallet: wallet,
                             zilWallet: nil)
-        case .Zilliqa: let wallet = UDWalletZil.createUnverified(address: response.address, humanAddress: response.humanAddress)
-            return UDWallet(aliasName: aliasName,
-                            type: .importedUnverified,
-                            ethWallet: nil,
-                            zilWallet: wallet)
         }
     }
     
@@ -294,7 +289,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     func getAddress(for namingService: NamingService) -> String? {
         switch namingService {
         case .UNS: return self.extractEthWallet()?.address
-        case .ZNS: return self.extractZilWallet()?.address
         }
     }
     
@@ -353,10 +347,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     func extractEthWallet() -> UDWalletEthereum? {
         return ethWallet
     }
-    
-    func extractZilWallet() -> UDWalletZil? {
-        return zilWallet
-    }
 }
 
 extension UDWallet {
@@ -387,11 +377,9 @@ extension UDWallet {
 extension Array where Element == UDWallet {
     func pickOwnedDomains(from domains: [DomainItem]) -> [DomainItem] {
         let ethWalletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
-        let zilWalletAddresses = self.compactMap({$0.extractZilWallet()?.address.normalized})
-        let walletAddresses = ethWalletAddresses + zilWalletAddresses
         let selected = domains.filter {
             guard let ownerWallet = $0.ownerWallet else { return false }
-            return walletAddresses.contains(ownerWallet.normalized)
+            return ethWalletAddresses.contains(ownerWallet.normalized)
         }
         return selected
     }
@@ -402,8 +390,6 @@ extension Array where Element == UDWallet {
         switch namingService {
         case .UNS:
             walletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
-        case .ZNS:
-            walletAddresses = self.compactMap({$0.extractZilWallet()?.address.normalized})
         }
         let selected = domains.filter {
             guard let ownerWallet = $0.ownerWallet else { return false }
@@ -419,19 +405,11 @@ extension UDWallet {
         return self.address.normalized == domainWalletAddress || self.address.normalized == domainWalletAddress
     }
     
-    var activeZilAddress: String? {
-        switch UDWalletZil.network {
-        case .mainnet: return self.extractZilWallet()?.bech32addressMainnet
-        case .testnet: return self.extractZilWallet()?.bech32addressTestnet
-        }
-    }
-    
     func getActiveAddress(for namingService: NamingService) -> String? {
         let etereumStyleAddress = self.extractEthWallet()?.address.normalized
         
         switch namingService {
         case .UNS: return etereumStyleAddress
-        case .ZNS: return self.activeZilAddress
         }
     }
     
@@ -475,15 +453,13 @@ extension UDWallet {
 extension UDWallet: Equatable {
     static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
-        let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
-        return resultEth || resultZil
+        return resultEth
     }
 }
 
 extension UDWallet: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(extractEthWallet()?.address)
-        hasher.combine(extractZilWallet()?.address)
         hasher.combine(aliasName)
         hasher.combine(hasBeenBackedUp)
         hasher.combine(walletState)
