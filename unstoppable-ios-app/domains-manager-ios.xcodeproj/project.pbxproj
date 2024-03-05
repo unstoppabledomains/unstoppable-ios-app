@@ -666,7 +666,6 @@
 		C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */; };
 		C63F1D0D28AF31D5000A5C12 /* AnalyticsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */; };
 		C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */; };
-		C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */; };
 		C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */; };
 		C6420BFA28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */; };
 		C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */; };
@@ -2855,7 +2854,6 @@
 		C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceEnvironment.swift; sourceTree = "<group>"; };
 		C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceProtocol.swift; sourceTree = "<group>"; };
 		C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
-		C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeapAnalyticService.swift; sourceTree = "<group>"; };
 		C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPushAnimation.swift; sourceTree = "<group>"; };
 		C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingInProgressViewPresenter.swift; sourceTree = "<group>"; };
@@ -5265,7 +5263,6 @@
 		C63F1D0728AF31D5000A5C12 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */,
 				C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */,
 			);
 			path = Services;
@@ -8202,7 +8199,6 @@
 				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
-				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
