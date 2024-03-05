@@ -12,8 +12,7 @@ final class AnalyticsService {
        
     private var cancellables: Set<AnyCancellable> = []
 
-    private var services: [AnalyticsServiceChildProtocol] = [HeapAnalyticService(),
-                                                             AmplitudeAnalyticsService()]
+    private var services: [AnalyticsServiceChildProtocol] = [AmplitudeAnalyticsService()]
     
     init(walletsDataService: WalletsDataServiceProtocol,
          wcRequestsHandlingService: WCRequestsHandlingServiceProtocol) {

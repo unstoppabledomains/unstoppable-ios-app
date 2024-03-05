@@ -75,7 +75,6 @@
 		30784C8E27F455350034FA4A /* UDTextView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30784C8D27F455350034FA4A /* UDTextView.xib */; };
 		307852642771FB030039FF40 /* DeepLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307852632771FB020039FF40 /* DeepLinks.swift */; };
 		307B1CEA2602775D007B14C3 /* UDWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1CE92602775C007B14C3 /* UDWallet.swift */; };
-		307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D312603C087007B14C3 /* UDWalletZil.swift */; };
 		307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */; };
 		307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 307B1D592603C8E0007B14C3 /* BigInt */; };
 		307EC19B25383EF600D62BA1 /* TransactionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307EC19A25383EF600D62BA1 /* TransactionItem.swift */; };
@@ -87,7 +86,6 @@
 		309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309FDFBB265E7C0C00AE53D3 /* StripePaymentHelper.swift */; };
 		30A1895525AB483B0001178D /* PullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30A1895425AB483B0001178D /* PullUpView.xib */; };
 		30A280372714217200FD3759 /* wallets-registry.json in Resources */ = {isa = PBXBuildFile; fileRef = 30A280362714217100FD3759 /* wallets-registry.json */; };
-		30AD0D792704634600F42ACC /* Zesame in Frameworks */ = {isa = PBXBuildFile; productRef = 30AD0D782704634600F42ACC /* Zesame */; };
 		30AE84A92575862F003A0142 /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30AE84A82575862F003A0142 /* SF-Pro.ttf */; };
 		30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AE8520257837B5003A0142 /* NetworkConfig.swift */; };
 		30B3DC9728763294006FAA64 /* WCConnectionIntentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */; };
@@ -716,7 +714,6 @@
 		C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */; };
 		C63F1D0D28AF31D5000A5C12 /* AnalyticsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */; };
 		C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */; };
-		C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */; };
 		C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */; };
 		C6420BFA28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */; };
 		C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */; };
@@ -2468,7 +2465,6 @@
 		307852632771FB020039FF40 /* DeepLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinks.swift; sourceTree = "<group>"; };
 		307B1C7D25FA258F007B14C3 /* Env-Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Env-Demo.swift"; sourceTree = "<group>"; };
 		307B1CE92602775C007B14C3 /* UDWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWallet.swift; sourceTree = "<group>"; };
-		307B1D312603C087007B14C3 /* UDWalletZil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletZil.swift; sourceTree = "<group>"; };
 		307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletEthereum.swift; sourceTree = "<group>"; };
 		307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
 		307EC19A25383EF600D62BA1 /* TransactionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionItem.swift; sourceTree = "<group>"; };
@@ -2953,7 +2949,6 @@
 		C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceEnvironment.swift; sourceTree = "<group>"; };
 		C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceProtocol.swift; sourceTree = "<group>"; };
 		C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
-		C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeapAnalyticService.swift; sourceTree = "<group>"; };
 		C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPushAnimation.swift; sourceTree = "<group>"; };
 		C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingInProgressViewPresenter.swift; sourceTree = "<group>"; };
@@ -3747,7 +3742,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30AD0D792704634600F42ACC /* Zesame in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
@@ -4736,7 +4730,6 @@
 				29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */,
 				2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */,
 				307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */,
-				307B1D312603C087007B14C3 /* UDWalletZil.swift */,
 				3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */,
 				C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */,
 				C617FDA02B58E75B00B93433 /* WalletEntity.swift */,
@@ -5460,7 +5453,6 @@
 		C63F1D0728AF31D5000A5C12 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C63F1D0828AF31D5000A5C12 /* HeapAnalyticService.swift */,
 				C607A5CE2B3288A40088ECF3 /* AmplitudeAnalyticsService.swift */,
 			);
 			path = Services;
@@ -7877,7 +7869,6 @@
 				30CE604B26A9DED000E0D29B /* web3swift */,
 				30B6583826A9E75E004F707F /* Stripe */,
 				30D89F5A26A9EB5500251C2D /* Bugsnag */,
-				30AD0D782704634600F42ACC /* Zesame */,
 				C63402872886547C00AB5D38 /* SVGKit */,
 				290A60472950AA1600882109 /* WalletConnect */,
 				290A60492950AA1600882109 /* WalletConnectAuth */,
@@ -8024,7 +8015,6 @@
 				30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */,
 				30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */,
 				30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */,
-				30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */,
 				C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */,
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
@@ -8406,7 +8396,6 @@
 				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
-				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
@@ -9203,7 +9192,6 @@
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				C6B2E1FC2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */,
 				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
-				307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6D646DF2B1ED46200D724AC /* WalletConnectController.swift in Sources */,
@@ -11260,14 +11248,6 @@
 				version = 5.3.0;
 			};
 		};
-		30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/unstoppabledomains/Zesame";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stripe/stripe-ios";
@@ -11413,11 +11393,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
-		};
-		30AD0D782704634600F42ACC /* Zesame */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */;
-			productName = Zesame;
 		};
 		30B6583826A9E75E004F707F /* Stripe */ = {
 			isa = XCSwiftPackageProductDependency;

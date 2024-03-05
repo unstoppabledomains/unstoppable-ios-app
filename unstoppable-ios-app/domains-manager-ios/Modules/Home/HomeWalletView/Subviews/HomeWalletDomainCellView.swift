@@ -91,8 +91,6 @@ private extension HomeWalletDomainCellView {
                 return nil
             case .deprecated(let tld):
                 return .deprecated(tld: tld)
-            case .zil:
-                return .deprecated(tld: "zil")
             }
         case .updatingRecords, .updatingReverseResolution:
             return .updatingRecords
