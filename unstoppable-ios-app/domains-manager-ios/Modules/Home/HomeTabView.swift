@@ -27,8 +27,8 @@ struct HomeTabView: View {
             .tag(HomeTab.wallets)
             .tabBarVisible(router.isTabBarVisible)
             
-            ChatsListViewControllerWrapper(tabState: router)
-                .ignoresSafeArea()
+            ChatListView(viewModel: .init(presentOptions: .default,
+                                          router: router))
             .tabItem {
                 Label(title: { Text(String.Constants.messages.localized()) },
                       icon: { Image.messageCircleIcon24 })
@@ -64,7 +64,8 @@ struct HomeTabView: View {
         })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
-                                           mode: presentationDetails.mode)
+                                           mode: presentationDetails.mode,
+                                           domainSetCallback: presentationDetails.domainSetCallback)
             .interactiveDismissDisabled(presentationDetails.mode == .selectFirst)
         })
         .sheet(isPresented: $router.isSearchingDomains, content: {

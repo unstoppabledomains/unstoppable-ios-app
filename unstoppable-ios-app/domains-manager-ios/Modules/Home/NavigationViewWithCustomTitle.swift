@@ -7,23 +7,26 @@
 
 import SwiftUI
 
-struct NavigationViewWithCustomTitle<Content: View>: View {
+typealias EmptyNavigationPath = Array<Int>
+
+struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
     
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
-    @Binding var path: NavigationPath 
+    @Binding var path: Data
     @StateObject private var navigationState = NavigationStateManager()
     @State private var viewPresentationStyle: ViewPresentationStyle = .fullScreen
 
     var body: some View {
         NavigationStack(path: $path) {
             content()
+                .environmentObject(navigationState)
         }
         .overlay(alignment: .top, content: {
             if navigationState.isTitleVisible,
                let customTitle = navigationState.customTitle {
                 AnyView(customTitle())
-                    .offset(y: currentTitleOffset)
+                    .offset(y: currentTitleOffset + navigationState.yOffset)
                     .frame(maxWidth: 240)
             }
         })
@@ -59,13 +62,15 @@ struct NavigationViewWithCustomTitle<Content: View>: View {
 #Preview {
     NavigationViewWithCustomTitle(content: {
         Text("Hello")
-    }, navigationStateProvider: { _ in }, path: .constant(.init()))
+    }, navigationStateProvider: { _ in }, path: .constant(EmptyNavigationPath()))
 }
 
 final class NavigationStateManager: ObservableObject {
     @Published var isTitleVisible: Bool = false
+    @Published var yOffset: CGFloat = 0
     @Published private(set) var customTitle: (() -> any View)?
     private(set) var customViewID: String?
+    
     
     func setCustomTitle(customTitle: (() -> any View)?,
                         id: String) {

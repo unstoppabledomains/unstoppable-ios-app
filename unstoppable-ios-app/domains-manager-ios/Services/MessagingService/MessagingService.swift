@@ -130,7 +130,7 @@ extension MessagingService: MessagingServiceProtocol {
             let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
             return communitiesProfile != nil
         }
-        return false 
+        return false
     }
     
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
@@ -149,7 +149,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func isNewMessagesAvailable() async throws -> Bool {
         let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
-        return totalNumberOfUnreadMessages > 0 
+        return totalNumberOfUnreadMessages > 0
     }
     
     func logout() {
@@ -263,6 +263,16 @@ extension MessagingService: MessagingServiceProtocol {
         }
     }
     
+    func refreshUserDisplayInfo(of user: MessagingChatUserDisplayInfo) async -> MessagingChatUserDisplayInfo {
+        if storageService.isNeedToRefreshMessagingUserInfo(user),
+           let refreshedUser = await loadUserInfoFor(wallet: user.wallet) {
+            await storageService.saveMessagingUserInfo(refreshedUser)
+            notifyListenersChangedDataType(.userInfoRefreshed(refreshedUser))
+            return refreshedUser
+        }
+        return user
+    }
+    
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
@@ -318,7 +328,7 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
 
         switch chatMessage.displayInfo.type {
-        case .text, .imageData, .imageBase64, .unknown:
+        case .text, .imageData, .imageBase64, .unknown, .reaction, .unsupported:
             return message
         case .remoteContent(let info):
             let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
@@ -328,6 +338,20 @@ extension MessagingService: MessagingServiceProtocol {
             chatMessage.displayInfo.type = loadedType
             await storageService.saveMessages([chatMessage])
             return chatMessage.displayInfo
+        case .reply(var info):
+            switch info.contentType {
+            case .text, .imageData, .imageBase64, .unknown, .reaction, .reply, .unsupported:
+                return message
+            case .remoteContent(let remoteInfo):
+                let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                           user: profile,
+                                                                           serviceData: remoteInfo.serviceData,
+                                                                           filesService: filesService)
+                chatMessage.displayInfo.type = .reply(.init(contentType: loadedType,
+                                                            messageId: info.messageId))
+                await storageService.saveMessages([chatMessage])
+                return chatMessage.displayInfo
+            }
         }
     }
 
@@ -518,7 +542,7 @@ extension MessagingService: MessagingServiceProtocol {
         notifyChannelsChanged(userId: user.id)
     }
     
-    // Search
+    // MARK: - Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
         if searchKey.isValidAddress() {
             let wallet = searchKey

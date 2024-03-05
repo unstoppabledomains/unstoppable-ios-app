@@ -47,9 +47,6 @@ extension DomainsCollectionListCell {
         setPrimaryLabelWith(name: domainItem.name)
         
         switch domainItem.usageType {
-        case .zil:
-            statusMessage.setComponent(.bridgeDomainToPolygon)
-            statusMessage.isHidden = false
         case .deprecated(let tld):
             statusMessage.setComponent(.deprecated(tld: tld))
             statusMessage.isHidden = false

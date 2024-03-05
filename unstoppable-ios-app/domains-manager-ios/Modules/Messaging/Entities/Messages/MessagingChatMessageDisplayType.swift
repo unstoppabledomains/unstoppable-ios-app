@@ -7,12 +7,15 @@
 
 import Foundation
 
-enum MessagingChatMessageDisplayType: Hashable {
+indirect enum MessagingChatMessageDisplayType: Hashable {
     case text(MessagingChatMessageTextTypeDisplayInfo)
     case imageBase64(MessagingChatMessageImageBase64TypeDisplayInfo)
     case imageData(MessagingChatMessageImageDataTypeDisplayInfo)
     case unknown(MessagingChatMessageUnknownTypeDisplayInfo)
     case remoteContent(MessagingChatMessageRemoteContentTypeDisplayInfo)
+    case reaction(MessagingChatMessageReactionTypeDisplayInfo)
+    case reply(MessagingChatMessageReplyTypeDisplayInfo)
+    case unsupported(MessagingChatMessageUnsupportedTypeDisplayInfo)
  
     var analyticName: String {
         switch self {
@@ -24,6 +27,32 @@ enum MessagingChatMessageDisplayType: Hashable {
             return info.type
         case .remoteContent:
             return "RemoteContent"
+        case .reaction:
+            return "Reaction"
+        case .reply:
+            return "Reply"
+        case .unsupported:
+            return "Unsupported"
+        }
+    }
+}
+
+// MARK: - Open methods
+extension MessagingChatMessageDisplayType {
+    func getContentDescriptionText() -> String  {
+        switch self {
+        case .text(let description):
+            return description.text
+        case .imageBase64, .imageData:
+            return String.Constants.photo.localized()
+        case .unknown, .unsupported:
+            return String.Constants.messageNotSupported.localized()
+        case .remoteContent:
+            return String.Constants.messagingRemoteContent.localized()
+        case .reaction(let info):
+            return info.content
+        case .reply(let info):
+            return info.contentType.getContentDescriptionText()
         }
     }
 }

@@ -9,6 +9,8 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
+    var isReadyToHandleExternalEvents: Bool { true }
+    
    
     
     var topVC: UIViewController? { nil }

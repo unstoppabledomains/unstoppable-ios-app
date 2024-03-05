@@ -46,7 +46,7 @@ struct MessageDateFormatter {
     static func formatChannelDate(_ date: Date) -> String {
         if date.isToday {
             return todayFormatter.string(from: date)
-        } else if (date.dateDifferenceBetween(date: Date()).day ?? 0) <= 6 {
+        } else if date.daysDifferenceBetween(date: Date()) <= 6 {
             return weekdayFormatter.string(from: date)
         } else if date.isCurrentYear {
             var formatted = shortDateFormatter.string(from: date)

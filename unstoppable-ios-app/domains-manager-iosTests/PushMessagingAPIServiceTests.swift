@@ -178,7 +178,7 @@ final class PushMessagingAPIServiceTests: XCTestCase {
 // MARK: - Private methods
 private extension PushMessagingAPIServiceTests {
     func createMessagingChat(lastMessage: MessagingChatMessageDisplayInfo?, threadHash: String?) -> MessagingChat {
-        let serviceMetadata = PushEnvironment.ChatServiceMetadata(threadHash: threadHash, publicKeys: []).jsonData()
+        let serviceMetadata = PushEnvironment.ChatServiceMetadata(threadHash: threadHash).jsonData()
         let displayInfo = MessagingChatDisplayInfo(id: "", thisUserDetails: .init(wallet: ""),
                                                    avatarURL: nil, 
                                                    serviceIdentifier: .xmtp,
@@ -273,7 +273,6 @@ private extension PushMessagingAPIServiceTests {
         
         static func createMessageWith(id: String, link: String, isFirstInChat: Bool = false) -> MessagingChatMessage {
             let serviceMetadata = PushEnvironment.MessageServiceMetadata(encType: "",
-                                                                         encryptedSecret: "",
                                                                          link: link).jsonData()
             let displayInfo = MessagingChatMessageDisplayInfo(id: id,
                                                               chatId: "",

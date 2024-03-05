@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 @MainActor
 extension View {
@@ -68,6 +69,27 @@ extension View {
         }
         
         topVC.present(activityVC, animated: true, completion: nil)
+    }
+    
+    func findFirstUIViewOfType<T: UIView>(_ type: T.Type) -> T? {
+        appContext.coreAppCoordinator.topVC?.view.firstSubviewOfType(type)
+    }
+    
+    func findAllUIViewsOfType<T: UIView>(_ type: T.Type) -> [T] {
+        appContext.coreAppCoordinator.topVC?.view.allSubviewsOfType(type) ?? []
+    }
+    
+    var keyboardPublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillShowNotification)
+                .map { _ in true },
+            
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
     }
 }
 

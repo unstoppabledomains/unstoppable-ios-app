@@ -44,7 +44,6 @@ struct PushEntitiesTransformer {
                                       userId: String,
                                       userWallet: String,
                                       isApproved: Bool,
-                                      publicKeys: [String],
                                       communityChatDetails: CommunityChatDetails? = nil) -> MessagingChat? {
         
         func convertChatMembersToUserDisplayInfo(_ members: [PushGroupChatMember]) -> [MessagingChatUserDisplayInfo] {
@@ -121,8 +120,7 @@ struct PushEntitiesTransformer {
                                                    lastMessageTime: lastMessageTime,
                                                    lastMessage: nil)
         
-        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: pushChat.threadhash,
-                                                                publicKeys: publicKeys)
+        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: pushChat.threadhash)
         let serviceMetadata = metadataModel.jsonData()
         let chat = MessagingChat(userId: userId,
                                  displayInfo: displayInfo,
@@ -149,8 +147,7 @@ struct PushEntitiesTransformer {
                                             unreadMessagesCount: 0,
                                             isApproved: true,
                                             lastMessageTime: Date())
-        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: nil,
-                                                                publicKeys: [])
+        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: nil)
         let serviceMetadata = metadataModel.jsonData()
         return MessagingChat(userId: user.id,
                              displayInfo: info,
@@ -165,6 +162,60 @@ struct PushEntitiesTransformer {
         let id = chat.displayInfo.id
         return id.components(separatedBy: "_").first ?? id
     }
+        
+    static private func prepareSecretKeysFor(sessionKeys: Set<String>,
+                                             pgpKey: String,
+                                             env: Push.ENV) async {
+        let sessionKeys = sessionKeys.filter { PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: $0) == nil }
+        guard !sessionKeys.isEmpty else { return }
+        
+        await withTaskGroup(of: Optional<PushEnvironment.SessionKeyWithSecret>.self) { group in
+            for sessionKey in sessionKeys {
+                group.addTask {
+                    if let secretKey = try? await Push.PushChat.getPrivateGroupPGPSecretKey(sessionKey: sessionKey,
+                                                                         privateKeyArmored: pgpKey,
+                                                                                            env: env) {
+                        return .init(sessionKey: sessionKey, secretKey: secretKey)
+                    }
+                    return nil
+                }
+            }
+            
+            for await result in group {
+                if let result {
+                    try? PushChatsSecretKeysStorage.instance.saveNew(keys: result)
+                }
+            }
+        }
+    }
+    
+    static func convertPushMessagesToChatMessage(_ pushMessages: [Push.Message],
+                                                 in chat: MessagingChat,
+                                                 pgpKey: String,
+                                                 isRead: Bool,
+                                                 filesService: MessagingFilesServiceProtocol,
+                                                 env: Push.ENV) async -> [MessagingChatMessage] {
+        let sessionKeys = pushMessages.compactMap { $0.sessionKey }
+        await prepareSecretKeysFor(sessionKeys: Set(sessionKeys),
+                                   pgpKey: pgpKey,
+                                   env: env)
+        
+        var chatMessages: [MessagingChatMessage] = []
+        for pushMessage in pushMessages {
+            if let chatMessage = await convertPushMessageToChatMessage(pushMessage,
+                                                                       in: chat,
+                                                                       pgpKey: pgpKey,
+                                                                       isRead: isRead,
+                                                                       filesService: filesService,
+                                                                       env: env) {
+                chatMessages.append(chatMessage)
+            }
+        }
+        
+        return chatMessages
+    }
+    
+    private static let pgpEncryptionTypes: Set<String> = ["pgp", "pgpv1:group"]
     
     static func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                                 in chat: MessagingChat,
@@ -173,16 +224,13 @@ struct PushEntitiesTransformer {
                                                 filesService: MessagingFilesServiceProtocol,
                                                 env: Push.ENV) async -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
-              let id = pushMessage.cid,
-              let chatServiceMetadata = chat.serviceMetadata,
-              let chatMetadata = (try? JSONDecoder().decode(PushEnvironment.ChatServiceMetadata.self, from: chatServiceMetadata)),
-              let type = try? await extractPushMessageType(from: pushMessage,
-                                                           messageId: id,
-                                                           userId: chat.userId,
-                                                           pgpKey: pgpKey,
-                                                           chatPublicKeys: chatMetadata.publicKeys,
-                                                           filesService: filesService,
-                                                           env: env) else { return nil }
+              let id = pushMessage.cid else { return nil }
+        let type = await extractPushMessageType(from: pushMessage,
+                                                messageId: id,
+                                                userId: chat.userId,
+                                                pgpKey: pgpKey,
+                                                filesService: filesService,
+                                                env: env)
         
         var time = Date()
         if let timestamp = pushMessage.timestamp {
@@ -215,48 +263,7 @@ struct PushEntitiesTransformer {
                                                serviceMetadata: serviceMetadata)
         return chatMessage
     }
-    
-    private static let pgpEncryptionTypes: Set<String> = ["pgp", "pgpv1:group"]
-    
-    private static func extractPushMessageType(from pushMessage: Push.Message,
-                                               messageId: String,
-                                               userId: String,
-                                               pgpKey: String,
-                                               chatPublicKeys: [String],
-                                               filesService: MessagingFilesServiceProtocol,
-                                               env: Push.ENV) async throws -> MessagingChatMessageDisplayType? {
-        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-        guard let decryptedContent = try? await Push.PushChat.decryptMessage(message: pushMessage,
-                                                                             privateKeyArmored: pgpKey,
-                                                                             env: env) else { return nil }
         
-        let type: MessagingChatMessageDisplayType
-        
-        switch messageType {
-        case .text:
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
-            type = .text(textDisplayInfo)
-        case .image:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            let base64Image = contentInfo.content
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
-            type = .imageBase64(imageBase64DisplayInfo)
-        default:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            guard let data = contentInfo.content.data(using: .utf8) else { return nil }
-            
-            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
-            try filesService.saveData(data, fileName: fileName)
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                type: pushMessage.messageType,
-                                                                                name: contentInfo.name,
-                                                                                size: contentInfo.size)
-            type = .unknown(unknownDisplayInfo)
-        }
-        
-        return type
-    }
-    
     static func convertPushMessageToWebSocketMessageEntity(_ pushMessage: Push.Message,
                                                            pgpKey: String) -> MessagingWebSocketMessageEntity? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
@@ -363,12 +370,115 @@ struct PushEntitiesTransformer {
         return nil
     }
     
-    private static func encryptText(_ text: String, publicKeys: [String]) throws -> (encryptedText: String, encryptedSecret: String) {
-        let aesKey = getRandomHexString(length: 15)
-        let cipherText = try AESCBCHelper.encrypt(messageText: text, secretKey: aesKey)
-        let encryptedAES = try Pgp.pgpEncryptV2(message: aesKey, pgpPublicKeys: publicKeys)
-        
-        return (cipherText, encryptedAES)
+}
+
+// MARK: - Message related methods
+private extension PushEntitiesTransformer {
+    static func extractPushMessageType(from pushMessage: Push.Message,
+                                       messageId: String,
+                                       userId: String,
+                                       pgpKey: String,
+                                       filesService: MessagingFilesServiceProtocol,
+                                       env: Push.ENV) async -> MessagingChatMessageDisplayType {
+        do {
+            let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
+            let (decryptedContent, messageObj) = try await decrypt(pushMessage: pushMessage,
+                                                                   pgpKey: pgpKey,
+                                                                   env: env)
+            
+            return try parseMessageFromPushMessage(decryptedContent: decryptedContent,
+                                                   messageObj: messageObj ?? pushMessage.messageObj,
+                                                   messageType: messageType,
+                                                   messageId: messageId,
+                                                   userId: userId,
+                                                   filesService: filesService)
+        } catch {
+            return .unsupported(MessagingChatMessageUnsupportedTypeDisplayInfo(data: Data()))
+        }
     }
     
+    static func parseMessageFromPushMessage(decryptedContent: String,
+                                            messageObj: String?,
+                                            messageType: PushMessageType,
+                                            messageId: String,
+                                            userId: String,
+                                            filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType {
+        switch messageType {
+        case .text:
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
+            return .text(textDisplayInfo)
+        case .image:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            let base64Image = contentInfo.content
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
+            return .imageBase64(imageBase64DisplayInfo)
+        case .reaction:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageReactionContent.objectFromJSONString(messageObj) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            let messageId = parseReferenceIdToMessage(from: contentInfo.reference)
+            return .reaction(.init(content: contentInfo.content, messageId: messageId))
+        case .reply:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageReplyContent.objectFromJSONString(messageObj),
+                  let messageType = PushMessageType(rawValue: contentInfo.content.messageType) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            let contentType = try parseMessageFromPushMessage(decryptedContent: contentInfo.content.messageObj.content,
+                                                                    messageObj: nil,
+                                                                    messageType: messageType,
+                                                                    messageId: messageId,
+                                                                    userId: userId,
+                                                                    filesService: filesService)
+            let messageId = parseReferenceIdToMessage(from: contentInfo.reference)
+
+            return .reply(.init(contentType: contentType, messageId: messageId))
+        case .meta:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMetaContent.objectFromJSONString(messageObj) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            
+            // Aware but not supporting at the moment
+            throw PushEntitiesTransformerError.failedToBuildMessageType
+        case .mediaEmbed:
+            guard let messageObj,
+                  let contentInfo = PushEnvironment.PushMessageMediaEmbeddedContent.objectFromJSONString(messageObj) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            
+            let serviceData = try contentInfo.jsonDataThrowing()
+            let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
+            return .remoteContent(displayInfo)
+        default:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            guard let data = contentInfo.content.data(using: .utf8) else { throw PushEntitiesTransformerError.failedToBuildMessageType }
+            
+            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
+            try filesService.saveData(data, fileName: fileName)
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                type: messageType.rawValue,
+                                                                                name: contentInfo.name,
+                                                                                size: contentInfo.size)
+            return .unknown(unknownDisplayInfo)
+        }
+    }
+    
+    static func parseReferenceIdToMessage(from reference: String) -> String {
+        reference.replacingOccurrences(of: "previous:", with: "") /// Push prefix
+    }
+    
+    static func decrypt(pushMessage: Push.Message,
+                                pgpKey: String,
+                                env: Push.ENV) async throws -> (String, String?) {
+        
+        if let sessionKey = pushMessage.sessionKey,
+           let secretKey = PushChatsSecretKeysStorage.instance.getSecretKeyFor(sessionKey: sessionKey) {
+            return try Push.PushChat.decryptPrivateGroupMessage(pushMessage,
+                                                                using: secretKey,
+                                                                privateKeyArmored: pgpKey,
+                                                                env: env)
+        }
+        
+        return try await Push.PushChat.decryptMessage(message: pushMessage,
+                                                      privateKeyArmored: pgpKey,
+                                                      env: env)
+    }
+    
+    enum PushEntitiesTransformerError: Error {
+        case failedToBuildMessageType
+    }
 }

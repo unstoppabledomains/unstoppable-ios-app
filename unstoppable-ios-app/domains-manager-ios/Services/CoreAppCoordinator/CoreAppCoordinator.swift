@@ -105,6 +105,13 @@ extension CoreAppCoordinator: DeepLinkServiceListener {
 
 // MARK: - ExternalEventsUIHandler
 extension CoreAppCoordinator: ExternalEventsUIHandler {
+    var isReadyToHandleExternalEvents: Bool {
+        if case .home = currentRoot {
+            return true
+        }
+        return false
+    }
+    
     func handle(uiFlow: ExternalEventUIFlow) async throws {
         switch currentRoot {
         case .home(let router):

@@ -28,7 +28,6 @@ extension String {
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
-        case udBlue
         case communitiesInfo
         case setupApplePayInstruction
         case unstoppableDomainSearch(searchKey: String)
@@ -92,8 +91,6 @@ extension String {
                 return "https://unstoppabledomains.com/refer-a-friend"
             case .referralLink(let code):
                 return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
-            case .udBlue:
-                return "https://unstoppabledomains.com/products/blue"
             case .communitiesInfo:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:
@@ -221,6 +218,7 @@ extension String {
         static let more = "MORE"
         static let home = "HOME"
         static let messages = "MESSAGES"
+        static let reply = "REPLY"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -470,7 +468,6 @@ extension String {
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
-        static let zilAddress = "ZIL_ADDRESS"
         static let importConnectedWalletDescription = "IMPORT_CONNECTED_WALLET_DESCRIPTION"
         static let walletWasDisconnectedMessage = "WALLET_WAS_DISCONNECTED_MESSAGE"
         static let addToBackupNewWalletSubtitle = "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE"

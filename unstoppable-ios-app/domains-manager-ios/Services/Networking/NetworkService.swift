@@ -119,16 +119,16 @@ struct NetworkService {
     
     @discardableResult
     func fetchDataHandlingThrottleFor(endpoint: Endpoint,
-                      method: HttpRequestMethod) async throws -> Data {
+                                      method: HttpRequestMethod) async throws -> Data {
         guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
         let data = try await fetchDataHandlingThrottle(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
         return data
     }
     
     func fetchDataHandlingThrottle(for url: URL,
-                                           body: String = "",
-                                           method: HttpRequestMethod = .post,
-                                           extraHeaders: [String: String]  = [:]) async throws -> Data {
+                                   body: String = "",
+                                   method: HttpRequestMethod = .post,
+                                   extraHeaders: [String: String]  = [:]) async throws -> Data {
         let data: Data
         do {
             data = try await fetchData(for: url, body: body, method: method, extraHeaders: extraHeaders)
@@ -205,7 +205,7 @@ struct NetworkService {
             let request = URLRequest(url: url)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let response = response as? HTTPURLResponse {
-                    let header = response.headers["x-debug-service"]
+                    let header = response.getHeader(for: "x-debug-service")
                     if header == nil {
                         Debugger.printFailure("Domain profile page has changed response structure", critical: true)
                     }
@@ -247,7 +247,7 @@ struct NetworkService {
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")
-        Debugger.printInfo(topic: .Network, "HEADERS: \(urlRequest.headers)")
+        Debugger.printInfo(topic: .Network, "HEADERS: \(urlRequest.allHTTPHeaderFields ?? ["":""])")
         
         return urlRequest
     }
@@ -536,5 +536,16 @@ struct ResponseLog: Codable {
 extension EthereumAddress {
     public func hex() -> String {
         self.hex(eip55: true)
+    }
+}
+
+
+extension HTTPURLResponse {
+    func getAllHeaders() {
+        let headers = self.allHeaderFields as? [String: String]
+    }
+    
+    func getHeader(for key: String) -> String? {
+        self.value(forHTTPHeaderField: key)
     }
 }

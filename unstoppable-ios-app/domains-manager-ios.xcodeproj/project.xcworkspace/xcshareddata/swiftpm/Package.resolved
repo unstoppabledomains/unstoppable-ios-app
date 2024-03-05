@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "alamofire",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Alamofire/Alamofire.git",
-      "state" : {
-        "revision" : "bc268c28fb170f494de9e9927c371b8342979ece",
-        "version" : "5.7.1"
-      }
-    },
-    {
       "identity" : "amplitude-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/amplitude/Amplitude-iOS",
@@ -73,15 +64,6 @@
       }
     },
     {
-      "identity" : "ellipticcurvekit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Sajjon/EllipticCurveKit.git",
-      "state" : {
-        "revision" : "9ebdfefe73f97cd9a2b95cd94a093d4aad61d12e",
-        "version" : "1.0.2"
-      }
-    },
-    {
       "identity" : "generic-json-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iwill/generic-json-swift",
@@ -129,10 +111,9 @@
     {
       "identity" : "push-swift-sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
+      "location" : "https://github.com/Oleg-Pecheneg/push-swift-sdk",
       "state" : {
-        "revision" : "adcda143aebec33ad75cc79ecc9a3ba7ddc9c38f",
-        "version" : "0.6.4"
+        "revision" : "7aa3a1aeea89acd91dcbefcb0473a2a993a66334"
       }
     },
     {
@@ -142,15 +123,6 @@
       "state" : {
         "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
         "version" : "14.3.1"
-      }
-    },
-    {
-      "identity" : "rxswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveX/RxSwift.git",
-      "state" : {
-        "revision" : "7e01c05f25c025143073eaa3be3532f9375c614b",
-        "version" : "6.1.0"
       }
     },
     {
@@ -357,15 +329,6 @@
       "state" : {
         "branch" : "main",
         "revision" : "e08af6942841054ae02a6fe01d90d18e76d5f248"
-      }
-    },
-    {
-      "identity" : "zesame",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/unstoppabledomains/Zesame",
-      "state" : {
-        "branch" : "master",
-        "revision" : "5a3d17e30f7e480e8f3168a915ae3327643ee0d8"
       }
     }
   ],

@@ -72,8 +72,13 @@ extension Date {
         self.yearNumber == Date().yearNumber
     }
     
-    func dateDifferenceBetween(date: Date) -> DateComponents {
-        Date.isoCalendar.dateComponents([.day, .month, .year], from: (date > self ? self : date).dayStart, to: (date < self ? self : date).dayStart)
+    func daysDifferenceBetween(date: Date) -> Int {
+        dateComponentsDifferenceBetween(date: date, components: [.day]).day ?? 0
+    }
+    
+    func dateComponentsDifferenceBetween(date: Date,
+                                         components: Set<Calendar.Component>) -> DateComponents {
+        Date.isoCalendar.dateComponents(components, from: (date > self ? self : date).dayStart, to: (date < self ? self : date).dayStart)
     }
     
     func adding(days: Int) -> Date {

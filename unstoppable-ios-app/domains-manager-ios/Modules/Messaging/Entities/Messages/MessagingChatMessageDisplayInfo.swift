@@ -18,13 +18,14 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var isFirstInChat: Bool
     var deliveryState: DeliveryState
     var isEncrypted: Bool
+    var reactions: [MessageReactionDescription] = []
     
     mutating func prepareToDisplay() async {
         if deliveryState == .failedToSend {
             time = Date() 
         }
         switch type {
-        case .text, .unknown, .remoteContent:
+        case .text, .unknown, .remoteContent, .reaction, .reply, .unsupported:
             return
         case .imageData(var info):
             if info.image == nil {
@@ -42,7 +43,41 @@ struct MessagingChatMessageDisplayInfo: Hashable {
 
 // MARK: - Open methods
 extension MessagingChatMessageDisplayInfo {
+    var isFailedMessage: Bool {
+        deliveryState == .failedToSend
+    }
+    
+    var isReactionMessage: Bool {
+        if case .reaction = type {
+            return true
+        }
+        return false
+    }
+    
     enum DeliveryState: Int {
         case delivered, sending, failedToSend
+    }
+    
+    struct ReactionUIDescription: Hashable {
+        let content: String
+        let count: Int
+        let containsUserReaction: Bool
+    }
+    
+    func buildReactionsUIDescription() -> [ReactionUIDescription] {
+        let groupedByContent = [String : [MessageReactionDescription]].init(grouping: reactions, by: { $0.content })
+        
+        return groupedByContent.map { .init(content: $0.key,
+                                            count: $0.value.count,
+                                            containsUserReaction: $0.value.first(where: { $0.isUserReaction }) != nil) }
+        .sorted(by: {
+            if $0.count != $1.count {
+                // Sort descending by count
+                return $0.count > $1.count
+            } else {
+                // Sort alphabetically by content
+                return $0.content < $1.content
+            }
+        })
     }
 }

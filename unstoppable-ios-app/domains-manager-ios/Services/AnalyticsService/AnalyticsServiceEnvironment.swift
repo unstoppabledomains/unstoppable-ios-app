@@ -217,6 +217,7 @@ extension Analytics {
         case shakeToFind
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
+        case viewMessagingImage
         
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
@@ -227,7 +228,7 @@ extension Analytics {
 extension Analytics {
     enum Button: String, Codable {
         case buyDomains, mintDomains, manageDomains, importFromTheWebsite
-        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut
+        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
         case termsOfUse, privacyPolicy
@@ -338,12 +339,19 @@ extension Analytics {
         case viewMessagingProfile, viewGroupChatInfo
         case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo, viewBlockedUsersList
         case block, unblock, leaveGroup, joinCommunity, leaveCommunity
+        case join
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
         case bulkBlockButtonPressed
         case copyChatMessageToClipboard
         case saveChatImage
         case blockUserInGroupChat
+        case chatInputActions, takePhoto, choosePhoto
+        case viewMessagePhoto
+        case selectReaction, sendReaction
+        case didSwipeToReply, jumpToMessageToReply, cancelReply, replyToMessage
+        case mentionWithinMessage, messagingMentionSuggestion
+        case linkWithinMessage
 
         // Public profile
         case follow, unfollow

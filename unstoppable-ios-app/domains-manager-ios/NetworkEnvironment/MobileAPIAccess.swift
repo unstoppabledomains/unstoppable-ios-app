@@ -114,7 +114,6 @@ extension NetworkService {
             
             switch blockchain {
             case .Ethereum, .Matic: return .UNS
-            case .Zilliqa: return .ZNS
             }
         }
     }
@@ -269,12 +268,6 @@ extension NetworkService {
         let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
         guard !ownerUnsAddresses.isEmpty else { return [] }
         return try await fetchDomains(for: ownerUnsAddresses)
-    }
-    
-    public func fetchZilDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
-        let ownerZilAddresses = wallets.compactMap({ $0.extractZilWallet()?.address.normalized})
-        guard !ownerZilAddresses.isEmpty else { return [] }
-        return try await fetchDomains(for: ownerZilAddresses)
     }
     
     private func fetchDomains(for ownerAddresses: [HexAddress]) async throws -> [DomainItem] {

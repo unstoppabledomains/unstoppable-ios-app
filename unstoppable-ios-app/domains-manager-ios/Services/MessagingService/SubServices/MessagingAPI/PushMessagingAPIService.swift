@@ -152,16 +152,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         guard let pushGroup = (try await Push.PushChat.getGroup(chatId: groupChatId, env: env)) else {
             throw PushMessagingAPIServiceError.groupChatWithGivenIdNotFound
         }
+        
         let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
         let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
-        let publicKeys = pushGroup.members.compactMap { $0.publicKey }
         let communityDetails: PushEntitiesTransformer.CommunityChatDetails = .init(badgeInfo: badgeInfo,
                                                                                    blockedUsersList: blockedUsersList)
         guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
                                                                        isApproved: true,
-                                                                       publicKeys: publicKeys,
                                                                        communityChatDetails: communityDetails) else {
             throw PushMessagingAPIServiceError.failedToConvertPushChat
         }
@@ -243,34 +242,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                   isRequests: isRequests)
     }
     
-    private func getPublicKeysFor(pushChat: PushChat) async throws -> [String] {
-        if let cachedKeys = PushPublicKeysStorage.instance.getCachedKeys(for: pushChat.chatId),
-           !cachedKeys.publicKeys.isEmpty {
-            return cachedKeys.publicKeys
-        }
-        
-        var keys = [String]()
-        if let groupInfo = pushChat.groupInformation {
-            keys = groupInfo.members.compactMap { $0.publicKey }
-        } else {
-            let chatDids = pushChat.combinedDID.components(separatedBy: "_")
-            guard chatDids.count == 2 else {
-                return  []
-            }
-          
-            let env = getCurrentPushEnvironment()
-            if let anotherUser = try await PushUser.get(account: chatDids[0] , env: env),
-               let senderUser = try await PushUser.get(account: chatDids[1], env: env) {
-                keys = [senderUser.getPGPPublickey(), anotherUser.getPGPPublickey()]
-            }
-        }
-        
-        if !keys.isEmpty {
-            PushPublicKeysStorage.instance.saveKeysHoldersInfo([.init(chatId: pushChat.chatId, publicKeys: keys)])
-        }
-        return keys
-    }
-    
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
@@ -295,12 +266,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         try await withThrowingTaskGroup(of: MessagingChat.self, body: { group in
             for pushChat in pushChats {
-                let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
                 if let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                             userId: user.id,
                                                                             userWallet: user.wallet,
-                                                                            isApproved: isApproved,
-                                                                            publicKeys: publicKeys) {
+                                                                            isApproved: isApproved) {
                     chats.append(chat)
                 }
             }
@@ -400,6 +369,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
         guard let chatThreadHash = chatMetadata.threadHash else { return [] } // No messages in chat yet
         
+        var message = message
         var fetchLimitToUse = fetchLimit
         var threadHash = chatThreadHash
         var messagesToKeep = [MessagingChatMessage]()
@@ -428,12 +398,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             return messagesToKeep
         }
         
-        let remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
+        var remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
                                                                                threadHash: threadHash,
                                                                                fetchLimit: fetchLimitToUse,
                                                                                isRead: isRead,
                                                                                filesService: filesService,
                                                                                for: user)
+        assignPreviousMessagesIn(messages: &remoteMessages)
         
         return messagesToKeep + remoteMessages
     }
@@ -442,6 +413,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                               user: MessagingChatUserProfile,
                               serviceData: Data,
                               filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        let embeddedMediaContent = try PushEnvironment.PushMessageMediaEmbeddedContent.objectFromDataThrowing(serviceData)
+        let url = embeddedMediaContent.content
+        if let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: nil),
+                                                                      downsampleDescription: .max) {
+            let data = try image.gifDataRepresentation()
+            let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: data,
+                                                                                image: image)
+            return .imageData(imageDisplayInfo)
+        }
         throw PushMessagingAPIServiceError.actionNotSupported
     }
     
@@ -519,13 +499,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = PushServiceHelper.getCurrentPushEnvironment()
 
         guard let pushChat = pushChats.first(where: { $0.threadhash == message.cid }) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
-        let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
              
         guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
-                                                                       isApproved: true,
-                                                                       publicKeys: publicKeys),
+                                                                       isApproved: true),
               let chatMessage = await PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                               in: chat,
                                                                                               pgpKey: pgpPrivateKey,
@@ -615,7 +593,22 @@ private extension PushMessagingAPIService {
     
     func getLinkFrom(message: MessagingChatMessage) -> String? {
         let messageMetadata: PushEnvironment.MessageServiceMetadata? = try? decodeServiceMetadata(from: message.serviceMetadata)
-        return messageMetadata?.link
+        return messageMetadata?.link?.replacingOccurrences(of: "previous:", with: "")
+    }
+    
+    func assignPreviousMessagesIn(messages: inout [MessagingChatMessage]) {
+        guard !messages.isEmpty else { return }
+        
+        for i in 1..<messages.count {
+            setPreviousMessageId(messages[i].displayInfo.id, to: &messages[i-1])
+        }
+    }
+    
+    func setPreviousMessageId(_ previousMessageId: String, to message: inout MessagingChatMessage) {
+        guard var messageMetadata: PushEnvironment.MessageServiceMetadata = try? MessagingAPIServiceHelper.decodeServiceMetadata(from: message.serviceMetadata) else { return }
+        
+        messageMetadata.link = previousMessageId
+        message.serviceMetadata = messageMetadata.jsonData()
     }
 }
 
@@ -652,15 +645,18 @@ private extension PushMessagingAPIService {
                               receiver: String,
                               by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
         let env = getCurrentPushEnvironment()
-        let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
+        let pushMessageContent = try await getPushMessageContentFrom(displayType: messageType,
+                                                                     by: user)
         let pushMessageType = try getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let reference = getPushMessageReferenceFrom(displayType: messageType)
         
         let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
                                                     messageType: pushMessageType.rawValue,
                                                     receiverAddress: receiver,
                                                     account: user.wallet,
                                                     pgpPrivateKey: pgpPrivateKey,
+                                                    refrence: reference,
                                                     env: env)
         return sendOptions
     }
@@ -673,21 +669,47 @@ private extension PushMessagingAPIService {
         try MessagingAPIServiceHelper.decodeServiceMetadata(from: data)
     }
    
-    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {
+    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType,
+                                   by user: MessagingChatUserProfile) async throws -> String {
         switch displayType {
         case .text(let details):
             return details.text
         case .imageBase64(let details):
-            let entity = PushEnvironment.PushMessageContentResponse(content: details.base64)
-            guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
-            return jsonString
+            guard let data = Data(base64Encoded: details.base64) else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
+            return try await getImagePushMessageContentFrom(data: data, by: user)
         case .imageData(let details):
-            guard let base64 = details.image?.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
-            let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
-            let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
-            return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
-        case .unknown, .remoteContent:
+            return try await getImagePushMessageContentFrom(data: details.data, by: user)
+        case .reaction(let details):
+            return details.content
+        case .reply(let info):
+            let replyType = info.contentType
+            if case .text = replyType {
+                return try await getPushMessageContentFrom(displayType: replyType,
+                                                           by: user)
+            }
+            throw PushMessagingAPIServiceError.canReplyOnlyWithText
+        case .unknown, .remoteContent, .unsupported:
             throw PushMessagingAPIServiceError.unsupportedType
+        }
+    }
+    
+    func getImagePushMessageContentFrom(data: Data,
+                                        by user: MessagingChatUserProfile) async throws -> String {
+        let wallet = user.wallet
+        let url = try await MessagingAPIServiceHelper.uploadDataToWeb3Storage(data,
+                                                                              ofType: "image/png",
+                                                                              by: wallet)
+        return url.absoluteString
+    }
+    
+    func getPushMessageReferenceFrom(displayType: MessagingChatMessageDisplayType) -> String? {
+        switch displayType {
+        case .reaction(let details):
+            return details.messageId
+        case .reply(let info):
+            return info.messageId
+        case .text, .imageBase64, .imageData, .unknown, .remoteContent, .unsupported:
+            return nil
         }
     }
     
@@ -695,9 +717,13 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .text:
             return .text
+        case .reaction:
+            return .reaction
         case .imageBase64, .imageData:
-            return .image
-        case .unknown, .remoteContent:
+            return .mediaEmbed
+        case .reply:
+            return .reply
+        case .unknown, .remoteContent, .unsupported:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -720,21 +746,6 @@ private extension PushMessagingAPIService {
     }
 }
 
-// MARK: - Private methods
-private extension PushMessagingAPIService {
-    enum PushMessageType: String {
-        case text = "Text"
-        case image = "Image"
-        case video = "Video"
-        case audio = "Audio"
-        case file = "File"
-        case gif = "GIF" // Deprecated, use mediaEmbed
-        case mediaEmbed = "MediaEmbed"
-        case meta = "Meta"
-        case reply = "Reply"
-    }
-}
-
 // MARK: - Open methods
 extension PushMessagingAPIService {
     enum PushMessagingAPIServiceError: String, LocalizedError {
@@ -745,6 +756,7 @@ extension PushMessagingAPIService {
         case blockUserInGroupChatsNotSupported
         case unsupportedType
         case groupChatWithGivenIdNotFound
+        case canReplyOnlyWithText
         
         case failedToDecodeServiceData
         case failedToConvertPushChat
@@ -786,17 +798,12 @@ final class DefaultPushMessagingAPIServiceDataProvider: PushMessagingAPIServiceD
                                                            pgpPrivateKey: "", // Get encrypted messages
                                                            toDecrypt: false,
                                                            env: env)
-        var messages: [MessagingChatMessage] = []
-        for pushMessage in pushMessages {
-            if let message = await PushEntitiesTransformer.convertPushMessageToChatMessage(pushMessage,
-                                                                                           in: chat,
-                                                                                           pgpKey: pgpPrivateKey,
-                                                                                           isRead: isRead,
-                                                                                           filesService: filesService,
-                                                                                           env: env) {
-                messages.append(message)
-            }
-        }
+        let messages = await PushEntitiesTransformer.convertPushMessagesToChatMessage(pushMessages,
+                                                                                      in: chat,
+                                                                                      pgpKey: pgpPrivateKey,
+                                                                                      isRead: isRead,
+                                                                                      filesService: filesService,
+                                                                                      env: env)
         return messages
     }
 }

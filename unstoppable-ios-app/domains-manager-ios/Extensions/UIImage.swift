@@ -17,7 +17,6 @@ extension UIImage {
     static let warningIcon = UIImage(named: "warningIcon")!
     static let ethereumIcon = UIImage(named: "ethereumIcon")!
     static let polygonIcon = UIImage(named: "polygonIcon")!
-    static let zilIcon = UIImage(named: "zilIcon")!
     static let externalWalletIndicator = UIImage(named: "externalWalletIndicator")!
     static let cloudIcon = UIImage(named: "cloudIcon")!
     static let checkCircleWhite = UIImage(named: "checkCircleWhite")!
@@ -145,7 +144,6 @@ extension UIImage {
     static let cellChevron = UIImage(named: "cellChevron")!
     static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
     static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
-    static let udBlueGrayIcon = UIImage(named: "udBlueGrayIcon")!
     static let check = UIImage(named: "check")!
     static let statsIcon = UIImage(named: "statsIcon")!
     static let sparkleIcon = UIImage(named: "sparkleIcon")!
@@ -231,9 +229,6 @@ extension UIImage {
             return .ethBGLarge
         case .Matic:
             return .maticBGLarge
-        case .Zilliqa:
-            Debugger.printFailure("Trying to connect unsupported Zilliqa network", critical: true)
-            return nil
         }
     }
     
@@ -243,9 +238,6 @@ extension UIImage {
             return .ethBGSmall
         case .Matic:
             return .maticBGSmall
-        case .Zilliqa:
-            Debugger.printFailure("Trying to connect unsupported Zilliqa network", critical: true)
-            return nil
         }
     }
     

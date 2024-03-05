@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Data aggregator service
-private struct DataAggregatorServiceKey: EnvironmentKey {
-    static let defaultValue = appContext.dataAggregatorService
-}
-
-extension EnvironmentValues {
-    var dataAggregatorService: DataAggregatorServiceProtocol {
-        get { self[DataAggregatorServiceKey.self] }
-        set { self[DataAggregatorServiceKey.self] = newValue }
-    }
-}
-
 // MARK: - Analytics View Name
 private struct AnalyticsViewNameKey: EnvironmentKey {
     static let defaultValue = Analytics.ViewName.unspecified

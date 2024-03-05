@@ -17,7 +17,6 @@ final class GeneralAppContext: AppContextProtocol {
     let externalEventsService: ExternalEventsServiceProtocol
     let authentificationService: AuthentificationServiceProtocol
     let coreAppCoordinator: CoreAppCoordinatorProtocol
-    let dataAggregatorService: DataAggregatorServiceProtocol
     let deepLinksService: DeepLinksServiceProtocol
     let domainTransactionsService: DomainTransactionsServiceProtocol
     let udDomainsService: UDDomainsServiceProtocol
@@ -73,13 +72,7 @@ final class GeneralAppContext: AppContextProtocol {
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
         
-        // Data aggregator
-        let dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
-                                                          walletsService: udWalletsService,
-                                                          transactionsService: domainTransactionsService,
-                                                          walletConnectServiceV2: walletConnectServiceV2)
-        self.dataAggregatorService = dataAggregatorService
-        
+        // Wallets data
         walletsDataService = WalletsDataService(domainsService: udDomainsService,
                                                 walletsService: udWalletsService,
                                                 transactionsService: domainTransactionsService,
