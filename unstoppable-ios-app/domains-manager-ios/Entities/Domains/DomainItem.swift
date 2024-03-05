@@ -81,7 +81,7 @@ extension DomainItem {
     static func isValidTxCost(blockchain: BlockchainType, txCost: NetworkService.TxCost?) -> Bool {
         switch blockchain {
         case .Ethereum: return txCost != nil
-        case .Zilliqa, .Matic: return txCost == nil
+        case .Matic: return txCost == nil
         }
     }
 }
@@ -149,10 +149,6 @@ extension Array where Element == DomainItem {
 }
 
 extension Array where Element == DomainItem {
-    func filterZilCoOwned(by ownerAddress: HexAddress) -> Self {
-        return filterCoOwned(by: ownerAddress, in: .ZNS)
-    }
-    
     func filterCoOwned(by ownerAddress: HexAddress, in namingService: NamingService) -> Self {
         return self.filter({$0.namingService == namingService &&  $0.ownerWallet?.normalized == ownerAddress.normalized})
     }
@@ -165,7 +161,7 @@ extension DomainItem {
     func doesRequirePayment() -> Bool {
         switch self.getBlockchainType() {
         case .Ethereum: return true
-        case .Zilliqa, .Matic: return false
+        case .Matic: return false
         }
     }
 }

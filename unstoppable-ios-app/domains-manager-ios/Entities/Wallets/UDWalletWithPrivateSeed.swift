@@ -39,7 +39,7 @@ struct UDWalletWithPrivateSeed {
             throw error
         }
         
-        return try await create(with: wrappedWallet,
+        return try create(with: wrappedWallet,
                                 aliasName: aliasName,
                                 privateKeyEthereum: privateKeyEthereum,
                                 type: type,
@@ -58,7 +58,7 @@ struct UDWalletWithPrivateSeed {
                 throw error
             }
         
-        return try await create(with: wrappedWallet,
+        return try create(with: wrappedWallet,
                                 aliasName: aliasName,
                                 privateKeyEthereum: privateKeyEthereum,
                                 type: type,
@@ -80,7 +80,6 @@ struct UDWalletWithPrivateSeed {
         let udWallet = UDWallet.create(aliasName: aliasName,
                                        type: type,
                                        ethWallet: wrappedWallet.ethWallet,
-                                       zilWallet: nil,
                                        hasBeenBackedUp: hasBeenBackedUp)
         return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedWallet.privateSeed)
     }
@@ -100,31 +99,20 @@ struct UDWalletWithPrivateSeed {
         let udWallet = UDWallet.create(aliasName: aliasName,
                                        type: type,
                                        ethWallet: wrappedWallet.ethWallet,
-                                       zilWallet: nil,
                                        hasBeenBackedUp: hasBeenBackedUp)
         return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedWallet.privateSeed)
     }
     
     static private func create(with wrappedEthereumWallet: UDWalletEthereumWithPrivateSeed,
                                aliasName: String,
-                                                  privateKeyEthereum: String,
-                                                  type: WalletType,
-                                                  hasBeenBackedUp: Bool = false) async throws -> UDWalletWithPrivateSeed {
+                               privateKeyEthereum: String,
+                               type: WalletType,
+                               hasBeenBackedUp: Bool = false) throws -> UDWalletWithPrivateSeed {
         
-        return try await withSafeCheckedThrowingContinuation { completion in
-            UDWalletZil.create(privateKey: privateKeyEthereum) { zil in
-                guard let zilWallet = zil else {
-                    Debugger.printFailure("Failed to init UDWalletZil with priv key", critical: true)
-                    completion(.failure(WalletError.zilWalletFailedInit))
-                    return
-                }
-                let udWallet = UDWallet.create(aliasName: aliasName,
-                                                  type: type,
-                                                  ethWallet: wrappedEthereumWallet.ethWallet,
-                                                  zilWallet: zilWallet,
-                                                  hasBeenBackedUp: hasBeenBackedUp)
-                completion(.success(UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedEthereumWallet.privateSeed)))
-            }
-        }
+        let udWallet = UDWallet.create(aliasName: aliasName,
+                                       type: type,
+                                       ethWallet: wrappedEthereumWallet.ethWallet,
+                                       hasBeenBackedUp: hasBeenBackedUp)
+        return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedEthereumWallet.privateSeed)
     }
 }

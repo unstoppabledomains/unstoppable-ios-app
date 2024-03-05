@@ -128,12 +128,6 @@ extension HomeTabRouter {
             let domain = domain.toDomainItem()
             let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
             showPublicDomainProfile(of: domainPublicInfo, by: wallet, preRequestedAction: nil)
-        case .zil:
-            do {
-                try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topVC)
-                await topVC.dismissPullUpMenu()
-                UDRouter().showUpgradeToPolygonTutorialScreen(in: topVC)
-            } catch { }
         case .deprecated(let tld):
             do {
                 try await appContext.pullUpViewService.showDomainTLDDeprecatedPullUp(tld: tld, in: topVC)

@@ -9,7 +9,6 @@ import Foundation
 
 enum NamingService: String, Codable, CaseIterable {
     case UNS
-    case ZNS = "zil"
     
     static let cases = NamingService.allCases
 }
