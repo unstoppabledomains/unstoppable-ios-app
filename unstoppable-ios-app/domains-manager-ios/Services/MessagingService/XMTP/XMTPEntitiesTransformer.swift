@@ -83,7 +83,7 @@ struct XMTPEntitiesTransformer {
                                                 cachedMessage: MessagingChatMessage?,
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
-                                                filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessage? {
+                                                filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessage {
         var isRead = isRead
         if Constants.shouldHideBlockedUsersLocally,
            XMTPBlockedUsersStorage.shared.isOtherUserBlockedInChat(chat.displayInfo) {
@@ -91,19 +91,18 @@ struct XMTPEntitiesTransformer {
         }
         
         if var cachedMessage {
-            cachedMessage.displayInfo.isRead = isRead 
+            cachedMessage.displayInfo.isRead = isRead
             return cachedMessage
         }
         
         let id = xmtpMessage.id
         let userId = chat.userId
         let metadataModel = XMTPEnvironmentNamespace.MessageServiceMetadata(encodedContent: xmtpMessage.encodedContent)
-        guard let serviceMetadata = metadataModel.jsonData(),
-              let type = try? await extractMessageType(from: xmtpMessage,
-                                                       messageId: id,
-                                                       userId: userId,
-                                                       filesService: filesService) else { return nil }
-        
+        let serviceMetadata = metadataModel.jsonData()
+        let type = await extractMessageType(from: xmtpMessage,
+                                            messageId: id,
+                                            userId: userId,
+                                            filesService: filesService)
         let senderWallet = xmtpMessage.senderAddress
         let userDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
         let sender: MessagingChatSender
@@ -128,42 +127,47 @@ struct XMTPEntitiesTransformer {
         let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                serviceMetadata: serviceMetadata)
         return chatMessage
+        
     }
     
     
     private static func extractMessageType(from xmtpMessage: XMTP.DecodedMessage,
                                            messageId: String,
                                            userId: String,
-                                           filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType? {
-        if let knownType = XMTPMessageKnownTypeFrom(xmtpMessage) {
-            switch knownType {
-            case .text:
-                let decryptedContent: String = try xmtpMessage.content()
-                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
-                return .text(textDisplayInfo)
-            case .attachment:
-                let attachment: XMTP.Attachment = try xmtpMessage.content()
-                return try await getMessageTypeFor(attachment: attachment,
-                                             messageId: messageId,
-                                             userId: userId,
-                                             filesService: filesService)
-            case .remoteStaticAttachment:
-                let remoteAttachment: XMTP.RemoteAttachment = try xmtpMessage.content()
-                let attachmentProperties = RemoteAttachmentProperties(remoteAttachment: remoteAttachment)
-                let serviceData = try attachmentProperties.jsonDataThrowing()
-                let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
-                return .remoteContent(displayInfo)
+                                           filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessageDisplayType {
+        do {
+            if let knownType = XMTPMessageKnownTypeFrom(xmtpMessage) {
+                switch knownType {
+                case .text:
+                    let decryptedContent: String = try xmtpMessage.content()
+                    let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
+                    return .text(textDisplayInfo)
+                case .attachment:
+                    let attachment: XMTP.Attachment = try xmtpMessage.content()
+                    return try await getMessageTypeFor(attachment: attachment,
+                                                       messageId: messageId,
+                                                       userId: userId,
+                                                       filesService: filesService)
+                case .remoteStaticAttachment:
+                    let remoteAttachment: XMTP.RemoteAttachment = try xmtpMessage.content()
+                    let attachmentProperties = RemoteAttachmentProperties(remoteAttachment: remoteAttachment)
+                    let serviceData = try attachmentProperties.jsonDataThrowing()
+                    let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
+                    return .remoteContent(displayInfo)
+                }
+            } else {
+                guard let contentData: Data = try? xmtpMessage.content() else { throw XMTPEntitiesTransformerError.failedToBuildMessageType }
+                
+                let fileName = messageId + "_" + String(userId.suffix(4))
+                try filesService.saveData(contentData, fileName: fileName)
+                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                    type: XMTPMessageTypeIDFrom(xmtpMessage),
+                                                                                    name: nil,
+                                                                                    size: nil)
+                return .unknown(unknownDisplayInfo)
             }
-        } else {
-            guard let contentData: Data = try? xmtpMessage.content() else { return nil }
-
-            let fileName = messageId + "_" + String(userId.suffix(4))
-            try filesService.saveData(contentData, fileName: fileName)
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                type: XMTPMessageTypeIDFrom(xmtpMessage),
-                                                                                name: nil,
-                                                                                size: nil)
-            return .unknown(unknownDisplayInfo)
+        } catch {
+            return .unsupported(MessagingChatMessageUnsupportedTypeDisplayInfo(data: Data())) /// No data could be extracted from XMTP message
         }
     }
     
@@ -286,5 +290,9 @@ struct XMTPEntitiesTransformer {
                                       nonce: nonce,
                                       scheme: .init(rawValue: scheme)!)
         }
+    }
+    
+    private enum XMTPEntitiesTransformerError: Error {
+        case failedToBuildMessageType
     }
 }

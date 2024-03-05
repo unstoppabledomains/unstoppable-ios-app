@@ -100,6 +100,8 @@ private extension MessageRowView {
                                       referenceMessageId: info.messageId)
             case .reaction(let info):
                 Text(info.content)
+            case .unsupported:
+                Text(String.Constants.messageNotSupported.localized())
             }
         }
     }

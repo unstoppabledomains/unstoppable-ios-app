@@ -154,7 +154,7 @@ private extension MessagingFilesService {
     
     func getContentFilenameFor(messageType: MessagingChatMessageDisplayType) -> String? {
         switch messageType {
-        case .text, .imageBase64, .imageData, .remoteContent, .reaction:
+        case .text, .imageBase64, .imageData, .remoteContent, .reaction, .unsupported:
             return nil
         case .unknown(let info):
             return info.fileName
