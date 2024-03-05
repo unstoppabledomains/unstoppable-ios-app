@@ -39,13 +39,13 @@ extension PublicProfileView {
         private(set) var viewingDomain: DomainItem?
         @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
-        @Published var socialAccounts: SocialAccounts?
+        @Published var socialAccounts: [DomainProfileSocialAccount]?
         @Published var tokens: [BalanceTokenUIDescription]?
         @Published var isTokensCollapsed = true
         @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var isUserDomainSelected = true
-        @Published private(set) var profile: SerializedPublicDomainProfile?
+        @Published private(set) var profile: PublicDomainProfileDisplayInfo?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
         @Published private(set) var coverImage: UIImage?
         @Published private(set) var avatarImage: UIImage?
@@ -159,14 +159,13 @@ extension PublicProfileView {
             isLoading = true
             Task {
                 await performAsyncErrorCatchingBlock {
-                    let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
-                                                                                fields: [.profile, .records, .socialAccounts])
+                    let profile = try await appContext.domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: domain.name)
                     let domains = appContext.walletsDataService.wallets.combinedDomains()
                     await waitForAppear()
                     self.profile = profile
                     isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
-                    records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
-                    socialInfo = profile.social
+                    records = await convertRecordsFrom(recordsDict: profile.records)
+                    socialInfo = .init(followingCount: profile.followingCount, followerCount: profile.followerCount)
                     socialAccounts = profile.socialAccounts
                     isLoading = false
                     loadImages()
@@ -240,9 +239,8 @@ extension PublicProfileView {
         
         private func loadAvatar() {
             Task {
-                if let imagePath = profile?.profile.imagePath,
-                   let url = URL(string: imagePath) {
-                    let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                if let pfpURL = profile?.pfpURL {
+                    let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
                                                                                      downsampleDescription: .mid)
                     await waitForAppear()
                     self.avatarImage = avatarImage
@@ -252,9 +250,8 @@ extension PublicProfileView {
         
         private func loadCoverImage() {
             Task {
-                if let coverPath = profile?.profile.coverPath,
-                   let url = URL(string: coverPath) {
-                    let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                if let bannerURL = profile?.bannerURL {
+                    let coverImage = await appContext.imageLoadingService.loadImage(from: .url(bannerURL),
                                                                                     downsampleDescription: .mid)
                     await waitForAppear()
                     self.coverImage = coverImage

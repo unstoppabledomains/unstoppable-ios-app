@@ -54,6 +54,9 @@ private extension PublicDomainProfileDisplayInfoStorageService {
         coreDataProfile.socialAccounts = profile.socialAccounts.jsonData()
         coreDataProfile.followingCount = Int64(profile.followingCount)
         coreDataProfile.followerCount = Int64(profile.followerCount)
+        coreDataProfile.profileDescription = profile.description
+        coreDataProfile.web2Url = profile.web2Url
+        coreDataProfile.location = profile.location
         
         return coreDataProfile
     }
@@ -74,7 +77,10 @@ private extension PublicDomainProfileDisplayInfoStorageService {
                                               pfpURL: coreDataUserProfile.pfpURL,
                                               imageType: imageType,
                                               bannerURL: coreDataUserProfile.bannerURL,
-                                              records: coreDataUserProfile.records,
+                                              description: coreDataUserProfile.profileDescription,
+                                              web2Url: coreDataUserProfile.web2Url,
+                                              location: coreDataUserProfile.location,
+                                              records: coreDataUserProfile.records ?? [:],
                                               socialAccounts: socialDescription,
                                               followingCount: Int(coreDataUserProfile.followingCount),
                                               followerCount: Int(coreDataUserProfile.followerCount))

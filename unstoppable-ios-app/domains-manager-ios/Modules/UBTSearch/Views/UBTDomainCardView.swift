@@ -61,12 +61,10 @@ private extension UBTDomainCardView {
     func loadAvatar() {
         Task {
             do {
-                let profileDetails = try await NetworkService().fetchPublicProfile(for: device.domainName,
-                                                                                   fields: [.profile, .records])
+                let profileDetails = try await appContext.domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: device.domainName)
                 
-                if let pfpURL = profileDetails.profile.imagePath,
-                   let url = URL(string: pfpURL) {
-                    avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                if let pfpURL = profileDetails.pfpURL {
+                    avatarImage = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
                                                                                  downsampleDescription: .mid)
                 }
             }

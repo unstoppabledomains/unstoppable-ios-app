@@ -197,15 +197,18 @@ extension MockEntitiesFabric {
                                                          withBanner: Bool = true,
                                                          withRecords: Bool = true,
                                                          withSocialAccounts: Bool = true,
-                                                         followingCount: Int = Int(arc4random_uniform(10000)),
-                                                         followerCount: Int = Int(arc4random_uniform(10000))) -> PublicDomainProfileDisplayInfo {
+                                                         followingCount: Int = Int(arc4random_uniform(10_000)),
+                                                         followerCount: Int = Int(arc4random_uniform(10_000))) -> PublicDomainProfileDisplayInfo {
             PublicDomainProfileDisplayInfo(domainName: domainName,
                                            ownerWallet: ownerWallet,
                                            profileName: profileName,
                                            pfpURL: withPFP ? ImageURLs.aiAvatar.url : nil,
                                            imageType: .onChain,
                                            bannerURL: withBanner ? ImageURLs.sunset.url : nil,
-                                           records: withRecords ? createPublicDomainProfileRecords() : nil,
+                                           description: nil,
+                                           web2Url: nil,
+                                           location: nil,
+                                           records: withRecords ? createPublicDomainProfileRecords() : [:],
                                            socialAccounts: withSocialAccounts ? createPublicDomainProfileSocialAccounts() : [],
                                            followingCount: followingCount,
                                            followerCount: followerCount)
@@ -220,7 +223,7 @@ extension MockEntitiesFabric {
         }
         
         static func createPublicDomainProfileSocialAccounts() -> [DomainProfileSocialAccount] {
-            [DomainProfileSocialAccount(type: .linkedIn, account: .init(location: "https://www.linkedin.com/in/preview/", verified: true, public: true))]
+            DomainProfileSocialAccount.typesFrom(accounts: DomainProfile.createSocialAccounts())
         }
     }
 }

@@ -43,9 +43,9 @@ struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
         .onChange(of: selectedSocial, perform: didSelectSocial)
     }
     
-    init(domainName: DomainName, socialAccounts: SocialAccounts) {
+    init(domainName: DomainName, socialAccounts: [DomainProfileSocialAccount]) {
         self.domainName = domainName
-        self.accounts = DomainProfileSocialAccount.typesFrom(accounts: socialAccounts)
+        self.accounts = socialAccounts
     }
     
 }
@@ -103,6 +103,6 @@ private extension PublicProfileSocialsListView {
 struct PublicProfileSocialsListView_Previews: PreviewProvider {
     static var previews: some View {
         PublicProfileSocialsListView(domainName: "dans.crypto",
-                                     socialAccounts: MockEntitiesFabric.DomainProfile.createSocialAccounts())
+                                     socialAccounts: MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileSocialAccounts())
     }
 }
