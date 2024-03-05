@@ -86,7 +86,6 @@
 		309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309FDFBB265E7C0C00AE53D3 /* StripePaymentHelper.swift */; };
 		30A1895525AB483B0001178D /* PullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30A1895425AB483B0001178D /* PullUpView.xib */; };
 		30A280372714217200FD3759 /* wallets-registry.json in Resources */ = {isa = PBXBuildFile; fileRef = 30A280362714217100FD3759 /* wallets-registry.json */; };
-		30AD0D792704634600F42ACC /* Zesame in Frameworks */ = {isa = PBXBuildFile; productRef = 30AD0D782704634600F42ACC /* Zesame */; };
 		30AE84A92575862F003A0142 /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30AE84A82575862F003A0142 /* SF-Pro.ttf */; };
 		30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AE8520257837B5003A0142 /* NetworkConfig.swift */; };
 		30B3DC9728763294006FAA64 /* WCConnectionIntentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */; };
@@ -3635,7 +3634,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30AD0D792704634600F42ACC /* Zesame in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
@@ -7670,7 +7668,6 @@
 				30CE604B26A9DED000E0D29B /* web3swift */,
 				30B6583826A9E75E004F707F /* Stripe */,
 				30D89F5A26A9EB5500251C2D /* Bugsnag */,
-				30AD0D782704634600F42ACC /* Zesame */,
 				C63402872886547C00AB5D38 /* SVGKit */,
 				290A60472950AA1600882109 /* WalletConnect */,
 				290A60492950AA1600882109 /* WalletConnectAuth */,
@@ -7817,7 +7814,6 @@
 				30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */,
 				30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */,
 				30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */,
-				30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */,
 				C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */,
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
@@ -10980,14 +10976,6 @@
 				version = 5.3.0;
 			};
 		};
-		30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/unstoppabledomains/Zesame";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stripe/stripe-ios";
@@ -11133,11 +11121,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
-		};
-		30AD0D782704634600F42ACC /* Zesame */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 30AD0D772704634600F42ACC /* XCRemoteSwiftPackageReference "Zesame" */;
-			productName = Zesame;
 		};
 		30B6583826A9E75E004F707F /* Stripe */ = {
 			isa = XCSwiftPackageProductDependency;
