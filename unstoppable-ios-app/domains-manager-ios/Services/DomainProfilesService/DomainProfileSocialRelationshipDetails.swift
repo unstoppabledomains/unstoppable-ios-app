@@ -19,7 +19,7 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
     }
     
     struct SocialDetails: Hashable {
-        var domains: [DomainName] = []
+        private(set) var domainNames: [DomainName] = []
         var paginationInfo: PaginationInfo
         
         init(wallet: WalletEntity) {
@@ -35,35 +35,29 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
                 self.canLoadMore = wallet.rrDomain != nil
             }
         }
+        
+        mutating func addDomainNames(_ domainNames: [DomainName]) {
+            let newDomains = domainNames.filter { !self.domainNames.contains($0) }
+            self.domainNames.append(contentsOf: newDomains)
+        }
     }
     
     mutating func applyDetailsFrom(response: DomainProfileFollowersResponse) {
         mutatingSocialDetailsFor(relationshipType: response.relationshipType) { socialDetails in
             
             let responseDomainNames = response.data.map { $0.domain }
-            socialDetails.domains.append(contentsOf: responseDomainNames)
-            
+            socialDetails.addDomainNames(responseDomainNames)
             socialDetails.paginationInfo.cursor = response.meta.pagination.cursor
             socialDetails.paginationInfo.canLoadMore = responseDomainNames.count == response.meta.pagination.take
-        }
-    }
-    
-    private mutating func mutatingSocialDetailsFor(relationshipType: DomainProfileFollowerRelationshipType,
-                                                   socialDetailsProvider: (inout SocialDetails)->()) {
-        switch relationshipType {
-        case .followers:
-            socialDetailsProvider(&followersDetails)
-        case .following:
-            socialDetailsProvider(&followingDetails)
         }
     }
     
     func getFollowersListFor(relationshipType: DomainProfileFollowerRelationshipType) -> [DomainName] {
         switch relationshipType {
         case .followers:
-            return followersDetails.domains
+            return followersDetails.domainNames
         case .following:
-            return followingDetails.domains
+            return followingDetails.domainNames
         }
     }
     
@@ -73,6 +67,19 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
             return followersDetails.paginationInfo
         case .following:
             return followingDetails.paginationInfo
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension DomainProfileSocialRelationshipDetails {
+    mutating func mutatingSocialDetailsFor(relationshipType: DomainProfileFollowerRelationshipType,
+                                           socialDetailsProvider: (inout SocialDetails)->()) {
+        switch relationshipType {
+        case .followers:
+            socialDetailsProvider(&followersDetails)
+        case .following:
+            socialDetailsProvider(&followingDetails)
         }
     }
 }

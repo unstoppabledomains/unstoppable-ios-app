@@ -32,7 +32,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
-    private var relationshipDetails: DomainProfileSocialRelationshipDetails?
+    @Published private var relationshipDetails: DomainProfileSocialRelationshipDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
     private let searchService = DomainsGlobalSearchService()
