@@ -662,6 +662,7 @@ private extension CoreDataMessagingStorageService {
         case reaction = 4
         case reply = 5
         case unknown = 999
+        case unsupported = 1000
      
         static func valueFor(_ messageType: MessagingChatMessageDisplayType) -> CoreDataMessageTypeWrapper {
             switch messageType {
@@ -679,6 +680,8 @@ private extension CoreDataMessagingStorageService {
                 return .reaction
             case .reply:
                 return .reply
+            case .unsupported:
+                return .unsupported
             }
         }
     }
@@ -750,6 +753,12 @@ private extension CoreDataMessagingStorageService {
             let reactionDisplayInfo = MessagingChatMessageReplyTypeDisplayInfo(contentType: displayType,
                                                                                messageId: decryptedData.messageId)
             return .reply(reactionDisplayInfo)
+        case .unsupported:
+            guard let decryptedContent,
+                  let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
+            
+            let unsupportedDisplayInfo = MessagingChatMessageUnsupportedTypeDisplayInfo(data: decryptedData)
+            return .unsupported(unsupportedDisplayInfo)
         }
     }
     
@@ -796,6 +805,8 @@ private extension CoreDataMessagingStorageService {
                                                           contentMessageType: contentMessageType,
                                                           messageId: info.messageId).jsonStringThrowing()
             return try decrypterService.encryptText(content)
+        case .unsupported(let info):
+            return try encryptDataContent(info.data)
         }
     }
     

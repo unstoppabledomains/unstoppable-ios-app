@@ -329,18 +329,17 @@ private extension XMTPMessagingAPIService {
                                                       in: conversation,
                                                       client: client,
                                                       by: senderWallet)
-        case .unknown, .remoteContent, .reaction, .reply:
+        case .unknown, .remoteContent, .reaction, .reply, .unsupported:
             throw XMTPServiceError.unsupportedAction
         }
         
         let newestMessages = try await conversation.messages(limit: 3, before: Date().addingTimeInterval(100)) // Get latest message
-        guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }),
-              let message = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                                          cachedMessage: nil,
-                                                                                          in: chat,
-                                                                                          isRead: true,
-                                                                                          filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
-        
+        guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }) else { throw XMTPServiceError.failedToFindSentMessage }
+        let message = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                    cachedMessage: nil,
+                                                                                    in: chat,
+                                                                                    isRead: true,
+                                                                                    filesService: filesService)
         return message
     }
     
@@ -600,13 +599,12 @@ final class DefaultXMTPMessagingAPIServiceDataProvider: XMTPMessagingAPIServiceD
         
         var chatMessages = [MessagingChatMessage]()
         for xmtpMessage in messages {
-            if let chatMessage = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                                               cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
-                                                                                               in: chat,
-                                                                                               isRead: isRead,
-                                                                                               filesService: filesService) {
-                chatMessages.append(chatMessage)
-            }
+            let chatMessage = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                            cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
+                                                                                            in: chat,
+                                                                                            isRead: isRead,
+                                                                                            filesService: filesService)
+            chatMessages.append(chatMessage)
         }
         
         return chatMessages

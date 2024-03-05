@@ -15,6 +15,7 @@ indirect enum MessagingChatMessageDisplayType: Hashable {
     case remoteContent(MessagingChatMessageRemoteContentTypeDisplayInfo)
     case reaction(MessagingChatMessageReactionTypeDisplayInfo)
     case reply(MessagingChatMessageReplyTypeDisplayInfo)
+    case unsupported(MessagingChatMessageUnsupportedTypeDisplayInfo)
  
     var analyticName: String {
         switch self {
@@ -30,6 +31,8 @@ indirect enum MessagingChatMessageDisplayType: Hashable {
             return "Reaction"
         case .reply:
             return "Reply"
+        case .unsupported:
+            return "Unsupported"
         }
     }
 }
@@ -42,7 +45,7 @@ extension MessagingChatMessageDisplayType {
             return description.text
         case .imageBase64, .imageData:
             return String.Constants.photo.localized()
-        case .unknown:
+        case .unknown, .unsupported:
             return String.Constants.messageNotSupported.localized()
         case .remoteContent:
             return String.Constants.messagingRemoteContent.localized()
