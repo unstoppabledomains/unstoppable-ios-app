@@ -116,8 +116,7 @@ private extension MockUDDomainsService {
                    isMinting: Bool = false,
                    wallet: String? = nil) -> DomainItem? {
         if self.domains.count < self.DomainsLimit {
-            let isZil = blockchain == .Zilliqa
-            let tld = isZil ? "zil" : "x"
+            let tld = "x"
             var newDomain = DomainItem(name: "coolguy_\(self.domains.count)_\(suffix).\(tld)")
             newDomain.blockchain = blockchain
             if let wallet {

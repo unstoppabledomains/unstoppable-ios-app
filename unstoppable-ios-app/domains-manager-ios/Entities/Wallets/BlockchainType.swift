@@ -9,7 +9,6 @@ import UIKit
 
 enum BlockchainType: String, CaseIterable, Codable, Hashable {
     case Ethereum = "ETH"
-    case Zilliqa = "ZIL"
     case Matic = "MATIC"
     
     static let cases = Self.allCases
@@ -28,8 +27,6 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         switch self {
         case .Ethereum:
             return UIImage(named: String.BlockChainIcons.ethereum.rawValue)!
-        case .Zilliqa:
-            return UIImage(named: String.BlockChainIcons.zilliqa.rawValue)!
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
         }
@@ -39,8 +36,6 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         switch self {
         case .Ethereum:
             return "Ethereum"
-        case .Zilliqa:
-            return "Zilliqa"
         case .Matic:
             return "Polygon"
         }
@@ -52,8 +47,6 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return isTestNet ? 5 : 1 // Goerly or Mainnet
         case .Matic:
             return isTestNet ? 80001 : 137 // Mumbai or
-        case .Zilliqa:
-            return nil
         }
     }
     

@@ -131,15 +131,12 @@ extension DomainDisplayInfo {
     enum UsageType: Equatable {
         case normal,
              newNonInteractable(tld: String),
-             zil,
              deprecated(tld: String),
              parked(status: DomainParkingStatus)
     }
     
     var usageType: UsageType {
-        if isZilliqaBased {
-            return .zil
-        } else if let tld = name.getTldName(), Constants.newNonInteractableTLDs.contains(tld) {
+        if let tld = name.getTldName(), Constants.newNonInteractableTLDs.contains(tld) {
             return .newNonInteractable(tld: tld)
         } else if let tld = name.getTldName(),
                   Constants.deprecatedTLDs.contains(tld) {
@@ -149,7 +146,6 @@ extension DomainDisplayInfo {
         }
         return .normal
     }
-    var isZilliqaBased: Bool { blockchain == .Zilliqa }
     var isInteractable: Bool { usageType == .normal }
     var isAbleToSetAsRR: Bool { usageType == .normal && blockchain == .Matic }
     var isAbleToTransfer: Bool { usageType == .normal && blockchain == .Matic }
