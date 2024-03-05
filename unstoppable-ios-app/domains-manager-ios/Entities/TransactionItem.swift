@@ -9,7 +9,6 @@ import Foundation
 import BigInt
 
 enum TxType: String, Codable {
-    case zilTx = "ZilTx"
     case ethTx = "EthTx"
     case maticTx = "MaticTx"
 }
@@ -152,7 +151,6 @@ struct TransactionItem: Codable {
         
         switch domain.namingService {
         case .UNS: return domainName == domain.name
-        case .ZNS: return self.isPendingZilDomain(domain)
         }
     }
     

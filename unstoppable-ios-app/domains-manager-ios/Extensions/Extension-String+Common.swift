@@ -99,10 +99,6 @@ extension DomainName {
         
         return components.count > 2
     }
-    
-    static func isZilByExtension(ext: String) -> Bool {
-        ext.lowercased() == NamingService.ZNS.rawValue.lowercased()
-    }
 }
 
 enum Seed: CustomStringConvertible, Equatable {
