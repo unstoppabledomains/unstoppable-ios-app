@@ -14,15 +14,15 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .homeExplore }
     
     @Published private(set) var selectedProfile: UserProfile
+    @Published private(set) var selectedPublicDomainProfile: PublicDomainProfileDisplayInfo?
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
-    
+    @Published private(set) var isLoadingGlobalProfiles = false
     @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
     @Published var userWalletCollapsedAddresses: Set<String> = []
     
-    @Published private(set) var isLoadingGlobalProfiles = false
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
@@ -128,9 +128,23 @@ private extension HomeExploreViewModel {
             socialRelationshipDetailsPublisher = appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
                 self?.relationshipDetails = relationshipDetails
             }
-            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType, in: wallet)
+            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .followers, in: wallet)
+            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .following, in: wallet)
+            reloadSelectedPublicDomainProfileFor(wallet: wallet)
         } else {
             socialRelationshipDetailsPublisher = nil
+            reloadSelectedPublicDomainProfileFor(wallet: nil)
+        }
+    }
+    
+    func reloadSelectedPublicDomainProfileFor(wallet: WalletEntity?) {
+        selectedPublicDomainProfile = nil
+        
+        guard let domainName = wallet?.profileDomainName else { return }
+        Task {
+            for try await profile in appContext.domainProfilesService.getCachedAndRefreshProfileStream(for: domainName) {
+                self.selectedPublicDomainProfile = profile
+            }
         }
     }
 }

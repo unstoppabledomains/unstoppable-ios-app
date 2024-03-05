@@ -144,11 +144,6 @@ private extension HomeExploreView {
     func listContentForSearchInactive() -> some View {
         HomeExploreTrendingProfilesSectionView()
         HomeExploreSeparatorView()
-        followersSection()
-    }
-    
-    @ViewBuilder
-    func followersSection() -> some View {
         HomeExploreFollowersSectionView()
             .listRowInsets(.init(horizontal: 16))
     }

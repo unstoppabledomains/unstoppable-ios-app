@@ -13,14 +13,17 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
-        
+    @Environment(\.domainProfilesService) private var domainProfilesService
+
     var body: some View {
-        Section {
-            gridWithFollowers(viewModel.getProfilesListForSelectedRelationshipType)
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-        } header: {
-            sectionHeaderView()
-                .padding(.init(vertical: 6))
+        if let profile = viewModel.selectedPublicDomainProfile {
+            Section {
+                gridWithFollowers(viewModel.getProfilesListForSelectedRelationshipType)
+                    .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+            } header: {
+                sectionHeaderView(profile: profile)
+                    .padding(.init(vertical: 6))
+            }
         }
     }
     
@@ -37,7 +40,9 @@ private extension HomeExploreFollowersSectionView {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .followerTile,
                                                parameters: [.domainName : follower])
-//                viewModel.didTapUserPublicDomainProfileDisplayInfo(<#T##PublicDomainProfileDisplayInfo#>)
+                if let profile = domainProfilesService.getCachedPublicDomainProfileDisplayInfo(for: follower) {
+                    viewModel.didTapUserPublicDomainProfileDisplayInfo(profile)
+                }
             } label: {
                 HomeExploreFollowerCellView(domainName: follower)
             }
@@ -46,8 +51,9 @@ private extension HomeExploreFollowersSectionView {
     }
     
     @ViewBuilder
-    func sectionHeaderView() -> some View {
-        HomeExploreFollowerRelationshipTypePickerView(relationshipType: $viewModel.relationshipType)
+    func sectionHeaderView(profile: PublicDomainProfileDisplayInfo) -> some View {
+        HomeExploreFollowerRelationshipTypePickerView(profile: profile,
+                                                      relationshipType: $viewModel.relationshipType)
             .padding(.init(vertical: 4))
     }
 }

@@ -11,6 +11,7 @@ import Combine
 protocol DomainProfilesServiceProtocol {
     func getCachedPublicDomainProfileDisplayInfo(for domainName: String) -> PublicDomainProfileDisplayInfo?
     func fetchPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo
+    func getCachedAndRefreshProfileStream(for domainName: DomainName) -> AsyncThrowingStream<PublicDomainProfileDisplayInfo, Error>
     func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     

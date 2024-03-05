@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeExploreFollowerRelationshipTypePickerView: View {
     
+    let profile: PublicDomainProfileDisplayInfo
     @Binding var relationshipType: DomainProfileFollowerRelationshipType
     
     var body: some View {
@@ -33,7 +34,7 @@ private extension HomeExploreFollowerRelationshipTypePickerView {
             HStack(alignment: .top, spacing: 4) {
                 Text(titleFor(relationshipType: relationshipType))
                     .font(.currentFont(size: 16, weight: .medium))
-                Text(String(20))
+                Text(String(profile.numberOfFollowersFor(relationshipType: relationshipType)))
                     .font(.currentFont(size: 11, weight: .medium))
             }
             .foregroundStyle(foregroundStyleFor(relationshipType: relationshipType))
@@ -56,5 +57,6 @@ private extension HomeExploreFollowerRelationshipTypePickerView {
 }
 
 #Preview {
-    HomeExploreFollowerRelationshipTypePickerView(relationshipType: .constant(.followers))
+    HomeExploreFollowerRelationshipTypePickerView(profile: MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(),
+                                                  relationshipType: .constant(.followers))
 }

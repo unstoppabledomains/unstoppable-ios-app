@@ -74,18 +74,19 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         Task {
             do {
                 guard let profileDomainName = wallet.profileDomainName else { throw DomainProfilesServiceError.noDomainForSocialDetails }
-                var socialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
+                let currentSocialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
                 
-                guard socialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
+                guard currentSocialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
                 
-                let cursor = socialDetails.getPaginationCursorFor(relationshipType: relationshipType)
+                let cursor = currentSocialDetails.getPaginationCursorFor(relationshipType: relationshipType)
                 
                 let response = try await NetworkService().fetchListOfFollowers(for: profileDomainName,
                                                                                relationshipType: relationshipType,
                                                                                count: numberOfFollowersToTake,
                                                                                cursor: cursor)
-                socialDetails.applyDetailsFrom(response: response)
-                saveCachedProfileSocialDetail(socialDetails)
+                var updatedSocialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
+                updatedSocialDetails.applyDetailsFrom(response: response)
+                saveCachedProfileSocialDetail(updatedSocialDetails)
             }
         }
     }

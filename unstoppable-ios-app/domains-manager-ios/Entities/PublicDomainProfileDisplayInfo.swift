@@ -23,6 +23,15 @@ struct PublicDomainProfileDisplayInfo: Hashable {
     let followingCount: Int
     let followerCount: Int
     
+    func numberOfFollowersFor(relationshipType: DomainProfileFollowerRelationshipType) -> Int {
+        switch relationshipType {
+        case .followers:
+            followerCount
+        case .following:
+            followingCount
+        }
+    }
+    
 }
 
 extension PublicDomainProfileDisplayInfo {

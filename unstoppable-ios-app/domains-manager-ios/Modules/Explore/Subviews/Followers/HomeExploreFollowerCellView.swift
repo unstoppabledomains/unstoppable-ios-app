@@ -20,6 +20,9 @@ struct HomeExploreFollowerCellView: View {
     var body: some View {
         viewForFollower()
             .onAppear(perform: onAppear)
+            .onChange(of: domainName) { newValue in
+                loadProfile()
+            }
     }
 }
 
@@ -30,10 +33,10 @@ private extension HomeExploreFollowerCellView {
     }
     
     func loadProfile() {
-        setProfile(nil)
         if let cachedProfile = domainProfilesService.getCachedPublicDomainProfileDisplayInfo(for: domainName) {
             setProfile(cachedProfile)
         } else {
+            setProfile(nil)
             Task {
                 let profile = try await domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: domainName)
                 setProfile(profile)
@@ -43,6 +46,8 @@ private extension HomeExploreFollowerCellView {
     
     func setProfile(_ profile: PublicDomainProfileDisplayInfo?) {
         self.profile = profile
+        self.pfpImage = nil
+        self.cover = nil
         if let profile {
             loadAvatar(profile: profile)
         }
