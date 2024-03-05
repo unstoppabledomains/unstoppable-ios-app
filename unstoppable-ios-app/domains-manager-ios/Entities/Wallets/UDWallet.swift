@@ -73,7 +73,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     var aliasName: String
     var type: WalletType
     var ethWallet: UDWalletEthereum?
-    var zilWallet: UDWalletZil?
     var hasBeenBackedUp: Bool? = false
     
     var walletState: WalletState {
@@ -94,7 +93,6 @@ struct UDWallet: Codable, @unchecked Sendable {
         self.aliasName = aliasName
         self.type = type
         self.ethWallet = ethWallet
-        self.zilWallet = zilWallet
         self.hasBeenBackedUp = hasBeenBackedUp
     }
     
