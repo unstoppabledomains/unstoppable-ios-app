@@ -37,6 +37,8 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
+    private var relationshipDetails: DomainProfileSocialRelationshipDetails?
+    private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
     
     init(router: HomeTabRouter,
@@ -46,9 +48,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
         self.walletsDataService = walletsDataService
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
-            if let selectedProfile {
-                self?.selectedProfile = selectedProfile
-            }
+            self?.setSelectedProfile(selectedProfile)
         }.store(in: &cancellables)
     
         $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
@@ -135,6 +135,19 @@ private extension HomeExploreViewModel {
     func setUserWalletSearchResults() {
         let userWallets = walletsDataService.wallets
         userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: getLowercasedTrimmedSearchKey()) })
+    }
+    
+    func setSelectedProfile(_ selectedProfile: UserProfile?) {
+        if let selectedProfile {
+            self.selectedProfile = selectedProfile
+        }
+        if case .wallet(let wallet) = selectedProfile {
+            socialRelationshipDetailsPublisher = appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                self?.relationshipDetails = relationshipDetails
+            }
+        } else {
+            socialRelationshipDetailsPublisher = nil
+        }
     }
 }
 
