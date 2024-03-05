@@ -13,7 +13,6 @@ enum WalletError: Error {
     case EthWalletFailedInit
     case EthWalletPrivateKeyNotFound
     case EthWalletMnemonicsNotFound
-    case zilWalletFailedInit
     case migrationError
     case failedGetPrivateKeyFromNonHdWallet
     case ethWalletAlreadyExists (HexAddress)

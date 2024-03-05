@@ -546,9 +546,13 @@ extension Endpoint {
         
         let req = OwnerArrayRequest(owner: owners)
         guard let json = try? JSONEncoder().encode(req) else { return nil }
+        guard let body = String(data: json, encoding: .utf8) else {
+            Debugger.printWarning("Failed to stringify data")
+            return nil
+        }
         return composeResolutionEndpoint(paramQueryItems: paramQueryItems,
                                          requestType: .domains,
-                                         body: String(data: json))
+                                         body: body)
     }
     
     struct DomainArray: Encodable {
@@ -572,11 +576,14 @@ extension Endpoint {
         let req = TxsArrayRequest(txs: DomainArray(domain: domains.map({ $0 }),
                                                    status: status))
         guard let json = try? JSONEncoder().encode(req) else { return nil }
-
+        guard let body = String(data: json, encoding: .utf8) else {
+            Debugger.printWarning("Failed to stringify data")
+            return nil
+        }
         return composeResolutionEndpoint(paramQueryItems: paramQueryItems,
                                          apiType: .resellers,
                                          requestType: .transactions,
-                                         body: String(data: json))
+                                         body: body)
     }
     
     static private func composeResolutionEndpoint(paramQueryItems: [URLQueryItem],
@@ -859,7 +866,6 @@ extension Endpoint {
 
 // MARK: - Open methods
 extension Endpoint {
-    
     static func getCryptoPortfolio(for wallet: String) -> Endpoint {
         //https://api.ud-staging.com/profile/user/0xcd0dadab45baf9a06ce1279d1342ecc3f44845af/wallets
         return Endpoint(
@@ -870,5 +876,5 @@ extension Endpoint {
             headers: NetworkService.profilesAPIHeader
         )
     }
-    
 }
+

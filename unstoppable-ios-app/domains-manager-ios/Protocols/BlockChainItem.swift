@@ -19,10 +19,7 @@ extension DomainEntity {
     }
     
     var namingService: NamingService {
-        let blockchain = getBlockchainType()
-        if blockchain == .Zilliqa {
-            return NamingService.ZNS
-        }
+//        Leave this till when other chains are introduced
         return NamingService.UNS
     }
     

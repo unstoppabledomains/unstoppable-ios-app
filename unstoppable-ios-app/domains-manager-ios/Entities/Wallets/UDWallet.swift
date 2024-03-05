@@ -62,7 +62,6 @@ struct UDWallet: Codable, @unchecked Sendable {
         case failedToSignMessage = "Failed to Sign Message"
         case noWalletOwner = "No Owner Wallet Specified"
         case failedToFindWallet = "Failed to Find a Wallet"
-        case zilNotSupported = "Zilliqua not supported"
         case failedSignature
     }
     
@@ -88,7 +87,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     private init(aliasName: String,
                  type: WalletType,
                  ethWallet: UDWalletEthereum?,
-                 zilWallet: UDWalletZil?,
                  hasBeenBackedUp: Bool = false) {
         self.aliasName = aliasName
         self.type = type
@@ -149,13 +147,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         case .Ethereum, .Matic: let wallet = UDWalletEthereum.createUnverified(address: response.address)
             return UDWallet(aliasName: aliasName,
                             type: .importedUnverified,
-                            ethWallet: wallet,
-                            zilWallet: nil)
-        case .Zilliqa: let wallet = UDWalletZil.createUnverified(address: response.address, humanAddress: response.humanAddress)
-            return UDWallet(aliasName: aliasName,
-                            type: .importedUnverified,
-                            ethWallet: nil,
-                            zilWallet: wallet)
+                            ethWallet: wallet)
         }
     }
     
@@ -165,8 +157,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         let wallet = UDWalletEthereum.createUnverified(address: address)
         return UDWallet(aliasName: name,
                         type: .importedUnverified,
-                        ethWallet: wallet,
-                        zilWallet: nil)
+                        ethWallet: wallet)
     }
     
     static func createLinked(aliasName: String,
@@ -175,8 +166,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         let ethWallet = UDWalletEthereum.createUnverified(address: address)
         var udWallet = UDWallet(aliasName: aliasName,
                                 type: .importedUnverified,
-                                ethWallet: ethWallet,
-                                zilWallet: nil)
+                                ethWallet: ethWallet)
         udWallet.walletConnectionInfo = UDWallet.WalletConnectionInfo(externalWallet: externalWallet)
         
         return udWallet
@@ -198,8 +188,7 @@ struct UDWallet: Codable, @unchecked Sendable {
     static func createEmpty(aliasName: String) -> UDWallet {
         let generatedWallet = UDWallet(aliasName: aliasName,
                                        type: .generatedLocally,
-                                       ethWallet: nil,
-                                       zilWallet: nil)
+                                       ethWallet: nil)
         return generatedWallet
     }
     
@@ -218,7 +207,7 @@ struct UDWallet: Codable, @unchecked Sendable {
             throw error
         }
         
-        return try await create(with: wrappedWallet,
+        return try create(with: wrappedWallet,
                                 aliasName: aliasName,
                                 privateKeyEthereum: privateKeyEthereum,
                                 type: type,
@@ -237,7 +226,7 @@ struct UDWallet: Codable, @unchecked Sendable {
             throw error
         }
         
-        return try await create(with: wrappedWallet,
+        return try create(with: wrappedWallet,
                                 aliasName: aliasName,
                                 
                                 privateKeyEthereum: privateKeyEthereum,
@@ -249,91 +238,38 @@ struct UDWallet: Codable, @unchecked Sendable {
                                aliasName: String,
                                privateKeyEthereum: String,
                                type: WalletType,
-                               hasBeenBackedUp: Bool = false) async throws -> UDWallet {
+                               hasBeenBackedUp: Bool = false) throws -> UDWallet {
         let address = wrappedWallet.ethWallet.address
         guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
             throw WalletError.ethWalletAlreadyExists(address)
         }
-        return try await withSafeCheckedThrowingContinuation { completion in
-            
-            UDWalletZil.create(privateKey: privateKeyEthereum) { zil in
-                guard let zilWallet = zil else {
-                    Debugger.printFailure("Failed to init UDWalletZil with priv key", critical: true)
-                    completion(.failure(WalletError.zilWalletFailedInit))
-                    return
-                }
-                
-                // all checks done, 2 subwallets created -- storing to Keychain
-                let privateSeedString: String = wrappedWallet.privateSeed
-                KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
-                
-                let udWallet: UDWallet = Self.create(aliasName: aliasName,
-                                                     type: type,
-                                                     ethWallet: wrappedWallet.ethWallet,
-                                                     zilWallet: zilWallet,
-                                                     hasBeenBackedUp: hasBeenBackedUp)
-                completion(.success(udWallet))
-            }
-        }
+        
+        let privateSeedString: String = wrappedWallet.privateSeed
+        KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
+        
+        let udWallet: UDWallet = Self.create(aliasName: aliasName,
+                                             type: type,
+                                             ethWallet: wrappedWallet.ethWallet,
+                                             hasBeenBackedUp: hasBeenBackedUp)
+        return udWallet
     }
     
     static func create(aliasName: String,
                        type: WalletType,
                        ethWallet: UDWalletEthereum,
-                       zilWallet: UDWalletZil?,
                        hasBeenBackedUp: Bool = false) -> UDWallet {
         return UDWallet(aliasName: aliasName,
                         type: type,
                         ethWallet: ethWallet,
-                        zilWallet: zilWallet,
                         hasBeenBackedUp: hasBeenBackedUp)
     }
     
     func getAddress(for namingService: NamingService) -> String? {
         switch namingService {
         case .UNS: return self.extractEthWallet()?.address
-        case .ZNS: return self.extractZilWallet()?.address
         }
     }
-    
-    static func create (aliasName: String,
-                        type: WalletType,
-                        keyStoreZil: String,
-                        encryptionPassword: String) async throws -> UDWallet {
-        return try await withSafeCheckedThrowingContinuation { completion in
-            UDWalletZil.create(keystoreJson: keyStoreZil,
-                               encryptionPassword: encryptionPassword) { zil, prKey in
-                guard let zilWallet = zil,
-                      let privateKey = prKey else {
-                    completion(.failure(WalletZilError.failedToRestoreFromJson))
-                    return
-                }
-                let privateKeyEthereum = privateKey
-                let wrappedWallet: UDWalletEthereumWithPrivateSeed
-                
-                do { wrappedWallet = try UDWalletEthereum.createVerified(privateKey: privateKeyEthereum) } catch {
-                    completion(.failure(WalletError.EthWalletFailedInit))
-                    return
-                }
-                
-                let address = wrappedWallet.ethWallet.address
-                guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
-                    completion(.failure(WalletError.ethWalletAlreadyExists(address)))
-                    return
-                }
-                
-                let privateSeedString: String = wrappedWallet.privateSeed
-                KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
-                
-                let udWallet = UDWallet(aliasName: aliasName,
-                                        type: type,
-                                        ethWallet: wrappedWallet.ethWallet,
-                                        zilWallet: zilWallet)
-                completion(.success(udWallet))
-            }
-        }
-    }
-    
+        
     func setNameAsAddress() -> UDWallet {
         var _wallet = self
         _wallet.aliasName = self.getActiveAddress(for: .UNS) ?? "Wallet"
@@ -350,10 +286,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     
     func extractEthWallet() -> UDWalletEthereum? {
         return ethWallet
-    }
-    
-    func extractZilWallet() -> UDWalletZil? {
-        return nil
     }
 }
 
@@ -385,11 +317,9 @@ extension UDWallet {
 extension Array where Element == UDWallet {
     func pickOwnedDomains(from domains: [DomainItem]) -> [DomainItem] {
         let ethWalletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
-        let zilWalletAddresses = self.compactMap({$0.extractZilWallet()?.address.normalized})
-        let walletAddresses = ethWalletAddresses + zilWalletAddresses
         let selected = domains.filter {
             guard let ownerWallet = $0.ownerWallet else { return false }
-            return walletAddresses.contains(ownerWallet.normalized)
+            return ethWalletAddresses.contains(ownerWallet.normalized)
         }
         return selected
     }
@@ -400,8 +330,6 @@ extension Array where Element == UDWallet {
         switch namingService {
         case .UNS:
             walletAddresses = self.compactMap({$0.extractEthWallet()?.address.normalized})
-        case .ZNS:
-            walletAddresses = self.compactMap({$0.extractZilWallet()?.address.normalized})
         }
         let selected = domains.filter {
             guard let ownerWallet = $0.ownerWallet else { return false }
@@ -417,19 +345,11 @@ extension UDWallet {
         return self.address.normalized == domainWalletAddress || self.address.normalized == domainWalletAddress
     }
     
-    var activeZilAddress: String? {
-        switch UDWalletZil.network {
-        case .mainnet: return self.extractZilWallet()?.bech32addressMainnet
-        case .testnet: return self.extractZilWallet()?.bech32addressTestnet
-        }
-    }
-    
     func getActiveAddress(for namingService: NamingService) -> String? {
         let etereumStyleAddress = self.extractEthWallet()?.address.normalized
         
         switch namingService {
         case .UNS: return etereumStyleAddress
-        case .ZNS: return self.activeZilAddress
         }
     }
     
@@ -473,15 +393,13 @@ extension UDWallet {
 extension UDWallet: Equatable {
     static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
-        let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
-        return resultEth || resultZil
+        return resultEth
     }
 }
 
 extension UDWallet: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(extractEthWallet()?.address)
-        hasher.combine(extractZilWallet()?.address)
         hasher.combine(aliasName)
         hasher.combine(hasBeenBackedUp)
         hasher.combine(walletState)
