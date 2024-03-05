@@ -19,7 +19,7 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
     }
     
     struct SocialDetails: Hashable {
-        var domains: [String] = []
+        var domains: [DomainName] = []
         var paginationInfo: PaginationInfo
         
         init(wallet: WalletEntity) {
@@ -58,7 +58,7 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
         }
     }
     
-    func getFollowersListFor(relationshipType: DomainProfileFollowerRelationshipType) -> [String] {
+    func getFollowersListFor(relationshipType: DomainProfileFollowerRelationshipType) -> [DomainName] {
         switch relationshipType {
         case .followers:
             return followersDetails.domains

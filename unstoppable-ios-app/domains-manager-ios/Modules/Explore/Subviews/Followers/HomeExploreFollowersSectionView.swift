@@ -16,7 +16,7 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
         
     var body: some View {
         Section {
-            gridWithFollowers(viewModel.profilesListForSelectedRelationshipType())
+            gridWithFollowers(viewModel.getProfilesListForSelectedRelationshipType)
                 .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
         } header: {
             sectionHeaderView()
@@ -29,17 +29,17 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeExploreFollowersSectionView {
     @ViewBuilder
-    func gridWithFollowers(_ followers: [SerializedPublicDomainProfile]) -> some View {
+    func gridWithFollowers(_ followers: [DomainName]) -> some View {
         ListVGrid(data: followers,
                   verticalSpacing: 0,
                   horizontalSpacing: 16) { follower in
             Button {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .followerTile,
-                                               parameters: [.domainName : follower.profile.displayName ?? ""])
+                                               parameters: [.domainName : follower])
 //                domainSelectedCallback(domain)
             } label: {
-                HomeExploreFollowerCellView(follower: follower)
+                HomeExploreFollowerCellView(domainName: follower)
             }
             .buttonStyle(.plain)
         }

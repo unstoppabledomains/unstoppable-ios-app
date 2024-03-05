@@ -1257,6 +1257,8 @@
 		C6B2E20A2B96DF6E00CEA1F9 /* PreviewPublicDomainProfileDisplayInfoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2092B96DF6E00CEA1F9 /* PreviewPublicDomainProfileDisplayInfoStorageService.swift */; };
 		C6B2E20C2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E20B2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift */; };
 		C6B2E20D2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E20B2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift */; };
+		C6B2E20F2B97042100CEA1F9 /* DomainsGlobalSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E20E2B97042100CEA1F9 /* DomainsGlobalSearchService.swift */; };
+		C6B2E2102B97042100CEA1F9 /* DomainsGlobalSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E20E2B97042100CEA1F9 /* DomainsGlobalSearchService.swift */; };
 		C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
 		C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
 		C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */; };
@@ -3381,6 +3383,7 @@
 		C6B2E2052B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfoStorageServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B2E2092B96DF6E00CEA1F9 /* PreviewPublicDomainProfileDisplayInfoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPublicDomainProfileDisplayInfoStorageService.swift; sourceTree = "<group>"; };
 		C6B2E20B2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialRelationshipDetails.swift; sourceTree = "<group>"; };
+		C6B2E20E2B97042100CEA1F9 /* DomainsGlobalSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsGlobalSearchService.swift; sourceTree = "<group>"; };
 		C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarItemsTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarBackButtonTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRESTAPIService.swift; sourceTree = "<group>"; };
@@ -7051,6 +7054,7 @@
 				307852632771FB020039FF40 /* DeepLinks.swift */,
 				C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */,
 				C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */,
+				C6B2E20E2B97042100CEA1F9 /* DomainsGlobalSearchService.swift */,
 				C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */,
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
 				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
@@ -9274,6 +9278,7 @@
 				C6011AB128F3FA1500342666 /* DomainProfileTopInfoSection.swift in Sources */,
 				C64513232809912F00413C51 /* PullUpViewController.swift in Sources */,
 				C624D770281B884600F55530 /* ImageLoadingService.swift in Sources */,
+				C6B2E20F2B97042100CEA1F9 /* DomainsGlobalSearchService.swift in Sources */,
 				C692C304282E012900C31393 /* WalletDataValidator.swift in Sources */,
 				C685D8102AA7071300212879 /* PublicProfileDomainSelectionView.swift in Sources */,
 				C6109E3F28E5AB310027D5D8 /* AppLaunchService.swift in Sources */,
@@ -9615,6 +9620,7 @@
 				C618083A2B19AF800032E543 /* PreviewExternalEventsService.swift in Sources */,
 				C61808402B19B0870032E543 /* PreviewDomainTransactionsService.swift in Sources */,
 				C6D646042B1DBFF700D724AC /* WalletConnectServiceConnectionListener.swift in Sources */,
+				C6B2E2102B97042100CEA1F9 /* DomainsGlobalSearchService.swift in Sources */,
 				C6D645BA2B1DBC6F00D724AC /* DomainParkingStatus.swift in Sources */,
 				C6D645D82B1DBD4900D724AC /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6B65F632B55015F006D1812 /* HomeWalletHeaderRowView.swift in Sources */,

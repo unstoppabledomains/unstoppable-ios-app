@@ -69,21 +69,25 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         getOrCreateProfileSocialDetailsFor(wallet: wallet).publisher
     }
     
-    func loadMoreSocialFor(relationshipType: DomainProfileFollowerRelationshipType,
-                           in wallet: WalletEntity) async throws {
-        guard let rrDomain = wallet.rrDomain else { throw DomainProfilesServiceError.noDomainForSocialDetails }
-        var socialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
-        
-        guard socialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
-        
-        let cursor = socialDetails.getPaginationCursorFor(relationshipType: relationshipType)
-        
-        let response = try await NetworkService().fetchListOfFollowers(for: rrDomain.name,
-                                                                       relationshipType: relationshipType,
-                                                                       count: numberOfFollowersToTake,
-                                                                       cursor: cursor)
-        socialDetails.applyDetailsFrom(response: response)
-        saveCachedProfileSocialDetail(socialDetails)
+    func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
+                                 in wallet: WalletEntity) {
+        Task {
+            do {
+                guard let rrDomain = wallet.rrDomain else { throw DomainProfilesServiceError.noDomainForSocialDetails }
+                var socialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
+                
+                guard socialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
+                
+                let cursor = socialDetails.getPaginationCursorFor(relationshipType: relationshipType)
+                
+                let response = try await NetworkService().fetchListOfFollowers(for: rrDomain.name,
+                                                                               relationshipType: relationshipType,
+                                                                               count: numberOfFollowersToTake,
+                                                                               cursor: cursor)
+                socialDetails.applyDetailsFrom(response: response)
+                saveCachedProfileSocialDetail(socialDetails)                
+            }
+        }
     }
 }
 

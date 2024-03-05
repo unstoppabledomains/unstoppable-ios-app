@@ -11,13 +11,9 @@ import Combine
 @MainActor
 final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
-    typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
-
     var analyticsName: Analytics.ViewName { .homeExplore }
     
     @Published private(set) var selectedProfile: UserProfile
-    @Published private(set) var followersList: [SerializedPublicDomainProfile] = []
-    @Published private(set) var followingsList: [SerializedPublicDomainProfile] = []
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
@@ -27,7 +23,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var userWalletCollapsedAddresses: Set<String> = []
     
     @Published private(set) var isLoadingGlobalProfiles = false
-    @Published private var currentTask: SearchProfilesTask?
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
@@ -40,6 +35,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     private var relationshipDetails: DomainProfileSocialRelationshipDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
+    private let searchService = DomainsGlobalSearchService()
     
     init(router: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
@@ -83,19 +79,10 @@ extension HomeExploreViewModel {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
     }
     
-    func profilesListForSelectedRelationshipType() -> [SerializedPublicDomainProfile] {
-        profilesListFor(relationshipType: self.relationshipType)
+    var getProfilesListForSelectedRelationshipType: [DomainName] {
+        relationshipDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
     }
-    
-    func profilesListFor(relationshipType: DomainProfileFollowerRelationshipType) -> [SerializedPublicDomainProfile] {
-        switch relationshipType {
-        case .followers:
-            return followersList
-        case .following:
-            return followingsList
-        }
-    }
-    
+ 
     func clearRecentSearchButtonPressed() {
         
     }
@@ -107,14 +94,6 @@ private extension HomeExploreViewModel {
         loadTrendingProfiles()
         loadRecentProfiles()
         setUserWalletSearchResults()
-        if case .wallet(let wallet) = selectedProfile {
-            loadFollowersFor(wallet: wallet)
-        }
-    }
-    
-    func loadFollowersFor(wallet: WalletEntity) {
-        followersList = MockEntitiesFabric.Explore.createFollowersProfiles()
-        followingsList = MockEntitiesFabric.Explore.createFollowersProfiles()
     }
     
     func loadTrendingProfiles() {
@@ -145,6 +124,7 @@ private extension HomeExploreViewModel {
             socialRelationshipDetailsPublisher = appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
                 self?.relationshipDetails = relationshipDetails
             }
+            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType, in: wallet)
         } else {
             socialRelationshipDetailsPublisher = nil
         }
@@ -167,62 +147,11 @@ private extension HomeExploreViewModel {
         isLoadingGlobalProfiles = true
         Task {
             do {
-                let profiles = try await searchForGlobalProfiles(with: getLowercasedTrimmedSearchKey())
+                let profiles = try await searchService.searchForGlobalProfiles(with: getLowercasedTrimmedSearchKey())
                 let userDomains = Set(self.userDomains.map({ $0.name }))
                 self.globalProfiles = profiles.filter({ !userDomains.contains($0.name) && $0.ownerAddress != nil })
             }
             isLoadingGlobalProfiles = false
         }
-    }
-    
-    func searchForGlobalProfiles(with searchKey: String) async throws -> [SearchDomainProfile] {
-        // Cancel previous search task if it exists
-        currentTask?.cancel()
-        
-        let task: SearchProfilesTask = Task.detached {
-            do {
-                try Task.checkCancellation()
-                
-                let profiles = try await self.searchForDomains(searchKey: searchKey)
-                
-                try Task.checkCancellation()
-                return profiles
-            } catch NetworkLayerError.requestCancelled, is CancellationError {
-                return []
-            } catch {
-                throw error
-            }
-        }
-        
-        currentTask = task
-        let users = try await task.value
-        return users
-    }
-    
-    func searchForDomains(searchKey: String) async throws -> [SearchDomainProfile] {
-        if searchKey.isValidAddress() {
-            let wallet = searchKey
-            if let domain = try? await loadGlobalDomainRRInfo(for: wallet) {
-                return [domain]
-            }
-            
-            return []
-        } else {
-            let domains = try await NetworkService().searchForDomainsWith(name: searchKey, shouldBeSetAsRR: false)
-            return domains
-        }
-    }
-    
-    func loadGlobalDomainRRInfo(for key: String) async throws -> SearchDomainProfile? {
-        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: key.lowercased()),
-           rrInfo.name.isUDTLD() {
-            
-            return SearchDomainProfile(name: rrInfo.name,
-                                       ownerAddress: rrInfo.address,
-                                       imagePath: rrInfo.pfpURLToUse?.absoluteString,
-                                       imageType: .offChain)
-        }
-        
-        return nil
     }
 }
