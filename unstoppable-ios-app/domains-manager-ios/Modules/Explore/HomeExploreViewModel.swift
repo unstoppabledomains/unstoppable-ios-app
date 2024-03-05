@@ -75,6 +75,10 @@ extension HomeExploreViewModel {
         }
     }
     
+    func didTapUserPublicDomainProfileDisplayInfo(_ profile: PublicDomainProfileDisplayInfo) {
+        openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.ownerWallet)
+    }
+    
     func didTapTrendingProfile(_ profile: HomeExplore.ExploreDomainProfile) {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
     }

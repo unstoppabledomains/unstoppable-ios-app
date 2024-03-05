@@ -30,6 +30,7 @@ private extension HomeExploreFollowerCellView {
     }
     
     func loadProfile() {
+        setProfile(nil)
         if let cachedProfile = domainProfilesService.getCachedPublicDomainProfileDisplayInfo(for: domainName) {
             setProfile(cachedProfile)
         } else {
@@ -40,9 +41,11 @@ private extension HomeExploreFollowerCellView {
         }
     }
     
-    func setProfile(_ profile: PublicDomainProfileDisplayInfo) {
+    func setProfile(_ profile: PublicDomainProfileDisplayInfo?) {
         self.profile = profile
-        loadAvatar(profile: profile)
+        if let profile {
+            loadAvatar(profile: profile)
+        }
     }
     
     func loadAvatar(profile: PublicDomainProfileDisplayInfo) {

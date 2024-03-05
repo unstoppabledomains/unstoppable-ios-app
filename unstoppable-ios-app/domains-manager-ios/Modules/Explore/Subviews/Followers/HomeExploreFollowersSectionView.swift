@@ -37,7 +37,7 @@ private extension HomeExploreFollowersSectionView {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .followerTile,
                                                parameters: [.domainName : follower])
-//                domainSelectedCallback(domain)
+//                viewModel.didTapUserPublicDomainProfileDisplayInfo(<#T##PublicDomainProfileDisplayInfo#>)
             } label: {
                 HomeExploreFollowerCellView(domainName: follower)
             }
