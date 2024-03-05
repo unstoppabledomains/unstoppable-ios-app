@@ -99,10 +99,6 @@ extension DomainName {
         
         return components.count > 2
     }
-    
-    static func isZilByExtension(ext: String) -> Bool {
-        ext.lowercased() == "zil"
-    }
 }
 
 enum Seed: CustomStringConvertible, Equatable {
