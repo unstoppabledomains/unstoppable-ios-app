@@ -345,7 +345,7 @@ class APIRequestBuilder {
 extension Encodable {
     func stringify() -> String? {
         guard let jsonData = try? JSONEncoder().encode(self) else {
-            Debugger.printFailure("Cannot encode requested unclaimed domains", critical: true)
+            Debugger.printFailure("Cannot encode data", critical: true)
             return nil
         }
         return String(data: jsonData, encoding: .utf8)
