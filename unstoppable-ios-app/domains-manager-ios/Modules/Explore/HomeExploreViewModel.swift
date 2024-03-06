@@ -70,8 +70,9 @@ extension HomeExploreViewModel {
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
         guard let walletAddress = profile.ownerAddress else { return }
         
-        recentProfilesStorage.addProfileToRecent(profile)
-        loadRecentProfiles()
+        makeChangesToRecentProfilesStorage { storage in
+            storage.addProfileToRecent(profile)
+        }
         openPublicDomainProfile(domainName: profile.name, walletAddress: walletAddress)
     }
     
@@ -107,7 +108,9 @@ extension HomeExploreViewModel {
     }
  
     func clearRecentSearchButtonPressed() {
-        
+        makeChangesToRecentProfilesStorage { storage in
+            storage.clearRecentProfiles()
+        }
     }
 }
 
@@ -152,6 +155,11 @@ private extension HomeExploreViewModel {
         } else {
             socialRelationshipDetailsPublisher = nil
         }
+    }
+    
+    func makeChangesToRecentProfilesStorage(_ block: (RecentGlobalSearchProfilesStorageProtocol)->()) {
+        block(recentProfilesStorage)
+        loadRecentProfiles()
     }
 }
 

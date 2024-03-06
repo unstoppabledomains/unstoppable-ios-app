@@ -83,11 +83,6 @@ extension HomeExplore {
     }
 }
 
-protocol RecentGlobalSearchProfilesStorageProtocol {
-    func getRecentProfiles() -> [SearchDomainProfile]
-    func addProfileToRecent(_ profile: SearchDomainProfile)
-}
-
 // MARK: - Open methods
 extension HomeExplore {
     struct RecentGlobalSearchProfilesStorage: RecentGlobalSearchProfilesStorageProtocol {
@@ -124,6 +119,10 @@ extension HomeExplore {
         
         private func set(newProfilesList: [Object]) {
             storage.store(newProfilesList)
+        }
+        
+        func clearRecentProfiles() {
+            storage.remove()
         }
     }
 }
