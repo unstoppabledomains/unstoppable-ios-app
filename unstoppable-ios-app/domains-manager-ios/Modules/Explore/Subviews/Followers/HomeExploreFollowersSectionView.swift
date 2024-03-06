@@ -47,6 +47,9 @@ private extension HomeExploreFollowersSectionView {
                 HomeExploreFollowerCellView(domainName: follower)
             }
             .buttonStyle(.plain)
+            .onAppear {
+                viewModel.willDisplayFollower(domainName: follower)
+            }
         }
     }
     

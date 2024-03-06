@@ -56,6 +56,14 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
 // MARK: - Open methods
 extension HomeExploreViewModel {
+    var getProfilesListForSelectedRelationshipType: [DomainName] {
+        relationshipDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+    }
+    
+    var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
+        relationshipDetails?.displayInfo
+    }
+    
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
         guard let walletAddress = profile.ownerAddress else { return }
         
@@ -81,13 +89,16 @@ extension HomeExploreViewModel {
     func didTapTrendingProfile(_ profile: HomeExplore.ExploreDomainProfile) {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
     }
-    
-    var getProfilesListForSelectedRelationshipType: [DomainName] {
-        relationshipDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
-    }
-    
-    var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
-        relationshipDetails?.displayInfo
+  
+    func willDisplayFollower(domainName: DomainName) {
+        let followersList = getProfilesListForSelectedRelationshipType
+        guard let index = followersList.firstIndex(of: domainName),
+            case .wallet(let wallet) = selectedProfile else { return }
+        
+        if index + 6 >= followersList.count {
+            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType,
+                                                                     in: wallet)
+        }
     }
  
     func clearRecentSearchButtonPressed() {
