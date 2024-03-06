@@ -232,7 +232,6 @@ private extension DomainProfilesServiceTests {
         XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[2].socialDetails!))
         cancellable.cancel()
     }
-    
 }
 
 private final class MockNetworkService: PublicDomainProfileNetworkServiceProtocol {

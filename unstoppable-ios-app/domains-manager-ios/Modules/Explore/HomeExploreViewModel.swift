@@ -17,7 +17,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
-    @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var recentProfiles: [SearchDomainProfile] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
     @Published var userWalletCollapsedAddresses: Set<String> = []
@@ -35,12 +35,15 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
     private let searchService = DomainsGlobalSearchService()
+    private let recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol
     
     init(router: HomeTabRouter,
-         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
+         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
+         recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol = HomeExplore.RecentGlobalSearchProfilesStorage.instance) {
         self.selectedProfile = router.profile
         self.router = router
         self.walletsDataService = walletsDataService
+        self.recentProfilesStorage = recentProfilesStorage
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             self?.setSelectedProfile(selectedProfile)
@@ -67,6 +70,8 @@ extension HomeExploreViewModel {
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
         guard let walletAddress = profile.ownerAddress else { return }
         
+        recentProfilesStorage.addProfileToRecent(profile)
+        loadRecentProfiles()
         openPublicDomainProfile(domainName: profile.name, walletAddress: walletAddress)
     }
     
@@ -126,7 +131,7 @@ private extension HomeExploreViewModel {
     }
     
     func loadRecentProfiles() {
-        recentProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+        recentProfiles = recentProfilesStorage.getRecentProfiles()
     }
     
     func setUserWalletSearchResults() {

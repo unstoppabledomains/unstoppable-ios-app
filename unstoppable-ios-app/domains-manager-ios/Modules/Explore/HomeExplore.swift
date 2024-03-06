@@ -35,7 +35,7 @@ extension HomeExplore {
         var analyticButton: Analytics.Button { .exploreDomainsSearchType }
     }
     
-    struct ExploreDomainProfile: Hashable, Identifiable {
+    struct ExploreDomainProfile: Hashable, Identifiable, Codable {
         var id: String { domainName }
         
         let domainName: String
@@ -79,6 +79,51 @@ extension HomeExplore {
             
             self.domains = domains
             self.wallet = wallet.displayInfo
+        }
+    }
+}
+
+protocol RecentGlobalSearchProfilesStorageProtocol {
+    func getRecentProfiles() -> [SearchDomainProfile]
+    func addProfileToRecent(_ profile: SearchDomainProfile)
+}
+
+// MARK: - Open methods
+extension HomeExplore {
+    struct RecentGlobalSearchProfilesStorage: RecentGlobalSearchProfilesStorageProtocol {
+        
+        typealias Object = SearchDomainProfile
+        static let domainPFPStorageFileName = "explore.recent.global.search.data"
+
+        static var instance = RecentGlobalSearchProfilesStorage()
+        private let storage = SpecificStorage<[Object]>(fileName: RecentGlobalSearchProfilesStorage.domainPFPStorageFileName)
+        private let maxNumberOfRecentProfiles = 3
+        
+        private init() {}
+
+        func getRecentProfiles() -> [Object] {
+            storage.retrieve() ?? []
+        }
+        
+        func addProfileToRecent(_ profile: Object) {
+            let targetProfileIndex = 0
+            var profilesList = getRecentProfiles()
+            if let index = profilesList.firstIndex(where: { $0.name == profile.name }) {
+                if index == targetProfileIndex {
+                    return
+                }
+                profilesList.swapAt(index, targetProfileIndex)
+            } else {
+                profilesList.insert(profile, at: targetProfileIndex)
+            }
+            
+            profilesList = Array(profilesList.prefix(maxNumberOfRecentProfiles))
+            
+            set(newProfilesList: profilesList)
+        }
+        
+        private func set(newProfilesList: [Object]) {
+            storage.store(newProfilesList)
         }
     }
 }

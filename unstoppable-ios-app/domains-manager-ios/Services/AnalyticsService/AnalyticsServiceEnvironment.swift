@@ -44,7 +44,7 @@ extension Analytics {
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
-        case searchProfilePressed
+        case searchProfilePressed, recentSearchProfilePressed
         case trendingProfilePressed
         
         // Domains Collection

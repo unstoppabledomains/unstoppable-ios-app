@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct HomeExploreRecentProfilesSectionView: View {
+struct HomeExploreRecentProfilesSectionView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: HomeExploreViewModel
+    @Environment(\.analyticsViewName) var analyticsName
 
     var body: some View {
         if !viewModel.recentProfiles.isEmpty {
@@ -26,8 +27,8 @@ struct HomeExploreRecentProfilesSectionView: View {
 private extension HomeExploreRecentProfilesSectionView {
     @ViewBuilder
     func recentProfilesListView() -> some View {
-        ForEach(viewModel.recentProfiles) { profile in
-            HomeExploreTrendingProfileRowView(profile: profile)
+        ForEach(viewModel.recentProfiles, id: \.name) { profile in
+            recentProfileRowView(profile)
         }
     }
     
@@ -58,6 +59,18 @@ private extension HomeExploreRecentProfilesSectionView {
                 .padding(6)
         }
         .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func recentProfileRowView(_ profile: SearchDomainProfile) -> some View {
+        UDCollectionListRowButton(content: {
+            DomainSearchResultProfileRowView(profile: profile)
+                .udListItemInCollectionButtonPadding()
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            logAnalytic(event: .recentSearchProfilePressed, parameters: [.domainName : profile.name])
+            viewModel.didTapSearchDomainProfile(profile)
+        })
     }
 }
 
