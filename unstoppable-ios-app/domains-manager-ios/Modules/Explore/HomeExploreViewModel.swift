@@ -17,7 +17,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
-    @Published private(set) var recentProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var recentProfiles: [SearchDomainProfile] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
     @Published var userWalletCollapsedAddresses: Set<String> = []
@@ -26,24 +26,33 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var relationshipType: DomainProfileFollowerRelationshipType = .following
     @Published var searchKey: String = ""
     @Published var error: Error?
-    @Published var isKeyboardActive: Bool = true
+    @Published var isKeyboardActive: Bool = false
     var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
-    @Published private var relationshipDetails: WalletDomainProfileDetails?
+    @Published private var walletDomainProfileDetails: WalletDomainProfileDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
+    private let domainProfilesService: DomainProfilesServiceProtocol
     private let searchService = DomainsGlobalSearchService()
+    private let recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol
     
     init(router: HomeTabRouter,
-         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
+         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
+         domainProfilesService: DomainProfilesServiceProtocol = appContext.domainProfilesService,
+         recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol = HomeExplore.RecentGlobalSearchProfilesStorage.instance) {
         self.selectedProfile = router.profile
         self.router = router
         self.walletsDataService = walletsDataService
+        self.domainProfilesService = domainProfilesService
+        self.recentProfilesStorage = recentProfilesStorage
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
-            self?.setSelectedProfile(selectedProfile)
+            if let selectedProfile {
+                self?.selectedProfile = selectedProfile
+                self?.didUpdateSelectedProfile()
+            }
         }.store(in: &cancellables)
     
         $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
@@ -57,16 +66,19 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 // MARK: - Open methods
 extension HomeExploreViewModel {
     var getProfilesListForSelectedRelationshipType: [DomainName] {
-        relationshipDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+        walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
     }
     
     var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
-        relationshipDetails?.displayInfo
+        walletDomainProfileDetails?.displayInfo
     }
     
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
         guard let walletAddress = profile.ownerAddress else { return }
         
+        makeChangesToRecentProfilesStorage { storage in
+            storage.addProfileToRecent(profile)
+        }
         openPublicDomainProfile(domainName: profile.name, walletAddress: walletAddress)
     }
     
@@ -95,14 +107,16 @@ extension HomeExploreViewModel {
         guard let index = followersList.firstIndex(of: domainName),
             case .wallet(let wallet) = selectedProfile else { return }
         
-        if index + 6 >= followersList.count {
-            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType,
-                                                                     in: wallet)
+        if index + Constants.numberOfFollowersBeforeLoadMore >= followersList.count {
+            domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType,
+                                                          in: wallet)
         }
     }
  
     func clearRecentSearchButtonPressed() {
-        
+        makeChangesToRecentProfilesStorage { storage in
+            storage.clearRecentProfiles()
+        }
     }
 }
 
@@ -112,6 +126,7 @@ private extension HomeExploreViewModel {
         loadTrendingProfiles()
         loadRecentProfiles()
         setUserWalletSearchResults()
+        updateWalletDomainProfileDetailsForSelectedProfile()
     }
     
     func loadTrendingProfiles() {
@@ -126,7 +141,7 @@ private extension HomeExploreViewModel {
     }
     
     func loadRecentProfiles() {
-        recentProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+        recentProfiles = recentProfilesStorage.getRecentProfiles()
     }
     
     func setUserWalletSearchResults() {
@@ -134,19 +149,25 @@ private extension HomeExploreViewModel {
         userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: getLowercasedTrimmedSearchKey()) })
     }
     
-    func setSelectedProfile(_ selectedProfile: UserProfile?) {
-        if let selectedProfile {
-            self.selectedProfile = selectedProfile
-        }
+    func didUpdateSelectedProfile() {
+        updateWalletDomainProfileDetailsForSelectedProfile()
+    }
+    
+    func updateWalletDomainProfileDetailsForSelectedProfile() {
         if case .wallet(let wallet) = selectedProfile {
             Task {
-                socialRelationshipDetailsPublisher = await appContext.domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
-                    self?.relationshipDetails = relationshipDetails
+                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                    self?.walletDomainProfileDetails = relationshipDetails
                 }
             }
         } else {
             socialRelationshipDetailsPublisher = nil
         }
+    }
+    
+    func makeChangesToRecentProfilesStorage(_ block: (RecentGlobalSearchProfilesStorageProtocol)->()) {
+        block(recentProfilesStorage)
+        loadRecentProfiles()
     }
 }
 
@@ -172,5 +193,12 @@ private extension HomeExploreViewModel {
             }
             isLoadingGlobalProfiles = false
         }
+    }
+}
+
+// MARK: - Open methods
+extension HomeExploreViewModel {
+    struct Constants {
+        static let numberOfFollowersBeforeLoadMore = 6
     }
 }

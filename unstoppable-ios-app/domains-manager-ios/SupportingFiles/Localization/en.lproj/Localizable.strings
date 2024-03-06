@@ -1022,3 +1022,5 @@
 "INTRO_MESSAGES_BODY" = "Messages now have a dedicated tab.
 More tabs are coming in the next updates.";
 "TOTAL_N" = "Total: %@";
+
+"GLOBAL_DOMAINS_SEARCH_HINT" = "Search by domain name\nor wallet address";

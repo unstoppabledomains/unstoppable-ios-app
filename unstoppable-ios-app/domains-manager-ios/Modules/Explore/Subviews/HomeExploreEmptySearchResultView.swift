@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct HomeExploreEmptySearchResultView: View {
+    
+    var mode: Mode = .noResults
+    
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
                 Image.searchIcon
                     .resizable()
                     .squareFrame(48)
-                Text(String.Constants.noResults.localized())
+                Text(mode.title)
                     .font(.currentFont(size: 22, weight: .bold))
-                    .frame(height: 28)
+                    .multilineTextAlignment(.center)
             }
             .foregroundStyle(Color.foregroundSecondary)
         }
@@ -27,6 +30,23 @@ struct HomeExploreEmptySearchResultView: View {
     }
 }
 
+// MARK: - Open methods
+extension HomeExploreEmptySearchResultView {
+    enum Mode {
+        case noResults
+        case globalSearchHint
+        
+        var title: String {
+            switch self {
+            case .noResults:
+                String.Constants.noResults.localized()
+            case .globalSearchHint:
+                String.Constants.globalDomainsSearchHint.localized()
+            }
+        }
+    }
+}
+
 #Preview {
-    HomeExploreEmptySearchResultView()
+    HomeExploreEmptySearchResultView(mode: .globalSearchHint)
 }
