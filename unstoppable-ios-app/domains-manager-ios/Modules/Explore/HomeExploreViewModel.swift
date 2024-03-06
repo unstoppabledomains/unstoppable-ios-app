@@ -125,12 +125,14 @@ private extension HomeExploreViewModel {
             self.selectedProfile = selectedProfile
         }
         if case .wallet(let wallet) = selectedProfile {
-            socialRelationshipDetailsPublisher = appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
-                self?.relationshipDetails = relationshipDetails
+            Task {
+                socialRelationshipDetailsPublisher = await appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                    self?.relationshipDetails = relationshipDetails
+                }
+                appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .followers, in: wallet)
+                appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .following, in: wallet)
+                reloadSelectedPublicDomainProfileFor(wallet: wallet)
             }
-            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .followers, in: wallet)
-            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .following, in: wallet)
-            reloadSelectedPublicDomainProfileFor(wallet: wallet)
         } else {
             socialRelationshipDetailsPublisher = nil
             reloadSelectedPublicDomainProfileFor(wallet: nil)

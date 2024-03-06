@@ -65,8 +65,8 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         try await networkService.unfollow(domainName, by: domain.toDomainItem())
     }
     
-    func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never> {
-        getOrCreateProfileSocialDetailsFor(wallet: wallet).publisher
+    func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) async -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never> {
+        await getOrCreateProfileSocialDetailsFor(wallet: wallet).publisher
     }
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
@@ -74,19 +74,20 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         Task {
             do {
                 guard let profileDomainName = wallet.profileDomainName else { throw DomainProfilesServiceError.noDomainForSocialDetails }
-                let currentSocialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
+                let socialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
                 
-                guard currentSocialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
+                guard await socialDetails.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
                 
-                let cursor = currentSocialDetails.getPaginationCursorFor(relationshipType: relationshipType)
+                await socialDetails.setLoading(relationshipType: relationshipType)
+                let cursor = await socialDetails.getPaginationCursorFor(relationshipType: relationshipType)
                 
                 let response = try await NetworkService().fetchListOfFollowers(for: profileDomainName,
                                                                                relationshipType: relationshipType,
                                                                                count: numberOfFollowersToTake,
                                                                                cursor: cursor)
-                var updatedSocialDetails = getOrCreateProfileSocialDetailsFor(wallet: wallet)
-                updatedSocialDetails.applyDetailsFrom(response: response)
-                saveCachedProfileSocialDetail(updatedSocialDetails)
+                await socialDetails.applyDetailsFrom(response: response)
+                await socialDetails.setNotLoading(relationshipType: relationshipType)
+                saveCachedProfileSocialDetail(socialDetails)
             }
         }
     }
@@ -124,10 +125,11 @@ private extension DomainProfilesService {
         }
     }
     
-    struct PublishableDomainProfileSocialRelationshipDetails {
+    actor PublishableDomainProfileSocialRelationshipDetails {
         private var details: DomainProfileSocialRelationshipDetails
         private(set) var publisher: CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never>
-
+        private var loadingRelationshipTypes: Set<DomainProfileFollowerRelationshipType> = []
+        
         var walletAddress: String { details.walletAddress }
         
         init(wallet: WalletEntity) {
@@ -140,10 +142,23 @@ private extension DomainProfilesService {
         }
         
         func isAbleToLoadMoreSocialsFor(relationshipType: DomainProfileFollowerRelationshipType) -> Bool {
-            details.getPaginationInfoFor(relationshipType: relationshipType).canLoadMore
+            details.getPaginationInfoFor(relationshipType: relationshipType).canLoadMore &&
+            !isLoading(relationshipType: relationshipType)
         }
         
-        mutating func applyDetailsFrom(response: DomainProfileFollowersResponse) {
+        private func isLoading(relationshipType: DomainProfileFollowerRelationshipType) -> Bool {
+            loadingRelationshipTypes.contains(relationshipType)
+        }
+        
+        func setLoading(relationshipType: DomainProfileFollowerRelationshipType) {
+            loadingRelationshipTypes.insert(relationshipType)
+        }
+        
+        func setNotLoading(relationshipType: DomainProfileFollowerRelationshipType) {
+            loadingRelationshipTypes.remove(relationshipType)
+        }
+        
+        func applyDetailsFrom(response: DomainProfileFollowersResponse) {
             details.applyDetailsFrom(response: response)
             publisher.send(details)
         }

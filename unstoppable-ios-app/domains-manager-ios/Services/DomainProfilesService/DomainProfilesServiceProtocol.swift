@@ -17,5 +17,5 @@ protocol DomainProfilesServiceProtocol {
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
                                  in wallet: WalletEntity)
-    func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never>
+    func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) async -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never>
 }
