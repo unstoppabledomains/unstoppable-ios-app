@@ -9,6 +9,9 @@ import Foundation
 
 protocol PublicDomainProfileNetworkServiceProtocol {
     func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile
+    @discardableResult
+    func updateUserDomainProfile(for domain: DomainItem,
+                                 request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile
     func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws
 }

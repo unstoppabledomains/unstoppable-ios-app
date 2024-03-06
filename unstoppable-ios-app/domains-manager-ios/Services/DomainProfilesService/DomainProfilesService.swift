@@ -12,14 +12,33 @@ final class DomainProfilesService {
    
     private let storage: PublicDomainProfileDisplayInfoStorageServiceProtocol
     private let networkService: PublicDomainProfileNetworkServiceProtocol
+    private let walletsDataService: WalletsDataServiceProtocol
     private let numberOfFollowersToTake = 40
     private let serialQueue = DispatchQueue(label: "com.domain_profiles_service.unstoppable")
     private var profilesSocialDetailsCache: [HexAddress : PublishableDomainProfileDetailsController] = [:]
+    private var cancellables: Set<AnyCancellable> = []
 
     init(networkService: PublicDomainProfileNetworkServiceProtocol = NetworkService(),
-         storage: PublicDomainProfileDisplayInfoStorageServiceProtocol) {
+         storage: PublicDomainProfileDisplayInfoStorageServiceProtocol,
+         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
         self.networkService = networkService
         self.storage = storage
+        self.walletsDataService = walletsDataService
+        walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.walletsListUpdated(wallets)
+        }.store(in: &cancellables)
+    }
+    
+    func walletsListUpdated(_ wallets: [WalletEntity]) {
+        Task {
+            for wallet in wallets {
+                if let cachedController = getCachedProfileSocialDetailFor(walletAddress: wallet.address),
+                   wallet.profileDomainName != (await cachedController.profileDomainName) {
+                    await cachedController.resetAllDetails()
+                    refreshAllProfileDetailsNonBlockingFor(controller: cachedController)
+                }
+            }
+        }
     }
     
 }
@@ -56,13 +75,25 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
             }
         }
     }
-
+    
+    
+    @discardableResult // TODO: - Update function to return DomainProfileDisplayInfo
+    func updateUserDomainProfile(for domain: DomainDisplayInfo,
+                                        request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
+        let serializedProfile = try await networkService.updateUserDomainProfile(for: domain.toDomainItem(),
+                                                                                 request: request)
+        try resetDomainDisplayInfoForWalletOwning(domain: domain)
+        return serializedProfile
+    }
+    
     func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
         try await networkService.follow(domainName, by: domain.toDomainItem())
+        try resetSocialsCacheForWalletOwning(domain: domain)
     }
     
     func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
         try await networkService.unfollow(domainName, by: domain.toDomainItem())
+        try resetSocialsCacheForWalletOwning(domain: domain)
     }
     
     func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never> {
@@ -73,41 +104,10 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
                                  in wallet: WalletEntity) {
         loadMoreSocialIfAbleFor(relationshipType: relationshipType, walletAddress: wallet.address)
     }
-    
-    
-    func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
-                                 walletAddress: HexAddress) {
-        
-        Task {
-            let profileController = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
-            
-            guard let profileDomainName = await profileController.profileDomainName,
-                await profileController.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
-            
-            await profileController.setLoading(relationshipType: relationshipType)
-            
-            do {
-                let cursor = await profileController.getPaginationCursorFor(relationshipType: relationshipType)
-                let response = try await NetworkService().fetchListOfFollowers(for: profileDomainName,
-                                                                               relationshipType: relationshipType,
-                                                                               count: numberOfFollowersToTake,
-                                                                               cursor: cursor)
-                await profileController.applyDetailsFrom(response: response)
-            }
-            
-            await profileController.setNotLoading(relationshipType: relationshipType)
-        }
-    }
 }
 
 // MARK: - Private methods
 private extension DomainProfilesService {
-    func getSerializedPublicDomainProfile(for domainName: DomainName) async throws -> SerializedPublicDomainProfile {
-        let serializedProfile = try await networkService.fetchPublicProfile(for: domainName,
-                                                                            fields: [.profile, .records, .socialAccounts])
-        return serializedProfile
-    }
-    
     func getOrCreateProfileDetailsControllerFor(walletAddress: HexAddress) -> PublishableDomainProfileDetailsController {
         if let cachedController = getCachedProfileSocialDetailFor(walletAddress: walletAddress) {
             return cachedController
@@ -119,25 +119,42 @@ private extension DomainProfilesService {
                                                                       profileDomainName: profileDomainName,
                                                                       displayInfo: domainProfileDisplayInfo)
         cacheProfileSocialDetail(newController, for: walletAddress)
-        
-        refreshProfileDetailsNonBlockingFor(controller: newController)
+        refreshAllProfileDetailsNonBlockingFor(controller: newController)
         
         return newController
     }
     
-    func refreshProfileDetailsNonBlockingFor(controller: PublishableDomainProfileDetailsController) {
+    func refreshAllProfileDetailsNonBlockingFor(controller: PublishableDomainProfileDetailsController) {
         Task {
             let walletAddress = await controller.walletAddress
-            loadMoreSocialIfAbleFor(relationshipType: .followers, walletAddress: walletAddress)
-            loadMoreSocialIfAbleFor(relationshipType: .following, walletAddress: walletAddress)
-            
-            if let profileDomainName = await controller.profileDomainName {
-                do {
-                    let displayInfo = try await fetchDomainProfileDisplayInfo(for: profileDomainName)
-                    await controller.setProfileDisplayInfo(displayInfo)
-                }
+            refreshSocialDetailsNonBlockingFor(walletAddress: walletAddress)
+            await refreshDomainProfileDisplayInfo(in: controller)
+        }
+    }
+    
+    func refreshDomainProfileDisplayInfo(in controller: PublishableDomainProfileDetailsController) async {
+        if let profileDomainName = await controller.profileDomainName {
+            do {
+                let displayInfo = try await fetchDomainProfileDisplayInfo(for: profileDomainName)
+                await controller.setProfileDisplayInfo(displayInfo)
+            } catch { }
+        }
+    }
+    
+    func resetDomainDisplayInfoForWalletOwning(domain: DomainDisplayInfo) throws {
+        let walletAddress = try domain.getOwnerWallet()
+        Task {
+            let controller = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
+            let profileDomainName = await controller.profileDomainName
+            if domain.name == profileDomainName {
+                await refreshDomainProfileDisplayInfo(in: controller)
             }
         }
+    }
+
+    func refreshSocialDetailsNonBlockingFor(walletAddress: HexAddress) {
+        loadMoreSocialIfAbleFor(relationshipType: .followers, walletAddress: walletAddress)
+        loadMoreSocialIfAbleFor(relationshipType: .following, walletAddress: walletAddress)
     }
     
     func getDomainProfileDisplayInfoForNewControllerFor(profileDomainName: DomainName?) -> DomainProfileDisplayInfo? {
@@ -164,6 +181,45 @@ private extension DomainProfilesService {
         let wallet = appContext.walletsDataService.wallets.findWithAddress(walletAddress)
         return wallet?.profileDomainName
     }
+    
+    func getSerializedPublicDomainProfile(for domainName: DomainName) async throws -> SerializedPublicDomainProfile {
+        let serializedProfile = try await networkService.fetchPublicProfile(for: domainName,
+                                                                            fields: [.profile, .records, .socialAccounts])
+        return serializedProfile
+    }
+    
+    func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
+                                 walletAddress: HexAddress) {
+        
+        Task {
+            let profileController = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
+            
+            guard let profileDomainName = await profileController.profileDomainName,
+                  await profileController.isAbleToLoadMoreSocialsFor(relationshipType: relationshipType) else { return }
+            
+            await profileController.setLoading(relationshipType: relationshipType)
+            
+            do {
+                let cursor = await profileController.getPaginationCursorFor(relationshipType: relationshipType)
+                let response = try await NetworkService().fetchListOfFollowers(for: profileDomainName,
+                                                                               relationshipType: relationshipType,
+                                                                               count: numberOfFollowersToTake,
+                                                                               cursor: cursor)
+                await profileController.applyDetailsFrom(response: response)
+            }
+            
+            await profileController.setNotLoading(relationshipType: relationshipType)
+        }
+    }
+    
+    func resetSocialsCacheForWalletOwning(domain: DomainDisplayInfo) throws {
+        let walletAddress = try domain.getOwnerWallet()
+        Task {
+            let controller = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
+            await controller.resetSocialDetails()
+            refreshSocialDetailsNonBlockingFor(walletAddress: walletAddress)
+        }
+    }
 }
 
 // MARK: - Open methods
@@ -180,19 +236,20 @@ extension DomainProfilesService {
 // MARK: - Private methods
 private extension DomainProfilesService {
     actor PublishableDomainProfileDetailsController {
-        private var details: WalletDomainProfileDetails
+        private var details: WalletDomainProfileDetails {
+            didSet {
+                publisher.send(details)
+            }
+        }
         private(set) var publisher: CurrentValueSubject<WalletDomainProfileDetails, Never>
         private var loadingRelationshipTypes: Set<DomainProfileFollowerRelationshipType> = []
         
         init(walletAddress: HexAddress,
              profileDomainName: DomainName?,
              displayInfo: DomainProfileDisplayInfo?) {
-            let socialDetails = DomainProfileSocialRelationshipDetails(walletAddress: walletAddress,
-                                                                       profileDomainName: profileDomainName)
             self.details = WalletDomainProfileDetails(walletAddress: walletAddress,
                                                       profileDomainName: profileDomainName,
-                                                      displayInfo: displayInfo,
-                                                      socialDetails: socialDetails)
+                                                      displayInfo: displayInfo)
             self.publisher = CurrentValueSubject(details)
         }
         
@@ -222,18 +279,47 @@ private extension DomainProfilesService {
         
         func applyDetailsFrom(response: DomainProfileFollowersResponse) {
             details.socialDetails?.applyDetailsFrom(response: response)
-            publisher.send(details)
         }
         
         func setProfileDisplayInfo(_ displayInfo: DomainProfileDisplayInfo) {
             details.displayInfo = displayInfo
         }
+        
+        func resetSocialDetails() {
+            details.resetSocialDetails()
+        }
+        
+        func resetAllDetails() {
+            details.resetAllDetails()
+        }
     }
 }
 
 struct WalletDomainProfileDetails: Hashable {
+   
     let walletAddress: HexAddress
     let profileDomainName: DomainName?
     var displayInfo: DomainProfileDisplayInfo?
     var socialDetails: DomainProfileSocialRelationshipDetails?
+    
+    init(walletAddress: HexAddress, profileDomainName: DomainName? = nil, displayInfo: DomainProfileDisplayInfo? = nil) {
+        self.walletAddress = walletAddress
+        self.profileDomainName = profileDomainName
+        self.displayInfo = displayInfo
+        resetSocialDetails()
+    }
+    
+    mutating func resetAllDetails() {
+        resetDisplayInfo()
+        resetSocialDetails()
+    }
+    
+    mutating func resetDisplayInfo()  {
+        displayInfo = nil
+    }
+    
+    mutating func resetSocialDetails() {
+        socialDetails = DomainProfileSocialRelationshipDetails(walletAddress: walletAddress,
+                                                               profileDomainName: profileDomainName)
+    }
 }

@@ -12,6 +12,10 @@ protocol DomainProfilesServiceProtocol {
     func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo?
     func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo
     func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, Error>
+    @discardableResult
+    func updateUserDomainProfile(for domain: DomainDisplayInfo,
+                                 request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile
+    
     func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     
