@@ -279,7 +279,7 @@ class SignatureTests: XCTestCase {
         let message = "0x070678b2c6913be3e6a50a10aabfd5ec2513fa6dff0219c2f53d0222d35478fa"
         let data = Data(message.droppedHexPrefix.hexToBytes())
         XCTAssertEqual(data.count, 32)
-        let m = String(data: data, encoding: .default)!
+        let m = String(data: data, encoding: .ascii)!
         
         XCTAssertEqual(m.count, 32)
         XCTAssertEqual(message.lowercased(), "0x" + m.unicodeScalarToHex!.lowercased())
