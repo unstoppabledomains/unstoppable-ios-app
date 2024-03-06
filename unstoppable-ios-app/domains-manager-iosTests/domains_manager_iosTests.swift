@@ -132,4 +132,27 @@ class APIRequestTests: XCTestCase {
         XCTAssertEqual(second["signature"] as! String, signatures[1])
         XCTAssertEqual(second["type"] as! String, txType)
     }
+    
+    func test_buildBody_DeepLinks() {
+        struct OperationBody: Codable {
+            let operation: DeepLinkOperation
+        }
+        let operation = DeepLinkOperation("MobileImportWallets")!
+        let body = OperationBody(operation: operation)
+        
+        let string = body.stringify()!
+        XCTAssertEqual(string, "{\"operation\":\"MobileImportWallets\"}")
+    }
+    
+    func test_buildBody_DomainsList() {
+        let domains : [DomainItem] = [DomainItem(name: "rabota.x", ownerWallet: "0xabcdef"),
+                                      DomainItem(name: "cow.nft", ownerWallet: "0x654321")]
+        let stripeIntent = "intent2345"
+        domains.forEach { if $0.ownerWallet == nil { Debugger.printFailure("no owner assigned for claiming", critical: true)}}
+        let domReq = domains.map { UnmintedDomainRequest(name: $0.name, owner: $0.ownerWallet!) }
+        let d = DomainRequestArray(domains: domReq)
+        let toClaim = RequestToClaim(claim: d, stripeIntent: stripeIntent)
+        let string = toClaim.stringify()!
+        XCTAssertEqual(string, "{\"claim\":{\"domains\":[{\"name\":\"rabota.x\",\"owner\":\"0xabcdef\"},{\"name\":\"cow.nft\",\"owner\":\"0x654321\"}]},\"stripeIntent\":\"intent2345\"}")
+    }
 }

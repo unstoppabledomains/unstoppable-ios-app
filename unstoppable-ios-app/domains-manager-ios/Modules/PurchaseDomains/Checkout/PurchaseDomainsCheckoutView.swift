@@ -432,12 +432,13 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var shouldShowTotalDueInSummary: Bool {
-        switch deviceSize {
-        case .i4Inch, .i4_7Inch:
-            return false
-        default:
-            return true
-        }
+        true
+//        switch deviceSize {
+//        case .i4Inch, .i4_7Inch:
+//            return false
+//        default:
+//            return true
+//        }
     }
     
     var isPayButtonDisabled: Bool {

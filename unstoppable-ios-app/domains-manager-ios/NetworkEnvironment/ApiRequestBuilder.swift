@@ -305,28 +305,19 @@ class APIRequestBuilder {
     
     
     private func buildBody(for operation: DeepLinkOperation) -> String? {
-        struct OperationBody: Codable {
+        struct OperationBody: Encodable {
             let operation: DeepLinkOperation
         }
 
         let body = OperationBody(operation: operation)
-        guard let jsonData = try? JSONEncoder().encode(body) else {
-            Debugger.printFailure("Cannot encode requested unclaimed domains", critical: true)
-            return nil
-        }
-        return String(data: jsonData, encoding: .utf8)
-    }
+        return body.stringify()    }
     
     private func buildBody(for domains: [DomainItem], stripeIntent: String?) -> String? {
         domains.forEach { if $0.ownerWallet == nil { Debugger.printFailure("no owner assigned for claiming", critical: true)}}
         let domReq = domains.map { UnmintedDomainRequest(name: $0.name, owner: $0.ownerWallet!) }
         let d = DomainRequestArray(domains: domReq)
         let toClaim = RequestToClaim(claim: d, stripeIntent: stripeIntent)
-        guard let jsonData = try? JSONEncoder().encode(toClaim) else {
-            Debugger.printFailure("Cannot encode requested unclaimed domains", critical: true)
-            return nil
-        }
-        return String(data: jsonData, encoding: .utf8)
+        return toClaim.stringify()
     }
     
     struct MessageToSignRequest<T:Encodable>: Encodable {
@@ -348,6 +339,16 @@ class APIRequestBuilder {
         self.type = .transactions
         self.ids = txIds
         return self
+    }
+}
+
+extension Encodable {
+    func stringify() -> String? {
+        guard let jsonData = try? JSONEncoder().encode(self) else {
+            Debugger.printFailure("Cannot encode data", critical: true)
+            return nil
+        }
+        return String(data: jsonData, encoding: .utf8)
     }
 }
 
