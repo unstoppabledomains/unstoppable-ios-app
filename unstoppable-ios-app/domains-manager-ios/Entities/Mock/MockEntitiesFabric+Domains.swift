@@ -111,14 +111,15 @@ extension MockEntitiesFabric {
                                         walletAddress: String = "0x1",
                                         attributes: PublicDomainProfileAttributes = DomainProfile.createEmptyPublicProfileAttributes(),
                                         socialAccounts: SocialAccounts? = nil,
-                                        social: DomainProfileSocialInfo? = nil) -> SerializedPublicDomainProfile {
+                                        social: DomainProfileSocialInfo? = nil,
+                                        walletBalance: [ProfileWalletBalance]? = nil) -> SerializedPublicDomainProfile {
             .init(profile: attributes,
                   metadata: createPublicDomainMetadata(domain: domain, walletAddress: walletAddress),
                   socialAccounts: socialAccounts,
                   referralCode: nil,
                   social: social,
                   records: nil,
-                  walletBalances: nil)
+                  walletBalances: walletBalance)
         }
         
         static func createEmptyPublicProfileAttributes() -> PublicDomainProfileAttributes {
@@ -181,6 +182,10 @@ extension MockEntitiesFabric {
                                            relationshipType: relationshipType,
                                            meta: .init(totalCount: followerNames.count,
                                                        pagination: .init(cursor: nil, take: followerNames.count)))
+        }
+        
+        static func createPublicProfileWalletBalances() -> [ProfileWalletBalance] {
+            []
         }
     }
 }

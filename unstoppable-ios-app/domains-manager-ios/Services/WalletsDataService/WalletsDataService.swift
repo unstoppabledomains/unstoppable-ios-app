@@ -112,6 +112,10 @@ extension WalletsDataService: WalletsDataServiceProtocol {
         
         try await refreshDataForWallet(wallet)
     }
+    
+    func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
+        try await NetworkService().fetchCryptoPortfolioFor(wallet: walletAddress)
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -476,13 +480,13 @@ private extension WalletsDataService {
         do {
             let walletBalance = try await loadBalanceFor(wallet: wallet)
             mutateWalletEntity(wallet) { wallet in
-                wallet.updateBalance(walletBalance ?? [])
+                wallet.updateBalance(walletBalance)
             }
         } catch { }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio]? {
-         try await NetworkService().fetchCryptoPortfolioFor(wallet: wallet.address)
+    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
+         try await loadBalanceFor(walletAddress: wallet.address)
     }
 }
 

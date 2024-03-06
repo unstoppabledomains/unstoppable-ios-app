@@ -224,7 +224,8 @@ extension String {
         static let yours = "YOURS"
         static let recent = "RECENT"
         static let primary = "PRIMARY"
-
+        static let collapse = "COLLAPSE"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
@@ -364,6 +365,7 @@ extension String {
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         static let pluralNHolders = "SDICT:N_HOLDERS"
+        static let pluralNAddresses = "SDICT:N_ADDRESSES"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -1116,6 +1118,7 @@ extension String {
         static let introBalanceBody = "INTRO_BALANCE_BODY"
         static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
         static let introMessagesBody = "INTRO_MESSAGES_BODY"
+        static let totalN = "TOTAL_N"
         
     }
     

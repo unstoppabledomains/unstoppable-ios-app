@@ -190,7 +190,7 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func totalBalanceView() -> some View {
-        Text("$\(wallet.totalBalance.formatted(toMaxNumberAfterComa: 2))")
+        Text(BalanceStringFormatter.tokensBalanceString(wallet.totalBalance))
             .titleText()
     }
 }

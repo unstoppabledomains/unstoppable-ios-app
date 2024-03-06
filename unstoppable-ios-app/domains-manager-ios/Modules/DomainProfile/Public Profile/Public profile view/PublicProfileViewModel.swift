@@ -40,6 +40,8 @@ extension PublicProfileView {
         @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
+        @Published var tokens: [BalanceTokenUIDescription]?
+        @Published var isTokensCollapsed = true
         @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var isUserDomainSelected = true
@@ -131,6 +133,7 @@ extension PublicProfileView {
         
         private func loadAllProfileData() {
             loadPublicProfile()
+            loadProfileTokens()
             loadBadgesInfo()
             loadFollowingState()
             loadFollowersList()
@@ -142,6 +145,7 @@ extension PublicProfileView {
             records = nil
             socialInfo = nil
             socialAccounts = nil
+            tokens = nil
             isFollowing = nil
             badgesInfo = nil
             badgesDisplayInfo = nil
@@ -166,6 +170,15 @@ extension PublicProfileView {
                     socialAccounts = profile.socialAccounts
                     isLoading = false
                     loadImages()
+                }
+            }
+        }
+        
+        private func loadProfileTokens() {
+            Task {
+                await performAsyncErrorCatchingBlock {
+                    let balances = try await appContext.walletsDataService.loadBalanceFor(walletAddress: domain.walletAddress)
+                    tokens = balances.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
                 }
             }
         }
