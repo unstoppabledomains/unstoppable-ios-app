@@ -65,7 +65,10 @@ extension HomeTabRouter {
     
     func runPurchaseFlow() {
         Task {
+            let currentTab = tabViewSelection
             await showHomeScreenList()
+            await waitBeforeNextNavigationIfTabNot(currentTab)
+            
             walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { [weak self] result in
                 switch result {
                 case .cancel:
@@ -76,7 +79,7 @@ extension HomeTabRouter {
             }))
         }
     }
-    
+  
     func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
         if let mintingNav {
             mintingNav.refreshMintingProgress()
@@ -486,6 +489,13 @@ private extension HomeTabRouter {
             }
         }
         isUpdatingPurchasedProfiles = false
+    }
+    
+    func waitBeforeNextNavigationIfTabNot(_ tab: HomeTab) async {
+        let shouldWaitBeforePush = tabViewSelection != currentTab
+        if shouldWaitBeforePush {
+            await Task.sleep(seconds: 0.2)
+        }
     }
 }
 
