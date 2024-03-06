@@ -164,6 +164,24 @@ final class DomainProfilesServiceTests: BaseTestClass {
         
         XCTAssertEqual(capturedValues[0].displayInfo, profile)
     }
+    
+    func testLoadMoreCalledOnPublishedRequestOnce() async {
+        let wallet = mockWallet()
+        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
+        var capturedValues: [WalletDomainProfileDetails] = []
+        let cancellable = publisher.sink { value in
+            capturedValues.append(value)
+        }
+        await Task.sleep(seconds: 0.1) // Wait for initial updates finished
+        XCTAssertFalse(capturedValues.isEmpty)
+        capturedValues.removeAll()
+        
+        let samePublisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
+        await Task.sleep(seconds: 0.1)
+
+        // Check no values were changed
+        XCTAssertTrue(capturedValues.isEmpty)
+    }
 }
 
 // MARK: - Private methods

@@ -76,7 +76,6 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         }
     }
     
-    
     @discardableResult // TODO: - Update function to return DomainProfileDisplayInfo
     func updateUserDomainProfile(for domain: DomainDisplayInfo,
                                         request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
