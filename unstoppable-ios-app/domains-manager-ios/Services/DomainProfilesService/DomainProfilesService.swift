@@ -20,7 +20,7 @@ final class DomainProfilesService {
 
     init(networkService: PublicDomainProfileNetworkServiceProtocol = NetworkService(),
          storage: PublicDomainProfileDisplayInfoStorageServiceProtocol,
-         walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService) {
+         walletsDataService: WalletsDataServiceProtocol) {
         self.networkService = networkService
         self.storage = storage
         self.walletsDataService = walletsDataService

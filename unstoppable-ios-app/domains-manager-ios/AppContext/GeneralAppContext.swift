@@ -30,6 +30,7 @@ final class GeneralAppContext: AppContextProtocol {
     let messagingService: MessagingServiceProtocol
     let walletsDataService: WalletsDataServiceProtocol
     let walletNFTsService: WalletNFTsServiceProtocol
+    let domainProfilesService: DomainProfilesServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -54,7 +55,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
-    private(set) lazy var domainProfilesService: DomainProfilesServiceProtocol = DomainProfilesService(storage: PublicDomainProfileDisplayInfoStorageService())
     
     init() {
         authentificationService = AuthentificationService()
@@ -79,6 +79,9 @@ final class GeneralAppContext: AppContextProtocol {
                                                 transactionsService: domainTransactionsService,
                                                 walletConnectServiceV2: walletConnectServiceV2,
                                                 walletNFTsService: walletNFTsService)
+        
+        domainProfilesService = DomainProfilesService(storage: PublicDomainProfileDisplayInfoStorageService(),
+                                                      walletsDataService: walletsDataService)
         
         // WC requests
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,
