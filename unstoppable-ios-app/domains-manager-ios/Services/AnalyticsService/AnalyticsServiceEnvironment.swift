@@ -392,6 +392,7 @@ extension Analytics {
         case followerTile
         case exploreDomainsSearchType
         case exploreUserWalletsSectionHeader
+        case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
     }
 }
 

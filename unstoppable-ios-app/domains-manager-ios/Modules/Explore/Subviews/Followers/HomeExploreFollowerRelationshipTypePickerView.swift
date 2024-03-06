@@ -34,8 +34,11 @@ private extension HomeExploreFollowerRelationshipTypePickerView {
             HStack(alignment: .top, spacing: 4) {
                 Text(titleFor(relationshipType: relationshipType))
                     .font(.currentFont(size: 16, weight: .medium))
-                Text(String(profile.numberOfFollowersFor(relationshipType: relationshipType)))
-                    .font(.currentFont(size: 11, weight: .medium))
+                let numberOfFollowers = profile.numberOfFollowersFor(relationshipType: relationshipType)
+                if numberOfFollowers > 0 {
+                    Text(String(numberOfFollowers))
+                        .font(.currentFont(size: 11, weight: .medium))
+                }
             }
             .foregroundStyle(foregroundStyleFor(relationshipType: relationshipType))
         }

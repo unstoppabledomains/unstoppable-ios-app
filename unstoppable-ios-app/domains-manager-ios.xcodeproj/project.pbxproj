@@ -2273,6 +2273,8 @@
 		C6E69FFB288AEAAF000A8346 /* ExternalEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */; };
 		C6E69FFF288AEAAF000A8346 /* ExternalEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */; };
 		C6E6A001288AEAC6000A8346 /* ExternalEventsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */; };
+		C6E6E03B2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */; };
+		C6E6E03C2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */; };
 		C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */; };
 		C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */; };
 		C6ECBF6628D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */; };
@@ -3673,6 +3675,7 @@
 		C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsService.swift; sourceTree = "<group>"; };
 		C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEvent.swift; sourceTree = "<group>"; };
 		C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsStorage.swift; sourceTree = "<group>"; };
+		C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreEmptyStateView.swift; sourceTree = "<group>"; };
 		C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAnalyticsLogger.swift; sourceTree = "<group>"; };
 		C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintingNotPrimaryDomainsInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectWalletsReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -4956,6 +4959,7 @@
 			children = (
 				C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */,
 				C63AD09F2B956DEC00BF8C83 /* HomeExploreEmptySearchResultView.swift */,
+				C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */,
 				C6FBCAA12B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift */,
 				C63AD0A62B9575D500BF8C83 /* HomeExploreSeparatorView.swift */,
 				C63AD0A32B956ED400BF8C83 /* Followers */,
@@ -8437,6 +8441,7 @@
 				C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C6102FC72B6A339A0098AF75 /* HomeWebAccountView.swift in Sources */,
+				C6E6E03B2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */,
 				C6C8F98F2B2189CB00A9834D /* TxOperation.swift in Sources */,
 				C6E1188D28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6526DCA29D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
@@ -9955,6 +9960,7 @@
 				C64939F62B6373C700457363 /* UIWindow.swift in Sources */,
 				C6D645CE2B1DBD4100D724AC /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6C8F9452B2184CD00A9834D /* MainWindow.swift in Sources */,
+				C6E6E03C2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */,
 				C6B65FA22B57912F006D1812 /* HomeWalletsDomainsSectionView.swift in Sources */,
 				C618081B2B19AAFB0032E543 /* PurchaseDomainsServiceProtocol.swift in Sources */,
 				C6D646C32B1ED22400D724AC /* NetworkService+ProfilesEntities.swift in Sources */,

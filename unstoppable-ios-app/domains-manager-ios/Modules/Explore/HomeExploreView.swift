@@ -142,10 +142,16 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
-        HomeExploreTrendingProfilesSectionView()
-        HomeExploreSeparatorView()
-        HomeExploreFollowersSectionView()
-            .listRowInsets(.init(horizontal: 16))
+        if viewModel.selectedPublicDomainProfile != nil {
+            HomeExploreTrendingProfilesSectionView()
+            HomeExploreSeparatorView()
+            HomeExploreFollowersSectionView()
+                .listRowInsets(.init(horizontal: 16))
+        } else {
+            HomeExploreEmptyStateView(state: .noProfile)
+            HomeExploreSeparatorView()
+            HomeExploreTrendingProfilesSectionView()
+        }
     }
 }
 

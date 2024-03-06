@@ -18,7 +18,7 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     var body: some View {
         if let profile = viewModel.selectedPublicDomainProfile {
             Section {
-                gridWithFollowers(viewModel.getProfilesListForSelectedRelationshipType)
+                gridWithFollowersOrEmptyView(viewModel.getProfilesListForSelectedRelationshipType)
                     .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
             } header: {
                 sectionHeaderView(profile: profile)
@@ -31,6 +31,15 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension HomeExploreFollowersSectionView {
+    @ViewBuilder
+    func gridWithFollowersOrEmptyView(_ followers: [DomainName]) -> some View {
+        if followers.isEmpty {
+            HomeExploreEmptyStateView(state: .forRelationshipType(viewModel.relationshipType))
+        } else {
+            gridWithFollowers(followers)
+        }
+    }
+    
     @ViewBuilder
     func gridWithFollowers(_ followers: [DomainName]) -> some View {
         ListVGrid(data: followers,

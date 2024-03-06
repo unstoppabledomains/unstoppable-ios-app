@@ -118,6 +118,10 @@ extension HomeExploreViewModel {
             storage.clearRecentProfiles()
         }
     }
+    
+    func didSelectActionInEmptyState(_ state: HomeExplore.EmptyState) {
+        
+    }
 }
 
 // MARK: - Private methods
