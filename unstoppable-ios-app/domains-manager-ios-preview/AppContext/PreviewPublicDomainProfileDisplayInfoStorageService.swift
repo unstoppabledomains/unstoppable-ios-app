@@ -8,14 +8,11 @@
 import Foundation
 
 final class PreviewPublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDisplayInfoStorageServiceProtocol {
-    
-    
-    
-    func store(profile: PublicDomainProfileDisplayInfo) {
+    func store(profile: DomainProfileDisplayInfo) {
         
     }
     
-    func retrieveProfileFor(domainName: DomainName) throws -> PublicDomainProfileDisplayInfo {
+    func retrieveProfileFor(domainName: DomainName) throws -> DomainProfileDisplayInfo {
         MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: domainName)
     }
 }
