@@ -27,13 +27,13 @@ final class DomainProfilesServiceTests: BaseTestClass {
         let mockProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: "test.x")
         storage.store(profile: mockProfile)
         
-        let cachedProfile = service.getCachedPublicDomainProfileDisplayInfo(for: "test.x")
+        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: "test.x")
         
         XCTAssertEqual(cachedProfile, mockProfile)
     }
     
     func test_getCachedPublicDomainProfileDisplayInfo_returnsNilForMissingCache() {
-        let cachedProfile = service.getCachedPublicDomainProfileDisplayInfo(for: "test.x")
+        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: "test.x")
         
         XCTAssertNil(cachedProfile)
     }
@@ -44,11 +44,11 @@ final class DomainProfilesServiceTests: BaseTestClass {
         
         let refreshedSerializedProfile = MockEntitiesFabric.DomainProfile.createPublicProfile(domain: mockDomainName)
         networkService.profileToReturn = refreshedSerializedProfile
-        let refreshedPublicProfile = PublicDomainProfileDisplayInfo(serializedProfile: refreshedSerializedProfile)
+        let refreshedPublicProfile = DomainProfileDisplayInfo(serializedProfile: refreshedSerializedProfile)
         
-        let stream = service.getCachedAndRefreshProfileStream(for: mockDomainName)
+        let stream = service.getCachedAndRefreshDomainProfileStream(for: mockDomainName)
         
-        var receivedValues: [PublicDomainProfileDisplayInfo] = []
+        var receivedValues: [DomainProfileDisplayInfo] = []
         do {
             for try await value in stream {
                 receivedValues.append(value)
@@ -66,11 +66,11 @@ final class DomainProfilesServiceTests: BaseTestClass {
     func test_getCachedAndRefreshProfileStream_yieldsOnlyRefreshedProfileIfNoCache() async throws {
         let refreshedSerializedProfile = MockEntitiesFabric.DomainProfile.createPublicProfile(domain: mockDomainName)
         networkService.profileToReturn = refreshedSerializedProfile
-        let refreshedPublicProfile = PublicDomainProfileDisplayInfo(serializedProfile: refreshedSerializedProfile)
+        let refreshedPublicProfile = DomainProfileDisplayInfo(serializedProfile: refreshedSerializedProfile)
         
-        let stream = service.getCachedAndRefreshProfileStream(for: mockDomainName)
+        let stream = service.getCachedAndRefreshDomainProfileStream(for: mockDomainName)
         
-        var receivedValues: [PublicDomainProfileDisplayInfo] = []
+        var receivedValues: [DomainProfileDisplayInfo] = []
         do {
             for try await value in stream {
                 receivedValues.append(value)
@@ -85,7 +85,7 @@ final class DomainProfilesServiceTests: BaseTestClass {
     
     func test_getCachedAndRefreshProfileStream_throwsErrorOnNetworkError() async throws {
         networkService.shouldFail = true
-        let stream = service.getCachedAndRefreshProfileStream(for: mockDomainName)
+        let stream = service.getCachedAndRefreshDomainProfileStream(for: mockDomainName)
         
         do {
             for try await _ in stream {
@@ -142,13 +142,13 @@ private final class MockNetworkService: PublicDomainProfileNetworkServiceProtoco
 
 private final class MockStorage: PublicDomainProfileDisplayInfoStorageServiceProtocol {
     
-    var cache: [DomainName : PublicDomainProfileDisplayInfo] = [:]
+    var cache: [DomainName : DomainProfileDisplayInfo] = [:]
     
-    func store(profile: PublicDomainProfileDisplayInfo) {
+    func store(profile: DomainProfileDisplayInfo) {
         cache[profile.domainName] = profile
     }
     
-    func retrieveProfileFor(domainName: DomainName) throws -> PublicDomainProfileDisplayInfo {
+    func retrieveProfileFor(domainName: DomainName) throws -> DomainProfileDisplayInfo {
         guard let profile = cache[domainName] else { throw MockStorageError.profileNotFound }
         
         return profile

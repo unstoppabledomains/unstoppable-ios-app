@@ -12,27 +12,29 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
     var followersDetails: SocialDetails
     var followingDetails: SocialDetails
     
-    init(wallet: WalletEntity) {
-        self.walletAddress = wallet.address
-        self.followersDetails = SocialDetails(wallet: wallet)
-        self.followingDetails = SocialDetails(wallet: wallet)
+    init(walletAddress: HexAddress,
+         profileDomainName: DomainName?) {
+        self.walletAddress = walletAddress
+        let isOwningProfile = profileDomainName != nil
+        self.followersDetails = SocialDetails(isOwningProfile: isOwningProfile)
+        self.followingDetails = SocialDetails(isOwningProfile: isOwningProfile)
     }
     
     struct SocialDetails: Hashable {
         private(set) var domainNames: [DomainName] = []
         var paginationInfo: PaginationInfo
         
-        init(wallet: WalletEntity) {
-            self.paginationInfo = PaginationInfo(wallet: wallet)
+        init(isOwningProfile: Bool) {
+            self.paginationInfo = PaginationInfo(isOwningProfile: isOwningProfile)
         }
         
         struct PaginationInfo: Hashable {
             var cursor: Int? = nil
             var canLoadMore: Bool
             
-            init(wallet: WalletEntity) {
+            init(isOwningProfile: Bool) {
                 // Only wallet with domain can have followers
-                self.canLoadMore = wallet.rrDomain != nil
+                self.canLoadMore = isOwningProfile
             }
         }
         

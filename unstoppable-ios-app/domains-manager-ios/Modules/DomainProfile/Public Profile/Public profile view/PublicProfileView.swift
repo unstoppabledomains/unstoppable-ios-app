@@ -378,7 +378,7 @@ private extension PublicProfileView {
     
     // Carousel
     @ViewBuilder
-    func infoCarouselView(for profile: PublicDomainProfileDisplayInfo) -> some View {
+    func infoCarouselView(for profile: DomainProfileDisplayInfo) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 carouselSocialItemIfAvailable(in: profile)
@@ -391,12 +391,12 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselSocialItemIfAvailable(in profile: PublicDomainProfileDisplayInfo) -> some View {
+    func carouselSocialItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
         carouselFollowersItem(for: profile, callback: { showFollowersList() })
     }
     
     @ViewBuilder
-    func carouselSocialAccountsItemIfAvailable(in profile: PublicDomainProfileDisplayInfo) -> some View {
+    func carouselSocialAccountsItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
         if !profile.socialAccounts.isEmpty {
             carouselItem(text: String.Constants.pluralNSocials.localized(profile.socialAccounts.count, profile.socialAccounts.count),
                          icon: .twitterIcon24,
@@ -406,7 +406,7 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselCryptoRecordsItemIfAvailable(in profile: PublicDomainProfileDisplayInfo) -> some View {
+    func carouselCryptoRecordsItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
         if let records = viewModel.records,
            !records.isEmpty {
             carouselItem(text: String.Constants.pluralNAddresses.localized(records.count, records.count),
@@ -488,7 +488,7 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselFollowersItem(for profile: PublicDomainProfileDisplayInfo,
+    func carouselFollowersItem(for profile: DomainProfileDisplayInfo,
                                callback: @escaping MainActorAsyncCallback) -> some View {
         let followerCount = profile.followerCount
         let followingCount = profile.followingCount

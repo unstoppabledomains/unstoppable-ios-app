@@ -44,7 +44,7 @@ extension PublicProfileView {
         @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var isUserDomainSelected = true
-        @Published private(set) var profile: PublicDomainProfileDisplayInfo?
+        @Published private(set) var profile: DomainProfileDisplayInfo?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
         @Published private(set) var coverImage: UIImage?
         @Published private(set) var avatarImage: UIImage?
@@ -156,7 +156,7 @@ extension PublicProfileView {
             isLoading = true
             Task {
                 await performAsyncErrorCatchingBlock {
-                    let profile = try await appContext.domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: domain.name)
+                    let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: domain.name)
                     let domains = appContext.walletsDataService.wallets.combinedDomains()
                     await waitForAppear()
                     self.profile = profile

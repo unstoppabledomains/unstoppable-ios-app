@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PublicDomainProfileDisplayInfo: Hashable {
+struct DomainProfileDisplayInfo: Hashable {
     let domainName: String
     let ownerWallet: String
     let profileName: String?
@@ -34,7 +34,7 @@ struct PublicDomainProfileDisplayInfo: Hashable {
     
 }
 
-extension PublicDomainProfileDisplayInfo {
+extension DomainProfileDisplayInfo {
     init(serializedProfile: SerializedPublicDomainProfile) {
         self.domainName = serializedProfile.metadata.domain
         self.ownerWallet = serializedProfile.metadata.owner

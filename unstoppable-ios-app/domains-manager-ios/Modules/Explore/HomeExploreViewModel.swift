@@ -14,7 +14,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .homeExplore }
     
     @Published private(set) var selectedProfile: UserProfile
-    @Published private(set) var selectedPublicDomainProfile: PublicDomainProfileDisplayInfo?
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
@@ -32,7 +31,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
-    @Published private var relationshipDetails: DomainProfileSocialRelationshipDetails?
+    @Published private var relationshipDetails: WalletDomainProfileDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
     private let searchService = DomainsGlobalSearchService()
@@ -75,7 +74,7 @@ extension HomeExploreViewModel {
         }
     }
     
-    func didTapUserPublicDomainProfileDisplayInfo(_ profile: PublicDomainProfileDisplayInfo) {
+    func didTapUserPublicDomainProfileDisplayInfo(_ profile: DomainProfileDisplayInfo) {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.ownerWallet)
     }
     
@@ -84,7 +83,11 @@ extension HomeExploreViewModel {
     }
     
     var getProfilesListForSelectedRelationshipType: [DomainName] {
-        relationshipDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+        relationshipDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+    }
+    
+    var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
+        relationshipDetails?.displayInfo
     }
  
     func clearRecentSearchButtonPressed() {
@@ -126,27 +129,12 @@ private extension HomeExploreViewModel {
         }
         if case .wallet(let wallet) = selectedProfile {
             Task {
-                socialRelationshipDetailsPublisher = await appContext.domainProfilesService.publisherForDomainProfileSocialRelationshipDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                socialRelationshipDetailsPublisher = await appContext.domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
                     self?.relationshipDetails = relationshipDetails
                 }
-                appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .followers, in: wallet)
-                appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: .following, in: wallet)
-                reloadSelectedPublicDomainProfileFor(wallet: wallet)
             }
         } else {
             socialRelationshipDetailsPublisher = nil
-            reloadSelectedPublicDomainProfileFor(wallet: nil)
-        }
-    }
-    
-    func reloadSelectedPublicDomainProfileFor(wallet: WalletEntity?) {
-        selectedPublicDomainProfile = nil
-        
-        guard let domainName = wallet?.profileDomainName else { return }
-        Task {
-            for try await profile in appContext.domainProfilesService.getCachedAndRefreshProfileStream(for: domainName) {
-                self.selectedPublicDomainProfile = profile
-            }
         }
     }
 }

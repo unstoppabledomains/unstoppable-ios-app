@@ -198,8 +198,8 @@ extension MockEntitiesFabric {
                                                          withRecords: Bool = true,
                                                          withSocialAccounts: Bool = true,
                                                          followingCount: Int = Int(arc4random_uniform(10_000)),
-                                                         followerCount: Int = Int(arc4random_uniform(10_000))) -> PublicDomainProfileDisplayInfo {
-            PublicDomainProfileDisplayInfo(domainName: domainName,
+                                                         followerCount: Int = Int(arc4random_uniform(10_000))) -> DomainProfileDisplayInfo {
+            DomainProfileDisplayInfo(domainName: domainName,
                                            ownerWallet: ownerWallet,
                                            profileName: profileName,
                                            pfpURL: withPFP ? ImageURLs.aiAvatar.url : nil,

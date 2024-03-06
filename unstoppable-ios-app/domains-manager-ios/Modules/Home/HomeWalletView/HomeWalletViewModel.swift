@@ -242,7 +242,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             
             do {
                 
-                let profile = try await appContext.domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: rrDomain.name)
+                let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: rrDomain.name)
                 let records = profile.records
                 let coinRecords = await appContext.coinRecordsService.getCurrencies()
                 let recordsData = DomainRecordsData(from: records,

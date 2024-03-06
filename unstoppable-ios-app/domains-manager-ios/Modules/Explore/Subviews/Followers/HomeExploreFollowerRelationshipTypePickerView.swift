@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeExploreFollowerRelationshipTypePickerView: View {
     
-    let profile: PublicDomainProfileDisplayInfo
+    let profile: DomainProfileDisplayInfo
     @Binding var relationshipType: DomainProfileFollowerRelationshipType
     
     var body: some View {

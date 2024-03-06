@@ -495,8 +495,8 @@
 		C61DB1122B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1102B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift */; };
 		C61DB1152B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */; };
 		C61DB1162B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */; };
-		C61DB11B2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */; };
-		C61DB11C2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */; };
+		C61DB11B2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift */; };
+		C61DB11C2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB11A2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift */; };
 		C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
 		C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
 		C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
@@ -1246,6 +1246,8 @@
 		C6AF12402A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */; };
 		C6B0A8CD2A4D7DDA00284022 /* MessagingImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */; };
 		C6B2E1FC2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */; };
+		C6B2E1FF2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */; };
+		C6B2E2002B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */; };
 		C6B2E2042B96D9BB00CEA1F9 /* DomainProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */; };
 		C6B2E2062B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2052B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift */; };
 		C6B2E2072B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2052B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift */; };
@@ -1259,8 +1261,6 @@
 		C6B2E2142B9714B100CEA1F9 /* DomainProfilesServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2132B9714B100CEA1F9 /* DomainProfilesServiceTests.swift */; };
 		C6B2E2162B9715BC00CEA1F9 /* PublicDomainProfileNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2152B9715BC00CEA1F9 /* PublicDomainProfileNetworkServiceProtocol.swift */; };
 		C6B2E2172B9715BC00CEA1F9 /* PublicDomainProfileNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2152B9715BC00CEA1F9 /* PublicDomainProfileNetworkServiceProtocol.swift */; };
-		C6B2E1FF2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */; };
-		C6B2E2002B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */; };
 		C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
 		C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
 		C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */; };
@@ -2759,7 +2759,7 @@
 		C61DB1102B95995800CDA243 /* UDListItemInCollectionButtonPaddingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDListItemInCollectionButtonPaddingModifier.swift; sourceTree = "<group>"; };
 		C61DB1142B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesServiceProtocol.swift; sourceTree = "<group>"; };
 		C61DB1172B95BCFD00CDA243 /* DomainProfilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesService.swift; sourceTree = "<group>"; };
-		C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfo.swift; sourceTree = "<group>"; };
+		C61DB11A2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
 		C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessage.swift; sourceTree = "<group>"; };
 		C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatDTO.swift; sourceTree = "<group>"; };
@@ -3380,6 +3380,7 @@
 		C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceDataRefreshManager.swift; sourceTree = "<group>"; };
 		C6B0A8CC2A4D7DDA00284022 /* MessagingImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingImageLoader.swift; sourceTree = "<group>"; };
 		C6B2E1FB2B95C3E200CEA1F9 /* PublicDomainProfileDisplayInfoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfoStorageService.swift; sourceTree = "<group>"; };
+		C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageUnsupportedTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6B2E2052B96DEC900CEA1F9 /* PublicDomainProfileDisplayInfoStorageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileDisplayInfoStorageServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B2E2092B96DF6E00CEA1F9 /* PreviewPublicDomainProfileDisplayInfoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPublicDomainProfileDisplayInfoStorageService.swift; sourceTree = "<group>"; };
 		C6B2E20B2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialRelationshipDetails.swift; sourceTree = "<group>"; };
@@ -3387,7 +3388,6 @@
 		C6B2E2112B970E0900CEA1F9 /* DomainProfileSocialRelationshipDetailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialRelationshipDetailsTests.swift; sourceTree = "<group>"; };
 		C6B2E2132B9714B100CEA1F9 /* DomainProfilesServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesServiceTests.swift; sourceTree = "<group>"; };
 		C6B2E2152B9715BC00CEA1F9 /* PublicDomainProfileNetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainProfileNetworkServiceProtocol.swift; sourceTree = "<group>"; };
-		C6B2E1FE2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageUnsupportedTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarItemsTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarBackButtonTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRESTAPIService.swift; sourceTree = "<group>"; };
@@ -7067,7 +7067,7 @@
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
-				C61DB11A2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift */,
+				C61DB11A2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift */,
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
 				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
 				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
@@ -8765,7 +8765,7 @@
 				C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */,
 				C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
-				C61DB11B2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */,
+				C61DB11B2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
 				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */,
@@ -9582,7 +9582,7 @@
 				C6D646A62B1ED15A00D724AC /* PublicProfileViewModel.swift in Sources */,
 				C61808802B19BC530032E543 /* Error.swift in Sources */,
 				C61DB1092B9587B600CDA243 /* PublicProfileSecondaryLargeTextView.swift in Sources */,
-				C61DB11C2B95BD1200CDA243 /* PublicDomainProfileDisplayInfo.swift in Sources */,
+				C61DB11C2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift in Sources */,
 				C6DA0B7C2B7CA3F5009920B5 /* MessagingReactionType.swift in Sources */,
 				C6C8F8142B217CC000A9834D /* WalletConnectedViewController.swift in Sources */,
 				C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */,

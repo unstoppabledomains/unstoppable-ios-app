@@ -17,14 +17,14 @@ final class PublicDomainProfileDisplayInfoStorageService: CoreDataService {
 
 // MARK: - PublicDomainProfileDisplayInfoStorageServiceProtocol
 extension PublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDisplayInfoStorageServiceProtocol {
-    func store(profile: PublicDomainProfileDisplayInfo) {
+    func store(profile: DomainProfileDisplayInfo) {
         coreDataQueue.sync {
             let _ = try? convertPublicProfileToCoreDataPublicProfile(profile)
             saveContext(backgroundContext)
         }
     }
     
-    func retrieveProfileFor(domainName: DomainName) throws -> PublicDomainProfileDisplayInfo {
+    func retrieveProfileFor(domainName: DomainName) throws -> DomainProfileDisplayInfo {
         try coreDataQueue.sync {
             let domainNamePredicate = NSPredicate(format: "domainName == %@", domainName)
             let coreDataProfiles: [CoreDataPublicDomainProfile] = try getEntities(predicate: domainNamePredicate,
@@ -41,7 +41,7 @@ extension PublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDispl
 // MARK: - Private methods
 private extension PublicDomainProfileDisplayInfoStorageService {
     @discardableResult
-    func convertPublicProfileToCoreDataPublicProfile(_ profile: PublicDomainProfileDisplayInfo) throws -> CoreDataPublicDomainProfile {
+    func convertPublicProfileToCoreDataPublicProfile(_ profile: DomainProfileDisplayInfo) throws -> CoreDataPublicDomainProfile {
         let coreDataProfile: CoreDataPublicDomainProfile = try createEntity(in: backgroundContext)
         
         coreDataProfile.owner = profile.ownerWallet
@@ -61,7 +61,7 @@ private extension PublicDomainProfileDisplayInfoStorageService {
         return coreDataProfile
     }
     
-    func convertCoreDataProfileToPublicProfile(_ coreDataUserProfile: CoreDataPublicDomainProfile) throws -> PublicDomainProfileDisplayInfo {
+    func convertCoreDataProfileToPublicProfile(_ coreDataUserProfile: CoreDataPublicDomainProfile) throws -> DomainProfileDisplayInfo {
         guard let domainName = coreDataUserProfile.domainName,
               let ownerWallet = coreDataUserProfile.owner else { throw Error.invalidEntity }
         var imageType: DomainProfileImageType?
@@ -71,7 +71,7 @@ private extension PublicDomainProfileDisplayInfoStorageService {
         let socialAccountsData = coreDataUserProfile.socialAccounts ?? Data()
         let socialDescription = [DomainProfileSocialAccount].objectFromData(socialAccountsData) ?? []
         
-        return PublicDomainProfileDisplayInfo(domainName: domainName,
+        return DomainProfileDisplayInfo(domainName: domainName,
                                               ownerWallet: ownerWallet,
                                               profileName: coreDataUserProfile.profileName,
                                               pfpURL: coreDataUserProfile.pfpURL,

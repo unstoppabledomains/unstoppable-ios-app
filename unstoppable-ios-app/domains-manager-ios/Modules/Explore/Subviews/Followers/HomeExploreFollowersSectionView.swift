@@ -40,7 +40,7 @@ private extension HomeExploreFollowersSectionView {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .followerTile,
                                                parameters: [.domainName : follower])
-                if let profile = domainProfilesService.getCachedPublicDomainProfileDisplayInfo(for: follower) {
+                if let profile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: follower) {
                     viewModel.didTapUserPublicDomainProfileDisplayInfo(profile)
                 }
             } label: {
@@ -51,7 +51,7 @@ private extension HomeExploreFollowersSectionView {
     }
     
     @ViewBuilder
-    func sectionHeaderView(profile: PublicDomainProfileDisplayInfo) -> some View {
+    func sectionHeaderView(profile: DomainProfileDisplayInfo) -> some View {
         HomeExploreFollowerRelationshipTypePickerView(profile: profile,
                                                       relationshipType: $viewModel.relationshipType)
             .padding(.init(vertical: 4))

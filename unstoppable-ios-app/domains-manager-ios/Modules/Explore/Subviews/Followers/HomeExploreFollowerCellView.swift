@@ -13,7 +13,7 @@ struct HomeExploreFollowerCellView: View {
     @Environment(\.domainProfilesService) private var domainProfilesService
 
     let domainName: DomainName
-    @State private var profile: PublicDomainProfileDisplayInfo?
+    @State private var profile: DomainProfileDisplayInfo?
     @State private var pfpImage: UIImage?
     @State private var cover: UIImage?
 
@@ -33,18 +33,18 @@ private extension HomeExploreFollowerCellView {
     }
     
     func loadProfile() {
-        if let cachedProfile = domainProfilesService.getCachedPublicDomainProfileDisplayInfo(for: domainName) {
+        if let cachedProfile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: domainName) {
             setProfile(cachedProfile)
         } else {
             setProfile(nil)
             Task {
-                let profile = try await domainProfilesService.fetchPublicDomainProfileDisplayInfo(for: domainName)
+                let profile = try await domainProfilesService.fetchDomainProfileDisplayInfo(for: domainName)
                 setProfile(profile)
             }
         }
     }
     
-    func setProfile(_ profile: PublicDomainProfileDisplayInfo?) {
+    func setProfile(_ profile: DomainProfileDisplayInfo?) {
         self.profile = profile
         self.pfpImage = nil
         self.cover = nil
@@ -53,7 +53,7 @@ private extension HomeExploreFollowerCellView {
         }
     }
     
-    func loadAvatar(profile: PublicDomainProfileDisplayInfo) {
+    func loadAvatar(profile: DomainProfileDisplayInfo) {
         Task {
             if let url = profile.pfpURL {
                 pfpImage = await imageLoadingService.loadImage(from: .url(url, maxSize: nil),

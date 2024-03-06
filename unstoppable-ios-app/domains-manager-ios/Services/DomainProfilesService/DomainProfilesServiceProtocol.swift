@@ -9,13 +9,13 @@ import Foundation
 import Combine
 
 protocol DomainProfilesServiceProtocol {
-    func getCachedPublicDomainProfileDisplayInfo(for domainName: String) -> PublicDomainProfileDisplayInfo?
-    func fetchPublicDomainProfileDisplayInfo(for domainName: DomainName) async throws -> PublicDomainProfileDisplayInfo
-    func getCachedAndRefreshProfileStream(for domainName: DomainName) -> AsyncThrowingStream<PublicDomainProfileDisplayInfo, Error>
+    func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo?
+    func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo
+    func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, Error>
     func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
                                  in wallet: WalletEntity)
-    func publisherForDomainProfileSocialRelationshipDetails(wallet: WalletEntity) async -> CurrentValueSubject<DomainProfileSocialRelationshipDetails, Never>
+    func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never>
 }
