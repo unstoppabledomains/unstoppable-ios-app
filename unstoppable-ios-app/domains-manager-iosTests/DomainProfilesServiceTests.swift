@@ -23,25 +23,23 @@ final class DomainProfilesServiceTests: BaseTestClass {
                                         storage: storage)
     }
     
+    // MARK: - Cached Profile Tests
     func test_getCachedPublicDomainProfileDisplayInfo_returnsCachedValue() throws {
-        let mockProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: "test.x")
-        storage.store(profile: mockProfile)
-        
-        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: "test.x")
+        let mockProfile = createMockDomainProfileAndStoreInCache()
+        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: mockDomainName)
         
         XCTAssertEqual(cachedProfile, mockProfile)
     }
     
     func test_getCachedPublicDomainProfileDisplayInfo_returnsNilForMissingCache() {
-        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: "test.x")
+        let cachedProfile = service.getCachedDomainProfileDisplayInfo(for: mockDomainName)
         
         XCTAssertNil(cachedProfile)
     }
     
+    // MARK: - Profile Stream Tests
     func test_getCachedAndRefreshProfileStream_yieldsCachedProfileThenRefreshed() async throws {
-        let cachedProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: mockDomainName)
-        storage.cache = [mockDomainName: cachedProfile]
-        
+        let cachedProfile = createMockDomainProfileAndStoreInCache()
         let refreshedSerializedProfile = MockEntitiesFabric.DomainProfile.createPublicProfile(domain: mockDomainName)
         networkService.profileToReturn = refreshedSerializedProfile
         let refreshedPublicProfile = DomainProfileDisplayInfo(serializedProfile: refreshedSerializedProfile)
@@ -57,11 +55,8 @@ final class DomainProfilesServiceTests: BaseTestClass {
             XCTFail("Unexpected error: \(error)")
         }
         
-        XCTAssertEqual(receivedValues.count, 2)
-        XCTAssertEqual(receivedValues[0], cachedProfile)
-        XCTAssertEqual(receivedValues[1], refreshedPublicProfile)
+        XCTAssertEqual(receivedValues, [cachedProfile, refreshedPublicProfile])
     }
-    
     
     func test_getCachedAndRefreshProfileStream_yieldsOnlyRefreshedProfileIfNoCache() async throws {
         let refreshedSerializedProfile = MockEntitiesFabric.DomainProfile.createPublicProfile(domain: mockDomainName)
@@ -92,7 +87,52 @@ final class DomainProfilesServiceTests: BaseTestClass {
                 XCTFail("Expected network error to be thrown")
             }
         } catch {
-            XCTAssertEqual(error as? MockNetworkService.GenericError, networkService.error)
+            assertNetworkErrorThrown(error)
+        }
+    }
+    
+    // MARK: - Follow Function Tests
+    func testFollowNetwork_Success() async throws {
+        try await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        XCTAssertEqual(networkService.followCallDomainNames, [mockDomainName])
+    }
+    
+    func testFollowPublisher_Success() async throws {
+        try await ensureFollowersResetAfterAsyncFunction {
+            try await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        }
+    }
+   
+    func testFollowNetwork_NetworkFailure() async throws {
+        networkService.shouldFail = true
+        do {
+            try await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+            XCTFail("Expected network error")
+        } catch {
+            assertNetworkErrorThrown(error)
+        }
+    }
+    
+    // MARK: - Unfollow Function Tests
+    func testUnfollowNetwork_Success() async throws {
+        try await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        XCTAssertEqual(networkService.unfollowCallDomainNames, [mockDomainName])
+    }
+    
+    func testUnfollowPublisher_Success() async throws {
+        try await ensureFollowersResetAfterAsyncFunction {
+            try await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        }
+    }
+    
+    func testUnfollowNetwork_NetworkFailure() async throws {
+        networkService.shouldFail = true
+        
+        do {
+            try await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+            XCTFail("Expected network error")
+        } catch {
+            assertNetworkErrorThrown(error)
         }
     }
 }
@@ -100,14 +140,60 @@ final class DomainProfilesServiceTests: BaseTestClass {
 // MARK: - Private methods
 private extension DomainProfilesServiceTests {
     func mockWallet() -> WalletEntity {
-        MockEntitiesFabric.Wallet.mockEntities()[0]
+        MockEntitiesFabric.Wallet.createFrom(walletWithInfo: WalletWithInfo.mock[0], hasRRDomain: true)
     }
+    
+    func mockDomainDisplayInfo() -> DomainDisplayInfo {
+        mockWallet().rrDomain!
+    }
+    
+    func createMockDomainProfileAndStoreInCache() -> DomainProfileDisplayInfo {
+        let mockProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: mockDomainName)
+        storage.store(profile: mockProfile)
+        return mockProfile
+    }
+    
+    func assertNetworkErrorThrown(_ error: Error) {
+        XCTAssertEqual(error as? MockNetworkService.GenericError, networkService.error)
+    }
+    
+    func isSocialRelationshipDetailsEmpty(_ socialRelationshipDetails: DomainProfileSocialRelationshipDetails) -> Bool {
+        isSocialDetailsEmpty(socialRelationshipDetails.followersDetails) &&
+        isSocialDetailsEmpty(socialRelationshipDetails.followingDetails)
+    }
+    
+    func isSocialDetailsEmpty(_ socialDetails: DomainProfileSocialRelationshipDetails.SocialDetails) -> Bool {
+        socialDetails.domainNames.isEmpty &&
+        socialDetails.paginationInfo.cursor == nil
+    }
+    
+    func ensureFollowersResetAfterAsyncFunction(_ block: @Sendable () async throws -> ())  async throws {
+        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: mockWallet())
+        var capturedValues: [WalletDomainProfileDetails] = []
+        let cancellable = publisher.sink { value in
+            capturedValues.append(value)
+        }
+        
+        await Task.sleep(seconds: 0.1) // Wait for initial updates finished
+        capturedValues.removeAll()
+        try await block()
+        await Task.sleep(seconds: 0.1) // Wait for new expected requests finished
+        
+        XCTAssertEqual(capturedValues.count, 3) // Reset + followers + followings
+        XCTAssertTrue(isSocialRelationshipDetailsEmpty(capturedValues[0].socialDetails!))
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[1].socialDetails!))
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[2].socialDetails!))
+        cancellable.cancel()
+    }
+    
 }
 
 private final class MockNetworkService: PublicDomainProfileNetworkServiceProtocol {
     var profileToReturn: SerializedPublicDomainProfile?
     var shouldFail = false
     var error: GenericError { GenericError.generic }
+    var followCallDomainNames: [DomainName] = []
+    var unfollowCallDomainNames: [DomainName] = []
     
     func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         try failIfNeeded()
@@ -117,12 +203,28 @@ private final class MockNetworkService: PublicDomainProfileNetworkServiceProtoco
         return MockEntitiesFabric.DomainProfile.createPublicProfile(domain: domainName)
     }
     
-    func follow(_ domainNameToFollow: String, by domain: domains_manager_ios.DomainItem) async throws {
-        try failIfNeeded()
+    func updateUserDomainProfile(for domain: DomainItem, request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
+        // Not needed for now
+        throw GenericError.generic
     }
     
-    func unfollow(_ domainNameToUnfollow: String, by domain: domains_manager_ios.DomainItem) async throws {
+    func fetchListOfFollowers(for domain: DomainName,
+                              relationshipType: DomainProfileFollowerRelationshipType,
+                              count: Int,
+                              cursor: Int?) async throws -> DomainProfileFollowersResponse {
+        MockEntitiesFabric.DomainProfile.createFollowersResponseWithDomains(["domain.x"],
+                                                                            take: 20,
+                                                                            relationshipType: relationshipType)
+    }
+    
+    func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
         try failIfNeeded()
+        followCallDomainNames.append(domainNameToFollow)
+    }
+    
+    func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
+        try failIfNeeded()
+        unfollowCallDomainNames.append(domainNameToUnfollow)
     }
     
     private func failIfNeeded() throws {

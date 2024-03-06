@@ -187,6 +187,17 @@ extension MockEntitiesFabric {
         static func createPublicProfileWalletBalances() -> [ProfileWalletBalance] {
             []
         }
+        
+        static  func createFollowersResponseWithDomains(_ domains: [String], 
+                                                        take: Int,
+                                                        relationshipType: DomainProfileFollowerRelationshipType) -> DomainProfileFollowersResponse {
+            DomainProfileFollowersResponse(domain: "",
+                                           data: domains.map { .init(domain: $0)},
+                                           relationshipType: relationshipType,
+                                           meta: .init(totalCount: take,
+                                                       pagination: .init(cursor: take,
+                                                                         take: take)))
+        }
     }
     
     enum PublicDomainProfile {

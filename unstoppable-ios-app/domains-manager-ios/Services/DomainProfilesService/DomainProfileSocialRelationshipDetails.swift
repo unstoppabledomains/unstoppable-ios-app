@@ -20,6 +20,10 @@ struct DomainProfileSocialRelationshipDetails: Hashable {
         self.followingDetails = SocialDetails(isOwningProfile: isOwningProfile)
     }
     
+    init(wallet: WalletEntity) {
+        self.init(walletAddress: wallet.address, profileDomainName: wallet.profileDomainName)
+    }
+    
     struct SocialDetails: Hashable {
         private(set) var domainNames: [DomainName] = []
         var paginationInfo: PaginationInfo

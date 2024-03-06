@@ -12,6 +12,11 @@ protocol PublicDomainProfileNetworkServiceProtocol {
     @discardableResult
     func updateUserDomainProfile(for domain: DomainItem,
                                  request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile
+    
+    func fetchListOfFollowers(for domain: DomainName,
+                              relationshipType: DomainProfileFollowerRelationshipType,
+                              count: Int,
+                              cursor: Int?) async throws -> DomainProfileFollowersResponse
     func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws
 }

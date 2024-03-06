@@ -201,7 +201,7 @@ private extension DomainProfilesService {
             
             do {
                 let cursor = await profileController.getPaginationCursorFor(relationshipType: relationshipType)
-                let response = try await NetworkService().fetchListOfFollowers(for: profileDomainName,
+                let response = try await networkService.fetchListOfFollowers(for: profileDomainName,
                                                                                relationshipType: relationshipType,
                                                                                count: numberOfFollowersToTake,
                                                                                cursor: cursor)

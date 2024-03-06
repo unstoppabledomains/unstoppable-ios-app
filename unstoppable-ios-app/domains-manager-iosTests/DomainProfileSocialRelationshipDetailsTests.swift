@@ -26,8 +26,7 @@ final class DomainProfileSocialRelationshipDetailsTests: BaseTestClass {
     }
 
     func test_SocialDetails_addDomainNames_filtersDuplicates() {
-        let mockWallet = createMockWallet()
-        var details = DomainProfileSocialRelationshipDetails.SocialDetails(wallet: mockWallet)
+        var details = DomainProfileSocialRelationshipDetails.SocialDetails(isOwningProfile: true)
         details.addDomainNames(["domain1", "domain2"])
         details.addDomainNames(["domain1"])
         
@@ -101,11 +100,8 @@ private extension DomainProfileSocialRelationshipDetailsTests {
     }
     
     func responseWithFollowerDomains(_ domains: [String], take: Int) -> DomainProfileFollowersResponse {
-        DomainProfileFollowersResponse(domain: "",
-                                       data: domains.map { .init(domain: $0)},
-                                       relationshipType: .followers,
-                                       meta: .init(totalCount: take,
-                                                   pagination: .init(cursor: take,
-                                                                     take: take)))
+        MockEntitiesFabric.DomainProfile.createFollowersResponseWithDomains(domains,
+                                                                            take: take,
+                                                                            relationshipType: .followers)
     }
 }
