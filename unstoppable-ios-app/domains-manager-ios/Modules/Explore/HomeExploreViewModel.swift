@@ -31,22 +31,28 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 
     private var router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
-    @Published private var relationshipDetails: WalletDomainProfileDetails?
+    @Published private var walletDomainProfileDetails: WalletDomainProfileDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     private let walletsDataService: WalletsDataServiceProtocol
+    private let domainProfilesService: DomainProfilesServiceProtocol
     private let searchService = DomainsGlobalSearchService()
     private let recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol
     
     init(router: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
+         domainProfilesService: DomainProfilesServiceProtocol = appContext.domainProfilesService,
          recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol = HomeExplore.RecentGlobalSearchProfilesStorage.instance) {
         self.selectedProfile = router.profile
         self.router = router
         self.walletsDataService = walletsDataService
+        self.domainProfilesService = domainProfilesService
         self.recentProfilesStorage = recentProfilesStorage
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
-            self?.setSelectedProfile(selectedProfile)
+            if let selectedProfile {
+                self?.selectedProfile = selectedProfile
+                self?.didUpdateSelectedProfile()
+            }
         }.store(in: &cancellables)
     
         $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
@@ -60,11 +66,11 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
 // MARK: - Open methods
 extension HomeExploreViewModel {
     var getProfilesListForSelectedRelationshipType: [DomainName] {
-        relationshipDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+        walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
     }
     
     var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
-        relationshipDetails?.displayInfo
+        walletDomainProfileDetails?.displayInfo
     }
     
     func didTapSearchDomainProfile(_ profile: SearchDomainProfile) {
@@ -101,9 +107,9 @@ extension HomeExploreViewModel {
         guard let index = followersList.firstIndex(of: domainName),
             case .wallet(let wallet) = selectedProfile else { return }
         
-        if index + 6 >= followersList.count {
-            appContext.domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType,
-                                                                     in: wallet)
+        if index + Constants.numberOfFollowersBeforeLoadMore >= followersList.count {
+            domainProfilesService.loadMoreSocialIfAbleFor(relationshipType: self.relationshipType,
+                                                          in: wallet)
         }
     }
  
@@ -120,6 +126,7 @@ private extension HomeExploreViewModel {
         loadTrendingProfiles()
         loadRecentProfiles()
         setUserWalletSearchResults()
+        updateWalletDomainProfileDetailsForSelectedProfile()
     }
     
     func loadTrendingProfiles() {
@@ -142,14 +149,15 @@ private extension HomeExploreViewModel {
         userWalletNonEmptySearchResults = userWallets.compactMap({ .init(wallet: $0, searchKey: getLowercasedTrimmedSearchKey()) })
     }
     
-    func setSelectedProfile(_ selectedProfile: UserProfile?) {
-        if let selectedProfile {
-            self.selectedProfile = selectedProfile
-        }
+    func didUpdateSelectedProfile() {
+        updateWalletDomainProfileDetailsForSelectedProfile()
+    }
+    
+    func updateWalletDomainProfileDetailsForSelectedProfile() {
         if case .wallet(let wallet) = selectedProfile {
             Task {
-                socialRelationshipDetailsPublisher = await appContext.domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
-                    self?.relationshipDetails = relationshipDetails
+                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                    self?.walletDomainProfileDetails = relationshipDetails
                 }
             }
         } else {
@@ -185,5 +193,12 @@ private extension HomeExploreViewModel {
             }
             isLoadingGlobalProfiles = false
         }
+    }
+}
+
+// MARK: - Open methods
+extension HomeExploreViewModel {
+    struct Constants {
+        static let numberOfFollowersBeforeLoadMore = 6
     }
 }
