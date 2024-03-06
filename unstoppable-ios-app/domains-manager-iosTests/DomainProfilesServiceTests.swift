@@ -135,20 +135,49 @@ final class DomainProfilesServiceTests: BaseTestClass {
             assertNetworkErrorThrown(error)
         }
     }
+    
+    // MARK: - Load More Tests
+    func testLoadMoreCalledOnPublisherRequest() async throws {
+        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: mockWallet())
+        var capturedValues: [WalletDomainProfileDetails] = []
+        let cancellable = publisher.sink { value in
+            capturedValues.append(value)
+        }
+        await Task.sleep(seconds: 0.1) // Wait for initial updates finished
+        
+        XCTAssertEqual(capturedValues.count, 4) // Initial + followers + followings + Public profile
+        XCTAssertTrue(isSocialRelationshipDetailsEmpty(capturedValues[0].socialDetails!))
+        XCTAssertNil(capturedValues[0].displayInfo)
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[3].socialDetails!))
+        XCTAssertNotNil(capturedValues[3].displayInfo)
+    }
+    
+    func testCachedProfileUsedOnPublisherInit() async throws {
+        let wallet = mockWallet()
+        let profile = createMockDomainProfileAndStoreInCache(name: wallet.profileDomainName!)
+        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
+        var capturedValues: [WalletDomainProfileDetails] = []
+        let cancellable = publisher.sink { value in
+            capturedValues.append(value)
+        }
+        await Task.sleep(seconds: 0.1) // Wait for initial updates finished
+        
+        XCTAssertEqual(capturedValues[0].displayInfo, profile)
+    }
 }
 
 // MARK: - Private methods
 private extension DomainProfilesServiceTests {
     func mockWallet() -> WalletEntity {
-        MockEntitiesFabric.Wallet.createFrom(walletWithInfo: WalletWithInfo.mock[0], hasRRDomain: true)
+        appContext.walletsDataService.wallets[0]
     }
     
     func mockDomainDisplayInfo() -> DomainDisplayInfo {
         mockWallet().rrDomain!
     }
     
-    func createMockDomainProfileAndStoreInCache() -> DomainProfileDisplayInfo {
-        let mockProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: mockDomainName)
+    func createMockDomainProfileAndStoreInCache(name: String? = nil) -> DomainProfileDisplayInfo {
+        let mockProfile = MockEntitiesFabric.PublicDomainProfile.createPublicDomainProfileDisplayInfo(domainName: name ?? mockDomainName)
         storage.store(profile: mockProfile)
         return mockProfile
     }

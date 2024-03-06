@@ -50,12 +50,10 @@ extension MockEntitiesFabric {
     }
     
     enum Wallet {
-        static func mockEntities() -> [WalletEntity] {
+        static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
             WalletWithInfo.mock.map {
-                let hasRRDomain = [true, false].randomElement()!
-                
-                return createFrom(walletWithInfo: $0,
-                                  hasRRDomain: hasRRDomain)
+                createFrom(walletWithInfo: $0,
+                           hasRRDomain: hasRRDomain)
                 
             }
         }

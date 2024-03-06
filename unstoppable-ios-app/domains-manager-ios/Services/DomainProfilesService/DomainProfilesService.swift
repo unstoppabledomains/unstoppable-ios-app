@@ -190,7 +190,6 @@ private extension DomainProfilesService {
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
                                  walletAddress: HexAddress) {
-        
         Task {
             let profileController = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
             
