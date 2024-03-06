@@ -255,7 +255,7 @@ private extension PullUpViewService {
                       let domainName = item.userInfo.domainName,
                     let wallet = appContext.walletsDataService.wallets.findWithAddress(messagingProfile.wallet) else { return }
                 
-                let viewingDomain = wallet.getDomainToViewPublicProfile()?.toDomainItem()
+                let viewingDomain = wallet.getDomainToViewPublicProfile()
                 let walletAddress = item.userInfo.wallet
                 UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                              name: domainName),

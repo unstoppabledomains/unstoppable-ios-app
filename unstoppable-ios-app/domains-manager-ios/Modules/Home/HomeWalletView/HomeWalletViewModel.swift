@@ -241,9 +241,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             }
             
             do {
-                let profile = try await NetworkService().fetchPublicProfile(for: rrDomain.name,
-                                                                            fields: [.records])
-                let records = profile.records ?? [:]
+                
+                let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: rrDomain.name)
+                let records = profile.records
                 let coinRecords = await appContext.coinRecordsService.getCurrencies()
                 let recordsData = DomainRecordsData(from: records,
                                                     coinRecords: coinRecords,

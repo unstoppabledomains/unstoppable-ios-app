@@ -13,14 +13,17 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
-        
+    @Environment(\.domainProfilesService) private var domainProfilesService
+
     var body: some View {
-        Section {
-            gridWithFollowers(viewModel.profilesListForSelectedRelationshipType())
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-        } header: {
-            sectionHeaderView()
-                .padding(.init(vertical: 6))
+        if let profile = viewModel.selectedPublicDomainProfile {
+            Section {
+                gridWithFollowers(viewModel.getProfilesListForSelectedRelationshipType)
+                    .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+            } header: {
+                sectionHeaderView(profile: profile)
+                    .padding(.init(vertical: 6))
+            }
         }
     }
     
@@ -29,25 +32,31 @@ struct HomeExploreFollowersSectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeExploreFollowersSectionView {
     @ViewBuilder
-    func gridWithFollowers(_ followers: [SerializedPublicDomainProfile]) -> some View {
+    func gridWithFollowers(_ followers: [DomainName]) -> some View {
         ListVGrid(data: followers,
                   verticalSpacing: 0,
                   horizontalSpacing: 16) { follower in
             Button {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .followerTile,
-                                               parameters: [.domainName : follower.profile.displayName ?? ""])
-//                domainSelectedCallback(domain)
+                                               parameters: [.domainName : follower])
+                if let profile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: follower) {
+                    viewModel.didTapUserPublicDomainProfileDisplayInfo(profile)
+                }
             } label: {
-                HomeExploreFollowerCellView(follower: follower)
+                HomeExploreFollowerCellView(domainName: follower)
             }
             .buttonStyle(.plain)
+            .onAppear {
+                viewModel.willDisplayFollower(domainName: follower)
+            }
         }
     }
     
     @ViewBuilder
-    func sectionHeaderView() -> some View {
-        HomeExploreFollowerRelationshipTypePickerView(relationshipType: $viewModel.relationshipType)
+    func sectionHeaderView(profile: DomainProfileDisplayInfo) -> some View {
+        HomeExploreFollowerRelationshipTypePickerView(profile: profile,
+                                                      relationshipType: $viewModel.relationshipType)
             .padding(.init(vertical: 4))
     }
 }

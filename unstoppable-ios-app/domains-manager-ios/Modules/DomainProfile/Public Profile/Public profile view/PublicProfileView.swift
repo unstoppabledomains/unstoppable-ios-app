@@ -12,7 +12,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
                             wallet: WalletEntity,
-                            viewingDomain: DomainItem?,
+                            viewingDomain: DomainDisplayInfo?,
                             preRequestedAction: PreRequestedProfileAction?,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
         let view = PublicProfileView(domain: domain,
@@ -31,7 +31,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     private let avatarSize: CGFloat = 80
     private let sidePadding: CGFloat = 16
     private var avatarStyle: DomainAvatarImageView.AvatarStyle {
-        switch viewModel.profile?.profile.imageType {
+        switch viewModel.profile?.imageType {
         case .onChain:
             return .hexagon
         default:
@@ -79,7 +79,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     
     init(domain: PublicDomainDisplayInfo,
          wallet: WalletEntity,
-         viewingDomain: DomainItem?,
+         viewingDomain: DomainDisplayInfo?,
          preRequestedAction: PreRequestedProfileAction?,
          delegate: PublicProfileViewDelegate? = nil) {
         _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, 
@@ -191,13 +191,17 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func startMessagingButtonView() -> some View {
-        CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                         size: .medium,
-                         callback: {
-            logButtonPressedAnalyticEvents(button: .messaging)
-            presentationMode.wrappedValue.dismiss()
-            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.wallet)
-        })
+        if let viewingDomain = viewModel.viewingDomain,
+           let wallet = appContext.walletsDataService.wallets.first(where: { $0.isOwningDomain(viewingDomain.name) }) {
+            CircleIconButton(icon: .uiImage(.messageCircleIcon24),
+                             size: .medium,
+                             callback: {
+                logButtonPressedAnalyticEvents(button: .messaging)
+                presentationMode.wrappedValue.dismiss()
+                delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, 
+                                                                     by: wallet)
+            })
+        }
     }
     
     @ViewBuilder
@@ -283,7 +287,7 @@ private extension PublicProfileView {
                    spacing: 16) {
                 VStack(alignment: .leading,
                        spacing: 0) {
-                    if let displayName = viewModel.profile?.profile.displayName,
+                    if let displayName = viewModel.profile?.profileName,
                        !displayName.trimmedSpaces.isEmpty {
                         PublicProfilePrimaryLargeTextView(text: displayName)
                         profileNameButton(isPrimary: false)
@@ -322,9 +326,9 @@ private extension PublicProfileView {
     }
     
     func isBioTextAvailable() -> Bool {
-        isStringValueSet(viewModel.profile?.profile.description) ||
-        isStringValueSet(viewModel.profile?.profile.web2Url) ||
-        isStringValueSet(viewModel.profile?.profile.location)
+        isStringValueSet(viewModel.profile?.description) ||
+        isStringValueSet(viewModel.profile?.web2Url) ||
+        isStringValueSet(viewModel.profile?.location)
     }
     
     func isStringValueSet(_ string: String?) -> Bool {
@@ -336,9 +340,9 @@ private extension PublicProfileView {
     @ViewBuilder
     func bioText() -> some View {
         Text(
-            attributedStringIfNotNil(viewModel.profile?.profile.description, isPrimary: true) +
-            attributedStringIfNotNil(viewModel.profile?.profile.web2Url, isPrimary: false) +
-            attributedStringIfNotNil(viewModel.profile?.profile.location, isPrimary: false)
+            attributedStringIfNotNil(viewModel.profile?.description, isPrimary: true) +
+            attributedStringIfNotNil(viewModel.profile?.web2Url, isPrimary: false) +
+            attributedStringIfNotNil(viewModel.profile?.location, isPrimary: false)
         )
         .lineLimit(3)
     }
@@ -374,7 +378,7 @@ private extension PublicProfileView {
     
     // Carousel
     @ViewBuilder
-    func infoCarouselView(for profile: SerializedPublicDomainProfile) -> some View {
+    func infoCarouselView(for profile: DomainProfileDisplayInfo) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 carouselSocialItemIfAvailable(in: profile)
@@ -387,27 +391,22 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselSocialItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
-        if let social = profile.social {
-            carouselFollowersItem(for: social, callback: { showFollowersList() })
+    func carouselSocialItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
+        carouselFollowersItem(for: profile, callback: { showFollowersList() })
+    }
+    
+    @ViewBuilder
+    func carouselSocialAccountsItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
+        if !profile.socialAccounts.isEmpty {
+            carouselItem(text: String.Constants.pluralNSocials.localized(profile.socialAccounts.count, profile.socialAccounts.count),
+                         icon: .twitterIcon24,
+                         button: .socialsList,
+                         callback: { showSocialAccountsList() })
         }
     }
     
     @ViewBuilder
-    func carouselSocialAccountsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
-        if let social = profile.socialAccounts {
-            let accounts = SocialDescription.typesFrom(accounts: social)
-            if !accounts.isEmpty {
-                carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
-                             icon: .twitterIcon24,
-                             button: .socialsList,
-                             callback: { showSocialAccountsList() })
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func carouselCryptoRecordsItemIfAvailable(in profile: SerializedPublicDomainProfile) -> some View {
+    func carouselCryptoRecordsItemIfAvailable(in profile: DomainProfileDisplayInfo) -> some View {
         if let records = viewModel.records,
            !records.isEmpty {
             carouselItem(text: String.Constants.pluralNAddresses.localized(records.count, records.count),
@@ -489,22 +488,24 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func carouselFollowersItem(for social: DomainProfileSocialInfo,
+    func carouselFollowersItem(for profile: DomainProfileDisplayInfo,
                                callback: @escaping MainActorAsyncCallback) -> some View {
-        let havingFollowers = social.followerCount > 0
-        let havingFollowings = social.followingCount > 0
+        let followerCount = profile.followerCount
+        let followingCount = profile.followingCount
+        let havingFollowers = followerCount > 0
+        let havingFollowings = followingCount > 0
         let havingFollowersOrFollowings = havingFollowers || havingFollowings
         let dimOpacity: CGFloat = 0.32
         carouselItemWithContent(callback: callback,
                                 button: .followersList) {
             HStack(spacing: 8) {
-                Text(String.Constants.pluralNFollowers.localized(social.followerCount, social.followerCount))
+                Text(String.Constants.pluralNFollowers.localized(followerCount, followerCount))
                     .foregroundColor(.white)
                     .opacity(havingFollowers ? 1 : dimOpacity)
                 Text("·")
                     .foregroundColor(.white)
                     .opacity(havingFollowersOrFollowings ? 1 : dimOpacity)
-                Text(String.Constants.pluralNFollowing.localized(social.followingCount, social.followingCount))
+                Text(String.Constants.pluralNFollowing.localized(followingCount, followingCount))
                     .foregroundColor(.white)
                     .opacity(havingFollowings ? 1 : dimOpacity)
             }
@@ -758,7 +759,7 @@ private extension PublicProfileView {
     
     struct ShowingSocialsList: ViewModifier {
         @Binding var isSocialsListPresented: Bool
-        var socialAccounts: SocialAccounts?
+        var socialAccounts: [DomainProfileSocialAccount]?
         let domainName: DomainName
         
         func body(content: Content) -> some View {
@@ -801,6 +802,6 @@ private extension PublicProfileView {
 #Preview {
     PublicProfileView(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
                       wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                      viewingDomain: .init(name: "oleg.x"),
+                      viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo(),
                       preRequestedAction: nil)
 }

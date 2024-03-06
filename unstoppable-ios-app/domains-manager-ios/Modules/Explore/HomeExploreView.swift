@@ -55,7 +55,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: HomeExploreNavigationDestination.self) { destination in
                 HomeExploreLinkNavigationDestination.viewFor(navigationDestination: destination,
-                                                          tabRouter: tabRouter)
+                                                             tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
         }, navigationStateProvider: { state in
@@ -118,9 +118,10 @@ private extension HomeExploreView {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .unstoppableListRowInset()
-        }
+        }.environment(\.defaultMinListRowHeight, 28)
         .listStyle(.plain)
         .listRowSpacing(0)
+        .sectionSpacing(0)
         .searchable(text: $viewModel.searchKey,
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: Text(String.Constants.search.localized()))
@@ -143,11 +144,6 @@ private extension HomeExploreView {
     func listContentForSearchInactive() -> some View {
         HomeExploreTrendingProfilesSectionView()
         HomeExploreSeparatorView()
-        followersSection()
-    }
-    
-    @ViewBuilder
-    func followersSection() -> some View {
         HomeExploreFollowersSectionView()
             .listRowInsets(.init(horizontal: 16))
     }

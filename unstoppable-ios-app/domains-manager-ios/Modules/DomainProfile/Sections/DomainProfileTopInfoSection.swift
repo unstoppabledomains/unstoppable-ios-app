@@ -207,7 +207,7 @@ private extension DomainProfileTopInfoSection {
                 return
             }
             
-            let viewingDomain = controller.generalData.domain.toDomainItem()
+            let viewingDomain = controller.generalData.domain
             let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
                                                  name: follower.domain)
             await Task.sleep(seconds: 0.2)

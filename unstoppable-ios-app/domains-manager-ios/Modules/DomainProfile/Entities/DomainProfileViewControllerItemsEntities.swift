@@ -235,7 +235,7 @@ extension DomainProfileViewController {
 extension DomainProfileViewController {
     struct DomainProfileSocialsDisplayInfo: Hashable, Sendable {
         let id: UUID
-        let description: SocialDescription
+        let description: DomainProfileSocialAccount
         let isEnabled: Bool
         let availableActions: [DomainProfileSocialsSection.SocialsAction]
         let actionButtonPressedCallback: MainActorAsyncCallback

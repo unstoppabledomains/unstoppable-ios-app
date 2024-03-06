@@ -16,7 +16,7 @@ extension MockEntitiesFabric {
             
             for tld in tlds {
                 for i in 0..<5 {
-                    let domain = DomainDisplayInfo(name: "oleg_\(i)_\(ownerWallet.last!).\(tld)",
+                    let domain = DomainDisplayInfo(name: "oleg_\(i)_\(ownerWallet.last ?? "a").\(tld)",
                                                    ownerWallet: ownerWallet,
                                                    blockchain: .Matic,
                                                    isSetForRR: i == 0)
@@ -186,6 +186,55 @@ extension MockEntitiesFabric {
         
         static func createPublicProfileWalletBalances() -> [ProfileWalletBalance] {
             []
+        }
+        
+        static  func createFollowersResponseWithDomains(_ domains: [String], 
+                                                        take: Int,
+                                                        relationshipType: DomainProfileFollowerRelationshipType) -> DomainProfileFollowersResponse {
+            DomainProfileFollowersResponse(domain: "",
+                                           data: domains.map { .init(domain: $0)},
+                                           relationshipType: relationshipType,
+                                           meta: .init(totalCount: take,
+                                                       pagination: .init(cursor: take,
+                                                                         take: take)))
+        }
+    }
+    
+    enum PublicDomainProfile {
+        static func createPublicDomainProfileDisplayInfo(domainName: String = "preview.x",
+                                                         ownerWallet: String = "0x1",
+                                                         profileName: String? = "Kaladin Stormblessed",
+                                                         withPFP: Bool = true,
+                                                         withBanner: Bool = true,
+                                                         withRecords: Bool = true,
+                                                         withSocialAccounts: Bool = true,
+                                                         followingCount: Int = Int(arc4random_uniform(10_000)),
+                                                         followerCount: Int = Int(arc4random_uniform(10_000))) -> DomainProfileDisplayInfo {
+            DomainProfileDisplayInfo(domainName: domainName,
+                                           ownerWallet: ownerWallet,
+                                           profileName: profileName,
+                                           pfpURL: withPFP ? ImageURLs.aiAvatar.url : nil,
+                                           imageType: .onChain,
+                                           bannerURL: withBanner ? ImageURLs.sunset.url : nil,
+                                           description: nil,
+                                           web2Url: nil,
+                                           location: nil,
+                                           records: withRecords ? createPublicDomainProfileRecords() : [:],
+                                           socialAccounts: withSocialAccounts ? createPublicDomainProfileSocialAccounts() : [],
+                                           followingCount: followingCount,
+                                           followerCount: followerCount)
+        }
+        
+        static func createPublicDomainProfileRecords() -> [String : String] {
+            ["crypto.BTC.address": "bc1pg2umaj84da0h97mkv5v4zecmzcryalms8ecxu6scfy3zapwnedksg4kmyn",
+             "crypto.ETH.address": "0xCD0DAdAb45bAF9a06ce1279D1342EcC3F44845af",
+             "crypto.SOL.address": "8DyNeQYMWY6NLpPN7S1nTcDy2WXLnm5rzrtdWA2H2t6Y",
+             "crypto.MATIC.version.ERC20.address": "0xCD0DAdAb45bAF9a06ce1279D1342EcC3F44845af",
+             "crypto.HBAR.address": "0.0.1345041"]
+        }
+        
+        static func createPublicDomainProfileSocialAccounts() -> [DomainProfileSocialAccount] {
+            DomainProfileSocialAccount.typesFrom(accounts: DomainProfile.createSocialAccounts())
         }
     }
 }

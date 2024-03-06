@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum SocialsType: Hashable, WebsiteURLValidator {
+enum SocialsType: String, Hashable, Codable, WebsiteURLValidator {
     
     case twitter
     case discord

@@ -67,3 +67,15 @@ extension EnvironmentValues {
         set { self[UserProfileServiceKey.self] = newValue }
     }
 }
+
+// MARK: - Domain profiles service
+private struct DomainProfilesServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.domainProfilesService
+}
+
+extension EnvironmentValues {
+    var domainProfilesService: DomainProfilesServiceProtocol {
+        get { self[DomainProfilesServiceKey.self] }
+        set { self[DomainProfilesServiceKey.self] = newValue }
+    }
+}
