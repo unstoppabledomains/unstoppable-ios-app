@@ -19,6 +19,8 @@ struct HomeExploreRecentProfilesSectionView: View, ViewAnalyticsLogger {
             } header: {
                 recentProfilesSectionHeaderView()
             }
+        } else {
+            HomeExploreEmptySearchResultView(mode: .globalSearchHint)
         }
     }
 }

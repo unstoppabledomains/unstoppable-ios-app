@@ -1119,6 +1119,7 @@ extension String {
         static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
         static let introMessagesBody = "INTRO_MESSAGES_BODY"
         static let totalN = "TOTAL_N"
+        static let globalDomainsSearchHint = "GLOBAL_DOMAINS_SEARCH_HINT"
         
     }
     
