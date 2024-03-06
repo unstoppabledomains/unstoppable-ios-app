@@ -37,18 +37,31 @@ final class HomeExploreViewModelTests: BaseTestClass {
     }
     
     @MainActor
+    func testViewModelAddRecentProfile() {
+        let profile = createSearchDomainProfileWithName()
+        viewModel.didTapSearchDomainProfile(profile)
+        XCTAssertEqual([profile], viewModel.recentProfiles)
+    }
+    
+    @MainActor
     func testViewModelAddRecentProfilesToStorage() {
         let profile = createSearchDomainProfileWithName()
         viewModel.didTapSearchDomainProfile(profile)
         XCTAssertEqual([profile], recentProfilesStorage.profiles)
     }
-    
+
+    @MainActor
+    func testViewModelClearRecentProfiles() {
+        viewModel.didTapSearchDomainProfile(createSearchDomainProfileWithName())
+        viewModel.clearRecentSearchButtonPressed()
+        XCTAssertTrue(viewModel.recentProfiles.isEmpty)
+    }
     
     @MainActor
     func testViewModelClearRecentProfilesFromStorage() {
         recentProfilesStorage.profiles = [createSearchDomainProfileWithName()]
         viewModel.clearRecentSearchButtonPressed()
-        XCTAssertTrue(recentProfilesStorage.profiles.isEmpty)        
+        XCTAssertTrue(recentProfilesStorage.profiles.isEmpty)
     }
 }
 
