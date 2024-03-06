@@ -10,9 +10,7 @@ import Foundation
 let previewContext = AppContext()
 
 final class AppContext: AppContextProtocol {
-    lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
-                                                                            firebaseParkedDomainsService: firebaseParkedDomainsService,
-                                                                            walletsDataService: walletsDataService)
+    var userProfileService: UserProfileServiceProtocol
     
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     
@@ -76,10 +74,18 @@ final class AppContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = PersistedSignaturesStorage()
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
     var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
-    var domainProfilesService: DomainProfilesServiceProtocol = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService())
+    var domainProfilesService: DomainProfilesServiceProtocol
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
+    }
+    
+    init() {
+        userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                walletsDataService: walletsDataService)
+        domainProfilesService = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService(),
+                                                      walletsDataService: walletsDataService)
     }
 }
 

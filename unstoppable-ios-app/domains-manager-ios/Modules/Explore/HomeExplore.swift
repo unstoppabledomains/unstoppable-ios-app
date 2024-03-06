@@ -35,6 +35,74 @@ extension HomeExplore {
         var analyticButton: Analytics.Button { .exploreDomainsSearchType }
     }
     
+    enum EmptyState {
+        case noProfile
+        case noFollowers
+        case noFollowing
+        
+        var title: String {
+            switch self {
+            case .noProfile:
+                String.Constants.exploreEmptyNoProfileTitle.localized()
+            case .noFollowers:
+                String.Constants.exploreEmptyNoFollowersTitle.localized()
+            case .noFollowing:
+                String.Constants.exploreEmptyNoFollowingTitle.localized()
+            }
+        }
+        
+        var subtitle: String {
+            switch self {
+            case .noProfile:
+                String.Constants.exploreEmptyNoProfileSubtitle.localized()
+            case .noFollowers:
+                String.Constants.exploreEmptyNoFollowersSubtitle.localized()
+            case .noFollowing:
+                String.Constants.exploreEmptyNoFollowingSubtitle.localized()
+            }
+        }
+        
+        var actionTitle: String {
+            switch self {
+            case .noProfile:
+                String.Constants.findYourDomain.localized()
+            case .noFollowers:
+                String.Constants.exploreEmptyNoFollowersActionTitle.localized()
+            case .noFollowing:
+                String.Constants.exploreEmptyNoFollowingActionTitle.localized()
+            }
+        }
+        
+        var actionStyle: UDButtonStyle {
+            switch self {
+            case .noFollowers, .noFollowing:
+                    .medium(.raisedTertiary)
+            case .noProfile:
+                    .medium(.raisedPrimary)
+            }
+        }
+        
+        var analyticButton: Analytics.Button {
+            switch self {
+            case .noProfile:
+                    .exploreNoProfile
+            case .noFollowers:
+                    .exploreNoFollowers
+            case .noFollowing:
+                    .exploreNoFollowing
+            }
+        }
+        
+        static func forRelationshipType(_ relationshipType: DomainProfileFollowerRelationshipType) -> EmptyState {
+            switch relationshipType {
+            case .followers:
+                    .noFollowers
+            case .following:
+                    .noFollowing
+            }
+        }
+    }
+    
     struct ExploreDomainProfile: Hashable, Identifiable, Codable {
         var id: String { domainName }
         

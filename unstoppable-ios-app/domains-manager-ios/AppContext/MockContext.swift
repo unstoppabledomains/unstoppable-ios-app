@@ -59,7 +59,8 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
     private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
     private(set) lazy var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
-    private(set) lazy var domainProfilesService: DomainProfilesServiceProtocol = DomainProfilesService(storage: PublicDomainProfileDisplayInfoStorageService())
+    private(set) lazy var domainProfilesService: DomainProfilesServiceProtocol = DomainProfilesService(storage: PublicDomainProfileDisplayInfoStorageService(),
+                                                                                                       walletsDataService: walletsDataService)
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     

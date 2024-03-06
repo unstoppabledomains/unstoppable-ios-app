@@ -1121,6 +1121,15 @@ extension String {
         static let totalN = "TOTAL_N"
         static let globalDomainsSearchHint = "GLOBAL_DOMAINS_SEARCH_HINT"
         
+        static let exploreEmptyNoProfileTitle = "EXPLORE_EMPTY_NO_PROFILE_TITLE"
+        static let exploreEmptyNoProfileSubtitle = "EXPLORE_EMPTY_NO_PROFILE_SUBTITLE"
+        static let exploreEmptyNoFollowersTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_TITLE"
+        static let exploreEmptyNoFollowersSubtitle = "EXPLORE_EMPTY_NO_FOLLOWERS_SUBTITLE"
+        static let exploreEmptyNoFollowersActionTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_ACTION_TITLE"
+        static let exploreEmptyNoFollowingTitle = "EXPLORE_EMPTY_NO_FOLLOWING_TITLE"
+        static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
+        static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
+
     }
     
     enum BlockChainIcons: String {

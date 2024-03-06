@@ -118,6 +118,17 @@ extension HomeExploreViewModel {
             storage.clearRecentProfiles()
         }
     }
+    
+    func didSelectActionInEmptyState(_ state: HomeExplore.EmptyState) {
+        switch state {
+        case .noProfile:
+            router.runPurchaseFlow()
+        case .noFollowers:
+            shareSelectedProfile()
+        case .noFollowing:
+            showSuggestedPeopleList()
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -168,6 +179,20 @@ private extension HomeExploreViewModel {
     func makeChangesToRecentProfilesStorage(_ block: (RecentGlobalSearchProfilesStorageProtocol)->()) {
         block(recentProfilesStorage)
         loadRecentProfiles()
+    }
+}
+
+// MARK: - Private methods
+private extension HomeExploreViewModel {
+    func shareSelectedProfile() {
+        guard let selectedPublicDomainProfile,
+            let topVC = appContext.coreAppCoordinator.topVC else { return }
+        
+        topVC.shareDomainProfile(domainName: selectedPublicDomainProfile.domainName, isUserDomain: true)
+    }
+    
+    func showSuggestedPeopleList() {
+        
     }
 }
 

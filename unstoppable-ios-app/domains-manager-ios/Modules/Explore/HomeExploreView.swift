@@ -52,12 +52,17 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                     }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: HomeExploreNavigationDestination.self) { destination in
                 HomeExploreLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                              tabRouter: tabRouter)
                 .environmentObject(navigationState!)
             }
+            .toolbar(content: {
+                // To keep nav bar background visible when scrolling
+                ToolbarItem(placement: .topBarLeading) {
+                    Color.clear
+                }
+            })
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.exploreTabNavPath)
@@ -105,6 +110,8 @@ private extension HomeExploreView {
 
 // MARK: - Domains views
 private extension HomeExploreView {
+    var isProfileAvailable: Bool { viewModel.selectedPublicDomainProfile != nil }
+    
     @ViewBuilder
     func domainSearchTypeSelector() -> some View {
         HomeExploreDomainSearchTypePickerView()
@@ -122,9 +129,10 @@ private extension HomeExploreView {
         .listStyle(.plain)
         .listRowSpacing(0)
         .sectionSpacing(0)
-        .searchable(text: $viewModel.searchKey,
+        .searchable(if: isProfileAvailable,
+                    text: $viewModel.searchKey,
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text(String.Constants.search.localized()))
+                    prompt: String.Constants.search.localized())
         .clearListBackground()
     }
     
@@ -142,10 +150,17 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
-        HomeExploreTrendingProfilesSectionView()
-        HomeExploreSeparatorView()
-        HomeExploreFollowersSectionView()
-            .listRowInsets(.init(horizontal: 16))
+        if isProfileAvailable {
+            HomeExploreTrendingProfilesSectionView()
+            HomeExploreSeparatorView()
+            HomeExploreFollowersSectionView()
+                .listRowInsets(.init(horizontal: 16))
+        } else {
+            HomeExploreEmptyStateView(state: .noProfile)
+                .padding(EdgeInsets(top: 32, leading: 0, bottom: 12, trailing: 0))
+            HomeExploreSeparatorView()
+            HomeExploreTrendingProfilesSectionView()
+        }
     }
 }
 
@@ -161,6 +176,22 @@ private extension HomeExploreView {
             HomeExploreGlobalSearchResultSectionView()
         case .local:
             HomeExploreUserWalletDomainsView()
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func searchable(if condition: Bool,
+                    text: Binding<String>,
+                    placement: SearchFieldPlacement = .automatic,
+                    prompt: String) -> some View {
+        if condition {
+            self.searchable(text: text,
+                            placement: placement,
+                            prompt: prompt)
+        } else {
+            self
         }
     }
 }
