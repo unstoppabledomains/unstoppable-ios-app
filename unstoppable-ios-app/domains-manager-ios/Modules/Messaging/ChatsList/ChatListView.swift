@@ -409,6 +409,7 @@ private extension ChatListView {
         if !requests.isEmpty {
             UDCollectionListRowButton(content: {
                 ChatListRequestsRowView(dataType: .chats, numberOfRequests: requests.count)
+                    .udListItemInCollectionButtonPadding()
             }, callback: {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .chatRequests)
@@ -473,6 +474,7 @@ private extension ChatListView {
     func channelRowView(channel: MessagingNewsChannel) -> some View {
         UDCollectionListRowButton(content: {
             ChatListChannelRowView(channel: channel)
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: .channelInList)
@@ -485,6 +487,7 @@ private extension ChatListView {
         if !viewModel.channelsRequests.isEmpty {
             UDCollectionListRowButton(content: {
                 ChatListRequestsRowView(dataType: .channels, numberOfRequests: viewModel.channelsRequests.count)
+                    .udListItemInCollectionButtonPadding()
             }, callback: {
                 UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
@@ -511,6 +514,7 @@ private extension ChatListView {
     func userRowView(user: MessagingChatUserDisplayInfo) -> some View {
         UDCollectionListRowButton(content: {
             ChatListUserRowView(user: user)
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: .userToChatInList)

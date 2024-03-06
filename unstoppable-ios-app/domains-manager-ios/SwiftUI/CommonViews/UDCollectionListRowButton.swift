@@ -25,7 +25,6 @@ struct UDCollectionListRowButton<Content: View>: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(state.pressed ? Color.backgroundSubtle : Color.clear)
-                    .padding(.init(horizontal: -12, vertical: -8))
                 content()
             }
         }))

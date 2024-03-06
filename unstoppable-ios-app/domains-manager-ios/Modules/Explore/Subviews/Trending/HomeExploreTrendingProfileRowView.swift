@@ -18,7 +18,7 @@ struct HomeExploreTrendingProfileRowView: View, ViewAnalyticsLogger {
     
     var body: some View {
         clickableContentView()
-            .padding(.init(vertical: 4))
+            .padding(.init(horizontal: -12, vertical: -5))
         .onAppear(perform: onAppear)
     }
     
@@ -50,6 +50,7 @@ private extension HomeExploreTrendingProfileRowView {
     func clickableContentView() -> some View {
         UDCollectionListRowButton(content: {
             contentView()
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logAnalytic(event: .trendingProfilePressed, parameters: [.domainName : profile.domainName])

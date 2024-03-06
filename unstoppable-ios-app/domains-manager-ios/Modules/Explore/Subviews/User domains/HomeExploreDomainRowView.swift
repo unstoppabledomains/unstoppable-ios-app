@@ -44,6 +44,7 @@ private extension HomeExploreDomainRowView {
     func clickableContentView() -> some View {
         UDCollectionListRowButton(content: {
             contentView()
+                .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             selectionCallback(domain)

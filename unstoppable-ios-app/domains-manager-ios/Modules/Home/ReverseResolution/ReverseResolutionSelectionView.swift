@@ -200,6 +200,7 @@ private extension ReverseResolutionSelectionView {
         UDCollectionListRowButton(content: {
             ReverseResolutionSelectionRowView(domain: domain,
                                               isSelected: domain.name == selectedDomain?.name)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             selectedDomain = domain
@@ -214,7 +215,7 @@ private extension ReverseResolutionSelectionView {
                                titleColor: .foregroundAccent,
                                imageType: .image(.plusIconNav),
                                imageStyle: .clearImage(foreground: .foregroundAccent))
-                .padding(EdgeInsets(top: -12, leading: 0, bottom: -12, trailing: 0))
+                .udListItemInCollectionButtonPadding()
             }, callback: {
                 UDVibration.buttonTap.vibrate()
                 tabRouter.runPurchaseFlow()

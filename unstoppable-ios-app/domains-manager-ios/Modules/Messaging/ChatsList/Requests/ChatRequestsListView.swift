@@ -123,6 +123,7 @@ private extension ChatRequestsListView {
                 ForEach(channels, id: \.id) { channel in
                     UDCollectionListRowButton(content: {
                         ChatListChannelRowView(channel: channel)
+                            .udListItemInCollectionButtonPadding()
                     }, callback: {
                         UDVibration.buttonTap.vibrate()
                         logButtonPressedAnalyticEvents(button: .channelInList)
