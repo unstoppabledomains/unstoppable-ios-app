@@ -21,7 +21,7 @@ struct HomeExploreFollowerCellView: View {
         viewForFollower()
             .onAppear(perform: onAppear)
             .onChange(of: domainName) { newValue in
-                loadProfile()
+                loadProfileFor(domainName: newValue)
             }
     }
 }
@@ -29,10 +29,10 @@ struct HomeExploreFollowerCellView: View {
 // MARK: - Private methods
 private extension HomeExploreFollowerCellView {
     func onAppear() {
-        loadProfile()
+        loadProfileFor(domainName: domainName)
     }
     
-    func loadProfile() {
+    func loadProfileFor(domainName: String) {
         if let cachedProfile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: domainName) {
             setProfile(cachedProfile)
         } else {
