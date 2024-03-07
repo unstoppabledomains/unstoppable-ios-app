@@ -13,7 +13,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     @State private var navigationState: NavigationStateManager?
     @StateObject var viewModel: HomeExploreViewModel
     
-    var isOtherScreenPushed: Bool { !tabRouter.chatTabNavPath.isEmpty }
+    var isOtherScreenPushed: Bool { !tabRouter.exploreTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeExplore }
 
     var body: some View {
@@ -44,11 +44,13 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .onChange(of: viewModel.searchKey) { keyboardFocused in
                 setTitleVisibility()
             }
-            .onChange(of: tabRouter.chatTabNavPath) { path in
-                tabRouter.isTabBarVisible = !isOtherScreenPushed
-                if path.isEmpty {
-                    withAnimation {
+            .onChange(of: tabRouter.exploreTabNavPath) { path in
+                withAnimation {
+                    tabRouter.isTabBarVisible = !isOtherScreenPushed
+                    if path.isEmpty {
                         setupTitle()
+                    } else {
+                        setTitleVisibility()
                     }
                 }
             }
@@ -81,11 +83,13 @@ private extension HomeExploreView {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
+        setTitleVisibility()
     }
     
     func setTitleVisibility() {
         withAnimation {
-            navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchKey.isEmpty
+            navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchKey.isEmpty &&
+            !isOtherScreenPushed
         }
     }
     
