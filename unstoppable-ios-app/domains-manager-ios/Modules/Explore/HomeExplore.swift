@@ -194,3 +194,40 @@ extension HomeExplore {
         }
     }
 }
+
+// MARK: - Open methods
+extension HomeExplore {
+    struct DomainProfileSuggestionSectionsBuilder {
+        
+        let sections: [Section]
+        
+        init(profiles: [DomainProfileSuggestion]) {
+            let numOfProfilesInSection = 3
+            let maxNumOfSections = 3
+            let maxNumOfProfiles = numOfProfilesInSection * maxNumOfSections
+            
+            var profilesToTake = Array(profiles.prefix(maxNumOfProfiles))
+            var sections: [Section] = []
+            
+            let numOfSections = Double(profilesToTake.count) / Double(numOfProfilesInSection)
+            let numOfSectionsRounded = Int(ceil(numOfSections))
+            for _ in 0..<numOfSectionsRounded {
+                let sectionProfiles = Array(profilesToTake.prefix(numOfProfilesInSection))
+                let section = Section(profiles: sectionProfiles)
+                sections.append(section)
+                profilesToTake = Array(profilesToTake.dropFirst(numOfProfilesInSection))
+            }
+            
+            self.sections = sections
+        }
+        
+        func getProfilesMatrix() -> [[DomainProfileSuggestion]] {
+            sections.map { $0.profiles }
+        }
+        
+        struct Section {
+            let profiles: [DomainProfileSuggestion]
+        }
+        
+    }
+}

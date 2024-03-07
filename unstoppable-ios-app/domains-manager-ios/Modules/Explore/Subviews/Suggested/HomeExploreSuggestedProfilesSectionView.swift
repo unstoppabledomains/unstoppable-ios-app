@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeExploreSuggestedProfilesSectionView: View {
     
+    @EnvironmentObject var viewModel: HomeExploreViewModel
+
     @State private var profilesSections: [[DomainProfileSuggestion]] = []
     private let horizontalContentPadding: CGFloat = 16
     private let horizontalSectionsSpacing: CGFloat = 30
@@ -26,6 +28,9 @@ struct HomeExploreSuggestedProfilesSectionView: View {
         } header: {
             sectionHeaderView()
         }
+        .onChange(of: viewModel.suggestedProfiles) { _ in
+            setSuggestedProfiles()
+        }
         .onChange(of: scrollOffset) { _ in
             updateCurrentPageForScrollOffset()
         }
@@ -35,8 +40,12 @@ struct HomeExploreSuggestedProfilesSectionView: View {
 // MARK: - Private methods
 private extension HomeExploreSuggestedProfilesSectionView {
     func onAppear() {
-        let items = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
-        let maker = DomainProfileSuggestionSectionsMaker(profiles: items)
+        setSuggestedProfiles()
+    }
+    
+    func setSuggestedProfiles() {
+        let profiles = viewModel.suggestedProfiles
+        let maker = HomeExplore.DomainProfileSuggestionSectionsBuilder(profiles: profiles)
         self.profilesSections = maker.getProfilesMatrix()
     }
     
@@ -107,7 +116,7 @@ private extension HomeExploreSuggestedProfilesSectionView {
                 .padding(.init(vertical: 8))
             
             Spacer()
-            PageControl(numberOfPages: profilesSections.count,
+            UDPageControlView(numberOfPages: profilesSections.count,
                         currentPage: $currentPage)
             .allowsHitTesting(false)
         }
@@ -136,105 +145,4 @@ private extension HomeExploreSuggestedProfilesSectionView {
 
 #Preview {
     HomeExploreSuggestedProfilesSectionView()
-}
-
-struct DomainProfileSuggestion: Hashable, Codable, Identifiable {
-    var id: String { domain }
-    
-    let address: String
-    let reasons: [String]
-    let score: Int
-    let domain: String
-    let imageUrl: String?
-    let imageType: DomainProfileImageType?
-    
-    var classifiedReasons: [Reason] { reasons.compactMap { Reason(rawValue: $0) } }
-    
-    func getReasonToShow() -> Reason? {
-        classifiedReasons.first
-    }
-    
-    enum Reason: String {
-        case nftCollection = "Holds the same NFT collection"
-        case poap = "Holds the same POAP"
-        case transaction = "Shared a transaction"
-        case lensFollows = "Lens follows in common"
-        case farcasterFollows = "Farcaster follows in common"
-        
-        var title: String {
-            rawValue
-        }
-        
-        var icon: Image {
-            switch self {
-            case .nftCollection:
-                return .cryptoFaceIcon
-            case .poap:
-                return .cryptoPOAPIcon
-            case .transaction:
-                return .cryptoTransactionIcon
-            case .lensFollows:
-                return .lensIcon
-            case .farcasterFollows:
-                return .farcasterIcon
-            }
-        }
-    }
-}
-
-struct DomainProfileSuggestionSectionsMaker {
-    
-    let sections: [Section]
-    
-    init(profiles: [DomainProfileSuggestion]) {
-        let numOfProfilesInSection = 3
-        let maxNumOfSections = 3
-        let maxNumOfProfiles = numOfProfilesInSection * maxNumOfSections
-        
-        var profilesToTake = Array(profiles.prefix(maxNumOfProfiles))
-        var sections: [Section] = []
-        
-        let numOfSections = Double(profilesToTake.count) / Double(numOfProfilesInSection)
-        let numOfSectionsRounded = Int(ceil(numOfSections))
-        for _ in 0..<numOfSectionsRounded {
-            let sectionProfiles = Array(profilesToTake.prefix(numOfProfilesInSection))
-            let section = Section(profiles: sectionProfiles)
-            sections.append(section)
-            profilesToTake = Array(profilesToTake.dropFirst(numOfProfilesInSection))
-        }
-        
-        self.sections = sections
-    }
-    
-    func getProfilesMatrix() -> [[DomainProfileSuggestion]] {
-        sections.map { $0.profiles }
-    }
-    
-    struct Section {
-        let profiles: [DomainProfileSuggestion]
-    }
-    
-}
-
-struct PageControl: View {
-    
-    let numberOfPages: Int
-    
-    @Binding var currentPage: Int
-    
-    var body: some View {
-        HStack {
-            ForEach(0..<numberOfPages, id: \.self) { index in
-                Circle()
-                    .squareFrame(8)
-                    .foregroundColor(index == self.currentPage ? .backgroundEmphasis : .backgroundMuted)
-                    .overlay {
-                        Circle()
-                            .stroke(lineWidth: 1)
-                            .foregroundStyle(Color.backgroundDefault)
-                    }
-                    .onTapGesture(perform: { self.currentPage = index })
-            }
-        }
-    }
 }

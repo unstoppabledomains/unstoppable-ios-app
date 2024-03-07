@@ -18,6 +18,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
     @Published private(set) var recentProfiles: [SearchDomainProfile] = []
+    @Published private(set) var suggestedProfiles: [DomainProfileSuggestion] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
     @Published var userWalletCollapsedAddresses: Set<String> = []
@@ -129,6 +130,14 @@ extension HomeExploreViewModel {
             showSuggestedPeopleList()
         }
     }
+    
+    func didSelectDomainProfileSuggestion(_ profileSuggestion: DomainProfileSuggestion) {
+        
+    }
+    
+    func didSelectToFollowDomainName(_ domainName: DomainName) {
+        
+    }
 }
 
 // MARK: - Private methods
@@ -138,6 +147,7 @@ private extension HomeExploreViewModel {
         loadRecentProfiles()
         setUserWalletSearchResults()
         updateWalletDomainProfileDetailsForSelectedProfile()
+        loadSuggestedProfiles()
     }
     
     func loadTrendingProfiles() {
@@ -179,6 +189,10 @@ private extension HomeExploreViewModel {
     func makeChangesToRecentProfilesStorage(_ block: (RecentGlobalSearchProfilesStorageProtocol)->()) {
         block(recentProfilesStorage)
         loadRecentProfiles()
+    }
+    
+    func loadSuggestedProfiles() {
+        suggestedProfiles = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
     }
 }
 
