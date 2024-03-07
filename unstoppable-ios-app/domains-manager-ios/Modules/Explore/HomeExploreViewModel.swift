@@ -13,7 +13,8 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .homeExplore }
     
-    @Published private(set) var selectedProfile: UserProfile
+    private var selectedProfile: UserProfile
+    
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
@@ -70,6 +71,8 @@ extension HomeExploreViewModel {
     var getProfilesListForSelectedRelationshipType: [DomainName] {
         walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
     }
+    
+    var isProfileAvailable: Bool { getSelectedUserProfileRRDomain() != nil }
     
     var selectedPublicDomainProfile: DomainProfileDisplayInfo? {
         walletDomainProfileDetails?.displayInfo
@@ -178,9 +181,13 @@ private extension HomeExploreViewModel {
     }
     
     func updateWalletDomainProfileDetailsForSelectedProfile() {
+        walletDomainProfileDetails = nil
         if case .wallet(let wallet) = selectedProfile {
             Task {
-                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet).receive(on: DispatchQueue.main).sink { [weak self] relationshipDetails in
+                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: wallet)
+                    .receive(on: DispatchQueue.main)
+                    .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+                    .sink { [weak self] relationshipDetails in
                     self?.walletDomainProfileDetails = relationshipDetails
                 }
             }

@@ -80,7 +80,7 @@ private extension HomeExploreView {
     }
     
     func setupTitle() {
-        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
+        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView() },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
         setTitleVisibility()
@@ -114,9 +114,7 @@ private extension HomeExploreView {
 }
 
 // MARK: - Domains views
-private extension HomeExploreView {
-    var isProfileAvailable: Bool { viewModel.selectedPublicDomainProfile != nil }
-    
+private extension HomeExploreView {    
     @ViewBuilder
     func domainSearchTypeSelector() -> some View {
         HomeExploreDomainSearchTypePickerView()
@@ -134,7 +132,7 @@ private extension HomeExploreView {
         .listStyle(.plain)
         .listRowSpacing(0)
         .sectionSpacing(0)
-        .searchable(if: isProfileAvailable,
+        .searchable(if: viewModel.isProfileAvailable,
                     text: $viewModel.searchKey,
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: String.Constants.search.localized())
@@ -155,7 +153,7 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
-        if isProfileAvailable {
+        if viewModel.isProfileAvailable {
             HomeExploreSuggestedProfilesSectionView()
             HomeExploreSeparatorView()
             HomeExploreFollowersSectionView()
