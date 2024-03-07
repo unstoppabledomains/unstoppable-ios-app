@@ -1027,11 +1027,11 @@ More tabs are coming in the next updates.";
 
 "EXPLORE_EMPTY_NO_PROFILE_TITLE" = "Get full access to Explore";
 "EXPLORE_EMPTY_NO_PROFILE_SUBTITLE" = "Buy your first domain to have an ability to explore and follow people.";
-
 "EXPLORE_EMPTY_NO_FOLLOWERS_TITLE" = "Get noticed in Web3";
 "EXPLORE_EMPTY_NO_FOLLOWERS_SUBTITLE" = "Share your profile to showcase your journey and attract like-minded people.";
 "EXPLORE_EMPTY_NO_FOLLOWERS_ACTION_TITLE" = "Share Profile";
-
 "EXPLORE_EMPTY_NO_FOLLOWING_TITLE" = "Expand your network";
 "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE" = "Connect with leaders and enthusiasts in Web3 space. Start following and engage with the community.";
 "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE" = "Find People";
+
+"SUGGESTED_FOR_YOU" = "Suggested for you";

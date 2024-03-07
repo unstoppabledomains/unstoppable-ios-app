@@ -16,12 +16,15 @@ struct HomeExploreSuggestedProfilesSectionView: View {
     private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + horizontalContentPadding + 15 }
     
     var body: some View {
-        contentScrollView()
-            .frame(height: 172)
-            .onAppear(perform: onAppear)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        Section {
+            contentScrollView()
+                .frame(height: 172)
+                .onAppear(perform: onAppear)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        } header: {
+            sectionHeaderView()
+        }
     }
-    
 }
 
 // MARK: - Private methods
@@ -79,6 +82,14 @@ private extension HomeExploreSuggestedProfilesSectionView {
     @ViewBuilder
     func rowForProfile(_ profileSuggestion: DomainProfileSuggestion) -> some View {
         HomeExploreSuggestedProfileRowView(profileSuggestion: profileSuggestion)
+    }
+    
+    @ViewBuilder
+    func sectionHeaderView() -> some View {
+        Text(String.Constants.suggestedForYou.localized())
+            .font(.currentFont(size: 16, weight: .medium))
+            .foregroundStyle(Color.foregroundDefault)
+            .padding(.init(vertical: 8))
     }
 }
 

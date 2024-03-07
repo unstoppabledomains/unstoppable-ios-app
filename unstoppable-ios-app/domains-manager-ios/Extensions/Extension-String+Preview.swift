@@ -1129,6 +1129,7 @@ extension String {
         static let exploreEmptyNoFollowingTitle = "EXPLORE_EMPTY_NO_FOLLOWING_TITLE"
         static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
         static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
+        static let suggestedForYou = "SUGGESTED_FOR_YOU"
 
     }
     
