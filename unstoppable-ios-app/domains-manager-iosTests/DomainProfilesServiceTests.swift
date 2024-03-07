@@ -234,7 +234,7 @@ private extension DomainProfilesServiceTests {
     }
 }
 
-private final class MockNetworkService: PublicDomainProfileNetworkServiceProtocol {
+private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
     var profileToReturn: SerializedPublicDomainProfile?
     var shouldFail = false
     var error: GenericError { GenericError.generic }
@@ -288,7 +288,7 @@ private final class MockNetworkService: PublicDomainProfileNetworkServiceProtoco
     }
 }
 
-private final class MockStorage: PublicDomainProfileDisplayInfoStorageServiceProtocol {
+private final class MockStorage: DomainProfileDisplayInfoStorageServiceProtocol {
     
     var cache: [DomainName : DomainProfileDisplayInfo] = [:]
     

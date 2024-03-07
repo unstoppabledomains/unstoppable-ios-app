@@ -80,7 +80,7 @@ final class GeneralAppContext: AppContextProtocol {
                                                 walletConnectServiceV2: walletConnectServiceV2,
                                                 walletNFTsService: walletNFTsService)
         
-        domainProfilesService = DomainProfilesService(storage: PublicDomainProfileDisplayInfoStorageService(),
+        domainProfilesService = DomainProfilesService(storage: DomainProfileDisplayInfoCoreDataStorage(),
                                                       walletsDataService: walletsDataService)
         
         // WC requests

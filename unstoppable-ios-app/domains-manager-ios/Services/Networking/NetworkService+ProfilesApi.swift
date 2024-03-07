@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     
     //MARK: public methods
     public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {

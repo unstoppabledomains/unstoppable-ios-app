@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class PublicDomainProfileDisplayInfoStorageService: CoreDataService {
+final class DomainProfileDisplayInfoCoreDataStorage: CoreDataService {
     
     init() {
         super.init(inMemory: false)
@@ -16,7 +16,7 @@ final class PublicDomainProfileDisplayInfoStorageService: CoreDataService {
 }
 
 // MARK: - PublicDomainProfileDisplayInfoStorageServiceProtocol
-extension PublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDisplayInfoStorageServiceProtocol {
+extension DomainProfileDisplayInfoCoreDataStorage: DomainProfileDisplayInfoStorageServiceProtocol {
     func store(profile: DomainProfileDisplayInfo) {
         coreDataQueue.sync {
             let _ = try? convertPublicProfileToCoreDataPublicProfile(profile)
@@ -39,7 +39,7 @@ extension PublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDispl
 }
 
 // MARK: - Private methods
-private extension PublicDomainProfileDisplayInfoStorageService {
+private extension DomainProfileDisplayInfoCoreDataStorage {
     @discardableResult
     func convertPublicProfileToCoreDataPublicProfile(_ profile: DomainProfileDisplayInfo) throws -> CoreDataPublicDomainProfile {
         let coreDataProfile: CoreDataPublicDomainProfile = try createEntity(in: backgroundContext)
@@ -88,7 +88,7 @@ private extension PublicDomainProfileDisplayInfoStorageService {
 }
 
 // MARK: - Open methods
-extension PublicDomainProfileDisplayInfoStorageService {
+extension DomainProfileDisplayInfoCoreDataStorage {
     enum Error: Swift.Error {
         case entityNotFound
         case invalidEntity

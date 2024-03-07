@@ -211,7 +211,7 @@ extension NetworkService {
     }
 }
 
-extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     public func searchForDomainsWith(name: String,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         var result = [SearchDomainProfile]()

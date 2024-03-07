@@ -10,16 +10,16 @@ import Combine
 
 final class DomainProfilesService {
    
-    private let storage: PublicDomainProfileDisplayInfoStorageServiceProtocol
-    private let networkService: PublicDomainProfileNetworkServiceProtocol
+    private let storage: DomainProfileDisplayInfoStorageServiceProtocol
+    private let networkService: DomainProfileNetworkServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
     private let numberOfFollowersToTake = 40
     private let serialQueue = DispatchQueue(label: "com.domain_profiles_service.unstoppable")
     private var profilesSocialDetailsCache: [HexAddress : PublishableDomainProfileDetailsController] = [:]
     private var cancellables: Set<AnyCancellable> = []
 
-    init(networkService: PublicDomainProfileNetworkServiceProtocol = NetworkService(),
-         storage: PublicDomainProfileDisplayInfoStorageServiceProtocol,
+    init(networkService: DomainProfileNetworkServiceProtocol = NetworkService(),
+         storage: DomainProfileDisplayInfoStorageServiceProtocol,
          walletsDataService: WalletsDataServiceProtocol) {
         self.networkService = networkService
         self.storage = storage
@@ -290,34 +290,5 @@ private extension DomainProfilesService {
         func resetAllDetails() {
             details.resetAllDetails()
         }
-    }
-}
-
-struct WalletDomainProfileDetails: Hashable {
-   
-    let walletAddress: HexAddress
-    let profileDomainName: DomainName?
-    var displayInfo: DomainProfileDisplayInfo?
-    var socialDetails: DomainProfileSocialRelationshipDetails?
-    
-    init(walletAddress: HexAddress, profileDomainName: DomainName? = nil, displayInfo: DomainProfileDisplayInfo? = nil) {
-        self.walletAddress = walletAddress
-        self.profileDomainName = profileDomainName
-        self.displayInfo = displayInfo
-        resetSocialDetails()
-    }
-    
-    mutating func resetAllDetails() {
-        resetDisplayInfo()
-        resetSocialDetails()
-    }
-    
-    mutating func resetDisplayInfo()  {
-        displayInfo = nil
-    }
-    
-    mutating func resetSocialDetails() {
-        socialDetails = DomainProfileSocialRelationshipDetails(walletAddress: walletAddress,
-                                                               profileDomainName: profileDomainName)
     }
 }

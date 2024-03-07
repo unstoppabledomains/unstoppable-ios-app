@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class PreviewPublicDomainProfileDisplayInfoStorageService: PublicDomainProfileDisplayInfoStorageServiceProtocol {
+final class PreviewPublicDomainProfileDisplayInfoStorageService: DomainProfileDisplayInfoStorageServiceProtocol {
     func store(profile: DomainProfileDisplayInfo) {
         
     }

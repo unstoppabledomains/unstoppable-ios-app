@@ -492,7 +492,7 @@ private extension HomeTabRouter {
     }
     
     func waitBeforeNextNavigationIfTabNot(_ tab: HomeTab) async {
-        let shouldWaitBeforePush = tabViewSelection != currentTab
+        let shouldWaitBeforePush = tabViewSelection != tab
         if shouldWaitBeforePush {
             await Task.sleep(seconds: 0.2)
         }
