@@ -33,35 +33,96 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
+    @State private var offset: CGPoint = .zero
+    @State private var didCoverActionsWithNav = false
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
 
     var body: some View {
-        ZStack {
-            backgroundView()
-            ScrollView {
-                contentView()
+        NavigationStack {
+            ZStack {
+                backgroundView()
+                ZStack(alignment: .bottom) {
+                    OffsetObservingScrollView(offset: $offset) {
+                        contentView()
+                    }
+                    bottomActionView()
+                }
+                if viewModel.isLoading {
+                    ProgressView()
+                }
             }
-            if viewModel.isLoading {
-                ProgressView()
+            .ignoresSafeArea()
+            .environmentObject(viewModel)
+            .passViewAnalyticsDetails(logger: self)
+            .animation(.easeInOut(duration: 0.3), value: UUID())
+            .displayError($viewModel.error)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: offset, perform: { _ in
+                didScroll()
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    if didCoverActionsWithNav {
+                        navShareProfileButtonView()
+                    }
+                }
             }
+            .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
+                                        domainName: viewModel.domain.name,
+                                        records: viewModel.records))
+            .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
+                                           socialInfo: viewModel.socialInfo,
+                                           domainName: viewModel.domain.name,
+                                           followerSelectionCallback: followerSelected))
+            .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
+                                         socialAccounts: viewModel.socialAccounts,
+                                         domainName: viewModel.domain.name))
+            .onAppear(perform: {
+                logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
+            })
         }
-        .environmentObject(viewModel)
-        .passViewAnalyticsDetails(logger: self)
-        .animation(.easeInOut(duration: 0.3), value: UUID())
-        .displayError($viewModel.error)
-        .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
-                                    domainName: viewModel.domain.name,
-                                    records: viewModel.records))
-        .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
-                                       socialInfo: viewModel.socialInfo,
-                                       domainName: viewModel.domain.name,
-                                       followerSelectionCallback: followerSelected))
-        .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
-                                     socialAccounts: viewModel.socialAccounts,
-                                     domainName: viewModel.domain.name))
-        .onAppear(perform: {
-            logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
-        })
+    }
+    
+    let gradient = LinearGradient(
+        gradient: Gradient(stops: [
+            .init(color: .black, location: 0),
+            .init(color: .black, location: 0.8),
+            .init(color: .black.opacity(0.12), location: 1)
+        ]),
+        startPoint: .bottom,
+        endPoint: .top
+    )
+    
+    @ViewBuilder
+    func bottomActionView() -> some View {
+        ZStack(alignment: .top) {
+            Rectangle()
+                .foregroundStyle(.ultraThinMaterial)
+                
+                .mask(gradient)
+
+            HStack {
+                startMessagingButtonView()
+                followButtonIfAvailable()
+            }
+            .padding()
+            
+        }
+        .frame(height: 116)
+        .frame(maxWidth: .infinity)
+        
+        
+    }
+    
+    func didScroll() {
+        didCoverActionsWithNav = offset.y > 76
     }
     
     init(configuration: PublicProfileViewConfiguration) {
@@ -158,10 +219,24 @@ private extension PublicProfileView {
     func shareProfileButtonView() -> some View {
         CircleIconButton(icon: .uiImage(.shareIcon),
                          size: .medium,
-                         callback: {
-            logButtonPressedAnalyticEvents(button: .share)
-            delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
+                         callback: didTapShareProfileButton)
+    }
+    
+    @ViewBuilder
+    func navShareProfileButtonView() -> some View {
+        Button(action: didTapShareProfileButton, 
+               label: {
+            Image.shareIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(.white)
         })
+        .buttonStyle(.plain)
+    }
+    
+    func didTapShareProfileButton() {
+        logButtonPressedAnalyticEvents(button: .share)
+        delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
     }
     
     @ViewBuilder
@@ -717,6 +792,26 @@ private extension PublicProfileView {
 
 @available(iOS 17, *)
 #Preview {
-    PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
-                                                                    viewingWallet: MockEntitiesFabric.Wallet.mockEntities()[0]))
+    PreviewContainerView()
+}
+
+private struct PreviewContainerView: View  {
+    
+    @State var isPresentingProfile = false
+    var body: some View {
+        Text("Container")
+            .sheet(isPresented: $isPresentingProfile, content: {
+                targetView()
+            })
+            .onAppear {
+                isPresentingProfile = true
+            }
+    }
+    
+    @ViewBuilder
+    func targetView() -> some View {
+        PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
+                                                                        viewingWallet: MockEntitiesFabric.Wallet.mockEntities()[0]))
+    }
+    
 }
