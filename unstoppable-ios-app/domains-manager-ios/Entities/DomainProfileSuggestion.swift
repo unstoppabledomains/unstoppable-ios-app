@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DomainProfileSuggestion: Hashable, Codable, Identifiable {
+struct DomainProfileSuggestion: Hashable, Identifiable {
     var id: String { domain }
     
     let address: String
@@ -49,5 +49,16 @@ struct DomainProfileSuggestion: Hashable, Codable, Identifiable {
                 return .farcasterIcon
             }
         }
+    }
+}
+
+extension DomainProfileSuggestion {
+    init(serializedProfile: SerializedDomainProfileSuggestion) {
+        self.address = serializedProfile.address
+        self.reasons = serializedProfile.reasons
+        self.score = serializedProfile.score
+        self.domain = serializedProfile.domain
+        self.imageUrl = URL(string: serializedProfile.imageUrl ?? "")
+        self.imageType = serializedProfile.imageType
     }
 }

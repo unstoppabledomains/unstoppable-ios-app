@@ -442,7 +442,16 @@ struct DomainProfileFollowersResponse: Codable {
         let cursor: Int?
         let take: Int
     }
-    
+}
+
+typealias SerializedDomainProfileSuggestionsResponse = [SerializedDomainProfileSuggestion]
+struct SerializedDomainProfileSuggestion: Codable {
+    let address: String
+    let reasons: [String]
+    let score: Int
+    let domain: String
+    let imageUrl: String?
+    let imageType: DomainProfileImageType?
 }
 
 struct DomainProfileFollower: Codable {

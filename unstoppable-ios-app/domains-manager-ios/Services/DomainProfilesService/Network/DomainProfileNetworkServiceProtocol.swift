@@ -19,4 +19,6 @@ protocol DomainProfileNetworkServiceProtocol {
                               cursor: Int?) async throws -> DomainProfileFollowersResponse
     func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse
 }

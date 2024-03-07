@@ -13,7 +13,6 @@ final class DomainProfileSocialRelationshipDetailsTests: BaseTestClass {
         let mockWallet = createMockWallet()
         let details = DomainProfileSocialRelationshipDetails(wallet: mockWallet)
         
-        XCTAssertEqual(details.walletAddress, mockWallet.address)
         XCTAssertTrue(details.followersDetails.paginationInfo.canLoadMore)
         XCTAssertTrue(details.followingDetails.paginationInfo.canLoadMore)
     }

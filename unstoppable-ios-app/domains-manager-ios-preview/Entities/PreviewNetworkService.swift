@@ -244,6 +244,10 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
        
     }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        MockEntitiesFabric.ProfileSuggestions.createSerializedSuggestionsForPreview()
+    }
 }
 
 extension NetworkService {

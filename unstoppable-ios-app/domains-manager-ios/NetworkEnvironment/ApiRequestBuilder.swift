@@ -863,6 +863,16 @@ extension Endpoint {
             headers: headers
         )
     }
+    
+    static func getProfileConnectionSuggestions(for domain: DomainName) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/public/oleg.x/connections
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/public/\(domain)/connections",
+            queryItems: [],
+            body: ""
+        )
+    }
 }
 
 // MARK: - Open methods

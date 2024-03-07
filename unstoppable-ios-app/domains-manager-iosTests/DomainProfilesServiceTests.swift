@@ -20,7 +20,8 @@ final class DomainProfilesServiceTests: BaseTestClass {
         networkService = MockNetworkService()
         storage = MockStorage()
         service = DomainProfilesService(networkService: networkService,
-                                        storage: storage)
+                                        storage: storage,
+                                        walletsDataService: appContext.walletsDataService)
     }
     
     // MARK: - Cached Profile Tests
@@ -182,6 +183,34 @@ final class DomainProfilesServiceTests: BaseTestClass {
         // Check no values were changed
         XCTAssertTrue(capturedValues.isEmpty)
     }
+    
+    // MARK: - Profile Suggestions tests
+    func testEmptyProfileSuggestionsIfNoDomainInWallet() async throws {
+        let walletWithoutDomain = MockEntitiesFabric.Wallet.mockEntities(hasRRDomain: false).first!
+        let suggestions = try await service.getSuggestionsFor(wallet: walletWithoutDomain)
+        
+        XCTAssertTrue(networkService.suggestionsCallDomainNames.isEmpty)
+        XCTAssertTrue(suggestions.isEmpty)
+    }
+    
+    func testProfileSuggestionsReturnSuccess() async throws {
+        let wallet = mockWallet()
+        let suggestions = try await service.getSuggestionsFor(wallet: wallet)
+        
+        XCTAssertEqual(networkService.suggestionsCallDomainNames, [wallet.rrDomain!.name])
+        XCTAssertEqual(suggestions.map { $0.domain }, networkService.suggestionToReturn.map { $0.domain })
+    }
+    
+    func testProfileSuggestionsFails() async {
+        networkService.shouldFail = true
+        do {
+            let wallet = mockWallet()
+            let suggestions = try await service.getSuggestionsFor(wallet: wallet)
+            XCTFail("Expected network error")
+        } catch {
+            assertNetworkErrorThrown(error)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -241,6 +270,9 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
     var followCallDomainNames: [DomainName] = []
     var unfollowCallDomainNames: [DomainName] = []
     
+    var suggestionToReturn: [SerializedDomainProfileSuggestion] = MockEntitiesFabric.ProfileSuggestions.createSerializedSuggestionsForPreview()
+    var suggestionsCallDomainNames: [DomainName] = []
+    
     func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         try failIfNeeded()
         if let profileToReturn {
@@ -271,6 +303,12 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
         try failIfNeeded()
         unfollowCallDomainNames.append(domainNameToUnfollow)
+    }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        try failIfNeeded()
+        suggestionsCallDomainNames.append(domainName)
+        return suggestionToReturn
     }
     
     private func failIfNeeded() throws {

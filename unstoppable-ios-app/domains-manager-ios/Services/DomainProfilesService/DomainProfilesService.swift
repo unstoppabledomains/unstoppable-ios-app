@@ -103,6 +103,14 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
                                  in wallet: WalletEntity) {
         loadMoreSocialIfAbleFor(relationshipType: relationshipType, walletAddress: wallet.address)
     }
+    
+    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
+        guard let rrDomain = wallet.rrDomain else { return [] } // No suggestions for user without domain
+        
+        let serializedSuggestions = try await networkService.getProfileSuggestions(for: rrDomain.name)
+        let profileSuggestions = serializedSuggestions.map { DomainProfileSuggestion(serializedProfile: $0) }
+        return profileSuggestions
+    }
 }
 
 // MARK: - Private methods

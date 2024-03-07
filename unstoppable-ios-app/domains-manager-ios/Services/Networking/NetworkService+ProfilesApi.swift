@@ -385,6 +385,13 @@ extension NetworkService {
             throw error
         }
     }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        let endpoint = Endpoint.getProfileConnectionSuggestions(for: domainName)
+        let response: SerializedDomainProfileSuggestionsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                       method: .get)
+        return response
+    }
 }
 
 // MARK: - Open methods
