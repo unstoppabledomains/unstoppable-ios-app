@@ -1711,6 +1711,9 @@
 		C6D011C82B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D011C92B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D011CB2B9999F70008BF40 /* CombineValuesCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */; };
+		C6D011CE2B99A3C90008BF40 /* TestableUserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */; };
+		C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CF2B99A7740008BF40 /* FailableService.swift */; };
+		C6D011D22B99A78E0008BF40 /* TestableGenericError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */; };
 		C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
 		C6D0549327FF07480036B200 /* UDTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0549227FF07470036B200 /* UDTextField.xib */; };
 		C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */; };
@@ -3534,6 +3537,9 @@
 		C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSuggestion.swift; sourceTree = "<group>"; };
 		C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfilesListView.swift; sourceTree = "<group>"; };
 		C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineValuesCapturer.swift; sourceTree = "<group>"; };
+		C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableUserProfileService.swift; sourceTree = "<group>"; };
+		C6D011CF2B99A7740008BF40 /* FailableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailableService.swift; sourceTree = "<group>"; };
+		C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableGenericError.swift; sourceTree = "<group>"; };
 		C6D0548D27FF07390036B200 /* UDTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTextField.swift; sourceTree = "<group>"; };
 		C6D0549227FF07470036B200 /* UDTextField.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDTextField.xib; sourceTree = "<group>"; };
 		C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationSelectionCell.swift; sourceTree = "<group>"; };
@@ -3987,6 +3993,7 @@
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */,
 				C67DE1422B983FD0002374CE /* HomeExploreViewModelTests.swift */,
+				C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */,
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
@@ -7385,6 +7392,8 @@
 			isa = PBXGroup;
 			children = (
 				C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */,
+				C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */,
+				C6D011CF2B99A7740008BF40 /* FailableService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9541,9 +9550,12 @@
 				C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */,
 				C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */,
 				29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */,
+				C6D011CE2B99A3C90008BF40 /* TestableUserProfileService.swift in Sources */,
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
+				C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
 				C67B6D552AE79E3B00F74B0B /* ImageLoadingServiceTests.swift in Sources */,
+				C6D011D22B99A78E0008BF40 /* TestableGenericError.swift in Sources */,
 				C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */,
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,

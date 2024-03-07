@@ -35,12 +35,13 @@ final class HomeTabRouter: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private(set) var isUpdatingPurchasedProfiles = false
     
-    init(profile: UserProfile) {
+    init(profile: UserProfile,
+         userProfileService: UserProfileServiceProtocol = appContext.userProfileService) {
         self.profile = profile
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile {
                 self?.profile = selectedProfile
             }

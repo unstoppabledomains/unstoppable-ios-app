@@ -34,17 +34,20 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     private var cancellables: Set<AnyCancellable> = []
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     
+    private let userProfileService: UserProfileServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
     private let domainProfilesService: DomainProfilesServiceProtocol
     private let searchService = DomainsGlobalSearchService()
     private let recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol
     
     init(router: HomeTabRouter,
+         userProfileService: UserProfileServiceProtocol = appContext.userProfileService,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
          domainProfilesService: DomainProfilesServiceProtocol = appContext.domainProfilesService,
          recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol = HomeExplore.RecentGlobalSearchProfilesStorage.instance) {
         self.selectedProfile = router.profile
         self.router = router
+        self.userProfileService = userProfileService
         self.walletsDataService = walletsDataService
         self.domainProfilesService = domainProfilesService
         self.recentProfilesStorage = recentProfilesStorage
@@ -138,7 +141,7 @@ extension HomeExploreViewModel {
 private extension HomeExploreViewModel {
     func setup() {
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile,
                selectedProfile.id != self?.selectedProfile.id {
                 self?.selectedProfile = selectedProfile

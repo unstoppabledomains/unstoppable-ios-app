@@ -252,7 +252,7 @@ private extension DomainProfilesServiceTests {
     }
     
     func assertNetworkErrorThrown(_ error: Error) {
-        XCTAssertEqual(error as? MockNetworkService.GenericError, networkService.error)
+        XCTAssertEqual(error as? TestableGenericError, networkService.error)
     }
     
     func isSocialRelationshipDetailsEmpty(_ socialRelationshipDetails: DomainProfileSocialRelationshipDetails) -> Bool {
@@ -299,10 +299,10 @@ private extension DomainProfilesServiceTests {
     }
 }
 
-private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
+private final class MockNetworkService: DomainProfileNetworkServiceProtocol, FailableService {
     var profileToReturn: SerializedPublicDomainProfile?
     var shouldFail = false
-    var error: GenericError { GenericError.generic }
+    var error: TestableGenericError { TestableGenericError.generic }
     var followCallDomainNames: [DomainName] = []
     var unfollowCallDomainNames: [DomainName] = []
     
@@ -319,7 +319,7 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
     
     func updateUserDomainProfile(for domain: DomainItem, request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
         // Not needed for now
-        throw GenericError.generic
+        throw TestableGenericError.generic
     }
     
     func fetchListOfFollowers(for domain: DomainName,
@@ -345,20 +345,6 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol {
         try failIfNeeded()
         suggestionsCallDomainNames.append(domainName)
         return suggestionToReturn
-    }
-    
-    private func failIfNeeded() throws {
-        if shouldFail {
-            throw GenericError.generic
-        }
-    }
-    
-    enum GenericError: String, LocalizedError {
-        case generic
-        
-        public var errorDescription: String? {
-            return rawValue
-        }
     }
 }
 
