@@ -12,6 +12,8 @@ struct HomeExploreSuggestedProfilesSectionView: View {
     @State private var profilesSections: [[DomainProfileSuggestion]] = []
     private let horizontalContentPadding: CGFloat = 16
     private let horizontalSectionsSpacing: CGFloat = 30
+    @State private var currentPage: Int = 0
+    @State private var scrollOffset: CGPoint = .zero
     
     private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + horizontalContentPadding + 15 }
     
@@ -24,6 +26,9 @@ struct HomeExploreSuggestedProfilesSectionView: View {
         } header: {
             sectionHeaderView()
         }
+        .onChange(of: scrollOffset) { _ in
+            updateCurrentPageForScrollOffset()
+        }
     }
 }
 
@@ -33,6 +38,13 @@ private extension HomeExploreSuggestedProfilesSectionView {
         let items = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
         let maker = DomainProfileSuggestionSectionsMaker(profiles: items)
         self.profilesSections = maker.getProfilesMatrix()
+    }
+    
+    @MainActor
+    func updateCurrentPageForScrollOffset() {
+        let pageWidth: CGFloat = screenSize.width - horizontalRowSizeReducer
+        let page = scrollOffset.x / pageWidth
+        currentPage = Int(page)
     }
 }
 
@@ -50,7 +62,8 @@ private extension HomeExploreSuggestedProfilesSectionView {
     @available(iOS 17.0, *)
     @ViewBuilder
     func nativePaginatedScrollView() -> some View {
-        ScrollView(.horizontal) {
+        OffsetObservingScrollView(axes: .horizontal,
+                                  offset: $scrollOffset) {
             scrollableSectionsView()
                 .scrollTargetLayout()
         }
@@ -59,7 +72,8 @@ private extension HomeExploreSuggestedProfilesSectionView {
     
     @MainActor @ViewBuilder
     func fallbackPaginatedScrollView() -> some View {
-        ScrollView(.horizontal) {
+        OffsetObservingScrollView(axes: .horizontal,
+                                  offset: $scrollOffset) {
             scrollableSectionsView()
         }
     }
@@ -86,10 +100,17 @@ private extension HomeExploreSuggestedProfilesSectionView {
     
     @ViewBuilder
     func sectionHeaderView() -> some View {
-        Text(String.Constants.suggestedForYou.localized())
-            .font(.currentFont(size: 16, weight: .medium))
-            .foregroundStyle(Color.foregroundDefault)
-            .padding(.init(vertical: 8))
+        HStack {
+            Text(String.Constants.suggestedForYou.localized())
+                .font(.currentFont(size: 16, weight: .medium))
+                .foregroundStyle(Color.foregroundDefault)
+                .padding(.init(vertical: 8))
+            
+            Spacer()
+            PageControl(numberOfPages: profilesSections.count,
+                        currentPage: $currentPage)
+            .allowsHitTesting(false)
+        }
     }
 }
 
@@ -193,4 +214,27 @@ struct DomainProfileSuggestionSectionsMaker {
         let profiles: [DomainProfileSuggestion]
     }
     
+}
+
+struct PageControl: View {
+    
+    let numberOfPages: Int
+    
+    @Binding var currentPage: Int
+    
+    var body: some View {
+        HStack {
+            ForEach(0..<numberOfPages, id: \.self) { index in
+                Circle()
+                    .squareFrame(8)
+                    .foregroundColor(index == self.currentPage ? .backgroundEmphasis : .backgroundMuted)
+                    .overlay {
+                        Circle()
+                            .stroke(lineWidth: 1)
+                            .foregroundStyle(Color.backgroundDefault)
+                    }
+                    .onTapGesture(perform: { self.currentPage = index })
+            }
+        }
+    }
 }
