@@ -149,6 +149,10 @@ private extension HomeExploreViewModel {
         $searchKey.debounce(for: .milliseconds(500), scheduler: DispatchQueue.main).sink { [weak self] searchText in
             self?.didSearchDomains()
         }.store(in: &cancellables)
+        
+        domainProfilesService.followActionsPublisher.receive(on: DispatchQueue.main).sink { [weak self] actionDetails in
+            self?.didReceiveFollowActionDetails(actionDetails)
+        }.store(in: &cancellables)
     }
     
     func loadAndShowData() {
@@ -286,6 +290,17 @@ private extension HomeExploreViewModel {
     func reloadSuggestedProfilesIfAvailable() {
         clearSuggestedProfiles()
         loadSuggestedProfilesIfAvailable()
+    }
+    
+    func didReceiveFollowActionDetails(_ actionDetails: DomainProfileFollowActionDetails) {
+        guard isFollowActionDetailsMadeByCurrentUser(actionDetails) else { return }
+        
+        markSuggestedProfileWith(domainName: actionDetails.targetDomainName,
+                                 asFollowing: actionDetails.isFollowing)
+    }
+    
+    func isFollowActionDetailsMadeByCurrentUser(_ actionDetails: DomainProfileFollowActionDetails) -> Bool {
+        actionDetails.userDomainName == getSelectedUserProfileRRDomain()?.name
     }
 }
 

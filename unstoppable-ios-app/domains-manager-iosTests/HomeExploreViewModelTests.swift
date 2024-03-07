@@ -197,7 +197,8 @@ private final class MockRecentGlobalSearchProfilesStorage: RecentGlobalSearchPro
 
 private final class MockDomainProfilesService: DomainProfilesServiceProtocol {
     
-    
+    private(set) var followActionsPublisher = PassthroughSubject<DomainProfileFollowActionDetails, Never>()
+
     var publisher = CurrentValueSubject<WalletDomainProfileDetails, Never>(.init(walletAddress: "0x1"))
     var loadMoreCallsHistory: [DomainProfileFollowerRelationshipType] = []
     

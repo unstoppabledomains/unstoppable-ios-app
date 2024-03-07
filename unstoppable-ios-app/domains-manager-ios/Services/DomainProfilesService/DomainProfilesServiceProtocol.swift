@@ -9,6 +9,8 @@ import Foundation
 import Combine
 
 protocol DomainProfilesServiceProtocol {
+    var followActionsPublisher: PassthroughSubject<DomainProfileFollowActionDetails, Never> { get }
+    
     func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo?
     func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo
     func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, Error>
