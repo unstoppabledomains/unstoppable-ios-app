@@ -13,7 +13,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
     @State private var navigationState: NavigationStateManager?
     @StateObject var viewModel: HomeExploreViewModel
     
-    var isOtherScreenPushed: Bool { !tabRouter.chatTabNavPath.isEmpty }
+    var isOtherScreenPushed: Bool { !tabRouter.exploreTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeExplore }
 
     var body: some View {
@@ -44,11 +44,13 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .onChange(of: viewModel.searchKey) { keyboardFocused in
                 setTitleVisibility()
             }
-            .onChange(of: tabRouter.chatTabNavPath) { path in
-                tabRouter.isTabBarVisible = !isOtherScreenPushed
-                if path.isEmpty {
-                    withAnimation {
+            .onChange(of: tabRouter.exploreTabNavPath) { path in
+                withAnimation {
+                    tabRouter.isTabBarVisible = !isOtherScreenPushed
+                    if path.isEmpty {
                         setupTitle()
+                    } else {
+                        setTitleVisibility()
                     }
                 }
             }
@@ -56,6 +58,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                 HomeExploreLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                              tabRouter: tabRouter)
                 .environmentObject(navigationState!)
+                .environmentObject(viewModel)
             }
             .toolbar(content: {
                 // To keep nav bar background visible when scrolling
@@ -77,14 +80,16 @@ private extension HomeExploreView {
     }
     
     func setupTitle() {
-        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(profile: viewModel.selectedProfile) },
+        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView() },
                                         id: UUID().uuidString)
         navigationState?.isTitleVisible = true
+        setTitleVisibility()
     }
     
     func setTitleVisibility() {
         withAnimation {
-            navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchKey.isEmpty
+            navigationState?.isTitleVisible = !viewModel.isSearchActive && viewModel.searchKey.isEmpty &&
+            !isOtherScreenPushed
         }
     }
     
@@ -109,9 +114,7 @@ private extension HomeExploreView {
 }
 
 // MARK: - Domains views
-private extension HomeExploreView {
-    var isProfileAvailable: Bool { viewModel.selectedPublicDomainProfile != nil }
-    
+private extension HomeExploreView {    
     @ViewBuilder
     func domainSearchTypeSelector() -> some View {
         HomeExploreDomainSearchTypePickerView()
@@ -129,7 +132,7 @@ private extension HomeExploreView {
         .listStyle(.plain)
         .listRowSpacing(0)
         .sectionSpacing(0)
-        .searchable(if: isProfileAvailable,
+        .searchable(if: viewModel.isProfileAvailable,
                     text: $viewModel.searchKey,
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: String.Constants.search.localized())
@@ -150,8 +153,8 @@ private extension HomeExploreView {
 private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
-        if isProfileAvailable {
-            HomeExploreTrendingProfilesSectionView()
+        if viewModel.isProfileAvailable {
+            HomeExploreSuggestedProfilesSectionView()
             HomeExploreSeparatorView()
             HomeExploreFollowersSectionView()
                 .listRowInsets(.init(horizontal: 16))
@@ -198,7 +201,8 @@ extension View {
 
 #Preview {
     let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    let viewModel = MockEntitiesFabric.Explore.createViewModelUsing(router)
     
-    return HomeExploreView(viewModel: .init(router: router))
+    return HomeExploreView(viewModel: viewModel)
         .environmentObject(router)
 }

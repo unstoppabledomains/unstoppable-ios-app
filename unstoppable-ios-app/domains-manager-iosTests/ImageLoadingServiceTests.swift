@@ -138,7 +138,7 @@ final class ImageLoadingServiceTests: XCTestCase {
         let imageSize = mockImage.size
         let minSize: CGFloat = max(imageSize.width, imageSize.height)
         let source: ImageSource = .url(getMockURL(), maxSize: minSize)
-        let downsampleDescription: DownsampleDescription = await .max
+        var downsampleDescription = DownsampleDescription(maxSize: 512, scale: 1)
         let sourceKey = source.key
         let image = await imageLoadingService.loadImage(from: source,
                                                         downsampleDescription: downsampleDescription)

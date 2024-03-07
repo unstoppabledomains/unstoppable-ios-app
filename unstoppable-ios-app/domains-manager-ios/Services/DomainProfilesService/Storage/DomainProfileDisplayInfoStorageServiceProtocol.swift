@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol PublicDomainProfileDisplayInfoStorageServiceProtocol {
+protocol DomainProfileDisplayInfoStorageServiceProtocol {
     func store(profile: DomainProfileDisplayInfo)
     func retrieveProfileFor(domainName: DomainName) throws -> DomainProfileDisplayInfo
 }

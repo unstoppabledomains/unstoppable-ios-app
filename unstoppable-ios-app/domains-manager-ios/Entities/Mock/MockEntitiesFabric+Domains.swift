@@ -237,4 +237,40 @@ extension MockEntitiesFabric {
             DomainProfileSocialAccount.typesFrom(accounts: DomainProfile.createSocialAccounts())
         }
     }
+    
+    enum ProfileSuggestions {
+        static func createSuggestionsForPreview() -> [DomainProfileSuggestion] {
+            createSerializedSuggestionsForPreview().map { DomainProfileSuggestion(serializedProfile: $0) }
+        }
+        
+        static func createSuggestion(domain: String = "oleg.x",
+                                     withImage: Bool = true,
+                                     imageType: DomainProfileImageType = .offChain,
+                                     reasons: [DomainProfileSuggestion.Reason] = [.nftCollection]) -> DomainProfileSuggestion {
+            DomainProfileSuggestion(serializedProfile: createSerializedSuggestion(domain: domain,
+                                                                                  withImage: withImage,
+                                                                                  imageType: imageType,
+                                                                                  reasons: reasons))
+        }
+        
+        static func createSerializedSuggestionsForPreview() -> [SerializedDomainProfileSuggestion] {
+            [createSerializedSuggestion(domain: "normal_nft_collection.x", imageType: .offChain, reasons: [.nftCollection]),
+             createSerializedSuggestion(domain: "normal_on_chain_poap_with_vaery_long_name_that_cant_fit_screen_size.x", imageType: .onChain, reasons: [.poap]),
+             createSerializedSuggestion(domain: "no_ava_transaction.x", withImage: false, reasons: [.transaction]),
+             createSerializedSuggestion(domain: "lens_follows.x", withImage: false, reasons: [.lensFollows]),
+             createSerializedSuggestion(domain: "farcaster_follows.x", reasons: [.farcasterFollows])]
+        }
+        
+        static func createSerializedSuggestion(domain: String = "oleg.x",
+                                               withImage: Bool = true,
+                                               imageType: DomainProfileImageType = .offChain,
+                                               reasons: [DomainProfileSuggestion.Reason] = [.nftCollection]) -> SerializedDomainProfileSuggestion {
+            SerializedDomainProfileSuggestion(address: "0x1",
+                                              reasons: reasons.map { $0.rawValue },
+                                              score: 10,
+                                              domain: domain,
+                                              imageUrl: withImage ? ImageURLs.aiAvatar.rawValue : nil,
+                                              imageType: imageType)
+        }
+    }
 }

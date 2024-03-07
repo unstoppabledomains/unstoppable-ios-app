@@ -8,20 +8,19 @@
 import Foundation
 
 struct DomainProfileSocialRelationshipDetails: Hashable {
-    let walletAddress: HexAddress
+    
     var followersDetails: SocialDetails
     var followingDetails: SocialDetails
     
-    init(walletAddress: HexAddress,
-         profileDomainName: DomainName?) {
-        self.walletAddress = walletAddress
+    init(profileDomainName: DomainName?) {
+        
         let isOwningProfile = profileDomainName != nil
         self.followersDetails = SocialDetails(isOwningProfile: isOwningProfile)
         self.followingDetails = SocialDetails(isOwningProfile: isOwningProfile)
     }
     
     init(wallet: WalletEntity) {
-        self.init(walletAddress: wallet.address, profileDomainName: wallet.profileDomainName)
+        self.init(profileDomainName: wallet.profileDomainName)
     }
     
     struct SocialDetails: Hashable {

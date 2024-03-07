@@ -8,18 +8,26 @@
 import Foundation
 import Combine
 
+
+struct DomainProfileFollowActionDetails: Hashable {
+    let userDomainName: DomainName
+    let targetDomainName: DomainName
+    let isFollowing: Bool
+}
+
 final class DomainProfilesService {
    
-    private let storage: PublicDomainProfileDisplayInfoStorageServiceProtocol
-    private let networkService: PublicDomainProfileNetworkServiceProtocol
+    private let storage: DomainProfileDisplayInfoStorageServiceProtocol
+    private let networkService: DomainProfileNetworkServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
     private let numberOfFollowersToTake = 40
     private let serialQueue = DispatchQueue(label: "com.domain_profiles_service.unstoppable")
     private var profilesSocialDetailsCache: [HexAddress : PublishableDomainProfileDetailsController] = [:]
     private var cancellables: Set<AnyCancellable> = []
+    private(set) var followActionsPublisher = PassthroughSubject<DomainProfileFollowActionDetails, Never>()
 
-    init(networkService: PublicDomainProfileNetworkServiceProtocol = NetworkService(),
-         storage: PublicDomainProfileDisplayInfoStorageServiceProtocol,
+    init(networkService: DomainProfileNetworkServiceProtocol = NetworkService(),
+         storage: DomainProfileDisplayInfoStorageServiceProtocol,
          walletsDataService: WalletsDataServiceProtocol) {
         self.networkService = networkService
         self.storage = storage
@@ -87,11 +95,17 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
     
     func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
         try await networkService.follow(domainName, by: domain.toDomainItem())
+        sendFollowActionDetails(details: .init(userDomainName: domain.name,
+                                               targetDomainName: domainName,
+                                               isFollowing: true))
         try resetSocialsCacheForWalletOwning(domain: domain)
     }
     
     func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
         try await networkService.unfollow(domainName, by: domain.toDomainItem())
+        sendFollowActionDetails(details: .init(userDomainName: domain.name,
+                                               targetDomainName: domainName,
+                                               isFollowing: false))
         try resetSocialsCacheForWalletOwning(domain: domain)
     }
     
@@ -102,6 +116,14 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
                                  in wallet: WalletEntity) {
         loadMoreSocialIfAbleFor(relationshipType: relationshipType, walletAddress: wallet.address)
+    }
+    
+    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
+        guard let rrDomain = wallet.rrDomain else { return [] } // No suggestions for user without domain
+        
+        let serializedSuggestions = try await networkService.getProfileSuggestions(for: rrDomain.name)
+        let profileSuggestions = serializedSuggestions.map { DomainProfileSuggestion(serializedProfile: $0) }
+        return profileSuggestions
     }
 }
 
@@ -218,6 +240,10 @@ private extension DomainProfilesService {
             refreshSocialDetailsNonBlockingFor(walletAddress: walletAddress)
         }
     }
+    
+    func sendFollowActionDetails(details: DomainProfileFollowActionDetails) {
+        followActionsPublisher.send(details)
+    }
 }
 
 // MARK: - Open methods
@@ -290,34 +316,5 @@ private extension DomainProfilesService {
         func resetAllDetails() {
             details.resetAllDetails()
         }
-    }
-}
-
-struct WalletDomainProfileDetails: Hashable {
-   
-    let walletAddress: HexAddress
-    let profileDomainName: DomainName?
-    var displayInfo: DomainProfileDisplayInfo?
-    var socialDetails: DomainProfileSocialRelationshipDetails?
-    
-    init(walletAddress: HexAddress, profileDomainName: DomainName? = nil, displayInfo: DomainProfileDisplayInfo? = nil) {
-        self.walletAddress = walletAddress
-        self.profileDomainName = profileDomainName
-        self.displayInfo = displayInfo
-        resetSocialDetails()
-    }
-    
-    mutating func resetAllDetails() {
-        resetDisplayInfo()
-        resetSocialDetails()
-    }
-    
-    mutating func resetDisplayInfo()  {
-        displayInfo = nil
-    }
-    
-    mutating func resetSocialDetails() {
-        socialDetails = DomainProfileSocialRelationshipDetails(walletAddress: walletAddress,
-                                                               profileDomainName: profileDomainName)
     }
 }

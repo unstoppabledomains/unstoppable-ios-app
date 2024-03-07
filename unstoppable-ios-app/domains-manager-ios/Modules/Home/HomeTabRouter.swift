@@ -22,7 +22,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
-    @Published var presentedPublicDomain: PublicDomainPresentationDetails?
+    @Published var presentedPublicDomain: PublicProfileViewConfiguration?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
@@ -35,12 +35,13 @@ final class HomeTabRouter: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private(set) var isUpdatingPurchasedProfiles = false
     
-    init(profile: UserProfile) {
+    init(profile: UserProfile,
+         userProfileService: UserProfileServiceProtocol = appContext.userProfileService) {
         self.profile = profile
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile {
                 self?.profile = selectedProfile
             }
@@ -492,7 +493,7 @@ private extension HomeTabRouter {
     }
     
     func waitBeforeNextNavigationIfTabNot(_ tab: HomeTab) async {
-        let shouldWaitBeforePush = tabViewSelection != currentTab
+        let shouldWaitBeforePush = tabViewSelection != tab
         if shouldWaitBeforePush {
             await Task.sleep(seconds: 0.2)
         }
@@ -508,16 +509,6 @@ extension HomeTabRouter {
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
         var dismissCallback: EmptyCallback? = nil
-    }
-    
-    struct PublicDomainPresentationDetails: Identifiable {
-        var id: String { domain.name }
-        
-        let domain: PublicDomainDisplayInfo
-        let wallet: WalletEntity
-        let viewingDomain: DomainDisplayInfo?
-        var preRequestedAction: PreRequestedProfileAction? = nil
-        var delegate: PublicProfileViewDelegate
     }
     
     struct UBTSearchPresentationDetails: Identifiable {

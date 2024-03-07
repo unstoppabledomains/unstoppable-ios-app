@@ -18,6 +18,17 @@ extension Array where Element == DomainProfileFollowerDisplayInfo {
     }
 }
 
+struct PublicProfileViewConfiguration: Identifiable {
+    
+    var id: String { domain.name }
+    
+    let domain: PublicDomainDisplayInfo
+    let wallet: WalletEntity
+    var viewingDomain: DomainDisplayInfo? = nil
+    var preRequestedAction: PreRequestedProfileAction? = nil
+    var delegate: PublicProfileViewDelegate? = nil
+}
+
 extension PublicProfileView {
     
     struct FollowersDisplayInfo {
@@ -29,7 +40,7 @@ extension PublicProfileView {
         case failedToLoadFollowerInfo
         case failedToFindDomain
     }
-    
+  
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
@@ -55,15 +66,11 @@ extension PublicProfileView {
         private var badgesInfo: BadgesInfo?
         private var preRequestedAction: PreRequestedProfileAction?
         
-        init(domain: PublicDomainDisplayInfo,
-             wallet: WalletEntity,
-             viewingDomain: DomainDisplayInfo?,
-             preRequestedAction: PreRequestedProfileAction?,
-             delegate: PublicProfileViewDelegate?) {
-            self.domain = domain
-            self.viewingDomain = viewingDomain ?? wallet.getDomainToViewPublicProfile()
-            self.preRequestedAction = preRequestedAction
-            self.delegate = delegate
+        init(configuration: PublicProfileViewConfiguration) {
+            self.domain = configuration.domain
+            self.viewingDomain = configuration.viewingDomain ?? configuration.wallet.getDomainToViewPublicProfile()
+            self.preRequestedAction = configuration.preRequestedAction
+            self.delegate = configuration.delegate
             self.appearTime = Date()
             loadAllProfileData()
             loadViewingDomainData()

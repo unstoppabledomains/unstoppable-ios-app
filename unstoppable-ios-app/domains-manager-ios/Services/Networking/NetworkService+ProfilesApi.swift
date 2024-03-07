@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     
     //MARK: public methods
     public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
@@ -384,6 +384,13 @@ extension NetworkService {
             checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
+    }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        let endpoint = Endpoint.getProfileConnectionSuggestions(for: domainName)
+        let response: SerializedDomainProfileSuggestionsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                       method: .get)
+        return response
     }
 }
 

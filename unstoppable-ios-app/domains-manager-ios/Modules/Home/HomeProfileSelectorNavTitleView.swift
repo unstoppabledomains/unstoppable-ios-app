@@ -12,7 +12,7 @@ struct HomeProfileSelectorNavTitleView: View {
     @Environment(\.imageLoadingService) private var imageLoadingService
     @EnvironmentObject var tabRouter: HomeTabRouter
 
-    @State var profile: UserProfile
+    @State var profile: UserProfile? 
     @State private var avatar: UIImage?
     
     var body: some View {
@@ -64,6 +64,8 @@ private extension HomeProfileSelectorNavTitleView {
             contentForWallet(wallet)
         case .webAccount(let user):
             contentForUser(user)
+        case .none:
+            Text("")
         }
     }
     

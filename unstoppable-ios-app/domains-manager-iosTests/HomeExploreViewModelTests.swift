@@ -11,19 +11,27 @@ import Combine
 
 final class HomeExploreViewModelTests: BaseTestClass {
     
+    private var wallet: WalletEntity!
     private var router: HomeTabRouter!
+    private var userProfilesService: TestableUserProfileService!
     private var domainProfilesService: MockDomainProfilesService!
     private var viewModel: HomeExploreViewModel!
     private var recentProfilesStorage: MockRecentGlobalSearchProfilesStorage!
     
     override func setUp() async throws {
+        
         domainProfilesService = MockDomainProfilesService()
-        router = await MockEntitiesFabric.Home.createHomeTabRouter(isWebProfile: false)
+        wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
+        let profile = MockEntitiesFabric.Profile.createWalletProfile(using: wallet)
+        userProfilesService = TestableUserProfileService(profile: profile)
+        router = await MockEntitiesFabric.Home.createHomeTabRouterUsing(profile: profile,
+                                                                        userProfileService: userProfilesService)
         recentProfilesStorage = MockRecentGlobalSearchProfilesStorage()
         viewModel = await HomeExploreViewModel(router: router,
+                                               userProfileService: userProfilesService,
                                                domainProfilesService: domainProfilesService,
                                                recentProfilesStorage: recentProfilesStorage)
-        await Task.sleep(seconds: 0.1)
+        await waitForRequestMade()
     }
 }
 
@@ -125,6 +133,58 @@ extension HomeExploreViewModelTests {
     }
 }
 
+// MARK: - Suggested profiles
+extension HomeExploreViewModelTests {
+    @MainActor
+    func testSuggestionsLoadedOnLaunch() {
+        XCTAssertEqual(domainProfilesService.loadSuggestionsCallsHistory, [wallet.address])
+        XCTAssertEqual(viewModel.suggestedProfiles, domainProfilesService.profilesSuggestions)
+    }
+    
+    @MainActor
+    func testSuggestionsInitialFollowingState() {
+        for profile in viewModel.suggestedProfiles {
+            XCTAssertFalse(profile.isFollowing)
+        }
+    }
+    
+    @MainActor
+    func testSuggestedProfileFollowStatusUpdatedSuccess() async {
+        let suggestedProfile = domainProfilesService.profilesSuggestions[0]
+        viewModel.didSelectToFollowDomainName(suggestedProfile.domain)
+        await waitForRequestMade()
+        XCTAssertTrue(viewModel.suggestedProfiles[0].isFollowing)
+    }
+    
+    @MainActor
+    func testSuggestedProfileFollowStatusUpdatedFailure() async {
+        let suggestedProfile = domainProfilesService.profilesSuggestions[0]
+        domainProfilesService.shouldFail = true
+        viewModel.didSelectToFollowDomainName(suggestedProfile.domain)
+        await waitForRequestMade()
+        XCTAssertFalse(viewModel.suggestedProfiles[0].isFollowing)
+    }
+    
+    @MainActor
+    func testSuggestedProfileFollowStatusUpdatedFromProfilesService() async {
+        let suggestedProfile = domainProfilesService.profilesSuggestions[0]
+        let userDomainName = wallet.rrDomain!.name
+        let followAction = DomainProfileFollowActionDetails(userDomainName: userDomainName,
+                                                            targetDomainName: suggestedProfile.domain,
+                                                            isFollowing: true)
+        domainProfilesService.followActionsPublisher.send(followAction)
+        await waitForRequestMade()
+        XCTAssertTrue(viewModel.suggestedProfiles[0].isFollowing)
+        
+        let unfollowAction = DomainProfileFollowActionDetails(userDomainName: userDomainName,
+                                                              targetDomainName: suggestedProfile.domain,
+                                                              isFollowing: false)
+        domainProfilesService.followActionsPublisher.send(unfollowAction)
+        await waitForRequestMade()
+        XCTAssertFalse(viewModel.suggestedProfiles[0].isFollowing)
+    }
+}
+
 // MARK: - Private methods
 private extension HomeExploreViewModelTests {
     func createSearchDomainProfileWithName(_ name: String = "domain.x") -> SearchDomainProfile {
@@ -174,6 +234,10 @@ private extension HomeExploreViewModelTests {
     
     func publishProfile(_ profile: WalletDomainProfileDetails) async {
         domainProfilesService.publisher.send(profile)
+        await Task.sleep(seconds: 0.6)
+    }
+    
+    func waitForRequestMade() async {
         await Task.sleep(seconds: 0.1)
     }
 }
@@ -195,42 +259,56 @@ private final class MockRecentGlobalSearchProfilesStorage: RecentGlobalSearchPro
     }
 }
 
-private final class MockDomainProfilesService: DomainProfilesServiceProtocol {
+private final class MockDomainProfilesService: DomainProfilesServiceProtocol, FailableService {
     
+    
+    private(set) var followActionsPublisher = PassthroughSubject<DomainProfileFollowActionDetails, Never>()
+
+    var shouldFail: Bool = false
     var publisher = CurrentValueSubject<WalletDomainProfileDetails, Never>(.init(walletAddress: "0x1"))
     var loadMoreCallsHistory: [DomainProfileFollowerRelationshipType] = []
+    var loadSuggestionsCallsHistory: [HexAddress] = []
+    var profilesSuggestions: [DomainProfileSuggestion] = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
     
     func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo? {
         nil
     }
     
-    func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> domains_manager_ios.DomainProfileDisplayInfo {
+    func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo {
+        try failIfNeeded()
         throw GenericError.genericError
     }
     
-    func getCachedAndRefreshDomainProfileStream(for domainName: domains_manager_ios.DomainName) -> AsyncThrowingStream<domains_manager_ios.DomainProfileDisplayInfo, any Error> {
+    func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, any Error> {
         AsyncThrowingStream { continuation in
             continuation.finish(throwing: GenericError.genericError)
         }
     }
     
-    func updateUserDomainProfile(for domain: domains_manager_ios.DomainDisplayInfo, request: domains_manager_ios.ProfileUpdateRequest) async throws -> domains_manager_ios.SerializedUserDomainProfile {
+    func updateUserDomainProfile(for domain: DomainDisplayInfo, request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
+        try failIfNeeded()
         throw GenericError.genericError
     }
     
-    func followProfileWith(domainName: String, by domain: domains_manager_ios.DomainDisplayInfo) async throws {
-        
+    func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
+        try failIfNeeded()
     }
     
-    func unfollowProfileWith(domainName: String, by domain: domains_manager_ios.DomainDisplayInfo) async throws {
-        
+    func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
+        try failIfNeeded()
     }
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType, in wallet: WalletEntity) {
         loadMoreCallsHistory.append(relationshipType)
     }
     
-    func publisherForWalletDomainProfileDetails(wallet: domains_manager_ios.WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never> {
+    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
+        loadSuggestionsCallsHistory.append(wallet.address)
+        try failIfNeeded()
+        return profilesSuggestions
+    }
+    
+    func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never> {
         publisher
     }
     

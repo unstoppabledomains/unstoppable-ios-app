@@ -211,7 +211,7 @@ extension NetworkService {
     }
 }
 
-extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     public func searchForDomainsWith(name: String,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         var result = [SearchDomainProfile]()
@@ -243,6 +243,10 @@ extension NetworkService: PublicDomainProfileNetworkServiceProtocol {
     
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
        
+    }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        MockEntitiesFabric.ProfileSuggestions.createSerializedSuggestionsForPreview()
     }
 }
 

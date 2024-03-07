@@ -33,7 +33,14 @@ extension MockEntitiesFabric {
             } else {
                 profile = Profile.createWalletProfile()
             }
-            return HomeTabRouter(profile: profile)
+            return createHomeTabRouterUsing(profile: profile)
+        }
+        
+        @MainActor
+        static func createHomeTabRouterUsing(profile: UserProfile,
+                                             userProfileService: UserProfileServiceProtocol = appContext.userProfileService) -> HomeTabRouter {
+            HomeTabRouter(profile: profile,
+                          userProfileService: userProfileService)
         }
     }
     

@@ -9,6 +9,8 @@ import Foundation
 import Combine
 
 protocol DomainProfilesServiceProtocol {
+    var followActionsPublisher: PassthroughSubject<DomainProfileFollowActionDetails, Never> { get }
+    
     func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo?
     func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo
     func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, Error>
@@ -22,4 +24,6 @@ protocol DomainProfilesServiceProtocol {
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType,
                                  in wallet: WalletEntity)
     func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never>
+    
+    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion]
 }

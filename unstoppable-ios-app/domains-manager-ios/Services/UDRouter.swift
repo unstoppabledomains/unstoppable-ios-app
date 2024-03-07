@@ -614,11 +614,11 @@ class UDRouter: DomainProfileSignatureValidator {
                                  viewingDomain: DomainDisplayInfo?,
                                  preRequestedAction: PreRequestedProfileAction?,
                                  in viewController: UIViewController) {
-        let vc = PublicProfileView.instantiate(domain: domain,
-                                               wallet: wallet,
-                                               viewingDomain: viewingDomain,
-                                               preRequestedAction: preRequestedAction,
-                                               delegate: viewController)
+        let vc = PublicProfileView.instantiate(configuration: PublicProfileViewConfiguration(domain: domain,
+                                                                                             wallet: wallet,
+                                                                                             viewingDomain: viewingDomain,
+                                                                                             preRequestedAction: preRequestedAction,
+                                                                                             delegate: viewController))
         viewController.present(vc, animated: true)
     }
     

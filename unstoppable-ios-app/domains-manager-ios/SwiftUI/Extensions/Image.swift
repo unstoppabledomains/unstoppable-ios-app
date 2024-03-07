@@ -89,6 +89,12 @@ extension Image {
     static let globeBold = Image("globeBold")
     static let searchClearIcon = Image("searchClearIcon")
 
+    static let cryptoFaceIcon = Image("cryptoFaceIcon")
+    static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
+    static let cryptoTransactionIcon = Image("cryptoTransactionIcon")
+    static let lensIcon = Image("lensIcon")
+    static let farcasterIcon = Image("farcasterIcon")
+    
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")
     
