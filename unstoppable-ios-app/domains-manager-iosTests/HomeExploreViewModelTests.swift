@@ -174,7 +174,7 @@ private extension HomeExploreViewModelTests {
     
     func publishProfile(_ profile: WalletDomainProfileDetails) async {
         domainProfilesService.publisher.send(profile)
-        await Task.sleep(seconds: 0.1)
+        await Task.sleep(seconds: 0.6)
     }
 }
 
