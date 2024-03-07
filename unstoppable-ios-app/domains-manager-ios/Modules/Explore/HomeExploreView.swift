@@ -151,7 +151,7 @@ private extension HomeExploreView {
     @ViewBuilder
     func listContentForSearchInactive() -> some View {
         if isProfileAvailable {
-            HomeExploreTrendingProfilesSectionView()
+            HomeExploreSuggestedProfilesSectionView()
             HomeExploreSeparatorView()
             HomeExploreFollowersSectionView()
                 .listRowInsets(.init(horizontal: 16))
