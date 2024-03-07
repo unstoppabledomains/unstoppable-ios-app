@@ -10,8 +10,10 @@ import SwiftUI
 struct HomeExploreSuggestedProfilesSectionView: View {
     
     @State private var profilesSections: [[DomainProfileSuggestion]] = []
+    private let horizontalContentPadding: CGFloat = 16
     private let horizontalSectionsSpacing: CGFloat = 30
-    private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + 15 + 16 }
+    
+    private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + horizontalContentPadding + 15 }
     
     var body: some View {
         contentScrollView()
@@ -71,7 +73,7 @@ private extension HomeExploreSuggestedProfilesSectionView {
                 .modifier(SectionRowWidthModifier(horizontalRowSizeReducer: horizontalRowSizeReducer))
             }
         }
-        .padding(.init(horizontal: 16))
+        .padding(.init(horizontal: horizontalContentPadding))
     }
     
     @ViewBuilder
