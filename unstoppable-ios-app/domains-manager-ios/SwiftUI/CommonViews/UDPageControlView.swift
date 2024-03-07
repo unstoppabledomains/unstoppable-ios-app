@@ -14,7 +14,7 @@ struct UDPageControlView: View {
     @Binding var currentPage: Int
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             ForEach(0..<numberOfPages, id: \.self) { index in
                 Circle()
                     .squareFrame(8)

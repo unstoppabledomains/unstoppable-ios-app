@@ -46,7 +46,9 @@ private extension HomeExploreSuggestedProfilesSectionView {
     func setSuggestedProfiles() {
         let profiles = viewModel.suggestedProfiles
         let maker = HomeExplore.DomainProfileSuggestionSectionsBuilder(profiles: profiles)
-        self.profilesSections = maker.getProfilesMatrix()
+        withAnimation {
+            self.profilesSections = maker.getProfilesMatrix()
+        }
     }
     
     @MainActor
