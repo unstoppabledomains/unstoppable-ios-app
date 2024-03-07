@@ -50,7 +50,8 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
         self.recentProfilesStorage = recentProfilesStorage
         userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
         appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
-            if let selectedProfile {
+            if let selectedProfile,
+               selectedProfile.id != self?.selectedProfile.id {
                 self?.selectedProfile = selectedProfile
                 self?.didUpdateSelectedProfile()
             }
@@ -148,7 +149,7 @@ private extension HomeExploreViewModel {
         loadRecentProfiles()
         setUserWalletSearchResults()
         updateWalletDomainProfileDetailsForSelectedProfile()
-        loadSuggestedProfiles()
+        loadSuggestedProfilesIfAvailable()
     }
     
     func loadTrendingProfiles() {
@@ -173,6 +174,7 @@ private extension HomeExploreViewModel {
     
     func didUpdateSelectedProfile() {
         updateWalletDomainProfileDetailsForSelectedProfile()
+        reloadSuggestedProfilesIfAvailable()
     }
     
     func updateWalletDomainProfileDetailsForSelectedProfile() {
@@ -192,9 +194,21 @@ private extension HomeExploreViewModel {
         loadRecentProfiles()
     }
     
-    func loadSuggestedProfiles() {
-        let suggestedProfiles = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
-        setSuggestedProfiles(suggestedProfiles)
+    func clearSuggestedProfiles() {
+        setSuggestedProfiles([])
+    }
+    
+    func loadSuggestedProfilesIfAvailable() {
+        if case .wallet(let wallet) = selectedProfile {
+            loadSuggestedProfilesFor(wallet: wallet)
+        }
+    }
+    
+    func loadSuggestedProfilesFor(wallet: WalletEntity) {
+        Task {
+            let suggestedProfiles = try await domainProfilesService.getSuggestionsFor(wallet: wallet)
+            setSuggestedProfiles(suggestedProfiles)
+        }
     }
 }
 
@@ -234,6 +248,7 @@ private extension HomeExploreViewModel {
                 markSuggestedProfileWith(domainName: domainName, asFollowing: true)
                 try await domainProfilesService.followProfileWith(domainName: domainName,
                                                                   by: rrDomain)
+                loadNewProfileSuggestionsIfAllFollowing()
             } catch {
                 self.error = error
                 markSuggestedProfileWith(domainName: domainName, asFollowing: false)
@@ -245,6 +260,21 @@ private extension HomeExploreViewModel {
         guard case .wallet(let wallet) = selectedProfile else { return nil }
         
         return wallet.rrDomain
+    }
+  
+    func loadNewProfileSuggestionsIfAllFollowing() {
+        if isFollowingAllCurrentlySuggestedProfiles() {
+            reloadSuggestedProfilesIfAvailable()
+        }
+    }
+    
+    func isFollowingAllCurrentlySuggestedProfiles() -> Bool {
+        suggestedProfiles.first(where: { !$0.isFollowing }) == nil
+    }
+    
+    func reloadSuggestedProfilesIfAvailable() {
+        clearSuggestedProfiles()
+        loadSuggestedProfilesIfAvailable()
     }
 }
 
