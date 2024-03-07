@@ -197,6 +197,7 @@ private final class MockRecentGlobalSearchProfilesStorage: RecentGlobalSearchPro
 
 private final class MockDomainProfilesService: DomainProfilesServiceProtocol {
     
+    
     var publisher = CurrentValueSubject<WalletDomainProfileDetails, Never>(.init(walletAddress: "0x1"))
     var loadMoreCallsHistory: [DomainProfileFollowerRelationshipType] = []
     
@@ -228,6 +229,10 @@ private final class MockDomainProfilesService: DomainProfilesServiceProtocol {
     
     func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType, in wallet: WalletEntity) {
         loadMoreCallsHistory.append(relationshipType)
+    }
+    
+    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
+        []
     }
     
     func publisherForWalletDomainProfileDetails(wallet: domains_manager_ios.WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never> {

@@ -98,12 +98,12 @@ final class DomainProfilesServiceTests: BaseTestClass {
         XCTAssertEqual(networkService.followCallDomainNames, [mockDomainName])
     }
     
-    func testFollowPublisher_Success() async throws {
+    func testResetDataResetAfterFollow_Success() async throws {
         try await ensureFollowersResetAfterAsyncFunction {
             try await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
         }
     }
-   
+    
     func testFollowNetwork_NetworkFailure() async throws {
         networkService.shouldFail = true
         do {
@@ -114,13 +114,29 @@ final class DomainProfilesServiceTests: BaseTestClass {
         }
     }
     
+    func testFollowActionSend_Success() async throws {
+        let domain = mockDomainDisplayInfo()
+        let action = DomainProfileFollowActionDetails(userDomainName: domain.name,
+                                                      targetDomainName: mockDomainName,
+                                                      isFollowing: true)
+        try await ensureFollowingActionSend(action: action, by: domain)
+    }
+    
+    func testFollowActionSend_Failure() async throws {
+        networkService.shouldFail = true
+        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        try? await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        
+        XCTAssertTrue(receiver.capturedValues.compactMap { $0 }.isEmpty)
+    }
+    
     // MARK: - Unfollow Function Tests
     func testUnfollowNetwork_Success() async throws {
         try await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
         XCTAssertEqual(networkService.unfollowCallDomainNames, [mockDomainName])
     }
     
-    func testUnfollowPublisher_Success() async throws {
+    func testResetDataResetAfterUnfollow_Success() async throws {
         try await ensureFollowersResetAfterAsyncFunction {
             try await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
         }
@@ -137,51 +153,57 @@ final class DomainProfilesServiceTests: BaseTestClass {
         }
     }
     
+    func testUnfollowActionSend_Success() async throws {
+        let domain = mockDomainDisplayInfo()
+        let action = DomainProfileFollowActionDetails(userDomainName: domain.name,
+                                                      targetDomainName: mockDomainName,
+                                                      isFollowing: false)
+        try await ensureFollowingActionSend(action: action, by: domain)
+    }
+    
+    func testUnfollowActionSend_Failure() async throws {
+        networkService.shouldFail = true
+        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        try? await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
+        
+        XCTAssertTrue(receiver.capturedValues.compactMap { $0 }.isEmpty)
+    }
+    
     // MARK: - Load More Tests
     func testLoadMoreCalledOnPublisherRequest() async throws {
-        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: mockWallet())
-        var capturedValues: [WalletDomainProfileDetails] = []
-        let cancellable = publisher.sink { value in
-            capturedValues.append(value)
-        }
+        let receiver = await createWalletDomainProfileDetailsValuesReceiver(for: mockWallet())
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
         
-        XCTAssertEqual(capturedValues.count, 4) // Initial + followers + followings + Public profile
-        XCTAssertTrue(isSocialRelationshipDetailsEmpty(capturedValues[0].socialDetails!))
-        XCTAssertNil(capturedValues[0].displayInfo)
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[3].socialDetails!))
-        XCTAssertNotNil(capturedValues[3].displayInfo)
+        XCTAssertEqual(receiver.capturedValues.count, 4) // Initial + followers + followings + Public profile
+        XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
+        XCTAssertNil(receiver.capturedValues[0].displayInfo)
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[3].socialDetails!))
+        XCTAssertNotNil(receiver.capturedValues[3].displayInfo)
     }
     
     func testCachedProfileUsedOnPublisherInit() async throws {
         let wallet = mockWallet()
         let profile = createMockDomainProfileAndStoreInCache(name: wallet.profileDomainName!)
-        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
-        var capturedValues: [WalletDomainProfileDetails] = []
-        let cancellable = publisher.sink { value in
-            capturedValues.append(value)
-        }
+        let receiver = await createWalletDomainProfileDetailsValuesReceiver(for: wallet)
+
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
         
-        XCTAssertEqual(capturedValues[0].displayInfo, profile)
+        XCTAssertEqual(receiver.capturedValues[0].displayInfo, profile)
     }
     
     func testLoadMoreCalledOnPublishedRequestOnce() async {
         let wallet = mockWallet()
-        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
-        var capturedValues: [WalletDomainProfileDetails] = []
-        let cancellable = publisher.sink { value in
-            capturedValues.append(value)
-        }
+        let receiver = await createWalletDomainProfileDetailsValuesReceiver(for: wallet)
+
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
-        XCTAssertFalse(capturedValues.isEmpty)
-        capturedValues.removeAll()
+        XCTAssertFalse(receiver.capturedValues.isEmpty)
+        receiver.clear()
         
         let samePublisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
         await Task.sleep(seconds: 0.1)
 
         // Check no values were changed
-        XCTAssertTrue(capturedValues.isEmpty)
+        XCTAssertTrue(receiver.capturedValues.isEmpty)
     }
     
     // MARK: - Profile Suggestions tests
@@ -205,7 +227,7 @@ final class DomainProfilesServiceTests: BaseTestClass {
         networkService.shouldFail = true
         do {
             let wallet = mockWallet()
-            let suggestions = try await service.getSuggestionsFor(wallet: wallet)
+            let _ = try await service.getSuggestionsFor(wallet: wallet)
             XCTFail("Expected network error")
         } catch {
             assertNetworkErrorThrown(error)
@@ -243,23 +265,38 @@ private extension DomainProfilesServiceTests {
         socialDetails.paginationInfo.cursor == nil
     }
     
+    func createWalletDomainProfileDetailsValuesReceiver(for wallet: WalletEntity) async -> CombineValuesCapturer<WalletDomainProfileDetails> {
+        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: wallet)
+        let receiver = CombineValuesCapturer(currentValueSubject: publisher)
+        return receiver
+    }
+    
     func ensureFollowersResetAfterAsyncFunction(_ block: @Sendable () async throws -> ())  async throws {
-        let publisher = await service.publisherForWalletDomainProfileDetails(wallet: mockWallet())
-        var capturedValues: [WalletDomainProfileDetails] = []
-        let cancellable = publisher.sink { value in
-            capturedValues.append(value)
-        }
-        
+        let receiver = await createWalletDomainProfileDetailsValuesReceiver(for: mockWallet())
+
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
-        capturedValues.removeAll()
+        receiver.clear()
         try await block()
         await Task.sleep(seconds: 0.1) // Wait for new expected requests finished
         
-        XCTAssertEqual(capturedValues.count, 3) // Reset + followers + followings
-        XCTAssertTrue(isSocialRelationshipDetailsEmpty(capturedValues[0].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[1].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(capturedValues[2].socialDetails!))
-        cancellable.cancel()
+        XCTAssertEqual(receiver.capturedValues.count, 3) // Reset + followers + followings
+        XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[1].socialDetails!))
+        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[2].socialDetails!))
+    }
+    
+    func ensureFollowingActionSend(action: DomainProfileFollowActionDetails,
+                                   by domain: DomainDisplayInfo) async throws {
+        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        
+        if action.isFollowing {
+            try await service.followProfileWith(domainName: action.targetDomainName, by: domain)
+        } else {
+            try await service.unfollowProfileWith(domainName: action.targetDomainName, by: domain)
+        }
+        
+        let validValues = receiver.capturedValues.compactMap({ $0 })
+        XCTAssertEqual(validValues, [action])
     }
 }
 

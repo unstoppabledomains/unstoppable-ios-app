@@ -1710,6 +1710,7 @@
 		C6D011C62B996A5C0008BF40 /* DomainProfileSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */; };
 		C6D011C82B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D011C92B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
+		C6D011CB2B9999F70008BF40 /* CombineValuesCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */; };
 		C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
 		C6D0549327FF07480036B200 /* UDTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0549227FF07470036B200 /* UDTextField.xib */; };
 		C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */; };
@@ -3532,6 +3533,7 @@
 		C6D011C12B9967A30008BF40 /* UDPageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPageControlView.swift; sourceTree = "<group>"; };
 		C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSuggestion.swift; sourceTree = "<group>"; };
 		C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfilesListView.swift; sourceTree = "<group>"; };
+		C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineValuesCapturer.swift; sourceTree = "<group>"; };
 		C6D0548D27FF07390036B200 /* UDTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTextField.swift; sourceTree = "<group>"; };
 		C6D0549227FF07470036B200 /* UDTextField.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDTextField.xib; sourceTree = "<group>"; };
 		C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationSelectionCell.swift; sourceTree = "<group>"; };
@@ -3980,6 +3982,7 @@
 				C6478B1729A36960006FADFE /* DeepLinksServiceTests.swift */,
 				C6B2E2112B970E0900CEA1F9 /* DomainProfileSocialRelationshipDetailsTests.swift */,
 				C6B2E2132B9714B100CEA1F9 /* DomainProfilesServiceTests.swift */,
+				C6D011CC2B999A100008BF40 /* Helpers */,
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */,
@@ -7378,6 +7381,14 @@
 			path = Suggested;
 			sourceTree = "<group>";
 		};
+		C6D011CC2B999A100008BF40 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		C6D0548C27FF05AF0036B200 /* UDTextFieldV2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -9520,6 +9531,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6DF986D290F83020098733A /* PrivateKeyStorageTests.swift in Sources */,
+				C6D011CB2B9999F70008BF40 /* CombineValuesCapturer.swift in Sources */,
 				C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */,
 				C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */,
 				C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */,
