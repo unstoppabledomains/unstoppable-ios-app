@@ -785,6 +785,5 @@ private extension PublicProfileView {
 @available(iOS 17, *)
 #Preview {
     PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
-                                                                    wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                                                                    viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
+                                                                    viewingWallet: MockEntitiesFabric.Wallet.mockEntities()[0]))
 }

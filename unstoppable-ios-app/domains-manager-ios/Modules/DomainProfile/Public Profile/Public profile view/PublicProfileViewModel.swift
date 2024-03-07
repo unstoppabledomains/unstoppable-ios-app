@@ -23,8 +23,7 @@ struct PublicProfileViewConfiguration: Identifiable {
     var id: String { domain.name }
     
     let domain: PublicDomainDisplayInfo
-    let wallet: WalletEntity
-    var viewingDomain: DomainDisplayInfo? = nil
+    let viewingWallet: WalletEntity?
     var preRequestedAction: PreRequestedProfileAction? = nil
     var delegate: PublicProfileViewDelegate? = nil
 }
@@ -68,14 +67,14 @@ extension PublicProfileView {
         
         init(configuration: PublicProfileViewConfiguration) {
             self.domain = configuration.domain
-            self.viewingDomain = configuration.viewingDomain ?? configuration.wallet.getDomainToViewPublicProfile()
             self.preRequestedAction = configuration.preRequestedAction
             self.delegate = configuration.delegate
             self.appearTime = Date()
+            setupViewingDomain(requiredWallet: configuration.viewingWallet)
             loadAllProfileData()
             loadViewingDomainData()
         }
-     
+        
         func loadIconIfNeededFor(follower: DomainProfileFollowerDisplayInfo) {
             guard follower.icon == nil else { return }
             
@@ -295,6 +294,14 @@ extension PublicProfileView {
                 return
             }
             self.preRequestedAction = nil
+        }
+        
+        private func setupViewingDomain(requiredWallet: WalletEntity?) {
+            if let requiredWallet {
+                viewingDomain = requiredWallet.rrDomain
+            } else if case .wallet(let wallet) = appContext.userProfileService.selectedProfile {
+                viewingDomain = wallet.rrDomain
+            }
         }
     }
     

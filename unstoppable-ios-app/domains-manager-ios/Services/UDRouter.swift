@@ -610,13 +610,11 @@ class UDRouter: DomainProfileSignatureValidator {
 //    }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
-                                 by wallet: WalletEntity,
-                                 viewingDomain: DomainDisplayInfo?,
-                                 preRequestedAction: PreRequestedProfileAction?,
+                                 by wallet: WalletEntity?,
+                                 preRequestedAction: PreRequestedProfileAction? = nil,
                                  in viewController: UIViewController) {
         let vc = PublicProfileView.instantiate(configuration: PublicProfileViewConfiguration(domain: domain,
-                                                                                             wallet: wallet,
-                                                                                             viewingDomain: viewingDomain,
+                                                                                             viewingWallet: wallet,
                                                                                              preRequestedAction: preRequestedAction,
                                                                                              delegate: viewController))
         viewController.present(vc, animated: true)
