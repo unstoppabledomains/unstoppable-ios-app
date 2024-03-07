@@ -20,6 +20,13 @@ final class CombineValuesCapturer<Entity> {
         .store(in: &cancellables)
     }
     
+    init(passthroughSubject: PassthroughSubject<Entity, Never>) {
+        passthroughSubject.sink { value in
+            self.capturedValues.append(value)
+        }
+        .store(in: &cancellables)
+    }
+    
     func clear() {
         capturedValues.removeAll()
     }

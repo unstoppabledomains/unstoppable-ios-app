@@ -124,10 +124,10 @@ final class DomainProfilesServiceTests: BaseTestClass {
     
     func testFollowActionSend_Failure() async throws {
         networkService.shouldFail = true
-        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        let receiver = CombineValuesCapturer(passthroughSubject: service.followActionsPublisher)
         try? await service.followProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
         
-        XCTAssertTrue(receiver.capturedValues.compactMap { $0 }.isEmpty)
+        XCTAssertTrue(receiver.capturedValues.isEmpty)
     }
     
     // MARK: - Unfollow Function Tests
@@ -163,10 +163,10 @@ final class DomainProfilesServiceTests: BaseTestClass {
     
     func testUnfollowActionSend_Failure() async throws {
         networkService.shouldFail = true
-        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        let receiver = CombineValuesCapturer(passthroughSubject: service.followActionsPublisher)
         try? await service.unfollowProfileWith(domainName: mockDomainName, by: mockDomainDisplayInfo())
         
-        XCTAssertTrue(receiver.capturedValues.compactMap { $0 }.isEmpty)
+        XCTAssertTrue(receiver.capturedValues.isEmpty)
     }
     
     // MARK: - Load More Tests
@@ -287,7 +287,7 @@ private extension DomainProfilesServiceTests {
     
     func ensureFollowingActionSend(action: DomainProfileFollowActionDetails,
                                    by domain: DomainDisplayInfo) async throws {
-        let receiver = CombineValuesCapturer(currentValueSubject: service.followActionsPublisher)
+        let receiver = CombineValuesCapturer(passthroughSubject: service.followActionsPublisher)
         
         if action.isFollowing {
             try await service.followProfileWith(domainName: action.targetDomainName, by: domain)
@@ -295,8 +295,7 @@ private extension DomainProfilesServiceTests {
             try await service.unfollowProfileWith(domainName: action.targetDomainName, by: domain)
         }
         
-        let validValues = receiver.capturedValues.compactMap({ $0 })
-        XCTAssertEqual(validValues, [action])
+        XCTAssertEqual(receiver.capturedValues, [action])
     }
 }
 

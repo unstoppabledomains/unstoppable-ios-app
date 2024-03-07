@@ -24,7 +24,7 @@ final class DomainProfilesService {
     private let serialQueue = DispatchQueue(label: "com.domain_profiles_service.unstoppable")
     private var profilesSocialDetailsCache: [HexAddress : PublishableDomainProfileDetailsController] = [:]
     private var cancellables: Set<AnyCancellable> = []
-    private(set) var followActionsPublisher: CurrentValueSubject<DomainProfileFollowActionDetails?, Never> = .init(nil)
+    private(set) var followActionsPublisher = PassthroughSubject<DomainProfileFollowActionDetails, Never>()
 
     init(networkService: DomainProfileNetworkServiceProtocol = NetworkService(),
          storage: DomainProfileDisplayInfoStorageServiceProtocol,
@@ -35,7 +35,6 @@ final class DomainProfilesService {
         walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
             self?.walletsListUpdated(wallets)
         }.store(in: &cancellables)
-        
     }
     
     func walletsListUpdated(_ wallets: [WalletEntity]) {
