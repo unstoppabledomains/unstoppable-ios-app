@@ -12,7 +12,12 @@ extension MockEntitiesFabric {
     enum Explore {
         @MainActor
         static func createViewModel() -> HomeExploreViewModel {
-            .init(router: Home.createHomeTabRouter())
+            createViewModelUsing(Home.createHomeTabRouter())
+        }
+        
+        @MainActor
+        static func createViewModelUsing(_ router: HomeTabRouter) -> HomeExploreViewModel {
+            HomeExploreViewModel(router: router)
         }
         
         static func createFollowersProfiles() -> [SerializedPublicDomainProfile] {

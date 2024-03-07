@@ -200,8 +200,9 @@ extension View {
 }
 
 #Preview {
-    let viewModel = MockEntitiesFabric.Explore.createViewModel()
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    let viewModel = MockEntitiesFabric.Explore.createViewModelUsing(router)
     
     return HomeExploreView(viewModel: viewModel)
-        .environmentObject(viewModel.router)
+        .environmentObject(router)
 }
