@@ -86,13 +86,9 @@ struct HomeTabView: View {
             .ignoresSafeArea()
             .pullUpHandler(router)
         })
-        .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
-            PublicProfileView(domain: presentationDetails.domain,
-                              wallet: presentationDetails.wallet,
-                              viewingDomain: presentationDetails.viewingDomain,
-                              preRequestedAction: presentationDetails.preRequestedAction,
-                              delegate: presentationDetails.delegate)
-                .pullUpHandler(router)
+        .sheet(item: $router.presentedPublicDomain, content: { configuration in
+            PublicProfileView(configuration: configuration)
+            .pullUpHandler(router)
         })
         .fullScreenCover(item: $router.presentedUBTSearch, content: { presentationDetails in
             UDBTSearchView(controller: UBTController(),

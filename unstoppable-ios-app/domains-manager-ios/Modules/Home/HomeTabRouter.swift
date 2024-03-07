@@ -22,7 +22,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
-    @Published var presentedPublicDomain: PublicDomainPresentationDetails?
+    @Published var presentedPublicDomain: PublicProfileViewConfiguration?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
@@ -508,16 +508,6 @@ extension HomeTabRouter {
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
         var dismissCallback: EmptyCallback? = nil
-    }
-    
-    struct PublicDomainPresentationDetails: Identifiable {
-        var id: String { domain.name }
-        
-        let domain: PublicDomainDisplayInfo
-        let wallet: WalletEntity
-        let viewingDomain: DomainDisplayInfo?
-        var preRequestedAction: PreRequestedProfileAction? = nil
-        var delegate: PublicProfileViewDelegate
     }
     
     struct UBTSearchPresentationDetails: Identifiable {

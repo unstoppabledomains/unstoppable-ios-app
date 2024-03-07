@@ -13,8 +13,6 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .homeExplore }
     
-    private var selectedProfile: UserProfile
-    
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
     @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
@@ -22,6 +20,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published private(set) var suggestedProfiles: [DomainProfileSuggestion] = []
     @Published private(set) var isLoadingGlobalProfiles = false
     @Published private(set) var userWalletNonEmptySearchResults: [HomeExplore.UserWalletNonEmptySearchResult] = []
+    @Published private var walletDomainProfileDetails: WalletDomainProfileDetails?
     @Published var userWalletCollapsedAddresses: Set<String> = []
     
     @Published var searchDomainsType: HomeExplore.SearchDomainsType = .global
@@ -32,9 +31,10 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
     let router: HomeTabRouter
+    private var selectedProfile: UserProfile
     private var cancellables: Set<AnyCancellable> = []
-    @Published private var walletDomainProfileDetails: WalletDomainProfileDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
+    
     private let walletsDataService: WalletsDataServiceProtocol
     private let domainProfilesService: DomainProfilesServiceProtocol
     private let searchService = DomainsGlobalSearchService()

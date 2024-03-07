@@ -10,16 +10,8 @@ import SwiftUI
 struct PublicProfileView: View, ViewAnalyticsLogger {
     
     @MainActor
-    static func instantiate(domain: PublicDomainDisplayInfo,
-                            wallet: WalletEntity,
-                            viewingDomain: DomainDisplayInfo?,
-                            preRequestedAction: PreRequestedProfileAction?,
-                            delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
-        let view = PublicProfileView(domain: domain,
-                                     wallet: wallet,
-                                     viewingDomain: viewingDomain,
-                                     preRequestedAction: preRequestedAction,
-                                     delegate: delegate)
+    static func instantiate(configuration: PublicProfileViewConfiguration) -> UIViewController {
+        let view = PublicProfileView(configuration: configuration)
         let vc = UIHostingController(rootView: view)
         return vc
     }
@@ -77,17 +69,9 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         })
     }
     
-    init(domain: PublicDomainDisplayInfo,
-         wallet: WalletEntity,
-         viewingDomain: DomainDisplayInfo?,
-         preRequestedAction: PreRequestedProfileAction?,
-         delegate: PublicProfileViewDelegate? = nil) {
-        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, 
-                                                                      wallet: wallet,
-                                                                      viewingDomain: viewingDomain,
-                                                                      preRequestedAction: preRequestedAction,
-                                                                      delegate: delegate))
-        self.delegate = delegate
+    init(configuration: PublicProfileViewConfiguration) {
+        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(configuration: configuration))
+        self.delegate = configuration.delegate
     }
 }
 
@@ -800,8 +784,7 @@ private extension PublicProfileView {
 
 @available(iOS 17, *)
 #Preview {
-    PublicProfileView(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
-                      wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                      viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo(),
-                      preRequestedAction: nil)
+    PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
+                                                                    wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                                                                    viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
 }
