@@ -237,4 +237,26 @@ extension MockEntitiesFabric {
             DomainProfileSocialAccount.typesFrom(accounts: DomainProfile.createSocialAccounts())
         }
     }
+    
+    enum ProfileSuggestions {
+        static func createSuggestionsForPreview() -> [DomainProfileSuggestion] {
+            [createSuggestion(domain: "normal_nft_collection.x", imageType: .offChain, reasons: [.nftCollection]),
+             createSuggestion(domain: "normal_on_chain_poap_with_vaery_long_name_that_cant_fit_screen_size.x", imageType: .onChain, reasons: [.poap]),
+             createSuggestion(domain: "no_ava_transaction.x", withImage: false, reasons: [.transaction]),
+             createSuggestion(domain: "lens_follows.x", withImage: false, reasons: [.lensFollows]),
+             createSuggestion(domain: "farcaster_follows.x", reasons: [.farcasterFollows])]
+        }
+        
+        static func createSuggestion(domain: String = "oleg.x",
+                                     withImage: Bool = true,
+                                     imageType: DomainProfileImageType = .offChain,
+                                     reasons: [DomainProfileSuggestion.Reason] = [.nftCollection]) -> DomainProfileSuggestion {
+            DomainProfileSuggestion(address: "0x1",
+                                    reasons: reasons.map { $0.rawValue },
+                                    score: 10,
+                                    domain: domain,
+                                    imageUrl: withImage ? ImageURLs.aiAvatar.rawValue : nil,
+                                    imageType: imageType)
+        }
+    }
 }

@@ -7,33 +7,25 @@
 
 import SwiftUI
 
-typealias ProfileSuggestion = String
-
 struct HomeExploreSuggestedProfilesSectionView: View {
     
-    @State private var profilesSections: [[ProfileSuggestion]] = []
+    @State private var profilesSections: [[DomainProfileSuggestion]] = []
     private let horizontalSectionsSpacing: CGFloat = 30
-    private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + 15 }
+    private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + 15 + 16 }
     
     var body: some View {
         contentScrollView()
             .frame(height: 172)
             .onAppear(perform: onAppear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
     }
     
-  
 }
 
 // MARK: - Private methods
 private extension HomeExploreSuggestedProfilesSectionView {
     func onAppear() {
-        let items = ["oleg.x",
-                     "test.x",
-                     "preview.x",
-                     "preview2.x",
-                     "preview3.x",
-                     "preview4.x",
-                     "preview5.x"]
+        let items = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
         let maker = DomainProfileSuggestionSectionsMaker(profiles: items)
         self.profilesSections = maker.getProfilesMatrix()
     }
@@ -44,7 +36,7 @@ private extension HomeExploreSuggestedProfilesSectionView {
     @MainActor @ViewBuilder
     func contentScrollView() -> some View {
         if #available(iOS 17.0, *) {
-            fallbackPaginatedScrollView()
+            nativePaginatedScrollView()
         } else {
             fallbackPaginatedScrollView()
         }
@@ -71,7 +63,7 @@ private extension HomeExploreSuggestedProfilesSectionView {
     func scrollableSectionsView() -> some View {
         LazyHStack(alignment: .top, spacing: horizontalSectionsSpacing) {
             ForEach(profilesSections, id: \.self) { profilesSection in
-                LazyVStack {
+                LazyVStack(spacing: 20) {
                     ForEach(profilesSection, id: \.self) { profile in
                         rowForProfile(profile)
                     }
@@ -79,18 +71,12 @@ private extension HomeExploreSuggestedProfilesSectionView {
                 .modifier(SectionRowWidthModifier(horizontalRowSizeReducer: horizontalRowSizeReducer))
             }
         }
+        .padding(.init(horizontal: 16))
     }
     
     @ViewBuilder
-    func rowForProfile(_ profile: String) -> some View {
-        HStack {
-            Text(profile)
-            Spacer()
-            Text(profile)
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 44)
-        .background(Color.red)
+    func rowForProfile(_ profileSuggestion: DomainProfileSuggestion) -> some View {
+        HomeExploreSuggestedProfileRowView(profileSuggestion: profileSuggestion)
     }
 }
 
@@ -125,15 +111,48 @@ struct DomainProfileSuggestion: Hashable, Codable, Identifiable {
     let reasons: [String]
     let score: Int
     let domain: String
-    let imageUrl: String
-    let imageType: String
+    let imageUrl: String?
+    let imageType: DomainProfileImageType?
+    
+    var classifiedReasons: [Reason] { reasons.compactMap { Reason(rawValue: $0) } }
+    
+    func getReasonToShow() -> Reason? {
+        classifiedReasons.first
+    }
+    
+    enum Reason: String {
+        case nftCollection = "Holds the same NFT collection"
+        case poap = "Holds the same POAP"
+        case transaction = "Shared a transaction"
+        case lensFollows = "Lens follows in common"
+        case farcasterFollows = "Farcaster follows in common"
+        
+        var title: String {
+            rawValue
+        }
+        
+        var icon: Image {
+            switch self {
+            case .nftCollection:
+                return .cryptoFaceIcon
+            case .poap:
+                return .cryptoPOAPIcon
+            case .transaction:
+                return .cryptoTransactionIcon
+            case .lensFollows:
+                return .lensIcon
+            case .farcasterFollows:
+                return .farcasterIcon
+            }
+        }
+    }
 }
 
 struct DomainProfileSuggestionSectionsMaker {
     
     let sections: [Section]
     
-    init(profiles: [ProfileSuggestion]) {
+    init(profiles: [DomainProfileSuggestion]) {
         let numOfProfilesInSection = 3
         let maxNumOfSections = 3
         let maxNumOfProfiles = numOfProfilesInSection * maxNumOfSections
@@ -153,12 +172,12 @@ struct DomainProfileSuggestionSectionsMaker {
         self.sections = sections
     }
     
-    func getProfilesMatrix() -> [[ProfileSuggestion]] {
+    func getProfilesMatrix() -> [[DomainProfileSuggestion]] {
         sections.map { $0.profiles }
     }
     
     struct Section {
-        let profiles: [ProfileSuggestion]
+        let profiles: [DomainProfileSuggestion]
     }
     
 }

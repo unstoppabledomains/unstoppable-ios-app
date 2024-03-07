@@ -1702,6 +1702,8 @@
 		C6D011B62B9949520008BF40 /* WalletDomainProfileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011B42B9949520008BF40 /* WalletDomainProfileDetails.swift */; };
 		C6D011BC2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011BB2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift */; };
 		C6D011BD2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011BB2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift */; };
+		C6D011BF2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011BE2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift */; };
+		C6D011C02B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011BE2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift */; };
 		C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
 		C6D0549327FF07480036B200 /* UDTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0549227FF07470036B200 /* UDTextField.xib */; };
 		C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */; };
@@ -3520,6 +3522,7 @@
 		C6C9DEAD2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyWalletAddressPullUpHandler.swift; sourceTree = "<group>"; };
 		C6D011B42B9949520008BF40 /* WalletDomainProfileDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDomainProfileDetails.swift; sourceTree = "<group>"; };
 		C6D011BB2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfilesSectionView.swift; sourceTree = "<group>"; };
+		C6D011BE2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfileRowView.swift; sourceTree = "<group>"; };
 		C6D0548D27FF07390036B200 /* UDTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTextField.swift; sourceTree = "<group>"; };
 		C6D0549227FF07470036B200 /* UDTextField.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDTextField.xib; sourceTree = "<group>"; };
 		C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationSelectionCell.swift; sourceTree = "<group>"; };
@@ -7358,6 +7361,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D011BB2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift */,
+				C6D011BE2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift */,
 			);
 			path = Suggested;
 			sourceTree = "<group>";
@@ -9473,6 +9477,7 @@
 				C6B65F792B550FC2006D1812 /* WalletNFTsServiceProtocol.swift in Sources */,
 				C61B3E8C283E708500500B6D /* EnterEmailVerificationCodeViewPresenter.swift in Sources */,
 				C63095F42B0DA66400205054 /* UDTwitterSigner.swift in Sources */,
+				C6D011BF2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift in Sources */,
 				C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C624D7AF281BCDB600F55530 /* BaseListCollectionViewCell.swift in Sources */,
 				C64F8DFE2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */,
@@ -9785,6 +9790,7 @@
 				C6C8F8972B2182A200A9834D /* WalletsEmptyStateCell.swift in Sources */,
 				C6C8F9972B218C4200A9834D /* DomainProfileLinkValidator.swift in Sources */,
 				C6B65F702B550ED5006D1812 /* NFTsAPIRequestBuilder.swift in Sources */,
+				C6D011C02B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift in Sources */,
 				C618086C2B19BC0C0032E543 /* Line.swift in Sources */,
 				C6C8F8A82B2182AE00A9834D /* RenameWalletViewController.swift in Sources */,
 				C6C8F91D2B2183AB00A9834D /* InviteFriendsViewController.swift in Sources */,
