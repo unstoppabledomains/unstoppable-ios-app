@@ -60,14 +60,14 @@ private extension HomeExploreFollowerCellView {
                                                                downsampleDescription: .mid)
             } else {
                 pfpImage = await imageLoadingService.loadImage(from: .initials(domainName,
-                                                                     size: .default,
-                                                                     style: .accent), downsampleDescription: nil)
+                                                                               size: .default,
+                                                                               style: .accent), downsampleDescription: nil)
             }
             
             cover = nil
             if let url = profile.bannerURL {
-                pfpImage = await imageLoadingService.loadImage(from: .url(url, maxSize: nil),
-                                                               downsampleDescription: .mid)
+                cover = await imageLoadingService.loadImage(from: .url(url, maxSize: nil),
+                                                            downsampleDescription: .mid)
             }
         }
     }
