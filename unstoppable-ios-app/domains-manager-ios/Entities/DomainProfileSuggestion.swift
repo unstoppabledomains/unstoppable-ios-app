@@ -14,8 +14,9 @@ struct DomainProfileSuggestion: Hashable, Codable, Identifiable {
     let reasons: [String]
     let score: Int
     let domain: String
-    let imageUrl: String?
+    let imageUrl: URL?
     let imageType: DomainProfileImageType?
+    var isFollowing: Bool = false
     
     var classifiedReasons: [Reason] { reasons.compactMap { Reason(rawValue: $0) } }
     

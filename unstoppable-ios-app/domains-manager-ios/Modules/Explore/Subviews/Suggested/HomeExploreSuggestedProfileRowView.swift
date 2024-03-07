@@ -23,6 +23,7 @@ struct HomeExploreSuggestedProfileRowView: View, ViewAnalyticsLogger {
             Spacer()
             actionButtonView()
         }
+        .animation(.default, value: UUID())
         .frame(maxWidth: .infinity)
         .frame(height: 44)
         .onAppear(perform: onAppear)
@@ -41,9 +42,8 @@ private extension HomeExploreSuggestedProfileRowView {
                                                                                    size: .default),
                                                          downsampleDescription: nil)
             
-            if let imagePath = profileSuggestion.imageUrl,
-               let url = URL(string: imagePath) {
-                avatar = await imageLoadingService.loadImage(from: .url(url, maxSize: nil), downsampleDescription: .mid)
+            if let imageUrl = profileSuggestion.imageUrl {
+                avatar = await imageLoadingService.loadImage(from: .url(imageUrl, maxSize: nil), downsampleDescription: .mid)
             }
         }
     }
@@ -110,12 +110,32 @@ private extension HomeExploreSuggestedProfileRowView {
         .lineLimit(1)
     }
     
+    var actionTitle: String {
+        if profileSuggestion.isFollowing { String.Constants.following.localized()
+        } else {
+            String.Constants.follow.localized()
+        }
+    }
+    
+    var actionStyle: UDButtonStyle {
+        if profileSuggestion.isFollowing {
+            .small(.raisedTertiary)
+        } else {
+            .small(.raisedPrimary)
+        }
+    }
+    
+    var actionEnabled: Bool {
+        !profileSuggestion.isFollowing
+    }
+    
     @ViewBuilder
     func actionButtonView() -> some View {
-        UDButtonView(text: String.Constants.follow.localized(),
-                     style: .small(.raisedPrimary)) {
+        UDButtonView(text: actionTitle,
+                     style: actionStyle) {
             viewModel.didSelectToFollowDomainName(profileSuggestion.domain)
         }
+                     .allowsHitTesting(actionEnabled)
     }
 }
 

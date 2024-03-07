@@ -255,7 +255,7 @@ extension MockEntitiesFabric {
                                     reasons: reasons.map { $0.rawValue },
                                     score: 10,
                                     domain: domain,
-                                    imageUrl: withImage ? ImageURLs.aiAvatar.rawValue : nil,
+                                    imageUrl: withImage ? ImageURLs.aiAvatar.url : nil,
                                     imageType: imageType)
         }
     }

@@ -20,19 +20,22 @@ struct HomeExploreSuggestedProfilesSectionView: View {
     private var horizontalRowSizeReducer: CGFloat { horizontalSectionsSpacing + horizontalContentPadding + 15 }
     
     var body: some View {
-        Section {
-            contentScrollView()
-                .frame(height: 172)
-                .onAppear(perform: onAppear)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-        } header: {
-            sectionHeaderView()
-        }
-        .onChange(of: viewModel.suggestedProfiles) { _ in
-            setSuggestedProfiles()
-        }
-        .onChange(of: scrollOffset) { _ in
-            updateCurrentPageForScrollOffset()
+        if !viewModel.suggestedProfiles.isEmpty {
+            Section {
+                contentScrollView()
+                    .scrollIndicators(.hidden)
+                    .frame(height: 172)
+                    .onAppear(perform: onAppear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            } header: {
+                sectionHeaderView()
+            }
+            .onChange(of: viewModel.suggestedProfiles) { _ in
+                setSuggestedProfiles()
+            }
+            .onChange(of: scrollOffset) { _ in
+                updateCurrentPageForScrollOffset()
+            }
         }
     }
 }
@@ -46,9 +49,7 @@ private extension HomeExploreSuggestedProfilesSectionView {
     func setSuggestedProfiles() {
         let profiles = viewModel.suggestedProfiles
         let maker = HomeExplore.DomainProfileSuggestionSectionsBuilder(profiles: profiles)
-        withAnimation {
-            self.profilesSections = maker.getProfilesMatrix()
-        }
+        self.profilesSections = maker.getProfilesMatrix()
     }
     
     @MainActor

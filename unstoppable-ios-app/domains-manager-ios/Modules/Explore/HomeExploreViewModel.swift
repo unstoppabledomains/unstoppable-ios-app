@@ -132,11 +132,12 @@ extension HomeExploreViewModel {
     }
     
     func didSelectDomainProfileSuggestion(_ profileSuggestion: DomainProfileSuggestion) {
-        
+        openPublicDomainProfile(domainName: profileSuggestion.domain,
+                                walletAddress: profileSuggestion.address)
     }
     
     func didSelectToFollowDomainName(_ domainName: DomainName) {
-        
+        followBySelectedProfile(domainName: domainName)
     }
 }
 
@@ -192,7 +193,8 @@ private extension HomeExploreViewModel {
     }
     
     func loadSuggestedProfiles() {
-        suggestedProfiles = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
+        let suggestedProfiles = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
+        setSuggestedProfiles(suggestedProfiles)
     }
 }
 
@@ -207,6 +209,42 @@ private extension HomeExploreViewModel {
     
     func showSuggestedPeopleList() {
         
+    }
+    
+    func setSuggestedProfiles(_ suggestedProfiles: [DomainProfileSuggestion]) {
+        withAnimation {
+            self.suggestedProfiles = suggestedProfiles
+        }
+    }
+    
+    func markSuggestedProfileWith(domainName: DomainName,
+                                  asFollowing isFollowing: Bool) {
+        if let i = suggestedProfiles.firstIndex(where: { $0.domain == domainName }) {
+            withAnimation {
+                suggestedProfiles[i].isFollowing = isFollowing
+            }
+        }
+    }
+    
+    func followBySelectedProfile(domainName: DomainName) {
+        guard let rrDomain = getSelectedUserProfileRRDomain() else { return }
+        
+        Task {
+            do {
+                markSuggestedProfileWith(domainName: domainName, asFollowing: true)
+                try await domainProfilesService.followProfileWith(domainName: domainName,
+                                                                  by: rrDomain)
+            } catch {
+                self.error = error
+                markSuggestedProfileWith(domainName: domainName, asFollowing: false)
+            }
+        }
+    }
+    
+    func getSelectedUserProfileRRDomain() -> DomainDisplayInfo? {
+        guard case .wallet(let wallet) = selectedProfile else { return nil }
+        
+        return wallet.rrDomain
     }
 }
 
