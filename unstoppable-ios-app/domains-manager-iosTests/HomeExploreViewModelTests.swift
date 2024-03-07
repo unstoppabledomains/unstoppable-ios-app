@@ -31,7 +31,7 @@ final class HomeExploreViewModelTests: BaseTestClass {
                                                userProfileService: userProfilesService,
                                                domainProfilesService: domainProfilesService,
                                                recentProfilesStorage: recentProfilesStorage)
-        await Task.sleep(seconds: 0.1)
+        await waitForRequestMade()
     }
 }
 
@@ -152,7 +152,7 @@ extension HomeExploreViewModelTests {
     func testSuggestedProfileFollowStatusUpdatedSuccess() async {
         let suggestedProfile = domainProfilesService.profilesSuggestions[0]
         viewModel.didSelectToFollowDomainName(suggestedProfile.domain)
-        await Task.sleep(seconds: 0.1) // Wait for request made
+        await waitForRequestMade()
         XCTAssertTrue(viewModel.suggestedProfiles[0].isFollowing)
     }
     
@@ -161,7 +161,26 @@ extension HomeExploreViewModelTests {
         let suggestedProfile = domainProfilesService.profilesSuggestions[0]
         domainProfilesService.shouldFail = true
         viewModel.didSelectToFollowDomainName(suggestedProfile.domain)
-        await Task.sleep(seconds: 0.1) // Wait for request made
+        await waitForRequestMade()
+        XCTAssertFalse(viewModel.suggestedProfiles[0].isFollowing)
+    }
+    
+    @MainActor
+    func testSuggestedProfileFollowStatusUpdatedFromProfilesService() async {
+        let suggestedProfile = domainProfilesService.profilesSuggestions[0]
+        let userDomainName = wallet.rrDomain!.name
+        let followAction = DomainProfileFollowActionDetails(userDomainName: userDomainName,
+                                                            targetDomainName: suggestedProfile.domain,
+                                                            isFollowing: true)
+        domainProfilesService.followActionsPublisher.send(followAction)
+        await waitForRequestMade()
+        XCTAssertTrue(viewModel.suggestedProfiles[0].isFollowing)
+        
+        let unfollowAction = DomainProfileFollowActionDetails(userDomainName: userDomainName,
+                                                              targetDomainName: suggestedProfile.domain,
+                                                              isFollowing: false)
+        domainProfilesService.followActionsPublisher.send(unfollowAction)
+        await waitForRequestMade()
         XCTAssertFalse(viewModel.suggestedProfiles[0].isFollowing)
     }
 }
@@ -216,6 +235,10 @@ private extension HomeExploreViewModelTests {
     func publishProfile(_ profile: WalletDomainProfileDetails) async {
         domainProfilesService.publisher.send(profile)
         await Task.sleep(seconds: 0.6)
+    }
+    
+    func waitForRequestMade() async {
+        await Task.sleep(seconds: 0.1)
     }
 }
 
