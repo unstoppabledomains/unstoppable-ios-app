@@ -126,14 +126,6 @@ extension PublicProfileView {
             }
         }
         
-        func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            viewingDomainImage = nil
-            isFollowing = nil
-            loadFollowingState()
-            viewingDomain = domain
-            loadViewingDomainData()
-        }
-        
         private func loadAllProfileData() {
             loadPublicProfile()
             loadProfileTokens()

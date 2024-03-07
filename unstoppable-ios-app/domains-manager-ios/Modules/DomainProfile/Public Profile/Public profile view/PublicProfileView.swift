@@ -33,7 +33,6 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
-    @State private var isDomainsListPresented = false
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
 
     var body: some View {
@@ -60,10 +59,6 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                      socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domain.name))
-        .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
-                                     domainSelectionCallback: domainSelected,
-                                     profileDomain: viewModel.domain.name,
-                                     currentDomainName: viewModel.viewingDomain?.name))
         .onAppear(perform: {
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
         })
@@ -79,10 +74,6 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
 private extension PublicProfileView {
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo) {
         viewModel.didSelectFollower(follower)
-    }
-    
-    func domainSelected(_ domain: DomainDisplayInfo) {
-        viewModel.didSelectViewingDomain(domain)
     }
     
     @ViewBuilder
@@ -208,58 +199,29 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func followButton(isFollowing: Bool) -> some View {
-        Menu {
-            followButtonMenuContent(isFollowing: isFollowing)
-        } label: {
-            HStack(spacing: 8) {
-                if !isFollowing {
-                    Image.arrowTopRight
-                }
-                
-                Text(isFollowing ? String.Constants.following.localized() : String.Constants.follow.localized())
-                
-                if isFollowing {
-                    Image(uiImage: viewModel.viewingDomainImage ?? .chevronDown)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 20, height: 20)
-                        .clipShape(Circle())
-                }
-            }
-            .foregroundColor(isFollowing ? .white : .black)
-            .font(.currentFont(size: 16, weight: .medium))
-            .frame(height: 24)
-            .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
-            .background(.white.opacity(isFollowing ? 0.16 : 1.0))
-            .clipShape(Capsule())
+        if isFollowing {
+            followButtonWith(title: String.Constants.following.localized(),
+                             icon: nil,
+                             style: .medium(.raisedTertiaryWhite),
+                             analytic: .unfollow)
+        } else {
+            followButtonWith(title: String.Constants.follow.localized(),
+                             icon: .plusIconNav,
+                             style: .medium(.raisedPrimaryWhite),
+                             analytic: .follow)
         }
-        .onButtonTap()
     }
     
     @ViewBuilder
-    func followButtonMenuContent(isFollowing: Bool) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            showDomainsList()
-        } label: {
-            Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
-        }
-        Divider()
-        if let viewingDomain = viewModel.viewingDomain {
-            Button(role: isFollowing ? .destructive : .cancel) {
-                UDVibration.buttonTap.vibrate()
-                viewModel.followButtonPressed()
-                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
-            } label: {
-                if isFollowing {
-                    Text(String.Constants.unfollowAsDomain.localized(viewingDomain.name))
-                } else {
-                    Text(String.Constants.followAsDomain.localized(viewingDomain.name))
-                }
-                if let viewingDomainImage = viewModel.viewingDomainImage {
-                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
-                }
-            }
+    func followButtonWith(title: String,
+                          icon: Image?,
+                          style: UDButtonStyle,
+                          analytic: Analytics.Button) -> some View {
+        UDButtonView(text: title,
+                     icon: icon,
+                     style: style) {
+            viewModel.followButtonPressed()
+            logButtonPressedAnalyticEvents(button: analytic)
         }
     }
     
@@ -401,7 +363,7 @@ private extension PublicProfileView {
     }
     
     enum PresentingModalsOption: CaseIterable, Hashable {
-        case followers, crypto, socials, domains
+        case followers, crypto, socials
     }
     
     func isPresenting(modal: PresentingModalsOption) -> Bool {
@@ -412,8 +374,6 @@ private extension PublicProfileView {
             return isCryptoListPresented
         case .socials:
             return isSocialsListPresented
-        case .domains:
-            return isDomainsListPresented
         }
     }
     
@@ -426,8 +386,6 @@ private extension PublicProfileView {
                 isCryptoListPresented = presented
             case .socials:
                 isSocialsListPresented = presented
-            case .domains:
-                isDomainsListPresented = presented
             }
         }
         
@@ -444,10 +402,6 @@ private extension PublicProfileView {
     
     func showSocialAccountsList() {
         present(modal: .socials)
-    }
-    
-    func showDomainsList() {
-        present(modal: .domains)
     }
     
     @ViewBuilder
@@ -752,27 +706,6 @@ private extension PublicProfileView {
                     .sheet(isPresented: $isSocialsListPresented, content: {
                         PublicProfileSocialsListView(domainName: domainName,
                                                      socialAccounts: socialAccounts)
-                        .adaptiveSheet()
-                    })
-            } else {
-                content
-            }
-        }
-    }
-    
-    struct ShowingDomainsList: ViewModifier {
-        @Binding var isDomainsListPresented: Bool
-        let domainSelectionCallback: PublicProfileDomainSelectionCallback
-        let profileDomain: DomainName
-        let currentDomainName: DomainName?
-        
-        func body(content: Content) -> some View {
-            if let currentDomainName {
-                content
-                    .sheet(isPresented: $isDomainsListPresented, content: {
-                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                         profileDomain: profileDomain,
-                                                         currentDomainName: currentDomainName)
                         .adaptiveSheet()
                     })
             } else {
