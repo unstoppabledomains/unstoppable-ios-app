@@ -1708,6 +1708,8 @@
 		C6D011C32B9967A30008BF40 /* UDPageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C12B9967A30008BF40 /* UDPageControlView.swift */; };
 		C6D011C52B996A5C0008BF40 /* DomainProfileSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */; };
 		C6D011C62B996A5C0008BF40 /* DomainProfileSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */; };
+		C6D011C82B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
+		C6D011C92B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
 		C6D0549327FF07480036B200 /* UDTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0549227FF07470036B200 /* UDTextField.xib */; };
 		C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */; };
@@ -3529,6 +3531,7 @@
 		C6D011BE2B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfileRowView.swift; sourceTree = "<group>"; };
 		C6D011C12B9967A30008BF40 /* UDPageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPageControlView.swift; sourceTree = "<group>"; };
 		C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSuggestion.swift; sourceTree = "<group>"; };
+		C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfilesListView.swift; sourceTree = "<group>"; };
 		C6D0548D27FF07390036B200 /* UDTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTextField.swift; sourceTree = "<group>"; };
 		C6D0549227FF07470036B200 /* UDTextField.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDTextField.xib; sourceTree = "<group>"; };
 		C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationSelectionCell.swift; sourceTree = "<group>"; };
@@ -4963,6 +4966,7 @@
 				C6203A532B88356E000A1A8E /* HomeExploreNavigationDestination.swift */,
 				C6203A502B882EBC000A1A8E /* HomeExploreViewModel.swift */,
 				C6203A4D2B882959000A1A8E /* HomeExploreView.swift */,
+				C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */,
 				C6203A612B883FCF000A1A8E /* Subviews */,
 			);
 			path = Explore;
@@ -8823,6 +8827,7 @@
 				C6045B87281C160000B16761 /* SettingsFooterView.swift in Sources */,
 				C628E34F27FDB2A30044E408 /* UITableView.swift in Sources */,
 				C66804D9280D9EC8007E6390 /* SetupPasscodeViewController.swift in Sources */,
+				C6D011C82B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */,
 				C6D8FF332B83180A0094A21E /* ChatListViewModel.swift in Sources */,
 				C671E3DE29027BE200A2B3A0 /* DomainProfileTopInfoData.swift in Sources */,
 				C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */,
@@ -10423,6 +10428,7 @@
 				C6D647542B1EDBAE00D724AC /* WalletInfoBadgeView.swift in Sources */,
 				C6C8F9702B21882F00A9834D /* WalletConnectServiceV2Protocol.swift in Sources */,
 				C6D645F02B1DBEC200D724AC /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C6D011C92B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */,
 				C6C8F8432B217E9600A9834D /* RestoreWalletViewController.swift in Sources */,
 				C6FBCAA92B91D00100BA39DF /* HomeExploreUserWalletDomainsView.swift in Sources */,
 				C6C8F8AD2B2182CF00A9834D /* NoDomainsToMintViewPresenter.swift in Sources */,

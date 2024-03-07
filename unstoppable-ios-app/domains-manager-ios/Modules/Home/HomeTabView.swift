@@ -28,7 +28,7 @@ struct HomeTabView: View {
             .tag(HomeTab.wallets)
             .tabBarVisible(router.isTabBarVisible)
             
-            HomeExploreView(viewModel: .init(router: router))
+            HomeExploreView(viewModel: HomeExploreViewModel(router: router))
                 .tabItem {
                     Label(title: { Text(String.Constants.explore.localized()) },
                           icon: { Image.exploreIcon })

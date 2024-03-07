@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum HomeExploreNavigationDestination: Hashable {
-    
+    case suggestionsList
 }
 
 struct HomeExploreLinkNavigationDestination {
@@ -16,7 +16,10 @@ struct HomeExploreLinkNavigationDestination {
     @ViewBuilder
     static func viewFor(navigationDestination: HomeExploreNavigationDestination,
                         tabRouter: HomeTabRouter) -> some View {
-        
+        switch navigationDestination {
+        case .suggestionsList:
+            HomeExploreSuggestedProfilesListView()
+        }
     }
     
 }

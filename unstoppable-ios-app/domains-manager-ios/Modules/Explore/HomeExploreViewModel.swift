@@ -30,7 +30,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var isKeyboardActive: Bool = false
     var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
-    private var router: HomeTabRouter
+    let router: HomeTabRouter
     private var cancellables: Set<AnyCancellable> = []
     @Published private var walletDomainProfileDetails: WalletDomainProfileDetails?
     private var socialRelationshipDetailsPublisher: AnyCancellable?
@@ -208,7 +208,7 @@ private extension HomeExploreViewModel {
     }
     
     func showSuggestedPeopleList() {
-        
+        router.exploreTabNavPath.append(.suggestionsList)
     }
     
     func setSuggestedProfiles(_ suggestedProfiles: [DomainProfileSuggestion]) {

@@ -56,6 +56,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                 HomeExploreLinkNavigationDestination.viewFor(navigationDestination: destination,
                                                              tabRouter: tabRouter)
                 .environmentObject(navigationState!)
+                .environmentObject(viewModel)
             }
             .toolbar(content: {
                 // To keep nav bar background visible when scrolling
@@ -197,8 +198,8 @@ extension View {
 }
 
 #Preview {
-    let router = MockEntitiesFabric.Home.createHomeTabRouter()
+    let viewModel = MockEntitiesFabric.Explore.createViewModel()
     
-    return HomeExploreView(viewModel: .init(router: router))
-        .environmentObject(router)
+    return HomeExploreView(viewModel: viewModel)
+        .environmentObject(viewModel.router)
 }
