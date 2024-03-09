@@ -61,6 +61,7 @@ struct UDButtonView: View {
                 .adjustContentSizeForStyle(style)
             }
             .foregroundColor(textColorForCurrentState(buttonStateFor(state: state)))
+            .background(backgroundGradientColor(buttonStateFor(state: state)))
             .background(backgroundColorForCurrentState(buttonStateFor(state: state)))
             .cornerRadius(style.cornerRadius)
         }))
@@ -88,16 +89,29 @@ private extension UDButtonView {
         }
     }
     
-    func backgroundColorForCurrentState(_ state: ButtonState) -> Color {
+    @ViewBuilder
+    func backgroundColorForCurrentState(_ state: ButtonState) -> some View {
         switch state {
         case .idle:
-            return style.backgroundIdleColor
+            style.backgroundIdleColor
         case .highlighted:
-            return style.backgroundHighlightedColor
+            style.backgroundHighlightedColor
         case .disabled:
-            return style.backgroundDisabledColor
+            style.backgroundDisabledColor
         case .success:
-            return style.backgroundSuccessColor
+            style.backgroundSuccessColor
+        }
+    }
+    
+    @ViewBuilder
+    func backgroundGradientColor(_ state: ButtonState) -> some View {
+        switch state {
+        case .idle:
+            style.backgroundIdleGradient
+        case .highlighted:
+            style.backgroundHighlightedGradient
+        default:
+            EmptyView()
         }
     }
     

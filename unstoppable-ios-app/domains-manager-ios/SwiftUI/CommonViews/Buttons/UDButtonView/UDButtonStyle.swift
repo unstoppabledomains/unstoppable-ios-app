@@ -23,18 +23,48 @@ enum UDButtonStyle {
         }
     }
     
-    var backgroundIdleColor: Color {
+    @ViewBuilder
+    var backgroundIdleColor: some View {
         switch self {
         case .verySmall(let verySmallStyle):
-            return verySmallStyle.backgroundIdleColor
+            verySmallStyle.backgroundIdleColor
         case .small(let smallStyle):
-            return smallStyle.backgroundIdleColor
+            smallStyle.backgroundIdleColor
         case .medium(let mediumStyle):
-            return mediumStyle.backgroundIdleColor
+            mediumStyle.backgroundIdleColor
         case .large(let largeStyle):
-            return largeStyle.backgroundIdleColor
+            largeStyle.backgroundIdleColor
         }
     }
+    
+    @ViewBuilder
+    var backgroundIdleGradient: some View {
+        switch self {
+        case .verySmall:
+            EmptyView()
+        case .small(let smallStyle):
+            smallStyle.backgroundIdleGradient
+        case .medium(let mediumStyle):
+            mediumStyle.backgroundIdleGradient
+        case .large(let largeStyle):
+            largeStyle.backgroundIdleGradient
+        }
+    }
+    
+    @ViewBuilder
+    var backgroundHighlightedGradient: some View {
+        switch self {
+        case .verySmall:
+            EmptyView()
+        case .small(let smallStyle):
+            smallStyle.backgroundHighlightedGradient
+        case .medium(let mediumStyle):
+            mediumStyle.backgroundHighlightedGradient
+        case .large(let largeStyle):
+            largeStyle.backgroundHighlightedGradient
+        }
+    }
+    
     var backgroundHighlightedColor: Color {
         switch self {
         case .verySmall(let verySmallStyle):
@@ -181,27 +211,55 @@ enum UDButtonStyle {
 
 // MARK: - LargeStyle
 extension UDButtonStyle {
-    enum LargeStyle: String, CaseIterable {
+    enum LargeStyle: String, CaseIterable, UDButtonViewSubviewsBuilder {
         case raisedPrimary, raisedPrimaryWhite, raisedDanger, raisedTertiary, raisedTertiaryWhite
         case ghostPrimary, ghostDanger
         case applePay
         
-        var backgroundIdleColor: Color {
+        var backgroundIdleColor: some View {
             switch self {
             case .raisedPrimary:
-                return .backgroundAccentEmphasis
+                return Color.backgroundAccentEmphasis
             case .raisedPrimaryWhite:
-                return .brandWhite
+                return Color.brandWhite
             case .raisedDanger:
-                return .backgroundDangerEmphasis
+                return Color.backgroundDangerEmphasis
             case .raisedTertiary:
-                return .backgroundMuted2
+                return Color.backgroundOverlay
             case .raisedTertiaryWhite:
-                return .brandWhite.opacity(0.16)
+                return Color.brandWhite.opacity(0.16)
             case .ghostPrimary, .ghostDanger:
-                return .clear
+                return Color.clear
             case .applePay:
-                return .black
+                return Color.black
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundIdleGradient: some View {
+            switch self {
+            case .raisedPrimary, .raisedDanger, .applePay:
+                gradientWith(.white.opacity(0.32),
+                             .white.opacity(0.0))
+            case .raisedTertiary:
+                gradientWith(.white.opacity(0.08),
+                             .white.opacity(0.0))
+            case .raisedPrimaryWhite, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger:
+                EmptyView()
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundHighlightedGradient: some View {
+            switch self {
+            case .raisedPrimary, .raisedDanger, .applePay:
+                gradientWith(.white.opacity(0.44),
+                             .white.opacity(0.0))
+            case .raisedTertiary, .raisedPrimaryWhite:
+                gradientWith(.black.opacity(0.0),
+                             .black.opacity(0.04))
+            case .raisedTertiaryWhite, .ghostPrimary, .ghostDanger:
+                EmptyView()
             }
         }
         
@@ -210,11 +268,11 @@ extension UDButtonStyle {
             case .raisedPrimary:
                 return .backgroundAccentEmphasis2
             case .raisedPrimaryWhite:
-                return .brandWhite.opacity(0.64)
+                return .brandWhite
             case .raisedDanger:
                 return .backgroundDangerEmphasis2
             case .raisedTertiary:
-                return .backgroundMuted
+                return .backgroundOverlay
             case .raisedTertiaryWhite:
                 return .brandWhite.opacity(0.24)
             case .ghostPrimary, .ghostDanger:
@@ -305,7 +363,7 @@ extension UDButtonStyle {
 
 // MARK: - MediumStyle
 extension UDButtonStyle {
-    enum MediumStyle: String, CaseIterable {
+    enum MediumStyle: String, CaseIterable, UDButtonViewSubviewsBuilder {
         case raisedPrimary, raisedPrimaryWhite, raisedTertiary, raisedTertiaryWhite
         case ghostPrimary, ghostPrimaryWhite, ghostTertiary, ghostTertiaryWhite
         
@@ -316,11 +374,25 @@ extension UDButtonStyle {
             case .raisedPrimaryWhite:
                 return .brandWhite
             case .raisedTertiary:
-                return .backgroundMuted2
+                return .backgroundOverlay
             case .raisedTertiaryWhite:
-                return .brandWhite.opacity(0.16)
+                return .brandWhite.opacity(0.24)
             case .ghostPrimary, .ghostPrimaryWhite, .ghostTertiary, .ghostTertiaryWhite:
                 return .clear
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundIdleGradient: some View {
+            switch self {
+            case .raisedPrimary:
+                gradientWith(.white.opacity(0.32),
+                             .white.opacity(0.0))
+            case .raisedTertiary:
+                gradientWith(.white.opacity(0.08),
+                             .white.opacity(0.0))
+            case .raisedPrimaryWhite, .raisedTertiaryWhite, .ghostPrimary, .ghostPrimaryWhite, .ghostTertiary, .ghostTertiaryWhite:
+                EmptyView()
             }
         }
         
@@ -331,11 +403,25 @@ extension UDButtonStyle {
             case .raisedPrimaryWhite:
                 return .brandWhite.opacity(0.64)
             case .raisedTertiary:
-                return .backgroundMuted
+                return .backgroundOverlay
             case .raisedTertiaryWhite:
                 return .brandWhite.opacity(0.24)
             case .ghostPrimary, .ghostPrimaryWhite, .ghostTertiary, .ghostTertiaryWhite:
                 return .clear
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundHighlightedGradient: some View {
+            switch self {
+            case .raisedPrimary:
+                gradientWith(.white.opacity(0.44),
+                             .white.opacity(0.0))
+            case .raisedTertiary:
+                gradientWith(.black.opacity(0.0),
+                             .black.opacity(0.04))
+            case .raisedTertiaryWhite, .ghostPrimary, .raisedPrimaryWhite, .ghostPrimaryWhite, .ghostTertiary, .ghostTertiaryWhite:
+                EmptyView()
             }
         }
         
@@ -344,7 +430,7 @@ extension UDButtonStyle {
             case .raisedPrimary:
                 return .backgroundAccent
             case .raisedPrimaryWhite:
-                return .brandWhite.opacity(0.16)
+                return .brandWhite.opacity(0.64)
             case .raisedTertiary:
                 return .backgroundSubtle
             case .raisedTertiaryWhite:
@@ -435,7 +521,7 @@ extension UDButtonStyle {
 
 // MARK: - SmallStyle
 extension UDButtonStyle {
-    enum SmallStyle: String, CaseIterable  {
+    enum SmallStyle: String, CaseIterable, UDButtonViewSubviewsBuilder  {
         case raisedPrimary, raisedPrimaryWhite, raisedTertiaryWhite, raisedTertiary
         case ghostPrimary, ghostPrimaryWhite, ghostPrimaryWhite2
         
@@ -448,9 +534,23 @@ extension UDButtonStyle {
             case .raisedTertiaryWhite:
                 return .brandWhite.opacity(0.16)
             case .raisedTertiary:
-                return .backgroundMuted2
+                return .backgroundOverlay
             case .ghostPrimary, .ghostPrimaryWhite, .ghostPrimaryWhite2:
                 return .clear
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundIdleGradient: some View {
+            switch self {
+            case .raisedPrimary:
+                gradientWith(.white.opacity(0.32),
+                             .white.opacity(0.0))
+            case .raisedTertiary:
+                gradientWith(.white.opacity(0.08),
+                             .white.opacity(0.0))
+            default:
+                EmptyView()
             }
         }
         
@@ -463,9 +563,23 @@ extension UDButtonStyle {
             case .raisedTertiaryWhite:
                 return .brandWhite.opacity(0.24)
             case .raisedTertiary:
-                return .backgroundMuted
+                return .backgroundOverlay
             case .ghostPrimary, .ghostPrimaryWhite, .ghostPrimaryWhite2:
                 return .clear
+            }
+        }
+        
+        @ViewBuilder
+        var backgroundHighlightedGradient: some View {
+            switch self {
+            case .raisedPrimary:
+                gradientWith(.white.opacity(0.44),
+                             .white.opacity(0.0))
+            case .raisedTertiary:
+                gradientWith(.black.opacity(0.0),
+                             .black.opacity(0.04))
+            default:
+                EmptyView()
             }
         }
         
@@ -623,5 +737,21 @@ extension UDButtonStyle {
                 return .foregroundSuccess
             }
         }
+    }
+}
+
+protocol UDButtonViewSubviewsBuilder { }
+
+extension UDButtonViewSubviewsBuilder {
+    func gradientWith(_ topColor: Color,
+                      _ bottomColor: Color) -> LinearGradient {
+        LinearGradient(
+            stops: [
+                Gradient.Stop(color: topColor, location: 0.00),
+                Gradient.Stop(color: bottomColor, location: 1.00),
+            ],
+            startPoint: UnitPoint(x: 0.49, y: 0),
+            endPoint: UnitPoint(x: 0.49, y: 1)
+        )
     }
 }
