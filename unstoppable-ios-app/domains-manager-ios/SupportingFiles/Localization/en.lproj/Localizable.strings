@@ -171,6 +171,7 @@
 "RECENT" = "Recent";
 "PRIMARY" = "Primary";
 "COLLAPSE" = "Collapse";
+"CHAT" = "Chat";
 
 /* ONBOARDING */
 // Tutorial screens

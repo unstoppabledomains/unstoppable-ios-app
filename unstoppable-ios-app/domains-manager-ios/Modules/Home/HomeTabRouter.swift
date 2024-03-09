@@ -163,12 +163,10 @@ extension HomeTabRouter {
     }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
-                                 by wallet: WalletEntity,
-                                 viewingDomain: DomainDisplayInfo? = nil,
-                                 preRequestedAction: PreRequestedProfileAction?) {
+                                 by wallet: WalletEntity? = nil,
+                                 preRequestedAction: PreRequestedProfileAction? = nil) {
         presentedPublicDomain = .init(domain: domain,
-                                      wallet: wallet,
-                                      viewingDomain: viewingDomain,
+                                      viewingWallet: wallet,
                                       preRequestedAction: preRequestedAction,
                                       delegate: self)
     }

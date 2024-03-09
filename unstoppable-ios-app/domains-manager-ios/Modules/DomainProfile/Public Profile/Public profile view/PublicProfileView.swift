@@ -33,40 +33,68 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
-    @State private var isDomainsListPresented = false
+    @State private var offset: CGPoint = .zero
+    @State private var didCoverActionsWithNav = false
+    @State private var navigationState: NavigationStateManager?
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
-
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : viewModel.domain.name]}
+    
+    
     var body: some View {
-        ZStack {
-            backgroundView()
-            ScrollView {
-                contentView()
+        NavigationViewWithCustomTitle(content: {
+            ZStack {
+                backgroundView()
+                ZStack(alignment: .bottom) {
+                    OffsetObservingScrollView(offset: $offset) {
+                        contentView()
+                    }
+                    if isBottomViewVisible {
+                        bottomActionView()
+                    }
+                }
+                if viewModel.isLoading {
+                    ProgressView()
+                }
             }
-            if viewModel.isLoading {
-                ProgressView()
+            .ignoresSafeArea()
+            .environmentObject(viewModel)
+            .passViewAnalyticsDetails(logger: self)
+            .animation(.easeInOut(duration: 0.3), value: UUID())
+            .displayError($viewModel.error)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: offset, perform: { _ in
+                didScroll()
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButtonView {
+                        logButtonPressedAnalyticEvents(button: .close)
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    if didCoverActionsWithNav {
+                        navShareProfileButtonView()
+                    }
+                }
             }
-        }
-        .environmentObject(viewModel)
-        .passViewAnalyticsDetails(logger: self)
-        .animation(.easeInOut(duration: 0.3), value: UUID())
-        .displayError($viewModel.error)
-        .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
-                                    domainName: viewModel.domain.name,
-                                    records: viewModel.records))
-        .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
-                                       socialInfo: viewModel.socialInfo,
-                                       domainName: viewModel.domain.name,
-                                       followerSelectionCallback: followerSelected))
-        .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
-                                     socialAccounts: viewModel.socialAccounts,
-                                     domainName: viewModel.domain.name))
-        .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
-                                     domainSelectionCallback: domainSelected,
-                                     profileDomain: viewModel.domain.name,
-                                     currentDomainName: viewModel.viewingDomain?.name))
-        .onAppear(perform: {
-            logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
-        })
+            .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
+                                        domainName: viewModel.domain.name,
+                                        records: viewModel.records))
+            .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
+                                           socialInfo: viewModel.socialInfo,
+                                           domainName: viewModel.domain.name,
+                                           followerSelectionCallback: followerSelected))
+            .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
+                                         socialAccounts: viewModel.socialAccounts,
+                                         domainName: viewModel.domain.name))
+            .onAppear(perform: onAppear)
+            .trackAppearanceAnalytics(analyticsLogger: self)
+        }, navigationStateProvider: { state in
+            self.navigationState = state
+        }, path: .constant(EmptyNavigationPath()))
     }
     
     init(configuration: PublicProfileViewConfiguration) {
@@ -77,14 +105,80 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension PublicProfileView {
+    func onAppear() {
+        setupTitle()
+    }
+    
+    func setupTitle() {
+        navigationState?.setCustomTitle(customTitle: { PublicProfileTitleView()
+            .environmentObject(viewModel)},
+                                        id: UUID().uuidString)
+        setTitleVisibility()
+    }
+    
+    func setTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = offset.y > 130
+        }
+    }
+    
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo) {
         viewModel.didSelectFollower(follower)
     }
     
-    func domainSelected(_ domain: DomainDisplayInfo) {
-        viewModel.didSelectViewingDomain(domain)
+    func didScroll() {
+        didCoverActionsWithNav = offset.y > 90
+        setTitleVisibility()
     }
     
+    var isBottomViewVisible: Bool { !viewModel.isUserDomainSelected && didCoverActionsWithNav }
+
+    
+    enum PresentingModalsOption: CaseIterable, Hashable {
+        case followers, crypto, socials
+    }
+    
+    func isPresenting(modal: PresentingModalsOption) -> Bool {
+        switch modal {
+        case .followers:
+            return isFollowersListPresented
+        case .crypto:
+            return isCryptoListPresented
+        case .socials:
+            return isSocialsListPresented
+        }
+    }
+    
+    func present(modal: PresentingModalsOption) {
+        func setModal(_ modal: PresentingModalsOption, presented: Bool) {
+            switch modal {
+            case .followers:
+                isFollowersListPresented = presented
+            case .crypto:
+                isCryptoListPresented = presented
+            case .socials:
+                isSocialsListPresented = presented
+            }
+        }
+        
+        setModal(modal, presented: true)
+    }
+    
+    func showFollowersList() {
+        present(modal: .followers)
+    }
+    
+    func showCryptoList() {
+        present(modal: .crypto)
+    }
+    
+    func showSocialAccountsList() {
+        present(modal: .socials)
+    }
+}
+
+// MARK: - Views
+private extension PublicProfileView {
     @ViewBuilder
     func backgroundView() -> some View {
         ZStack {
@@ -121,7 +215,8 @@ private extension PublicProfileView {
                 PublicProfileTokensSectionView()
                 if let badges = viewModel.badgesDisplayInfo {
                     PublicProfileSeparatorView()
-                    badgesView(badges: badges)
+                    PublicProfileBadgesSectionView(sidePadding: sidePadding,
+                                                   badges: badges)
                 }
             }
             .offset(y: -26)
@@ -130,7 +225,7 @@ private extension PublicProfileView {
         .sideInsets(sidePadding)
         .frame(width: UIScreen.main.bounds.width)
     }
-    
+        
     @ViewBuilder
     func avatarWithActionsView() -> some View {
         HStack {
@@ -140,8 +235,9 @@ private extension PublicProfileView {
             HStack(spacing: 8) {
                 shareProfileButtonView()
                 if !viewModel.isUserDomainSelected {
-                    startMessagingButtonView()
-                    followButtonIfAvailable()
+                    startMessagingButtonView(title: "",
+                                             style: .medium(.raisedTertiaryWhite))
+                    followButtonIfAvailable(isLarge: false)
                 }
             }
             .offset(y: -18)
@@ -149,10 +245,11 @@ private extension PublicProfileView {
     }
     
     @ViewBuilder
-    func followButtonIfAvailable() -> some View {
+    func followButtonIfAvailable(isLarge: Bool) -> some View {
         if isCanFollowThisProfile,
            let isFollowing = viewModel.isFollowing {
-            followButton(isFollowing: isFollowing)
+            followButton(isFollowing: isFollowing,
+                         isLarge: isLarge)
         }
     }
     
@@ -165,26 +262,42 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func shareProfileButtonView() -> some View {
-        CircleIconButton(icon: .uiImage(.shareIcon),
-                         size: .medium,
-                         callback: {
-            logButtonPressedAnalyticEvents(button: .share)
-            delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
-        })
+        UDButtonView(text: "",
+                     icon: .shareIcon,
+                     style: .medium(.raisedTertiaryWhite),
+                     callback: didTapShareProfileButton)
     }
     
     @ViewBuilder
-    func startMessagingButtonView() -> some View {
+    func navShareProfileButtonView() -> some View {
+        Button(action: didTapShareProfileButton, 
+               label: {
+            Image.shareIcon
+                .resizable()
+                .squareFrame(24)
+                .foregroundStyle(.white)
+        })
+        .buttonStyle(.plain)
+    }
+    
+    func didTapShareProfileButton() {
+        logButtonPressedAnalyticEvents(button: .share)
+        delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
+    }
+    
+    @ViewBuilder
+    func startMessagingButtonView(title: String,
+                                  style: UDButtonStyle) -> some View {
         if let viewingDomain = viewModel.viewingDomain,
            let wallet = appContext.walletsDataService.wallets.first(where: { $0.isOwningDomain(viewingDomain.name) }) {
-            CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                             size: .medium,
-                             callback: {
+            UDButtonView(text: title,
+                         icon: .messageCircleIcon24,
+                         style: style) {
                 logButtonPressedAnalyticEvents(button: .messaging)
                 presentationMode.wrappedValue.dismiss()
-                delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, 
+                delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain,
                                                                      by: wallet)
-            })
+            }
         }
     }
     
@@ -206,60 +319,40 @@ private extension PublicProfileView {
         }
     }
     
-    @ViewBuilder
-    func followButton(isFollowing: Bool) -> some View {
-        Menu {
-            followButtonMenuContent(isFollowing: isFollowing)
-        } label: {
-            HStack(spacing: 8) {
-                if !isFollowing {
-                    Image.arrowTopRight
-                }
-                
-                Text(isFollowing ? String.Constants.following.localized() : String.Constants.follow.localized())
-                
-                if isFollowing {
-                    Image(uiImage: viewModel.viewingDomainImage ?? .chevronDown)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 20, height: 20)
-                        .clipShape(Circle())
-                }
-            }
-            .foregroundColor(isFollowing ? .white : .black)
-            .font(.currentFont(size: 16, weight: .medium))
-            .frame(height: 24)
-            .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
-            .background(.white.opacity(isFollowing ? 0.16 : 1.0))
-            .clipShape(Capsule())
-        }
-        .onButtonTap()
+    func followButtonStyle(isLarge: Bool) -> UDButtonStyle {
+        isLarge ? .large(.raisedPrimaryWhite) : .medium(.raisedPrimaryWhite)
+    }
+    
+    func followingButtonStyle(isLarge: Bool) -> UDButtonStyle {
+        isLarge ? .large(.raisedTertiaryWhite) : .medium(.raisedTertiaryWhite)
     }
     
     @ViewBuilder
-    func followButtonMenuContent(isFollowing: Bool) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            showDomainsList()
-        } label: {
-            Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
+    func followButton(isFollowing: Bool,
+                      isLarge: Bool) -> some View {
+        if isFollowing {
+            followButtonWith(title: String.Constants.following.localized(),
+                             icon: nil,
+                             style: followingButtonStyle(isLarge: isLarge),
+                             analytic: .unfollow)
+        } else {
+            followButtonWith(title: String.Constants.follow.localized(),
+                             icon: .plusIconNav,
+                             style: followButtonStyle(isLarge: isLarge),
+                             analytic: .follow)
         }
-        Divider()
-        if let viewingDomain = viewModel.viewingDomain {
-            Button(role: isFollowing ? .destructive : .cancel) {
-                UDVibration.buttonTap.vibrate()
-                viewModel.followButtonPressed()
-                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
-            } label: {
-                if isFollowing {
-                    Text(String.Constants.unfollowAsDomain.localized(viewingDomain.name))
-                } else {
-                    Text(String.Constants.followAsDomain.localized(viewingDomain.name))
-                }
-                if let viewingDomainImage = viewModel.viewingDomainImage {
-                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
-                }
-            }
+    }
+    
+    @ViewBuilder
+    func followButtonWith(title: String,
+                          icon: Image?,
+                          style: UDButtonStyle,
+                          analytic: Analytics.Button) -> some View {
+        UDButtonView(text: title,
+                     icon: icon,
+                     style: style) {
+            viewModel.followButtonPressed()
+            logButtonPressedAnalyticEvents(button: analytic)
         }
     }
     
@@ -394,80 +487,30 @@ private extension PublicProfileView {
         if let records = viewModel.records,
            !records.isEmpty {
             carouselItem(text: String.Constants.pluralNAddresses.localized(records.count, records.count),
-                         icon: .walletBTCIcon20,
+                         icon: .walletAddressesIcon,
                          button: .cryptoList,
                          callback: { showCryptoList() })
         }
     }
     
-    enum PresentingModalsOption: CaseIterable, Hashable {
-        case followers, crypto, socials, domains
-    }
-    
-    func isPresenting(modal: PresentingModalsOption) -> Bool {
-        switch modal {
-        case .followers:
-            return isFollowersListPresented
-        case .crypto:
-            return isCryptoListPresented
-        case .socials:
-            return isSocialsListPresented
-        case .domains:
-            return isDomainsListPresented
-        }
-    }
-    
-    func present(modal: PresentingModalsOption) {
-        func setModal(_ modal: PresentingModalsOption, presented: Bool) {
-            switch modal {
-            case .followers:
-                isFollowersListPresented = presented
-            case .crypto:
-                isCryptoListPresented = presented
-            case .socials:
-                isSocialsListPresented = presented
-            case .domains:
-                isDomainsListPresented = presented
-            }
-        }
-        
-        setModal(modal, presented: true)
-    }
-    
-    func showFollowersList() {
-        present(modal: .followers)
-    }
-    
-    func showCryptoList() {
-        present(modal: .crypto)
-    }
-    
-    func showSocialAccountsList() {
-        present(modal: .socials)
-    }
-    
-    func showDomainsList() {
-        present(modal: .domains)
-    }
-    
     @ViewBuilder
     func carouselItemWithContent(callback: @escaping MainActorAsyncCallback,
                                  button: Analytics.Button,
-                                 @ViewBuilder content: ()->(any View)) -> some View {
+                                 @ViewBuilder content: ()->(some View)) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: button)
             callback()
         } label: {
             ZStack {
-                Capsule()
+                RoundedRectangle(cornerRadius: 12)
                     .fill(Color.white)
                     .opacity(0.16)
-                AnyView(content())
+                content()
                     .sideInsets(12)
             }
             .frame(height: 32)
-            .clipShape(Capsule())
+            
         }
     }
     
@@ -599,76 +642,36 @@ private extension PublicProfileView {
         return text
     }
     
-    @ViewBuilder
-    func badgesView(badges: [DomainProfileBadgeDisplayInfo]) -> some View {
-        VStack(spacing: sidePadding) {
-            badgesTitle(badges: badges)
-            badgesGrid(badges: badges)
-        }
-    }
-        
-    @ViewBuilder
-    func badgesTitle(badges: [DomainProfileBadgeDisplayInfo]) -> some View {
-        HStack {
-            PublicProfilePrimaryLargeTextView(text: String.Constants.domainProfileSectionBadgesName.localized())
-            PublicProfileSecondaryLargeTextView(text: "\(badges.count)")
-            Spacer()
-            Button {
-                UDVibration.buttonTap.vibrate()
-                delegate?.publicProfileDidSelectOpenLeaderboard()
-                logButtonPressedAnalyticEvents(button: .badgesLeaderboard)
-            } label: {
-                HStack(spacing: 8) {
-                    Text(String.Constants.leaderboard.localized())
-                        .font(.currentFont(size: 16, weight: .medium))
-                        .frame(height: 24)
-                    Image.arrowTopRight
-                        .resizable()
-                        .frame(width: 20,
-                               height: 20)
-                }
-                .foregroundColor(.white).opacity(0.56)
-            }
-        }
-    }
-
-    @ViewBuilder
-    func badgesGrid(badges: [DomainProfileBadgeDisplayInfo]) -> some View {
-        LazyVGrid(columns: Array(repeating: .init(), count: 5)) {
-            ForEach(badges, id: \.self) { badge in
-                badgeView(badge: badge)
-            }
-        }
+    var bottomActionGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(stops: [
+                .init(color: .black, location: 0),
+                .init(color: .black, location: 0.8),
+                .init(color: .black.opacity(0.12), location: 1)
+            ]),
+            startPoint: .bottom,
+            endPoint: .top
+        )
     }
     
     @ViewBuilder
-    func badgeView(badge: DomainProfileBadgeDisplayInfo) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            delegate?.publicProfileDidSelectBadge(badge, in: viewModel.domain.name)
-            logButtonPressedAnalyticEvents(button: .badge, parameters: [.fieldName: badge.badge.name])
-        } label: {
-            ZStack {
-                Color.white
-                    .opacity(0.16)
-                let badge = viewModel.badgesDisplayInfo?.first(where: { $0.badge.code == badge.badge.code }) ?? badge // Fix issue when SwiftUI could not pick up badge icon update sometimes
-                let imagePadding: CGFloat = badge.badge.isUDBadge ? 8 : 4
-                Image(uiImage: badge.icon ?? badge.defaultIcon)
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .scaledToFill()
-                    .clipped()
-                    .clipShape(Circle())
-                    .foregroundColor(.white)
-                    .padding(EdgeInsets(top: imagePadding, leading: imagePadding,
-                                        bottom: imagePadding, trailing: imagePadding))
+    func bottomActionView() -> some View {
+        ZStack(alignment: .top) {
+            Rectangle()
+                .foregroundStyle(.ultraThinMaterial)
+            
+                .mask(bottomActionGradient)
+            
+            HStack(spacing: 16) {
+                startMessagingButtonView(title: String.Constants.chat.localized(),
+                                         style: .large(.raisedTertiary))
+                followButtonIfAvailable(isLarge: true)
             }
-            .aspectRatio(1, contentMode: .fit)
-            .clipShape(Circle())
+            .padding()
+            
         }
-        .task {
-            viewModel.loadIconIfNeededFor(badge: badge)
-        }
+        .frame(height: 116)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -759,32 +762,30 @@ private extension PublicProfileView {
             }
         }
     }
-    
-    struct ShowingDomainsList: ViewModifier {
-        @Binding var isDomainsListPresented: Bool
-        let domainSelectionCallback: PublicProfileDomainSelectionCallback
-        let profileDomain: DomainName
-        let currentDomainName: DomainName?
-        
-        func body(content: Content) -> some View {
-            if let currentDomainName {
-                content
-                    .sheet(isPresented: $isDomainsListPresented, content: {
-                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                         profileDomain: profileDomain,
-                                                         currentDomainName: currentDomainName)
-                        .adaptiveSheet()
-                    })
-            } else {
-                content
-            }
-        }
-    }
 }
 
 @available(iOS 17, *)
 #Preview {
-    PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
-                                                                    wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
-                                                                    viewingDomain: MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
+    PreviewContainerView()
+}
+
+private struct PreviewContainerView: View  {
+    
+    @State var isPresentingProfile = false
+    var body: some View {
+        Text("Container")
+            .sheet(isPresented: $isPresentingProfile, content: {
+                targetView()
+            })
+            .onAppear {
+                isPresentingProfile = true
+            }
+    }
+    
+    @ViewBuilder
+    func targetView() -> some View {
+        PublicProfileView(configuration: PublicProfileViewConfiguration(domain: .init(walletAddress: "0x123", name: "gounstoppable.polygon"),
+                                                                        viewingWallet: MockEntitiesFabric.Wallet.mockEntities()[0]))
+    }
+    
 }

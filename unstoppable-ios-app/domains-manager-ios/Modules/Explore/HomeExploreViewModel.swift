@@ -171,10 +171,8 @@ private extension HomeExploreViewModel {
     }
     
     func openPublicDomainProfile(domainName: String, walletAddress: String) {
-        guard let selectedWallet = walletsDataService.selectedWallet else { return }
-        
         let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domainName)
-        router.showPublicDomainProfile(of: domainPublicInfo, by: selectedWallet, preRequestedAction: nil)
+        router.showPublicDomainProfile(of: domainPublicInfo)
     }
     
     func loadRecentProfiles() {

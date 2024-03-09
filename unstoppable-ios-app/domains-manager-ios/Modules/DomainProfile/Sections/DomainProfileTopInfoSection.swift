@@ -207,13 +207,11 @@ private extension DomainProfileTopInfoSection {
                 return
             }
             
-            let viewingDomain = controller.generalData.domain
             let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
                                                  name: follower.domain)
             await Task.sleep(seconds: 0.2)
             UDRouter().showPublicDomainProfile(of: domain,
                                                by: wallet,
-                                               viewingDomain: viewingDomain,
                                                preRequestedAction: nil,
                                                in: viewController)
         }

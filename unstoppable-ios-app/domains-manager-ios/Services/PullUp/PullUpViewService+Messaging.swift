@@ -260,8 +260,6 @@ private extension PullUpViewService {
                 UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                              name: domainName),
                                                    by: wallet,
-                                                   viewingDomain: viewingDomain,
-                                                   preRequestedAction: nil,
                                                    in: pullUpVC)
             }
         }

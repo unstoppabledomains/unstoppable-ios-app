@@ -23,8 +23,7 @@ struct PublicProfileViewConfiguration: Identifiable {
     var id: String { domain.name }
     
     let domain: PublicDomainDisplayInfo
-    let wallet: WalletEntity
-    var viewingDomain: DomainDisplayInfo? = nil
+    let viewingWallet: WalletEntity?
     var preRequestedAction: PreRequestedProfileAction? = nil
     var delegate: PublicProfileViewDelegate? = nil
 }
@@ -44,7 +43,7 @@ extension PublicProfileView {
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
-        private weak var delegate: PublicProfileViewDelegate?
+        private(set) weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
         private(set) var viewingDomain: DomainDisplayInfo?
         @Published var records: [CryptoRecord]?
@@ -68,14 +67,14 @@ extension PublicProfileView {
         
         init(configuration: PublicProfileViewConfiguration) {
             self.domain = configuration.domain
-            self.viewingDomain = configuration.viewingDomain ?? configuration.wallet.getDomainToViewPublicProfile()
             self.preRequestedAction = configuration.preRequestedAction
             self.delegate = configuration.delegate
             self.appearTime = Date()
+            setupViewingDomain(requiredWallet: configuration.viewingWallet)
             loadAllProfileData()
             loadViewingDomainData()
         }
-     
+        
         func loadIconIfNeededFor(follower: DomainProfileFollowerDisplayInfo) {
             guard follower.icon == nil else { return }
             
@@ -125,14 +124,6 @@ extension PublicProfileView {
                                name: follower.domain)
                 loadAllProfileData()
             }
-        }
-        
-        func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            viewingDomainImage = nil
-            isFollowing = nil
-            loadFollowingState()
-            viewingDomain = domain
-            loadViewingDomainData()
         }
         
         private func loadAllProfileData() {
@@ -295,6 +286,14 @@ extension PublicProfileView {
                 return
             }
             self.preRequestedAction = nil
+        }
+        
+        private func setupViewingDomain(requiredWallet: WalletEntity?) {
+            if let requiredWallet {
+                viewingDomain = requiredWallet.rrDomain
+            } else if case .wallet(let wallet) = appContext.userProfileService.selectedProfile {
+                viewingDomain = wallet.rrDomain
+            }
         }
     }
     
