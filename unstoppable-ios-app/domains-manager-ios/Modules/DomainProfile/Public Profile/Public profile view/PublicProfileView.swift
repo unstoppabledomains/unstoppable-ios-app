@@ -35,9 +35,13 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isSocialsListPresented = false
     @State private var offset: CGPoint = .zero
     @State private var didCoverActionsWithNav = false
+    @State private var navigationState: NavigationStateManager?
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName : viewModel.domain.name]}
+    
+    
     var body: some View {
-        NavigationStack {
+        NavigationViewWithCustomTitle(content: {
             ZStack {
                 backgroundView()
                 ZStack(alignment: .bottom) {
@@ -86,10 +90,11 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
             .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                          socialAccounts: viewModel.socialAccounts,
                                          domainName: viewModel.domain.name))
-            .onAppear(perform: {
-                logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
-            })
-        }
+            .onAppear(perform: onAppear)
+            .trackAppearanceAnalytics(analyticsLogger: self)
+        }, navigationStateProvider: { state in
+            self.navigationState = state
+        }, path: .constant(EmptyNavigationPath()))
     }
     
     init(configuration: PublicProfileViewConfiguration) {
@@ -100,12 +105,30 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension PublicProfileView {
+    func onAppear() {
+        setupTitle()
+    }
+    
+    func setupTitle() {
+        navigationState?.setCustomTitle(customTitle: { PublicProfileTitleView()
+            .environmentObject(viewModel)},
+                                        id: UUID().uuidString)
+        setTitleVisibility()
+    }
+    
+    func setTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = offset.y > 130
+        }
+    }
+    
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo) {
         viewModel.didSelectFollower(follower)
     }
     
     func didScroll() {
         didCoverActionsWithNav = offset.y > 90
+        setTitleVisibility()
     }
     
     var isBottomViewVisible: Bool { !viewModel.isUserDomainSelected && didCoverActionsWithNav }

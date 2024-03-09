@@ -82,7 +82,6 @@ private extension HomeExploreView {
     func setupTitle() {
         navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView() },
                                         id: UUID().uuidString)
-        navigationState?.isTitleVisible = true
         setTitleVisibility()
     }
     
