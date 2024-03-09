@@ -236,7 +236,7 @@ private extension PublicProfileView {
                 shareProfileButtonView()
                 if !viewModel.isUserDomainSelected {
                     startMessagingButtonView(title: "",
-                                             style: .medium(.raisedTertiary))
+                                             style: .medium(.raisedTertiaryWhite))
                     followButtonIfAvailable(isLarge: false)
                 }
             }
@@ -262,9 +262,10 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func shareProfileButtonView() -> some View {
-        CircleIconButton(icon: .uiImage(.shareIcon),
-                         size: .medium,
-                         callback: didTapShareProfileButton)
+        UDButtonView(text: "",
+                     icon: .shareIcon,
+                     style: .medium(.raisedTertiaryWhite),
+                     callback: didTapShareProfileButton)
     }
     
     @ViewBuilder
@@ -486,7 +487,7 @@ private extension PublicProfileView {
         if let records = viewModel.records,
            !records.isEmpty {
             carouselItem(text: String.Constants.pluralNAddresses.localized(records.count, records.count),
-                         icon: .walletBTCIcon20,
+                         icon: .walletAddressesIcon,
                          button: .cryptoList,
                          callback: { showCryptoList() })
         }
@@ -495,21 +496,21 @@ private extension PublicProfileView {
     @ViewBuilder
     func carouselItemWithContent(callback: @escaping MainActorAsyncCallback,
                                  button: Analytics.Button,
-                                 @ViewBuilder content: ()->(any View)) -> some View {
+                                 @ViewBuilder content: ()->(some View)) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: button)
             callback()
         } label: {
             ZStack {
-                Capsule()
+                RoundedRectangle(cornerRadius: 12)
                     .fill(Color.white)
                     .opacity(0.16)
-                AnyView(content())
+                content()
                     .sideInsets(12)
             }
             .frame(height: 32)
-            .clipShape(Capsule())
+            
         }
     }
     

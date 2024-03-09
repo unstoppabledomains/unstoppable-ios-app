@@ -94,6 +94,7 @@ extension Image {
     static let cryptoTransactionIcon = Image("cryptoTransactionIcon")
     static let lensIcon = Image("lensIcon")
     static let farcasterIcon = Image("farcasterIcon")
+    static let walletAddressesIcon = Image("walletAddressesIcon")
     
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")
