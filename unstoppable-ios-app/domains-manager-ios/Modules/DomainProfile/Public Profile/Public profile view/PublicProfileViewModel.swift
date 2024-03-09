@@ -43,7 +43,7 @@ extension PublicProfileView {
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
-        private weak var delegate: PublicProfileViewDelegate?
+        private(set) weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
         private(set) var viewingDomain: DomainDisplayInfo?
         @Published var records: [CryptoRecord]?

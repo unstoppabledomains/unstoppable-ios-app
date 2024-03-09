@@ -39,18 +39,21 @@ struct UDButtonView: View {
                             .scaleEffect(0.85)
                     }
                     leftIcon()
-                    VStack(spacing: 0) {
-                        Text(text)
-                            .font(style.font)
-                            .lineLimit(1)
-                            .frame(height: 24)
-                        if style.isSupportingSubhead,
-                           let subtext {
-                            Text(subtext)
-                                .font(.currentFont(size: 11, weight: .semibold))
-                                .foregroundStyle(Color.foregroundOnEmphasisOpacity)
+                    if !text.isEmpty {
+                        VStack(spacing: 0) {
+                            Text(text)
+                                .font(style.font)
                                 .lineLimit(1)
-                                .frame(height: 16)
+                                .frame(height: 24)
+                            
+                            if style.isSupportingSubhead,
+                               let subtext {
+                                Text(subtext)
+                                    .font(.currentFont(size: 11, weight: .semibold))
+                                    .foregroundStyle(Color.foregroundOnEmphasisOpacity)
+                                    .lineLimit(1)
+                                    .frame(height: 16)
+                            }
                         }
                     }
                     rightIcon()

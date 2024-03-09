@@ -225,6 +225,7 @@ extension String {
         static let recent = "RECENT"
         static let primary = "PRIMARY"
         static let collapse = "COLLAPSE"
+        static let chat = "CHAT"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

@@ -304,6 +304,8 @@
 		C6170EC42B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EC32B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift */; };
 		C6170EC52B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6170EC32B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift */; };
 		C617370029D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */; };
+		C617D0B02B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */; };
+		C617D0B12B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */; };
 		C617FD972B58BB7600B93433 /* WalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD962B58BB7600B93433 /* WalletsDataService.swift */; };
 		C617FD992B58BC2900B93433 /* WalletEntitiesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD982B58BC2900B93433 /* WalletEntitiesStorage.swift */; };
 		C617FD9E2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */; };
@@ -2707,6 +2709,7 @@
 		C6170EC02B79E8E9008E9C93 /* UDListSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDListSectionView.swift; sourceTree = "<group>"; };
 		C6170EC32B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowingWalletSelectionModifier.swift; sourceTree = "<group>"; };
 		C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLeaderboardSelectionItem.swift; sourceTree = "<group>"; };
+		C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileBadgesSectionView.swift; sourceTree = "<group>"; };
 		C617FD962B58BB7600B93433 /* WalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataService.swift; sourceTree = "<group>"; };
 		C617FD982B58BC2900B93433 /* WalletEntitiesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntitiesStorage.swift; sourceTree = "<group>"; };
 		C617FD9D2B58DBCA00B93433 /* WalletsDataServiceEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataServiceEnvironmentKey.swift; sourceTree = "<group>"; };
@@ -6807,6 +6810,7 @@
 			children = (
 				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
 				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
+				C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */,
 				C61DB10A2B9588B300CDA243 /* PublicProfileSeparatorView.swift */,
 				C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */,
 				C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */,
@@ -8488,6 +8492,7 @@
 				C61DB10E2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */,
 				C63095D32B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
+				C617D0B02B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
 				C6203A632B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */,
 				C609823A2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				C6526DE329D2E05F00D6F2EB /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
@@ -10162,6 +10167,7 @@
 				C6C8F8CF2B21832F00A9834D /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				C6D646712B1ED11B00D724AC /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C6C8F8232B217CC000A9834D /* CreateLocalWalletPresenter.swift in Sources */,
+				C617D0B12B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
 				C6D6466D2B1ED11B00D724AC /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C6D647012B1ED7C300D724AC /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
 				C6C8F84A2B217E9600A9834D /* EnterBackupToBackupWalletPresenter.swift in Sources */,
