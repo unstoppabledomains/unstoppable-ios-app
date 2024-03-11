@@ -778,6 +778,16 @@
 		C650AC3D298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC422983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
 		C650BC0328F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
+		C650E28A2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2892B9E97B1002C120A /* UDButtonStyle+Medium.swift */; };
+		C650E28B2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2892B9E97B1002C120A /* UDButtonStyle+Medium.swift */; };
+		C650E28D2B9E97C5002C120A /* UDButtonStyle+Small.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E28C2B9E97C5002C120A /* UDButtonStyle+Small.swift */; };
+		C650E28E2B9E97C5002C120A /* UDButtonStyle+Small.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E28C2B9E97C5002C120A /* UDButtonStyle+Small.swift */; };
+		C650E2902B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E28F2B9E97D8002C120A /* UDButtonStyle+VerySmall.swift */; };
+		C650E2912B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E28F2B9E97D8002C120A /* UDButtonStyle+VerySmall.swift */; };
+		C650E2932B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2922B9E97F2002C120A /* UDButtonStyle+Large.swift */; };
+		C650E2942B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2922B9E97F2002C120A /* UDButtonStyle+Large.swift */; };
+		C650E2962B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */; };
+		C650E2972B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */; };
 		C651DC51286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */; };
 		C651DC56286C115900808D4C /* WatchFaceDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */; };
 		C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */ = {isa = PBXBuildFile; productRef = C65244692AF8A7A400673CC0 /* WalletConnectNotify */; };
@@ -3018,6 +3028,11 @@
 		C650AC3C298105C900A398AB /* UDSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControl.swift; sourceTree = "<group>"; };
 		C650AC412983B20D00A398AB /* AppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewService.swift; sourceTree = "<group>"; };
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
+		C650E2892B9E97B1002C120A /* UDButtonStyle+Medium.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDButtonStyle+Medium.swift"; sourceTree = "<group>"; };
+		C650E28C2B9E97C5002C120A /* UDButtonStyle+Small.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDButtonStyle+Small.swift"; sourceTree = "<group>"; };
+		C650E28F2B9E97D8002C120A /* UDButtonStyle+VerySmall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDButtonStyle+VerySmall.swift"; sourceTree = "<group>"; };
+		C650E2922B9E97F2002C120A /* UDButtonStyle+Large.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDButtonStyle+Large.swift"; sourceTree = "<group>"; };
+		C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDButtonStyle+ViewModifier.swift"; sourceTree = "<group>"; };
 		C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCV2NotifyDefaultCryptoProvider.swift; sourceTree = "<group>"; };
@@ -7660,6 +7675,11 @@
 			isa = PBXGroup;
 			children = (
 				C6DDF2452B147F1A006D1F0B /* UDButtonStyle.swift */,
+				C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */,
+				C650E2922B9E97F2002C120A /* UDButtonStyle+Large.swift */,
+				C650E2892B9E97B1002C120A /* UDButtonStyle+Medium.swift */,
+				C650E28C2B9E97C5002C120A /* UDButtonStyle+Small.swift */,
+				C650E28F2B9E97D8002C120A /* UDButtonStyle+VerySmall.swift */,
 				C6DDF2462B147F1A006D1F0B /* UDButtonView.swift */,
 			);
 			path = UDButtonView;
@@ -8649,6 +8669,7 @@
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C60CA2962832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
+				C650E2932B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */,
 				C6C8F8652B21811000A9834D /* UDWalletBackUpError.swift in Sources */,
 				C6D3B9D42A6EC8C00091B279 /* MessagingAPIServiceHelper.swift in Sources */,
 				C66435CF288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
@@ -8706,6 +8727,7 @@
 				C655CAA52B16E82800FDA063 /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C635AFF328338A080058F14F /* DomainURLActivityItemSource.swift in Sources */,
 				30CB2D2225C2E98C00203052 /* ApiRequestBuilder.swift in Sources */,
+				C650E2962B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */,
 				C630E4B92B7F5BAC008F3269 /* Padding.swift in Sources */,
 				C63AD0A72B9575D500BF8C83 /* HomeExploreSeparatorView.swift in Sources */,
 				C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */,
@@ -9018,6 +9040,7 @@
 				307852642771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
+				C650E28A2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */,
 				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C68BAC922B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */,
 				C61807F82B19A7D80032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
@@ -9428,6 +9451,7 @@
 				C6ECBF6B28D07FE000E94309 /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				C63095EE2B0DA66400205054 /* FirebaseAuthService.swift in Sources */,
 				C6F946DB2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
+				C650E28D2B9E97C5002C120A /* UDButtonStyle+Small.swift in Sources */,
 				C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C652721B2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
 				C63902C228E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
@@ -9521,6 +9545,7 @@
 				C64BCB762A6FA61F00EF8B47 /* XMTPServiceHelper.swift in Sources */,
 				C63392FF2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */,
 				C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
+				C650E2902B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */,
 				C6D647942B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C6C8F8252B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6526DFA29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
@@ -9781,6 +9806,7 @@
 				C6A89C552B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */,
 				C6D647232B1ED91F00D724AC /* PullUpViewService+Badges.swift in Sources */,
 				C6C8F9902B2189CB00A9834D /* TxOperation.swift in Sources */,
+				C650E28E2B9E97C5002C120A /* UDButtonStyle+Small.swift in Sources */,
 				C669B4562B748214001D4788 /* HomeView.swift in Sources */,
 				C6D646132B1DC0F000D724AC /* Equatable.swift in Sources */,
 				C6D6472B2B1ED99900D724AC /* WalletDetailsAddWalletAction.swift in Sources */,
@@ -9886,6 +9912,7 @@
 				C6D6470F2B1ED7D000D724AC /* MessagingChatMessageTextTypeDisplayInfo.swift in Sources */,
 				C6C8F8912B21829000A9834D /* SecuritySettingsViewPresenter.swift in Sources */,
 				C6C8F92A2B2183C700A9834D /* DomainsListPresenter.swift in Sources */,
+				C650E2972B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */,
 				C6A89C612B31657D008AB043 /* PreviewHotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6C8F96B2B2187E000A9834D /* PreviewStorage.swift in Sources */,
 				C6D645C92B1DBD3C00D724AC /* CInteractiveTransitioningController.swift in Sources */,
@@ -10107,6 +10134,7 @@
 				C6FAED842B8C5C1200CC1844 /* ChatMentionSuggestionsView.swift in Sources */,
 				C61807BF2B19A2CC0032E543 /* AppContextProtocol.swift in Sources */,
 				C61807D62B19A4580032E543 /* ExternalEventsServiceProtocol.swift in Sources */,
+				C650E2942B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */,
 				C618084E2B19B9FD0032E543 /* PreviewFirebasePurchaseDomainsService.swift in Sources */,
 				C6B65F952B5665F0006D1812 /* HomeTabView.swift in Sources */,
 				C6D647212B1ED91F00D724AC /* PullUpViewService.swift in Sources */,
@@ -10226,6 +10254,7 @@
 				C61DB1162B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */,
 				C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */,
 				C63AD09E2B956D2A00BF8C83 /* HomeExploreGlobalSearchResultSectionView.swift in Sources */,
+				C650E28B2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */,
 				C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */,
 				C6D6460C2B1DC07200D724AC /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C61808102B19AA4C0032E543 /* LinkPresentationService.swift in Sources */,
@@ -10471,6 +10500,7 @@
 				C6D647222B1ED91F00D724AC /* PullUpNamespace.swift in Sources */,
 				C6D646AF2B1ED17100D724AC /* ShareDomainHandler.swift in Sources */,
 				C61808382B19AF150032E543 /* UITextView.swift in Sources */,
+				C650E2912B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */,
 				C6D6475D2B1EDD8300D724AC /* WalletConnectRequestError.swift in Sources */,
 				C6960C312B1994EC00B79E28 /* PreviewDebugger.swift in Sources */,
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,

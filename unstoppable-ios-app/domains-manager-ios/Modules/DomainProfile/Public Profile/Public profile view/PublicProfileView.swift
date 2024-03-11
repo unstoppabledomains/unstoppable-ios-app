@@ -664,7 +664,7 @@ private extension PublicProfileView {
             
             HStack(spacing: 16) {
                 startMessagingButtonView(title: String.Constants.chat.localized(),
-                                         style: .large(.raisedTertiary))
+                                         style: .large(.raisedTertiaryWhite))
                 followButtonIfAvailable(isLarge: true)
             }
             .padding()
