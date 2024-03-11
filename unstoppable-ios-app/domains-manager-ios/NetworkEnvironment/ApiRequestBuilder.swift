@@ -864,12 +864,13 @@ extension Endpoint {
         )
     }
     
-    static func getProfileConnectionSuggestions(for domain: DomainName) -> Endpoint {
+    static func getProfileConnectionSuggestions(for domain: DomainName,
+                                                filterFollowings: Bool) -> Endpoint {
         //https://api.unstoppabledomains.com/profile/public/oleg.x/connections
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/public/\(domain)/connections",
-            queryItems: [],
+            queryItems: [.init(name: "recommendationsOnly", value: String(filterFollowings))],
             body: ""
         )
     }

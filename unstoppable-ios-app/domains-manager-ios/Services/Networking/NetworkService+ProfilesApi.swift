@@ -387,7 +387,8 @@ extension NetworkService {
     }
     
     func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
-        let endpoint = Endpoint.getProfileConnectionSuggestions(for: domainName)
+        let endpoint = Endpoint.getProfileConnectionSuggestions(for: domainName,
+                                                                filterFollowings: true)
         let response: SerializedDomainProfileSuggestionsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
                                                                                        method: .get)
         return response
