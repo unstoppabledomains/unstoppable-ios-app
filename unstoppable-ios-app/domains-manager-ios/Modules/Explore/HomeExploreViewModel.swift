@@ -15,7 +15,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
-    @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var trendingProfiles: [DomainName] = []
     @Published private(set) var recentProfiles: [SearchDomainProfile] = []
     @Published private(set) var suggestedProfiles: [DomainProfileSuggestion] = []
     @Published private(set) var isLoadingGlobalProfiles = false
@@ -167,7 +167,7 @@ private extension HomeExploreViewModel {
     }
     
     func loadTrendingProfiles() {
-        trendingProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+        trendingProfiles = MockEntitiesFabric.Explore.createTrendingProfiles().map { $0.domainName }
     }
     
     func openPublicDomainProfile(domainName: String, walletAddress: String) {

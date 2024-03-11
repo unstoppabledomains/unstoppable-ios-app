@@ -389,7 +389,7 @@ extension Analytics {
         case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
         case subdomainsSectionHeader, domainsSectionHeader
         case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
-        case followerTile
+        case followerTile, trendingProfileTile
         case exploreDomainsSearchType
         case exploreUserWalletsSectionHeader
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
