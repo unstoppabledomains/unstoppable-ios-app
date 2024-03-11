@@ -310,6 +310,7 @@
 		C617CFA42B9ED9F200663516 /* TestableDomainTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617CFA32B9ED9F200663516 /* TestableDomainTransactionsService.swift */; };
 		C617CFA62B9EDA1300663516 /* TestableWalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */; };
 		C617CFA82B9EDA2F00663516 /* TestableWalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */; };
+		C617CFAA2B9EDD9400663516 /* TestableDomainProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617CFA92B9EDD9400663516 /* TestableDomainProfilesService.swift */; };
 		C617D0B02B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */; };
 		C617D0B12B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */; };
 		C617D0B32B9C390800607555 /* PublicProfileTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C617D0B22B9C390800607555 /* PublicProfileTitleView.swift */; };
@@ -2731,6 +2732,7 @@
 		C617CFA32B9ED9F200663516 /* TestableDomainTransactionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableDomainTransactionsService.swift; sourceTree = "<group>"; };
 		C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableWalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableWalletNFTsService.swift; sourceTree = "<group>"; };
+		C617CFA92B9EDD9400663516 /* TestableDomainProfilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableDomainProfilesService.swift; sourceTree = "<group>"; };
 		C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileBadgesSectionView.swift; sourceTree = "<group>"; };
 		C617D0B22B9C390800607555 /* PublicProfileTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileTitleView.swift; sourceTree = "<group>"; };
 		C617FD962B58BB7600B93433 /* WalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataService.swift; sourceTree = "<group>"; };
@@ -4031,8 +4033,8 @@
 				C67B6D562AE79E8400F74B0B /* ImagesCacheStorageTests.swift */,
 				C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */,
 				30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */,
-				C617CF9D2B9ED96200663516 /* WalletsDataServiceTests.swift */,
 				3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */,
+				C617CF9D2B9ED96200663516 /* WalletsDataServiceTests.swift */,
 				C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */,
 				C6DF9878290F832A0098733A /* WebsiteURLValidatorTests.swift */,
 				C60610E729A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift */,
@@ -7423,6 +7425,7 @@
 				C617CFA32B9ED9F200663516 /* TestableDomainTransactionsService.swift */,
 				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
 				C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */,
+				C617CFA92B9EDD9400663516 /* TestableDomainProfilesService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9594,6 +9597,7 @@
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
 				C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
+				C617CFAA2B9EDD9400663516 /* TestableDomainProfilesService.swift in Sources */,
 				C67B6D552AE79E3B00F74B0B /* ImageLoadingServiceTests.swift in Sources */,
 				C617CFA22B9ED9D100663516 /* TestableUDWalletsService.swift in Sources */,
 				C6D011D22B99A78E0008BF40 /* TestableGenericError.swift in Sources */,

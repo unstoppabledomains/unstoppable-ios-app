@@ -31,3 +31,18 @@ final class WalletsDataServiceTests: BaseTestClass {
     }
     
 }
+
+// MARK: - Open methods
+extension WalletsDataServiceTests {
+    func testSubscribedToUDWalletsService() {
+        XCTAssertTrue(udWalletsService.listeners[0] === walletsDataService)
+    }
+    
+    func testWalletsListSyncOnLaunch() {
+        XCTAssertEqual(udWalletsService.wallets.map { $0.address }, walletsDataService.wallets.map { $0.address })
+    }
+    
+    func testSelectedWalletNotAssignedAutomatically() {
+        XCTAssertNil(walletsDataService.selectedWallet)
+    }
+}

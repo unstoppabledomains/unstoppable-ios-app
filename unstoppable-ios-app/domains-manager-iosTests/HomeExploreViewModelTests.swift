@@ -14,13 +14,13 @@ final class HomeExploreViewModelTests: BaseTestClass {
     private var wallet: WalletEntity!
     private var router: HomeTabRouter!
     private var userProfilesService: TestableUserProfileService!
-    private var domainProfilesService: MockDomainProfilesService!
+    private var domainProfilesService: TestableDomainProfilesService!
     private var viewModel: HomeExploreViewModel!
     private var recentProfilesStorage: MockRecentGlobalSearchProfilesStorage!
     
     override func setUp() async throws {
         
-        domainProfilesService = MockDomainProfilesService()
+        domainProfilesService = TestableDomainProfilesService()
         wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
         let profile = MockEntitiesFabric.Profile.createWalletProfile(using: wallet)
         userProfilesService = TestableUserProfileService(profile: profile)
@@ -256,67 +256,5 @@ private final class MockRecentGlobalSearchProfilesStorage: RecentGlobalSearchPro
     
     func clearRecentProfiles() {
         profiles.removeAll()
-    }
-}
-
-private final class MockDomainProfilesService: DomainProfilesServiceProtocol, FailableService {
-    
-    
-    private(set) var followActionsPublisher = PassthroughSubject<DomainProfileFollowActionDetails, Never>()
-
-    var shouldFail: Bool = false
-    var publisher = CurrentValueSubject<WalletDomainProfileDetails, Never>(.init(walletAddress: "0x1"))
-    var loadMoreCallsHistory: [DomainProfileFollowerRelationshipType] = []
-    var loadSuggestionsCallsHistory: [HexAddress] = []
-    var profilesSuggestions: [DomainProfileSuggestion] = MockEntitiesFabric.ProfileSuggestions.createSuggestionsForPreview()
-    
-    func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo? {
-        nil
-    }
-    
-    func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo {
-        try failIfNeeded()
-        throw GenericError.genericError
-    }
-    
-    func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, any Error> {
-        AsyncThrowingStream { continuation in
-            continuation.finish(throwing: GenericError.genericError)
-        }
-    }
-    
-    func updateUserDomainProfile(for domain: DomainDisplayInfo, request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
-        try failIfNeeded()
-        throw GenericError.genericError
-    }
-    
-    func followProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
-        try failIfNeeded()
-    }
-    
-    func unfollowProfileWith(domainName: String, by domain: DomainDisplayInfo) async throws {
-        try failIfNeeded()
-    }
-    
-    func loadMoreSocialIfAbleFor(relationshipType: DomainProfileFollowerRelationshipType, in wallet: WalletEntity) {
-        loadMoreCallsHistory.append(relationshipType)
-    }
-    
-    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
-        loadSuggestionsCallsHistory.append(wallet.address)
-        try failIfNeeded()
-        return profilesSuggestions
-    }
-    
-    func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never> {
-        publisher
-    }
-    
-    enum GenericError: String, LocalizedError {
-        case genericError
-        
-        public var errorDescription: String? {
-            return rawValue
-        }
     }
 }

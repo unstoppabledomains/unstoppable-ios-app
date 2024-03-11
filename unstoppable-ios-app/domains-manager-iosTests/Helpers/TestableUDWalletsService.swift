@@ -9,8 +9,16 @@ import Foundation
 @testable import domains_manager_ios
 
 final class TestableUDWalletsService: UDWalletsServiceProtocol {
+    
+    var listeners: [UDWalletsServiceListener] = []
+    
+    var wallets: [UDWallet] = [UDWallet.createUnverified(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+                                                         address: "0xc4a748796805dfa42cafe0901ec182936584cc6e")!,
+                               UDWallet.createUnverified(aliasName: "Custom name",
+                                                         address: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")!]
+    
     func getUserWallets() -> [UDWallet] {
-        []
+        wallets
     }
     
     func find(by address: HexAddress) -> UDWallet? {
@@ -103,10 +111,19 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
     }
     
     func addListener(_ listener: any UDWalletsServiceListener) {
-        
+        listeners.append(listener)
     }
     
     func removeListener(_ listener: any UDWalletsServiceListener) {
         
+    }
+}
+
+// MARK: - Open methods
+extension TestableUDWalletsService {
+    func notifyWith(_ notification: UDWalletsServiceNotification) {
+        listeners.forEach { listener in
+            listener.walletsDataUpdated(notification: notification)
+        }
     }
 }

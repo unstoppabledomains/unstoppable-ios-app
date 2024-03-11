@@ -46,7 +46,7 @@ final class TestableUDDomainsService: UDDomainsServiceProtocol {
     }
     
     func getAllDomains() -> [DomainItem] {
-        [
+        []
     }
     
     func getReferralCodeFor(domain: DomainItem) async throws -> String? {
