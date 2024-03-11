@@ -1036,6 +1036,7 @@ More tabs are coming in the next updates.";
 "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE" = "Find People";
 
 "SUGGESTED_FOR_YOU" = "Suggested for you";
+"FOLLOWED_AS_X" = "Followed as %@";
 
 "PROFILE_SUGGESTION_REASON_NFT_COLLECTION" = "Holds the same NFT collection";
 "PROFILE_SUGGESTION_REASON_POAP" = "Holds the same POAP";

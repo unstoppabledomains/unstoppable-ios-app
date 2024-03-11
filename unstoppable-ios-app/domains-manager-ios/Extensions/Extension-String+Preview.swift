@@ -1131,6 +1131,7 @@ extension String {
         static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
         static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
         static let suggestedForYou = "SUGGESTED_FOR_YOU"
+        static let followedAsX = "FOLLOWED_AS_X"
         
         static let profileSuggestionReasonNFTCollection = "PROFILE_SUGGESTION_REASON_NFT_COLLECTION"
         static let profileSuggestionReasonPOAP = "PROFILE_SUGGESTION_REASON_POAP"
