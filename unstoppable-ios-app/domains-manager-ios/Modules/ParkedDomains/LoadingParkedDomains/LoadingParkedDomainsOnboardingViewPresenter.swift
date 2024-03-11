@@ -31,6 +31,7 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                 case .email, .google, .twitter:
                     let parkedDomains = try await appContext.firebaseParkedDomainsService.getParkedDomains()
                     let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+                    await Task.sleep(seconds: CNavigationController.animationDuration)
                     
                     await MainActor.run {
                         if parkedDomains.isEmpty {

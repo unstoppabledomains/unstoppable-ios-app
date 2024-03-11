@@ -94,7 +94,7 @@ private extension UserProfileService {
         let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
         setSelectedProfile(selectedProfile)
         
-        if profiles.isEmpty {
+        if profiles.isEmpty, !currentProfilesList.isEmpty {
             Task {
                 await SceneDelegate.shared?.restartOnboarding()
                 firebaseParkedDomainsAuthenticationService.logOut()
