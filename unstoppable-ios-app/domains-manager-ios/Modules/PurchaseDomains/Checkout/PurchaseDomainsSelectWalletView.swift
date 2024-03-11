@@ -60,7 +60,7 @@ private extension PurchaseDomainsSelectWalletView {
 
             let selectedWallet = wallet
             self.selectedWallet = selectedWallet
-            userProfileService.setSelectedProfile(.wallet(selectedWallet))
+            userProfileService.setActiveProfile(.wallet(selectedWallet))
             selectedWalletCallback(selectedWallet)
             presentationMode.wrappedValue.dismiss()
         })
