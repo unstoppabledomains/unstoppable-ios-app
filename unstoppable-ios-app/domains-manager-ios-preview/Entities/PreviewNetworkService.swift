@@ -248,6 +248,10 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
         MockEntitiesFabric.ProfileSuggestions.createSerializedSuggestionsForPreview()
     }
+    
+    func getTrendingDomains() async throws -> SerializedRankingDomainsResponse {
+        MockEntitiesFabric.Explore.createTrendingProfiles()
+    }
 }
 
 extension NetworkService {

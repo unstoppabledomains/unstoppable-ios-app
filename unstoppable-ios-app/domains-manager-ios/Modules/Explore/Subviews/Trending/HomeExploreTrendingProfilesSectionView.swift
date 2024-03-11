@@ -16,13 +16,15 @@ struct HomeExploreTrendingProfilesSectionView: View, ViewAnalyticsLogger {
     @Environment(\.domainProfilesService) private var domainProfilesService
 
     var body: some View {
-        Section {
-            gridWithDomains(viewModel.trendingProfiles)
-        } header: {
-            Text(String.Constants.trending.localized())
-                .font(.currentFont(size: 16, weight: .medium))
-                .foregroundStyle(Color.foregroundDefault)
-                .padding(.init(vertical: 4))
+        if !viewModel.trendingProfiles.isEmpty {
+            Section {
+                gridWithDomains(viewModel.trendingProfiles)
+            } header: {
+                Text(String.Constants.trending.localized())
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .foregroundStyle(Color.foregroundDefault)
+                    .padding(.init(vertical: 4))
+            }
         }
     }
 }

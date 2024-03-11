@@ -26,4 +26,5 @@ protocol DomainProfilesServiceProtocol {
     func publisherForWalletDomainProfileDetails(wallet: WalletEntity) async -> CurrentValueSubject<WalletDomainProfileDetails, Never>
     
     func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion]
+    func getTrendingDomainNames() async throws -> [DomainName]
 }

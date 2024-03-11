@@ -27,13 +27,13 @@ extension MockEntitiesFabric {
              DomainProfile.createPublicProfile(attributes: DomainProfile.createPublicProfileAttributes(imagePath: ImageURLs.aiAvatar.rawValue, coverPath: ImageURLs.sunset.rawValue))] // Avatar and cover 1
         }
         
-        static func createTrendingProfiles() -> [HomeExplore.ExploreDomainProfile] {
-            [.init(domainName: "trendingprofile.x", walletAddress: "1", avatarURL: nil, profileName: "", followersCount: 0),
-             .init(domainName: "trendingprofile.crypto", walletAddress: "2", avatarURL: ImageURLs.aiAvatar.url, profileName: "", followersCount: 0),
-             .init(domainName: "trendingprofile.wallet", walletAddress: "3", avatarURL: ImageURLs.sunset.url, profileName: "Captain bitcoin", followersCount: 0),
-             .init(domainName: "trendingprofile.pudgy", walletAddress: "4", avatarURL: nil, profileName: "", followersCount: 18768),
-             .init(domainName: "trendingprofilewithlonglongdomainnamethatcantfitAnywhere.wallet", walletAddress: "5", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin", followersCount: 1),
-             .init(domainName: "hey.hi", walletAddress: "6", avatarURL: ImageURLs.aiAvatar.url, profileName: "Captain bitcoin withlonglongdomainnamethatcantfitAnywhere", followersCount: 173)]
+        static func createTrendingProfiles() -> [SerializedRankingDomain] {
+            [.init(rank: 1, domain: "trendingprofile.x"),
+             .init(rank: 2, domain: "trendingprofile.crypto"),
+             .init(rank: 3, domain: "trendingprofile.wallet"),
+             .init(rank: 4, domain: "trendingprofile.pudgy"),
+             .init(rank: 5, domain: "trendingprofilewithlonglongdomainnamethatcantfitAnywhere.wallet"),
+             .init(rank: 6, domain: "hey.hi")]
         }
     }
 }

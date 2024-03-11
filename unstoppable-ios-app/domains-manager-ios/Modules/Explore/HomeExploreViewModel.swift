@@ -95,10 +95,6 @@ extension HomeExploreViewModel {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.ownerWallet)
     }
     
-    func didTapTrendingProfile(_ profile: HomeExplore.ExploreDomainProfile) {
-        openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
-    }
-  
     func willDisplayFollower(domainName: DomainName) {
         let followersList = getProfilesListForSelectedRelationshipType
         guard let index = followersList.firstIndex(of: domainName),
@@ -167,7 +163,9 @@ private extension HomeExploreViewModel {
     }
     
     func loadTrendingProfiles() {
-        trendingProfiles = MockEntitiesFabric.Explore.createTrendingProfiles().map { $0.domainName }
+        Task {    
+            trendingProfiles = try await domainProfilesService.getTrendingDomainNames()
+        }
     }
     
     func openPublicDomainProfile(domainName: String, walletAddress: String) {

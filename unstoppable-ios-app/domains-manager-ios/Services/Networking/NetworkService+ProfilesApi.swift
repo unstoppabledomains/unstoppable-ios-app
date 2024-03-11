@@ -393,6 +393,13 @@ extension NetworkService {
                                                                                        method: .get)
         return response
     }
+    
+    func getTrendingDomains() async throws -> SerializedRankingDomainsResponse {
+        let endpoint = Endpoint.getProfileFollowersRanking(count: 20)
+        let response: SerializedRankingDomainsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                                   method: .get)
+        return response
+    }
 }
 
 // MARK: - Open methods

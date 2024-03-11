@@ -125,6 +125,12 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         let profileSuggestions = serializedSuggestions.map { DomainProfileSuggestion(serializedProfile: $0) }
         return profileSuggestions
     }
+    
+    func getTrendingDomainNames() async throws -> [DomainName] {
+        let serializedTrendingDomains = try await networkService.getTrendingDomains()
+
+        return serializedTrendingDomains.map { $0.domain }
+    }
 }
 
 // MARK: - Private methods
