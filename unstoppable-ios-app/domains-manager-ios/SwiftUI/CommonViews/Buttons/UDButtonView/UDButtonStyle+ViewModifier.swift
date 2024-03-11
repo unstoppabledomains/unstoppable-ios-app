@@ -78,15 +78,9 @@ private extension UDButtonStyle {
                     }
             case .applePay:
                 content
-                    .shadow(color: .black, radius: 0, x: 0, y: 0)
+                    .shadow(color: .backgroundEmphasis, radius: 0, x: 0, y: 0)
                     .overlay {
                         rectangleOverlay(color: .white.opacity(0.3))
-                    }
-            case .applePayWhite:
-                content
-                    .shadow(color: .black, radius: 0, x: 0, y: 0)
-                    .overlay {
-                        rectangleOverlay(color: .black.opacity(0.12))
                     }
             case .ghostPrimary, .ghostDanger:
                 content

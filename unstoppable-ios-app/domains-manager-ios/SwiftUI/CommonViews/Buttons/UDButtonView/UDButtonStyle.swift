@@ -89,6 +89,20 @@ enum UDButtonStyle {
             return largeStyle.backgroundDisabledColor
         }
     }
+    
+    @ViewBuilder
+    var backgroundDisabledGradient: some View {
+        switch self {
+        case .verySmall, .small, .medium:
+            EmptyView()
+        case .large(let largeStyle):
+            // The only exception
+            if case .applePay = largeStyle {
+                largeStyle.backgroundIdleGradient
+            }
+        }
+    }
+    
     var backgroundSuccessColor: Color {
         switch self {
         case .verySmall(let verySmallStyle):

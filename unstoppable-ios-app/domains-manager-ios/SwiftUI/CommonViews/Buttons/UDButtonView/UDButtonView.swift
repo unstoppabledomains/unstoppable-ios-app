@@ -111,6 +111,8 @@ private extension UDButtonView {
             style.backgroundIdleGradient
         case .highlighted:
             style.backgroundHighlightedGradient
+        case .disabled:
+            style.backgroundDisabledGradient
         default:
             EmptyView()
         }
@@ -187,13 +189,6 @@ fileprivate extension View {
 #Preview {
     ScrollView {
         VStack {
-            Text("Small buttons")
-                .font(.largeTitle)
-            ForEach(UDButtonStyle.SmallStyle.allCases, id: \.self) { smallStyle in
-                ButtonViewer(style: .small(smallStyle))
-            }
-        }
-        VStack {
             Text("Stack view alignment")
                 .font(.largeTitle)
             HStack {
@@ -215,7 +210,13 @@ fileprivate extension View {
                 ButtonViewer(style: .medium(mediumStyle))
             }
         }
-       
+        VStack {
+            Text("Small buttons")
+                .font(.largeTitle)
+            ForEach(UDButtonStyle.SmallStyle.allCases, id: \.self) { smallStyle in
+                ButtonViewer(style: .small(smallStyle))
+            }
+        }
         VStack {
             Text("Very small buttons")
                 .font(.largeTitle)
@@ -239,13 +240,14 @@ private struct ButtonViewer: View {
     var body: some View {
         UDButtonView(text: style.name,
                      subtext: nil,
-                     icon: nil, //.messageCircleIcon24,
+                     icon: .appleIcon,
                      iconAlignment: .left,
                      style: style,
                      isLoading: isLoading,
                      isSuccess: isSuccess,
                      callback: {
-            isLoading.toggle()
+            isBtnDisabled.toggle()
+//            isLoading.toggle()
 //            isSuccess.toggle()
         })
             .disabled(isBtnDisabled)
