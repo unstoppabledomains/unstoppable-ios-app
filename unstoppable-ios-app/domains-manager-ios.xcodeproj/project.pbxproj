@@ -477,6 +477,8 @@
 		C61B3E90283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E8A283E708500500B6D /* EnterEmailVerificationCodeViewController.swift */; };
 		C61B3E94283E708500500B6D /* EnterEmailVerificationCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C61B3E8B283E708500500B6D /* EnterEmailVerificationCodeViewController.xib */; };
 		C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */; };
+		C61B6C702B9F050B007408FD /* PublicProfileBadgeTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */; };
+		C61B6C712B9F056C007408FD /* PublicProfileBadgeTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */; };
 		C61C33242B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */; };
 		C61C33252B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */; };
 		C61C33272B904FC600BD11F5 /* HomeExplore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33262B904FC600BD11F5 /* HomeExplore.swift */; };
@@ -2788,6 +2790,7 @@
 		C61B3E8A283E708500500B6D /* EnterEmailVerificationCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailVerificationCodeViewController.swift; sourceTree = "<group>"; };
 		C61B3E8B283E708500500B6D /* EnterEmailVerificationCodeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EnterEmailVerificationCodeViewController.xib; sourceTree = "<group>"; };
 		C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailVerificationCodeToMintDomainsPresenter.swift; sourceTree = "<group>"; };
+		C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileBadgeTileView.swift; sourceTree = "<group>"; };
 		C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreDomainSearchTypePickerView.swift; sourceTree = "<group>"; };
 		C61C33262B904FC600BD11F5 /* HomeExplore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExplore.swift; sourceTree = "<group>"; };
 		C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControlView.swift; sourceTree = "<group>"; };
@@ -6841,6 +6844,7 @@
 				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
 				C617D0B22B9C390800607555 /* PublicProfileTitleView.swift */,
 				C617D0AF2B9C334600607555 /* PublicProfileBadgesSectionView.swift */,
+				C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */,
 				C61DB10A2B9588B300CDA243 /* PublicProfileSeparatorView.swift */,
 				C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */,
 				C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */,
@@ -8512,6 +8516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C61B6C702B9F050B007408FD /* PublicProfileBadgeTileView.swift in Sources */,
 				C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */,
 				C63095F62B0DA66400205054 /* FirebaseDomainsService.swift in Sources */,
 				C6D6478B2B1EE5B600D724AC /* PreviewDomainProfile.swift in Sources */,
@@ -9961,6 +9966,7 @@
 				C6FBCAA32B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */,
 				C6C8F8262B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6D647182B1ED83800D724AC /* CollectionTextFooterReusableView.swift in Sources */,
+				C61B6C712B9F056C007408FD /* PublicProfileBadgeTileView.swift in Sources */,
 				C6D647562B1EDBF800D724AC /* UserProfileAction.swift in Sources */,
 				C6203A642B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */,
 				C6D646312B1DC42700D724AC /* MainButton.swift in Sources */,
