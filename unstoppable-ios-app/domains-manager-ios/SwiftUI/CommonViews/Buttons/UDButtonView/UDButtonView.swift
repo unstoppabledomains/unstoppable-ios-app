@@ -64,6 +64,7 @@ struct UDButtonView: View {
             .background(backgroundGradientColor(buttonStateFor(state: state)))
             .background(backgroundColorForCurrentState(buttonStateFor(state: state)))
             .cornerRadius(style.cornerRadius)
+            .modifier(UDButtonStyle.SpecialStyleModifier(style: style))
         }))
     }
 }
@@ -186,11 +187,17 @@ fileprivate extension View {
 #Preview {
     ScrollView {
         VStack {
+            Text("Small buttons")
+                .font(.largeTitle)
+            ForEach(UDButtonStyle.SmallStyle.allCases, id: \.self) { smallStyle in
+                ButtonViewer(style: .small(smallStyle))
+            }
+        }
+        VStack {
             Text("Stack view alignment")
                 .font(.largeTitle)
             HStack {
                 ButtonViewer(style: .large(.raisedPrimary))
-//                ButtonViewer(style: .large(.raisedPrimary))
                 ButtonViewer(style: .medium(.ghostPrimary))
             }
         }
@@ -208,13 +215,7 @@ fileprivate extension View {
                 ButtonViewer(style: .medium(mediumStyle))
             }
         }
-        VStack {
-            Text("Small buttons")
-                .font(.largeTitle)
-            ForEach(UDButtonStyle.SmallStyle.allCases, id: \.self) { smallStyle in
-                ButtonViewer(style: .small(smallStyle))
-            }
-        }
+       
         VStack {
             Text("Very small buttons")
                 .font(.largeTitle)
