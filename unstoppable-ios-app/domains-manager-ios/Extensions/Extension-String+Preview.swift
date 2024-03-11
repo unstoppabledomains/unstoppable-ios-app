@@ -1131,6 +1131,14 @@ extension String {
         static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
         static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
         static let suggestedForYou = "SUGGESTED_FOR_YOU"
+        
+        static let profileSuggestionReasonNFTCollection = "PROFILE_SUGGESTION_REASON_NFT_COLLECTION"
+        static let profileSuggestionReasonPOAP = "PROFILE_SUGGESTION_REASON_POAP"
+        static let profileSuggestionReasonTransaction = "PROFILE_SUGGESTION_REASON_TRANSACTION"
+        static let profileSuggestionReasonLensFollows = "PROFILE_SUGGESTION_REASON_LENS_FOLLOWS"
+        static let profileSuggestionReasonLensMutual = "PROFILE_SUGGESTION_REASON_LENS_MUTUAL"
+        static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
+        static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
 
     }
     
