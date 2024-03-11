@@ -346,7 +346,8 @@ extension HomeWalletView {
         let nftsNativeValue: Double
         let nftsUsdValue: Double
         let lastSaleDate: Date?
-        
+        let lastAcquiredDate: Date?
+                
         init(collectionName: String, nfts: [NFTDisplayInfo]) {
             self.collectionName = collectionName
             self.nfts = nfts
@@ -356,6 +357,8 @@ extension HomeWalletView {
             nftsNativeValue = saleDetails.reduce(0.0, { $0 + $1.valueNative })
             nftsUsdValue = saleDetails.reduce(0.0, { $0 + $1.valueUsd })
             lastSaleDate = saleDetails.sorted(by: { $0.date > $1.date }).first?.date
+            
+            lastAcquiredDate = nfts.lazy.compactMap({ $0.acquiredDate }).sorted(by: { $0 > $1 }).first
         }
     }
     
