@@ -59,12 +59,13 @@ extension ChatRequestsListViewModel {
         guard !selectedChats.isEmpty,
               case .chatRequests(let chats) = dataType else { return }
         
+        let chatsToBlock = Array(selectedChats)
         isEditing = false
         Task {
             isLoading = true
             do {
-                try await appContext.messagingService.block(chats: Array(selectedChats))
-                if chats.count == selectedChats.count {
+                try await appContext.messagingService.block(chats: chatsToBlock)
+                if chats.count == chatsToBlock.count {
                     router.chatTabNavPath.removeLast()
                 }
             } catch {
