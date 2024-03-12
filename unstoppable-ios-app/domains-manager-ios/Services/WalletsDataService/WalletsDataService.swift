@@ -46,6 +46,8 @@ final class WalletsDataService {
 // MARK: - WalletsDataServiceProtocol
 extension WalletsDataService: WalletsDataServiceProtocol {
     func setSelectedWallet(_ wallet: WalletEntity?) {
+        guard wallet?.address != selectedWallet?.address else { return }
+        
         selectedWallet = wallet
         if let wallet {
             refreshDataForWalletAsync(wallet)

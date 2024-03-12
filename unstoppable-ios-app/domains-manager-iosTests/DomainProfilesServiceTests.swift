@@ -300,6 +300,7 @@ private extension DomainProfilesServiceTests {
 }
 
 private final class MockNetworkService: DomainProfileNetworkServiceProtocol, FailableService {
+   
     var profileToReturn: SerializedPublicDomainProfile?
     var shouldFail = false
     var error: TestableGenericError { TestableGenericError.generic }
@@ -346,6 +347,11 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol, Fai
         suggestionsCallDomainNames.append(domainName)
         return suggestionToReturn
     }
+    
+    func getTrendingDomains() async throws -> domains_manager_ios.SerializedRankingDomainsResponse {
+        []
+    }
+    
 }
 
 private final class MockStorage: DomainProfileDisplayInfoStorageServiceProtocol {

@@ -70,6 +70,7 @@ private extension PurchaseSearchDomainsView {
                         rightViewType: currentSearchFieldRightViewType,
                         rightViewMode: .always,
                         leftViewType: .search,
+                        focusBehaviour: .activateOnAppear,
                         keyboardType: .alphabet,
                         autocapitalization: .never,
                         autocorrectionDisabled: true)

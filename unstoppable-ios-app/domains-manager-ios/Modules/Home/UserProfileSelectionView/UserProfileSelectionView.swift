@@ -101,7 +101,7 @@ private extension UserProfileSelectionView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             presentationMode.wrappedValue.dismiss()
-            userProfileService.setSelectedProfile(profile)
+            userProfileService.setActiveProfile(profile)
             logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
         })
         .padding(EdgeInsets(4))

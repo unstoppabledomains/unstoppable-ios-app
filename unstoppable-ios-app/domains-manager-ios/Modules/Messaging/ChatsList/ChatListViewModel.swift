@@ -272,11 +272,11 @@ extension ChatListViewModel: ChatsListCoordinator {
         case .wallet(let wallet):
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet,
                wallet.address != selectedMessagingWallet.address  {
-                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         case .webAccount:
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet {
-                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         }
     }
