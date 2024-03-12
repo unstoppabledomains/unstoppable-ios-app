@@ -39,18 +39,21 @@ struct UDButtonView: View {
                             .scaleEffect(0.85)
                     }
                     leftIcon()
-                    VStack(spacing: 0) {
-                        Text(text)
-                            .font(style.font)
-                            .lineLimit(1)
-                            .frame(height: 24)
-                        if style.isSupportingSubhead,
-                           let subtext {
-                            Text(subtext)
-                                .font(.currentFont(size: 11, weight: .semibold))
-                                .foregroundStyle(Color.foregroundOnEmphasisOpacity)
+                    if !text.isEmpty {
+                        VStack(spacing: 0) {
+                            Text(text)
+                                .font(style.font)
                                 .lineLimit(1)
-                                .frame(height: 16)
+                                .frame(height: 24)
+                            
+                            if style.isSupportingSubhead,
+                               let subtext {
+                                Text(subtext)
+                                    .font(.currentFont(size: 11, weight: .semibold))
+                                    .foregroundStyle(Color.foregroundOnEmphasisOpacity)
+                                    .lineLimit(1)
+                                    .frame(height: 16)
+                            }
                         }
                     }
                     rightIcon()
@@ -58,8 +61,10 @@ struct UDButtonView: View {
                 .adjustContentSizeForStyle(style)
             }
             .foregroundColor(textColorForCurrentState(buttonStateFor(state: state)))
+            .background(backgroundGradientColor(buttonStateFor(state: state)))
             .background(backgroundColorForCurrentState(buttonStateFor(state: state)))
             .cornerRadius(style.cornerRadius)
+            .modifier(UDButtonStyle.SpecialStyleModifier(style: style))
         }))
     }
 }
@@ -85,16 +90,31 @@ private extension UDButtonView {
         }
     }
     
-    func backgroundColorForCurrentState(_ state: ButtonState) -> Color {
+    @ViewBuilder
+    func backgroundColorForCurrentState(_ state: ButtonState) -> some View {
         switch state {
         case .idle:
-            return style.backgroundIdleColor
+            style.backgroundIdleColor
         case .highlighted:
-            return style.backgroundHighlightedColor
+            style.backgroundHighlightedColor
         case .disabled:
-            return style.backgroundDisabledColor
+            style.backgroundDisabledColor
         case .success:
-            return style.backgroundSuccessColor
+            style.backgroundSuccessColor
+        }
+    }
+    
+    @ViewBuilder
+    func backgroundGradientColor(_ state: ButtonState) -> some View {
+        switch state {
+        case .idle:
+            style.backgroundIdleGradient
+        case .highlighted:
+            style.backgroundHighlightedGradient
+        case .disabled:
+            style.backgroundDisabledGradient
+        default:
+            EmptyView()
         }
     }
     
@@ -173,7 +193,6 @@ fileprivate extension View {
                 .font(.largeTitle)
             HStack {
                 ButtonViewer(style: .large(.raisedPrimary))
-//                ButtonViewer(style: .large(.raisedPrimary))
                 ButtonViewer(style: .medium(.ghostPrimary))
             }
         }
@@ -221,13 +240,14 @@ private struct ButtonViewer: View {
     var body: some View {
         UDButtonView(text: style.name,
                      subtext: nil,
-                     icon: nil, //.messageCircleIcon24,
+                     icon: .appleIcon,
                      iconAlignment: .left,
                      style: style,
                      isLoading: isLoading,
                      isSuccess: isSuccess,
                      callback: {
-            isLoading.toggle()
+            isBtnDisabled.toggle()
+//            isLoading.toggle()
 //            isSuccess.toggle()
         })
             .disabled(isBtnDisabled)

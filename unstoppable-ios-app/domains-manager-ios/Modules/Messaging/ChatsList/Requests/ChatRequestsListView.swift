@@ -123,6 +123,7 @@ private extension ChatRequestsListView {
                 ForEach(channels, id: \.id) { channel in
                     UDCollectionListRowButton(content: {
                         ChatListChannelRowView(channel: channel)
+                            .udListItemInCollectionButtonPadding()
                     }, callback: {
                         UDVibration.buttonTap.vibrate()
                         logButtonPressedAnalyticEvents(button: .channelInList)
@@ -147,9 +148,7 @@ extension ChatRequestsListView {
 }
 
 #Preview {
-    let wallet = MockEntitiesFabric.Wallet.mockEntities().first!
-    let profile = UserProfile.wallet(wallet)
-    let router = HomeTabRouter(profile: profile)
+    let router = MockEntitiesFabric.Home.createHomeTabRouter()
     
     return NavigationStack {
         ChatRequestsListView(viewModel: .init(dataType: .channelsSpam(MockEntitiesFabric.Messaging.createChannelsForUITesting()),

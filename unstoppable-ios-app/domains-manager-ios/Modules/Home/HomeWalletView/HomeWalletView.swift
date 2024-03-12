@@ -58,7 +58,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 contentForSelectedType()
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(.init(horizontal: 16))
             }.environment(\.defaultMinListRowHeight, 28)
             .onChange(of: tabRouter.walletViewNavPath) { _ in
                 updateNavTitleVisibility()
@@ -78,9 +78,6 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     HomeSettingsNavButtonView()
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    searchButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     qrNavButtonView()
@@ -125,9 +122,7 @@ private extension HomeWalletView {
         private func content() -> some View {
             if let rrDomain = wallet.rrDomain {
                 HStack {
-                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder,
-                                      width: 20,
-                                      height: 20)
+                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
                     .squareFrame(20)
                     .clipShape(Circle())
                     Text(rrDomain.name)
@@ -314,19 +309,6 @@ private extension HomeWalletView {
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: .qrCode)
-        }
-    }
-    
-    @ViewBuilder
-    func searchButtonView() -> some View {
-        Button {
-            logButtonPressedAnalyticEvents(button: .searchDomains)
-            tabRouter.isSearchingDomains = true
-        } label: {
-            Image.searchIcon
-                .resizable()
-                .squareFrame(24)
-                .foregroundStyle(Color.foregroundDefault)
         }
     }
 }

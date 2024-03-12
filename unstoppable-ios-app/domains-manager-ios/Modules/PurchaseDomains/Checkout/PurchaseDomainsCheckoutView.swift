@@ -162,6 +162,7 @@ private extension PurchaseDomainsCheckoutView {
                            value: selectedWalletName,
                            imageType: .image(.vaultIcon),
                            rightViewStyle: walletSelectionIndicatorStyle)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             if !canSelectWallet,
                 isFailedToAuthWallet {
@@ -205,6 +206,7 @@ private extension PurchaseDomainsCheckoutView {
                            imageType: .image(.usaFlagIcon),
                            imageStyle: .centred(offset: EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8)),
                            rightViewStyle: .chevron)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             logButtonPressedAnalyticEvents(button: .enterUSZIPCode)
             isEnterZIPCodePresented = true
@@ -226,6 +228,7 @@ private extension PurchaseDomainsCheckoutView {
                            value: discountValueString,
                            imageType: .image(.tagsCashIcon),
                            rightViewStyle: .chevron)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             if cartStatus.storeCreditsAvailable == 0 && cartStatus.promoCreditsAvailable == 0 {
                 logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
@@ -429,12 +432,13 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var shouldShowTotalDueInSummary: Bool {
-        switch deviceSize {
-        case .i4Inch, .i4_7Inch:
-            return false
-        default:
-            return true
-        }
+        true
+//        switch deviceSize {
+//        case .i4Inch, .i4_7Inch:
+//            return false
+//        default:
+//            return true
+//        }
     }
     
     var isPayButtonDisabled: Bool {

@@ -97,13 +97,14 @@ private extension UserProfileSelectionView {
         UDCollectionListRowButton(content: {
             UserProfileSelectionRowView(profile: profile,
                                         isSelected: profile.id == selectedProfile?.id)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             presentationMode.wrappedValue.dismiss()
-            userProfileService.setSelectedProfile(profile)
+            userProfileService.setActiveProfile(profile)
             logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
         })
-        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        .padding(EdgeInsets(4))
     }
     
     @ViewBuilder

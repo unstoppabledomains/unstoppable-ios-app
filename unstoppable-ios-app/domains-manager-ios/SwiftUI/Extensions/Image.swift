@@ -21,6 +21,7 @@ extension Image {
     static let grimaseIcon = Image(uiImage: .grimaseIcon)
     static let cellChevron = Image(uiImage: .cellChevron)
     static let chevronDown = Image(uiImage: .chevronDown)
+    static let chevronUp = Image(uiImage: .chevronUp)
     static let checkCircle = Image(uiImage: .checkCircle)
     static let udCartLogoRaster = Image(uiImage: .udCartLogoRaster)
     static let crossWhite = Image(uiImage: .crossWhite)
@@ -84,7 +85,17 @@ extension Image {
     static let chatRequestsIcon = Image("chatRequestsIcon")
     static let alertOctagon24 = Image("alertOctagon24")
     static let newMessageIcon = Image("newMessageIcon")
+    static let exploreIcon = Image("exploreIcon")
+    static let globeBold = Image("globeBold")
+    static let searchClearIcon = Image("searchClearIcon")
 
+    static let cryptoFaceIcon = Image("cryptoFaceIcon")
+    static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
+    static let cryptoTransactionIcon = Image("cryptoTransactionIcon")
+    static let lensIcon = Image("lensIcon")
+    static let farcasterIcon = Image("farcasterIcon")
+    static let walletAddressesIcon = Image("walletAddressesIcon")
+    
     static let systemDocOnDoc = Image(systemName: "doc.on.doc")
     static let systemAppBadgeCheckmark = Image(systemName: "app.badge.checkmark")
     

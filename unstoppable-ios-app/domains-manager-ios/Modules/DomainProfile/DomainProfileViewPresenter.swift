@@ -776,13 +776,17 @@ private extension DomainProfileViewPresenter {
     }
     
     func saveProfile(_ request: ProfileUpdateRequest) async throws {
-        let domain = try await getCurrentDomain()
-        try await NetworkService().updateUserDomainProfile(for: domain,
-                                                           request: request)
+        let domain = try await getCurrentDomainDisplayInfo()
+        try await appContext.domainProfilesService.updateUserDomainProfile(for: domain,
+                                                                           request: request)
     }
     
     func getCurrentDomain() async throws -> DomainItem {
-        generalData.domain.toDomainItem()
+        try await getCurrentDomainDisplayInfo().toDomainItem()
+    }
+    
+    func getCurrentDomainDisplayInfo() async throws -> DomainDisplayInfo {
+        generalData.domain
     }
 }
 

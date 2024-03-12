@@ -21,5 +21,6 @@ protocol WalletsDataServiceProtocol {
     func didPurchaseDomains(_ purchasedDomains: [PendingPurchasedDomain],
                             pendingProfiles: [DomainProfilePendingChanges]) async
     func didMintDomainsWith(domainNames: [String],
-                            to wallet: WalletEntity) -> [MintingDomain] 
+                            to wallet: WalletEntity) -> [MintingDomain]
+    func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio]
 }

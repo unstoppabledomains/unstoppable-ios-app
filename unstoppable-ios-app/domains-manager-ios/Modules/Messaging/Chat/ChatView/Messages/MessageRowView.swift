@@ -175,9 +175,7 @@ private extension MessageRowView {
             UDVibration.buttonTap.vibrate()
             viewModel.handleChatMessageAction(.viewSenderProfile(message.senderType))
         } label: {
-            UIImageBridgeView(image: otherUserAvatar,
-                              width: 36,
-                              height: 35)
+            UIImageBridgeView(image: otherUserAvatar)
             .squareFrame(36)
             .clipShape(Circle())
             .onAppear(perform: loadAvatarForOtherUserInfo)
@@ -404,10 +402,6 @@ private extension MessageRowView {
     message.type = .reply(.init(contentType: message.type, messageId: "1"))
     return MessageRowView(message: message,
                    isGroupChatMessage: true)
-    .environmentObject(ChatViewModel(profile: .init(id: "",
-                                            wallet: "",
-                                            serviceIdentifier: .push),
-                             conversationState: MockEntitiesFabric.Messaging.existingChatConversationState(isGroup: true),
-                             router: HomeTabRouter(profile: .wallet(MockEntitiesFabric.Wallet.mockEntities().first!))))
+    .environmentObject(MockEntitiesFabric.Messaging.mockChatViewModel())
     .padding()
 }

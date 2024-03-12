@@ -131,9 +131,7 @@ private extension HomeWalletHeaderRowView {
             didSelectDomainCallback()
             logButtonPressedAnalyticEvents(button: .rrDomainAvatar)
         } label: {
-            UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder,
-                              width: 20,
-                              height: 20)
+            UIImageBridgeView(image: domainAvatar ?? .domainSharePlaceholder)
         }
         .buttonStyle(.plain)
     }
@@ -192,7 +190,7 @@ private extension HomeWalletHeaderRowView {
     
     @ViewBuilder
     func totalBalanceView() -> some View {
-        Text("$\(wallet.totalBalance.formatted(toMaxNumberAfterComa: 2))")
+        Text(BalanceStringFormatter.tokensBalanceString(wallet.totalBalance))
             .titleText()
     }
 }

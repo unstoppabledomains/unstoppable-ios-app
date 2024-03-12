@@ -61,9 +61,7 @@ private extension ChatListChannelRowView {
     
     @ViewBuilder
     func avatarsView() -> some View {
-        UIImageBridgeView(image: icon,
-                          width: iconSize,
-                          height: iconSize)
+        UIImageBridgeView(image: icon)
         .squareFrame(iconSize)
         .clipShape(Circle())
     }

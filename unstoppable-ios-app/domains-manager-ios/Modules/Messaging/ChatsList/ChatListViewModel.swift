@@ -272,11 +272,11 @@ extension ChatListViewModel: ChatsListCoordinator {
         case .wallet(let wallet):
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet,
                wallet.address != selectedMessagingWallet.address  {
-                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         case .webAccount:
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet {
-                appContext.userProfileService.setSelectedProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         }
     }
@@ -464,7 +464,7 @@ private extension ChatListViewModel {
     
     func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo,
                           usingWallets wallets: [WalletEntity]) async throws {
-        guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
+        guard let wallet = wallets.findWithAddress(profile.wallet) else {
             try await resolveInitialProfileWith(wallets: wallets)
             return
         }

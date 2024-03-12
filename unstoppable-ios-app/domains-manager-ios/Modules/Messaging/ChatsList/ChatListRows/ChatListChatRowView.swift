@@ -33,7 +33,7 @@ struct ChatListChatRowView: View, ViewAnalyticsLogger {
                 trailingView()
             }
         }
-        .frame(height: 60)
+        .frame(height: 52)
         .onAppear(perform: onAppear)
     }
 }
@@ -93,9 +93,7 @@ private extension ChatListChatRowView {
     
     @ViewBuilder
     func iconView() -> some View {
-        UIImageBridgeView(image: icon,
-                          width: iconSize,
-                          height: iconSize)
+        UIImageBridgeView(image: icon)
         .squareFrame(iconSize)
     }
     

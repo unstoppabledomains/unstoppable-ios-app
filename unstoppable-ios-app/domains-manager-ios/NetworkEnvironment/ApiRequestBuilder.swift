@@ -863,6 +863,27 @@ extension Endpoint {
             headers: headers
         )
     }
+    
+    static func getProfileConnectionSuggestions(for domain: DomainName,
+                                                filterFollowings: Bool) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/public/oleg.x/connections
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/public/\(domain)/connections",
+            queryItems: [.init(name: "recommendationsOnly", value: String(filterFollowings))],
+            body: ""
+        )
+    }
+    
+    static func getProfileFollowersRanking(count: Int) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/rankings?count=20
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/rankings",
+            queryItems: [.init(name: "count", value: String(count))],
+            body: ""
+        )
+    }
 }
 
 // MARK: - Open methods

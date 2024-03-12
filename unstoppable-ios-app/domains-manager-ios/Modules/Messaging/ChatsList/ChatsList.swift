@@ -33,7 +33,7 @@ extension ChatsList {
         case edit, cancel, selectAll
     }
     
-    enum DataType: String, Hashable, CaseIterable {
+    enum DataType: String, Hashable, CaseIterable, UDSegmentedControlItem {
         case chats, communities, channels
         
         var title: String {
@@ -46,6 +46,8 @@ extension ChatsList {
                 return String.Constants.appsInbox.localized()
             }
         }
+        
+        var analyticButton: Analytics.Button { .messagingDataType }
     }
     
     struct DataTypeUIConfiguration: Hashable {

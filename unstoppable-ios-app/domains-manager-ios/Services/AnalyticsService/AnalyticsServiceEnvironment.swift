@@ -28,7 +28,7 @@ extension Analytics {
         case didAddWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
-        case domainPressed, domainMoved
+        case domainPressed, domainMoved, userDomainPressed
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
@@ -44,7 +44,8 @@ extension Analytics {
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
-        case searchProfilePressed
+        case searchProfilePressed, recentSearchProfilePressed
+        case trendingProfilePressed
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -221,6 +222,7 @@ extension Analytics {
         
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
+        case homeExplore
     }
 }
 
@@ -387,6 +389,10 @@ extension Analytics {
         case buyDomainTile, domainTile, buyDomainsSectionHeader, parkedDomainTile
         case subdomainsSectionHeader, domainsSectionHeader
         case nftDetailsActions, savePhoto, viewMarketPlace, nftDetailItem
+        case followerTile, trendingProfileTile
+        case exploreDomainsSearchType
+        case exploreUserWalletsSectionHeader
+        case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
     }
 }
 

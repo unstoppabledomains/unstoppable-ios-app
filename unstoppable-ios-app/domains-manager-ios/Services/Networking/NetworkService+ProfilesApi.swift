@@ -7,14 +7,14 @@
 
 import Foundation
 
-extension NetworkService {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     
     //MARK: public methods
     public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         try await fetchPublicProfile(for: domain.name, fields: fields)
     }
     
-    public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+    func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
         struct SerializedNullableRecordValue: Decodable {
             let records: [String : String?]?
         }
@@ -384,6 +384,21 @@ extension NetworkService {
             checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
+    }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        let endpoint = Endpoint.getProfileConnectionSuggestions(for: domainName,
+                                                                filterFollowings: true)
+        let response: SerializedDomainProfileSuggestionsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                       method: .get)
+        return response
+    }
+    
+    func getTrendingDomains() async throws -> SerializedRankingDomainsResponse {
+        let endpoint = Endpoint.getProfileFollowersRanking(count: 20)
+        let response: SerializedRankingDomainsResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                                   method: .get)
+        return response
     }
 }
 

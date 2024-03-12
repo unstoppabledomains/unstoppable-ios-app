@@ -18,9 +18,7 @@ struct ChatReplyInfoView: View, ViewAnalyticsLogger {
     var body: some View {
         HStack(spacing: 20) {
             replyIndicatorView()
-            Line(direction: .vertical)
-                .stroke(style: StrokeStyle(lineWidth: 1))
-                .frame(width: 1)
+            LineView(direction: .vertical)
                 .padding(.init(vertical: 4))
             clickableMessageDescriptionView()
             Spacer()

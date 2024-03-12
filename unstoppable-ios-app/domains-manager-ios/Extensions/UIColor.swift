@@ -14,9 +14,10 @@ extension UIColor {
     static let foregroundMuted = UIColor(named: "foregroundMuted") ?? .black
     static let foregroundSubtle = UIColor(named: "foregroundSubtle") ?? .black
     static let foregroundOnEmphasis = UIColor(named: "foregroundOnEmphasis") ?? .black
-    static let foregroundOnEmphasis2 = UIColor(named: "foregroundOnEmphasis2") ?? .black
     static let foregroundOnEmphasisOpacity = UIColor(named: "foregroundOnEmphasisOpacity") ?? .black
     static let foregroundOnEmphasisOpacity2 = UIColor(named: "foregroundOnEmphasisOpacity2") ?? .black
+    static let foregroundOnEmphasis2 = UIColor(named: "foregroundOnEmphasis2") ?? .black
+    static let foregroundOnEmphasis2Opacity = UIColor(named: "foregroundOnEmphasis2Opacity") ?? .black
     static let foregroundAccent = UIColor(named: "foregroundAccent") ?? .black
     static let foregroundAccentSubtle = UIColor(named: "foregroundAccentSubtle") ?? .black
     static let foregroundAccentMuted = UIColor(named: "foregroundAccentMuted") ?? .black

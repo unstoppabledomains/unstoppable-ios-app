@@ -218,7 +218,14 @@ extension String {
         static let more = "MORE"
         static let home = "HOME"
         static let messages = "MESSAGES"
+        static let explore = "EXPLORE"
         static let reply = "REPLY"
+        static let global = "GLOBAL"
+        static let yours = "YOURS"
+        static let recent = "RECENT"
+        static let primary = "PRIMARY"
+        static let collapse = "COLLAPSE"
+        static let chat = "CHAT"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -359,6 +366,7 @@ extension String {
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         static let pluralNHolders = "SDICT:N_HOLDERS"
+        static let pluralNAddresses = "SDICT:N_ADDRESSES"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -1111,7 +1119,28 @@ extension String {
         static let introBalanceBody = "INTRO_BALANCE_BODY"
         static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
         static let introMessagesBody = "INTRO_MESSAGES_BODY"
+        static let totalN = "TOTAL_N"
+        static let globalDomainsSearchHint = "GLOBAL_DOMAINS_SEARCH_HINT"
         
+        static let exploreEmptyNoProfileTitle = "EXPLORE_EMPTY_NO_PROFILE_TITLE"
+        static let exploreEmptyNoProfileSubtitle = "EXPLORE_EMPTY_NO_PROFILE_SUBTITLE"
+        static let exploreEmptyNoFollowersTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_TITLE"
+        static let exploreEmptyNoFollowersSubtitle = "EXPLORE_EMPTY_NO_FOLLOWERS_SUBTITLE"
+        static let exploreEmptyNoFollowersActionTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_ACTION_TITLE"
+        static let exploreEmptyNoFollowingTitle = "EXPLORE_EMPTY_NO_FOLLOWING_TITLE"
+        static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
+        static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
+        static let suggestedForYou = "SUGGESTED_FOR_YOU"
+        static let followedAsX = "FOLLOWED_AS_X"
+        
+        static let profileSuggestionReasonNFTCollection = "PROFILE_SUGGESTION_REASON_NFT_COLLECTION"
+        static let profileSuggestionReasonPOAP = "PROFILE_SUGGESTION_REASON_POAP"
+        static let profileSuggestionReasonTransaction = "PROFILE_SUGGESTION_REASON_TRANSACTION"
+        static let profileSuggestionReasonLensFollows = "PROFILE_SUGGESTION_REASON_LENS_FOLLOWS"
+        static let profileSuggestionReasonLensMutual = "PROFILE_SUGGESTION_REASON_LENS_MUTUAL"
+        static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
+        static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
+
     }
     
     enum BlockChainIcons: String {

@@ -176,8 +176,10 @@ fileprivate extension ImageLoadingService {
             case .none:
                 return nil
             }
+        case .domainNameInitials(let domainName, let size):
+            return await fetchImageFor(source: .initials(domainName, size: size, style: .accent), downsampleDescription: downsampleDescription)
         case .domainInitials(let domainItem, let size):
-            return await fetchImageFor(source: .initials(domainItem.name, size: size, style: .accent), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .domainNameInitials(domainItem.name, size: size), downsampleDescription: downsampleDescription)
         case .domainItemOrInitials(let domainItem, let size):
             if domainItem.pfpSource != .none,
                let image = await fetchImageFor(source: .domain(domainItem), downsampleDescription: downsampleDescription) {

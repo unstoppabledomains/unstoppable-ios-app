@@ -46,6 +46,8 @@ final class WalletsDataService {
 // MARK: - WalletsDataServiceProtocol
 extension WalletsDataService: WalletsDataServiceProtocol {
     func setSelectedWallet(_ wallet: WalletEntity?) {
+        guard wallet?.address != selectedWallet?.address else { return }
+        
         selectedWallet = wallet
         if let wallet {
             refreshDataForWalletAsync(wallet)
@@ -111,6 +113,10 @@ extension WalletsDataService: WalletsDataServiceProtocol {
         guard let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }) else { throw WalletsDataServiceError.walletNotFound }
         
         try await refreshDataForWallet(wallet)
+    }
+    
+    func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
+        try await NetworkService().fetchCryptoPortfolioFor(wallet: walletAddress)
     }
 }
 
@@ -476,13 +482,13 @@ private extension WalletsDataService {
         do {
             let walletBalance = try await loadBalanceFor(wallet: wallet)
             mutateWalletEntity(wallet) { wallet in
-                wallet.updateBalance(walletBalance ?? [])
+                wallet.updateBalance(walletBalance)
             }
         } catch { }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio]? {
-         try await NetworkService().fetchCryptoPortfolioFor(wallet: wallet.address)
+    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
+         try await loadBalanceFor(walletAddress: wallet.address)
     }
 }
 

@@ -70,6 +70,7 @@ private extension PurchaseSearchDomainsView {
                         rightViewType: currentSearchFieldRightViewType,
                         rightViewMode: .always,
                         leftViewType: .search,
+                        focusBehaviour: .activateOnAppear,
                         keyboardType: .alphabet,
                         autocapitalization: .never,
                         autocorrectionDisabled: true)
@@ -131,6 +132,7 @@ private extension PurchaseSearchDomainsView {
                 ForEach(searchResult, id: \.name) { domainInfo in
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
+                            .udListItemInCollectionButtonPadding()
                     }, callback: {
                         logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
                                                                                             .price: String(domainInfo.price),

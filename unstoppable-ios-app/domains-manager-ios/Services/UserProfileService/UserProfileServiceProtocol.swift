@@ -12,5 +12,5 @@ protocol UserProfileServiceProtocol {
     var selectedProfile: UserProfile? { get }
     var profiles: [UserProfile] { get }
     
-    func setSelectedProfile(_ profile: UserProfile)
+    func setActiveProfile(_ profile: UserProfile)
 }

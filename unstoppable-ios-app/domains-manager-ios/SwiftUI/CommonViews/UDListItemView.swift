@@ -74,9 +74,7 @@ private extension UDListItemView {
                 .frame(width: size.width,
                        height: size.height)
         case .uiImage(let uiImage):
-            UIImageBridgeView(image: uiImage,
-                              width: size.width,
-                              height: size.height)
+            UIImageBridgeView(image: uiImage)
             .frame(width: size.width,
                    height: size.height)
         }
