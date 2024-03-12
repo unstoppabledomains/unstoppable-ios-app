@@ -178,12 +178,12 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         switch sortOption {
         case .mostRecent:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
-                if lhs.lastSaleDate == nil && rhs.lastSaleDate == nil {
+                if lhs.lastAcquiredDate == nil && rhs.lastAcquiredDate == nil {
                     return lhs.collectionName < rhs.collectionName /// Sort by name collections without sale date info
-                } else if let lhsDate = lhs.lastSaleDate,
-                          let rhsDate = rhs.lastSaleDate {
+                } else if let lhsDate = lhs.lastAcquiredDate,
+                          let rhsDate = rhs.lastAcquiredDate {
                     return lhsDate > rhsDate
-                } else if lhs.lastSaleDate != nil {
+                } else if lhs.lastAcquiredDate != nil {
                     return true
                 } else {
                     return false
