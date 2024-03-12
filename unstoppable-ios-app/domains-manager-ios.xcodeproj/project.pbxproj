@@ -2780,7 +2780,6 @@
 		C61C33262B904FC600BD11F5 /* HomeExplore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExplore.swift; sourceTree = "<group>"; };
 		C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControlView.swift; sourceTree = "<group>"; };
 		C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Explore.swift"; sourceTree = "<group>"; };
-		C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreTrendingProfileRowView.swift; sourceTree = "<group>"; };
 		C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserDisplayInfoImageLoader.swift; sourceTree = "<group>"; };
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
@@ -5473,7 +5472,6 @@
 			isa = PBXGroup;
 			children = (
 				C6FBCAA42B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift */,
-				C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */,
 			);
 			path = Trending;
 			sourceTree = "<group>";
@@ -9104,7 +9102,6 @@
 				C664312328DACB4100A9C734 /* RaisedTertiaryButton.swift in Sources */,
 				C664B6502914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C6D8FF392B831BC40094A21E /* HomeProfileSelectorNavTitleView.swift in Sources */,
-				C61C33302B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */,
 				C6456F152800212000A517D5 /* UIStackView.swift in Sources */,
 				C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
@@ -9894,7 +9891,6 @@
 				C61808372B19AF120032E543 /* UITextField.swift in Sources */,
 				C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */,
 				C61C33252B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */,
-				C61C33312B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */,
 				C6C8F8112B217CC000A9834D /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				C6B65F982B566B37006D1812 /* NFTDisplayInfo.swift in Sources */,
 				C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */,

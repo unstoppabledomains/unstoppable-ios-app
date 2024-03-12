@@ -874,6 +874,16 @@ extension Endpoint {
             body: ""
         )
     }
+    
+    static func getProfileFollowersRanking(count: Int) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/rankings?count=20
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/rankings",
+            queryItems: [.init(name: "count", value: String(count))],
+            body: ""
+        )
+    }
 }
 
 // MARK: - Open methods

@@ -15,7 +15,7 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     
     @Published private(set) var globalProfiles: [SearchDomainProfile] = []
     @Published private(set) var userDomains: [DomainDisplayInfo] = []
-    @Published private(set) var trendingProfiles: [HomeExplore.ExploreDomainProfile] = []
+    @Published private(set) var trendingProfiles: [DomainName] = []
     @Published private(set) var recentProfiles: [SearchDomainProfile] = []
     @Published private(set) var suggestedProfiles: [DomainProfileSuggestion] = []
     @Published private(set) var isLoadingGlobalProfiles = false
@@ -95,10 +95,6 @@ extension HomeExploreViewModel {
         openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.ownerWallet)
     }
     
-    func didTapTrendingProfile(_ profile: HomeExplore.ExploreDomainProfile) {
-        openPublicDomainProfile(domainName: profile.domainName, walletAddress: profile.walletAddress)
-    }
-  
     func willDisplayFollower(domainName: DomainName) {
         let followersList = getProfilesListForSelectedRelationshipType
         guard let index = followersList.firstIndex(of: domainName),
@@ -167,7 +163,9 @@ private extension HomeExploreViewModel {
     }
     
     func loadTrendingProfiles() {
-        trendingProfiles = MockEntitiesFabric.Explore.createTrendingProfiles()
+        Task {    
+            trendingProfiles = try await domainProfilesService.getTrendingDomainNames()
+        }
     }
     
     func openPublicDomainProfile(domainName: String, walletAddress: String) {

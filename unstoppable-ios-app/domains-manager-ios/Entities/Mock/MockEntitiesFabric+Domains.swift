@@ -272,5 +272,7 @@ extension MockEntitiesFabric {
                                               imageUrl: withImage ? ImageURLs.aiAvatar.rawValue : nil,
                                               imageType: imageType)
         }
+        
+        
     }
 }

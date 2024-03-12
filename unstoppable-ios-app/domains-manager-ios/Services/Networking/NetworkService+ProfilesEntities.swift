@@ -734,3 +734,9 @@ struct ProfileUploadRemoteAttachmentRequest: Codable {
 struct ProfileUploadRemoteAttachmentResponse: Codable {
     let url: URL
 }
+
+typealias SerializedRankingDomainsResponse = [SerializedRankingDomain]
+struct SerializedRankingDomain: Codable {
+    let rank: Int
+    let domain: String
+}

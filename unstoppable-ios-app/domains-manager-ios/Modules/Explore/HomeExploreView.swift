@@ -24,6 +24,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
                 }
                 contentList()
             }
+            .animation(.default, value: UUID())
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
