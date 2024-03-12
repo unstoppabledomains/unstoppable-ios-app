@@ -65,26 +65,7 @@ private extension PublicProfileBadgesSectionView {
             viewModel.delegate?.publicProfileDidSelectBadge(badge, in: viewModel.domain.name)
             logButtonPressedAnalyticEvents(button: .badge, parameters: [.fieldName: badge.badge.name])
         } label: {
-            ZStack {
-                Color.white
-                    .opacity(0.16)
-                let badge = viewModel.badgesDisplayInfo?.first(where: { $0.badge.code == badge.badge.code }) ?? badge // Fix issue when SwiftUI could not pick up badge icon update sometimes
-                let imagePadding: CGFloat = badge.badge.isUDBadge ? 8 : 4
-                Image(uiImage: badge.icon ?? badge.defaultIcon)
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .scaledToFill()
-                    .clipped()
-                    .clipShape(Circle())
-                    .foregroundColor(.white)
-                    .padding(EdgeInsets(top: imagePadding, leading: imagePadding,
-                                        bottom: imagePadding, trailing: imagePadding))
-            }
-            .aspectRatio(1, contentMode: .fit)
-            .clipShape(Circle())
-        }
-        .task {
-            viewModel.loadIconIfNeededFor(badge: badge)
+            PublicProfileBadgeTileView(badge: badge)
         }
     }
 }

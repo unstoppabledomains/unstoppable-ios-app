@@ -180,7 +180,7 @@ extension NetworkService {
         try await fetchBadgesInfo(for: domain.name)
     }
     public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
-        .init(badges: [.init(code: "1", name: "Lol", logo: "", description: "")], refresh: nil)
+        MockEntitiesFabric.Badges.createBadgesInfo()
     }
     public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
         .init(badge: .init(code: "", name: "", logo: "", description: ""), usage: .init(rank: 0, holders: 1, domains: 1, featured: []))

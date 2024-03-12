@@ -12,7 +12,7 @@ extension UDButtonStyle {
     enum LargeStyle: String, CaseIterable, UDButtonViewSubviewsBuilder {
         case raisedPrimary, raisedPrimaryWhite, raisedDanger, raisedTertiary, raisedTertiaryWhite
         case ghostPrimary, ghostDanger
-        case applePay, applePayWhite
+        case applePay
         
         var backgroundIdleColor: some View {
             switch self {
@@ -29,9 +29,7 @@ extension UDButtonStyle {
             case .ghostPrimary, .ghostDanger:
                 return Color.clear
             case .applePay:
-                return Color.black
-            case .applePayWhite:
-                return Color.white
+                return Color.backgroundEmphasis
             }
         }
         
@@ -44,7 +42,7 @@ extension UDButtonStyle {
             case .raisedTertiary:
                 gradientWith(.white.opacity(0.08),
                              .white.opacity(0.0))
-            case .raisedPrimaryWhite, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger, .applePayWhite:
+            case .raisedPrimaryWhite, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger:
                 EmptyView()
             }
         }
@@ -52,10 +50,10 @@ extension UDButtonStyle {
         @ViewBuilder
         var backgroundHighlightedGradient: some View {
             switch self {
-            case .raisedPrimary, .raisedDanger, .applePay:
+            case .raisedPrimary, .raisedDanger:
                 gradientWith(.white.opacity(0.44),
                              .white.opacity(0.0))
-            case .raisedTertiary, .raisedPrimaryWhite, .applePayWhite:
+            case .raisedTertiary, .raisedPrimaryWhite, .applePay:
                 gradientWith(.black.opacity(0.0),
                              .black.opacity(0.04))
             case .raisedTertiaryWhite, .ghostPrimary, .ghostDanger:
@@ -67,7 +65,7 @@ extension UDButtonStyle {
             switch self {
             case .raisedPrimary:
                 return .backgroundAccentEmphasis2
-            case .raisedPrimaryWhite, .applePayWhite:
+            case .raisedPrimaryWhite:
                 return .brandWhite
             case .raisedDanger:
                 return .backgroundDangerEmphasis2
@@ -78,7 +76,7 @@ extension UDButtonStyle {
             case .ghostPrimary, .ghostDanger:
                 return .backgroundMuted
             case .applePay:
-                return .black.opacity(0.64)
+                return .backgroundEmphasis
             }
         }
         
@@ -86,7 +84,7 @@ extension UDButtonStyle {
             switch self {
             case .raisedPrimary:
                 return .backgroundAccent
-            case .raisedPrimaryWhite, .applePayWhite:
+            case .raisedPrimaryWhite:
                 return .brandWhite.opacity(0.16)
             case .raisedDanger:
                 return .backgroundDanger
@@ -97,7 +95,7 @@ extension UDButtonStyle {
             case .ghostPrimary, .ghostDanger:
                 return .clear
             case .applePay:
-                return .black.opacity(0.16)
+                return .backgroundEmphasisOpacity2
             }
         }
         
@@ -105,7 +103,7 @@ extension UDButtonStyle {
             switch self {
             case .raisedPrimary, .raisedPrimaryWhite, .raisedDanger:
                 return .backgroundSuccessEmphasis
-            case .raisedTertiary, .raisedTertiaryWhite, .applePayWhite:
+            case .raisedTertiary, .raisedTertiaryWhite:
                 return .backgroundSuccess
             case .ghostPrimary, .ghostDanger, .applePay:
                 return .clear
@@ -116,7 +114,7 @@ extension UDButtonStyle {
             switch self {
             case .raisedPrimary, .raisedDanger:
                 return .foregroundOnEmphasis
-            case .raisedPrimaryWhite, .applePayWhite:
+            case .raisedPrimaryWhite:
                 return .black
             case .raisedTertiary:
                 return .foregroundDefault
@@ -127,7 +125,7 @@ extension UDButtonStyle {
             case .ghostDanger:
                 return .foregroundDanger
             case .applePay:
-                return .foregroundOnEmphasis
+                return .foregroundOnEmphasis2
             }
         }
         
@@ -135,24 +133,26 @@ extension UDButtonStyle {
         
         var textDisabledColor: Color {
             switch self {
-            case .raisedPrimary, .raisedDanger, .applePay:
+            case .raisedPrimary, .raisedDanger:
                 return .foregroundOnEmphasis.opacity(0.56)
             case .raisedPrimaryWhite:
                 return .black
             case .raisedTertiary:
                 return .foregroundMuted
-            case .raisedTertiaryWhite, .applePayWhite:
+            case .raisedTertiaryWhite:
                 return .brandWhite.opacity(0.32)
             case .ghostPrimary:
                 return .foregroundAccent.opacity(0.48)
             case .ghostDanger:
                 return .foregroundDanger.opacity(0.48)
+            case .applePay:
+                return .foregroundOnEmphasis2Opacity
             }
         }
         
         var textSuccessColor: Color {
             switch self {
-            case .raisedPrimary, .raisedPrimaryWhite, .raisedDanger, .applePayWhite:
+            case .raisedPrimary, .raisedPrimaryWhite, .raisedDanger:
                 return .foregroundOnEmphasis
             case .raisedTertiary, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger, .applePay:
                 return .foregroundSuccess

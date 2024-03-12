@@ -224,6 +224,7 @@ private extension PublicProfileView {
         }
         .sideInsets(sidePadding)
         .frame(width: UIScreen.main.bounds.width)
+        .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
     }
         
     @ViewBuilder
