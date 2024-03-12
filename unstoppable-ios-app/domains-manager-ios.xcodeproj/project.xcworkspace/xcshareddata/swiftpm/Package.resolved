@@ -1,4 +1,5 @@
 {
+  "originHash" : "7ef48ccc75c726c1506bc02084c676ce9561560c2e5a8b11a64a3392d2a42f0c",
   "pins" : [
     {
       "identity" : "amplitude-ios",
@@ -111,9 +112,9 @@
     {
       "identity" : "push-swift-sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Oleg-Pecheneg/push-swift-sdk",
+      "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
       "state" : {
-        "revision" : "7aa3a1aeea89acd91dcbefcb0473a2a993a66334"
+        "revision" : "45113991bb3eb6e7ab54556918a8aa523da85ce8"
       }
     },
     {
@@ -350,5 +351,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

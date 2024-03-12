@@ -568,8 +568,9 @@ private extension ChatListViewModel {
     }
     
     func fillSnapshotForUserChatsList() {
-        chatsRequests = chatsList.requestsOnly()
-        chatsListToShow = chatsList.confirmedOnly().unblockedOnly()
+        let unblockedChats = chatsList.unblockedOnly()
+        chatsRequests = unblockedChats.requestsOnly()
+        chatsListToShow = unblockedChats.confirmedOnly()
     }
   
     func fillSnapshotForUserCommunitiesList() {
