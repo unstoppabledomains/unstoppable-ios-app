@@ -106,6 +106,7 @@ extension PublicProfileView {
                         try await appContext.domainProfilesService.unfollowProfileWith(domainName: domain.name, by: viewingDomain)
                     } else {
                         try await appContext.domainProfilesService.followProfileWith(domainName: domain.name, by: viewingDomain)
+                        appContext.toastMessageService.showToast(.followedProfileAs(viewingDomain.name), isSticky: false)
                     }
                     self.isFollowing?.toggle()
                     loadPublicProfile() // Refresh social info

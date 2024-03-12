@@ -1036,3 +1036,12 @@ More tabs are coming in the next updates.";
 "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE" = "Find People";
 
 "SUGGESTED_FOR_YOU" = "Suggested for you";
+"FOLLOWED_AS_X" = "Followed as %@";
+
+"PROFILE_SUGGESTION_REASON_NFT_COLLECTION" = "Holds the same NFT collection";
+"PROFILE_SUGGESTION_REASON_POAP" = "Holds the same POAP";
+"PROFILE_SUGGESTION_REASON_TRANSACTION" = "Shared a transaction";
+"PROFILE_SUGGESTION_REASON_LENS_FOLLOWS" = "Social follow on Lens";
+"PROFILE_SUGGESTION_REASON_LENS_MUTUAL" = "Both users follow each other on Lens";
+"PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS" = "Social follow on Farcaster";
+"PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL" = "Both users follow each other on Farcaster";

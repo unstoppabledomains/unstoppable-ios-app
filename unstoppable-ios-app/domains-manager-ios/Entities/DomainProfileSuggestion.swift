@@ -25,14 +25,31 @@ struct DomainProfileSuggestion: Hashable, Identifiable {
     }
     
     enum Reason: String {
-        case nftCollection = "Holds the same NFT collection"
-        case poap = "Holds the same POAP"
-        case transaction = "Shared a transaction"
-        case lensFollows = "Lens follows in common"
-        case farcasterFollows = "Farcaster follows in common"
+        case nftCollection = "NftCollection"
+        case poap = "POAP"
+        case transaction = "Tx"
+        case lensFollows = "Lens"
+        case lensMutual = "LensMutual"
+        case farcasterFollows = "Farcaster"
+        case farcasterMutual = "FarcasterMutual"
         
         var title: String {
-            rawValue
+            switch self {
+            case .nftCollection:
+                return String.Constants.profileSuggestionReasonNFTCollection.localized()
+            case .poap:
+                return String.Constants.profileSuggestionReasonPOAP.localized()
+            case .transaction:
+                return String.Constants.profileSuggestionReasonTransaction.localized()
+            case .lensFollows:
+                return String.Constants.profileSuggestionReasonLensFollows.localized()
+            case .lensMutual:
+                return String.Constants.profileSuggestionReasonLensMutual.localized()
+            case .farcasterFollows:
+                return String.Constants.profileSuggestionReasonFarcasterFollows.localized()
+            case .farcasterMutual:
+                return String.Constants.profileSuggestionReasonFarcasterMutual.localized()
+            }
         }
         
         var icon: Image {
@@ -43,9 +60,9 @@ struct DomainProfileSuggestion: Hashable, Identifiable {
                 return .cryptoPOAPIcon
             case .transaction:
                 return .cryptoTransactionIcon
-            case .lensFollows:
+            case .lensFollows, .lensMutual:
                 return .lensIcon
-            case .farcasterFollows:
+            case .farcasterFollows, .farcasterMutual:
                 return .farcasterIcon
             }
         }
@@ -55,7 +72,7 @@ struct DomainProfileSuggestion: Hashable, Identifiable {
 extension DomainProfileSuggestion {
     init(serializedProfile: SerializedDomainProfileSuggestion) {
         self.address = serializedProfile.address
-        self.reasons = serializedProfile.reasons
+        self.reasons = serializedProfile.reasons.map { $0.id }
         self.score = serializedProfile.score
         self.domain = serializedProfile.domain
         self.imageUrl = URL(string: serializedProfile.imageUrl ?? "")

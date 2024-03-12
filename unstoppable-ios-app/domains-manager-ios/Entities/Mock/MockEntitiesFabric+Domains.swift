@@ -266,7 +266,7 @@ extension MockEntitiesFabric {
                                                imageType: DomainProfileImageType = .offChain,
                                                reasons: [DomainProfileSuggestion.Reason] = [.nftCollection]) -> SerializedDomainProfileSuggestion {
             SerializedDomainProfileSuggestion(address: "0x1",
-                                              reasons: reasons.map { $0.rawValue },
+                                              reasons: reasons.map { .init(id: $0.rawValue, description: $0.rawValue) },
                                               score: 10,
                                               domain: domain,
                                               imageUrl: withImage ? ImageURLs.aiAvatar.rawValue : nil,
