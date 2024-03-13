@@ -75,13 +75,14 @@ extension HomeWalletView {
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:
-                guard let rrDomain = selectedWallet.rrDomain else {
+                switch getCurrentWalletProfileState() {
+                case .udDomain(let domain), .ensDomain(let domain):
+                    showProfile(of: domain)
+                case .noProfile:
                     router.pullUp = .default(.showCreateYourProfilePullUp(buyCallback: { [weak self] in
                         self?.router.runPurchaseFlow()
                     }))
-                    return }
-                
-                showProfile(of: rrDomain)
+                }
             case .buy:
                 router.runPurchaseFlow()
             case .more:
@@ -126,6 +127,15 @@ extension HomeWalletView {
         
         func domainPurchased() {
             selectedContentType = .domains
+        }
+        
+        var isProfileButtonEnabled: Bool {
+            switch getCurrentWalletProfileState() {
+            case .udDomain, .ensDomain:
+                return true
+            case .noProfile:
+                return false
+            }
         }
     }
 }
@@ -286,5 +296,21 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             UserDefaults.didUpdateToWalletVersion = false
             router.showingUpdatedToWalletGreetings = true
         }
+    }
+}
+
+fileprivate extension HomeWalletView.HomeWalletViewModel {
+    enum WalletProfileState {
+        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
+    }
+    
+    func getCurrentWalletProfileState() -> WalletProfileState {
+        if let rrDomain = selectedWallet.rrDomain {
+            return .udDomain(rrDomain)
+        } else if let ensDomain = selectedWallet.domains.first(where: { $0.isENSDomain }),
+                  !selectedWallet.isReverseResolutionChangeAllowed() {
+            return .ensDomain(ensDomain)
+        }
+        return .noProfile
     }
 }
