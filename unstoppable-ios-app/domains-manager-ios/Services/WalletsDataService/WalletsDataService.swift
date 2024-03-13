@@ -17,6 +17,7 @@ final class WalletsDataService {
     private let transactionsService: DomainTransactionsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletNFTsService: WalletNFTsServiceProtocol
+    private let networkService: WalletsDataNetworkServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
     
     @Published private(set) var wallets: [WalletEntity] = []
@@ -28,12 +29,14 @@ final class WalletsDataService {
          walletsService: UDWalletsServiceProtocol,
          transactionsService: DomainTransactionsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
-         walletNFTsService: WalletNFTsServiceProtocol) {
+         walletNFTsService: WalletNFTsServiceProtocol,
+         networkService: WalletsDataNetworkServiceProtocol) {
         self.domainsService = domainsService
         self.walletsService = walletsService
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
+        self.networkService = networkService
         walletsService.addListener(self)
         wallets = storage.getCachedWallets()
         queue.async {
@@ -116,7 +119,7 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     }
     
     func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
-        try await NetworkService().fetchCryptoPortfolioFor(wallet: walletAddress)
+        try await networkService.fetchCryptoPortfolioFor(wallet: walletAddress)
     }
 }
 
@@ -537,12 +540,8 @@ private extension WalletsDataService {
         guard let profileDomainName = wallet.profileDomainName else { return [] }
         
         let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
-        let serializedProfile = try await NetworkService().fetchPublicProfile(for: profileDomainName,
-                                                                              fields: [.records])
-        var additionalAddresses: Set<String> = []
-        if let records = serializedProfile.records {
-            additionalAddresses = Set(additionalSupportedTokens.compactMap({ records[$0] }))
-        }
+        let records = try await networkService.fetchProfileRecordsFor(domainName: profileDomainName)
+        let additionalAddresses = Set(additionalSupportedTokens.compactMap({ records[$0] }))
         
         return additionalAddresses
     }

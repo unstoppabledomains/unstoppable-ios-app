@@ -78,7 +78,8 @@ final class GeneralAppContext: AppContextProtocol {
                                                 walletsService: udWalletsService,
                                                 transactionsService: domainTransactionsService,
                                                 walletConnectServiceV2: walletConnectServiceV2,
-                                                walletNFTsService: walletNFTsService)
+                                                walletNFTsService: walletNFTsService, 
+                                                networkService: NetworkService())
         
         domainProfilesService = DomainProfilesService(storage: DomainProfileDisplayInfoCoreDataStorage(),
                                                       walletsDataService: walletsDataService)

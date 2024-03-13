@@ -402,10 +402,17 @@ extension NetworkService {
     }
 }
 
-// MARK: - Open methods
-extension NetworkService {
+// MARK: - WalletsDataNetworkServiceProtocol
+extension NetworkService: WalletsDataNetworkServiceProtocol {
   
-    public func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
+    func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
+        let profile = try await fetchPublicProfile(for: domainName,
+                                     fields: [.records])
+        let records = profile.records
+        return records ?? [:]
+    }
+    
+    func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
         let endpoint = Endpoint.getCryptoPortfolio(for: wallet)
         let response: [WalletTokenPortfolio] = try await fetchDecodableDataFor(endpoint: endpoint,
                                                                           method: .get,
@@ -413,3 +420,4 @@ extension NetworkService {
         return response
     }
 }
+
