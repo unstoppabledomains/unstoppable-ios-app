@@ -205,7 +205,7 @@ private extension DomainProfilesService {
     }
     
     func getProfileDomainNameFor(walletAddress: HexAddress) -> DomainName? {
-        let wallet = appContext.walletsDataService.wallets.findWithAddress(walletAddress)
+        let wallet = walletsDataService.wallets.findWithAddress(walletAddress)
         return wallet?.profileDomainName
     }
     

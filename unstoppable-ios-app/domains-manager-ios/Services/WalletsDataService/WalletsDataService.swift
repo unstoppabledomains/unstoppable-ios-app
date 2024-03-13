@@ -480,15 +480,71 @@ private extension WalletsDataService {
     
     func refreshWalletBalancesAsync(_ wallet: WalletEntity) async {
         do {
-            let walletBalance = try await loadBalanceFor(wallet: wallet)
+            async let walletBalanceTask = loadEssentialBalanceFor(wallet: wallet)
+            async let additionalBalancesTask = loadAdditionalBalancesFor(wallet: wallet)
+            
+            let (walletBalance, additionalBalances) = try await (walletBalanceTask, additionalBalancesTask)
+            let allBalances = walletBalance + additionalBalances
+            
             mutateWalletEntity(wallet) { wallet in
-                wallet.updateBalance(walletBalance)
+                wallet.updateBalance(allBalances)
             }
         } catch { }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
+    func loadEssentialBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
          try await loadBalanceFor(walletAddress: wallet.address)
+    }
+    
+    func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {
+        do {
+            let additionalAddresses = try await getAdditionalWalletAddressesToLoadBalanceFor(wallet: wallet)
+            guard !additionalAddresses.isEmpty else { return [] }
+            
+            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses)
+            return balances
+        } catch {
+            Debugger.printFailure("Failed to load additional tokens for wallet: \(wallet.address)")
+            return []
+        }
+    }
+    
+    func loadAdditionalBalancesFor(addresses: Set<String>) async -> [WalletTokenPortfolio] {
+        var balances = [WalletTokenPortfolio]()
+        
+        await withTaskGroup(of: [WalletTokenPortfolio].self) { group in
+            for address in addresses {
+                group.addTask {
+                    do {
+                        let tokens = try await self.loadBalanceFor(walletAddress: address)
+                        return tokens
+                    } catch {
+                        // Do not fail everything if one of additional tokens failed
+                        return []
+                    }
+                }
+            }
+            
+            for await additionalBalances in group {
+                balances.append(contentsOf: additionalBalances)
+            }
+        }
+        
+        return balances
+    }
+    
+    func getAdditionalWalletAddressesToLoadBalanceFor(wallet: WalletEntity) async throws -> Set<String> {
+        guard let profileDomainName = wallet.profileDomainName else { return [] }
+        
+        let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
+        let serializedProfile = try await NetworkService().fetchPublicProfile(for: profileDomainName,
+                                                                              fields: [.records])
+        var additionalAddresses: Set<String> = []
+        if let records = serializedProfile.records {
+            additionalAddresses = Set(additionalSupportedTokens.compactMap({ records[$0] }))
+        }
+        
+        return additionalAddresses
     }
 }
 
