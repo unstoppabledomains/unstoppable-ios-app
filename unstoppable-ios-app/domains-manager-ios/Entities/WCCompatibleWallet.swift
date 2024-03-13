@@ -47,10 +47,10 @@ struct WCWalletsProvider {
         var universal: String
     }
 
-    static let filename = "wallets-registry" // https://registry.walletconnect.com/api/v1/wallets
+    static let registryFilename = "wallets-registry" // https://explorer-api.walletconnect.com/v3/wallets?projectId=983234f8fb06d29cf4dd9d8ab60e9c3f
     static func fetchRegistry() -> [WalletRecord]? {
         let bundler = Bundle.main
-        if let filePath = bundler.url(forResource: Self.filename, withExtension: "json") {
+        if let filePath = bundler.url(forResource: Self.registryFilename, withExtension: "json") {
             guard let data = try? Data(contentsOf: filePath),
                   let jsonReg = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                   let walletsRecs = jsonReg["listings"] as? [String: [String: Any]] else { return nil }
