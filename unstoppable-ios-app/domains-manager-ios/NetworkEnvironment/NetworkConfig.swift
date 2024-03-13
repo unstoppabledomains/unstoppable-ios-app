@@ -100,12 +100,22 @@ struct NetworkConfig {
         }
     }
     
-    static var baseNetworkScanUrl: String {
+    private static let okLinkBaseURL = "https://www.oklink.com"
+    
+    static var basePolygonNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return "https://mumbai.polygonscan.com"
+            return okLinkBaseURL + "/mumbai"
         }
-        return "https://polygonscan.com"
+        return okLinkBaseURL + "/polygon"
+    }
+    
+    static var baseEthereumNetworkScanUrl: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return okLinkBaseURL + "/goerli-test"
+        }
+        return okLinkBaseURL + "/eth"
     }
     
     static func currencyIconUrl(for currency: CoinRecord) -> String {

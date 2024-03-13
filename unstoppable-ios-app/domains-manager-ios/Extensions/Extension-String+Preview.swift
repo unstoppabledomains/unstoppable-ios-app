@@ -49,15 +49,15 @@ extension String {
             case .setupICloudDriveInstruction:
                 return "https://support.apple.com/en-us/HT204025"
             case .etherScanAddress(let address):
-                return "https://etherscan.io/address/\(address)"
+                return NetworkConfig.baseEthereumNetworkScanUrl + "/address/\(address)"
             case .polygonScanAddress(let address):
-                return NetworkConfig.baseNetworkScanUrl + "/address/\(address)"
+                return NetworkConfig.basePolygonNetworkScanUrl + "/address/\(address)"
             case .editProfile, .upgradeToPolygon:
                 return "https://unstoppabledomains.com/"
             case .mintDomainGuide:
                 return "https://cdn.unstoppabledomains.com/bucket/mobile-app/what_is_minting.mp4"
             case .polygonScanTransaction(let transaction):
-                return NetworkConfig.baseNetworkScanUrl + "/tx/\(transaction)"
+                return NetworkConfig.basePolygonNetworkScanUrl + "/tx/\(transaction)"
             case .learn:
                 return "https://mobileapp.unstoppabledomains.com"
             case .udLogoPng:
