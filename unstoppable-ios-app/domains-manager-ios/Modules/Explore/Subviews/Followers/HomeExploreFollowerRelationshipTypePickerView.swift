@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeExploreFollowerRelationshipTypePickerView: View {
     
+    @EnvironmentObject var viewModel: HomeExploreViewModel
     let profile: DomainProfileDisplayInfo
     @Binding var relationshipType: DomainProfileFollowerRelationshipType
     
@@ -34,7 +35,7 @@ private extension HomeExploreFollowerRelationshipTypePickerView {
             HStack(alignment: .top, spacing: 4) {
                 Text(titleFor(relationshipType: relationshipType))
                     .font(.currentFont(size: 16, weight: .medium))
-                let numberOfFollowers = profile.numberOfFollowersFor(relationshipType: relationshipType)
+                let numberOfFollowers = viewModel.getNumberOfFollowersFor(relationshipType: relationshipType)
                 if numberOfFollowers > 0 {
                     Text(String(numberOfFollowers))
                         .font(.currentFont(size: 11, weight: .medium))
