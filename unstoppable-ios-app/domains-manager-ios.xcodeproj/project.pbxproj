@@ -479,6 +479,7 @@
 		C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */; };
 		C61B6C702B9F050B007408FD /* PublicProfileBadgeTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */; };
 		C61B6C712B9F056C007408FD /* PublicProfileBadgeTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B6C6F2B9F050B007408FD /* PublicProfileBadgeTileView.swift */; };
+		C61B6C742BA0052C007408FD /* Push in Frameworks */ = {isa = PBXBuildFile; productRef = C61B6C732BA0052C007408FD /* Push */; };
 		C61C33242B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */; };
 		C61C33252B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33232B904FBC00BD11F5 /* HomeExploreDomainSearchTypePickerView.swift */; };
 		C61C33272B904FC600BD11F5 /* HomeExplore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33262B904FC600BD11F5 /* HomeExplore.swift */; };
@@ -487,9 +488,6 @@
 		C61C332B2B90527200BD11F5 /* UDSegmentedControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */; };
 		C61C332D2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */; };
 		C61C332E2B906DCF00BD11F5 /* MockEntitiesFabric+Explore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */; };
-		C61C33302B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */; };
-		C61C33312B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C332F2B90710800BD11F5 /* HomeExploreTrendingProfileRowView.swift */; };
-		C61B6C742BA0052C007408FD /* Push in Frameworks */ = {isa = PBXBuildFile; productRef = C61B6C732BA0052C007408FD /* Push */; };
 		C61C333A2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */; };
 		C61C333B2B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C33392B90CE6600BD11F5 /* MessagingChatUserDisplayInfoImageLoader.swift */; };
 		C61C50002820E39600D1110A /* PullUpSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */; };
@@ -1739,6 +1737,8 @@
 		C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */; };
 		C6D0F43C283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0F437283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib */; };
 		C6D0F442283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0F441283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift */; };
+		C6D1E74C2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D1E74B2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift */; };
+		C6D1E74D2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D1E74B2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift */; };
 		C6D2F13028729585005F4F2E /* DomainDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F12F28729585005F4F2E /* DomainDisplayInfo.swift */; };
 		C6D2F15328757C25005F4F2E /* UIImage+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */; };
 		C6D3B9B52A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9B42A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift */; };
@@ -3576,6 +3576,7 @@
 		C6D0F436283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationSelectionCell.swift; sourceTree = "<group>"; };
 		C6D0F437283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MintDomainsConfigurationSelectionCell.xib; sourceTree = "<group>"; };
 		C6D0F441283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsConfigurationListHeaderView.swift; sourceTree = "<group>"; };
+		C6D1E74B2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsDataNetworkServiceProtocol.swift; sourceTree = "<group>"; };
 		C6D2F12F28729585005F4F2E /* DomainDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainDisplayInfo.swift; sourceTree = "<group>"; };
 		C6D2F15228757C25005F4F2E /* UIImage+SVG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+SVG.swift"; sourceTree = "<group>"; };
 		C6D3B9B42A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChannelsAPIServiceProtocol.swift; sourceTree = "<group>"; };
@@ -4811,6 +4812,7 @@
 			children = (
 				C617FD962B58BB7600B93433 /* WalletsDataService.swift */,
 				C617FDA62B58E7BB00B93433 /* WalletsDataServiceProtocol.swift */,
+				C6D1E74B2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift */,
 			);
 			path = WalletsDataService;
 			sourceTree = "<group>";
@@ -9542,6 +9544,7 @@
 				29DE3B1328913DF500655675 /* Env.swift in Sources */,
 				C664B6492914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */,
 				C62396952A288AD100363F60 /* MessagingChatType.swift in Sources */,
+				C6D1E74C2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift in Sources */,
 				C6E0417E295057FE0080F8E3 /* DomainsListViewPresenter.swift in Sources */,
 				C6420BFA28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
 				C638121C29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
@@ -10065,6 +10068,7 @@
 				C6960C522B19993700B79E28 /* PreviewString.swift in Sources */,
 				C6D647062B1ED7CA00D724AC /* MessagingImageLoader.swift in Sources */,
 				C6D647832B1EE23000D724AC /* UITableViewCell.swift in Sources */,
+				C6D1E74D2BA17E2700738365 /* WalletsDataNetworkServiceProtocol.swift in Sources */,
 				C6D647A32B1F188400D724AC /* UDRouter+Common.swift in Sources */,
 				C617FDA52B58E79E00B93433 /* PreviewWalletsDataService.swift in Sources */,
 				C61807FC2B19A83E0032E543 /* QRCodeService.swift in Sources */,

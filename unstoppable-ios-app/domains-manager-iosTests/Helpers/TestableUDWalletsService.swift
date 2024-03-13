@@ -11,6 +11,7 @@ import Foundation
 final class TestableUDWalletsService: UDWalletsServiceProtocol {
     
     var listeners: [UDWalletsServiceListener] = []
+    var rrDomainNamePerWallet: [HexAddress : DomainName] = [:]
     
     var wallets: [UDWallet] = [UDWallet.createUnverified(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
                                                          address: "0xc4a748796805dfa42cafe0901ec182936584cc6e")!,
@@ -99,7 +100,7 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
     }
     
     func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName? {
-        nil
+        rrDomainNamePerWallet[walletAddress]
     }
     
     func setReverseResolution(to domain: DomainItem, paymentConfirmationDelegate: any PaymentConfirmationDelegate) async throws {

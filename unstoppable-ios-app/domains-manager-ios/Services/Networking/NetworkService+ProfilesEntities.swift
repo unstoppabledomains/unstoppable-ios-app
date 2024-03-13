@@ -657,7 +657,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let blockchainScanUrl: String
     let balanceAmt: Double
     let tokens: [Token]?
-    let stats: Stats?
+//    let stats: Stats?
 //    let nfts: [NFT]?
     let value: Value
     let totalValueUsdAmt: Double?
@@ -698,10 +698,10 @@ struct WalletTokenPortfolio: Codable, Hashable {
     }
     
     struct Stats: Codable, Hashable {
-        let nfts: String
-        let collections: String
-        let transactions: String
-        let transfers: String
+        let nfts: String?
+        let collections: String?
+        let transactions: String?
+        let transfers: String?
     }
     
     struct Token: Codable, Hashable {

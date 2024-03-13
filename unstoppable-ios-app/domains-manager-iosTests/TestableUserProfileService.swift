@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 final class TestableUserProfileService: UserProfileServiceProtocol {
-    
+   
     @Published var selectedProfile: UserProfile?
     var selectedProfilePublisher: Published<UserProfile?>.Publisher { $selectedProfile }
     
@@ -20,7 +20,7 @@ final class TestableUserProfileService: UserProfileServiceProtocol {
         self.selectedProfile = profile
     }
     
-    func setSelectedProfile(_ profile: UserProfile) {
+    func setActiveProfile(_ profile: UserProfile) {
         selectedProfile = profile
     }
 }
