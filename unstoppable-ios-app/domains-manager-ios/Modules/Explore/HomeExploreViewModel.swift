@@ -64,10 +64,6 @@ extension HomeExploreViewModel {
         getFollowersFor(relationshipType: self.relationshipType)
     }
     
-    func getNumberOfFollowersFor(relationshipType: DomainProfileFollowerRelationshipType) -> Int {
-        getFollowersFor(relationshipType: relationshipType).count
-    }
-    
     private func getFollowersFor(relationshipType: DomainProfileFollowerRelationshipType) -> [DomainName] {
         walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: relationshipType) ?? []
     }

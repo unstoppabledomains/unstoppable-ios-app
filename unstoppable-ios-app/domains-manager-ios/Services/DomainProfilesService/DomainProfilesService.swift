@@ -243,7 +243,7 @@ private extension DomainProfilesService {
         Task {
             let controller = getOrCreateProfileDetailsControllerFor(walletAddress: walletAddress)
             await controller.resetSocialDetails()
-            refreshSocialDetailsNonBlockingFor(walletAddress: walletAddress)
+            refreshAllProfileDetailsNonBlockingFor(controller: controller)
         }
     }
     
