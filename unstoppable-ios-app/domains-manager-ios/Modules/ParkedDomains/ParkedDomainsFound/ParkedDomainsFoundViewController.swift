@@ -96,7 +96,7 @@ private extension ParkedDomainsFoundViewController {
         addProgressDashesView()
         setupCollectionView()
         title = presenter.title
-        importButton.setTitle(String.Constants.import.localized(), image: nil)
+        importButton.setTitle(String.Constants.viewVaultedDomains.localized(), image: nil)
     }
     
     func setupCollectionView() {

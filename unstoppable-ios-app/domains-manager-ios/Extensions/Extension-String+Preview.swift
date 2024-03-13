@@ -143,7 +143,6 @@ extension String {
         static let ok = "OK"
         static let copy = "COPY"
         static let cancel = "CANCEL"
-        static let `import` = "IMPORT"
         static let gotIt = "GOT_IT"
         static let share = "SHARE"
         static let comingSoon = "COMING_SOON"
