@@ -9,12 +9,15 @@ import Foundation
 @testable import domains_manager_ios
 
 final class TestableUDDomainsService: UDDomainsServiceProtocol {
+    
+    var domainsToReturn: [DomainItem] = []
+    
     func getCachedDomainsFor(wallets: [UDWallet]) -> [DomainItem] {
         []
     }
     
     func updateDomainsList(for userWallets: [UDWallet]) async throws -> [DomainItem] {
-        []
+        domainsToReturn
     }
     
     func getCachedDomainsPFPInfo() -> [DomainPFPInfo] {

@@ -539,9 +539,8 @@ private extension WalletsDataService {
     func getAdditionalWalletAddressesToLoadBalanceFor(wallet: WalletEntity) async throws -> Set<String> {
         guard let profileDomainName = wallet.profileDomainName else { return [] }
         
-        let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
         let records = try await networkService.fetchProfileRecordsFor(domainName: profileDomainName)
-        let additionalAddresses = Set(additionalSupportedTokens.compactMap({ records[$0] }))
+        let additionalAddresses = Set(Constants.additionalSupportedTokens.compactMap({ records[$0] }))
         
         return additionalAddresses
     }

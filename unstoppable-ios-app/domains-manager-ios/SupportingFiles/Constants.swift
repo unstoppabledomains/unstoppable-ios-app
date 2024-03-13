@@ -59,6 +59,7 @@ struct Constants {
     static let defaultMessagingServiceIdentifier: MessagingServiceIdentifier = .xmtp
     static let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
+    static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
 
     
     // Shake to find

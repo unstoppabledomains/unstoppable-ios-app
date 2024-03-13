@@ -10,6 +10,10 @@ import UIKit
 // MARK: - Domains
 extension MockEntitiesFabric {
     enum Domains {
+        static func mockDomainsItems(ownerWallet: String) -> [DomainItem] {
+            mockDomainsDisplayInfo(ownerWallet: ownerWallet).map { $0.toDomainItem() }
+        }
+        
         static func mockDomainsDisplayInfo(ownerWallet: String) -> [DomainDisplayInfo] {
             var domains = [DomainDisplayInfo]()
             let tlds: [String] = ["x", "nft", "unstoppable"]
