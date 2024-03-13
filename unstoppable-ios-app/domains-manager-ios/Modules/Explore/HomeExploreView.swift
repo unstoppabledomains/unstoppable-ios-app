@@ -135,7 +135,7 @@ private extension HomeExploreView {
         .searchable(if: viewModel.isProfileAvailable,
                     text: $viewModel.searchKey,
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: String.Constants.search.localized())
+                    prompt: String.Constants.searchProfiles.localized())
         .clearListBackground()
     }
     

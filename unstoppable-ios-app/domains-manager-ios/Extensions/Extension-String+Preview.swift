@@ -1139,7 +1139,7 @@ extension String {
         static let profileSuggestionReasonLensMutual = "PROFILE_SUGGESTION_REASON_LENS_MUTUAL"
         static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
         static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
-
+        static let searchProfiles = "SEARCH_PROFILES"
     }
     
     enum BlockChainIcons: String {
