@@ -61,7 +61,11 @@ extension HomeExploreViewModel {
     var isSearchActive: Bool { isKeyboardActive || !searchKey.isEmpty }
 
     var getProfilesListForSelectedRelationshipType: [DomainName] {
-        walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: self.relationshipType) ?? []
+        getFollowersFor(relationshipType: self.relationshipType)
+    }
+    
+    private func getFollowersFor(relationshipType: DomainProfileFollowerRelationshipType) -> [DomainName] {
+        walletDomainProfileDetails?.socialDetails?.getFollowersListFor(relationshipType: relationshipType) ?? []
     }
     
     var isProfileAvailable: Bool { getSelectedUserProfileRRDomain() != nil }
