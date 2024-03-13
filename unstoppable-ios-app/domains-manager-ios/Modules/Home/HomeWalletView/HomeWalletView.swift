@@ -142,7 +142,7 @@ private extension HomeWalletView {
     }
     
     func walletActions() -> [WalletAction] {
-        [.buy, .receive, .profile(enabled: viewModel.selectedWallet.rrDomain != nil), .more]
+        [.buy, .receive, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
     }
     
     func updateNavTitleVisibility() {

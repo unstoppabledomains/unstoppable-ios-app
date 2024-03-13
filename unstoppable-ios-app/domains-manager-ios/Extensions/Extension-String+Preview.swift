@@ -1172,10 +1172,18 @@ extension String {
         
         return tld.isValidTld() && tld != GlobalConstants.ensDomainTLD
     }
+    
+    func isENSTLD() -> Bool {
+        guard let tld = getTldName() else { return false }
+        
+        return tld.isValidTld() && tld == GlobalConstants.ensDomainTLD
+    }
+    
     func isValidDomainName() -> Bool {
         guard let tld = self.getTldName() else { return false }
         return tld.isValidTld()
     }
+    
     static let messagingAdditionalSupportedTLDs: Set = [GlobalConstants.lensDomainTLD,
                                                         GlobalConstants.coinbaseDomainTLD] // MARK: - Temporary urgent request
     

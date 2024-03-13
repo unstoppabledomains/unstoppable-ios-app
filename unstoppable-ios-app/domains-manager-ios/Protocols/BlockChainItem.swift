@@ -47,6 +47,10 @@ extension DomainEntity {
     var isUDDomain: Bool {
         name.isUDTLD()
     }
+    
+    var isENSDomain: Bool {
+        name.isENSTLD()
+    }
 }
 
 extension Array where Element: DomainEntity {
