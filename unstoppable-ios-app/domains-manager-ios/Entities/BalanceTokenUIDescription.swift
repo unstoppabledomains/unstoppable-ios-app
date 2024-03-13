@@ -108,7 +108,8 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         if let cachedImage = appContext.imageLoadingService.cachedImage(for: .currencyTicker(ticker,
                                                                                              size: size,
                                                                                              style: style),
-                                                                        downsampleDescription: .icon) {
+                                                                        downsampleDescription: .icon),
+           logoURL == nil {
             iconUpdated(cachedImage)
             return
         }
