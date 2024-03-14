@@ -102,6 +102,7 @@ struct NetworkService {
         }
     }
     
+    @discardableResult
     func makeAPIRequest(_ apiRequest: APIRequest) async throws -> Data {
         try await fetchData(for: apiRequest.url,
                             body: apiRequest.body,

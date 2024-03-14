@@ -1377,6 +1377,10 @@
 		C6BF80292BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */; };
 		C6BF802B2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
 		C6BF802C2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
+		C6BF802F2BA2DFE500CC4CB3 /* FireblocksSDK in Frameworks */ = {isa = PBXBuildFile; productRef = C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */; };
+		C6BF80312BA2E01F00CC4CB3 /* FireblocksConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */; };
+		C6BF80332BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80322BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift */; };
+		C6BF80352BA2ED7100CC4CB3 /* JoinWalletHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80342BA2ED7100CC4CB3 /* JoinWalletHandler.swift */; };
 		C6C1E9342B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1E9352B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
@@ -3514,6 +3518,9 @@
 		C6BF80242BA2C73800CC4CB3 /* MPCEnterPassphraseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseView.swift; sourceTree = "<group>"; };
 		C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseViewController.swift; sourceTree = "<group>"; };
 		C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCNetworkService.swift; sourceTree = "<group>"; };
+		C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksConnector.swift; sourceTree = "<group>"; };
+		C6BF80322BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksRPCMessageHandler.swift; sourceTree = "<group>"; };
+		C6BF80342BA2ED7100CC4CB3 /* JoinWalletHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinWalletHandler.swift; sourceTree = "<group>"; };
 		C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticAppearanceTrackerModifier.swift; sourceTree = "<group>"; };
 		C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuDomainAvatarLoader.swift; sourceTree = "<group>"; };
 		C6C1EC5E2A3AD483005EB37D /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
@@ -3823,6 +3830,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6BF802F2BA2DFE500CC4CB3 /* FireblocksSDK in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
@@ -7289,6 +7297,9 @@
 				C6BF80232BA2C6D300CC4CB3 /* EnterPassphrase */,
 				C6BF80222BA2BB2300CC4CB3 /* EnterCode */,
 				C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */,
+				C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */,
+				C6BF80342BA2ED7100CC4CB3 /* JoinWalletHandler.swift */,
+				C6BF80322BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift */,
 			);
 			path = MPC;
 			sourceTree = "<group>";
@@ -8063,6 +8074,7 @@
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
 				C66811F42B47B1C600BDABB0 /* XMTP */,
 				C61B6C732BA0052C007408FD /* Push */,
+				C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -8201,6 +8213,7 @@
 				C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
 				C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C61B6C722BA004F2007408FD /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
+				C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -8690,6 +8703,7 @@
 				C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
 				C66804C1280D9EC8007E6390 /* DigitalKeyboardViewController.swift in Sources */,
 				C609831A282B707B00546392 /* UINavigationController.swift in Sources */,
+				C6BF80332BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift in Sources */,
 				C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */,
 				C6C995C2289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6FBCAA82B91D00100BA39DF /* HomeExploreUserWalletDomainsView.swift in Sources */,
@@ -8815,6 +8829,7 @@
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
 				C6B65F942B5665F0006D1812 /* HomeTabView.swift in Sources */,
+				C6BF80352BA2ED7100CC4CB3 /* JoinWalletHandler.swift in Sources */,
 				C635193C28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift in Sources */,
 				C6386843285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */,
 				C628E37227FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,
@@ -9094,6 +9109,7 @@
 				C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */,
 				C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */,
 				C688C1AA2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */,
+				C6BF80312BA2E01F00CC4CB3 /* FireblocksConnector.swift in Sources */,
 				C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C65DD4B92A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */,
@@ -11562,6 +11578,14 @@
 				version = 4.0.6;
 			};
 		};
+		C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fireblocks/ncw-ios-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.3.6;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -11689,6 +11713,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */;
 			productName = LaunchDarkly;
+		};
+		C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */;
+			productName = FireblocksSDK;
 		};
 		C6E69F98288AB6DC000A8346 /* Bugsnag */ = {
 			isa = XCSwiftPackageProductDependency;
