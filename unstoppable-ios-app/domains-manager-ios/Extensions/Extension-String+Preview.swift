@@ -1214,3 +1214,17 @@ extension String {
         }
     }
 }
+
+extension String {
+    func appendingURLPathComponent(_ pathComponent: String) -> String {
+        return self + "/" + pathComponent
+    }
+    
+    func appendingURLPathComponents(_ pathComponents: String...) -> String {
+        return self + "/" + pathComponents.joined(separator: "/")
+    }
+    
+    func appendingURLQueryComponents(_ components: [String : String]) -> String {
+        self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
+    }
+}
