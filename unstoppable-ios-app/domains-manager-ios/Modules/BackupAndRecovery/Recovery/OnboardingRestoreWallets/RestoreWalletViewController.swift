@@ -109,7 +109,7 @@ extension RestoreWalletViewController: UITableViewDelegate {
         case .websiteAccount:
             onboardingFlowManager.moveToStep(.loginWithWebsite)
         case .mpc:
-            return
+            onboardingFlowManager.moveToStep(.mpcCode)
         }
     }
 }

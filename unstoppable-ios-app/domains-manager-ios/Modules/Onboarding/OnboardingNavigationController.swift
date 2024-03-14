@@ -398,6 +398,19 @@ private extension OnboardingNavigationController {
             addStepHandler(presenter)
             vc.presenter = presenter
             return vc
+            
+        case .mpcCode:
+            let vc = MPCEnterCodeOnboardingViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcSecret:
+            let vc = MPCEnterCodeOnboardingViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         }
     }
  
@@ -455,6 +468,9 @@ extension OnboardingNavigationController {
         case loginWithEmailAndPassword = 20
         case noParkedDomains = 21
         case parkedDomainsFound = 22
+        
+        case mpcCode
+        case mpcSecret
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {

@@ -219,6 +219,7 @@ extension Analytics {
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
         case viewMessagingImage
+        case onboardingMPCEnterCode
         
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings

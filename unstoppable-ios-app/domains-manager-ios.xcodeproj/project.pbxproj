@@ -1367,6 +1367,10 @@
 		C6BF6BDC2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */; };
 		C6BF6BDD2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */; };
 		C6BF6BDE2B8F3602006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */; };
+		C6BF801D2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */; };
+		C6BF801E2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */; };
+		C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */; };
+		C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */; };
 		C6C1E9342B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1E9352B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */; };
 		C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
@@ -3499,6 +3503,8 @@
 		C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPendingEventsOnAppearViewModifier.swift; sourceTree = "<group>"; };
 		C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassViewAnalyticsDetailsViewModifier.swift; sourceTree = "<group>"; };
 		C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskWithDeadline.swift; sourceTree = "<group>"; };
+		C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeView.swift; sourceTree = "<group>"; };
+		C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeOnboardingViewController.swift; sourceTree = "<group>"; };
 		C6C1E9332B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticAppearanceTrackerModifier.swift; sourceTree = "<group>"; };
 		C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuDomainAvatarLoader.swift; sourceTree = "<group>"; };
 		C6C1EC5E2A3AD483005EB37D /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
@@ -7268,6 +7274,23 @@
 			path = Animations;
 			sourceTree = "<group>";
 		};
+		C6BF801B2BA2B53F00CC4CB3 /* MPC */ = {
+			isa = PBXGroup;
+			children = (
+				C6BF80222BA2BB2300CC4CB3 /* EnterCode */,
+			);
+			path = MPC;
+			sourceTree = "<group>";
+		};
+		C6BF80222BA2BB2300CC4CB3 /* EnterCode */ = {
+			isa = PBXGroup;
+			children = (
+				C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */,
+				C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */,
+			);
+			path = EnterCode;
+			sourceTree = "<group>";
+		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
 			isa = PBXGroup;
 			children = (
@@ -7598,6 +7621,7 @@
 				C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */,
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
+				C6BF801B2BA2B53F00CC4CB3 /* MPC */,
 				C6203A4C2B882909000A1A8E /* Explore */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
@@ -8792,6 +8816,7 @@
 				C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */,
 				C6C8F85E2B21800E00A9834D /* ValetProtocol.swift in Sources */,
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
+				C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */,
 				C63095E92B0DA66400205054 /* GoogleIDTokenUtilities.swift in Sources */,
 				C6FFBADB2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */,
 				C60982352823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
@@ -9077,6 +9102,7 @@
 				30784C8927F455100034FA4A /* UDTextView.swift in Sources */,
 				C6D6E4F22817CC97008C66BB /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C623969F2A288AE300363F60 /* MessagingChat.swift in Sources */,
+				C6BF801D2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */,
 				C6F9FBD42A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift in Sources */,
 				C63095F02B0DA66400205054 /* UDGoogleSigner.swift in Sources */,
 				C671E3EE2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
@@ -9748,6 +9774,7 @@
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
 				C6D6462C2B1DC2BC00D724AC /* ResizableRoundedImageView.swift in Sources */,
 				C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */,
+				C6BF801E2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */,
 				C6D646742B1ED11B00D724AC /* DomainProfileUpdateDataRequestType.swift in Sources */,
 				C6D647592B1EDC2E00D724AC /* TertiaryButton.swift in Sources */,
 				C6C8F92E2B2183C700A9834D /* DomainsCollectionSearchEmptyCell.swift in Sources */,
@@ -10153,6 +10180,7 @@
 				C61808262B19AB320032E543 /* DomainTransferServiceProtocol.swift in Sources */,
 				C61807FE2B19A84F0032E543 /* QRCodeMonkeyServiceProvider.swift in Sources */,
 				C6B65F5D2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
+				C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */,
 				C6C8F98D2B21897A00A9834D /* NonEmptyArray.swift in Sources */,
 				C61808512B19BA670032E543 /* MockFirebaseInteractionsService.swift in Sources */,
 				C61DB10C2B9588B300CDA243 /* PublicProfileSeparatorView.swift in Sources */,

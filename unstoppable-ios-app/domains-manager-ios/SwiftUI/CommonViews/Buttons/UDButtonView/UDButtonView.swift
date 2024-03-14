@@ -66,6 +66,7 @@ struct UDButtonView: View {
             .cornerRadius(style.cornerRadius)
             .modifier(UDButtonStyle.SpecialStyleModifier(style: style))
         }))
+        .allowsHitTesting(!isLoading)
     }
 }
 
