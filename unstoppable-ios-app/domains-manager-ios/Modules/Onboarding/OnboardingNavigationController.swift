@@ -78,6 +78,27 @@ extension OnboardingNavigationController: CNavigationControllerDelegate {
  
 // MARK: - OnboardingFlowManager
 extension OnboardingNavigationController: OnboardingFlowManager {
+    func handle(action: Action) async throws {
+        switch action {
+        case .didGenerateLocalWallet(let uDWallet):
+            modifyOnboardingData() { $0.wallets = [uDWallet] }
+            setNewUserOnboardingSubFlow(.create)
+            if case .sameUserWithoutWallets = onboardingFlow {
+                moveToStep(.backupWallet)
+            } else {
+                moveToStep(.protectWallet)
+            }
+        case .didImportWallet(let uDWallet):
+            modifyOnboardingData() { $0.wallets = [uDWallet] }
+
+            if case .sameUserWithoutWallets = onboardingFlow {
+                didFinishOnboarding()
+            } else {
+                moveToStep(.protectWallet)
+            }
+        }
+    }
+    
     func didSetupProtectWallet() {
         func pushBackupWalletsScreen() {
             moveToStep(.backupWallet)
@@ -405,8 +426,8 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
-        case .mpcSecret:
-            let vc = MPCEnterCodeOnboardingViewController()
+        case .mpcPassphrase:
+            let vc = MPCEnterPassphraseViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -469,8 +490,8 @@ extension OnboardingNavigationController {
         case noParkedDomains = 21
         case parkedDomainsFound = 22
         
-        case mpcCode
-        case mpcSecret
+        case mpcCode = 23
+        case mpcPassphrase = 24
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {
@@ -479,4 +500,10 @@ extension OnboardingNavigationController {
         
         var description: String { "\n\nOnboardingData\nFlow: \(flow)\nSteps: \(steps.map({ $0.rawValue} ))\n\n" }
     }
+    
+    enum Action {
+        case didGenerateLocalWallet(UDWallet)
+        case didImportWallet(UDWallet)
+    }
+    
 }

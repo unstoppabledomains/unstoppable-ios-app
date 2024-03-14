@@ -1,5 +1,5 @@
 //
-//  MPCEnterCodeViewController.swift
+//  MPCEnterPassphraseViewController.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 14.03.2024.
@@ -7,9 +7,8 @@
 
 import SwiftUI
 
-final class MPCEnterCodeOnboardingViewController: BaseViewController, ViewWithDashesProgress {
-        
-
+final class MPCEnterPassphraseViewController: BaseViewController, ViewWithDashesProgress {
+    
     override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
@@ -24,15 +23,16 @@ final class MPCEnterCodeOnboardingViewController: BaseViewController, ViewWithDa
 }
 
 // MARK: - Private methods
-private extension MPCEnterCodeOnboardingViewController {
-    func didEnterValidCode(_ code: String) {
-        onboardingFlowManager?.onboardingData.mpcCode = code
-        onboardingFlowManager?.moveToStep(.mpcPassphrase)
+private extension MPCEnterPassphraseViewController {
+    func didCreateMPCWallet(_ wallet: UDWallet) {
+        Task {
+            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
+        }
     }
 }
 
 // MARK: - Setup methods
-private extension MPCEnterCodeOnboardingViewController {
+private extension MPCEnterPassphraseViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -42,9 +42,9 @@ private extension MPCEnterCodeOnboardingViewController {
     }
     
     func addChildView() {
-        let mpcView = MPCEnterCodeView { [weak self] code in
+        let mpcView = MPCEnterPassphraseView { [weak self] wallet in
             DispatchQueue.main.async {
-                self?.didEnterValidCode(code)
+                self?.didCreateMPCWallet(wallet)
             }
         }
         let vc = UIHostingController(rootView: mpcView)
@@ -53,15 +53,13 @@ private extension MPCEnterCodeOnboardingViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCEnterCodeOnboardingViewController: OnboardingNavigationHandler {
+extension MPCEnterPassphraseViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCode }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPassphrase }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCEnterCodeOnboardingViewController: OnboardingDataHandling {
-    func willNavigateBack() {
-        onboardingFlowManager?.onboardingData.mpcCode = nil
-    }
+extension MPCEnterPassphraseViewController: OnboardingDataHandling {
+    func willNavigateBack() { }
 }
 

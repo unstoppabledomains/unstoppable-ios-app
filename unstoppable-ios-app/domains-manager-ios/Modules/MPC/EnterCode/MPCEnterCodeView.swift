@@ -113,9 +113,9 @@ private extension MPCEnterCodeView {
     func actionButtonView() -> some View {
         UDButtonView(text: actionButtonTitle, 
                      style: .large(.raisedPrimary),
-                     isLoading: isLoading) {
-            actionButtonPressed()
-        }
+                     isLoading: isLoading,
+                     callback: actionButtonPressed)
+        .disabled(input.isEmpty)
     }
     
     var actionButtonTitle: String {
@@ -171,5 +171,4 @@ private extension MPCEnterCodeView {
     let nav = CNavigationController(rootViewController: vc)
     
     return nav
-    
 }
