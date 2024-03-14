@@ -23,12 +23,17 @@ final class FireblocksConnector {
         self.deviceId = deviceId
         self.messageHandler = messageHandler
         
-        //        try Fireblocks.getInstance(deviceId: deviceId)
-        let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
-                                                   messageHandlerDelegate: messageHandler,
-                                                   keyStorageDelegate: KeyStorageProvider(deviceId: self.deviceId),
-                                                   fireblocksOptions: FireblocksOptions(env: .sandbox, eventHandlerDelegate: self))
-        self.fireblocks = fireblocks
+        do {
+            //        try Fireblocks.getInstance(deviceId: deviceId)
+            let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
+                                                       messageHandlerDelegate: messageHandler,
+                                                       keyStorageDelegate: KeyStorageProvider(deviceId: self.deviceId),
+                                                       fireblocksOptions: FireblocksOptions(env: .sandbox, eventHandlerDelegate: self))
+            self.fireblocks = fireblocks
+        } catch {
+            logMPC("Did fail to create fireblocks connector with error: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     func requestJoinExistingWallet() async throws -> String {
@@ -39,7 +44,9 @@ final class FireblocksConnector {
                         completion(.success(requestId))
                     })
                     _ = try await fireblocks.requestJoinExistingWallet(joinWalletHandler: handler)
+                    logMPC("Did request to join existing wallet. Waiting for request id")
                 } catch {
+                    logMPC("Did fail to request to join existing wallet with error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             }
@@ -51,12 +58,16 @@ final class FireblocksConnector {
     }
     
     private func waitForKeyIsReadyInternal(attempt: Int = 0) async throws {
+        logMPC("Will check for key is ready attempt: \(attempt + 1)")
         if isKeyInitialized(algorithm: .MPC_ECDSA_SECP256K1) {
+            logMPC("Key is ready")
             return
         } else {
             if attempt >= 50 {
+                logMPC("Key is not ready. Abort due to timeout")
                 throw FireblocksConnectorError.waitForKeysTimeout
             }
+            logMPC("Key is not ready. Will wait more")
             await Task.sleep(seconds: 0.5)
             try await waitForKeyIsReadyInternal(attempt: attempt + 1)
         }
@@ -71,10 +82,27 @@ final class FireblocksConnector {
     }
     
     func signTransactionWith(txId: String) async throws {
-        let signatureStatus = try await fireblocks.signTransaction(txId: txId)
-        if signatureStatus.transactionSignatureStatus != .COMPLETED {
-            throw FireblocksConnectorError.failedToSignTx
+        fireblocks.stopJoinWallet()
+        for i in 0..<5 {
+            logMPC("Will check for transaction is ready attempt \(i + 1)")
+            
+            do {
+                let signatureStatus = try await fireblocks.signTransaction(txId: txId)
+                if signatureStatus.transactionSignatureStatus != .COMPLETED {
+                    logMPC("Transaction \(txId) is not ready. Will wait more.")
+                    await Task.sleep(seconds: 0.5)
+                } else {
+                    logMPC("Did sign transaction \(txId)")
+                    return
+                }
+            } catch {
+                logMPC("Did fail to sign transaction \(txId) with error: \(error.localizedDescription)")
+                throw error
+            }
         }
+        
+        logMPC("Did fail to sign transaction \(txId) due to timeout")
+        throw FireblocksConnectorError.failedToSignTx
     }
 }
 
@@ -94,25 +122,25 @@ extension FireblocksConnector: EventHandlerDelegate {
     func onEvent(event: FireblocksSDK.FireblocksEvent) {
         switch event {
         case let .KeyCreation(status, error):
-            Debugger.printInfo("FireblocksManager, status(.KeyCreation): \(status.description()). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.KeyCreation): \(status.description()). Error: \(String(describing: error)).")
             break
         case let .Backup(status, error):
-            Debugger.printInfo("FireblocksManager, status(.Backup): \(status.description()). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.Backup): \(status.description()). Error: \(String(describing: error)).")
             break
         case let .Recover(status, error):
-            Debugger.printInfo("FireblocksManager, status(.Recover): \(String(describing: status?.description())). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.Recover): \(String(describing: status?.description())). Error: \(String(describing: error)).")
             break
         case let .Transaction(status, error):
-            Debugger.printInfo("FireblocksManager, status(.Transaction): \(status.description()). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.Transaction): \(status.description()). Error: \(String(describing: error)).")
             break
         case let .Takeover(status, error):
-            Debugger.printInfo("FireblocksManager, status(.Takeover): \(status.description()). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.Takeover): \(status.description()). Error: \(String(describing: error)).")
             break
         case let .JoinWallet(status, error):
-            Debugger.printInfo("FireblocksManager, status(.JoinWallet): \(status.description()). Error: \(String(describing: error)).")
+            logMPC("FireblocksManager, status(.JoinWallet): \(status.description()). Error: \(String(describing: error)).")
             break
         @unknown default:
-            Debugger.printInfo("FireblocksManager, @unknown case")
+            logMPC("FireblocksManager, @unknown case")
             break
         }
     }

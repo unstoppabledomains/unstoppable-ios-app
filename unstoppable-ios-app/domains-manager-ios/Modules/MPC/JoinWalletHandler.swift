@@ -16,6 +16,7 @@ final class JoinWalletHandler: FireblocksConnectorJoinWalletHandler {
     }
     
     func onRequestId(requestId: String) {
+        logMPC("Did receive request id to join existing wallet: \(requestId)")
         requestIdCallback(requestId)
     }
 }

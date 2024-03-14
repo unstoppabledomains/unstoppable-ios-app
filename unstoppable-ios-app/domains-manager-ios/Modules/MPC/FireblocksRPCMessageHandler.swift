@@ -22,6 +22,7 @@ final class FireblocksRPCMessageHandler: NetworkAuthorisedWithBearerService, Fir
                                error: @escaping (String?) -> ()) {
         Task {
             do {
+                logMPC("Will handle outgoing message: \(payload)")
                 let headers = buildAuthBearerHeader()
                 let body = payload.data(using: .utf8)
                 let request = try APIRequest(urlString: MPCNetwork.URLSList.rpcMessagesURL,
@@ -31,9 +32,11 @@ final class FireblocksRPCMessageHandler: NetworkAuthorisedWithBearerService, Fir
                 let data = try await networkService.makeAPIRequest(request)
                 let responseMessage = String(data: data, encoding: .utf8)
                 
+                logMPC("Did handle outgoing message with response: \(responseMessage)")
                 response(responseMessage)
             } catch let requestError {
                 let errorMessage = requestError.localizedDescription
+                logMPC("Did fail to handle outgoing message with error: \(errorMessage)")
                 
                 error(errorMessage)
             }
