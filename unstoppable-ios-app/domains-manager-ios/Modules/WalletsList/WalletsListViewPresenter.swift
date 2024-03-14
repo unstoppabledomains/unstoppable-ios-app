@@ -116,7 +116,7 @@ private extension WalletsListViewPresenter {
         Task {
             let actions: [WalletDetailsAddWalletAction]
             if isImportOnly {
-                actions = [.recoveryOrKey, .connect]
+                actions = [.recoveryOrKey, .connect, .mpc]
             } else {
                 actions = WalletDetailsAddWalletAction.allCases
             }
@@ -208,6 +208,8 @@ private extension WalletsListViewPresenter {
                     importNewWallet()
                 case .connect:
                     connectNewWallet()
+                case .mpc:
+                    return
                 }
             }
         }

@@ -327,6 +327,7 @@ extension Analytics {
         case moveToTop
         case websiteAccount
         case resetRecords
+        case mpc
         
         // Referral
         case inviteFriendInfo, copyLink
