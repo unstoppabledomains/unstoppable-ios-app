@@ -42,7 +42,12 @@ private extension MPCEnterPassphraseViewController {
     }
     
     func addChildView() {
-        let mpcView = MPCEnterPassphraseView { [weak self] wallet in
+        guard let code = onboardingFlowManager?.onboardingData.mpcCode else {
+            cNavigationController?.popViewController(animated: true)
+            Debugger.printFailure("No MPC Code passed", critical: true)
+            return
+        }
+        let mpcView = MPCEnterPassphraseView(code: code) { [weak self] wallet in
             DispatchQueue.main.async {
                 self?.didCreateMPCWallet(wallet)
             }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MPCEnterPassphraseView: View {
     
+    let code: String
     let mpcWalletCreatedCallback: (UDWallet)->()
     @State private var input: String = ""
     @State private var isLoading = false
@@ -71,5 +72,6 @@ private extension MPCEnterPassphraseView {
     }
 }
 #Preview {
-    MPCEnterPassphraseView(mpcWalletCreatedCallback: { _ in })
+    MPCEnterPassphraseView(code: "",
+                           mpcWalletCreatedCallback: { _ in })
 }

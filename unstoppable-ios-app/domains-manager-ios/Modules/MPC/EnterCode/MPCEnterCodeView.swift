@@ -13,6 +13,7 @@ struct MPCEnterCodeView: View {
     @State private var input: String = ""
     @State private var inputType: InputType = .code
     @State private var isLoading = false
+    @State private var error: Error?
     
     var body: some View {
         VStack(spacing: 32) {
@@ -24,6 +25,7 @@ struct MPCEnterCodeView: View {
             actionButtonView()
             Spacer()
         }
+        .displayError($error)
         .padding()
         .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
         .animation(.default, value: UUID())
@@ -130,29 +132,33 @@ private extension MPCEnterCodeView {
     func actionButtonPressed() {
         switch inputType {
         case .code:
-            sendCode()
+            confirmCode()
         case .email:
             sendEmail()
         }
     }
     
-    func sendCode() {
+    func confirmCode() {
         Task {
             isLoading = true
             // Send code
             await Task.sleep(seconds: 1.0)
             isLoading = false
-            codeVerifiedCallback(input)
+            codeVerifiedCallback(input.trimmedSpaces.uppercased())
         }
     }
     
     func sendEmail() {
         Task {
             isLoading = true
-            // Send email action
-            await Task.sleep(seconds: 1.0)
+            do {
+                // Send email action
+                try await MPCNetworkService.shared.sendBootstrapCodeTo(email: input)
+                toggleInputType()
+            } catch {
+                self.error = error
+            }
             isLoading = false
-            toggleInputType()
         }
     }
 }

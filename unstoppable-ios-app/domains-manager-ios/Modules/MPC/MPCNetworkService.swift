@@ -10,7 +10,7 @@ import Foundation
 enum MPCNetwork {
     enum URLSList {
         static var baseURL: String {
-            "https://api-ud.staging.com"
+            "https://api.ud-staging.com" // NetworkConfig.migratedBaseUrl
         }
         
         static var v1URL: String { baseURL.appendingURLPathComponents("wallet", "v1") }
@@ -55,10 +55,12 @@ extension MPCNetworkService {
             let code: String
         }
         
-        let body = Body(walletExternalId: "123")
+        let header = buildAuthBearerHeader(token: NetworkService.stagingWalletAPIAdminKey)
+        let body = Body(walletExternalId: "wa-wt-d890e86a-7680-4c6a-9d23-e80e00be44d9")
         let request = try APIRequest(urlString: MPCNetwork.URLSList.tempGetCodeURL,
                                      body: body,
-                                     method: .post)
+                                     method: .post,
+                                     headers: header)
         
         let response: Response = try await makeDecodableAPIRequest(request)
         
