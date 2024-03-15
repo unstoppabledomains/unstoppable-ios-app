@@ -264,3 +264,14 @@ extension UIViewController {
         return presentedViewController?.childOf(type: type)
     }
 }
+
+import SafariServices
+
+extension UIViewController {
+    func openLinkInSafari(_ link: String.Links) {
+        guard let url = link.url else { return }
+        
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true)
+    }
+}

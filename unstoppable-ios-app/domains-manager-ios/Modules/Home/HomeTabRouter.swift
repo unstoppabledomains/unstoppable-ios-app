@@ -93,7 +93,7 @@ extension HomeTabRouter {
                 link = .buyCryptoToWallet(wallet.address)
             }
             
-            topVC.openLink(link)
+            topVC.openLinkInSafari(link)
         }
     }
   
