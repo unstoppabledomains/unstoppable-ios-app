@@ -88,7 +88,9 @@ extension Image {
     static let exploreIcon = Image("exploreIcon")
     static let globeBold = Image("globeBold")
     static let searchClearIcon = Image("searchClearIcon")
-
+    static let globeRotated = Image("globeRotated")
+    static let verticalLines = Image("verticalLines")
+    
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
     static let cryptoTransactionIcon = Image("cryptoTransactionIcon")

@@ -1140,6 +1140,12 @@ extension String {
         static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
         static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
         static let searchProfiles = "SEARCH_PROFILES"
+        
+        static let selectPullUpBuyDomainsTitle = "SELECT_PULL_UP_BUY_DOMAINS_TITLE"
+        static let selectPullUpBuyTokensTitle = "SELECT_PULL_UP_BUY_TOKENS_TITLE"
+        static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
+        static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
+        
     }
     
     enum BlockChainIcons: String {

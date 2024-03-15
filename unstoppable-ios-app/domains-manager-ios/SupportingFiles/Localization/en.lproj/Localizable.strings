@@ -1045,3 +1045,8 @@ More tabs are coming in the next updates.";
 "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS" = "Social follow on Farcaster";
 "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL" = "Both users follow each other on Farcaster";
 "SEARCH_PROFILES" = "Search profiles";
+
+"SELECT_PULL_UP_BUY_DOMAINS_TITLE" = "Buy domains";
+"SELECT_PULL_UP_BUY_TOKENS_TITLE" = "Buy tokens";
+"SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE" = "Find and acquire new domain names";
+"SELECT_PULL_UP_BUY_TOKENS_SUBTITLE" = "Purchase instantly with Apple Pay";

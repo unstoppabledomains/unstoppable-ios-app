@@ -385,11 +385,23 @@ extension ViewPullUpDefaultConfiguration {
         return .init(title: .text(String.Constants.settingsLegal.localized()),
                      items: LegalType.allCases,
                      itemSelectedCallback: { item in
-            guard let legalType = item as? LegalType else { return }
-            selectionCallback(legalType)
+            guard let item = item as? LegalType else { return }
+            selectionCallback(item)
         },
                      dismissAble: true,
                      analyticName: .settingsLegalSelection,
+                     dismissCallback: nil)
+    }
+    
+    static func homeWalletBuySelectionPullUp(selectionCallback: @escaping (HomeWalletView.BuyOptions)->()) -> ViewPullUpDefaultConfiguration {
+        return .init(title: .text(String.Constants.settingsLegal.localized()),
+                     items: HomeWalletView.BuyOptions.allCases,
+                     itemSelectedCallback: { item in
+            guard let item = item as? HomeWalletView.BuyOptions else { return }
+            selectionCallback(item)
+        },
+                     dismissAble: true,
+                     analyticName: .homeWalletBuyOptions,
                      dismissCallback: nil)
     }
     

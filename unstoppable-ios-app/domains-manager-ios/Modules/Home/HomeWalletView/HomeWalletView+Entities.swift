@@ -268,3 +268,40 @@ extension HomeWalletView {
         }
     }
 }
+
+extension HomeWalletView {
+    enum BuyOptions: String, CaseIterable, PullUpCollectionViewCellItem  {
+        case domains, crypto
+        
+        var title: String {
+            switch self {
+            case .domains:
+                String.Constants.selectPullUpBuyDomainsTitle.localized()
+            case .crypto:
+                String.Constants.selectPullUpBuyTokensTitle.localized()
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .domains:
+                String.Constants.selectPullUpBuyDomainsSubtitle.localized()
+            case .crypto:
+                String.Constants.selectPullUpBuyTokensSubtitle.localized()
+            }
+        }
+        
+        var disclosureIndicatorStyle: PullUpDisclosureIndicatorStyle { .right }
+        
+        var icon: UIImage {
+            switch self {
+            case .domains:
+                return .globeRotated
+            case .crypto:
+                return .verticalLines
+            }
+        }
+        
+        var analyticsName: String { rawValue }
+    }
+}
