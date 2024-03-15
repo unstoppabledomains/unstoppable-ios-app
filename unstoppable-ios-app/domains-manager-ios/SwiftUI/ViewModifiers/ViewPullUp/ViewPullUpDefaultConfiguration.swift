@@ -8,11 +8,15 @@
 import UIKit
 
 struct ViewPullUpDefaultConfiguration {
+    typealias ItemCallback = ((PullUpCollectionViewCellItem)->())
+    
     let id = UUID()
     var icon: IconContent? = nil
     var title: LabelType?
     var subtitle: Subtitle? = nil
     var contentAlignment: ContentAlignment = .center
+    var items: [PullUpCollectionViewCellItem] = PullUpSelectionViewEmptyItem.allCases
+    var itemSelectedCallback: ItemCallback? = nil
     var actionButton: ButtonType? = nil
     var extraButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
@@ -183,9 +187,16 @@ extension ViewPullUpDefaultConfiguration {
         }
         
         if let subtitle {
+            height += 8 // Space from title
             height += heightForSubtitle(subtitle,
                                         contentWidth: contentWidth)
-            height += 8 // Space from title
+        }
+        
+        if !items.isEmpty {
+            let itemsHeight = items.reduce(0.0, { $0 + $1.height }) 
+            height += itemsHeight
+            height += ViewPullUp.listContentPadding * 2 // Top and bottom
+            height += ViewPullUp.sideOffset
         }
         
         if let actionButton {
@@ -370,7 +381,17 @@ extension ViewPullUpDefaultConfiguration {
                      dismissCallback: nil)
     }
     
-
+    static func legalSelectionPullUp(selectionCallback: @escaping (LegalType)->()) -> ViewPullUpDefaultConfiguration {
+        return .init(title: .text(String.Constants.settingsLegal.localized()),
+                     items: LegalType.allCases,
+                     itemSelectedCallback: { item in
+            guard let legalType = item as? LegalType else { return }
+            selectionCallback(legalType)
+        },
+                     dismissAble: true,
+                     analyticName: .settingsLegalSelection,
+                     dismissCallback: nil)
+    }
     
 }
 

@@ -13,6 +13,7 @@ struct ViewPullUp: ViewModifier {
     static let headerSpacing: CGFloat = 36
     static let imageSize: CGFloat = 40
     static let titleLineHeight: CGFloat = 28
+    static let listContentPadding: CGFloat = 4
     
     @Binding var type: ViewPullUpConfigurationType?
     var typeChangedCallback: ((ViewPullUpConfigurationType?)->())? = nil
@@ -99,6 +100,10 @@ private extension ViewPullUp {
                 }
                 .multilineTextAlignment(alignmentFrom(textAlignment: getCurrentContentAlignment(configuration: configuration)))
                 
+                
+                viewForItemsList(items: configuration.items,
+                                 selectionCallback: configuration.itemSelectedCallback)
+                
                 if let actionButton = configuration.actionButton {
                     buttonViewFor(configuration: configuration, buttonType: actionButton)
                         .padding(EdgeInsets(top: 14, leading: 0, bottom: 0, trailing: 0))
@@ -120,6 +125,41 @@ private extension ViewPullUp {
         case .custom(let configuration):
             AnyView(configuration.content())
         }
+    }
+    
+    @ViewBuilder
+    func viewForItemsList(items: [PullUpCollectionViewCellItem],
+                          selectionCallback: ((PullUpCollectionViewCellItem)->())?) -> some View {
+        VStack(spacing: 0) {
+            ForEach(items, id: \.title) { item in
+                selectableListItemView(item: item,
+                                       selectionCallback: selectionCallback)
+            }
+        }
+        .padding(Self.listContentPadding)
+        .background(Color.backgroundOverlay)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.borderMuted, lineWidth: 1)
+        }
+    }
+    
+    @ViewBuilder
+    func selectableListItemView(item: PullUpCollectionViewCellItem,
+                                selectionCallback: ((PullUpCollectionViewCellItem)->())?) -> some View {
+        UDCollectionListRowButton(content: {
+            ViewPullUpListItemView(item: item)
+                .padding(.init(horizontal: 12))
+        }, callback: {
+            UDVibration.buttonTap.vibrate()
+            appContext.analyticsService.log(event: .buttonPressed,
+                                            withParameters: [.button: item.analyticsName,
+                                                             .pullUpName: type?.analyticName.rawValue ?? ""])
+            
+            selectionCallback?(item)
+        })
+            .allowsHitTesting(item.isSelectable)
     }
     
     @ViewBuilder
