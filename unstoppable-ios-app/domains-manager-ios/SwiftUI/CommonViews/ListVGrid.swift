@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ListVGrid<Element: Identifiable, Row: View>: View {
+struct ListVGrid<Element, Row: View>: View {
     
     let data: [Element]
     var numberOfColumns: Int = 2

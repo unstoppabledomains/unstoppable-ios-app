@@ -17,8 +17,10 @@ final class WalletsDataService {
     private let transactionsService: DomainTransactionsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletNFTsService: WalletNFTsServiceProtocol
+    private let networkService: WalletsDataNetworkServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
-    
+    private var refreshDomainsTimer: AnyCancellable?
+
     @Published private(set) var wallets: [WalletEntity] = []
     var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }
     @Published private(set) var selectedWallet: WalletEntity? = nil
@@ -28,12 +30,14 @@ final class WalletsDataService {
          walletsService: UDWalletsServiceProtocol,
          transactionsService: DomainTransactionsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
-         walletNFTsService: WalletNFTsServiceProtocol) {
+         walletNFTsService: WalletNFTsServiceProtocol,
+         networkService: WalletsDataNetworkServiceProtocol) {
         self.domainsService = domainsService
         self.walletsService = walletsService
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
+        self.networkService = networkService
         walletsService.addListener(self)
         wallets = storage.getCachedWallets()
         queue.async {
@@ -46,6 +50,8 @@ final class WalletsDataService {
 // MARK: - WalletsDataServiceProtocol
 extension WalletsDataService: WalletsDataServiceProtocol {
     func setSelectedWallet(_ wallet: WalletEntity?) {
+        guard wallet?.address != selectedWallet?.address else { return }
+        
         selectedWallet = wallet
         if let wallet {
             refreshDataForWalletAsync(wallet)
@@ -112,6 +118,10 @@ extension WalletsDataService: WalletsDataServiceProtocol {
         
         try await refreshDataForWallet(wallet)
     }
+    
+    func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
+        try await networkService.fetchCryptoPortfolioFor(wallet: walletAddress)
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -130,7 +140,7 @@ extension WalletsDataService: UDWalletsServiceListener {
                     mutateWalletEntity(wallet) { wallet in
                         wallet.changeRRDomain(domain)
                     }
-                    refreshWalletDomainsAsync(wallet, shouldRefreshPFP: false)
+                    refreshWalletDomainsNonBlocking(wallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
             case .walletRemoved:
@@ -152,13 +162,13 @@ extension WalletsDataService: UDWalletsServiceListener {
 // MARK: - Private methods
 private extension WalletsDataService {
     func refreshDataForWalletAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool = true) {
-        refreshWalletDomainsAsync(wallet, shouldRefreshPFP: shouldRefreshPFP)
+        refreshWalletDomainsNonBlocking(wallet, shouldRefreshPFP: shouldRefreshPFP)
         refreshWalletBalancesAsync(wallet)
         refreshWalletNFTsAsync(wallet)
     }
     
     func refreshDataForWalletSync(_ wallet: WalletEntity) async {
-        async let domainsTask: () = refreshWalletDomainsSync(wallet, shouldRefreshPFP: true)
+        async let domainsTask: () = refreshWalletDomains(wallet, shouldRefreshPFP: true)
         async let walletsTask: () = refreshWalletBalancesAsync(wallet)
         async let NFTsTask: () = refreshWalletNFTsSync(wallet)
         
@@ -184,13 +194,14 @@ private extension WalletsDataService {
 
 // MARK: - Load domains
 private extension WalletsDataService {
-    func refreshWalletDomainsAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) {
+    func refreshWalletDomainsNonBlocking(_ wallet: WalletEntity, shouldRefreshPFP: Bool) {
         Task {
-            await refreshWalletDomainsSync(wallet, shouldRefreshPFP: shouldRefreshPFP)
+            await refreshWalletDomains(wallet, shouldRefreshPFP: shouldRefreshPFP)
         }
     }
 
-    func refreshWalletDomainsSync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
+    func refreshWalletDomains(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
+        await stopRefreshDomainsTimer()
         do {
             async let domainsTask = domainsService.updateDomainsList(for: [wallet.udWallet])
             async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
@@ -221,6 +232,7 @@ private extension WalletsDataService {
                 await loadWalletDomainsPFPIfTooLarge(wallet)
             }
         } catch { }
+        startRefreshDomainsTimerIfNeeded()
     }
     
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
@@ -474,15 +486,66 @@ private extension WalletsDataService {
     
     func refreshWalletBalancesAsync(_ wallet: WalletEntity) async {
         do {
-            let walletBalance = try await loadBalanceFor(wallet: wallet)
+            async let walletBalanceTask = loadEssentialBalanceFor(wallet: wallet)
+            async let additionalBalancesTask = loadAdditionalBalancesFor(wallet: wallet)
+            
+            let (walletBalance, additionalBalances) = try await (walletBalanceTask, additionalBalancesTask)
+            let allBalances = walletBalance + additionalBalances
+            
             mutateWalletEntity(wallet) { wallet in
-                wallet.updateBalance(walletBalance ?? [])
+                wallet.updateBalance(allBalances)
             }
         } catch { }
     }
     
-    func loadBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio]? {
-         try await NetworkService().fetchCryptoPortfolioFor(wallet: wallet.address)
+    func loadEssentialBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
+         try await loadBalanceFor(walletAddress: wallet.address)
+    }
+    
+    func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {
+        do {
+            let additionalAddresses = try await getAdditionalWalletAddressesToLoadBalanceFor(wallet: wallet)
+            guard !additionalAddresses.isEmpty else { return [] }
+            
+            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses)
+            return balances
+        } catch {
+            Debugger.printFailure("Failed to load additional tokens for wallet: \(wallet.address)")
+            return []
+        }
+    }
+    
+    func loadAdditionalBalancesFor(addresses: Set<String>) async -> [WalletTokenPortfolio] {
+        var balances = [WalletTokenPortfolio]()
+        
+        await withTaskGroup(of: [WalletTokenPortfolio].self) { group in
+            for address in addresses {
+                group.addTask {
+                    do {
+                        let tokens = try await self.loadBalanceFor(walletAddress: address)
+                        return tokens
+                    } catch {
+                        // Do not fail everything if one of additional tokens failed
+                        return []
+                    }
+                }
+            }
+            
+            for await additionalBalances in group {
+                balances.append(contentsOf: additionalBalances)
+            }
+        }
+        
+        return balances
+    }
+    
+    func getAdditionalWalletAddressesToLoadBalanceFor(wallet: WalletEntity) async throws -> Set<String> {
+        guard let profileDomainName = wallet.profileDomainName else { return [] }
+        
+        let records = try await networkService.fetchProfileRecordsFor(domainName: profileDomainName)
+        let additionalAddresses = Set(Constants.additionalSupportedTokens.compactMap({ records[$0] }))
+        
+        return additionalAddresses
     }
 }
 
@@ -543,6 +606,55 @@ private extension WalletsDataService {
                             nfts: [],
                             balance: [],
                             rrDomain: nil)
+    }
+}
+
+// MARK: - Private methods
+private extension WalletsDataService {
+    @MainActor
+    func stopRefreshDomainsTimer() {
+        refreshDomainsTimer?.cancel()
+        refreshDomainsTimer = nil
+    }
+    
+    @MainActor
+    func startRefreshDomainsTimer() {
+        stopRefreshDomainsTimer()
+        refreshDomainsTimer = Timer
+            .publish(every: Constants.updateInterval, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshDomainsForCurrentWalletNonBlocking()
+            }
+    }
+    
+    @MainActor
+    func refreshDomainsForCurrentWalletNonBlocking() {
+        guard let selectedWallet else {
+            stopRefreshDomainsTimer()
+            return
+        }
+        
+        refreshWalletDomainsNonBlocking(selectedWallet, shouldRefreshPFP: false)
+    }
+    
+    func startRefreshDomainsTimerIfNeeded() {
+        guard let selectedWallet else { return }
+        
+        Task {
+            if isNeedToStartRefreshTimerFor(wallet: selectedWallet) {
+                await startRefreshDomainsTimer()
+            }
+        }
+    }
+    
+    func isNeedToStartRefreshTimerFor(wallet: WalletEntity) -> Bool {
+        let domains = wallet.domains
+        
+        if domains.first(where: { $0.state == .minting || $0.state == .transfer }) != nil {
+            return true
+        }
+        return false
     }
 }
 

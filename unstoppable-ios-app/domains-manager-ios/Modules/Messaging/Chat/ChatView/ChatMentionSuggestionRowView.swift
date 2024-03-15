@@ -43,9 +43,7 @@ private extension ChatMentionSuggestionRowView {
     
     @ViewBuilder
     func avatarView() -> some View {
-        UIImageBridgeView(image: avatar,
-                          width: 20,
-                          height: 20)
+        UIImageBridgeView(image: avatar)
             .squareFrame(24)
             .clipShape(Circle())
     }

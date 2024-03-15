@@ -212,130 +212,6 @@ extension HomeWalletView {
 }
 
 extension HomeWalletView {
-    struct TokenDescription: Hashable, Identifiable {
-        var id: String { "\(chain)/\(symbol)" }
-        
-        let chain: String
-        let symbol: String
-        let name: String
-        let balance: Double
-        let balanceUsd: Double
-        var marketUsd: Double?
-        var marketPctChange24Hr: Double?
-        var parentSymbol: String?
-        var logoURL: URL?
-        var parentLogoURL: URL?
-        private(set) var isSkeleton: Bool = false
-       
-        static let iconSize: InitialsView.InitialsSize = .default
-        static let iconStyle: InitialsView.Style = .gray
-        
-        init(walletBalance: WalletTokenPortfolio) {
-            self.chain = walletBalance.symbol
-            self.symbol = walletBalance.symbol
-            self.name = walletBalance.name
-            self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
-            self.balanceUsd = walletBalance.value.walletUsdAmt
-            self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
-            self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
-        }
-        
-        init(chain: String, symbol: String, name: String, balance: Double, balanceUsd: Double, marketUsd: Double? = nil,
-             marketPctChange24Hr: Double? = nil,
-             icon: UIImage? = nil) {
-            self.chain = chain
-            self.symbol = symbol
-            self.name = name
-            self.balance = balance
-            self.balanceUsd = balanceUsd
-            self.marketUsd = marketUsd
-            self.marketPctChange24Hr = marketPctChange24Hr
-        }
-        
-        init(chain: String, walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
-            self.chain = chain
-            self.symbol = walletToken.symbol
-            self.name = walletToken.name
-            self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
-            self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
-            self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
-            self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
-            self.parentSymbol = parentSymbol
-            self.logoURL = URL(string: walletToken.logoUrl ?? "")
-        }
-        
-        static func extractFrom(walletBalance: WalletTokenPortfolio) -> [TokenDescription] {
-            let tokenDescription = TokenDescription(walletBalance: walletBalance)
-            let parentSymbol = walletBalance.symbol
-            let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
-            let chainSymbol = walletBalance.symbol
-            let subTokenDescriptions = walletBalance.tokens?.map({ TokenDescription(chain: chainSymbol,
-                                                                                    walletToken: $0,
-                                                                                    parentSymbol: parentSymbol,
-                                                                                    parentLogoURL: parentLogoURL) })
-                                                            .filter({ $0.balanceUsd >= 1 }) ?? []
-            
-            return [tokenDescription] + subTokenDescriptions
-        }
-        
-        static func createSkeletonEntity() -> TokenDescription {
-            var token = TokenDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
-            token.isSkeleton = true
-            return token 
-        }
-        
-        func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
-            TokenDescription.loadIconFor(ticker: symbol, logoURL: logoURL, iconUpdated: iconUpdated)
-        }
-        
-        func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
-            if let parentSymbol {
-                TokenDescription.loadIconFor(ticker: parentSymbol, logoURL: parentLogoURL, iconUpdated: iconUpdated)
-            } else {
-                iconUpdated(nil)
-            }
-        }
-        
-        static func loadIconFor(ticker: String, logoURL: URL?, iconUpdated: @escaping (UIImage?)->()) {
-            if let logoURL,
-               let cachedImage = appContext.imageLoadingService.cachedImage(for: .url(logoURL, maxSize: nil), downsampleDescription: .icon) {
-                iconUpdated(cachedImage)
-                return
-            }
-            
-            let size = TokenDescription.iconSize
-            let style = TokenDescription.iconStyle
-            if let cachedImage = appContext.imageLoadingService.cachedImage(for: .currencyTicker(ticker,
-                                                                                                 size: size,
-                                                                                                 style: style),
-                                                                            downsampleDescription: .icon) {
-                iconUpdated(cachedImage)
-                return
-            }
-            Task { @MainActor in
-                let initials = await appContext.imageLoadingService.loadImage(from: .initials(ticker,
-                                                                                              size: size,
-                                                                                              style: style),
-                                                                              downsampleDescription: nil)
-                iconUpdated(initials)
-                
-                if let logoURL,
-                   let icon = await appContext.imageLoadingService.loadImage(from: .url(logoURL,
-                                                                                        maxSize: nil),
-                                                                             downsampleDescription: .icon) {
-                    iconUpdated(icon)
-                } else if let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
-                                                                                                   size: size,
-                                                                                                   style: style),
-                                                                             downsampleDescription: .icon) {
-                    iconUpdated(icon)
-                }
-            }
-        }
-    }
-}
-
-extension HomeWalletView {
     struct NFTsCollectionDescription: Hashable, Identifiable {
         var id: String { collectionName }
 
@@ -346,7 +222,8 @@ extension HomeWalletView {
         let nftsNativeValue: Double
         let nftsUsdValue: Double
         let lastSaleDate: Date?
-        
+        let lastAcquiredDate: Date?
+                
         init(collectionName: String, nfts: [NFTDisplayInfo]) {
             self.collectionName = collectionName
             self.nfts = nfts
@@ -356,6 +233,8 @@ extension HomeWalletView {
             nftsNativeValue = saleDetails.reduce(0.0, { $0 + $1.valueNative })
             nftsUsdValue = saleDetails.reduce(0.0, { $0 + $1.valueUsd })
             lastSaleDate = saleDetails.sorted(by: { $0.date > $1.date }).first?.date
+            
+            lastAcquiredDate = nfts.lazy.compactMap({ $0.acquiredDate }).sorted(by: { $0 > $1 }).first
         }
     }
     
@@ -387,5 +266,42 @@ extension HomeWalletView {
             self.tld = tld
             numberOfDomains = domains.count
         }
+    }
+}
+
+extension HomeWalletView {
+    enum BuyOptions: String, CaseIterable, PullUpCollectionViewCellItem  {
+        case domains, crypto
+        
+        var title: String {
+            switch self {
+            case .domains:
+                String.Constants.selectPullUpBuyDomainsTitle.localized()
+            case .crypto:
+                String.Constants.selectPullUpBuyTokensTitle.localized()
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .domains:
+                String.Constants.selectPullUpBuyDomainsSubtitle.localized()
+            case .crypto:
+                String.Constants.selectPullUpBuyTokensSubtitle.localized()
+            }
+        }
+        
+        var disclosureIndicatorStyle: PullUpDisclosureIndicatorStyle { .right }
+        
+        var icon: UIImage {
+            switch self {
+            case .domains:
+                return .globeRotated
+            case .crypto:
+                return .verticalLines
+            }
+        }
+        
+        var analyticsName: String { rawValue }
     }
 }

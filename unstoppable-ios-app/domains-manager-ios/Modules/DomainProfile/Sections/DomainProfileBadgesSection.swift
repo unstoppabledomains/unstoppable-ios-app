@@ -242,28 +242,6 @@ private extension DomainProfileBadgesSection {
     }
 }
 
-extension BadgesInfo {
-    static func mock() -> BadgesInfo {
-        .init(badges: [.init(code: "1", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "2", name: "Octopus", logo: "", description: "Holder shmolder very long long description for this interesting badge"),
-                       .init(code: "3", name: "1 Year club", logo: "", description: "Holder ksdjfsdafl ksjhdflksadjhf klsadjhf klsadjfh skdf skldjf laksdhf skaldjhf ksaldjfh sakljdf ksaldjfh laskdjfh slakdfjh askldfjh aslkdfhaslkdf aslkfj saldkfjas dklfaslkdjf lkasd flsdjhf klasjhf kljashf kjlasdhf klsadjhf askldjfh sadlkjfh kj"),
-                       .init(code: "4", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "5", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "6", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "8", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "9", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "10", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "11", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "12", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "13", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "14", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "15", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "16", name: "NFT Domain", logo: "", description: "Holder")],
-              refresh: .init(last: Date(), next: Date()))
-    }
-}
-
 extension BadgesInfo.BadgeInfo {
     static let exploreWeb3: BadgesInfo.BadgeInfo = .init(code: UUID().uuidString,
                                                          name: String.Constants.profileBadgeExploreWeb3TitleFull.localized(),

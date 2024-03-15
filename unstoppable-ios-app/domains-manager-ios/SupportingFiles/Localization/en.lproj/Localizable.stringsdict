@@ -482,6 +482,30 @@
 			<string>crypto</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_ADDRESSES</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>addresses</string>
+			<key>one</key>
+			<string>address</string>
+			<key>two</key>
+			<string>addresses</string>
+			<key>few</key>
+			<string>addresses</string>
+			<key>many</key>
+			<string>addresses</string>
+			<key>other</key>
+			<string>addresses</string>
+		</dict>
+	</dict>
 	<key>SDICT:N_FOLLOWERS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

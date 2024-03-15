@@ -34,6 +34,13 @@ struct NetworkConfig {
             return "unstoppabledomains.com"
         }
     }
+    static var websiteBaseUrl: String {
+        "https://\(Self.websiteHost)"
+    }
+    
+    static var buyCryptoUrl: String {
+        websiteBaseUrl + "/fiat-ramps"
+    }
     
     static var baseDomainProfileUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
@@ -100,12 +107,22 @@ struct NetworkConfig {
         }
     }
     
-    static var baseNetworkScanUrl: String {
+    private static let okLinkBaseURL = "https://www.oklink.com"
+    
+    static var basePolygonNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return "https://mumbai.polygonscan.com"
+            return okLinkBaseURL + "/mumbai"
         }
-        return "https://polygonscan.com"
+        return okLinkBaseURL + "/polygon"
+    }
+    
+    static var baseEthereumNetworkScanUrl: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return okLinkBaseURL + "/goerli-test"
+        }
+        return okLinkBaseURL + "/eth"
     }
     
     static func currencyIconUrl(for currency: CoinRecord) -> String {

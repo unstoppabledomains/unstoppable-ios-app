@@ -107,8 +107,8 @@ extension DomainProfileSocialsSection: DomainProfileSection {
 
 // MARK: - Private methods
 private extension DomainProfileSocialsSection {
-    var currentSocialDescriptions: [SocialDescription] {
-        SocialDescription.typesFrom(accounts: editingSocialsData)
+    var currentSocialDescriptions: [DomainProfileSocialAccount] {
+        DomainProfileSocialAccount.typesFrom(accounts: editingSocialsData)
     }
     
     func sectionHeader(numberOfAddedSocials: Int,
@@ -131,7 +131,7 @@ private extension DomainProfileSocialsSection {
                      id: id)
     }
     
-    func displayInfo(for description: SocialDescription) -> DomainProfileViewController.DomainProfileSocialsDisplayInfo {
+    func displayInfo(for description: DomainProfileSocialAccount) -> DomainProfileViewController.DomainProfileSocialsDisplayInfo {
         var actions: [DomainProfileSocialsSection.SocialsAction] = [.copy(description: description,
                                                                           callback: { [weak self] in
             self?.logProfileSectionButtonPressedAnalyticEvent(button: .copyToClipboard, parameters: [.fieldName : description.analyticsName])
@@ -171,7 +171,7 @@ private extension DomainProfileSocialsSection {
         }
     }
 
-    func handleEditAction(for description: SocialDescription) {
+    func handleEditAction(for description: DomainProfileSocialAccount) {
         logProfileSectionButtonPressedAnalyticEvent(button: .edit, parameters: [.fieldName : description.analyticsName])
         guard let nav = controller?.viewController?.cNavigationController else { return }
         
@@ -187,7 +187,7 @@ private extension DomainProfileSocialsSection {
         }
     }
     
-    func handleCopyAction(for description: SocialDescription) {
+    func handleCopyAction(for description: DomainProfileSocialAccount) {
         Task { @MainActor in
             var name = "URL"
             var value = description.appURL?.absoluteString ?? ""
@@ -199,17 +199,17 @@ private extension DomainProfileSocialsSection {
         }
     }
     
-    func handleOpenAction(for description: SocialDescription) {
+    func handleOpenAction(for description: DomainProfileSocialAccount) {
         description.openSocialAccount()
     }
     
-    func handleClearAction(for description: SocialDescription) {
+    func handleClearAction(for description: DomainProfileSocialAccount) {
         logProfileSectionButtonPressedAnalyticEvent(button: .clear, parameters: [.fieldName : description.analyticsName])
         set(value: "", for: description)
         controller?.sectionDidUpdate(animated: true)
     }
     
-    func set(value: String, for description: SocialDescription) {
+    func set(value: String, for description: DomainProfileSocialAccount) {
         let value = value.trimmedSpaces
         switch description.type {
         case .twitter:
@@ -229,17 +229,17 @@ private extension DomainProfileSocialsSection {
         }
     }
     
-    func value(of description: SocialDescription, in sectionData: SectionData) -> String {
+    func value(of description: DomainProfileSocialAccount, in sectionData: SectionData) -> String {
         description.value(in: sectionData)
     }
 }
 
 extension DomainProfileSocialsSection {    
     enum SocialsAction: Hashable, Sendable {
-        case edit(description: SocialDescription, callback: MainActorAsyncCallback)
-        case open(description: SocialDescription, callback: MainActorAsyncCallback)
-        case remove(description: SocialDescription, callback: MainActorAsyncCallback)
-        case copy(description: SocialDescription, callback: MainActorAsyncCallback)
+        case edit(description: DomainProfileSocialAccount, callback: MainActorAsyncCallback)
+        case open(description: DomainProfileSocialAccount, callback: MainActorAsyncCallback)
+        case remove(description: DomainProfileSocialAccount, callback: MainActorAsyncCallback)
+        case copy(description: DomainProfileSocialAccount, callback: MainActorAsyncCallback)
 
         var title: String {
             switch self {
@@ -298,20 +298,3 @@ extension DomainProfileSocialsSection {
         }
     }
 }
-
-extension SocialAccounts {
-    static func mock() -> SocialAccounts {
-        .init(twitter: .mock(value: "lastsummer"),
-              discord: .mock(),
-              youtube: .mock(value: "https://www.youtube.com/channel/UCH7R3uNh4yqL0FmBLHXHLDg"),
-              reddit: .mock(value:"TopTrending2022"),
-              telegram: .mock(value: "lastsummersix"))
-    }
-}
-
-extension SerializedDomainSocialAccount {
-    static func mock(value: String = "") -> SerializedDomainSocialAccount {
-        .init(location: value, verified: true, public: true)
-    }
-}
- 

@@ -54,12 +54,13 @@ private extension PurchaseDomainsSelectWalletView {
                            imageType: .image(walletDisplayInfo.image),
                            imageStyle: walletDisplayInfo.imageStyle,
                            rightViewStyle: walletDisplayInfo.rightViewStyle)
+            .udListItemInCollectionButtonPadding()
         }, callback: {
             logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
 
             let selectedWallet = wallet
             self.selectedWallet = selectedWallet
-            userProfileService.setSelectedProfile(.wallet(selectedWallet))
+            userProfileService.setActiveProfile(.wallet(selectedWallet))
             selectedWalletCallback(selectedWallet)
             presentationMode.wrappedValue.dismiss()
         })

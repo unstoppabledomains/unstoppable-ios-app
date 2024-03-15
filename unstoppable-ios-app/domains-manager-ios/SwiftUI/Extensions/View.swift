@@ -91,6 +91,8 @@ extension View {
         )
         .eraseToAnyPublisher()
     }
+    
+    var screenSize: CGSize { UIScreen.main.bounds.size }
 }
 
 extension View {
@@ -99,4 +101,8 @@ extension View {
             transaction.animation = nil
         }
     }
+}
+
+extension ViewModifier {
+    var screenSize: CGSize { UIScreen.main.bounds.size }
 }

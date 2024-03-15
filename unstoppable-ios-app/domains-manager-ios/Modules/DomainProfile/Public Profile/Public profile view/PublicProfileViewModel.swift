@@ -18,6 +18,16 @@ extension Array where Element == DomainProfileFollowerDisplayInfo {
     }
 }
 
+struct PublicProfileViewConfiguration: Identifiable {
+    
+    var id: String { domain.name }
+    
+    let domain: PublicDomainDisplayInfo
+    let viewingWallet: WalletEntity?
+    var preRequestedAction: PreRequestedProfileAction? = nil
+    var delegate: PublicProfileViewDelegate? = nil
+}
+
 extension PublicProfileView {
     
     struct FollowersDisplayInfo {
@@ -29,21 +39,22 @@ extension PublicProfileView {
         case failedToLoadFollowerInfo
         case failedToFindDomain
     }
-    
+  
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
-        private weak var delegate: PublicProfileViewDelegate?
+        private(set) weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
-        private(set) var wallet: WalletEntity
-        private(set) var viewingDomain: DomainItem?
+        private(set) var viewingDomain: DomainDisplayInfo?
         @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
-        @Published var socialAccounts: SocialAccounts?
+        @Published var socialAccounts: [DomainProfileSocialAccount]?
+        @Published var tokens: [BalanceTokenUIDescription]?
+        @Published var isTokensCollapsed = true
         @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var isUserDomainSelected = true
-        @Published private(set) var profile: SerializedPublicDomainProfile?
+        @Published private(set) var profile: DomainProfileDisplayInfo?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
         @Published private(set) var coverImage: UIImage?
         @Published private(set) var avatarImage: UIImage?
@@ -54,21 +65,16 @@ extension PublicProfileView {
         private var badgesInfo: BadgesInfo?
         private var preRequestedAction: PreRequestedProfileAction?
         
-        init(domain: PublicDomainDisplayInfo,
-             wallet: WalletEntity,
-             viewingDomain: DomainItem?,
-             preRequestedAction: PreRequestedProfileAction?,
-             delegate: PublicProfileViewDelegate?) {
-            self.domain = domain
-            self.wallet = wallet
-            self.viewingDomain = viewingDomain ?? wallet.getDomainToViewPublicProfile()?.toDomainItem()
-            self.preRequestedAction = preRequestedAction
-            self.delegate = delegate
+        init(configuration: PublicProfileViewConfiguration) {
+            self.domain = configuration.domain
+            self.preRequestedAction = configuration.preRequestedAction
+            self.delegate = configuration.delegate
             self.appearTime = Date()
+            setupViewingDomain(requiredWallet: configuration.viewingWallet)
             loadAllProfileData()
             loadViewingDomainData()
         }
-     
+        
         func loadIconIfNeededFor(follower: DomainProfileFollowerDisplayInfo) {
             guard follower.icon == nil else { return }
             
@@ -97,11 +103,12 @@ extension PublicProfileView {
             Task {
                 await performAsyncErrorCatchingBlock {
                     if isFollowing {
-                        try await NetworkService().unfollow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.unfollowProfileWith(domainName: domain.name, by: viewingDomain)
                     } else {
-                        try await NetworkService().follow(domain.name, by: viewingDomain)
+                        try await appContext.domainProfilesService.followProfileWith(domainName: domain.name, by: viewingDomain)
+                        appContext.toastMessageService.showToast(.followedProfileAs(viewingDomain.name), isSticky: false)
                     }
-                    self.isFollowing = !isFollowing
+                    self.isFollowing?.toggle()
                     loadPublicProfile() // Refresh social info
                 }
             }
@@ -120,17 +127,9 @@ extension PublicProfileView {
             }
         }
         
-        func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
-            let domainItem = domain.toDomainItem()
-            viewingDomainImage = nil
-            isFollowing = nil
-            loadFollowingState()
-            viewingDomain = domainItem
-            loadViewingDomainData()
-        }
-        
         private func loadAllProfileData() {
             loadPublicProfile()
+            loadProfileTokens()
             loadBadgesInfo()
             loadFollowingState()
             loadFollowersList()
@@ -142,6 +141,7 @@ extension PublicProfileView {
             records = nil
             socialInfo = nil
             socialAccounts = nil
+            tokens = nil
             isFollowing = nil
             badgesInfo = nil
             badgesDisplayInfo = nil
@@ -155,17 +155,25 @@ extension PublicProfileView {
             isLoading = true
             Task {
                 await performAsyncErrorCatchingBlock {
-                    let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
-                                                                                fields: [.profile, .records, .socialAccounts])
+                    let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: domain.name)
                     let domains = appContext.walletsDataService.wallets.combinedDomains()
                     await waitForAppear()
                     self.profile = profile
                     isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
-                    records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
-                    socialInfo = profile.social
+                    records = await convertRecordsFrom(recordsDict: profile.records)
+                    socialInfo = .init(followingCount: profile.followingCount, followerCount: profile.followerCount)
                     socialAccounts = profile.socialAccounts
                     isLoading = false
                     loadImages()
+                }
+            }
+        }
+        
+        private func loadProfileTokens() {
+            Task {
+                await performAsyncErrorCatchingBlock {
+                    let balances = try await appContext.walletsDataService.loadBalanceFor(walletAddress: domain.walletAddress)
+                    tokens = balances.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 }).sorted(by: { $0.balanceUsd > $1.balanceUsd })
                 }
             }
         }
@@ -227,9 +235,8 @@ extension PublicProfileView {
         
         private func loadAvatar() {
             Task {
-                if let imagePath = profile?.profile.imagePath,
-                   let url = URL(string: imagePath) {
-                    let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                if let pfpURL = profile?.pfpURL {
+                    let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
                                                                                      downsampleDescription: .mid)
                     await waitForAppear()
                     self.avatarImage = avatarImage
@@ -239,9 +246,8 @@ extension PublicProfileView {
         
         private func loadCoverImage() {
             Task {
-                if let coverPath = profile?.profile.coverPath,
-                   let url = URL(string: coverPath) {
-                    let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                if let bannerURL = profile?.bannerURL {
+                    let coverImage = await appContext.imageLoadingService.loadImage(from: .url(bannerURL),
                                                                                     downsampleDescription: .mid)
                     await waitForAppear()
                     self.coverImage = coverImage
@@ -253,10 +259,7 @@ extension PublicProfileView {
             guard let viewingDomain else { return }
             
             Task {
-                let domains = appContext.walletsDataService.wallets.combinedDomains()
-                guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
-                
-                let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
+                let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(viewingDomain),
                                                                                         downsampleDescription: .icon)
                 await waitForAppear()
                 self.viewingDomainImage = viewingDomainImage
@@ -285,30 +288,16 @@ extension PublicProfileView {
             }
             self.preRequestedAction = nil
         }
+        
+        private func setupViewingDomain(requiredWallet: WalletEntity?) {
+            if let requiredWallet {
+                viewingDomain = requiredWallet.rrDomain
+            } else if case .wallet(let wallet) = appContext.userProfileService.selectedProfile {
+                viewingDomain = wallet.rrDomain
+            }
+        }
     }
     
-}
-
-extension PublicDomainProfileAttributes {
-    static let empty = PublicDomainProfileAttributes(displayName: nil,
-                                                     description: nil,
-                                                     location: nil,
-                                                     web2Url: nil,
-                                                     imagePath: nil,
-                                                     imageType: nil,
-                                                     coverPath: nil,
-                                                     phoneNumber: nil,
-                                                     domainPurchased: nil)
-    
-    static let filled = PublicDomainProfileAttributes(displayName: "Oleg Kuplin",
-                                                      description: "Unstoppable iOS developer",
-                                                      location: "Danang",
-                                                      web2Url: "ud.me/oleg.x",
-                                                      imagePath: "nil",
-                                                      imageType: .onChain,
-                                                      coverPath: "nil",
-                                                      phoneNumber: nil,
-                                                      domainPurchased: nil)
 }
 
 func loadImageFrom(url: URL) async -> UIImage? {

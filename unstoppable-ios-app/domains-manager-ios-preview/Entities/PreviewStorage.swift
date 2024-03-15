@@ -15,3 +15,25 @@ struct Storage {
         
     }
 }
+
+class SpecificStorage<T: Codable> {
+    let fileName: String
+    
+    init(fileName: String) {
+        self.fileName = fileName
+    }
+    
+    func retrieve() -> T? {
+        nil
+    }
+    
+    @discardableResult
+    func store(_ data: T) -> Bool {
+        
+        return true
+    }
+    
+    func remove() {
+        
+    }
+}

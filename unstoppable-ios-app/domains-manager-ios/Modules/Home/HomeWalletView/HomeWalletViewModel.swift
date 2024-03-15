@@ -18,7 +18,7 @@ extension HomeWalletView {
     final class HomeWalletViewModel: ObservableObject, HomeWalletViewCoordinator {
         
         @Published private(set) var selectedWallet: WalletEntity
-        @Published private(set) var tokens: [TokenDescription] = []
+        @Published private(set) var tokens: [BalanceTokenUIDescription] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = []
         @Published private(set) var domainsGroups: [DomainsGroup] = []
         @Published private(set) var subdomains: [DomainDisplayInfo] = []
@@ -75,17 +75,30 @@ extension HomeWalletView {
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:
-                guard let rrDomain = selectedWallet.rrDomain else {
+                switch getCurrentWalletProfileState() {
+                case .udDomain(let domain), .ensDomain(let domain):
+                    showProfile(of: domain)
+                case .noProfile:
                     router.pullUp = .default(.showCreateYourProfilePullUp(buyCallback: { [weak self] in
                         self?.router.runPurchaseFlow()
                     }))
-                    return }
-                
-                showProfile(of: rrDomain)
+                }
             case .buy:
-                router.runPurchaseFlow()
+                router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
+                    self?.router.pullUp = nil
+                    self?.didSelectBuyOption(buyOption)
+                }))
             case .more:
                 return
+            }
+        }
+        
+        func didSelectBuyOption(_ buyOption: HomeWalletView.BuyOptions) {
+            switch buyOption {
+            case .domains:
+                router.runPurchaseFlow()
+            case .crypto:
+                router.runBuyCryptoFlowTo(wallet: selectedWallet)
             }
         }
         
@@ -127,13 +140,22 @@ extension HomeWalletView {
         func domainPurchased() {
             selectedContentType = .domains
         }
+        
+        var isProfileButtonEnabled: Bool {
+            switch getCurrentWalletProfileState() {
+            case .udDomain, .ensDomain:
+                return true
+            case .noProfile:
+                return false
+            }
+        }
     }
 }
 
 fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
-        tokens = wallet.balance.map { HomeWalletView.TokenDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
+        tokens = wallet.balance.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
         let domains = wallet.domains.filter({ !$0.isSubdomain })
         self.domainsGroups = [String : [DomainDisplayInfo]].init(grouping: domains, by: { $0.name.getTldName() ?? "" }).map { HomeWalletView.DomainsGroup(domains: $0.value, tld: $0.key) }
         subdomains = wallet.domains.filter({ $0.isSubdomain })
@@ -178,12 +200,12 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
         switch sortOption {
         case .mostRecent:
             nftsCollections = nftsCollections.sorted(by: { lhs, rhs in
-                if lhs.lastSaleDate == nil && rhs.lastSaleDate == nil {
+                if lhs.lastAcquiredDate == nil && rhs.lastAcquiredDate == nil {
                     return lhs.collectionName < rhs.collectionName /// Sort by name collections without sale date info
-                } else if let lhsDate = lhs.lastSaleDate,
-                          let rhsDate = rhs.lastSaleDate {
+                } else if let lhsDate = lhs.lastAcquiredDate,
+                          let rhsDate = rhs.lastAcquiredDate {
                     return lhsDate > rhsDate
-                } else if lhs.lastSaleDate != nil {
+                } else if lhs.lastAcquiredDate != nil {
                     return true
                 } else {
                     return false
@@ -241,9 +263,9 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             }
             
             do {
-                let profile = try await NetworkService().fetchPublicProfile(for: rrDomain.name,
-                                                                            fields: [.records])
-                let records = profile.records ?? [:]
+                
+                let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: rrDomain.name)
+                let records = profile.records
                 let coinRecords = await appContext.coinRecordsService.getCurrencies()
                 let recordsData = DomainRecordsData(from: records,
                                                     coinRecords: coinRecords,
@@ -286,5 +308,21 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             UserDefaults.didUpdateToWalletVersion = false
             router.showingUpdatedToWalletGreetings = true
         }
+    }
+}
+
+fileprivate extension HomeWalletView.HomeWalletViewModel {
+    enum WalletProfileState {
+        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
+    }
+    
+    func getCurrentWalletProfileState() -> WalletProfileState {
+        if let rrDomain = selectedWallet.rrDomain {
+            return .udDomain(rrDomain)
+        } else if let ensDomain = selectedWallet.domains.first(where: { $0.isENSDomain }),
+                  !selectedWallet.isReverseResolutionChangeAllowed() {
+            return .ensDomain(ensDomain)
+        }
+        return .noProfile
     }
 }

@@ -820,9 +820,7 @@ private extension ChatViewModel {
         guard let wallet = appContext.walletsDataService.wallets.findWithAddress(profile.wallet) else { return }
         router.showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                  name: domainName),
-                                       by: wallet,
-                                       viewingDomain: nil,
-                                       preRequestedAction: nil)
+                                       by: wallet)
     }
     
     func didPressViewGroupInfoButton(groupDetails: MessagingGroupChatDetails) {

@@ -97,6 +97,12 @@ extension DomainDisplayInfo {
     mutating func setOrder(_ order: Int?) {
         self.order = order
     }
+    
+    func getOwnerWallet() throws -> String {
+        guard let ownerWallet else { throw DomainDisplayInfoError.domainWithoutOwnerWallet }
+        
+        return ownerWallet
+    }
 }
 
 // MARK: - State
@@ -189,5 +195,16 @@ extension Array where Element == DomainDisplayInfo {
 extension DomainDisplayInfo {
     func toDomainItem() -> DomainItem {
         DomainItem(name: name, ownerWallet: ownerWallet, blockchain: blockchain)
+    }
+}
+
+// MARK: - Open methods
+extension DomainDisplayInfo {
+    enum DomainDisplayInfoError: String, LocalizedError {
+        case domainWithoutOwnerWallet
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }

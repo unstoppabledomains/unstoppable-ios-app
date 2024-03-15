@@ -70,6 +70,7 @@ private extension PurchaseSearchDomainsView {
                         rightViewType: currentSearchFieldRightViewType,
                         rightViewMode: .always,
                         leftViewType: .search,
+                        focusBehaviour: .activateOnAppear,
                         keyboardType: .alphabet,
                         autocapitalization: .never,
                         autocorrectionDisabled: true)
@@ -131,6 +132,7 @@ private extension PurchaseSearchDomainsView {
                 ForEach(searchResult, id: \.name) { domainInfo in
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
+                            .udListItemInCollectionButtonPadding()
                     }, callback: {
                         logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name,
                                                                                             .price: String(domainInfo.price),
@@ -293,24 +295,12 @@ private extension PurchaseSearchDomainsView {
     func loadSuggestions() {
         guard suggestions.isEmpty else { return }
         
-        func waitAndTryAgain() {
-            Task {
-                await Task.sleep(seconds: 5)
-                loadSuggestions()
-            }
-        }
-        
         Task {
             do {
                 let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
-                if suggestions.isEmpty {
-                    Debugger.printFailure("Did load 0 suggestions")
-                    waitAndTryAgain()
-                }
                 self.suggestions = suggestions
             } catch {
                 Debugger.printFailure("Failed to load suggestions")
-                waitAndTryAgain()
             }
         }
     }

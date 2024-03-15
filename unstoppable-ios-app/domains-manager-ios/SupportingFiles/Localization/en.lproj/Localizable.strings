@@ -89,7 +89,6 @@
 "OK" = "Ok";
 "COPY" = "Copy";
 "CANCEL" = "Cancel";
-"IMPORT" = "Import";
 "GOT_IT" = "Got it";
 "SHARE" = "Share";
 "COMING_SOON" = "Coming soon";
@@ -164,7 +163,14 @@
 "MORE" = "More";
 "HOME" = "Home";
 "MESSAGES" = "Messages";
+"EXPLORE" = "Explore";
 "REPLY" = "Reply";
+"GLOBAL" = "Global";
+"YOURS" = "Yours";
+"RECENT" = "Recent";
+"PRIMARY" = "Primary";
+"COLLAPSE" = "Collapse";
+"CHAT" = "Chat";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -1015,3 +1021,32 @@
 "INTRO_COLLECTIBLES_BODY" = "Keep an eye on your NFT collection and stay updated with market prices.";
 "INTRO_MESSAGES_BODY" = "Messages now have a dedicated tab.
 More tabs are coming in the next updates.";
+"TOTAL_N" = "Total: %@";
+
+"GLOBAL_DOMAINS_SEARCH_HINT" = "Search by domain name\nor wallet address";
+
+"EXPLORE_EMPTY_NO_PROFILE_TITLE" = "Get full access to Explore";
+"EXPLORE_EMPTY_NO_PROFILE_SUBTITLE" = "Buy your first domain to have an ability to explore and follow people.";
+"EXPLORE_EMPTY_NO_FOLLOWERS_TITLE" = "Get noticed in Web3";
+"EXPLORE_EMPTY_NO_FOLLOWERS_SUBTITLE" = "Share your profile to showcase your journey and attract like-minded people.";
+"EXPLORE_EMPTY_NO_FOLLOWERS_ACTION_TITLE" = "Share Profile";
+"EXPLORE_EMPTY_NO_FOLLOWING_TITLE" = "Expand your network";
+"EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE" = "Connect with leaders and enthusiasts in Web3 space. Start following and engage with the community.";
+"EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE" = "Find People";
+
+"SUGGESTED_FOR_YOU" = "Suggested for you";
+"FOLLOWED_AS_X" = "Followed as %@";
+
+"PROFILE_SUGGESTION_REASON_NFT_COLLECTION" = "Holds the same NFT collection";
+"PROFILE_SUGGESTION_REASON_POAP" = "Holds the same POAP";
+"PROFILE_SUGGESTION_REASON_TRANSACTION" = "Shared a transaction";
+"PROFILE_SUGGESTION_REASON_LENS_FOLLOWS" = "Social follow on Lens";
+"PROFILE_SUGGESTION_REASON_LENS_MUTUAL" = "Both users follow each other on Lens";
+"PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS" = "Social follow on Farcaster";
+"PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL" = "Both users follow each other on Farcaster";
+"SEARCH_PROFILES" = "Search profiles";
+
+"SELECT_PULL_UP_BUY_DOMAINS_TITLE" = "Buy domains";
+"SELECT_PULL_UP_BUY_TOKENS_TITLE" = "Buy crypto";
+"SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE" = "Find and acquire new domain names";
+"SELECT_PULL_UP_BUY_TOKENS_SUBTITLE" = "With Apple Pay or card";

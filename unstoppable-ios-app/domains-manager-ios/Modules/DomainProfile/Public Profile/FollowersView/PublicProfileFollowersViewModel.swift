@@ -92,9 +92,9 @@ extension PublicProfileFollowersView {
             Task {
                 await performAsyncErrorCatchingBlock {
                     let response = try await NetworkService().fetchListOfFollowers(for: domainName,
-                                                                                    relationshipType: type,
-                                                                                    count: numberOfFollowersToTake,
-                                                                                    cursor: paginationInfo.cursor)
+                                                                                   relationshipType: type,
+                                                                                   count: numberOfFollowersToTake,
+                                                                                   cursor: paginationInfo.cursor)
                     var currentList = getFollowersListFor(type: type) ?? []
                     currentList.append(contentsOf: response.data.map({ DomainProfileFollowerDisplayInfo(domain: $0.domain) }))
                     

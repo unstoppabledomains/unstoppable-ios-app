@@ -9,6 +9,7 @@ import Foundation
 
 struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
+    let metadata: PublicDomainProfileMetaData
     let socialAccounts: SocialAccounts?
     let referralCode: String?
     let social: DomainProfileSocialInfo?
@@ -106,6 +107,13 @@ struct PublicDomainProfileAttributes: Decodable {
         case phoneNumber
         case domainPurchased
     }
+}
+
+struct PublicDomainProfileMetaData: Decodable {
+    let domain: String
+    let blockchain: String
+    let networkId: Int
+    let owner: String
 }
 
 // MARK: - PublicDomainProfileAttributes init(from decoder:
@@ -434,7 +442,21 @@ struct DomainProfileFollowersResponse: Codable {
         let cursor: Int?
         let take: Int
     }
+}
+
+typealias SerializedDomainProfileSuggestionsResponse = [SerializedDomainProfileSuggestion]
+struct SerializedDomainProfileSuggestion: Codable {
+    let address: String
+    let reasons: [Reason]
+    let score: Int
+    let domain: String
+    let imageUrl: String?
+    let imageType: DomainProfileImageType?
     
+    struct Reason: Codable {
+        let id: String
+        let description: String
+    }
 }
 
 struct DomainProfileFollower: Codable {
@@ -635,7 +657,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let blockchainScanUrl: String
     let balanceAmt: Double
     let tokens: [Token]?
-    let stats: Stats?
+//    let stats: Stats?
 //    let nfts: [NFT]?
     let value: Value
     let totalValueUsdAmt: Double?
@@ -676,10 +698,10 @@ struct WalletTokenPortfolio: Codable, Hashable {
     }
     
     struct Stats: Codable, Hashable {
-        let nfts: String
-        let collections: String
-        let transactions: String
-        let transfers: String
+        let nfts: String?
+        let collections: String?
+        let transactions: String?
+        let transfers: String?
     }
     
     struct Token: Codable, Hashable {
@@ -711,4 +733,10 @@ struct ProfileUploadRemoteAttachmentRequest: Codable {
 // MARK: Profile Update Request Structures
 struct ProfileUploadRemoteAttachmentResponse: Codable {
     let url: URL
+}
+
+typealias SerializedRankingDomainsResponse = [SerializedRankingDomain]
+struct SerializedRankingDomain: Codable {
+    let rank: Int
+    let domain: String
 }

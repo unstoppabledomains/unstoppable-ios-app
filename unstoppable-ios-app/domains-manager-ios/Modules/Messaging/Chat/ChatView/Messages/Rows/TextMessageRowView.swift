@@ -145,10 +145,8 @@ private extension TextMessageRowView {
                 viewModel.didTapJumpToMessage(message)
             } label: {
                 HStack(spacing: 2) {
-                    Line(direction: .vertical)
-                        .stroke(lineWidth: 6)
+                    LineView(direction: .vertical, size: 6)
                         .foregroundStyle(Color.brandUnstoppableBlue)
-                        .frame(width: 6)
                         .padding(.init(vertical: -8))
                         .offset(x: -6)
                         .frame(height: 30)
@@ -180,5 +178,6 @@ private extension TextMessageRowView {
 #Preview {
     TextMessageRowView(message: MockEntitiesFabric.Messaging.createTextMessage(text: "Hello world", isThisUser: false),
                        info: .init(text: "Hello world"),
-                       referenceMessageId: nil)
+                       referenceMessageId: "1")
+    .environmentObject(MockEntitiesFabric.Messaging.mockChatViewModel())
 }

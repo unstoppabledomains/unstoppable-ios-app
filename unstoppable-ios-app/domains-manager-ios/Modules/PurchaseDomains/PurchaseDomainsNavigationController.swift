@@ -126,12 +126,20 @@ private extension PurchaseDomainsNavigationController {
     
     func moveToCheckoutWith(domain: DomainToPurchase,
                             profileChanges: DomainProfilePendingChanges) {
-        guard let selectedWallet = appContext.walletsDataService.selectedWallet else {
+        
+        let wallets = appContext.walletsDataService.wallets
+        let selectedWallet: WalletEntity
+        if let wallet = appContext.walletsDataService.selectedWallet {
+            selectedWallet = wallet
+        } else if let wallet = wallets.first {
+            selectedWallet = wallet
+            appContext.userProfileService.setActiveProfile(.wallet(wallet))
+        } else {
             askUserToAddWalletToPurchase(domain: domain,
                                          profileChanges: profileChanges)
             return
         }
-        let wallets = appContext.walletsDataService.wallets
+        
         purchaseData.domain = domain
         moveToStep(.checkout(domain: domain,
                              profileChanges: profileChanges,

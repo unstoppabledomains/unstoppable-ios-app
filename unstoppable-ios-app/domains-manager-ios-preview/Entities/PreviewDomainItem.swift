@@ -15,7 +15,7 @@ struct DomainItem: DomainEntity {
     func doesRequirePayment() -> Bool {
         switch self.getBlockchainType() {
         case .Ethereum: return true
-        case .Zilliqa, .Matic: return false
+        case .Matic: return false
         }
     }
 }

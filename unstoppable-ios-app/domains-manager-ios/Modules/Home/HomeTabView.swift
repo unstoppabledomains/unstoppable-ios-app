@@ -9,6 +9,7 @@ import SwiftUI
 
 enum HomeTab: String, Hashable {
     case wallets
+    case explore
     case messaging
 }
 
@@ -26,6 +27,14 @@ struct HomeTabView: View {
             }
             .tag(HomeTab.wallets)
             .tabBarVisible(router.isTabBarVisible)
+            
+            HomeExploreView(viewModel: HomeExploreViewModel(router: router))
+                .tabItem {
+                    Label(title: { Text(String.Constants.explore.localized()) },
+                          icon: { Image.exploreIcon })
+                }
+                .tag(HomeTab.explore)
+                .tabBarVisible(router.isTabBarVisible)
             
             ChatListView(viewModel: .init(presentOptions: .default,
                                           router: router))
@@ -68,9 +77,6 @@ struct HomeTabView: View {
                                            domainSetCallback: presentationDetails.domainSetCallback)
             .interactiveDismissDisabled(presentationDetails.mode == .selectFirst)
         })
-        .sheet(isPresented: $router.isSearchingDomains, content: {
-            DomainsSearchView()
-        })
         .sheet(item: $router.presentedDomain, content: { presentationDetails in
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
                                                wallet: presentationDetails.wallet,
@@ -80,13 +86,9 @@ struct HomeTabView: View {
             .ignoresSafeArea()
             .pullUpHandler(router)
         })
-        .sheet(item: $router.presentedPublicDomain, content: { presentationDetails in
-            PublicProfileView(domain: presentationDetails.domain,
-                              wallet: presentationDetails.wallet,
-                              viewingDomain: presentationDetails.viewingDomain,
-                              preRequestedAction: presentationDetails.preRequestedAction,
-                              delegate: presentationDetails.delegate)
-                .pullUpHandler(router)
+        .sheet(item: $router.presentedPublicDomain, content: { configuration in
+            PublicProfileView(configuration: configuration)
+            .pullUpHandler(router)
         })
         .fullScreenCover(item: $router.presentedUBTSearch, content: { presentationDetails in
             UDBTSearchView(controller: UBTController(),

@@ -55,15 +55,8 @@ final class UserProfileService {
 
 // MARK: - Open methods
 extension UserProfileService: UserProfileServiceProtocol {
-    func setSelectedProfile(_ profile: UserProfile) {
-        selectedProfile = profile
-        UserDefaults.selectedProfileId = profile.id
-        switch profile {
-        case .wallet(let walletEntity):
-            walletsDataService.setSelectedWallet(walletEntity)
-        case .webAccount:
-            walletsDataService.setSelectedWallet(nil)
-        }
+    func setActiveProfile(_ profile: UserProfile) {
+        setSelectedProfile(profile)
     }
 }
 
@@ -101,7 +94,7 @@ private extension UserProfileService {
         let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
         setSelectedProfile(selectedProfile)
         
-        if profiles.isEmpty {
+        if profiles.isEmpty, !currentProfilesList.isEmpty {
             Task {
                 await SceneDelegate.shared?.restartOnboarding()
                 firebaseParkedDomainsAuthenticationService.logOut()
@@ -127,6 +120,13 @@ private extension UserProfileService {
     func setSelectedProfile(_ profile: UserProfile?) {
         selectedProfile = profile
         UserDefaults.selectedProfileId = profile?.id
+        
+        switch profile {
+        case .wallet(let walletEntity):
+            walletsDataService.setSelectedWallet(walletEntity)
+        case .webAccount, .none:
+            walletsDataService.setSelectedWallet(nil)
+        }
     }
     
     func refreshWalletsAfterLaunchAsync(_ wallets: [WalletEntity]) {

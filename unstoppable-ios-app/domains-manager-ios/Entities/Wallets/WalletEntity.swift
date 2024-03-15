@@ -94,6 +94,7 @@ extension WalletEntity {
     var domainOrDisplayName: String { rrDomain == nil ? displayName : rrDomain!.name }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
+    var profileDomainName: String? { rrDomain?.name }
     
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
         balance.first(where: { $0.symbol == blockchainType.rawValue })

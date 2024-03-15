@@ -31,6 +31,7 @@ extension String {
         case communitiesInfo
         case setupApplePayInstruction
         case unstoppableDomainSearch(searchKey: String)
+        case buyCryptoToDomain(DomainName), buyCryptoToWallet(HexAddress)
         
         var urlString: String {
             switch self {
@@ -49,15 +50,15 @@ extension String {
             case .setupICloudDriveInstruction:
                 return "https://support.apple.com/en-us/HT204025"
             case .etherScanAddress(let address):
-                return "https://etherscan.io/address/\(address)"
+                return NetworkConfig.baseEthereumNetworkScanUrl + "/address/\(address)"
             case .polygonScanAddress(let address):
-                return NetworkConfig.baseNetworkScanUrl + "/address/\(address)"
+                return NetworkConfig.basePolygonNetworkScanUrl + "/address/\(address)"
             case .editProfile, .upgradeToPolygon:
                 return "https://unstoppabledomains.com/"
             case .mintDomainGuide:
                 return "https://cdn.unstoppabledomains.com/bucket/mobile-app/what_is_minting.mp4"
             case .polygonScanTransaction(let transaction):
-                return NetworkConfig.baseNetworkScanUrl + "/tx/\(transaction)"
+                return NetworkConfig.basePolygonNetworkScanUrl + "/tx/\(transaction)"
             case .learn:
                 return "https://mobileapp.unstoppabledomains.com"
             case .udLogoPng:
@@ -98,7 +99,11 @@ extension String {
             case .direct(let url):
                 return url.absoluteString
             case .unstoppableDomainSearch(let searchKey):
-                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+                return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+            case .buyCryptoToDomain(let domainName):
+                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+            case .buyCryptoToWallet(let walletAddress):
+                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
             }
         }
         
@@ -143,7 +148,6 @@ extension String {
         static let ok = "OK"
         static let copy = "COPY"
         static let cancel = "CANCEL"
-        static let `import` = "IMPORT"
         static let gotIt = "GOT_IT"
         static let share = "SHARE"
         static let comingSoon = "COMING_SOON"
@@ -218,7 +222,14 @@ extension String {
         static let more = "MORE"
         static let home = "HOME"
         static let messages = "MESSAGES"
+        static let explore = "EXPLORE"
         static let reply = "REPLY"
+        static let global = "GLOBAL"
+        static let yours = "YOURS"
+        static let recent = "RECENT"
+        static let primary = "PRIMARY"
+        static let collapse = "COLLAPSE"
+        static let chat = "CHAT"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -359,6 +370,7 @@ extension String {
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         static let pluralNHolders = "SDICT:N_HOLDERS"
+        static let pluralNAddresses = "SDICT:N_ADDRESSES"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -1111,6 +1123,33 @@ extension String {
         static let introBalanceBody = "INTRO_BALANCE_BODY"
         static let introCollectiblesBody = "INTRO_COLLECTIBLES_BODY"
         static let introMessagesBody = "INTRO_MESSAGES_BODY"
+        static let totalN = "TOTAL_N"
+        static let globalDomainsSearchHint = "GLOBAL_DOMAINS_SEARCH_HINT"
+        
+        static let exploreEmptyNoProfileTitle = "EXPLORE_EMPTY_NO_PROFILE_TITLE"
+        static let exploreEmptyNoProfileSubtitle = "EXPLORE_EMPTY_NO_PROFILE_SUBTITLE"
+        static let exploreEmptyNoFollowersTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_TITLE"
+        static let exploreEmptyNoFollowersSubtitle = "EXPLORE_EMPTY_NO_FOLLOWERS_SUBTITLE"
+        static let exploreEmptyNoFollowersActionTitle = "EXPLORE_EMPTY_NO_FOLLOWERS_ACTION_TITLE"
+        static let exploreEmptyNoFollowingTitle = "EXPLORE_EMPTY_NO_FOLLOWING_TITLE"
+        static let exploreEmptyNoFollowingSubtitle = "EXPLORE_EMPTY_NO_FOLLOWING_SUBTITLE"
+        static let exploreEmptyNoFollowingActionTitle = "EXPLORE_EMPTY_NO_FOLLOWING_ACTION_TITLE"
+        static let suggestedForYou = "SUGGESTED_FOR_YOU"
+        static let followedAsX = "FOLLOWED_AS_X"
+        
+        static let profileSuggestionReasonNFTCollection = "PROFILE_SUGGESTION_REASON_NFT_COLLECTION"
+        static let profileSuggestionReasonPOAP = "PROFILE_SUGGESTION_REASON_POAP"
+        static let profileSuggestionReasonTransaction = "PROFILE_SUGGESTION_REASON_TRANSACTION"
+        static let profileSuggestionReasonLensFollows = "PROFILE_SUGGESTION_REASON_LENS_FOLLOWS"
+        static let profileSuggestionReasonLensMutual = "PROFILE_SUGGESTION_REASON_LENS_MUTUAL"
+        static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
+        static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
+        static let searchProfiles = "SEARCH_PROFILES"
+        
+        static let selectPullUpBuyDomainsTitle = "SELECT_PULL_UP_BUY_DOMAINS_TITLE"
+        static let selectPullUpBuyTokensTitle = "SELECT_PULL_UP_BUY_TOKENS_TITLE"
+        static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
+        static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
         
     }
     
@@ -1144,10 +1183,18 @@ extension String {
         
         return tld.isValidTld() && tld != GlobalConstants.ensDomainTLD
     }
+    
+    func isENSTLD() -> Bool {
+        guard let tld = getTldName() else { return false }
+        
+        return tld.isValidTld() && tld == GlobalConstants.ensDomainTLD
+    }
+    
     func isValidDomainName() -> Bool {
         guard let tld = self.getTldName() else { return false }
         return tld.isValidTld()
     }
+    
     static let messagingAdditionalSupportedTLDs: Set = [GlobalConstants.lensDomainTLD,
                                                         GlobalConstants.coinbaseDomainTLD] // MARK: - Temporary urgent request
     

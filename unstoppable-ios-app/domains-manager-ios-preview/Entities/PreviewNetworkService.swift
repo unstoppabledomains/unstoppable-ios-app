@@ -169,20 +169,8 @@ extension NetworkService {
     }
     
     public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
-        .init(profile: .init(displayName: nil,
-                             description: nil,
-                             location: nil,
-                             web2Url: nil,
-                             imagePath: nil,
-                             imageType: nil,
-                             coverPath: nil,
-                             phoneNumber: nil,
-                             domainPurchased: nil),
-              socialAccounts: nil,
-              referralCode: nil,
-              social: nil,
-              records: nil,
-              walletBalances: [])
+        MockEntitiesFabric.DomainProfile.createPublicProfile(domain: domainName,
+                                                             walletBalance: MockEntitiesFabric.DomainProfile.createPublicProfileWalletBalances())
     }
     
     public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
@@ -192,7 +180,7 @@ extension NetworkService {
         try await fetchBadgesInfo(for: domain.name)
     }
     public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
-        .init(badges: [], refresh: nil)
+        MockEntitiesFabric.Badges.createBadgesInfo()
     }
     public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
         .init(badge: .init(code: "", name: "", logo: "", description: ""), usage: .init(rank: 0, holders: 1, domains: 1, featured: []))
@@ -223,7 +211,7 @@ extension NetworkService {
     }
 }
 
-extension NetworkService {
+extension NetworkService: DomainProfileNetworkServiceProtocol {
     public func searchForDomainsWith(name: String,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         var result = [SearchDomainProfile]()
@@ -255,6 +243,14 @@ extension NetworkService {
     
     func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
        
+    }
+    
+    func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse {
+        MockEntitiesFabric.ProfileSuggestions.createSerializedSuggestionsForPreview()
+    }
+    
+    func getTrendingDomains() async throws -> SerializedRankingDomainsResponse {
+        MockEntitiesFabric.Explore.createTrendingProfiles()
     }
 }
 

@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeWalletTokenRowView: View {
     
     static let height: CGFloat = 64
-    let token: HomeWalletView.TokenDescription
+    let token: BalanceTokenUIDescription
+    var secondaryColor: Color = .foregroundSecondary
     @State private var icon: UIImage?
     @State private var parentIcon: UIImage?
     
@@ -50,7 +51,7 @@ struct HomeWalletTokenRowView: View {
                     .skeletonCornerRadius(12)
                 Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.symbol)")
                     .font(.currentFont(size: 14, weight: .regular))
-                    .foregroundStyle(Color.foregroundSecondary)
+                    .foregroundStyle(secondaryColor)
                     .frame(height: token.isSkeleton ? 12 : 20)
                     .skeletonable()
                     .skeletonCornerRadius(10)
@@ -68,7 +69,7 @@ struct HomeWalletTokenRowView: View {
                 if let pctChange = token.marketPctChange24Hr {
                     Text("\(pctChange.formatted(toMaxNumberAfterComa: 2))%")
                         .font(.currentFont(size: 14))
-                        .foregroundStyle(pctChange > 0 ? Color.foregroundSuccess : Color.foregroundSecondary)
+                        .foregroundStyle(pctChange > 0 ? Color.foregroundSuccess : secondaryColor)
                         .frame(height: token.isSkeleton ? 12 : 20)
                         .skeletonable()
                         .skeletonCornerRadius(10)
@@ -93,7 +94,7 @@ private extension HomeWalletTokenRowView {
         loadIconFor(token: token)
     }
     
-    func loadIconFor(token: HomeWalletView.TokenDescription) {
+    func loadIconFor(token: BalanceTokenUIDescription) {
         guard !token.isSkeleton else {
             icon = nil
             parentIcon = nil

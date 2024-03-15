@@ -36,9 +36,7 @@ private extension ChannelFeedRowView {
             Text(feed.message)
                 .font(.currentFont(size: 16))
             if let link = feed.link {
-                Line(direction: .horizontal)
-                    .stroke(lineWidth: 1)
-                    .frame(height: 1)
+                LineView(direction: .horizontal)
                     .foregroundStyle(Color.borderMuted)
                 feedLinkButtonView(link)
             }
@@ -70,5 +68,5 @@ private extension ChannelFeedRowView {
 }
 
 #Preview {
-    ChannelFeedRowView(feed: MockEntitiesFabric.Messaging.mockChannelFeed(title: "Title", message: "Preview"))
+    ChannelFeedRowView(feed: MockEntitiesFabric.Messaging.mockChannelFeed(title: "Title", message: "Preview", withLink: true))
 }

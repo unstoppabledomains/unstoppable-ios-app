@@ -14,15 +14,15 @@ final class HomeTabRouter: ObservableObject {
     @Published var isTabBarVisible: Bool = true
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
-    @Published var isSearchingDomains: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
     @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
+    @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
-    @Published var presentedPublicDomain: PublicDomainPresentationDetails?
+    @Published var presentedPublicDomain: PublicProfileViewConfiguration?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
@@ -35,12 +35,13 @@ final class HomeTabRouter: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private(set) var isUpdatingPurchasedProfiles = false
     
-    init(profile: UserProfile) {
+    init(profile: UserProfile,
+         userProfileService: UserProfileServiceProtocol = appContext.userProfileService) {
         self.profile = profile
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile {
                 self?.profile = selectedProfile
             }
@@ -65,7 +66,10 @@ extension HomeTabRouter {
     
     func runPurchaseFlow() {
         Task {
+            let currentTab = tabViewSelection
             await showHomeScreenList()
+            await waitBeforeNextNavigationIfTabNot(currentTab)
+            
             walletViewNavPath.append(HomeWalletNavigationDestination.purchaseDomains(domainsPurchasedCallback: { [weak self] result in
                 switch result {
                 case .cancel:
@@ -77,6 +81,22 @@ extension HomeTabRouter {
         }
     }
     
+    func runBuyCryptoFlowTo(wallet: WalletEntity) {
+        Task {
+            await showHomeScreenList()
+            guard let topVC else { return }
+            
+            let link: String.Links
+            if let rrDomain = wallet.rrDomain {
+                link = .buyCryptoToDomain(rrDomain.name)
+            } else {
+                link = .buyCryptoToWallet(wallet.address)
+            }
+            
+            topVC.openLinkInSafari(link)
+        }
+    }
+  
     func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
         if let mintingNav {
             mintingNav.refreshMintingProgress()
@@ -115,7 +135,7 @@ extension HomeTabRouter {
             tabViewSelection = .wallets
         }
         await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
-        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        guard let topVC else { return }
 
         
         switch domain.usageType {
@@ -159,12 +179,10 @@ extension HomeTabRouter {
     }
     
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
-                                 by wallet: WalletEntity,
-                                 viewingDomain: DomainItem? = nil,
-                                 preRequestedAction: PreRequestedProfileAction?) {
+                                 by wallet: WalletEntity? = nil,
+                                 preRequestedAction: PreRequestedProfileAction? = nil) {
         presentedPublicDomain = .init(domain: domain,
-                                      wallet: wallet,
-                                      viewingDomain: viewingDomain,
+                                      viewingWallet: wallet,
                                       preRequestedAction: preRequestedAction,
                                       delegate: self)
     }
@@ -182,10 +200,9 @@ extension HomeTabRouter {
         Task { @MainActor in
             let domains = appContext.walletsDataService.wallets.combinedDomains()
             
-            let topPresentedViewController = appContext.coreAppCoordinator.topVC
             if let mintingNav {
                 mintingNav.setMode(mode)
-            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
+            } else if let _ = topVC as? AddWalletNavigationController {
                 // MARK: - Ignore minting request when add/import/connect wallet
             } else if resolvingPrimaryDomainWallet == nil {
                 await popToRootAndWait()
@@ -264,7 +281,7 @@ extension HomeTabRouter {
     
     func isChannelOpenedWith(channelId: String) -> Bool {
         chatTabNavPath.first(where: { screen in
-            if case .channel(let profile, let channel) = screen {
+            if case .channel(_, let channel) = screen {
                 return channel.channel.normalized.contains(channelId.normalized)
             }
             return false
@@ -274,7 +291,6 @@ extension HomeTabRouter {
     func popToRoot() {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
-        isSearchingDomains = false
         showingUpdatedToWalletGreetings = false
         presentedNFT = nil
         presentedDomain = nil
@@ -283,6 +299,7 @@ extension HomeTabRouter {
         showingWalletInfo = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
+        exploreTabNavPath.removeAll()
     }
 }
 
@@ -376,7 +393,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     
     func showDomainMintingInProgress(_ domain: DomainDisplayInfo) {
         guard domain.isMinting,
-              let topVC = appContext.coreAppCoordinator.topVC else { return }
+              let topVC else { return }
         
         let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
         
@@ -390,7 +407,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     }
     
     func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
-        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        guard let topVC else { return }
         
         UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: topVC)
     }
@@ -413,16 +430,16 @@ private extension HomeTabRouter {
     }
     
     func isMintingAvailable() async -> Bool {
-        guard let topPresentedViewController = appContext.coreAppCoordinator.topVC else { return false }
+        guard let topVC else { return false }
 
         guard appContext.networkReachabilityService?.isReachable == true else {
-            await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topPresentedViewController,
+            await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topVC,
                                                                        unavailableFeature: .minting)
             return false
         }
         
         guard User.instance.getAppVersionInfo().mintingIsEnabled else {
-            await appContext.pullUpViewService.showMintingNotAvailablePullUp(in: topPresentedViewController)
+            await appContext.pullUpViewService.showMintingNotAvailablePullUp(in: topVC)
             return false
         }
         
@@ -487,6 +504,13 @@ private extension HomeTabRouter {
         }
         isUpdatingPurchasedProfiles = false
     }
+    
+    func waitBeforeNextNavigationIfTabNot(_ tab: HomeTab) async {
+        let shouldWaitBeforePush = tabViewSelection != tab
+        if shouldWaitBeforePush {
+            await Task.sleep(seconds: 0.2)
+        }
+    }
 }
 
 // MARK: - DomainPresentationDetails
@@ -498,16 +522,6 @@ extension HomeTabRouter {
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
         var dismissCallback: EmptyCallback? = nil
-    }
-    
-    struct PublicDomainPresentationDetails: Identifiable {
-        var id: String { domain.name }
-        
-        let domain: PublicDomainDisplayInfo
-        let wallet: WalletEntity
-        let viewingDomain: DomainItem?
-        var preRequestedAction: PreRequestedProfileAction? = nil
-        var delegate: PublicProfileViewDelegate
     }
     
     struct UBTSearchPresentationDetails: Identifiable {
