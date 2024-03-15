@@ -53,6 +53,11 @@ final class FireblocksConnector {
         }
     }
     
+    func stopJoinWallet() {
+        logMPC("Will stop join wallet")
+        fireblocks.stopJoinWallet()
+    }
+    
     func waitForKeyIsReady() async throws {
         try await waitForKeyIsReadyInternal()
     }

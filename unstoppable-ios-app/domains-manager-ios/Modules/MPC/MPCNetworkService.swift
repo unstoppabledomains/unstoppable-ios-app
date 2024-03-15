@@ -96,46 +96,51 @@ extension MPCNetworkService {
                                                           messageHandler: rpcHandler)
         logMPC("Did create fireblocks connector")
         logMPC("Will request to join existing wallet")
-        let requestId = try await fireblocksConnector.requestJoinExistingWallet()
-        logMPC("Will auth new device with request id: \(requestId)")
-        // Once we have the key material, now it’s time to get a full access token to the Wallets API. To prove that the key material is valid, you need to create a transaction to sign
-        // Initialize a transaction with the Wallets API
-        try await authNewDeviceWith(requestId: requestId,
-                                    recoveryPhrase: recoveryPhrase,
-                                    accessToken: accessToken)
-        logMPC("Did auth new device with request id: \(requestId)")
-        logMPC("Will wait for key is ready")
-        try await fireblocksConnector.waitForKeyIsReady()
-        
-        logMPC("Will init transaction with new key materials")
-        let transactionDetails = try await initTransactionWithNewKeyMaterials(accessToken: accessToken)
-        let txId = transactionDetails.transactionId
-        logMPC("Did init transaction with new key materials with tx id: \(txId)")
-        
-        /// Skipping this part because iOS doesn't have equal functions. To discuss with Wallet team
-        /*
-         const inProg = await sdk.getInProgressSigningTxId();
-         if (inProg && inProg !== tx.transactionId) {
-         this.logger.warn('Encountered in progress tx', { inProg });
-         await sdk.stopInProgressSignTransaction();
-         }
-         */
-        
-        //    We have to wait for Fireblocks to also sign, so poll the Wallets API until the transaction is returned with the PENDING_SIGNATURE status
-        logMPC("Will wait for transaction with new key materials is ready with tx id: \(txId)")
-        try await waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
-        
-        logMPC("Will sign transaction with fireblocks. txId: \(txId)")
-        try await fireblocksConnector.signTransactionWith(txId: txId)
-        
-        //    Once it is pending a signature, sign with the Fireblocks NCW SDK and confirm with the Wallets API that you have signed. After confirmation is validated, you’ll be returned an access token, a refresh token and a bootstrap token.
-        logMPC("Will confirm transaction is signed")
-        let finalAuthResponse = try await confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
-        logMPC("Did confirm transaction is signed")
-        
-        logMPC("Will verify final response \(finalAuthResponse)")
-        try await verifyAccessToken(finalAuthResponse.accessToken)
-        logMPC("Did verify verify final response \(finalAuthResponse) success")
+        do {
+            let requestId = try await fireblocksConnector.requestJoinExistingWallet()
+            logMPC("Will auth new device with request id: \(requestId)")
+            // Once we have the key material, now it’s time to get a full access token to the Wallets API. To prove that the key material is valid, you need to create a transaction to sign
+            // Initialize a transaction with the Wallets API
+            try await authNewDeviceWith(requestId: requestId,
+                                        recoveryPhrase: recoveryPhrase,
+                                        accessToken: accessToken)
+            logMPC("Did auth new device with request id: \(requestId)")
+            logMPC("Will wait for key is ready")
+            try await fireblocksConnector.waitForKeyIsReady()
+            
+            logMPC("Will init transaction with new key materials")
+            let transactionDetails = try await initTransactionWithNewKeyMaterials(accessToken: accessToken)
+            let txId = transactionDetails.transactionId
+            logMPC("Did init transaction with new key materials with tx id: \(txId)")
+            
+            /// Skipping this part because iOS doesn't have equal functions. To discuss with Wallet team
+            /*
+             const inProg = await sdk.getInProgressSigningTxId();
+             if (inProg && inProg !== tx.transactionId) {
+             this.logger.warn('Encountered in progress tx', { inProg });
+             await sdk.stopInProgressSignTransaction();
+             }
+             */
+            
+            //    We have to wait for Fireblocks to also sign, so poll the Wallets API until the transaction is returned with the PENDING_SIGNATURE status
+            logMPC("Will wait for transaction with new key materials is ready with tx id: \(txId)")
+            try await waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
+            
+            logMPC("Will sign transaction with fireblocks. txId: \(txId)")
+            try await fireblocksConnector.signTransactionWith(txId: txId)
+            
+            //    Once it is pending a signature, sign with the Fireblocks NCW SDK and confirm with the Wallets API that you have signed. After confirmation is validated, you’ll be returned an access token, a refresh token and a bootstrap token.
+            logMPC("Will confirm transaction is signed")
+            let finalAuthResponse = try await confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+            logMPC("Did confirm transaction is signed")
+            
+            logMPC("Will verify final response \(finalAuthResponse)")
+            try await verifyAccessToken(finalAuthResponse.accessToken)
+            logMPC("Did verify verify final response \(finalAuthResponse) success")
+        } catch {
+            fireblocksConnector.stopJoinWallet()
+            throw error 
+        }
     }
 }
 
