@@ -31,6 +31,7 @@ extension String {
         case communitiesInfo
         case setupApplePayInstruction
         case unstoppableDomainSearch(searchKey: String)
+        case buyCryptoToDomain(DomainName), buyCryptoToWallet(HexAddress)
         
         var urlString: String {
             switch self {
@@ -98,7 +99,11 @@ extension String {
             case .direct(let url):
                 return url.absoluteString
             case .unstoppableDomainSearch(let searchKey):
-                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+                return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+            case .buyCryptoToDomain(let domainName):
+                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+            case .buyCryptoToWallet(let walletAddress):
+                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
             }
         }
         
