@@ -68,7 +68,7 @@ extension MPCNetworkService {
     }
     
     func signForNewDeviceWith(code: String,
-                              recoveryPhrase: String) async throws {
+                              recoveryPhrase: String) async throws -> UDMPCWallet {
         struct Body: Encodable {
             let code: String
             var device: String? = nil
@@ -79,7 +79,7 @@ extension MPCNetworkService {
             let deviceId: String
         }
         
-        logMPC("Will submit code \(code)")
+        logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")
         let body = Body(code: code)
         let request = try APIRequest(urlString: MPCNetwork.URLSList.submitCodeURL,
                                      body: body,
@@ -90,10 +90,11 @@ extension MPCNetworkService {
         let accessToken = response.accessToken
         let deviceId = response.deviceId
         
-        let rpcHandler = FireblocksRPCMessageHandler(authToken: accessToken)
+        let rpcHandler = FireblocksBootstrapRPCMessageHandler(authToken: accessToken)
         logMPC("Will create fireblocks connector")
         let fireblocksConnector = try FireblocksConnector(deviceId: deviceId,
                                                           messageHandler: rpcHandler)
+        fireblocksConnector.stopJoinWallet()
         logMPC("Did create fireblocks connector")
         logMPC("Will request to join existing wallet")
         do {
@@ -137,6 +138,11 @@ extension MPCNetworkService {
             logMPC("Will verify final response \(finalAuthResponse)")
             try await verifyAccessToken(finalAuthResponse.accessToken)
             logMPC("Did verify verify final response \(finalAuthResponse) success")
+            
+            let mpcWallet = UDMPCWallet(deviceId: deviceId,
+                                        tokens: .init(refreshToken: finalAuthResponse.refreshToken,
+                                                      bootstrapToken: finalAuthResponse.bootstrapToken))
+            return mpcWallet
         } catch {
             fireblocksConnector.stopJoinWallet()
             throw error 

@@ -19,4 +19,8 @@ final class JoinWalletHandler: FireblocksConnectorJoinWalletHandler {
         logMPC("Did receive request id to join existing wallet: \(requestId)")
         requestIdCallback(requestId)
     }
+    
+    func onProvisionerFound() {
+        logMPC("On provisioner found")
+    }
 }

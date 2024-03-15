@@ -26,7 +26,7 @@ final class MPCEnterCodeOnboardingViewController: BaseViewController, ViewWithDa
 // MARK: - Private methods
 private extension MPCEnterCodeOnboardingViewController {
     func didEnterValidCode(_ code: String) {
-        onboardingFlowManager?.onboardingData.mpcCode = code
+        onboardingFlowManager?.modifyOnboardingData { $0.mpcCode = code }
         onboardingFlowManager?.moveToStep(.mpcPassphrase)
     }
 }
