@@ -445,6 +445,7 @@ extension Analytics {
         case finishProfileForPurchasedDomains, failedToFinishProfileForPurchasedDomains
         case searchPurchaseDomainNotSupported
         case createYourProfile
+        case homeWalletBuyOptions
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
