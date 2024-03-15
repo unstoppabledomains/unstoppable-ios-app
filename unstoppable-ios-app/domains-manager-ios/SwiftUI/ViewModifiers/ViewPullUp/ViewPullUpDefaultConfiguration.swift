@@ -396,7 +396,7 @@ extension ViewPullUpDefaultConfiguration {
     static func homeWalletBuySelectionPullUp(selectionCallback: @escaping (HomeWalletView.BuyOptions)->()) -> ViewPullUpDefaultConfiguration {
         var selectedItem: HomeWalletView.BuyOptions?
         
-        return .init(title: .text(String.Constants.settingsLegal.localized()),
+        return .init(title: nil,
                      items: HomeWalletView.BuyOptions.allCases,
                      itemSelectedCallback: { item in
             guard let item = item as? HomeWalletView.BuyOptions else { return }
