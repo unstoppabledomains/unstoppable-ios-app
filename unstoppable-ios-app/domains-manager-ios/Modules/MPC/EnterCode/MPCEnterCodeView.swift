@@ -25,10 +25,10 @@ struct MPCEnterCodeView: View {
             actionButtonView()
             Spacer()
         }
-        .displayError($error)
         .padding()
         .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
         .animation(.default, value: UUID())
+        .displayError($error)
     }
     
 }

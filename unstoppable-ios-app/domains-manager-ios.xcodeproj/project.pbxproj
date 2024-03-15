@@ -795,6 +795,7 @@
 		C650E2942B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2922B9E97F2002C120A /* UDButtonStyle+Large.swift */; };
 		C650E2962B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */; };
 		C650E2972B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650E2952B9E9878002C120A /* UDButtonStyle+ViewModifier.swift */; };
+		C650F8BB2BA4150300BDA099 /* FireblocksSDK in Frameworks */ = {isa = PBXBuildFile; productRef = C650F8BA2BA4150300BDA099 /* FireblocksSDK */; };
 		C651DC51286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */; };
 		C651DC56286C115900808D4C /* WatchFaceDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */; };
 		C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */ = {isa = PBXBuildFile; productRef = C65244692AF8A7A400673CC0 /* WalletConnectNotify */; };
@@ -1377,7 +1378,6 @@
 		C6BF80292BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */; };
 		C6BF802B2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
 		C6BF802C2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
-		C6BF802F2BA2DFE500CC4CB3 /* FireblocksSDK in Frameworks */ = {isa = PBXBuildFile; productRef = C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */; };
 		C6BF80312BA2E01F00CC4CB3 /* FireblocksConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */; };
 		C6BF80332BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80322BA2E80300CC4CB3 /* FireblocksRPCMessageHandler.swift */; };
 		C6BF80352BA2ED7100CC4CB3 /* JoinWalletHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80342BA2ED7100CC4CB3 /* JoinWalletHandler.swift */; };
@@ -3830,7 +3830,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C6BF802F2BA2DFE500CC4CB3 /* FireblocksSDK in Frameworks */,
+				C650F8BB2BA4150300BDA099 /* FireblocksSDK in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
@@ -8074,7 +8074,7 @@
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
 				C66811F42B47B1C600BDABB0 /* XMTP */,
 				C61B6C732BA0052C007408FD /* Push */,
-				C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */,
+				C650F8BA2BA4150300BDA099 /* FireblocksSDK */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -8213,7 +8213,7 @@
 				C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */,
 				C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C61B6C722BA004F2007408FD /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
-				C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */,
+				C650F8B92BA414DC00BDA099 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -11554,6 +11554,14 @@
 				kind = branch;
 			};
 		};
+		C650F8B92BA414DC00BDA099 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fireblocks/ncw-ios-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.3.6;
+			};
+		};
 		C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/xmtp/xmtp-ios";
@@ -11576,14 +11584,6 @@
 			requirement = {
 				kind = exactVersion;
 				version = 4.0.6;
-			};
-		};
-		C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/fireblocks/ncw-ios-sdk.git";
-			requirement = {
-				kind = exactVersion;
-				version = 2.3.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -11689,6 +11689,11 @@
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
 		};
+		C650F8BA2BA4150300BDA099 /* FireblocksSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C650F8B92BA414DC00BDA099 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */;
+			productName = FireblocksSDK;
+		};
 		C65244692AF8A7A400673CC0 /* WalletConnectNotify */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
@@ -11713,11 +11718,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */;
 			productName = LaunchDarkly;
-		};
-		C6BF802E2BA2DFE500CC4CB3 /* FireblocksSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C6BF802D2BA2DE9400CC4CB3 /* XCRemoteSwiftPackageReference "ncw-ios-sdk" */;
-			productName = FireblocksSDK;
 		};
 		C6E69F98288AB6DC000A8346 /* Bugsnag */ = {
 			isa = XCSwiftPackageProductDependency;

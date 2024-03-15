@@ -13,6 +13,7 @@ struct MPCEnterPassphraseView: View {
     let mpcWalletCreatedCallback: (UDWallet)->()
     @State private var input: String = ""
     @State private var isLoading = false
+    @State private var error: Error?
 
     var body: some View {
         VStack(spacing: 32) {
@@ -24,6 +25,7 @@ struct MPCEnterPassphraseView: View {
         .padding()
         .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
         .animation(.default, value: UUID())
+        .displayError($error)
     }
 }
 
@@ -64,10 +66,13 @@ private extension MPCEnterPassphraseView {
     func actionButtonPressed() {
         Task {
             isLoading = true
-            // Send code
-            await Task.sleep(seconds: 1.0)
+            do {
+                try await MPCNetworkService.shared.signForNewDeviceWith(code: code, recoveryPhrase: input)
+                //            codeVerifiedCallback(input)
+            } catch {
+                self.error = error
+            }
             isLoading = false
-//            codeVerifiedCallback(input)
         }
     }
 }
