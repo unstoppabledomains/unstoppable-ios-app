@@ -80,6 +80,22 @@ extension HomeTabRouter {
             }))
         }
     }
+    
+    func runBuyCryptoFlowTo(wallet: WalletEntity) {
+        Task {
+            await showHomeScreenList()
+            guard let topVC else { return }
+            
+            let link: String.Links
+            if let rrDomain = wallet.rrDomain {
+                link = .buyCryptoToDomain(rrDomain.name)
+            } else {
+                link = .buyCryptoToWallet(wallet.address)
+            }
+            
+            topVC.openLink(link)
+        }
+    }
   
     func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
         if let mintingNav {
@@ -119,7 +135,7 @@ extension HomeTabRouter {
             tabViewSelection = .wallets
         }
         await askToFinishSetupPurchasedProfileIfNeeded(domains: wallet.domains)
-        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        guard let topVC else { return }
 
         
         switch domain.usageType {
@@ -184,10 +200,9 @@ extension HomeTabRouter {
         Task { @MainActor in
             let domains = appContext.walletsDataService.wallets.combinedDomains()
             
-            let topPresentedViewController = appContext.coreAppCoordinator.topVC
             if let mintingNav {
                 mintingNav.setMode(mode)
-            } else if let _ = topPresentedViewController as? AddWalletNavigationController {
+            } else if let _ = topVC as? AddWalletNavigationController {
                 // MARK: - Ignore minting request when add/import/connect wallet
             } else if resolvingPrimaryDomainWallet == nil {
                 await popToRootAndWait()
@@ -378,7 +393,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     
     func showDomainMintingInProgress(_ domain: DomainDisplayInfo) {
         guard domain.isMinting,
-              let topVC = appContext.coreAppCoordinator.topVC else { return }
+              let topVC else { return }
         
         let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
         
@@ -392,7 +407,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     }
     
     func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
-        guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+        guard let topVC else { return }
         
         UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: topVC)
     }
@@ -415,16 +430,16 @@ private extension HomeTabRouter {
     }
     
     func isMintingAvailable() async -> Bool {
-        guard let topPresentedViewController = appContext.coreAppCoordinator.topVC else { return false }
+        guard let topVC else { return false }
 
         guard appContext.networkReachabilityService?.isReachable == true else {
-            await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topPresentedViewController,
+            await appContext.pullUpViewService.showYouAreOfflinePullUp(in: topVC,
                                                                        unavailableFeature: .minting)
             return false
         }
         
         guard User.instance.getAppVersionInfo().mintingIsEnabled else {
-            await appContext.pullUpViewService.showMintingNotAvailablePullUp(in: topPresentedViewController)
+            await appContext.pullUpViewService.showMintingNotAvailablePullUp(in: topVC)
             return false
         }
         

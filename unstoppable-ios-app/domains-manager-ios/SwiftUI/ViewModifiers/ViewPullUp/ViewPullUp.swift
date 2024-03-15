@@ -58,10 +58,14 @@ struct ViewPullUp: ViewModifier {
     }
     
     private func closeAndPassCallback(_ callback: MainActorAsyncCallback?) {
-        type = nil
+        close()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             callback?()
         }
+    }
+    
+    func close() {
+        type = nil
     }
     
     private func didDismissCurrentPullUp() {
@@ -158,6 +162,7 @@ private extension ViewPullUp {
                                                              .pullUpName: type?.analyticName.rawValue ?? ""])
             
             selectionCallback?(item)
+            close()
         })
             .allowsHitTesting(item.isSelectable)
     }

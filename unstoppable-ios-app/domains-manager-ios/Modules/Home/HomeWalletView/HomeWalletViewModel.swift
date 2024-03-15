@@ -84,7 +84,6 @@ extension HomeWalletView {
                     }))
                 }
             case .buy:
-                
                 router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
                     self?.router.pullUp = nil
                     self?.didSelectBuyOption(buyOption)
@@ -99,7 +98,7 @@ extension HomeWalletView {
             case .domains:
                 router.runPurchaseFlow()
             case .crypto:
-                return
+                router.runBuyCryptoFlowTo(wallet: selectedWallet)
             }
         }
         
