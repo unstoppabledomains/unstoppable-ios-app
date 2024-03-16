@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class JoinWalletHandler: FireblocksConnectorJoinWalletHandler {
+final class FireblockJoinWalletHandlerImplementation: FireblocksConnectorJoinWalletHandler {
     
     let requestIdCallback: (String) -> ()
     

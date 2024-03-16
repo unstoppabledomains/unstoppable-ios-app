@@ -35,10 +35,13 @@ func logMPC(_ message: String) {
 final class MPCNetworkService {
     
     private let networkService = NetworkService()
+    private let connectorBuilder: MPCConnectorBuilder
     
-    static let shared = MPCNetworkService()
+    static let shared = MPCNetworkService(connectorBuilder: DefaultMPCConnectorBuilder())
     
-    private init() { }
+    private init(connectorBuilder: MPCConnectorBuilder) {
+        self.connectorBuilder = connectorBuilder
+    }
     
 }
 
@@ -94,16 +97,16 @@ extension MPCNetworkService {
                 let deviceId = response.deviceId
                 
                 continuation.yield(.initialiseFireblocks)
-                let rpcHandler = FireblocksBootstrapRPCMessageHandler(authToken: accessToken)
+                
                 logMPC("Will create fireblocks connector")
-                let fireblocksConnector = try FireblocksConnector(deviceId: deviceId,
-                                                                  messageHandler: rpcHandler)
-                fireblocksConnector.stopJoinWallet()
+                let mpcConnector = try connectorBuilder.buildMPCConnector(deviceId: deviceId, accessToken: accessToken)
+                
+                mpcConnector.stopJoinWallet()
                 logMPC("Did create fireblocks connector")
                 logMPC("Will request to join existing wallet")
                 do {
                     continuation.yield(.requestingToJoinExistingWallet)
-                    let requestId = try await fireblocksConnector.requestJoinExistingWallet()
+                    let requestId = try await mpcConnector.requestJoinExistingWallet()
                     logMPC("Will auth new device with request id: \(requestId)")
                     // Once we have the key material, now it’s time to get a full access token to the Wallets API. To prove that the key material is valid, you need to create a transaction to sign
                     // Initialize a transaction with the Wallets API
@@ -114,7 +117,7 @@ extension MPCNetworkService {
                     logMPC("Did auth new device with request id: \(requestId)")
                     logMPC("Will wait for key is ready")
                     continuation.yield(.waitingForKeysIsReady)
-                    try await fireblocksConnector.waitForKeyIsReady()
+                    try await mpcConnector.waitForKeyIsReady()
                     
                     logMPC("Will init transaction with new key materials")
                     continuation.yield(.initialiseTransaction)
@@ -138,7 +141,7 @@ extension MPCNetworkService {
                     
                     logMPC("Will sign transaction with fireblocks. txId: \(txId)")
                     continuation.yield(.signingTransaction)
-                    try await fireblocksConnector.signTransactionWith(txId: txId)
+                    try await mpcConnector.signTransactionWith(txId: txId)
                     
                     //    Once it is pending a signature, sign with the Fireblocks NCW SDK and confirm with the Wallets API that you have signed. After confirmation is validated, you’ll be returned an access token, a refresh token and a bootstrap token.
                     logMPC("Will confirm transaction is signed")
@@ -157,7 +160,7 @@ extension MPCNetworkService {
                     continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
-                    fireblocksConnector.stopJoinWallet()
+                    mpcConnector.stopJoinWallet()
                     continuation.finish(throwing: error)
                 }
             }

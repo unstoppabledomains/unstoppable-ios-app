@@ -11,6 +11,7 @@ import FireblocksSDK
 typealias FireblocksConnectorMessageHandler = MessageHandlerDelegate
 typealias FireblocksConnectorJoinWalletHandler = FireblocksJoinWalletHandler
 
+
 final class FireblocksConnector {
     
     private let deviceId: String
@@ -34,14 +35,17 @@ final class FireblocksConnector {
             throw error
         }
     }
-    
+}
+
+// MARK: - Open methods
+extension FireblocksConnector: MPCConnector {
     func requestJoinExistingWallet() async throws -> String {
         let fireblocks = self.fireblocks
         let task = TaskWithDeadline(deadline: 30) {
             try await withSafeCheckedThrowingContinuation { completion in
                 Task {
                     do {
-                        let handler = JoinWalletHandler(requestIdCallback: { requestId in
+                        let handler = FireblockJoinWalletHandlerImplementation(requestIdCallback: { requestId in
                             completion(.success(requestId))
                         })
                         _ = try await fireblocks?.requestJoinExistingWallet(joinWalletHandler: handler)
@@ -84,11 +88,10 @@ final class FireblocksConnector {
     private func isKeyInitialized(algorithm: Algorithm) -> Bool {
         return getMpcKeys().filter({ $0.algorithm == algorithm }).first?.keyStatus == .READY
     }
-
+    
     private  func getMpcKeys() -> [KeyDescriptor] {
         fireblocks.getKeysStatus()
     }
-    
     func signTransactionWith(txId: String) async throws {
         let fireblocks = self.fireblocks!
         let task = TaskWithDeadline(deadline: 20) {
