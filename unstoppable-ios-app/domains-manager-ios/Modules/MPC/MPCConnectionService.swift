@@ -32,21 +32,23 @@ func logMPC(_ message: String) {
     print("MPC: - \(message)")
 }
 
-final class MPCNetworkService {
+final class MPCConnectionService {
     
-    private let networkService = NetworkService()
     private let connectorBuilder: MPCConnectorBuilder
+    private let networkService: MPCConnectionNetworkService
     
-    static let shared = MPCNetworkService(connectorBuilder: DefaultMPCConnectorBuilder())
+    static let shared = MPCConnectionService(connectorBuilder: DefaultMPCConnectorBuilder())
     
-    private init(connectorBuilder: MPCConnectorBuilder) {
+    private init(connectorBuilder: MPCConnectorBuilder,
+                 networkService: MPCConnectionNetworkService = NetworkService()) {
         self.connectorBuilder = connectorBuilder
+        self.networkService = networkService
     }
     
 }
 
 // MARK: - Open methods
-extension MPCNetworkService {
+extension MPCConnectionService {
     /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
         
@@ -169,7 +171,7 @@ extension MPCNetworkService {
 }
 
 // MARK: - Private methods
-private extension MPCNetworkService {
+private extension MPCConnectionService {
     func authNewDeviceWith(requestId: String,
                            recoveryPhrase: String,
                            accessToken: String) async throws {
@@ -281,7 +283,7 @@ private extension MPCNetworkService {
 }
 
 // MARK: - Private methods
-private extension MPCNetworkService {
+private extension MPCConnectionService {
     func buildAuthBearerHeader(token: String) -> [String : String] {
         ["Authorization":"Bearer \(token)"]
     }

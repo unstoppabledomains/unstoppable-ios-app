@@ -148,7 +148,7 @@ private extension MPCEnterCodeView {
             isLoading = true
             do {
                 // Send email action
-                try await MPCNetworkService.shared.sendBootstrapCodeTo(email: input)
+                try await MPCConnectionService.shared.sendBootstrapCodeTo(email: input)
                 toggleInputType()
             } catch {
                 self.error = error

@@ -665,6 +665,8 @@
 		C632BE452BA5978F00C95B2D /* MPCConnectorBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE432BA5978F00C95B2D /* MPCConnectorBuilder.swift */; };
 		C632BE472BA597B700C95B2D /* FireblocksMPCConnectorBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE462BA597B700C95B2D /* FireblocksMPCConnectorBuilder.swift */; };
 		C632BE4B2BA5984100C95B2D /* PreviewMPCConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE492BA5984100C95B2D /* PreviewMPCConnector.swift */; };
+		C632BE4D2BA599E900C95B2D /* MPCConnectionNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE4C2BA599E900C95B2D /* MPCConnectionNetworkService.swift */; };
+		C632BE4E2BA599E900C95B2D /* MPCConnectionNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE4C2BA599E900C95B2D /* MPCConnectionNetworkService.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -1386,8 +1388,8 @@
 		C6BF80262BA2C73800CC4CB3 /* MPCEnterPassphraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80242BA2C73800CC4CB3 /* MPCEnterPassphraseView.swift */; };
 		C6BF80282BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */; };
 		C6BF80292BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */; };
-		C6BF802B2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
-		C6BF802C2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */; };
+		C6BF802B2BA2CC6E00CC4CB3 /* MPCConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCConnectionService.swift */; };
+		C6BF802C2BA2CC6E00CC4CB3 /* MPCConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* MPCConnectionService.swift */; };
 		C6BF80312BA2E01F00CC4CB3 /* FireblocksConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */; };
 		C6BF80332BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80322BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift */; };
 		C6BF80352BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80342BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift */; };
@@ -2969,6 +2971,7 @@
 		C632BE432BA5978F00C95B2D /* MPCConnectorBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCConnectorBuilder.swift; sourceTree = "<group>"; };
 		C632BE462BA597B700C95B2D /* FireblocksMPCConnectorBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksMPCConnectorBuilder.swift; sourceTree = "<group>"; };
 		C632BE492BA5984100C95B2D /* PreviewMPCConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewMPCConnector.swift; sourceTree = "<group>"; };
+		C632BE4C2BA599E900C95B2D /* MPCConnectionNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCConnectionNetworkService.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -3534,7 +3537,7 @@
 		C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeOnboardingViewController.swift; sourceTree = "<group>"; };
 		C6BF80242BA2C73800CC4CB3 /* MPCEnterPassphraseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseView.swift; sourceTree = "<group>"; };
 		C6BF80272BA2C74500CC4CB3 /* MPCEnterPassphraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseViewController.swift; sourceTree = "<group>"; };
-		C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCNetworkService.swift; sourceTree = "<group>"; };
+		C6BF802A2BA2CC6E00CC4CB3 /* MPCConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCConnectionService.swift; sourceTree = "<group>"; };
 		C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksConnector.swift; sourceTree = "<group>"; };
 		C6BF80322BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksBootstrapRPCMessageHandler.swift; sourceTree = "<group>"; };
 		C6BF80342BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblockJoinWalletHandlerImplementation.swift; sourceTree = "<group>"; };
@@ -4936,6 +4939,7 @@
 				C6960C512B19993700B79E28 /* PreviewString.swift */,
 				C6D6461C2B1DC1F900D724AC /* PreviewStripePaymentHelper.swift */,
 				C6960C5D2B199A7900B79E28 /* PreviewTransactionItem.swift */,
+				C632BE492BA5984100C95B2D /* PreviewMPCConnector.swift */,
 				C61807DC2B19A4D50032E543 /* PreviewUDWallet.swift */,
 				C6C8F9622B21874400A9834D /* PreviewUDWalletsStorage.swift */,
 				C61807B62B199E370032E543 /* PreviewUIImage.swift */,
@@ -7334,11 +7338,11 @@
 			children = (
 				C6BF80232BA2C6D300CC4CB3 /* EnterPassphrase */,
 				C6BF80222BA2BB2300CC4CB3 /* EnterCode */,
-				C6BF802A2BA2CC6E00CC4CB3 /* MPCNetworkService.swift */,
+				C6BF802A2BA2CC6E00CC4CB3 /* MPCConnectionService.swift */,
+				C632BE4C2BA599E900C95B2D /* MPCConnectionNetworkService.swift */,
 				C650F8BC2BA4182900BDA099 /* UDMPCWallet.swift */,
 				C632BE402BA5962A00C95B2D /* MPCConnector.swift */,
 				C632BE432BA5978F00C95B2D /* MPCConnectorBuilder.swift */,
-				C632BE492BA5984100C95B2D /* PreviewMPCConnector.swift */,
 				C650F8C22BA41A1200BDA099 /* Fireblocks */,
 			);
 			path = MPC;
@@ -8792,6 +8796,7 @@
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
+				C632BE4D2BA599E900C95B2D /* MPCConnectionNetworkService.swift in Sources */,
 				C60CA2962832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
 				C650E2932B9E97F2002C120A /* UDButtonStyle+Large.swift in Sources */,
 				C6C8F8652B21811000A9834D /* UDWalletBackUpError.swift in Sources */,
@@ -9011,7 +9016,7 @@
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
 				C61DB11B2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
-				C6BF802B2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */,
+				C6BF802B2BA2CC6E00CC4CB3 /* MPCConnectionService.swift in Sources */,
 				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
@@ -9868,7 +9873,7 @@
 				C6C8F8C32B2182E400A9834D /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				C63AD0AE2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */,
 				C6C8F8752B21822700A9834D /* ExistingUsersTutorialViewController.swift in Sources */,
-				C6BF802C2BA2CC6E00CC4CB3 /* MPCNetworkService.swift in Sources */,
+				C6BF802C2BA2CC6E00CC4CB3 /* MPCConnectionService.swift in Sources */,
 				C6D647662B1EDEF600D724AC /* UDCarouselFeature.swift in Sources */,
 				C6D8FF222B82F3DC0094A21E /* ImageMessageRowView.swift in Sources */,
 				C61808082B19A9E60032E543 /* AnalyticsServiceProtocol.swift in Sources */,
@@ -9906,6 +9911,7 @@
 				C6C8F8EA2B21836400A9834D /* LoadingParkedDomainsViewPresenter.swift in Sources */,
 				C6C8F81F2B217CC000A9834D /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C6D6470C2B1ED7D000D724AC /* MessagingChatMessageDisplayType.swift in Sources */,
+				C632BE4E2BA599E900C95B2D /* MPCConnectionNetworkService.swift in Sources */,
 				C61807C02B19A2D10032E543 /* AppContextEnvironmentKeys.swift in Sources */,
 				C6B2E2072B96DEC900CEA1F9 /* DomainProfileDisplayInfoStorageServiceProtocol.swift in Sources */,
 				C663A4D72B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */,

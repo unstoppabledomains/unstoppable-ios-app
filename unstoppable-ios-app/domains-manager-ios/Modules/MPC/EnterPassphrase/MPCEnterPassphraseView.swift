@@ -79,7 +79,7 @@ private extension MPCEnterPassphraseView {
             
             isLoading = true
             do {
-                let mpcWalletStepsStream = MPCNetworkService.shared.signForNewDeviceWith(code: code, recoveryPhrase: input)
+                let mpcWalletStepsStream = MPCConnectionService.shared.signForNewDeviceWith(code: code, recoveryPhrase: input)
                 
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)

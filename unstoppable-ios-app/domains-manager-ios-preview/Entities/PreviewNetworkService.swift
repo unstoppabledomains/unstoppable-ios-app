@@ -370,3 +370,11 @@ struct ErrorEntry: Decodable {
     let value: String?
     let status: Int?
 }
+
+extension NetworkService: MPCConnectionNetworkService {
+    func makeDecodableAPIRequest<T>(_ apiRequest: APIRequest) async throws -> T where T : Decodable {
+        let data = try await makeAPIRequest(apiRequest)
+        let entities = try T.objectFromDataThrowing(data)
+        return entities
+    }
+}
