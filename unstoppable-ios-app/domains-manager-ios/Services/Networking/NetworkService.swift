@@ -551,5 +551,3 @@ extension HTTPURLResponse {
         self.value(forHTTPHeaderField: key)
     }
 }
-
-extension NetworkService: MPCConnectionNetworkService { }
