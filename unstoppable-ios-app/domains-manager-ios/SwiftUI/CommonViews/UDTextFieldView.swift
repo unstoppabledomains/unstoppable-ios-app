@@ -19,6 +19,7 @@ struct UDTextFieldView: View {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     var autocorrectionDisabled: Bool = false
+    var isSecureInput: Bool = false
     @State private var state: TextFieldState = .rest
     @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
@@ -115,7 +116,7 @@ private extension UDTextFieldView {
                            height: isTextFieldVisible ? 16 : 24)
             }
             
-            TextField("", text: $text)
+            textInputView()
                 .foregroundStyle(state.textColor)
                 .placeholder(when: text.isEmpty) {
                     Text(placeholder)
@@ -135,6 +136,15 @@ private extension UDTextFieldView {
                     setState()
                 }
                 .frame(height: 24)
+        }
+    }
+    
+    @ViewBuilder
+    func textInputView() -> some View {
+        if isSecureInput {
+            SecureField("", text: $text)
+        } else {
+            TextField("", text: $text)
         }
     }
 }

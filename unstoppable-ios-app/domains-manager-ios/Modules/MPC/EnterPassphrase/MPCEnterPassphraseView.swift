@@ -51,7 +51,8 @@ private extension MPCEnterPassphraseView {
                         placeholder: "Password",
                         focusBehaviour: .activateOnAppear,
                         autocapitalization: .never,
-                        autocorrectionDisabled: true)
+                        autocorrectionDisabled: true,
+                        isSecureInput: true)
     }
     
     @ViewBuilder

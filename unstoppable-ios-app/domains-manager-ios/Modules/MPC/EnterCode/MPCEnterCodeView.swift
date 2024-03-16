@@ -139,13 +139,8 @@ private extension MPCEnterCodeView {
     }
     
     func confirmCode() {
-        Task {
-            isLoading = true
-            // Send code
-            await Task.sleep(seconds: 1.0)
-            isLoading = false
-            codeVerifiedCallback(input.trimmedSpaces.uppercased())
-        }
+        let code = input.trimmedSpaces.uppercased()
+        codeVerifiedCallback(code)
     }
     
     func sendEmail() {
