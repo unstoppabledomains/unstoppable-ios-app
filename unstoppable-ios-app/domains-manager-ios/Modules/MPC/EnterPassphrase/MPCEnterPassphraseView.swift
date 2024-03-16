@@ -15,6 +15,7 @@ struct MPCEnterPassphraseView: View {
     @State private var isLoading = false
     @State private var error: Error?
     @State private var mpcState: String = ""
+    @State private var mpcCreateProgress: CGFloat = 0.0
 
     var body: some View {
         ZStack {
@@ -92,6 +93,7 @@ private extension MPCEnterPassphraseView {
     
     func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
         mpcState = step.title
+        mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
             mpcWalletCreatedCallback(mpcWallet)
@@ -103,8 +105,8 @@ private extension MPCEnterPassphraseView {
     @ViewBuilder
     func mpcStateView() -> some View {
         VStack(spacing: 20) {
-            ProgressView()
-                .tint(Color.foregroundDefault)
+            CircularProgressView(progress: mpcCreateProgress)
+                .squareFrame(60)
             Text(mpcState)
                 .bold()
                 .multilineTextAlignment(.center)
@@ -119,4 +121,28 @@ private extension MPCEnterPassphraseView {
 #Preview {
     MPCEnterPassphraseView(code: "",
                            mpcWalletCreatedCallback: { _ in })
+}
+
+
+struct CircularProgressView: View {
+    let progress: CGFloat
+    var lineWidth: CGFloat = 10
+    
+    var body: some View {
+        ZStack {
+            // Background for the progress bar
+            Circle()
+                .stroke(lineWidth: lineWidth)
+                .opacity(0.1)
+                .foregroundStyle(Color.foregroundAccent)
+            
+            // Foreground or the actual progress bar
+            Circle()
+                .trim(from: 0.0, to: min(progress, 1.0))
+                .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+                .foregroundStyle(Color.foregroundAccent)
+                .rotationEffect(Angle(degrees: 270.0))
+                .animation(.linear, value: progress)
+        }
+    }
 }

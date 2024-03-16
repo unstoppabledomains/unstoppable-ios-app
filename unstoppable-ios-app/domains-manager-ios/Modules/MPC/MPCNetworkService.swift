@@ -351,8 +351,38 @@ enum SetupMPCWalletStep {
             "Confirming transaction"
         case .verifyingAccessToken:
             "Verifying access token"
-        case .finished(let uDMPCWallet):
+        case .finished:
             "Finished"
         }
     }
+    
+    
+    var stepOrder: Int {
+        switch self {
+        case .submittingCode:
+            1
+        case .initialiseFireblocks:
+            2
+        case .requestingToJoinExistingWallet:
+            3
+        case .authorisingNewDevice:
+            4
+        case .waitingForKeysIsReady:
+            5
+        case .initialiseTransaction:
+            6
+        case .waitingForTransactionIsReady:
+            7
+        case .signingTransaction:
+            8
+        case .confirmingTransaction:
+            9
+        case .verifyingAccessToken:
+            10
+        case .finished:
+            11
+        }
+    }
+    
+    static var numberOfSteps: Int { 11 }
 }
