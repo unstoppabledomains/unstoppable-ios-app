@@ -9,8 +9,10 @@ import Foundation
 import FireblocksSDK
 import LocalAuthentication
 
-final class FireblocksKeyStorageProvider: KeyStorageDelegate {
+final class FireblocksKeyStorageProvider {
     private let deviceId: String
+    
+    private var keys: [String: Data] = [:]
     
     init(deviceId: String) {
         self.deviceId = deviceId
@@ -21,44 +23,93 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         case failure(OSStatus)
     }
     
+}
+
+// MARK: - Open methods
+extension FireblocksKeyStorageProvider: KeyStorageDelegate {
+    func store(keys: [String : Data], callback: @escaping ([String : Bool]) -> ()) {
+        logMPC("Will store keys: \(keys.keys)")
+        var result: [String : Bool] = [:]
+        for (key, data) in keys {
+            self.keys[key] = data
+            result[key] = true
+        }
+        
+        callback(result)
+//        self.saveToKeychain(keys: keys, callback: callback)
+    }
+    
     func remove(keyId: String) {
-        guard let acl = self.getAcl() else {
-            return
+        logMPC("Will Remove key with id \(keyId)")
+
+        keys[keyId] = nil
+//        guard let acl = self.getAcl() else {
+//            return
+//        }
+//        
+//        var attributes = [String : AnyObject]()
+//        
+//        guard let tag = keyId.data(using: .utf8) else {
+//            return
+//        }
+//        
+//        attributes[kSecClass as String] = kSecClassKey
+//        attributes[kSecAttrApplicationTag as String] = tag as AnyObject
+//        attributes[kSecAttrAccessControl as String] = acl
+//        
+//        let context = LAContext()
+//        context.touchIDAuthenticationAllowableReuseDuration = 0
+//        
+//        context.setCredential(self.deviceId.data(using: .utf8), type: .applicationPassword)
+//        attributes[kSecUseAuthenticationContext as String] = context
+//        
+//        let status = SecItemDelete(attributes as CFDictionary)
+//        logMPC("Did Remove key with id \(keyId) status: \(String(status))")
+    }
+
+    func load(keyIds: Set<String>, callback: @escaping ([String : Data]) -> ()) {
+        logMPC("Will load keys with id \(keyIds)")
+
+        var result: [String : Data] = [:]
+        
+        for key in keyIds {
+            if let data = self.keys[key] {
+                result[key] = data
+            } else {
+                logMPC("Failed to find requested MPC Key")
+            }
         }
         
-        var attributes = [String : AnyObject]()
-        
-        guard let tag = keyId.data(using: .utf8) else {
-            return
-        }
-        
-        attributes[kSecClass as String] = kSecClassKey
-        attributes[kSecAttrApplicationTag as String] = tag as AnyObject
-        attributes[kSecAttrAccessControl as String] = acl
-        
-        let context = LAContext()
-        context.touchIDAuthenticationAllowableReuseDuration = 0
-        
-        context.setCredential(self.deviceId.data(using: .utf8), type: .applicationPassword)
-        attributes[kSecUseAuthenticationContext as String] = context
-        
-        let status = SecItemDelete(attributes as CFDictionary)
-        Debugger.printInfo(String(status))
-        
-        
+        callback(result)
+//        self.getKeys(keyIds: keyIds, callback: callback)
     }
     
     func contains(keyIds: Set<String>, callback: @escaping ([String : Bool]) -> ())  {
-        load(keyIds: keyIds) { privateKeys in
-            var dict: [String: Bool] = [:]
-            for key in keyIds {
-                dict[key] = privateKeys[key] != nil
+        logMPC("Will check if contains keys with id \(keyIds)")
+
+        var result: [String : Bool] = [:]
+        for key in keyIds {
+            if let data = self.keys[key] {
+                result[key] = true
+            } else {
+                logMPC("Not containing MPC Key")
             }
-            callback(dict)
         }
+        
+        callback(result)
+//        load(keyIds: keyIds) { privateKeys in
+//            var dict: [String: Bool] = [:]
+//            for key in keyIds {
+//                dict[key] = privateKeys[key] != nil
+//            }
+//            callback(dict)
+//        }
     }
-    
-    private func checkIfContainsKey(keyId: String) -> Bool {
+}
+
+// MARK: - Private methods
+private extension FireblocksKeyStorageProvider {
+    func checkIfContainsKey(keyId: String) -> Bool {
         var error : Unmanaged<CFError>?
         guard let acl = SecAccessControlCreateWithFlags(kCFAllocatorDefault,
                                                         kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
@@ -91,24 +142,9 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         
     }
     
-    func store(keys: [String : Data], callback: @escaping ([String : Bool]) -> ()) {
-        Debugger.printInfo("generateMpcKeys started store: \(Date())")
-        biometricStatus { status in
-            if status == .ready {
-                self.saveToKeychain(keys: keys, callback: callback)
-            } else {
-                DispatchQueue.main.async {
-                    Debugger.printInfo("generateMpcKeys ended store: \(Date())")
-                    callback([:])
-                }
-            }
-        }
-        
-    }
-    
-    private func saveToKeychain(keys: [String : Data], callback: @escaping ([String : Bool]) -> ()) {
+    func saveToKeychain(keys: [String : Data], callback: @escaping ([String : Bool]) -> ()) {
         guard let acl = self.getAcl() else {
-            Debugger.printInfo("generateMpcKeys ended store: \(Date())")
+            logMPC("generateMpcKeys ended store: \(Date())")
             callback([:])
             return
         }
@@ -145,27 +181,11 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
             
         }
         
-        Debugger.printInfo("generateMpcKeys ended store: \(Date())")
+        logMPC("generateMpcKeys ended store: \(Date())")
         callback(mpcSecretKeys)
-        
-        
     }
     
-    func load(keyIds: Set<String>, callback: @escaping ([String : Data]) -> ()) {
-        let startDate = Date()
-        biometricStatus { status in
-            if status == .ready {
-                self.getKeys(keyIds: keyIds, callback: callback)
-            } else {
-                DispatchQueue.main.async {
-                    Debugger.printInfo("Measure - load keys \(Date().timeIntervalSince(startDate))")
-                    callback([:])
-                }
-            }
-        }
-    }
-    
-    private func getKeys(keyIds: Set<String>, callback: @escaping ([String : Data]) -> ()) {
+    func getKeys(keyIds: Set<String>, callback: @escaping ([String : Data]) -> ()) {
         var dict: [String: Data] = [:]
         let startDate = Date()
         
@@ -175,15 +195,15 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
                 case .loadSuccess(let data):
                     dict[keyId] = data
                 case .failure(let failure):
-                    Debugger.printInfo(String(failure))
+                    logMPC(String(failure))
                 }
             }
         }
-        Debugger.printInfo("Measure - load keys \(Date().timeIntervalSince(startDate))")
+        logMPC("Measure - load keys \(Date().timeIntervalSince(startDate))")
         callback(dict)
     }
     
-    private func getMpcSecret(keyId: String, callback: @escaping (Result) -> Void) {
+    func getMpcSecret(keyId: String, callback: @escaping (Result) -> Void) {
         let getMpcSecret = {
             guard let acl = self.getAcl() else {
                 callback(.failure(errSecNotAvailable))
@@ -229,7 +249,7 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         }
     }
     
-    private func getAcl() -> SecAccessControl? {
+    func getAcl() -> SecAccessControl? {
         var error : Unmanaged<CFError>?
         var acl: SecAccessControl?
         var secFlagsArray: [SecAccessControlCreateFlags] = []
@@ -245,7 +265,10 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         }
         return acl!
     }
-    
+}
+
+// MARK: - Biometric
+private extension FireblocksKeyStorageProvider {
     enum BiometricStatus {
         case notSupported //No hardware on device
         case noPasscode //User need to setup passcode/enroll to touchId/FaceId
@@ -256,7 +279,7 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         case ready //User approved
     }
     
-    private func setupBiometric(succeeded: @escaping (Bool) -> ()) {
+    func setupBiometric(succeeded: @escaping (Bool) -> ()) {
         let context = LAContext()
         context.touchIDAuthenticationAllowableReuseDuration = 0
         var error: NSError?
@@ -282,7 +305,7 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
         }
     }
     
-    private func biometricStatus(status: @escaping (BiometricStatus) -> ()) {
+    func biometricStatus(status: @escaping (BiometricStatus) -> ()) {
         let context = LAContext()
         context.touchIDAuthenticationAllowableReuseDuration = 0
         
@@ -309,5 +332,4 @@ final class FireblocksKeyStorageProvider: KeyStorageDelegate {
             }
         }
     }
-    
 }
