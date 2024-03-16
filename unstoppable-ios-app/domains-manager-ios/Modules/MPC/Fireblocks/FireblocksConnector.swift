@@ -90,20 +90,25 @@ final class FireblocksConnector {
     }
     
     func signTransactionWith(txId: String) async throws {
-        logMPC("Will sign transaction")
-        do {
-            let signatureStatus = try await fireblocks.signTransaction(txId: txId)
-            if signatureStatus.transactionSignatureStatus != .COMPLETED {
-                logMPC("Transaction \(txId) is not ready. Will wait more.")
-                throw FireblocksConnectorError.failedToSignTx
-            } else {
-                logMPC("Did sign transaction \(txId)")
-                return
+        let fireblocks = self.fireblocks!
+        let task = TaskWithDeadline(deadline: 20) {
+            logMPC("Will sign transaction")
+            do {
+                let signatureStatus = try await fireblocks.signTransaction(txId: txId)
+                if signatureStatus.transactionSignatureStatus != .COMPLETED {
+                    logMPC("Transaction \(txId) is not ready. Will wait more.")
+                    throw FireblocksConnectorError.failedToSignTx
+                } else {
+                    logMPC("Did sign transaction \(txId)")
+                    return
+                }
+            } catch {
+                logMPC("Did fail to sign transaction \(txId) with error: \(error.localizedDescription)")
+                throw error
             }
-        } catch {
-            logMPC("Did fail to sign transaction \(txId) with error: \(error.localizedDescription)")
-            throw error
         }
+        
+        _ = try await task.value
     }
 }
 
