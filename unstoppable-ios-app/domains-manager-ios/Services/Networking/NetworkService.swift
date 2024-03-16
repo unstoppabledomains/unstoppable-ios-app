@@ -172,6 +172,7 @@ struct NetworkService {
             if response.statusCode < 300 {
                 return data
             } else {
+                logMPC("Did fail with message: \(String(data: data, encoding: .utf8))")
                 if response.statusCode == Constants.backEndThrottleErrorCode {
                     Debugger.printWarning("Request failed due to backend throttling issue")
                     throw NetworkLayerError.backendThrottle

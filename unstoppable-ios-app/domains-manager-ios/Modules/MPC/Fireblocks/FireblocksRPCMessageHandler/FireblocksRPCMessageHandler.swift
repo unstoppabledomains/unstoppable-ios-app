@@ -14,14 +14,16 @@ extension FireblocksRPCMessageHandler {
                  authToken: String,
                  response: @escaping (String?) -> (),
                  error: @escaping (String?) -> ()) {
+        
         Task {
             do {
                 logMPC("Will handle outgoing message: \(payload)")
+                let body = RequestBody(message: payload)
                 let headers = buildAuthBearerHeader()
-                let request = APIRequest(url: URL(string: MPCNetwork.URLSList.rpcMessagesURL)!,
-                                         headers: headers,
-                                         body: payload,
-                                         method: .post)
+                let request = try APIRequest(urlString: MPCNetwork.URLSList.rpcMessagesURL,
+                                             body: body,
+                                             method: .post,
+                                             headers: headers)
                 let data = try await NetworkService().makeAPIRequest(request)
                 let responseMessage = String(data: data, encoding: .utf8)
                 
@@ -35,4 +37,8 @@ extension FireblocksRPCMessageHandler {
             }
         }
     }
+}
+
+fileprivate struct RequestBody: Encodable {
+    let message: String
 }

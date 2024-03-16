@@ -90,27 +90,20 @@ final class FireblocksConnector {
     }
     
     func signTransactionWith(txId: String) async throws {
-        fireblocks.stopJoinWallet()
-        for i in 0..<5 {
-            logMPC("Will check for transaction is ready attempt \(i + 1)")
-            
-            do {
-                let signatureStatus = try await fireblocks.signTransaction(txId: txId)
-                if signatureStatus.transactionSignatureStatus != .COMPLETED {
-                    logMPC("Transaction \(txId) is not ready. Will wait more.")
-                    await Task.sleep(seconds: 0.5)
-                } else {
-                    logMPC("Did sign transaction \(txId)")
-                    return
-                }
-            } catch {
-                logMPC("Did fail to sign transaction \(txId) with error: \(error.localizedDescription)")
-                throw error
+        logMPC("Will sign transaction")
+        do {
+            let signatureStatus = try await fireblocks.signTransaction(txId: txId)
+            if signatureStatus.transactionSignatureStatus != .COMPLETED {
+                logMPC("Transaction \(txId) is not ready. Will wait more.")
+                throw FireblocksConnectorError.failedToSignTx
+            } else {
+                logMPC("Did sign transaction \(txId)")
+                return
             }
+        } catch {
+            logMPC("Did fail to sign transaction \(txId) with error: \(error.localizedDescription)")
+            throw error
         }
-        
-        logMPC("Did fail to sign transaction \(txId) due to timeout")
-        throw FireblocksConnectorError.failedToSignTx
     }
 }
 

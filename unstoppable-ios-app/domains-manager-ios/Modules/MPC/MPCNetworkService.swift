@@ -18,9 +18,9 @@ enum MPCNetwork {
         static var tempGetCodeURL: String { v1URL.appendingURLPathComponents("admin", "auth", "bootstrap-code") }
         static var submitCodeURL: String { v1URL.appendingURLPathComponents("auth", "bootstrap") }
         static var rpcMessagesURL: String { v1URL.appendingURLPathComponents("rpc", "messages") }
-        static var devicesBootstrapURL: String { v1URL.appendingURLPathComponents("devices", "bootstrap") }
+        static var devicesBootstrapURL: String { v1URL.appendingURLPathComponents("auth", "devices", "bootstrap") }
         
-        static var tokensURL: String { v1URL.appendingURLPathComponents("tokens") }
+        static var tokensURL: String { v1URL.appendingURLPathComponents("auth", "tokens") }
         static var tokensSetupURL: String { tokensURL.appendingURLPathComponents("setup") }
         static var tokensConfirmURL: String { tokensURL.appendingURLPathComponents("confirm") }
         static var tokensVerifyURL: String { tokensURL.appendingURLPathComponents("verify") }
@@ -157,10 +157,10 @@ private extension MPCNetworkService {
                            accessToken: String) async throws {
         struct Body: Encodable {
             let walletJoinRequestId: String
-            var recoveryPhrase: String
+            var recoveryPassphrase: String
         }
         
-        let body = Body(walletJoinRequestId: requestId, recoveryPhrase: recoveryPhrase)
+        let body = Body(walletJoinRequestId: requestId, recoveryPassphrase: recoveryPhrase)
         let headers = buildAuthBearerHeader(token: accessToken)
         let request = try APIRequest(urlString: MPCNetwork.URLSList.devicesBootstrapURL,
                                      body: body,
@@ -180,7 +180,7 @@ private extension MPCNetworkService {
     }
     
     func waitForTransactionWithNewKeyMaterialsReady(accessToken: String) async throws {
-        for i in 0..<10 {
+        for i in 0..<50 {
             logMPC("Will check for transaction is ready attempt \(i + 1)")
             let response = try await checkTransactionWithNewKeyMaterialsStatus(accessToken: accessToken)
             if response.isCompleted {
@@ -272,7 +272,7 @@ private extension MPCNetworkService {
         let transactionId: String // temp access token
         let status: String // 'QUEUED' | 'PENDING_SIGNATURE' | 'COMPLETED' | 'UNKNOWN';
         
-        var isCompleted: Bool { status != "PENDING_SIGNATURE" }
+        var isCompleted: Bool { status == "PENDING_SIGNATURE" }
     }
     
     struct SuccessAuthResponse: Decodable {
