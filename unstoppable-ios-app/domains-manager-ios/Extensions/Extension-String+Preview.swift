@@ -31,6 +31,7 @@ extension String {
         case communitiesInfo
         case setupApplePayInstruction
         case unstoppableDomainSearch(searchKey: String)
+        case buyCryptoToDomain(DomainName), buyCryptoToWallet(HexAddress)
         
         var urlString: String {
             switch self {
@@ -98,7 +99,11 @@ extension String {
             case .direct(let url):
                 return url.absoluteString
             case .unstoppableDomainSearch(let searchKey):
-                return "https://\(NetworkConfig.websiteHost)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+                return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
+            case .buyCryptoToDomain(let domainName):
+                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+            case .buyCryptoToWallet(let walletAddress):
+                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
             }
         }
         
@@ -1140,6 +1145,12 @@ extension String {
         static let profileSuggestionReasonFarcasterFollows = "PROFILE_SUGGESTION_REASON_FARCASTER_FOLLOWS"
         static let profileSuggestionReasonFarcasterMutual = "PROFILE_SUGGESTION_REASON_FARCASTER_MUTUAL"
         static let searchProfiles = "SEARCH_PROFILES"
+        
+        static let selectPullUpBuyDomainsTitle = "SELECT_PULL_UP_BUY_DOMAINS_TITLE"
+        static let selectPullUpBuyTokensTitle = "SELECT_PULL_UP_BUY_TOKENS_TITLE"
+        static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
+        static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
+        
     }
     
     enum BlockChainIcons: String {

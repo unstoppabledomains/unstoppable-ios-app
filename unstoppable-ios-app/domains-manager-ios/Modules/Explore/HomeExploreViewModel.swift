@@ -140,7 +140,7 @@ extension HomeExploreViewModel {
 // MARK: - Private methods
 private extension HomeExploreViewModel {
     func setup() {
-        userDomains = walletsDataService.wallets.combinedDomains().sorted(by: { $0.name < $1.name })
+        setDomainsForUserWallet()
         userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile,
                selectedProfile.id != self?.selectedProfile.id {
@@ -156,6 +156,16 @@ private extension HomeExploreViewModel {
         domainProfilesService.followActionsPublisher.receive(on: DispatchQueue.main).sink { [weak self] actionDetails in
             self?.didReceiveFollowActionDetails(actionDetails)
         }.store(in: &cancellables)
+        walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
+            self?.setDomainsForUserWallet()
+        }.store(in: &cancellables)
+    }
+    
+    func setDomainsForUserWallet() {
+        let domains = walletsDataService.wallets.combinedDomains()
+        if domains.count != self.userDomains.count {
+            self.userDomains = domains.sorted(by: { $0.name < $1.name })
+        }
     }
     
     func loadAndShowData() {
@@ -187,6 +197,7 @@ private extension HomeExploreViewModel {
     }
     
     func didUpdateSelectedProfile() {
+        isKeyboardActive = false
         updateWalletDomainProfileDetailsForSelectedProfile()
         reloadSuggestedProfilesIfAvailable()
     }

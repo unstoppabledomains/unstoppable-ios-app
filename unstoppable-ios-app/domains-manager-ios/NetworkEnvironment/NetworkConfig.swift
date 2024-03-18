@@ -34,6 +34,13 @@ struct NetworkConfig {
             return "unstoppabledomains.com"
         }
     }
+    static var websiteBaseUrl: String {
+        "https://\(Self.websiteHost)"
+    }
+    
+    static var buyCryptoUrl: String {
+        websiteBaseUrl + "/fiat-ramps"
+    }
     
     static var baseDomainProfileUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed

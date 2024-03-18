@@ -19,7 +19,8 @@ final class WalletsDataService {
     private let walletNFTsService: WalletNFTsServiceProtocol
     private let networkService: WalletsDataNetworkServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
-    
+    private var refreshDomainsTimer: AnyCancellable?
+
     @Published private(set) var wallets: [WalletEntity] = []
     var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }
     @Published private(set) var selectedWallet: WalletEntity? = nil
@@ -139,7 +140,7 @@ extension WalletsDataService: UDWalletsServiceListener {
                     mutateWalletEntity(wallet) { wallet in
                         wallet.changeRRDomain(domain)
                     }
-                    refreshWalletDomainsAsync(wallet, shouldRefreshPFP: false)
+                    refreshWalletDomainsNonBlocking(wallet, shouldRefreshPFP: false)
                     AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
                 }
             case .walletRemoved:
@@ -161,13 +162,13 @@ extension WalletsDataService: UDWalletsServiceListener {
 // MARK: - Private methods
 private extension WalletsDataService {
     func refreshDataForWalletAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool = true) {
-        refreshWalletDomainsAsync(wallet, shouldRefreshPFP: shouldRefreshPFP)
+        refreshWalletDomainsNonBlocking(wallet, shouldRefreshPFP: shouldRefreshPFP)
         refreshWalletBalancesAsync(wallet)
         refreshWalletNFTsAsync(wallet)
     }
     
     func refreshDataForWalletSync(_ wallet: WalletEntity) async {
-        async let domainsTask: () = refreshWalletDomainsSync(wallet, shouldRefreshPFP: true)
+        async let domainsTask: () = refreshWalletDomains(wallet, shouldRefreshPFP: true)
         async let walletsTask: () = refreshWalletBalancesAsync(wallet)
         async let NFTsTask: () = refreshWalletNFTsSync(wallet)
         
@@ -193,13 +194,14 @@ private extension WalletsDataService {
 
 // MARK: - Load domains
 private extension WalletsDataService {
-    func refreshWalletDomainsAsync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) {
+    func refreshWalletDomainsNonBlocking(_ wallet: WalletEntity, shouldRefreshPFP: Bool) {
         Task {
-            await refreshWalletDomainsSync(wallet, shouldRefreshPFP: shouldRefreshPFP)
+            await refreshWalletDomains(wallet, shouldRefreshPFP: shouldRefreshPFP)
         }
     }
 
-    func refreshWalletDomainsSync(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
+    func refreshWalletDomains(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
+        await stopRefreshDomainsTimer()
         do {
             async let domainsTask = domainsService.updateDomainsList(for: [wallet.udWallet])
             async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
@@ -230,6 +232,7 @@ private extension WalletsDataService {
                 await loadWalletDomainsPFPIfTooLarge(wallet)
             }
         } catch { }
+        startRefreshDomainsTimerIfNeeded()
     }
     
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
@@ -603,6 +606,55 @@ private extension WalletsDataService {
                             nfts: [],
                             balance: [],
                             rrDomain: nil)
+    }
+}
+
+// MARK: - Private methods
+private extension WalletsDataService {
+    @MainActor
+    func stopRefreshDomainsTimer() {
+        refreshDomainsTimer?.cancel()
+        refreshDomainsTimer = nil
+    }
+    
+    @MainActor
+    func startRefreshDomainsTimer() {
+        stopRefreshDomainsTimer()
+        refreshDomainsTimer = Timer
+            .publish(every: Constants.updateInterval, on: .main, in: .default)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshDomainsForCurrentWalletNonBlocking()
+            }
+    }
+    
+    @MainActor
+    func refreshDomainsForCurrentWalletNonBlocking() {
+        guard let selectedWallet else {
+            stopRefreshDomainsTimer()
+            return
+        }
+        
+        refreshWalletDomainsNonBlocking(selectedWallet, shouldRefreshPFP: false)
+    }
+    
+    func startRefreshDomainsTimerIfNeeded() {
+        guard let selectedWallet else { return }
+        
+        Task {
+            if isNeedToStartRefreshTimerFor(wallet: selectedWallet) {
+                await startRefreshDomainsTimer()
+            }
+        }
+    }
+    
+    func isNeedToStartRefreshTimerFor(wallet: WalletEntity) -> Bool {
+        let domains = wallet.domains
+        
+        if domains.first(where: { $0.state == .minting || $0.state == .transfer }) != nil {
+            return true
+        }
+        return false
     }
 }
 

@@ -1314,6 +1314,8 @@
 		C6B435072A53F42400BC644B /* BaseDiffableCollectionViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B435062A53F42400BC644B /* BaseDiffableCollectionViewControllerProtocol.swift */; };
 		C6B5136228320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B5136128320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift */; };
 		C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B5136728322EA1001E99B5 /* MainWindow.swift */; };
+		C6B540C12BA3F77200A41D42 /* ViewPullUpListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B540C02BA3F77200A41D42 /* ViewPullUpListItemView.swift */; };
+		C6B540C22BA3F77200A41D42 /* ViewPullUpListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B540C02BA3F77200A41D42 /* ViewPullUpListItemView.swift */; };
 		C6B659242B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B659232B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift */; };
 		C6B659252B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B659232B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift */; };
 		C6B65F502B54DA84006D1812 /* HomeWalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */; };
@@ -3499,6 +3501,7 @@
 		C6B435062A53F42400BC644B /* BaseDiffableCollectionViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDiffableCollectionViewControllerProtocol.swift; sourceTree = "<group>"; };
 		C6B5136128320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterBackupToRestoreWalletsPresenter.swift; sourceTree = "<group>"; };
 		C6B5136728322EA1001E99B5 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		C6B540C02BA3F77200A41D42 /* ViewPullUpListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUpListItemView.swift; sourceTree = "<group>"; };
 		C6B659232B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletTokenNotMatchingRowView.swift; sourceTree = "<group>"; };
 		C6B65F4F2B54DA84006D1812 /* HomeWalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletViewModel.swift; sourceTree = "<group>"; };
 		C6B65F552B54E42C006D1812 /* HomeWalletTokenRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWalletTokenRowView.swift; sourceTree = "<group>"; };
@@ -5674,6 +5677,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D646442B1E084C00D724AC /* ViewPullUp.swift */,
+				C6B540C02BA3F77200A41D42 /* ViewPullUpListItemView.swift */,
 				C64F8DFD2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift */,
 				C64F8E032B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift */,
 				C64F8E002B60F2590075D37F /* ViewPullUpConfigurationType.swift */,
@@ -8771,6 +8775,7 @@
 				C6C995C2289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6FBCAA82B91D00100BA39DF /* HomeExploreUserWalletDomainsView.swift in Sources */,
 				C6B6B043296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
+				C6B540C12BA3F77200A41D42 /* ViewPullUpListItemView.swift in Sources */,
 				C617FD992B58BC2900B93433 /* WalletEntitiesStorage.swift in Sources */,
 				C692C32A282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.swift in Sources */,
 				C635195128D0441000FC6AF8 /* SetupWalletsReverseResolutionPresenter.swift in Sources */,
@@ -9968,6 +9973,7 @@
 				C6D646AC2B1ED16900D724AC /* DomainProfileTutorialViewController.swift in Sources */,
 				C6D6467A2B1ED12100D724AC /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C630E4BA2B7F5BAC008F3269 /* Padding.swift in Sources */,
+				C6B540C22BA3F77200A41D42 /* ViewPullUpListItemView.swift in Sources */,
 				C6D647192B1ED84500D724AC /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C6C8F8372B217E9600A9834D /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6D646612B1ED11400D724AC /* DomainProfileSectionHeader.swift in Sources */,
