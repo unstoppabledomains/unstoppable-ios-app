@@ -172,8 +172,12 @@ extension PublicProfileView {
         private func loadProfileTokens() {
             Task {
                 await performAsyncErrorCatchingBlock {
-                    let balances = try await appContext.walletsDataService.loadBalanceFor(walletAddress: domain.walletAddress)
-                    tokens = balances.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 }).sorted(by: { $0.balanceUsd > $1.balanceUsd })
+                    async let balancesTask = appContext.walletsDataService.loadBalanceFor(walletAddress: domain.walletAddress)
+                    async let additionalBalancesTask = appContext.walletsDataService.loadAdditionalBalancesFor(domainName: domain.name)
+                    let (balances, additionalBalances) = try await (balancesTask, additionalBalancesTask)
+                    let allBalances = balances + additionalBalances
+                    
+                    tokens = allBalances.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 }).sorted(by: { $0.balanceUsd > $1.balanceUsd })
                 }
             }
         }
