@@ -191,6 +191,25 @@ extension FirebasePurchaseDomainsService {
         @DecodeHashableIgnoringFailed
         var hiddenProducts: [UDProduct]
         
+        
+        init(from decoder: any Decoder) throws {
+            let container: KeyedDecodingContainer<FirebasePurchaseDomainsService.DomainProductItem.CodingKeys> = try decoder.container(keyedBy: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.self)
+            self.reservedForUserId = try container.decodeIfPresent(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.reservedForUserId)
+            self.availability = try container.decode(Bool.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.availability)
+            self.domain = try container.decode(FirebasePurchaseDomainsService.DomainProductDetails.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.domain)
+            self.price = try container.decode(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.price)
+            self.productId = try container.decodeIfPresent(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productId)
+            self.productType = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productType)
+            self.productCode = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productCode)
+            self.status = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.status)
+            self.tags = try container.decode([String].self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.tags)
+            if let hiddenProducts = try? container.decode(DecodeHashableIgnoringFailed<FirebasePurchaseDomainsService.UDProduct>.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.hiddenProducts) {
+                self._hiddenProducts = hiddenProducts
+            } else {
+                self._hiddenProducts = .init(value: [])
+            }
+        }
+        
         // Custom field
         var availableProducts: [UDProduct]?
         var ensStatus: ENSDomainProductStatusResponse?
