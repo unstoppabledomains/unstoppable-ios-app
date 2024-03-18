@@ -1388,6 +1388,7 @@
 		C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C75C682848E82000DD8E3F /* Sequence.swift */; };
 		C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */; };
 		C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */; };
+		C6C8F72E2BA7F4DB00F8708C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C6C8F72D2BA7F4DB00F8708C /* PrivacyInfo.xcprivacy */; };
 		C6C8F80E2B217C8F00A9834D /* NSLayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E37C27FEE2D40044E408 /* NSLayoutHelper.swift */; };
 		C6C8F80F2B217CA900A9834D /* EmptyRootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */; };
 		C6C8F8102B217CC000A9834D /* ConnectNewExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098291282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift */; };
@@ -3519,6 +3520,7 @@
 		C6C57C5C2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6C75C682848E82000DD8E3F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		C6C837A02B5FF307000A6AF5 /* TabBarVisibleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVisibleModifier.swift; sourceTree = "<group>"; };
+		C6C8F72D2BA7F4DB00F8708C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C6C8F8242B217CDD00A9834D /* UDWallet+RecoveryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDWallet+RecoveryType.swift"; sourceTree = "<group>"; };
 		C6C8F8282B217D7C00A9834D /* WCRegistryWalletProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRegistryWalletProxy.swift; sourceTree = "<group>"; };
 		C6C8F82B2B217D9600A9834D /* PreviewSessionV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSessionV2.swift; sourceTree = "<group>"; };
@@ -4083,6 +4085,7 @@
 				306C9ACC273184FA00FD9D9C /* ReleaseConfig.swift */,
 				306486822527253700388026 /* SceneDelegate.swift */,
 				C6C8F9422B2184A000A9834D /* SceneDelegateProtocol.swift */,
+				C6C8F72D2BA7F4DB00F8708C /* PrivacyInfo.xcprivacy */,
 				C6538DC02A32244400B63E84 /* CoreDataModel.xcdatamodeld */,
 				306486892527253C00388026 /* Assets.xcassets */,
 				C628E33B27FDA63F0044E408 /* Colors.xcassets */,
@@ -8313,6 +8316,7 @@
 				C691CFCC28C070450077C59F /* SetupReverseResolutionViewController.xib in Resources */,
 				C638683C285C0ED1000F98C4 /* AppUpdatedRequired.xib in Resources */,
 				C6C9DEA42834B56200BAC36F /* ManageDomainLoadingCell.xib in Resources */,
+				C6C8F72E2BA7F4DB00F8708C /* PrivacyInfo.xcprivacy in Resources */,
 				C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */,
 				C62C8DC528DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */,
 				C635B02A283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
@@ -11447,7 +11451,7 @@
 			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa";
 			requirement = {
 				kind = exactVersion;
-				version = 6.25.2;
+				version = 6.28.1;
 			};
 		};
 		C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */ = {
@@ -11503,7 +11507,7 @@
 			repositoryURL = "https://github.com/launchdarkly/ios-client-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 9.1.1;
+				version = 9.5.0;
 			};
 		};
 		C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */ = {
