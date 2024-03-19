@@ -17,19 +17,23 @@ final class TestableFirebaseParkedDomainsAuthenticationService: FirebaseAuthenti
     var authorizedUserPublisher: Published<FirebaseUser?>.Publisher { $firebaseUser }
     
     func authorizeWith(email: String, password: String) async throws {
-        
+        try failIfNeeded()
+        setFirebaseUser()
     }
     
     func authorizeWithGoogle(in viewController: UIWindow) async throws {
-        
+        try failIfNeeded()
+        setFirebaseUser()
     }
     
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
-        
+        try failIfNeeded()
+        setFirebaseUser()
     }
     
     func authorizeWith(wallet: UDWallet) async throws {
-        
+        try failIfNeeded()
+        setFirebaseUser()
     }
     
     func logOut() {
@@ -40,7 +44,15 @@ final class TestableFirebaseParkedDomainsAuthenticationService: FirebaseAuthenti
 
 // MARK: - Open methods
 extension TestableFirebaseParkedDomainsAuthenticationService {
+    func simulateAuthorise() {
+        setFirebaseUser()
+    }
+    
+    func mockFirebaseUser() -> FirebaseUser {
+        FirebaseUser(email: "qq@qq.qq")
+    }
+    
     func setFirebaseUser() {
-        firebaseUser = .init(email: "qq@qq.qq")
+        firebaseUser = mockFirebaseUser()
     }
 }

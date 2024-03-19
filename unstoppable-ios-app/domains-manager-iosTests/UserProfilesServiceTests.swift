@@ -89,8 +89,7 @@ extension UserProfilesServiceTests {
     }
     
     func testPreviouslySelectedFBProfileWhenWalletsAndFB() {
-        firebaseParkedDomainsAuthenticationService.setFirebaseUser()
-        let preSelectedProfile = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.firebaseUser!)
+        let preSelectedProfile = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.mockFirebaseUser())
         buildUserProfilesService(isFBAuthorised: true,
                                  withParkedDomains: true,
                                  selectedProfileId: preSelectedProfile.id)
@@ -98,18 +97,9 @@ extension UserProfilesServiceTests {
     }
 }
 
-// MARK: - Open methods
+// MARK: - Add first profile
 extension UserProfilesServiceTests {
-    func testPreselectedOnlyProfileRemoved() {
-        let preSelectedProfile = UserProfile.wallet(walletsDataService.wallets[1])
-        buildUserProfilesService(withWallets: false,
-                                 isFBAuthorised: false,
-                                 withParkedDomains: false,
-                                 selectedProfileId: preSelectedProfile.id)
-        XCTAssertNil(storage.selectedProfileId)
-    }
-    
-    func testNewProfileFromNilWallet() async {
+    func testFirstProfileFromWallet() async {
         let newWallet = walletsDataService.wallets[0]
         let expectedProfile = UserProfile.wallet(newWallet)
 
@@ -118,14 +108,99 @@ extension UserProfilesServiceTests {
                                  withParkedDomains: false)
         walletsDataService.wallets.append(newWallet)
         await waitPublishersDelivered()
-        XCTAssertEqual(userProfilesService.selectedProfile?.id, expectedProfile.id)
-        XCTAssertEqual(storage.selectedProfileId, expectedProfile.id)
+        verifySelectedProfileId(expectedProfile.id)
     }
     
-    func testNewProfileFromNilFB() {
+    func testFirstProfileFromFBWithoutDomains() async {
         buildUserProfilesService(withWallets: false,
                                  isFBAuthorised: false,
                                  withParkedDomains: false)
+        firebaseParkedDomainsAuthenticationService.simulateAuthorise()
+        await waitPublishersDelivered()
+        verifySelectedProfileId(nil)
+    }
+    
+    func testFirstProfileFromFBWithDomains() async {
+        let expectedProfile = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.mockFirebaseUser())
+        
+        buildUserProfilesService(withWallets: false,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: true)
+        firebaseParkedDomainsAuthenticationService.simulateAuthorise()
+        await waitPublishersDelivered()
+        verifySelectedProfileId(expectedProfile.id)
+    }
+}
+
+// MARK: - Add/Remove Profile
+extension UserProfilesServiceTests {
+    func testNewWalletProfileAdded() async {
+        let walletToAdd = walletsDataService.wallets.randomElement()!
+        let profileToAdd = UserProfile.wallet(walletToAdd)
+        
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: false,
+                                 extraSetupBlock: {
+            self.walletsDataService.wallets.removeAll(where: { $0.address == walletToAdd.address })
+        })
+        XCTAssertNotEqual(profileToAdd.id, userProfilesService.selectedProfile?.id)
+        walletsDataService.wallets.append(walletToAdd)
+        await waitPublishersDelivered()
+        verifySelectedProfileId(profileToAdd.id)
+    }
+    
+    func testNewFBProfileWithoutDomainsAdded() async {
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: false)
+        let selectedProfile = userProfilesService.selectedProfile
+        firebaseParkedDomainsAuthenticationService.simulateAuthorise()
+        await waitPublishersDelivered()
+        verifySelectedProfileId(selectedProfile?.id)
+    }
+    
+    func testNewFBProfileWithDomainsAdded() async {
+        let profileToAdd = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.mockFirebaseUser())
+        
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: true)
+
+        firebaseParkedDomainsAuthenticationService.simulateAuthorise()
+        await waitPublishersDelivered()
+        verifySelectedProfileId(profileToAdd.id)
+    }
+    
+    func testNewFBProfileWithDomainsFailedToFetchAdded() async {
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: true,
+                                 extraSetupBlock: {
+            self.firebaseParkedDomainsService.shouldFail = true
+        })
+        let selectedProfile = userProfilesService.selectedProfile
+        firebaseParkedDomainsAuthenticationService.simulateAuthorise()
+        await waitPublishersDelivered()
+        verifySelectedProfileId(selectedProfile?.id)
+    }
+    
+    func testPreselectedOnlyProfileRemoved() {
+        let preSelectedProfile = UserProfile.wallet(walletsDataService.wallets[1])
+        buildUserProfilesService(withWallets: false,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: false,
+                                 selectedProfileId: preSelectedProfile.id)
+        XCTAssertNil(storage.selectedProfileId)
+    }
+}
+
+// MARK: - Switch profile
+extension UserProfilesServiceTests {
+    func testSelectedProfileChanged() {
+        let newProfile = userProfilesService.profiles.first(where: { $0.id != userProfilesService.selectedProfile?.id })!
+        userProfilesService.setActiveProfile(newProfile)
+        verifySelectedProfileId(newProfile.id)
     }
 }
 
@@ -138,15 +213,16 @@ private extension UserProfilesServiceTests {
     func buildUserProfilesService(withWallets: Bool = true,
                                   isFBAuthorised: Bool = false,
                                   withParkedDomains: Bool = true,
-                                  selectedProfileId: String? = nil) {
+                                  selectedProfileId: String? = nil,
+                                  extraSetupBlock: EmptyCallback? = nil) {
         firebaseParkedDomainsAuthenticationService = TestableFirebaseParkedDomainsAuthenticationService()
         if isFBAuthorised {
-            firebaseParkedDomainsAuthenticationService.setFirebaseUser()
+            firebaseParkedDomainsAuthenticationService.simulateAuthorise()
         }
         
         firebaseParkedDomainsService = TestableFirebaseParkedDomainsService()
         if withParkedDomains {
-            firebaseParkedDomainsService.domainsToReturn = MockEntitiesFabric.Domains.mockFirebaseDomains()
+            firebaseParkedDomainsService.simulateParkedDomainsLoaded()
         }
         
         
@@ -158,11 +234,19 @@ private extension UserProfilesServiceTests {
         storage = UserProfilesStorage()
         storage.selectedProfileId = selectedProfileId
         
+        extraSetupBlock?()
+        
         userProfilesService = UserProfilesService(firebaseParkedDomainsAuthenticationService:  firebaseParkedDomainsAuthenticationService,
                                                   firebaseParkedDomainsService: firebaseParkedDomainsService,
                                                   walletsDataService: walletsDataService,
                                                   storage: storage)
     }
+    
+    func verifySelectedProfileId(_ id: String?) {
+        XCTAssertEqual(userProfilesService.selectedProfile?.id, id)
+        XCTAssertEqual(storage.selectedProfileId, id)
+    }
+    
 }
 
 final class UserProfilesStorage: SelectedUserProfileInfoStorageProtocol {

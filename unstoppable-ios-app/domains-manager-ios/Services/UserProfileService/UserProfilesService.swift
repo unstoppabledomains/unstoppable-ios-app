@@ -38,7 +38,7 @@ final class UserProfilesService {
             self?.updateProfilesList()
         }.store(in: &cancellables)
         firebaseParkedDomainsAuthenticationService.authorizedUserPublisher.receive(on: DispatchQueue.main).sink { [weak self] userProfile in
-            if let userProfile {
+            if userProfile != nil {
                 self?.loadParkedDomainsAndCheckProfile()
             } else {
                 self?.updateProfilesList()

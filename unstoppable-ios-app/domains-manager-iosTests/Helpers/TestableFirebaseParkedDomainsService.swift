@@ -28,3 +28,11 @@ final class TestableFirebaseParkedDomainsService: FirebaseDomainsServiceProtocol
         return domainsToReturn
     }
 }
+
+// MARK: - Open methods
+extension TestableFirebaseParkedDomainsService {
+    func simulateParkedDomainsLoaded() {
+        domainsToReturn = MockEntitiesFabric.Domains.mockFirebaseDomains()
+        parkedDomains = domainsToReturn.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
+    }
+}
