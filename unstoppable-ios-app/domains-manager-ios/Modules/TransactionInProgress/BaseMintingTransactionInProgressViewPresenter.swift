@@ -26,7 +26,9 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
     func didRefreshPendingDomains() { }
     
     override func viewTransactionButtonPressed() {
-        view?.cNavigationController?.popViewController(animated: true)
+        guard let transactionHash = self.mintingDomains.first?.transactionHash else { return }
+        
+        view?.openLink(.polygonScanTransaction(transactionHash))
     }
      
     override func refreshMintingTransactions() {
@@ -47,10 +49,6 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
             }
             didRefreshPendingDomains()
         }
-    }
-    
-    override func setActionButtonStyle() {
-        view?.setActionButtonStyle(.goHome)
     }
 }
 
