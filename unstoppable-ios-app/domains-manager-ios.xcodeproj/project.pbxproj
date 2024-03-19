@@ -677,6 +677,9 @@
 		C632BE5A2BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE582BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift */; };
 		C632BE5C2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE5B2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift */; };
 		C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9422BA957BF00B0072B /* UserProfilesServiceTests.swift */; };
+		C632C9452BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */; };
+		C632C9472BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */; };
+		C632C9492BA95D8A00B0072B /* TestableWalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -2991,6 +2994,9 @@
 		C632BE582BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSuccessAuthResponse.swift; sourceTree = "<group>"; };
 		C632BE5B2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultMPCConnectionNetworkService.swift; sourceTree = "<group>"; };
 		C632C9422BA957BF00B0072B /* UserProfilesServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilesServiceTests.swift; sourceTree = "<group>"; };
+		C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableFirebaseParkedDomainsAuthenticationService.swift; sourceTree = "<group>"; };
+		C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableFirebaseParkedDomainsService.swift; sourceTree = "<group>"; };
+		C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableWalletsDataService.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -7561,6 +7567,9 @@
 				C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */,
 				C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */,
 				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
+				C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */,
+				C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */,
+				C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9759,6 +9768,7 @@
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
 				C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
+				C632C9472BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift in Sources */,
 				C617CFAA2B9EDD9400663516 /* TestableDomainProfilesService.swift in Sources */,
 				C67B6D552AE79E3B00F74B0B /* ImageLoadingServiceTests.swift in Sources */,
 				C617CFA22B9ED9D100663516 /* TestableUDWalletsService.swift in Sources */,
@@ -9767,8 +9777,10 @@
 				C617CF9E2B9ED96200663516 /* WalletsDataServiceTests.swift in Sources */,
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,
+				C632C9492BA95D8A00B0072B /* TestableWalletsDataService.swift in Sources */,
 				C6478B1829A36960006FADFE /* DeepLinksServiceTests.swift in Sources */,
 				C6DF986A290F83020098733A /* WalletDataValidationTests.swift in Sources */,
+				C632C9452BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift in Sources */,
 				C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
 				C617CFA62B9EDA1300663516 /* TestableWalletConnectServiceV2.swift in Sources */,
