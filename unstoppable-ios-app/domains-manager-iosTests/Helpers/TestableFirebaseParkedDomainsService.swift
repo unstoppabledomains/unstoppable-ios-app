@@ -19,6 +19,9 @@ final class TestableFirebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     var numberOfGetCachedDomainsCalls = 0
     func getCachedDomains() -> [FirebaseDomain] {
         numberOfGetCachedDomainsCalls += 1
+        if shouldFail {
+            return []
+        }
         return domainsToReturn
     }
     

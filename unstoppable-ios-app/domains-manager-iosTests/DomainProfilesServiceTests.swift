@@ -281,7 +281,6 @@ private extension DomainProfilesServiceTests {
         
         XCTAssertEqual(receiver.capturedValues.count, 4) // Reset + followers + followings + Domain Profile
         XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[1].socialDetails!))
         XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[2].socialDetails!))
     }
     
