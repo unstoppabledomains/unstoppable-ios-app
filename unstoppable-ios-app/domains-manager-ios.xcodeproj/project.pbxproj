@@ -680,6 +680,8 @@
 		C632C9452BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */; };
 		C632C9472BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */; };
 		C632C9492BA95D8A00B0072B /* TestableWalletsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */; };
+		C632C94B2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C94A2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift */; };
+		C632C94C2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C94A2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -2997,6 +2999,7 @@
 		C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableFirebaseParkedDomainsAuthenticationService.swift; sourceTree = "<group>"; };
 		C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableFirebaseParkedDomainsService.swift; sourceTree = "<group>"; };
 		C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableWalletsDataService.swift; sourceTree = "<group>"; };
+		C632C94A2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedUserProfileInfoStorageProtocol.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -6408,6 +6411,7 @@
 			children = (
 				C6752C452B708E1900E54367 /* UserProfilesServiceProtocol.swift */,
 				C6526DB829D2BACB00D6F2EB /* UserProfilesService.swift */,
+				C632C94A2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift */,
 			);
 			path = UserProfileService;
 			sourceTree = "<group>";
@@ -9310,6 +9314,7 @@
 				C6F7D9D32B8D766500764708 /* ChatReplyInfoView.swift in Sources */,
 				C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
+				C632C94B2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift in Sources */,
 				C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */,
 				C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6C9DE992834B28F00BAC36F /* SubheadTertiaryButton.swift in Sources */,
@@ -10595,6 +10600,7 @@
 				C6D6458A2B1DBAD900D724AC /* UDPageControl.swift in Sources */,
 				C6D645D72B1DBD4900D724AC /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C61DB10F2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */,
+				C632C94C2BA964E000B0072B /* SelectedUserProfileInfoStorageProtocol.swift in Sources */,
 				C6D645DB2B1DBD4D00D724AC /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C617FDA82B58E7BB00B93433 /* WalletsDataServiceProtocol.swift in Sources */,
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,

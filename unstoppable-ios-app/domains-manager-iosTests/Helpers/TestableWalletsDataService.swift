@@ -13,15 +13,19 @@ final class TestableWalletsDataService: WalletsDataServiceProtocol, FailableServ
     var shouldFail: Bool = false
     
     
+    var numberOfGetWalletsCalls = 0
+    @Published var wrappedWallets: [WalletEntity] = MockEntitiesFabric.Wallet.mockEntities()
     
-    @Published var wallets: [WalletEntity] = []
-    var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wallets }
+    var wallets: [WalletEntity] {
+        get {
+            numberOfGetWalletsCalls += 1
+            return wrappedWallets
+        }
+        set { wrappedWallets = newValue }
+    }
+    var walletsPublisher: Published<[WalletEntity]>.Publisher  { $wrappedWallets }
     @Published private(set) var selectedWallet: WalletEntity? = nil
     var selectedWalletPublisher: Published<WalletEntity?>.Publisher { $selectedWallet }
-    
-    init() {
-        
-    }
     
     func setSelectedWallet(_ wallet: WalletEntity?) {
         

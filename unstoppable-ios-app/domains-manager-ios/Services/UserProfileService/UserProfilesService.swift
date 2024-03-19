@@ -13,6 +13,7 @@ final class UserProfilesService {
     private let firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
+    private var storage: SelectedUserProfileInfoStorageProtocol
     
     @Published private(set) var profiles: [UserProfile] = []
     @Published private(set) var selectedProfile: UserProfile? = nil
@@ -21,10 +22,12 @@ final class UserProfilesService {
 
     init(firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol,
          firebaseParkedDomainsService: FirebaseDomainsServiceProtocol,
-         walletsDataService: WalletsDataServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol,
+         storage: SelectedUserProfileInfoStorageProtocol = UserDefaults.standard) {
         self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
         self.firebaseParkedDomainsService = firebaseParkedDomainsService
         self.walletsDataService = walletsDataService
+        self.storage = storage
         loadProfilesAndSetSelected()
         firebaseParkedDomainsService.parkedDomainsPublisher.receive(on: DispatchQueue.main).sink { [weak self] parkedDomains in
             if parkedDomains.isEmpty {
@@ -91,7 +94,7 @@ private extension UserProfilesService {
         let currentProfilesList = self.profiles
         let currentSelectedProfile = self.selectedProfile
         self.profiles = getAvailableProfiles()
-        let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
+        let selectedProfile = profiles.first(where: { $0.id == storage.selectedProfileId }) ?? profiles.first
         setSelectedProfile(selectedProfile)
         
         if profiles.isEmpty, !currentProfilesList.isEmpty {
@@ -119,7 +122,7 @@ private extension UserProfilesService {
     
     func setSelectedProfile(_ profile: UserProfile?) {
         selectedProfile = profile
-        UserDefaults.selectedProfileId = profile?.id
+        storage.selectedProfileId = profile?.id
         
         switch profile {
         case .wallet(let walletEntity):

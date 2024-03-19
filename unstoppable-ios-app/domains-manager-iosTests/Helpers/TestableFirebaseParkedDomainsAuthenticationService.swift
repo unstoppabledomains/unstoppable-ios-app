@@ -36,3 +36,11 @@ final class TestableFirebaseParkedDomainsAuthenticationService: FirebaseAuthenti
         
     }
 }
+
+
+// MARK: - Open methods
+extension TestableFirebaseParkedDomainsAuthenticationService {
+    func setFirebaseUser() {
+        firebaseUser = .init(email: "qq@qq.qq")
+    }
+}
