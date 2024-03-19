@@ -74,8 +74,8 @@ private extension MPCEnterPassphraseView {
     }
     
     func actionButtonPressed() {
-        Task {
-            await KeyboardService.shared.hideKeyboard()
+        Task { @MainActor in
+            KeyboardService.shared.hideKeyboard()
             
             isLoading = true
             do {
