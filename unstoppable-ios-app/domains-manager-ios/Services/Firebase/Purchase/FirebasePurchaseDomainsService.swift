@@ -13,8 +13,8 @@ private extension BaseFirebaseInteractionService.URLSList {
     static var USER_PROFILE_URL: String { USER_URL.appendingURLPathComponent("profile") }
     
     static var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
-    static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponent("search") }
-    static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_SEARCH_URL.appendingURLPathComponent("ai-suggestions") }
+    static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponents("search", "internal") }
+    static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_URL.appendingURLPathComponents("search", "ai-suggestions") }
     static func DOMAIN_ENS_STATUS_URL(domain: String) -> String {
         DOMAIN_URL.appendingURLPathComponents(domain, "ens-status")
     }
@@ -187,8 +187,8 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func aiSearchForFBDomains(hint: String) async throws -> [DomainProductItem] {
-        let queryComponents = ["phrase" : hint,
-                               "extension" : "All"]
+        let queryComponents = ["extension" : "All",
+                               "phrase" : hint]
         let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
