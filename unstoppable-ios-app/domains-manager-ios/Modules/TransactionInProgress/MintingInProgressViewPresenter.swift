@@ -25,6 +25,10 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
         self.mintDomainsFlowManager = mintDomainsFlowManager
     }
     
+    override func setActionButtonStyle() {
+        view?.setActionButtonStyle(.goHome)
+    }
+    
     override func viewTransactionButtonPressed() {
         Task {
             try? await mintDomainsFlowManager?.handle(action: .skipMinting)
