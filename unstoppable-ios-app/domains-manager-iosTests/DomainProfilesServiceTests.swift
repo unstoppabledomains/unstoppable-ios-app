@@ -279,7 +279,7 @@ private extension DomainProfilesServiceTests {
         try await block()
         await Task.sleep(seconds: 0.1) // Wait for new expected requests finished
         
-        XCTAssertEqual(receiver.capturedValues.count, 3) // Reset + followers + followings
+        XCTAssertEqual(receiver.capturedValues.count, 4) // Reset + followers + followings + Domain Profile
         XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
         XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[1].socialDetails!))
         XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[2].socialDetails!))
@@ -357,13 +357,17 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol, Fai
 private final class MockStorage: DomainProfileDisplayInfoStorageServiceProtocol {
     
     var cache: [DomainName : DomainProfileDisplayInfo] = [:]
+    let serialQueue = DispatchQueue(label: "com.tests")
     
     func store(profile: DomainProfileDisplayInfo) {
-        cache[profile.domainName] = profile
+        serialQueue.sync {
+            cache[profile.domainName] = profile
+        }
     }
     
     func retrieveProfileFor(domainName: DomainName) throws -> DomainProfileDisplayInfo {
-        guard let profile = cache[domainName] else { throw MockStorageError.profileNotFound }
+        let profile = serialQueue.sync { cache[domainName] }
+        guard let profile = profile else { throw MockStorageError.profileNotFound }
         
         return profile
     }
