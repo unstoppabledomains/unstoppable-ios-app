@@ -71,6 +71,10 @@ extension FireblocksConnector: MPCConnector {
         try await waitForKeyIsReadyInternal()
     }
     
+    func getLogsURLs() -> URL? {
+        fireblocks.getURLForLogFiles()
+    }
+    
     private func waitForKeyIsReadyInternal(attempt: Int = 0) async throws {
         logMPC("Will check for key is ready attempt: \(attempt + 1)")
         if isKeyInitialized(algorithm: .MPC_ECDSA_SECP256K1) {

@@ -12,4 +12,5 @@ protocol MPCConnector {
     func stopJoinWallet()
     func waitForKeyIsReady() async throws
     func signTransactionWith(txId: String) async throws
+    func getLogsURLs() -> URL? 
 }

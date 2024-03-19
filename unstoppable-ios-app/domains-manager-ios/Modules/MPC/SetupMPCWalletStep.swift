@@ -19,6 +19,7 @@ enum SetupMPCWalletStep {
     case confirmingTransaction
     case verifyingAccessToken
     case finished(UDMPCWallet)
+    case failed(URL?)
     
     var title: String {
         switch self {
@@ -44,6 +45,8 @@ enum SetupMPCWalletStep {
             "Verifying access token"
         case .finished:
             "Finished"
+        case .failed:
+            "Failed"
         }
     }
     
@@ -72,6 +75,8 @@ enum SetupMPCWalletStep {
             10
         case .finished:
             11
+        case .failed:
+            12
         }
     }
     

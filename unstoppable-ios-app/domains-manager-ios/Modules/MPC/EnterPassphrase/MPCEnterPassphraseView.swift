@@ -91,12 +91,17 @@ private extension MPCEnterPassphraseView {
         }
     }
     
+    @MainActor
     func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
         mpcState = step.title
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
             mpcWalletCreatedCallback(mpcWallet)
+        case .failed(let url):
+            if let url {
+                shareItems([url], completion: nil)
+            }
         default:
             return
         }

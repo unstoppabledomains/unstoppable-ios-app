@@ -109,8 +109,12 @@ extension MPCConnectionService {
                     continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
-                    mpcConnector.stopJoinWallet()
-                    continuation.finish(throwing: error)
+                    let logsURL = mpcConnector.getLogsURLs()
+                    continuation.yield(.failed(logsURL))
+                    continuation.finish()
+                    
+//                    mpcConnector.stopJoinWallet()
+//                    continuation.finish(throwing: error)
                 }
             }
         }
