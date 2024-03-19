@@ -48,6 +48,10 @@ extension TestableFirebaseParkedDomainsAuthenticationService {
         setFirebaseUser()
     }
     
+    func simulateDeauthorise() {
+        firebaseUser = nil 
+    }
+    
     func mockFirebaseUser() -> FirebaseUser {
         FirebaseUser(email: "qq@qq.qq")
     }

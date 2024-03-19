@@ -193,6 +193,46 @@ extension UserProfilesServiceTests {
                                  selectedProfileId: preSelectedProfile.id)
         XCTAssertNil(storage.selectedProfileId)
     }
+    
+    func testSelectedWalletProfileRemoved() async {
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: false,
+                                 withParkedDomains: false)
+        let selectedProfile = userProfilesService.selectedProfile!
+        if case .wallet(let walletEntity) = selectedProfile {
+            walletsDataService.wallets.removeAll(where: { $0.address == walletEntity.address })
+        }
+        await waitPublishersDelivered()
+        XCTAssertNotEqual(selectedProfile.id, userProfilesService.selectedProfile?.id)
+    }
+    
+    func testSelectedFBProfileRemovedDeauth() async {
+        let profile = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.mockFirebaseUser())
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: true,
+                                 withParkedDomains: true,
+                                 selectedProfileId: profile.id)
+        let selectedProfile = userProfilesService.selectedProfile!
+        if case .webAccount = selectedProfile {
+            firebaseParkedDomainsAuthenticationService.simulateDeauthorise()
+        }
+        await waitPublishersDelivered()
+        XCTAssertNotEqual(profile.id, userProfilesService.selectedProfile?.id)
+    }
+    
+    func testSelectedFBProfileRemovedNoDomains() async {
+        let profile = UserProfile.webAccount(firebaseParkedDomainsAuthenticationService.mockFirebaseUser())
+        buildUserProfilesService(withWallets: true,
+                                 isFBAuthorised: true,
+                                 withParkedDomains: true,
+                                 selectedProfileId: profile.id)
+        let selectedProfile = userProfilesService.selectedProfile!
+        if case .webAccount = selectedProfile {
+            firebaseParkedDomainsService.simulateDomainsGone()
+        }
+        await waitPublishersDelivered()
+        XCTAssertNotEqual(profile.id, userProfilesService.selectedProfile?.id)
+    }
 }
 
 // MARK: - Switch profile

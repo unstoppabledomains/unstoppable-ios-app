@@ -38,4 +38,9 @@ extension TestableFirebaseParkedDomainsService {
         domainsToReturn = MockEntitiesFabric.Domains.mockFirebaseDomains()
         parkedDomains = domainsToReturn.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
+    
+    func simulateDomainsGone() {
+        domainsToReturn = []
+        parkedDomains = []
+    }
 }
