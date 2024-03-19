@@ -35,8 +35,8 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
             result[key] = true
         }
         
-        callback(result)
-//        self.saveToKeychain(keys: keys, callback: callback)
+//        callback(result)
+        self.saveToKeychain(keys: keys, callback: callback)
     }
     
     func remove(keyId: String) {
@@ -80,8 +80,8 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
             }
         }
         
-        callback(result)
-//        self.getKeys(keyIds: keyIds, callback: callback)
+//        callback(result)
+        self.getKeys(keyIds: keyIds, callback: callback)
     }
     
     func contains(keyIds: Set<String>, callback: @escaping ([String : Bool]) -> ())  {
@@ -96,14 +96,14 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
             }
         }
         
-        callback(result)
-//        load(keyIds: keyIds) { privateKeys in
-//            var dict: [String: Bool] = [:]
-//            for key in keyIds {
-//                dict[key] = privateKeys[key] != nil
-//            }
-//            callback(dict)
-//        }
+//        callback(result)
+        load(keyIds: keyIds) { privateKeys in
+            var dict: [String: Bool] = [:]
+            for key in keyIds {
+                dict[key] = privateKeys[key] != nil
+            }
+            callback(dict)
+        }
     }
 }
 
