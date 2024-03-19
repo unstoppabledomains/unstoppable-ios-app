@@ -28,7 +28,9 @@ final class FireblocksConnector {
             let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
                                                        messageHandlerDelegate: messageHandler,
                                                        keyStorageDelegate: FireblocksKeyStorageProvider(deviceId: self.deviceId),
-                                                       fireblocksOptions: FireblocksOptions(env: .sandbox, eventHandlerDelegate: self))
+                                                       fireblocksOptions: FireblocksOptions(env: .sandbox, 
+                                                                                            eventHandlerDelegate: self,
+                                                                                            logLevel: .debug))
             self.fireblocks = fireblocks
         } catch {
             logMPC("Did fail to create fireblocks connector with error: \(error.localizedDescription)")
