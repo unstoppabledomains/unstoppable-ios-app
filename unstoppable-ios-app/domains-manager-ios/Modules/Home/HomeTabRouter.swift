@@ -395,10 +395,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         guard domain.isMinting,
               let topVC else { return }
         
-        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(mintingDomain: .init(name: domain.name,
-                                                                                             walletAddress: domain.ownerWallet ?? "",
-                                                                                             isPrimary: false),
-                                                                        displayInfo: domain)
+        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(displayInfo: domain)
         UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: [mintingDomainWithDisplayInfo],
                                                       mintingDomainSelectedCallback: { _ in },
                                                       in: topVC)
