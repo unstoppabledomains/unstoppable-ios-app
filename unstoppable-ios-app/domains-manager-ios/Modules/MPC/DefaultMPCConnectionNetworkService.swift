@@ -100,7 +100,7 @@ struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
         for i in 0..<50 {
             logMPC("Will check for transaction is ready attempt \(i + 1)")
             let response = try await checkTransactionWithNewKeyMaterialsStatus(accessToken: accessToken)
-            if response.isCompleted {
+            if response.isReady {
                 logMPC("Transaction is ready")
                 return
             } else {

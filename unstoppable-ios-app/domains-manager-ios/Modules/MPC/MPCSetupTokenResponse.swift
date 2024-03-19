@@ -11,5 +11,5 @@ struct MPCSetupTokenResponse: Decodable {
     let transactionId: String // temp access token
     let status: String // 'QUEUED' | 'PENDING_SIGNATURE' | 'COMPLETED' | 'UNKNOWN';
     
-    var isCompleted: Bool { status == "PENDING_SIGNATURE" }
+    var isReady: Bool { status == "PENDING_SIGNATURE" }
 }
