@@ -57,14 +57,14 @@ extension EnvironmentValues {
 }
 
 // MARK: - User profile service
-private struct UserProfileServiceKey: EnvironmentKey {
-    static let defaultValue = appContext.userProfileService
+private struct UserProfilesServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.userProfilesService
 }
 
 extension EnvironmentValues {
-    var userProfileService: UserProfileServiceProtocol {
-        get { self[UserProfileServiceKey.self] }
-        set { self[UserProfileServiceKey.self] = newValue }
+    var userProfilesService: UserProfilesServiceProtocol {
+        get { self[UserProfilesServiceKey.self] }
+        set { self[UserProfilesServiceKey.self] = newValue }
     }
 }
 

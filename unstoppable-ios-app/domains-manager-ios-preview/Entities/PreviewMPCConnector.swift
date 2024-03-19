@@ -14,6 +14,10 @@ struct DefaultMPCConnectorBuilder: MPCConnectorBuilder {
 }
 
 final class PreviewMPCConnector: MPCConnector {
+    func getLogsURLs() -> URL? {
+        nil
+    }
+    
     func requestJoinExistingWallet() async throws -> String {
         await Task.sleep(seconds: 1)
         return "1"

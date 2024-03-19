@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class UserProfileService {
+final class UserProfilesService {
     
     private let firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
@@ -54,14 +54,14 @@ final class UserProfileService {
 }
 
 // MARK: - Open methods
-extension UserProfileService: UserProfileServiceProtocol {
+extension UserProfilesService: UserProfilesServiceProtocol {
     func setActiveProfile(_ profile: UserProfile) {
         setSelectedProfile(profile)
     }
 }
 
 // MARK: - UDWalletsServiceListener
-extension UserProfileService: UDWalletsServiceListener {
+extension UserProfilesService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
             switch notification {
@@ -75,7 +75,7 @@ extension UserProfileService: UDWalletsServiceListener {
 }
 
 // MARK: - Private methods
-private extension UserProfileService {
+private extension UserProfilesService {
     func loadProfilesAndSetSelected() {
         updateProfilesList()
         
@@ -162,7 +162,7 @@ private extension UserProfileService {
 }
 
 // MARK: - Open methods
-extension UserProfileService {
+extension UserProfilesService {
     enum State {
         case noWalletsOrWebAccount
         case walletAdded(WalletEntity)

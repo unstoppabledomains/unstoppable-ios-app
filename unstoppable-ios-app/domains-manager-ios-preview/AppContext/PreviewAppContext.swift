@@ -10,7 +10,7 @@ import Foundation
 let previewContext = AppContext()
 
 final class AppContext: AppContextProtocol {
-    var userProfileService: UserProfileServiceProtocol
+    var userProfilesService: UserProfilesServiceProtocol
     
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     
@@ -81,9 +81,9 @@ final class AppContext: AppContextProtocol {
     }
     
     init() {
-        userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
-                                                firebaseParkedDomainsService: firebaseParkedDomainsService,
-                                                walletsDataService: walletsDataService)
+        userProfilesService = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                  firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                  walletsDataService: walletsDataService)
         domainProfilesService = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService(),
                                                       walletsDataService: walletsDataService)
     }

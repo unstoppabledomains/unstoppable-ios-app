@@ -13,7 +13,7 @@ final class HomeExploreViewModelTests: BaseTestClass {
     
     private var wallet: WalletEntity!
     private var router: HomeTabRouter!
-    private var userProfilesService: TestableUserProfileService!
+    private var userProfilesService: TestableUserProfilesService!
     private var domainProfilesService: TestableDomainProfilesService!
     private var viewModel: HomeExploreViewModel!
     private var recentProfilesStorage: MockRecentGlobalSearchProfilesStorage!
@@ -23,12 +23,12 @@ final class HomeExploreViewModelTests: BaseTestClass {
         domainProfilesService = TestableDomainProfilesService()
         wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
         let profile = MockEntitiesFabric.Profile.createWalletProfile(using: wallet)
-        userProfilesService = TestableUserProfileService(profile: profile)
+        userProfilesService = TestableUserProfilesService(profile: profile)
         router = await MockEntitiesFabric.Home.createHomeTabRouterUsing(profile: profile,
-                                                                        userProfileService: userProfilesService)
+                                                                        userProfilesService: userProfilesService)
         recentProfilesStorage = MockRecentGlobalSearchProfilesStorage()
         viewModel = await HomeExploreViewModel(router: router,
-                                               userProfileService: userProfilesService,
+                                               userProfilesService: userProfilesService,
                                                domainProfilesService: domainProfilesService,
                                                recentProfilesStorage: recentProfilesStorage)
         await waitForRequestMade()

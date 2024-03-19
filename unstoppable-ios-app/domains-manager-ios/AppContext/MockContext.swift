@@ -9,7 +9,7 @@ import Foundation
 
 #if DEBUG
 final class MockContext: AppContextProtocol {
-    private(set) lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+    private(set) lazy var userProfilesService: UserProfilesServiceProtocol = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
                                                                                              
                                                                                               firebaseParkedDomainsService: firebaseParkedDomainsService,
                                                                                               walletsDataService: walletsDataService)

@@ -676,6 +676,7 @@
 		C632BE592BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE582BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift */; };
 		C632BE5A2BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE582BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift */; };
 		C632BE5C2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632BE5B2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift */; };
+		C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C632C9422BA957BF00B0072B /* UserProfilesServiceTests.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63392FC2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
 		C63392FD2B7271E800941C9D /* OffsetObservingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */; };
@@ -823,7 +824,7 @@
 		C652446C2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */; };
 		C652629828110B8500F1D699 /* SecurityWallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652629628110B8500F1D699 /* SecurityWallViewController.swift */; };
 		C652629C28110B8500F1D699 /* SecurityWallViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C652629728110B8500F1D699 /* SecurityWallViewController.xib */; };
-		C6526DB929D2BACB00D6F2EB /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* UserProfileService.swift */; };
+		C6526DB929D2BACB00D6F2EB /* UserProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* UserProfilesService.swift */; };
 		C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */; };
 		C6526DCA29D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */; };
 		C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */; };
@@ -1032,9 +1033,9 @@
 		C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
 		C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
-		C6752C432B708DF400E54367 /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* UserProfileService.swift */; };
-		C6752C462B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */; };
-		C6752C472B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */; };
+		C6752C432B708DF400E54367 /* UserProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* UserProfilesService.swift */; };
+		C6752C462B708E1900E54367 /* UserProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6752C452B708E1900E54367 /* UserProfilesServiceProtocol.swift */; };
+		C6752C472B708E1900E54367 /* UserProfilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6752C452B708E1900E54367 /* UserProfilesServiceProtocol.swift */; };
 		C679B5ED2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */; };
 		C679B5F12918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */; };
 		C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5F52918F38100F543A7 /* DefaultCodable.swift */; };
@@ -1767,7 +1768,7 @@
 		C6D011C82B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D011C92B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */; };
 		C6D011CB2B9999F70008BF40 /* CombineValuesCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */; };
-		C6D011CE2B99A3C90008BF40 /* TestableUserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */; };
+		C6D011CE2B99A3C90008BF40 /* TestableUserProfilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */; };
 		C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011CF2B99A7740008BF40 /* FailableService.swift */; };
 		C6D011D22B99A78E0008BF40 /* TestableGenericError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */; };
 		C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
@@ -2989,6 +2990,7 @@
 		C632BE552BA59E8400C95B2D /* MPCSetupTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSetupTokenResponse.swift; sourceTree = "<group>"; };
 		C632BE582BA59ECF00C95B2D /* MPCSuccessAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCSuccessAuthResponse.swift; sourceTree = "<group>"; };
 		C632BE5B2BA59F0700C95B2D /* DefaultMPCConnectionNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultMPCConnectionNetworkService.swift; sourceTree = "<group>"; };
+		C632C9422BA957BF00B0072B /* UserProfilesServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilesServiceTests.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetObservingListView.swift; sourceTree = "<group>"; };
 		C63392FE2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPortfolioRecordsStorage.swift; sourceTree = "<group>"; };
@@ -3105,7 +3107,7 @@
 		C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCV2NotifyDefaultCryptoProvider.swift; sourceTree = "<group>"; };
 		C652629628110B8500F1D699 /* SecurityWallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWallViewController.swift; sourceTree = "<group>"; };
 		C652629728110B8500F1D699 /* SecurityWallViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecurityWallViewController.xib; sourceTree = "<group>"; };
-		C6526DB829D2BACB00D6F2EB /* UserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileService.swift; sourceTree = "<group>"; };
+		C6526DB829D2BACB00D6F2EB /* UserProfilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilesService.swift; sourceTree = "<group>"; };
 		C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInAppViewPresenter.swift; sourceTree = "<group>"; };
 		C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewPresenter.swift; sourceTree = "<group>"; };
 		C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsInAppViewPresenter.swift; sourceTree = "<group>"; };
@@ -3294,7 +3296,7 @@
 		C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InviteFriendsViewController.xib; sourceTree = "<group>"; };
 		C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendStepView.swift; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
-		C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileServiceProtocol.swift; sourceTree = "<group>"; };
+		C6752C452B708E1900E54367 /* UserProfilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilesServiceProtocol.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
 		C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileWeb3WebsiteLoadingCell.xib; sourceTree = "<group>"; };
 		C679B5F52918F38100F543A7 /* DefaultCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCodable.swift; sourceTree = "<group>"; };
@@ -3629,7 +3631,7 @@
 		C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSuggestion.swift; sourceTree = "<group>"; };
 		C6D011C72B9976060008BF40 /* HomeExploreSuggestedProfilesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreSuggestedProfilesListView.swift; sourceTree = "<group>"; };
 		C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineValuesCapturer.swift; sourceTree = "<group>"; };
-		C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableUserProfileService.swift; sourceTree = "<group>"; };
+		C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableUserProfilesService.swift; sourceTree = "<group>"; };
 		C6D011CF2B99A7740008BF40 /* FailableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailableService.swift; sourceTree = "<group>"; };
 		C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableGenericError.swift; sourceTree = "<group>"; };
 		C6D0548D27FF07390036B200 /* UDTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTextField.swift; sourceTree = "<group>"; };
@@ -4087,7 +4089,6 @@
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */,
 				C67DE1422B983FD0002374CE /* HomeExploreViewModelTests.swift */,
-				C6D011CD2B99A3C90008BF40 /* TestableUserProfileService.swift */,
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
@@ -4101,6 +4102,7 @@
 				C67B6D562AE79E8400F74B0B /* ImagesCacheStorageTests.swift */,
 				C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */,
 				30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */,
+				C632C9422BA957BF00B0072B /* UserProfilesServiceTests.swift */,
 				3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */,
 				C617CF9D2B9ED96200663516 /* WalletsDataServiceTests.swift */,
 				C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */,
@@ -6398,8 +6400,8 @@
 		C6752C442B708E0E00E54367 /* UserProfileService */ = {
 			isa = PBXGroup;
 			children = (
-				C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */,
-				C6526DB829D2BACB00D6F2EB /* UserProfileService.swift */,
+				C6752C452B708E1900E54367 /* UserProfilesServiceProtocol.swift */,
+				C6526DB829D2BACB00D6F2EB /* UserProfilesService.swift */,
 			);
 			path = UserProfileService;
 			sourceTree = "<group>";
@@ -7550,14 +7552,15 @@
 			isa = PBXGroup;
 			children = (
 				C6D011CA2B9999F70008BF40 /* CombineValuesCapturer.swift */,
-				C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */,
 				C6D011CF2B99A7740008BF40 /* FailableService.swift */,
+				C617CFA92B9EDD9400663516 /* TestableDomainProfilesService.swift */,
+				C617CFA32B9ED9F200663516 /* TestableDomainTransactionsService.swift */,
+				C6D011D12B99A78E0008BF40 /* TestableGenericError.swift */,
 				C617CF9F2B9ED9A400663516 /* TestableUDDomainsService.swift */,
 				C617CFA12B9ED9D100663516 /* TestableUDWalletsService.swift */,
-				C617CFA32B9ED9F200663516 /* TestableDomainTransactionsService.swift */,
-				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
+				C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */,
 				C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */,
-				C617CFA92B9EDD9400663516 /* TestableDomainProfilesService.swift */,
+				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -9010,7 +9013,7 @@
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6DDF2502B147F1A006D1F0B /* UDButtonStyle.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
-				C6526DB929D2BACB00D6F2EB /* UserProfileService.swift in Sources */,
+				C6526DB929D2BACB00D6F2EB /* UserProfilesService.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AE2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
 				C6B65F9B2B566B84006D1812 /* NFTDetailsView.swift in Sources */,
@@ -9261,7 +9264,7 @@
 				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F2A280030AB00A517D5 /* UICollectionView.swift in Sources */,
 				C64836B8282BADB1007BD3F1 /* PullUpViewService.swift in Sources */,
-				C6752C462B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */,
+				C6752C462B708E1900E54367 /* UserProfilesServiceProtocol.swift in Sources */,
 				C6DDF2562B147F1A006D1F0B /* UDTextFieldView.swift in Sources */,
 				C665B9BA28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
 				C62C3FBD283F6E410094FC93 /* MintDomainsConfigurationViewController.swift in Sources */,
@@ -9752,7 +9755,7 @@
 				C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */,
 				C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */,
 				29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */,
-				C6D011CE2B99A3C90008BF40 /* TestableUserProfileService.swift in Sources */,
+				C6D011CE2B99A3C90008BF40 /* TestableUserProfilesService.swift in Sources */,
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
 				C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
@@ -9771,6 +9774,7 @@
 				C617CFA62B9EDA1300663516 /* TestableWalletConnectServiceV2.swift in Sources */,
 				C6B2E2122B970E0900CEA1F9 /* DomainProfileSocialRelationshipDetailsTests.swift in Sources */,
 				C617CFA42B9ED9F200663516 /* TestableDomainTransactionsService.swift in Sources */,
+				C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */,
 				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
 				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C67DE1432B983FD0002374CE /* HomeExploreViewModelTests.swift in Sources */,
@@ -9863,7 +9867,7 @@
 				C6C8F8822B21827700A9834D /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
 				C6D6472E2B1ED9AA00D724AC /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C6C8F8722B21822700A9834D /* TutorialViewController.swift in Sources */,
-				C6752C472B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */,
+				C6752C472B708E1900E54367 /* UserProfilesServiceProtocol.swift in Sources */,
 				C6D647372B1ED9EF00D724AC /* PaymentTransactionGasOnlyCostView.swift in Sources */,
 				C61808712B19BC150032E543 /* Image.swift in Sources */,
 				C61807F92B19A7DF0032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
@@ -10062,7 +10066,7 @@
 				C6C8F89D2B2182A200A9834D /* WalletsListCell.swift in Sources */,
 				C61808332B19AEDC0032E543 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6D647872B1EE30F00D724AC /* UIImage+Colors.swift in Sources */,
-				C6752C432B708DF400E54367 /* UserProfileService.swift in Sources */,
+				C6752C432B708DF400E54367 /* UserProfilesService.swift in Sources */,
 				C6D6465A2B1ED10D00D724AC /* DomainProfileBadgeCell.swift in Sources */,
 				C61808832B19BC6A0032E543 /* TransactionError.swift in Sources */,
 				C6960C5F2B199A7B00B79E28 /* PreviewTransactionItem.swift in Sources */,
