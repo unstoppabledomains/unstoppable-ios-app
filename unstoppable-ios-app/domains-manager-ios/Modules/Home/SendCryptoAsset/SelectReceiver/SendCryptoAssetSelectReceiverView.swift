@@ -18,6 +18,7 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
 
 
+    @State private var userWallets: [WalletEntity] = []
     @State private var followingList: [DomainName] = []
     @State private var inputText: String = ""
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
@@ -43,6 +44,7 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
             }
         }
         .task {
+            userWallets = appContext.walletsDataService.wallets.filter({ $0.address != viewModel.sourceWallet.address })
             socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
                 .receive(on: DispatchQueue.main)
                 .sink { relationshipDetails in
@@ -88,18 +90,20 @@ private extension SendCryptoAssetSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         } callback: {
-            viewModel.navPath.append(.selectAssetToSend)
+            viewModel.handleAction(.scanQRSelected)
         }
     }
     
     @ViewBuilder
     func userWalletsSection() -> some View {
-        Section {
-            ForEach(appContext.walletsDataService.wallets) { wallet in
-                selectableUserWalletView(wallet: wallet)
+        if !userWallets.isEmpty {
+            Section {
+                ForEach(userWallets) { wallet in
+                    selectableUserWalletView(wallet: wallet)
+                }
+            } header: {
+                sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
             }
-        } header: {
-            sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
         }
     }
     
@@ -114,12 +118,14 @@ private extension SendCryptoAssetSelectReceiverView {
     
     @ViewBuilder
     func followingsSection() -> some View {
-        Section {
-            ForEach(followingList, id: \.self) { following in
-                selectableFollowingView(following: following)
+        if !followingList.isEmpty {
+            Section {
+                ForEach(followingList, id: \.self) { following in
+                    selectableFollowingView(following: following)
+                }
+            } header: {
+                sectionHeaderViewWith(title: String.Constants.following.localized())
             }
-        } header: {
-            sectionHeaderViewWith(title: String.Constants.following.localized())
         }
     }
     

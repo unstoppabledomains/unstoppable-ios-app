@@ -18,5 +18,15 @@ final class SendCryptoAssetViewModel: ObservableObject {
         self.sourceWallet = initialData.sourceWallet
     }
     
-        
+    func handleAction(_ action: SendCryptoAsset.FlowAction) {
+        switch action {
+        case .scanQRSelected:
+            navPath.append(.selectAssetToSend)
+        case .userWalletSelected(let walletEntity):
+            navPath.append(.selectAssetToSend)
+        case .followingDomainSelected(let domainName):
+            navPath.append(.selectAssetToSend)
+        }
+    }
+    
 }

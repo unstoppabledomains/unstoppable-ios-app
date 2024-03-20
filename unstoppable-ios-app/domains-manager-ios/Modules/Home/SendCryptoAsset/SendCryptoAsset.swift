@@ -35,3 +35,11 @@ extension SendCryptoAsset {
         }
     }
 }
+
+extension SendCryptoAsset {
+    enum FlowAction {
+        case scanQRSelected
+        case userWalletSelected(WalletEntity)
+        case followingDomainSelected(DomainName)
+    }
+}
