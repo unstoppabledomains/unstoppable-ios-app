@@ -41,6 +41,7 @@ struct BalanceTokenIconsView: View {
         .onChange(of: token, perform: { newValue in
             loadIconFor(token: newValue)
         })
+        .onAppear(perform: onAppear)
     }
 }
 

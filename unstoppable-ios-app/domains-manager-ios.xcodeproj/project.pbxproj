@@ -6273,7 +6273,6 @@
 		C67213CC2BAA803C0075B9C7 /* SendCryptoAsset */ = {
 			isa = PBXGroup;
 			children = (
-				C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */,
 				C67213D82BAA90C20075B9C7 /* SendCryptoAssetViewModel.swift */,
 				C67213E12BAA967C0075B9C7 /* SendCryptoAssetRootView.swift */,
 				C62900E12BAAB392008B35A2 /* SendCryptoAsset.swift */,
@@ -7698,6 +7697,7 @@
 				C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */,
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
+				C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
