@@ -58,7 +58,7 @@ struct UDButtonView: View {
                     }
                     rightIcon()
                 }
-                .adjustContentSizeForStyle(style)
+                .adjustContentSizeForStyle(style, withTitle: !text.isEmpty)
             }
             .foregroundColor(textColorForCurrentState(buttonStateFor(state: state)))
             .background(backgroundGradientColor(buttonStateFor(state: state)))
@@ -148,6 +148,7 @@ private extension UDButtonView {
 fileprivate extension UDButtonView {
     struct AutoAdjustSizeModifier: ViewModifier {
         let style: UDButtonStyle
+        let withTitle: Bool
         
         func body(content: Content) -> some View {
             switch style {
@@ -158,7 +159,7 @@ fileprivate extension UDButtonView {
                     .frame(height: style.height)
             case .medium, .small, .verySmall:
                 content
-                    .sideInsets(12)
+                    .sideInsets(withTitle ? 12 : 6)
                     .frame(height: style.height)
             }
         }
@@ -181,8 +182,9 @@ fileprivate extension UDButtonView {
 }
 
 fileprivate extension View {
-    func adjustContentSizeForStyle(_ style: UDButtonStyle) -> some View {
-        modifier(UDButtonView.AutoAdjustSizeModifier(style: style))
+    func adjustContentSizeForStyle(_ style: UDButtonStyle, withTitle: Bool) -> some View {
+        modifier(UDButtonView.AutoAdjustSizeModifier(style: style,
+                                                     withTitle: withTitle))
     }
 }
 

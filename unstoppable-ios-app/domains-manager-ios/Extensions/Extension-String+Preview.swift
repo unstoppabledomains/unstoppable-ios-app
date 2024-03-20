@@ -230,6 +230,7 @@ extension String {
         static let primary = "PRIMARY"
         static let collapse = "COLLAPSE"
         static let chat = "CHAT"
+        static let send = "SEND"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

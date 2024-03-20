@@ -55,6 +55,8 @@ extension HomeWalletView {
         
         var id: String {
             switch self {
+            case .send:
+                return "send"
             case .buy:
                 return "buy"
             case .receive:
@@ -66,6 +68,7 @@ extension HomeWalletView {
             }
         }
         
+        case send
         case buy
         case receive
         case profile(enabled: Bool)
@@ -73,6 +76,8 @@ extension HomeWalletView {
         
         var title: String {
             switch self {
+            case .send:
+                return String.Constants.send.localized()
             case .receive:
                 return String.Constants.receive.localized()
             case .profile:
@@ -86,6 +91,8 @@ extension HomeWalletView {
         
         var icon: Image {
             switch self {
+            case .send:
+                return .paperPlaneTopRight
             case .receive:
                 return .arrowBottom
             case .profile:
@@ -99,7 +106,7 @@ extension HomeWalletView {
         
         var subActions: [WalletSubAction] {
             switch self {
-            case .receive, .profile, .buy:
+            case .receive, .profile, .buy, .send:
                 return []
             case .more:
                 return WalletSubAction.allCases
@@ -108,6 +115,8 @@ extension HomeWalletView {
         
         var analyticButton: Analytics.Button {
             switch self {
+            case .send:
+                return .sendCrypto
             case .buy:
                 return .buy
             case .receive:
@@ -121,7 +130,7 @@ extension HomeWalletView {
         
         var isDimmed: Bool {
             switch self {
-            case .buy, .receive, .more:
+            case .send, .buy, .receive, .more:
                 return false
             case .profile(let enabled):
                 return !enabled

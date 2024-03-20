@@ -11,7 +11,6 @@ struct HomeView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @State private var navigationState: NavigationStateManager?
-    @State private var isNavTitleVisible: Bool = true
     @State private var isTabBarVisible: Bool = true
     var analyticsName: Analytics.ViewName { .home }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.profileId: tabRouter.profile.id] }
@@ -19,11 +18,6 @@ struct HomeView: View, ViewAnalyticsLogger {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             currentWalletView()
-                .onChange(of: isNavTitleVisible) { _ in
-                    withAnimation {
-                        navigationState?.isTitleVisible = isNavTitleVisible
-                    }
-                }
                 .onChange(of: isTabBarVisible) { _ in
                     tabRouter.isTabBarVisible = isTabBarVisible
                 }
@@ -50,13 +44,11 @@ private extension HomeView {
         case .wallet(let wallet):
             HomeWalletView(viewModel: .init(selectedWallet: wallet,
                                             router: tabRouter),
-                           navigationState: navigationState,
-                           isNavTitleVisible: $isNavTitleVisible,
+                           navigationState: $navigationState,
                            isTabBarVisible: $isTabBarVisible)
         case .webAccount(let user):
             HomeWebAccountView(user: user,
-                               navigationState: navigationState,
-                               isNavTitleVisible: $isNavTitleVisible,
+                               navigationState: $navigationState,
                                isTabBarVisible: $isTabBarVisible)
         }
     }

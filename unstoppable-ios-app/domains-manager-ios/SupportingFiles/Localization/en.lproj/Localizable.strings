@@ -171,6 +171,7 @@
 "PRIMARY" = "Primary";
 "COLLAPSE" = "Collapse";
 "CHAT" = "Chat";
+"SEND" = "Send";
 
 /* ONBOARDING */
 // Tutorial screens

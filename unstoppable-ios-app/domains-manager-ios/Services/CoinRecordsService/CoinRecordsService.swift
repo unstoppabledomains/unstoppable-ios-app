@@ -45,7 +45,7 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
                 self.storeCoinRecords(data: data)
                 self.detectAndReportRecordsWithoutPrimaryChain()
             } catch {
-                Debugger.printFailure("Failed to fetch uns version: \(version)", critical: true)
+                Debugger.printFailure("Failed to fetch uns version: \(version)", critical: false)
             }
         }
     }
