@@ -10,6 +10,7 @@ import SwiftUI
 extension SendCryptoAsset {
     enum NavigationDestination: Hashable {
         case selectAssetToSend
+        case selectTokenAmountToSend(BalanceTokenUIDescription)
     }
     
     struct LinkNavigationDestination {
@@ -19,6 +20,8 @@ extension SendCryptoAsset {
             switch navigationDestination {
             case .selectAssetToSend:
                 SelectCryptoAssetToSendView()
+            case .selectTokenAmountToSend(let token):
+                SelectTokenAssetAmountToSendView(token: token)
             }
         }
         

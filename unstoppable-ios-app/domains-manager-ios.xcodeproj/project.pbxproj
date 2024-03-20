@@ -602,6 +602,10 @@
 		C62900EC2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900EA2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift */; };
 		C62900EE2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */; };
 		C62900EF2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */; };
+		C62900F52BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */; };
+		C62900F62BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */; };
+		C62900F82BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */; };
+		C62900F92BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */; };
 		C629A4602A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */; };
 		C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
 		C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
@@ -2922,6 +2926,8 @@
 		C62900E72BAAB6F6008B35A2 /* SelectCryptoAssetToSendDomainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCryptoAssetToSendDomainView.swift; sourceTree = "<group>"; };
 		C62900EA2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTopSafeAreaOffset.swift; sourceTree = "<group>"; };
 		C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenIconsView.swift; sourceTree = "<group>"; };
+		C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTokenAssetAmountToSendView.swift; sourceTree = "<group>"; };
+		C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNumberButtonView.swift; sourceTree = "<group>"; };
 		C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageBase64TypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
 		C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingBlockUserInChatType.swift; sourceTree = "<group>"; };
@@ -5219,6 +5225,14 @@
 			path = LayoutHelper;
 			sourceTree = "<group>";
 		};
+		C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */ = {
+			isa = PBXGroup;
+			children = (
+				C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */,
+			);
+			path = SelectTokenAssetAmount;
+			sourceTree = "<group>";
+		};
 		C62C3F94283F35730094FC93 /* CodeVerificationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -6279,6 +6293,7 @@
 				C67213DE2BAA96170075B9C7 /* SendCryptoAssetNavigationDestination.swift */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
+				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
 			);
 			path = SendCryptoAsset;
 			sourceTree = "<group>";
@@ -7789,6 +7804,7 @@
 			children = (
 				C6DDF24B2B147F1A006D1F0B /* ControllableButtonStyle.swift */,
 				C6DDF24A2B147F1A006D1F0B /* UDButtonImage.swift */,
+				C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */,
 				C6DDF2442B147F1A006D1F0B /* UDButtonView */,
 				C6DDF2472B147F1A006D1F0B /* UDIconButtonView */,
 			);
@@ -8714,6 +8730,7 @@
 				C60EE80F2ACD203000D699C7 /* NetworkService+MessagingApi.swift in Sources */,
 				C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
 				C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
+				C62900F52BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */,
 				C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */,
 				C609821C2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C6C9958E289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
@@ -8809,6 +8826,7 @@
 				C6ECBF7A28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
+				C62900F82BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */,
 				C6B65F6A2B550E72006D1812 /* NFTModel.swift in Sources */,
 				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C63095D22B0DA5DE00205054 /* DomainToPurchase.swift in Sources */,
@@ -9927,6 +9945,7 @@
 				C6C8F8CD2B21832F00A9834D /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */,
 				C6C8F8592B217F8200A9834D /* PreviewiCloudPrivateKeyStorage.swift in Sources */,
 				C6D6468B2B1ED12D00D724AC /* DomainProfileCryptoSection.swift in Sources */,
+				C62900F62BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */,
 				C64F8E022B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */,
 				C6D646EC2B1ED55F00D724AC /* NFCService+Entities.swift in Sources */,
 				C6D647252B1ED91F00D724AC /* PullUpViewService+Messaging.swift in Sources */,
@@ -10561,6 +10580,7 @@
 				C60C59B62B47FC0900A2522C /* LoginProvider.swift in Sources */,
 				C6C8F9222B2183B700A9834D /* EnterPasscodeViewController.swift in Sources */,
 				C6D646352B1DC44400D724AC /* PrimaryDangerButton.swift in Sources */,
+				C62900F92BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */,
 				C6D646052B1DC01700D724AC /* DashesProgressView.swift in Sources */,
 				C6C8F85B2B217FB500A9834D /* WalletBackUpPassword.swift in Sources */,
 				C6D647812B1EE1FC00D724AC /* UDCheckBox.swift in Sources */,
