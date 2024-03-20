@@ -16,18 +16,25 @@ protocol CryptoSenderProtocol {
     /// - Returns: true if the sending is supported
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool
     
-    /// Create TX, send it to the chain and store it to the storage as 'pending'
+    /// Create TX, send it to the chain and store it to the storage as 'pending'.
+    /// Method fails if sending TX failed. Otherwise it returns TX hash
     /// - Parameters:
     ///   - amount: anount of tokens
     ///   - address: address of the receiver
     ///   - chain: chain of the transaction
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async
+    /// - Returns: TX Hash if success
+    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws -> String
     
+    /// Get all 'Send' Txs from the persistent storage.
+    /// - Returns: Array of Txs. ATM only 'status' property can be guaranteed
     func getStoredSendTxs() -> [StoredSendTransactionProtocol]
 }
 
+
+
+
 extension CryptoSenderProtocol {
-    func sendCrypto(amount: Double, address: HexAddress, chain: BlockchainType) {
+    private func _sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws {
         // create the TX
         
         // send TX to the chain
@@ -65,8 +72,10 @@ class DemoCryptoSender: CryptoSenderProtocol {
     static let instance: DemoCryptoSender = DemoCryptoSender()
     private init() {}
     
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) {
+    @discardableResult
+    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) -> String {
         // TODO:
+        return "0x"
     }
     
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
