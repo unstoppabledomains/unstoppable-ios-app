@@ -231,6 +231,9 @@ extension String {
         static let collapse = "COLLAPSE"
         static let chat = "CHAT"
         static let send = "SEND"
+        static let to = "TO"
+        static let domainOrAddress = "DOMAIN_OR_ADDRESS"
+        static let yourWallets = "YOUR_WALLETS"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
