@@ -29,6 +29,7 @@ struct UDNumberButtonView: View {
             .background(backgroundColorFor(pressed: state.pressed))
             .clipShape(Circle())
         }))
+        .squareFrame(64)
     }
 }
 

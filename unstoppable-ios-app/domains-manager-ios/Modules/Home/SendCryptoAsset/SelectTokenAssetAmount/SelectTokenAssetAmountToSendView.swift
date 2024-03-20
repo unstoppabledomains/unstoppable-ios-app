@@ -9,10 +9,14 @@ import SwiftUI
 
 struct SelectTokenAssetAmountToSendView: View {
     
+    @State private var interpreter = NumberPadInputInterpreter()
+
     let token: BalanceTokenUIDescription
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        UDNumberPadView(inputCallback: { inputType in
+            interpreter.addInput(inputType)
+        })
     }
 }
 

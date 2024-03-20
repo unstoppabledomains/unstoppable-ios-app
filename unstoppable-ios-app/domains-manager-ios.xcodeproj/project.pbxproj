@@ -606,6 +606,11 @@
 		C62900F62BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */; };
 		C62900F82BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */; };
 		C62900F92BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */; };
+		C62900FB2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900FA2BAACCD2008B35A2 /* UDNumberPadView.swift */; };
+		C62900FC2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900FA2BAACCD2008B35A2 /* UDNumberPadView.swift */; };
+		C62900FE2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900FD2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift */; };
+		C62901002BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */; };
+		C62901012BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */; };
 		C629A4602A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */; };
 		C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
 		C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
@@ -2928,6 +2933,9 @@
 		C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenIconsView.swift; sourceTree = "<group>"; };
 		C62900F42BAAC83A008B35A2 /* SelectTokenAssetAmountToSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTokenAssetAmountToSendView.swift; sourceTree = "<group>"; };
 		C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNumberButtonView.swift; sourceTree = "<group>"; };
+		C62900FA2BAACCD2008B35A2 /* UDNumberPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNumberPadView.swift; sourceTree = "<group>"; };
+		C62900FD2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPadInputInterpreterTests.swift; sourceTree = "<group>"; };
+		C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPadInputInterpreter.swift; sourceTree = "<group>"; };
 		C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageBase64TypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
 		C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingBlockUserInChatType.swift; sourceTree = "<group>"; };
@@ -4085,6 +4093,7 @@
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
+				C62900FD2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift */,
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
@@ -7255,6 +7264,7 @@
 				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
+				C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C61DB11A2B95BD1200CDA243 /* DomainProfileDisplayInfo.swift */,
@@ -7804,6 +7814,7 @@
 			children = (
 				C6DDF24B2B147F1A006D1F0B /* ControllableButtonStyle.swift */,
 				C6DDF24A2B147F1A006D1F0B /* UDButtonImage.swift */,
+				C62900FA2BAACCD2008B35A2 /* UDNumberPadView.swift */,
 				C62900F72BAAC922008B35A2 /* UDNumberButtonView.swift */,
 				C6DDF2442B147F1A006D1F0B /* UDButtonView */,
 				C6DDF2472B147F1A006D1F0B /* UDIconButtonView */,
@@ -8776,6 +8787,7 @@
 				C6ECBF7528D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */,
 				C638680B2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */,
 				C6D6E527281932FF008C66BB /* BaseViewControllerProtocol.swift in Sources */,
+				C62900FB2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */,
 				307B1CEA2602775D007B14C3 /* UDWallet.swift in Sources */,
 				C6B6B028296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				C60982562823FDE100546392 /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,
@@ -9581,6 +9593,7 @@
 				30972CC4258A62A700D7E229 /* LocalStorage.swift in Sources */,
 				C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */,
 				C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */,
+				C62901002BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift in Sources */,
 				C6D0F442283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
 				C64939F22B6357A600457363 /* HomeTabRouter.swift in Sources */,
 				C67213E92BAA99080075B9C7 /* SelectCryptoAssetToSendView.swift in Sources */,
@@ -9738,6 +9751,7 @@
 				C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */,
 				29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */,
 				C6D011CE2B99A3C90008BF40 /* TestableUserProfileService.swift in Sources */,
+				C62900FE2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift in Sources */,
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
 				C6D011D02B99A7740008BF40 /* FailableService.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
@@ -10361,6 +10375,7 @@
 				C6C8F83E2B217E9600A9834D /* RecoveryPhraseViewController.swift in Sources */,
 				C6C8F8742B21822700A9834D /* TutorialStepViewController.swift in Sources */,
 				C6C8F8BF2B2182E400A9834D /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
+				C62900FC2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */,
 				C6C8F82A2B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
 				C6D647042B1ED7C300D724AC /* MessagingGroupChatDetails.swift in Sources */,
 				C61808232B19AB250032E543 /* PurchaseDomainsPreferencesStorage.swift in Sources */,
@@ -10703,6 +10718,7 @@
 				C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
 				C6D646AA2B1ED15F00D724AC /* DomainProfileViewPresenter.swift in Sources */,
 				C6D646592B1ED10D00D724AC /* DomainProfileMetadataCell.swift in Sources */,
+				C62901012BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift in Sources */,
 				C61807B22B199DD70032E543 /* UIView.swift in Sources */,
 				C6203A552B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */,
 				C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */,
