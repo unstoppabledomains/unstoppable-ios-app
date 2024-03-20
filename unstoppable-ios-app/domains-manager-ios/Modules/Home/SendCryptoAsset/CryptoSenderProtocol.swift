@@ -24,10 +24,6 @@ protocol CryptoSenderProtocol {
     ///   - chain: chain of the transaction
     /// - Returns: TX Hash if success
     func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws -> String
-    
-    /// Get all 'Send' Txs from the persistent storage.
-    /// - Returns: Array of Txs. ATM only 'status' and 'hash' properties can be guaranteed
-    func getStoredSendTxs() -> [StoredSendTransactionProtocol]
 }
 
 
@@ -49,26 +45,10 @@ extension CryptoSenderProtocol {
     private func sendTX() {
         // TODO:
     }
-    
-    private func storeTX() {
-        // TODO:
-    }
 }
-
-protocol StoredSendTransactionProtocol {
-    var status: TxStatusGroup { get }
-    var hash: String { get }
-}
-
 
 // ==========================
 
-struct DemoSendTransaction: StoredSendTransactionProtocol {
-    let hash: String
-    var status: TxStatusGroup
-    let token: String
-    let amount: Double
-}
 
 class DemoCryptoSender: CryptoSenderProtocol {
     static let instance: DemoCryptoSender = DemoCryptoSender()
@@ -82,16 +62,5 @@ class DemoCryptoSender: CryptoSenderProtocol {
     
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
         return false
-    }
-    
-    func getStoredSendTxs() -> [StoredSendTransactionProtocol] {
-        return [DemoSendTransaction(hash: "0x",
-                                    status: .pending,
-                                    token: "crypto.LINK.address",
-                                    amount: 1.0)]
-    }
-    
-    func getAllDemoSendTransactions() -> [DemoSendTransaction] {
-        return getStoredSendTxs() as! [DemoSendTransaction]
     }
 }
