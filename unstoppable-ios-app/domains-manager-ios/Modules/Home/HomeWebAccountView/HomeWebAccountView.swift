@@ -15,10 +15,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
     
     let user: FirebaseUser
     @EnvironmentObject var tabRouter: HomeTabRouter
-    @State private var isHeaderVisible: Bool = true
-    @State private var scrollOffset: CGPoint = .zero
-    let navigationState: NavigationStateManager?
-    @Binding var isNavTitleVisible: Bool
+    @Binding var navigationState: NavigationStateManager?
     @Binding var isTabBarVisible: Bool
     
     @State private var domains: [FirebaseDomainDisplayInfo] = []
@@ -29,11 +26,10 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
     private var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
 
     var body: some View {
-        OffsetObservingListView(offset: $scrollOffset) {
+        List {
             headerIconRowView()
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-                .onAppearanceChange($isHeaderVisible)
                 .unstoppableListRowInset()
             
             headerInfoView()
@@ -60,9 +56,6 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
             updateNavTitleVisibility()
             isTabBarVisible = !isOtherScreenPushed
         }
-        .onChange(of: scrollOffset) { point in
-            updateNavTitleVisibility()
-        }
         .listStyle(.plain)
         .clearListBackground()
         .background(Color.backgroundDefault)
@@ -84,7 +77,7 @@ struct HomeWebAccountView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeWebAccountView {
     func onAppear() {
-        setTitleViewIfNeeded()
+        setupTitleView()
         let firebaseDomains = firebaseParkedDomainsService.getCachedDomains()
         setFirebaseDomains(firebaseDomains)
         Task {
@@ -102,41 +95,22 @@ private extension HomeWebAccountView {
         self.domains = firebaseDomains.map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
     }
     
-    func updateNavTitleVisibility() {
-        let isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
-        !isOtherScreenPushed &&
-        tabRouter.tabViewSelection == .wallets
-        
-        if self.isNavTitleVisible != isNavTitleVisible {
-            setTitleViewIfNeeded()
-            self.isNavTitleVisible = isNavTitleVisible
-        }
+    func setupTitleView() {
+        let id = user.displayName
+        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(shouldHideAvatar: true) },
+                                        id: id)
+        updateNavTitleVisibility()
     }
     
-    func setTitleViewIfNeeded() {
-        let id = user.displayName
-        if navigationState?.customViewID != id {
-            navigationState?.setCustomTitle(customTitle: { titleView() },
-                                            id: id)
+    func updateNavTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = !isOtherScreenPushed && tabRouter.tabViewSelection == .wallets
         }
     }
 }
 
 // MARK: - Private methods
 private extension HomeWebAccountView {
-    @ViewBuilder
-    func titleView() -> some View {
-        HStack {
-            headerIconView(size: 12)
-                .squareFrame(20)
-            Text(user.displayName)
-                .font(.currentFont(size: 16, weight: .semibold))
-                .foregroundStyle(Color.foregroundDefault)
-                .lineLimit(1)
-                .frame(height: 20)
-        }
-    }
-    
     @ViewBuilder
     func headerIconView(size: CGFloat) -> some View {
         ZStack {
@@ -166,20 +140,6 @@ private extension HomeWebAccountView {
     @ViewBuilder
     func headerInfoView() -> some View {
         VStack(spacing: 8) {
-            Button {
-                UDVibration.buttonTap.vibrate()
-                tabRouter.isSelectProfilePresented = true
-            } label: {
-                HStack(spacing: 0) {
-                    Text(user.displayName)
-                        .truncationMode(.middle)
-                        .font(.currentFont(size: 16, weight: .medium))
-                    Image.chevronGrabberVertical
-                        .squareFrame(24)
-                }
-                    .foregroundStyle(Color.foregroundSecondary)
-                    .frame(height: 24)
-            }
             Text(String.Constants.pluralNDomains.localized(numberOfDomains, numberOfDomains))
                 .font(.currentFont(size: 32, weight: .bold))
                 .truncationMode(.middle)

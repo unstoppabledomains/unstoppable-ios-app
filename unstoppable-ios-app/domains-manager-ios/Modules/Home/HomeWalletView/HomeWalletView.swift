@@ -14,23 +14,19 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var tabRouter: HomeTabRouter
     @StateObject var viewModel: HomeWalletViewModel
-    @State private var isHeaderVisible: Bool = true
-    @State private var scrollOffset: CGPoint = .zero
     @State private var isOtherScreenPresented: Bool = false
-    let navigationState: NavigationStateManager?
-    @Binding var isNavTitleVisible: Bool
+    @Binding var navigationState: NavigationStateManager?
     @Binding var isTabBarVisible: Bool
     var isOtherScreenPushed: Bool { !tabRouter.walletViewNavPath.isEmpty }
     
     var body: some View {
-            OffsetObservingListView(offset: $scrollOffset) {
+            List {
                 HomeWalletHeaderRowView(wallet: viewModel.selectedWallet,
                                         actionCallback: viewModel.walletActionPressed,
                                         didSelectDomainCallback: viewModel.didSelectChangeRR,
                                         purchaseDomainCallback: viewModel.buyDomainPressed)
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-                .onAppearanceChange($isHeaderVisible)
                 .unstoppableListRowInset()
                 
                 HomeWalletActionsView(actions: walletActions(),
@@ -64,10 +60,6 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 updateNavTitleVisibility()
                 isTabBarVisible = !isOtherScreenPushed
             }
-            .onChange(of: scrollOffset) { point in
-                guard point.y > -200 else { return }
-                updateNavTitleVisibility()
-            }
             .animation(.default, value: viewModel.selectedWallet)
             .listStyle(.plain)
             .listRowSpacing(0)
@@ -93,81 +85,31 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension HomeWalletView {
-    struct NavigationTitleView: View {
-        
-        @Environment(\.imageLoadingService) private var imageLoadingService
-
-        let wallet: WalletEntity
-        @State private var avatar: UIImage?
-        
-        var body: some View {
-            content()
-                .frame(maxWidth: 200)
-                .onAppear(perform: loadAvatar)
-                .onChange(of: wallet) { newValue in
-                    avatar = nil
-                    loadAvatar()
-                }
-        }
-        
-        private func loadAvatar() {
-            Task {
-                if let rrDomain = wallet.rrDomain {
-                    avatar =  await imageLoadingService.loadImage(from: .domain(rrDomain), downsampleDescription: .mid)
-                }
-            }
-        }
-        
-        @ViewBuilder
-        private func content() -> some View {
-            if let rrDomain = wallet.rrDomain {
-                HStack {
-                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
-                    .squareFrame(20)
-                    .clipShape(Circle())
-                    Text(rrDomain.name)
-                        .font(.currentFont(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.foregroundDefault)
-                        .lineLimit(1)
-                }
-                .frame(height: 20)
-            } else {
-                Text(wallet.displayName)
-                    .font(.currentFont(size: 16, weight: .semibold))
-                    .foregroundStyle(Color.foregroundDefault)
-                    .lineLimit(1)
-                    .frame(height: 20)
-            }
-        }
-    }
-    
     func walletActions() -> [WalletAction] {
         [.send, .buy, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
     }
     
-    func updateNavTitleVisibility() {
-        let isNavTitleVisible = (scrollOffset.y + safeAreaInset.top > 60) || (!isHeaderVisible) &&
-        !isOtherScreenPushed &&
-        tabRouter.tabViewSelection == .wallets
-        if self.isNavTitleVisible != isNavTitleVisible {
-            setTitleViewIfNeeded()
-            self.isNavTitleVisible = isNavTitleVisible
-        }
-    }
-    
     func onAppear() {
-        setTitleViewIfNeeded()
+        setupTitleView()
         viewModel.onAppear()
     }
     
-    func setTitleViewIfNeeded() {
+    func setupTitleView() {
         let id = viewModel.selectedWallet.id
-        if navigationState?.customViewID != id {
-            navigationState?.setCustomTitle(customTitle: { NavigationTitleView(wallet: viewModel.selectedWallet) },
-                                            id: id)
+        navigationState?.setCustomTitle(customTitle: { HomeProfileSelectorNavTitleView(shouldHideAvatar: true) },
+                                        id: id)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            updateNavTitleVisibility()
+            
         }
     }
     
+    func updateNavTitleVisibility() {
+        withAnimation {
+            navigationState?.isTitleVisible = !isOtherScreenPushed && tabRouter.tabViewSelection == .wallets
+        }
+    }
+
     @ViewBuilder
     func contentTypeSelector() -> some View {
         HomeWalletContentTypeSelectorView(selectedContentType: $viewModel.selectedContentType)

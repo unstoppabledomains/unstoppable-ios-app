@@ -12,8 +12,10 @@ struct HomeProfileSelectorNavTitleView: View {
     @Environment(\.imageLoadingService) private var imageLoadingService
     @EnvironmentObject var tabRouter: HomeTabRouter
 
-    @State var profile: UserProfile? 
+    var shouldHideAvatar: Bool = false
+    @State var profile: UserProfile?
     @State private var avatar: UIImage?
+    
     
     var body: some View {
         Button {
@@ -81,8 +83,10 @@ private extension HomeProfileSelectorNavTitleView {
     @ViewBuilder
     func contentForUser(_ user: FirebaseUser) -> some View {
         HStack {
-            headerIconView(size: 12)
-                .squareFrame(20)
+            if !shouldHideAvatar {
+                headerIconView(size: 12)
+                    .squareFrame(20)
+            }
             Text(user.displayName)
                 .font(.currentFont(size: 16, weight: .semibold))
                 .foregroundStyle(Color.foregroundDefault)
@@ -107,9 +111,11 @@ private extension HomeProfileSelectorNavTitleView {
     func contentForWallet(_ wallet: WalletEntity) -> some View {
         if let rrDomain = wallet.rrDomain {
             HStack {
-                UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
-                .squareFrame(20)
-                .clipShape(Circle())
+                if !shouldHideAvatar {
+                    UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
+                        .squareFrame(20)
+                        .clipShape(Circle())
+                }
                 Text(rrDomain.name)
                     .font(.currentFont(size: 16, weight: .semibold))
                     .foregroundStyle(Color.foregroundDefault)
