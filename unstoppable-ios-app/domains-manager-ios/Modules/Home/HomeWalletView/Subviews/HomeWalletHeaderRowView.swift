@@ -13,9 +13,8 @@ struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
-    @EnvironmentObject private var tabRouter: HomeTabRouter
     let wallet: WalletEntity
-    let domainNamePressedCallback: MainActorCallback
+    let actionCallback: @MainActor (HomeWalletView.WalletAction)->()
     let didSelectDomainCallback: MainActorCallback
     let purchaseDomainCallback: MainActorCallback
 
@@ -32,10 +31,7 @@ struct HomeWalletHeaderRowView: View, ViewAnalyticsLogger {
                 }
                 avatarView()
             }
-                VStack(alignment: .center, spacing: 8) {
-                    profileSelectionView()
-                    totalBalanceView()
-                }
+            totalBalanceView()
         }
         .frame(maxWidth: .infinity)
         .onChange(of: wallet, perform: { wallet in
@@ -63,6 +59,7 @@ private extension HomeWalletHeaderRowView {
         }
     }
     
+    @MainActor
     @ViewBuilder
     func avatarView() -> some View {
         ZStack(alignment: .bottom) {
@@ -115,6 +112,7 @@ private extension HomeWalletHeaderRowView {
         }
     }
  
+    @MainActor
     @ViewBuilder
     func getAvatarView() -> some View {
         if let domain = wallet.rrDomain {
@@ -124,6 +122,7 @@ private extension HomeWalletHeaderRowView {
         }
     }
     
+    @MainActor
     @ViewBuilder
     func getAvatarViewForDomain(_ domain: DomainDisplayInfo) -> some View {
         Button {
@@ -136,6 +135,7 @@ private extension HomeWalletHeaderRowView {
         .buttonStyle(.plain)
     }
     
+    @MainActor
     @ViewBuilder
     func getAvatarViewToGetDomain() -> some View {
         Button {
@@ -170,28 +170,22 @@ private extension HomeWalletHeaderRowView {
     }
     
     @ViewBuilder
-    func profileSelectionView() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            domainNamePressedCallback()
-            logButtonPressedAnalyticEvents(button: .selectProfile)
-        } label: {
-            HStack(spacing: 0) {
-                Text(getProfileSelectionTitle())
-                    .font(.currentFont(size: 16, weight: .medium))
-                Image.chevronGrabberVertical
-                    .squareFrame(24)
-            }
-            .foregroundStyle(Color.foregroundSecondary)
-            .frame(maxWidth: .infinity)
+    func totalBalanceView() -> some View {
+        HStack(spacing: 8) {
+            Text(BalanceStringFormatter.tokensBalanceString(wallet.totalBalance))
+                .titleText()
+            receiveButtonView()
         }
-        .buttonStyle(.plain)
     }
     
     @ViewBuilder
-    func totalBalanceView() -> some View {
-        Text(BalanceStringFormatter.tokensBalanceString(wallet.totalBalance))
-            .titleText()
+    func receiveButtonView() -> some View {
+        UDButtonView(text: "",
+                     icon: .arrowDown,
+                     style: .small(.raisedTertiary)) {
+            logButtonPressedAnalyticEvents(button: .receive)
+            actionCallback(.receive)
+        }
     }
 }
 
@@ -234,7 +228,7 @@ private extension HomeWalletHeaderRowView {
 
 #Preview {
     HomeWalletHeaderRowView(wallet: MockEntitiesFabric.Wallet.mockEntities().first!, 
-                            domainNamePressedCallback: { }, 
+                            actionCallback: { _ in  },
                             didSelectDomainCallback: { },
                             purchaseDomainCallback: { })
 }

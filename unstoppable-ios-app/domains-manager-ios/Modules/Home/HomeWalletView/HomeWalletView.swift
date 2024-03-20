@@ -25,7 +25,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
     var body: some View {
             OffsetObservingListView(offset: $scrollOffset) {
                 HomeWalletHeaderRowView(wallet: viewModel.selectedWallet,
-                                        domainNamePressedCallback: viewModel.domainNamePressed,
+                                        actionCallback: viewModel.walletActionPressed,
                                         didSelectDomainCallback: viewModel.didSelectChangeRR,
                                         purchaseDomainCallback: viewModel.buyDomainPressed)
                 .listRowBackground(Color.clear)
@@ -142,7 +142,7 @@ private extension HomeWalletView {
     }
     
     func walletActions() -> [WalletAction] {
-        [.buy, .receive, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
+        [.send, .buy, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
     }
     
     func updateNavTitleVisibility() {

@@ -72,6 +72,8 @@ extension HomeWalletView {
         
         func walletActionPressed(_ action: WalletAction) {
             switch action {
+            case .send:
+                return
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:

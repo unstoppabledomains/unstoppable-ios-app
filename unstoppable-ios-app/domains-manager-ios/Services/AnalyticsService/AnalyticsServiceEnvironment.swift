@@ -393,6 +393,8 @@ extension Analytics {
         case exploreDomainsSearchType
         case exploreUserWalletsSectionHeader
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
+        
+        case sendCrypto
     }
 }
 
