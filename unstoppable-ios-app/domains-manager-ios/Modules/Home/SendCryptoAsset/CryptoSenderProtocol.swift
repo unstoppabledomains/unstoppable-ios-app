@@ -57,12 +57,14 @@ extension CryptoSenderProtocol {
 
 protocol StoredSendTransactionProtocol {
     var status: TxStatusGroup { get }
+    var hash: String { get }
 }
 
 
 // ==========================
 
 struct DemoSendTransaction: StoredSendTransactionProtocol {
+    let hash: String
     var status: TxStatusGroup
     let token: String
     let amount: Double
@@ -83,7 +85,8 @@ class DemoCryptoSender: CryptoSenderProtocol {
     }
     
     func getStoredSendTxs() -> [StoredSendTransactionProtocol] {
-        return [DemoSendTransaction(status: .pending,
+        return [DemoSendTransaction(hash: "0x",
+                                    status: .pending,
                                     token: "crypto.LINK.address",
                                     amount: 1.0)]
     }
