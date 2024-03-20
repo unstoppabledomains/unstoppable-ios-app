@@ -26,7 +26,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
-    @Published var sendCryptoInitialData: SendCryptoInitialData?
+    @Published var sendCryptoInitialData: SendCryptoAsset.InitialData?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     weak var homeWalletViewCoordinator: HomeWalletViewCoordinator?

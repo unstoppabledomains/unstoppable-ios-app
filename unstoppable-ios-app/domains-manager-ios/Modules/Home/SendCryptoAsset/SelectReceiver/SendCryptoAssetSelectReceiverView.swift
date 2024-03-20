@@ -8,16 +8,17 @@
 import SwiftUI
 import Combine
 
-struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
+struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     
     
     @Environment(\.domainProfilesService) var domainProfilesService
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var viewModel: SendCryptoViewModel
+    @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
 
 
+    @State private var userWallets: [WalletEntity] = []
     @State private var followingList: [DomainName] = []
     @State private var inputText: String = ""
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
@@ -43,6 +44,7 @@ struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
             }
         }
         .task {
+            userWallets = appContext.walletsDataService.wallets.filter({ $0.address != viewModel.sourceWallet.address })
             socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
                 .receive(on: DispatchQueue.main)
                 .sink { relationshipDetails in
@@ -53,7 +55,7 @@ struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
 }
 
 // MARK: - Private methods
-private extension SendCryptoSelectReceiverView {
+private extension SendCryptoAssetSelectReceiverView {
     @ViewBuilder
     func closeButton() -> some View {
         CloseButtonView {
@@ -88,47 +90,51 @@ private extension SendCryptoSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         } callback: {
-            viewModel.navPath.append(.selectAssetToSend)
+            viewModel.handleAction(.scanQRSelected)
         }
     }
     
     @ViewBuilder
     func userWalletsSection() -> some View {
-        Section {
-            ForEach(appContext.walletsDataService.wallets) { wallet in
-                selectableUserWalletView(wallet: wallet)
+        if !userWallets.isEmpty {
+            Section {
+                ForEach(userWallets) { wallet in
+                    selectableUserWalletView(wallet: wallet)
+                }
+            } header: {
+                sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
             }
-        } header: {
-            sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
         }
     }
     
     @ViewBuilder
     func selectableUserWalletView(wallet: WalletEntity) -> some View {
         selectableRowView {
-            SendCryptoSelectReceiverWalletRowView(wallet: wallet)
+            SendCryptoAssetSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
-            
+            viewModel.handleAction(.userWalletSelected(wallet))
         }
     }
     
     @ViewBuilder
     func followingsSection() -> some View {
-        Section {
-            ForEach(followingList, id: \.self) { following in
-                selectableFollowingView(following: following)
+        if !followingList.isEmpty {
+            Section {
+                ForEach(followingList, id: \.self) { following in
+                    selectableFollowingView(following: following)
+                }
+            } header: {
+                sectionHeaderViewWith(title: String.Constants.following.localized())
             }
-        } header: {
-            sectionHeaderViewWith(title: String.Constants.following.localized())
         }
     }
     
     @ViewBuilder
     func selectableFollowingView(following: DomainName) -> some View {
         selectableRowView {
-            SendCryptoSelectReceiverFollowingRowView(domainName: following)
+            SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
-            
+            viewModel.handleAction(.followingDomainSelected(following))
         }
     }
     
@@ -156,6 +162,6 @@ private extension SendCryptoSelectReceiverView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverView()
+    SendCryptoAssetSelectReceiverView()
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

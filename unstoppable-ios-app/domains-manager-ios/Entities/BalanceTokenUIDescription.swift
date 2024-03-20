@@ -77,13 +77,22 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         
         return [tokenDescription] + subTokenDescriptions
     }
-    
-    static func createSkeletonEntity() -> BalanceTokenUIDescription {
-        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
-        token.isSkeleton = true
-        return token
+
+}
+
+// MARK: - Open methods
+extension BalanceTokenUIDescription {
+    var formattedBalanceWithSymbol: String {
+        "\(balance.formatted(toMaxNumberAfterComa: 2)) \(symbol)"
     }
     
+    var formattedBalanceUSD: String {
+        "$\(balanceUsd.formatted(toMaxNumberAfterComa: 2))"
+    }
+}
+
+// MARK: - Load icons
+extension BalanceTokenUIDescription {
     func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
         BalanceTokenUIDescription.loadIconFor(ticker: symbol, logoURL: logoURL, iconUpdated: iconUpdated)
     }
@@ -132,6 +141,15 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
                 iconUpdated(icon)
             }
         }
+    }
+}
+
+// MARK: - Skeleton
+extension BalanceTokenUIDescription {
+    static func createSkeletonEntity() -> BalanceTokenUIDescription {
+        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+        token.isSkeleton = true
+        return token
     }
 }
 

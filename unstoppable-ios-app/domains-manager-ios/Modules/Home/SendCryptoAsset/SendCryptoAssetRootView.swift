@@ -1,5 +1,5 @@
 //
-//  SendCryptoRootView.swift
+//  SendCryptoAssetRootView.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 20.03.2024.
@@ -7,19 +7,20 @@
 
 import SwiftUI
 
-struct SendCryptoRootView: View {
+struct SendCryptoAssetRootView: View {
     
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject var viewModel: SendCryptoViewModel
+    @StateObject var viewModel: SendCryptoAssetViewModel
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            SendCryptoSelectReceiverView()
+            SendCryptoAssetSelectReceiverView()
                 .environmentObject(viewModel)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(for: SendCryptoNavigationDestination.self) { destination in
-                    SendCryptoLinkNavigationDestination.viewFor(navigationDestination: destination)
+                .navigationDestination(for: SendCryptoAsset.NavigationDestination.self) { destination in
+                    SendCryptoAsset.LinkNavigationDestination.viewFor(navigationDestination: destination)
                         .ignoresSafeArea()
+                        .environmentObject(viewModel)
                 }
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
@@ -31,5 +32,5 @@ struct SendCryptoRootView: View {
 }
 
 #Preview {
-    SendCryptoRootView(viewModel: SendCryptoViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
+    SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
 }
