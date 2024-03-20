@@ -26,7 +26,7 @@ protocol CryptoSenderProtocol {
     func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws -> String
     
     /// Get all 'Send' Txs from the persistent storage.
-    /// - Returns: Array of Txs. ATM only 'status' property can be guaranteed
+    /// - Returns: Array of Txs. ATM only 'status' and 'hash' properties can be guaranteed
     func getStoredSendTxs() -> [StoredSendTransactionProtocol]
 }
 
