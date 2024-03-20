@@ -112,7 +112,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
-            
+            viewModel.handleAction(.userWalletSelected(wallet))
         }
     }
     
@@ -134,7 +134,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
-            
+            viewModel.handleAction(.followingDomainSelected(following))
         }
     }
     

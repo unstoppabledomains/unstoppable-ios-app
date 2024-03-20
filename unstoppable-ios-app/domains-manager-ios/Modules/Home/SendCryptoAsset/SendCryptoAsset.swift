@@ -41,5 +41,8 @@ extension SendCryptoAsset {
         case scanQRSelected
         case userWalletSelected(WalletEntity)
         case followingDomainSelected(DomainName)
+        
+        case userTokenSelected(BalanceTokenUIDescription)
+        case userDomainSelected(DomainDisplayInfo)
     }
 }

@@ -78,6 +78,7 @@ private extension SelectCryptoAssetToSendView {
     func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            viewModel.handleAction(.userTokenSelected(token))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
         }
@@ -95,6 +96,7 @@ private extension SelectCryptoAssetToSendView {
     func selectableDomainRow(_ domain: DomainDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            viewModel.handleAction(.userDomainSelected(domain))
         } label: {
             SelectCryptoAssetToSendDomainView(domain: domain)
         }
