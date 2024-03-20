@@ -20,14 +20,18 @@ struct SelectTokenAssetAmountToSendView: View {
                 inputValueView()
                 convertedValueView()
             }
-            VStack(spacing: 16) {
-                tokenInfoView()
-                UDNumberPadView(inputCallback: { inputType in
-                    interpreter.addInput(inputType)
-                })
+            VStack(spacing: 32) {
+                VStack(spacing: 16) {
+                    tokenInfoView()
+                    UDNumberPadView(inputCallback: { inputType in
+                        interpreter.addInput(inputType)
+                    })
+                }
+                confirmButton()
             }
         }
         .padding(16)
+        .animation(.default, value: UUID())
     }
 }
 
@@ -186,6 +190,18 @@ private extension SelectTokenAssetAmountToSendView {
         }
         .buttonStyle(.plain)
         .padding(.init(horizontal: 16))
+    }
+}
+
+// MARK: - Private methods
+private extension SelectTokenAssetAmountToSendView {
+    @ViewBuilder
+    func confirmButton() -> some View {
+        UDButtonView(text: String.Constants.review.localized(),
+                     style: .large(.raisedPrimary)) {
+            
+        }
+                     .disabled(interpreter.getInterpretedNumber() <= 0)
     }
 }
 
