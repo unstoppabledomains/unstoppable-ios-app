@@ -13,10 +13,13 @@ struct HomeExploreFollowerRelationshipTypePickerView: View {
     @Binding var relationshipType: DomainProfileFollowerRelationshipType
     
     var body: some View {
-        HStack(spacing: 16) {
-            ForEach(orderedRelationshipTypes, id: \.self) { relationshipType in
-                viewFor(relationshipType: relationshipType)
+        UDTabsPickerView(selectedTab: $relationshipType,
+                         tabs: orderedRelationshipTypes) { relationshipType in
+            let numberOfFollowers = profile.numberOfFollowersFor(relationshipType: relationshipType)
+            if numberOfFollowers > 0 {
+                return String(numberOfFollowers)
             }
+            return nil
         }
     }
 }
@@ -24,33 +27,13 @@ struct HomeExploreFollowerRelationshipTypePickerView: View {
 // MARK: - Private methods
 private extension HomeExploreFollowerRelationshipTypePickerView {
     var orderedRelationshipTypes: [DomainProfileFollowerRelationshipType] { [.following, .followers] }
+}
+
+extension DomainProfileFollowerRelationshipType: UDTabPickable {
+    var id: String { rawValue }
     
-    @ViewBuilder
-    func viewFor(relationshipType: DomainProfileFollowerRelationshipType) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            self.relationshipType = relationshipType
-        } label: {
-            HStack(alignment: .top, spacing: 4) {
-                Text(titleFor(relationshipType: relationshipType))
-                    .font(.currentFont(size: 16, weight: .medium))
-                let numberOfFollowers = profile.numberOfFollowersFor(relationshipType: relationshipType)
-                if numberOfFollowers > 0 {
-                    Text(String(numberOfFollowers))
-                        .font(.currentFont(size: 11, weight: .medium))
-                }
-            }
-            .foregroundStyle(foregroundStyleFor(relationshipType: relationshipType))
-        }
-        .buttonStyle(.plain)
-    }
-    
-    func foregroundStyleFor(relationshipType: DomainProfileFollowerRelationshipType) -> Color {
-        relationshipType == self.relationshipType ? Color.foregroundDefault : Color.foregroundSecondary
-    }
-    
-    func titleFor(relationshipType: DomainProfileFollowerRelationshipType) -> String {
-        switch relationshipType {
+    var title: String {
+        switch self {
         case .followers:
             String.Constants.followers.localized()
         case .following:
