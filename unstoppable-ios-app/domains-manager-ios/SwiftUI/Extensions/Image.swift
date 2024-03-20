@@ -92,6 +92,7 @@ extension Image {
     static let verticalLines = Image("verticalLines")
     static let arrowDown = Image("arrowDown")
     static let paperPlaneTopRight = Image("paperPlaneTopRight")
+    static let arrowsTopBottom = Image("arrowsTopBottom")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

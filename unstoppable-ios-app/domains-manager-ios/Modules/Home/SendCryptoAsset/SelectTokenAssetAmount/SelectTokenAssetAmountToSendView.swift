@@ -16,7 +16,10 @@ struct SelectTokenAssetAmountToSendView: View {
     
     var body: some View {
         VStack(spacing: 57) {
-            inputValueView()
+            VStack(spacing: 8) {
+                inputValueView()
+                convertedValueView()
+            }
             VStack(spacing: 16) {
                 tokenInfoView()
                 UDNumberPadView(inputCallback: { inputType in
@@ -69,6 +72,67 @@ private extension SelectTokenAssetAmountToSendView {
     }
 }
 
+// MARK: - Converted value
+private extension SelectTokenAssetAmountToSendView {
+    @ViewBuilder
+    func convertedValueView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            switchInputType()
+        } label: {
+            HStack(spacing: 8) {
+                currentConvertedTypeValueView()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                Image.arrowsTopBottom
+                    .resizable()
+                    .squareFrame(24)
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    func switchInputType() {
+        switch self.inputType {
+        case .usdAmount:
+            self.inputType = .tokenAmount
+        case .tokenAmount:
+            self.inputType = .usdAmount
+        }
+    }
+    
+    @ViewBuilder
+    func currentConvertedTypeValueView() -> some View {
+        switch inputType {
+        case .usdAmount:
+            tokenConvertedValue()
+        case .tokenAmount:
+            usdConvertedValue()
+        }
+    }
+    
+    var usdConvertedString: String {
+        "$\(interpreter.getInput())"
+    }
+    
+    @ViewBuilder
+    func usdConvertedValue() -> some View {
+        convertedAmountText(usdInputString)
+    }
+    
+    @ViewBuilder
+    func tokenConvertedValue() -> some View {
+        convertedAmountText("\(interpreter.getInput()) \(token.symbol)")
+    }
+    
+    @ViewBuilder
+    func convertedAmountText(_ text: String) -> some View {
+        Text(text)
+            .font(.currentFont(size: 16, weight: .medium))
+    }
+}
+
 // MARK: - Private methods
 private extension SelectTokenAssetAmountToSendView {
     @ViewBuilder
@@ -88,7 +152,6 @@ private extension SelectTokenAssetAmountToSendView {
             RoundedRectangle(cornerRadius: 12)
                 .inset(by: 0.5)
                 .stroke(.white.opacity(0.08), lineWidth: 1)
-            
         )
     }
     
