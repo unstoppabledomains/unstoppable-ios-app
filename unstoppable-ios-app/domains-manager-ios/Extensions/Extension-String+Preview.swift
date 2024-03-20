@@ -1155,6 +1155,9 @@ extension String {
         static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
         static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
         
+        static let review = "REVIEW"
+        static let usingMax = "USING_MAX"
+        static let useMax = "USE_MAX"
     }
     
     enum BlockChainIcons: String {
