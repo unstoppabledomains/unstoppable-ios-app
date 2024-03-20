@@ -217,4 +217,15 @@ extension MockEntitiesFabric {
             */
         }
     }
+    
+    enum Tokens {
+        static func mockUIToken() -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "ETH",
+                                      symbol: "ETH",
+                                      name: "ETH",
+                                      balance: 1,
+                                      balanceUsd: 1,
+                                      marketUsd: 1)
+        }
+    }
 }

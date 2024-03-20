@@ -17,29 +17,7 @@ struct HomeWalletTokenRowView: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            ZStack(alignment: .bottomTrailing) {
-                Image(uiImage: icon ?? .init())
-                    .resizable()
-                    .squareFrame(40)
-                    .background(Color.backgroundSubtle)
-                    .skeletonable()
-                    .clipShape(Circle())
-                
-                if token.parentSymbol != nil {
-                    Image(uiImage: parentIcon ?? .init())
-                        .resizable()
-                        .squareFrame(20)
-                        .background(Color.backgroundDefault)
-                        .skeletonable()
-                        .clipShape(Circle())
-                        .overlay {
-                            Circle()
-                                .stroke(lineWidth: 2)
-                                .foregroundStyle(Color.backgroundDefault)
-                        }
-                        .offset(x: 4, y: 4)
-                }
-            }
+            iconView()
             
             VStack(alignment: .leading,
                    spacing: token.isSkeleton ? 8 : 0) {
@@ -49,7 +27,7 @@ struct HomeWalletTokenRowView: View {
                     .frame(height: token.isSkeleton ? 16 : 24)
                     .skeletonable()
                     .skeletonCornerRadius(12)
-                Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.symbol)")
+                Text(token.formattedBalanceWithSymbol)
                     .font(.currentFont(size: 14, weight: .regular))
                     .foregroundStyle(secondaryColor)
                     .frame(height: token.isSkeleton ? 12 : 20)
@@ -60,7 +38,7 @@ struct HomeWalletTokenRowView: View {
             
             VStack(alignment: .trailing,
                    spacing: 0) {
-                Text("$\(token.balanceUsd.formatted(toMaxNumberAfterComa: 2))")
+                Text(token.formattedBalanceUSD)
                     .font(.currentFont(size: 16, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Color.foregroundDefault)
@@ -109,11 +87,36 @@ private extension HomeWalletTokenRowView {
     }
 }
 
+// MARK: - Private methods
+private extension HomeWalletTokenRowView {
+    @ViewBuilder
+    func iconView() -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            Image(uiImage: icon ?? .init())
+                .resizable()
+                .squareFrame(40)
+                .background(Color.backgroundSubtle)
+                .skeletonable()
+                .clipShape(Circle())
+            
+            if token.parentSymbol != nil {
+                Image(uiImage: parentIcon ?? .init())
+                    .resizable()
+                    .squareFrame(20)
+                    .background(Color.backgroundDefault)
+                    .skeletonable()
+                    .clipShape(Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(lineWidth: 2)
+                            .foregroundStyle(Color.backgroundDefault)
+                    }
+                    .offset(x: 4, y: 4)
+            }
+        }
+    }
+}
+
 #Preview {
-    HomeWalletTokenRowView(token: .init(chain: "ETH",
-                                        symbol: "ETH",
-                                        name: "ETH",
-                                        balance: 1,
-                                        balanceUsd: 1,
-                                        marketUsd: 1))
+    HomeWalletTokenRowView(token: MockEntitiesFabric.Tokens.mockUIToken())
 }

@@ -17,3 +17,21 @@ extension SendCryptoAsset {
         let sourceWallet: WalletEntity
     }
 }
+
+extension SendCryptoAsset {
+    enum AssetType: String, Identifiable, CaseIterable, UDTabPickable {
+        
+        var id: String { rawValue }
+        
+        case tokens, domains
+        
+        var title: String {
+            switch self {
+            case .tokens:
+                String.Constants.tokens.localized()
+            case .domains:
+                String.Constants.domains.localized()
+            }
+        }
+    }
+}
