@@ -20,6 +20,8 @@ struct SendCryptoSelectReceiverView: View {
                     .listRowSeparator(.hidden)
                 scanQRView()
                     .listRowSeparator(.hidden)
+                userWalletsSection()
+                    .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
                 .navigationTitle(String.Constants.send.localized())
@@ -55,6 +57,31 @@ private extension SendCryptoSelectReceiverView {
                                                 background: .backgroundMuted2,
                                                 bordered: true),
                            rightViewStyle: nil)
+        } callback: {
+            
+        }
+    }
+    
+    @ViewBuilder
+    func userWalletsSection() -> some View {
+        Section {
+            ForEach(appContext.walletsDataService.wallets) { wallet in
+                selectableUserWalletView(wallet: wallet)
+            }
+        } header: {
+            HStack(spacing: 8) {
+                Text(String.Constants.yourWallets.localized())
+                    .font(.currentFont(size: 14, weight: .medium))
+                    .foregroundStyle(Color.foregroundSecondary)
+                HomeExploreSeparatorView()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func selectableUserWalletView(wallet: WalletEntity) -> some View {
+        selectableRowView {
+            SendCryptoSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
             
         }
