@@ -20,6 +20,7 @@ struct SendCryptoAssetRootView: View {
                 .navigationDestination(for: SendCryptoAsset.NavigationDestination.self) { destination in
                     SendCryptoAsset.LinkNavigationDestination.viewFor(navigationDestination: destination)
                         .ignoresSafeArea()
+                        .environmentObject(viewModel)
                 }
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState

@@ -23,6 +23,8 @@ struct SelectCryptoAssetToSendView: View {
             selectedAssetsList()
                 .listRowSeparator(.hidden)
         }
+        .addNavigationTopSafeAreaOffset()
+        .navigationTitle(String.Constants.send.localized())
         .listStyle(.plain)
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
@@ -85,8 +87,18 @@ private extension SelectCryptoAssetToSendView {
     @ViewBuilder
     func domainsListView() -> some View {
         ForEach(domains) { domain in
+            selectableDomainRow(domain)
+        }
+    }
+    
+    @ViewBuilder
+    func selectableDomainRow(_ domain: DomainDisplayInfo) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+        } label: {
             SelectCryptoAssetToSendDomainView(domain: domain)
         }
+        .buttonStyle(.plain)
     }
 }
 
