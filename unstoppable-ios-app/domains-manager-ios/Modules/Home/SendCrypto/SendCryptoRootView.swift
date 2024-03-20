@@ -24,6 +24,8 @@ struct SendCryptoRootView: View {
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
+        .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
+
     }
     
 }
