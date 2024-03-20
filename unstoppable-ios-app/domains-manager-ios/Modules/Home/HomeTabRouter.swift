@@ -26,6 +26,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
+    @Published var sendCryptoFromWallet: WalletEntity?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     weak var homeWalletViewCoordinator: HomeWalletViewCoordinator?
@@ -297,6 +298,7 @@ extension HomeTabRouter {
         presentedPublicDomain = nil
         resolvingPrimaryDomainWallet = nil
         showingWalletInfo = nil
+        sendCryptoFromWallet = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()

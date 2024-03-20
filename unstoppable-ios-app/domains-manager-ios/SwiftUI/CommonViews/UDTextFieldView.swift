@@ -149,6 +149,8 @@ private extension UDTextFieldView {
                 switch rightViewType {
                 case .clear:
                     text = ""
+                case .paste:
+                    text = UIPasteboard.general.string ?? ""
                 case .cancel(let callback):
                     if isInspiring {
                         isInspiring.toggle()
@@ -165,6 +167,7 @@ private extension UDTextFieldView {
             } label: {
                 buildRightView()
             }
+            .buttonStyle(.plain)
         }
     }
     
@@ -190,6 +193,8 @@ private extension UDTextFieldView {
             buildClearRightView()
         case .cancel:
             buildCancelRightView()
+        case .paste:
+            buildPasteRightView()
         case .inspire:
             if state == .focused {
                 buildClearRightView()
@@ -213,7 +218,17 @@ private extension UDTextFieldView {
     
     @ViewBuilder
     func buildCancelRightView() -> some View {
-        Text(String.Constants.cancel.localized())
+        buildTextBasedRightView(String.Constants.cancel.localized())
+    }
+    
+    @ViewBuilder
+    func buildPasteRightView() -> some View {
+        buildTextBasedRightView(String.Constants.paste.localized())
+    }
+    
+    @ViewBuilder
+    func buildTextBasedRightView(_ text: String) -> some View {
+        Text(text)
             .font(.currentFont(size: 16, weight: .medium))
             .foregroundStyle(Color.foregroundAccent)
     }
@@ -321,7 +336,7 @@ extension UDTextFieldView {
     enum RightViewType {
         case clear
         case cancel(EmptyCallback)
-        //        case paste
+        case paste
         //        case loading
         //        case success
         case inspire((Bool)->())

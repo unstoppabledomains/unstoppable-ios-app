@@ -989,6 +989,8 @@
 		C671E3E42902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3E22902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift */; };
 		C671E3E82902817000A2B3A0 /* DomainProfileGeneralInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C671E3E32902817000A2B3A0 /* DomainProfileGeneralInfoCell.xib */; };
 		C671E3EE2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3ED2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift */; };
+		C67213CF2BAA80890075B9C7 /* SendCryptoSelectReceiverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213CE2BAA80880075B9C7 /* SendCryptoSelectReceiverView.swift */; };
+		C67213D02BAA80890075B9C7 /* SendCryptoSelectReceiverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213CE2BAA80880075B9C7 /* SendCryptoSelectReceiverView.swift */; };
 		C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD74286061E300D27078 /* WalletBackUpPassword.swift */; };
 		C673BA1E2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */; };
 		C673BA242A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */; };
@@ -3226,6 +3228,7 @@
 		C671E3E22902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralInfoCell.swift; sourceTree = "<group>"; };
 		C671E3E32902817000A2B3A0 /* DomainProfileGeneralInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileGeneralInfoCell.xib; sourceTree = "<group>"; };
 		C671E3ED2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDashesHeaderReusableView.swift; sourceTree = "<group>"; };
+		C67213CE2BAA80880075B9C7 /* SendCryptoSelectReceiverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoSelectReceiverView.swift; sourceTree = "<group>"; };
 		C672FD74286061E300D27078 /* WalletBackUpPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBackUpPassword.swift; sourceTree = "<group>"; };
 		C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingUnreadCountingService.swift; sourceTree = "<group>"; };
 		C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingUnreadCountingServiceProtocol.swift; sourceTree = "<group>"; };
@@ -6223,6 +6226,32 @@
 			path = DomainProfileGeneralInfoCell;
 			sourceTree = "<group>";
 		};
+		C67213CC2BAA803C0075B9C7 /* SendCrypto */ = {
+			isa = PBXGroup;
+			children = (
+				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
+			);
+			path = SendCrypto;
+			sourceTree = "<group>";
+		};
+		C67213CD2BAA80670075B9C7 /* SelectReceiver */ = {
+			isa = PBXGroup;
+			children = (
+				C67213CE2BAA80880075B9C7 /* SendCryptoSelectReceiverView.swift */,
+			);
+			path = SelectReceiver;
+			sourceTree = "<group>";
+		};
+		C67213D12BAA864C0075B9C7 /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				C669B4542B748214001D4788 /* HomeView.swift */,
+				C6102FC52B6A338D0098AF75 /* HomeWebAccountView */,
+				C6B65F4E2B54DA73006D1812 /* HomeWalletView */,
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
 		C673BA222A80E156001FD763 /* UnreadMessages */ = {
 			isa = PBXGroup;
 			children = (
@@ -7191,14 +7220,14 @@
 		C6B65F4D2B54DA6D006D1812 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C67213CC2BAA803C0075B9C7 /* SendCrypto */,
+				C6203A4C2B882909000A1A8E /* Explore */,
 				C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */,
 				C6B40E922B5F833E0038CEB0 /* UserProfileSelectionView */,
 				C6E0DC5B2B71E20C0069E100 /* ShareWalletInfoView */,
 				C64939FA2B637DCB00457363 /* ReverseResolution */,
 				C6B65F992B566B7A006D1812 /* NFTDetailsView */,
-				C6102FC52B6A338D0098AF75 /* HomeWebAccountView */,
-				C6B65F4E2B54DA73006D1812 /* HomeWalletView */,
-				C669B4542B748214001D4788 /* HomeView.swift */,
+				C67213D12BAA864C0075B9C7 /* Wallet */,
 				C6B65F932B5665F0006D1812 /* HomeTabView.swift */,
 				C64939F12B6357A600457363 /* HomeTabRouter.swift */,
 				C64939EE2B63579700457363 /* HomeTabPullUpHandlerModifier.swift */,
@@ -7605,7 +7634,6 @@
 				C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */,
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
-				C6203A4C2B882909000A1A8E /* Explore */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
@@ -8822,6 +8850,7 @@
 				C685D8192AA978DE00212879 /* UBTSearchingView.swift in Sources */,
 				C6A89C482B315B35008AB043 /* HotFeatureSuggestion.swift in Sources */,
 				C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
+				C67213CF2BAA80890075B9C7 /* SendCryptoSelectReceiverView.swift in Sources */,
 				C61807B12B199DBC0032E543 /* DefaultAppVersionFetcher.swift in Sources */,
 				C6F9FBE82A25CB5800102F81 /* PushMessageType.swift in Sources */,
 				C685D8172AA978DE00212879 /* UBTController.swift in Sources */,
@@ -9901,6 +9930,7 @@
 				C6D011C02B995AEE0008BF40 /* HomeExploreSuggestedProfileRowView.swift in Sources */,
 				C618086C2B19BC0C0032E543 /* Line.swift in Sources */,
 				C6C8F8A82B2182AE00A9834D /* RenameWalletViewController.swift in Sources */,
+				C67213D02BAA80890075B9C7 /* SendCryptoSelectReceiverView.swift in Sources */,
 				C6C8F91D2B2183AB00A9834D /* InviteFriendsViewController.swift in Sources */,
 				C6C8F97C2B2188FA00A9834D /* QRScannerViewPresenter.swift in Sources */,
 				C688C1872B846F1B00BD233A /* ChannelView.swift in Sources */,

@@ -172,6 +172,9 @@
 "COLLAPSE" = "Collapse";
 "CHAT" = "Chat";
 "SEND" = "Send";
+"TO" = "To";
+"DOMAIN_OR_ADDRESS" = "Domain or Address";
+"YOUR_WALLETS" = "Your Wallets";
 
 /* ONBOARDING */
 // Tutorial screens

@@ -73,7 +73,7 @@ extension HomeWalletView {
         func walletActionPressed(_ action: WalletAction) {
             switch action {
             case .send:
-                return
+                router.sendCryptoFromWallet = selectedWallet
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:

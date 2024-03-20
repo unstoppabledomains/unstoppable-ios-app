@@ -71,6 +71,9 @@ struct HomeTabView: View {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])
         })
+        .sheet(item: $router.sendCryptoFromWallet, content: { wallet in
+            SendCryptoSelectReceiverView(sourceWallet: wallet)
+        })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
                                            mode: presentationDetails.mode,
