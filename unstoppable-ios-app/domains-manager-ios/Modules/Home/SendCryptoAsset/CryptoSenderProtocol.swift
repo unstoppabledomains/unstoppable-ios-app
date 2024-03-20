@@ -7,13 +7,9 @@
 
 import Foundation
 
-protocol StoredSendTransactionProtocol {
-    var status: TxStatusGroup { get }
-}
-
 protocol CryptoSenderProtocol {
     
-    /// Indicates of Sender supports sending of a token on the chain
+    /// Indicates if Sender supports sending of a token on the chain
     /// - Parameters:
     ///   - token: tokan name
     ///   - chain: chain
@@ -25,9 +21,9 @@ protocol CryptoSenderProtocol {
     ///   - amount: anount of tokens
     ///   - address: address of the receiver
     ///   - chain: chain of the transaction
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType)
+    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async
     
-    func getSendTxs() -> [StoredSendTransactionProtocol]
+    func getStoredSendTxs() -> [StoredSendTransactionProtocol]
 }
 
 extension CryptoSenderProtocol {
@@ -40,17 +36,22 @@ extension CryptoSenderProtocol {
     }
     
     private func createTX() {
-        
+        // TODO:
     }
     
     private func sendTX() {
-        
+        // TODO:
     }
     
     private func storeTX() {
-        
+        // TODO:
     }
 }
+
+protocol StoredSendTransactionProtocol {
+    var status: TxStatusGroup { get }
+}
+
 
 // ==========================
 
@@ -61,6 +62,9 @@ struct DemoSendTransaction: StoredSendTransactionProtocol {
 }
 
 class DemoCryptoSender: CryptoSenderProtocol {
+    static let instance: DemoCryptoSender = DemoCryptoSender()
+    private init() {}
+    
     func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) {
         // TODO:
     }
@@ -69,9 +73,13 @@ class DemoCryptoSender: CryptoSenderProtocol {
         return false
     }
     
-    func getSendTxs() -> [StoredSendTransactionProtocol] {
+    func getStoredSendTxs() -> [StoredSendTransactionProtocol] {
         return [DemoSendTransaction(status: .pending,
                                     token: "crypto.LINK.address",
                                     amount: 1.0)]
+    }
+    
+    func getAllDemoSendTransactions() -> [DemoSendTransaction] {
+        return getStoredSendTxs() as! [DemoSendTransaction]
     }
 }
