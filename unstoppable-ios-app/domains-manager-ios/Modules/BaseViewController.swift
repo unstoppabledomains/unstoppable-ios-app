@@ -47,7 +47,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         
         addObservers()
         navigationController?.navigationBar.prefersLargeTitles = prefersLargeTitles
-        customiseNavigationBackButton(image: navBackStyle.icon)
+        customiseNavigationBackButton(style: navBackStyle)
         setupNavBar()
         navBarUpdated()
         cNavigationController?.backButtonPressedCallback = { [weak self] in
@@ -62,7 +62,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         
         isDisappearing = false
         navigationController?.navigationBar.prefersLargeTitles = prefersLargeTitles
-        customiseNavigationBackButton(image: navBackStyle.icon)
+        customiseNavigationBackButton(style: navBackStyle)
         navBarUpdated()
         appContext.externalEventsService.checkPendingEvents()
         if analyticsName == .unspecified {
@@ -81,7 +81,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        customiseNavigationBackButton(image: navBackStyle.icon)
+        customiseNavigationBackButton(style: navBackStyle)
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         navBarUpdated()
     }
@@ -193,7 +193,7 @@ private extension BaseViewController {
     }
     
     func setupNavBar() {
-        customiseNavigationBackButton(image: navBackStyle.icon)
+        customiseNavigationBackButton(style: navBackStyle)
         if let navBarTitleAttributes {
             navigationController?.navigationBar.standardAppearance.titleTextAttributes = navBarTitleAttributes
             navigationController?.navigationBar.scrollEdgeAppearance?.titleTextAttributes = navBarTitleAttributes

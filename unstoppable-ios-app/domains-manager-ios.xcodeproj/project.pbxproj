@@ -1007,6 +1007,8 @@
 		C67213E62BAA97540075B9C7 /* MockEntitiesFabric+SendCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213E42BAA97540075B9C7 /* MockEntitiesFabric+SendCrypto.swift */; };
 		C67213E92BAA99080075B9C7 /* SelectAssetToSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213E82BAA99080075B9C7 /* SelectAssetToSendView.swift */; };
 		C67213EA2BAA99080075B9C7 /* SelectAssetToSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213E82BAA99080075B9C7 /* SelectAssetToSendView.swift */; };
+		C67213EC2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213EB2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift */; };
+		C67213ED2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67213EB2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift */; };
 		C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD74286061E300D27078 /* WalletBackUpPassword.swift */; };
 		C673BA1E2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */; };
 		C673BA242A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */; };
@@ -3253,6 +3255,7 @@
 		C67213E12BAA967C0075B9C7 /* SendCryptoRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoRootView.swift; sourceTree = "<group>"; };
 		C67213E42BAA97540075B9C7 /* MockEntitiesFabric+SendCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+SendCrypto.swift"; sourceTree = "<group>"; };
 		C67213E82BAA99080075B9C7 /* SelectAssetToSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAssetToSendView.swift; sourceTree = "<group>"; };
+		C67213EB2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerCustomiser.swift; sourceTree = "<group>"; };
 		C672FD74286061E300D27078 /* WalletBackUpPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBackUpPassword.swift; sourceTree = "<group>"; };
 		C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingUnreadCountingService.swift; sourceTree = "<group>"; };
 		C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingUnreadCountingServiceProtocol.swift; sourceTree = "<group>"; };
@@ -6076,6 +6079,7 @@
 				C66804AC280D93E5007E6390 /* ObjectWithAttributedString.swift */,
 				C67DE1442B984031002374CE /* RecentGlobalSearchProfilesStorageProtocol.swift */,
 				C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */,
+				C67213EB2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift */,
 				C663538A294319B400EF1DC7 /* ScrollViewOffsetListener.swift */,
 			);
 			path = Protocols;
@@ -8763,6 +8767,7 @@
 				3026FA2B27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
 				C692C360282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
 				C6C8F9882B21893600A9834D /* WCRequestsHandlingServiceProtocol.swift in Sources */,
+				C67213EC2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift in Sources */,
 				C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */,
@@ -9860,6 +9865,7 @@
 				C67213EA2BAA99080075B9C7 /* SelectAssetToSendView.swift in Sources */,
 				C6D646D12B1ED29500D724AC /* DomainRecordsData.swift in Sources */,
 				C6D646062B1DC02300D724AC /* UDTitleLabel.swift in Sources */,
+				C67213ED2BAA9F460075B9C7 /* NavigationControllerCustomiser.swift in Sources */,
 				C60CB4F12B2020DD007FD3CF /* UIImage+Preview.swift in Sources */,
 				C6C8F9A72B2191CC00A9834D /* PreviewGIFAnimationsService.swift in Sources */,
 				C6F7D9D02B8D6EFC00764708 /* MessageActionReplyButtonView.swift in Sources */,
