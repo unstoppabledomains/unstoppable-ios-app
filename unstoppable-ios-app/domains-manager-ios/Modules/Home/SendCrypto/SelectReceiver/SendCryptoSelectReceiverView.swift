@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import Combine
 
-struct SendCryptoSelectReceiverView: View {
+struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
     
-    let sourceWallet: WalletEntity
     
+    @Environment(\.domainProfilesService) var domainProfilesService
+    @Environment(\.presentationMode) private var presentationMode
+    @StateObject var viewModel: SendCryptoViewModel
+    var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
+
+    @State private var followingList: [DomainName] = []
     @State private var inputText: String = ""
+    @State private var socialRelationshipDetailsPublisher: AnyCancellable?
     
     var body: some View {
         NavigationStack {
@@ -22,16 +29,40 @@ struct SendCryptoSelectReceiverView: View {
                     .listRowSeparator(.hidden)
                 userWalletsSection()
                     .listRowSeparator(.hidden)
+                followingsSection()
+                    .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
-                .navigationTitle(String.Constants.send.localized())
-                .navigationBarTitleDisplayMode(.inline)
+            .animation(.default, value: UUID())
+            .navigationTitle(String.Constants.send.localized())
+            .navigationBarTitleDisplayMode(.inline)
+            .trackAppearanceAnalytics(analyticsLogger: self)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    closeButton()
+                }
+            }
+            .task {
+                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
+                    .receive(on: DispatchQueue.main)
+                    .sink { relationshipDetails in
+                        followingList = relationshipDetails.socialDetails?.getFollowersListFor(relationshipType: .following) ?? []
+                    }
+            }
         }
     }
 }
 
 // MARK: - Private methods
 private extension SendCryptoSelectReceiverView {
+    @ViewBuilder
+    func closeButton() -> some View {
+        CloseButtonView {
+            logButtonPressedAnalyticEvents(button: .close)
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
     @ViewBuilder
     func inputFieldView() -> some View {
         UDTextFieldView(text: $inputText,
@@ -69,12 +100,7 @@ private extension SendCryptoSelectReceiverView {
                 selectableUserWalletView(wallet: wallet)
             }
         } header: {
-            HStack(spacing: 8) {
-                Text(String.Constants.yourWallets.localized())
-                    .font(.currentFont(size: 14, weight: .medium))
-                    .foregroundStyle(Color.foregroundSecondary)
-                HomeExploreSeparatorView()
-            }
+            sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
         }
     }
     
@@ -84,6 +110,36 @@ private extension SendCryptoSelectReceiverView {
             SendCryptoSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
             
+        }
+    }
+    
+    @ViewBuilder
+    func followingsSection() -> some View {
+        Section {
+            ForEach(followingList, id: \.self) { following in
+                selectableFollowingView(following: following)
+            }
+        } header: {
+            sectionHeaderViewWith(title: String.Constants.following.localized())
+        }
+    }
+    
+    @ViewBuilder
+    func selectableFollowingView(following: DomainName) -> some View {
+        selectableRowView {
+            SendCryptoSelectReceiverFollowingRowView(domainName: following)
+        } callback: {
+            
+        }
+    }
+    
+    @ViewBuilder
+    func sectionHeaderViewWith(title: String) -> some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.currentFont(size: 14, weight: .medium))
+                .foregroundStyle(Color.foregroundSecondary)
+            HomeExploreSeparatorView()
         }
     }
     
@@ -101,5 +157,5 @@ private extension SendCryptoSelectReceiverView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverView(sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
+    SendCryptoSelectReceiverView(viewModel: SendCryptoViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
 }
