@@ -8,13 +8,13 @@
 import SwiftUI
 import Combine
 
-struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
+struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     
     
     @Environment(\.domainProfilesService) var domainProfilesService
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var viewModel: SendCryptoViewModel
+    @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
 
 
@@ -53,7 +53,7 @@ struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
 }
 
 // MARK: - Private methods
-private extension SendCryptoSelectReceiverView {
+private extension SendCryptoAssetSelectReceiverView {
     @ViewBuilder
     func closeButton() -> some View {
         CloseButtonView {
@@ -106,7 +106,7 @@ private extension SendCryptoSelectReceiverView {
     @ViewBuilder
     func selectableUserWalletView(wallet: WalletEntity) -> some View {
         selectableRowView {
-            SendCryptoSelectReceiverWalletRowView(wallet: wallet)
+            SendCryptoAssetSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
             
         }
@@ -126,7 +126,7 @@ private extension SendCryptoSelectReceiverView {
     @ViewBuilder
     func selectableFollowingView(following: DomainName) -> some View {
         selectableRowView {
-            SendCryptoSelectReceiverFollowingRowView(domainName: following)
+            SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
             
         }
@@ -156,6 +156,6 @@ private extension SendCryptoSelectReceiverView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverView()
+    SendCryptoAssetSelectReceiverView()
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

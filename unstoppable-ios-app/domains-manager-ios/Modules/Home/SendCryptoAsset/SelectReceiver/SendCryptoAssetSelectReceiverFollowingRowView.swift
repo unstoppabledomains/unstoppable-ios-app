@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SendCryptoSelectReceiverFollowingRowView: View {
+struct SendCryptoAssetSelectReceiverFollowingRowView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
     @Environment(\.domainProfilesService) private var domainProfilesService
@@ -26,7 +26,7 @@ struct SendCryptoSelectReceiverFollowingRowView: View {
 }
 
 // MARK: - Private methods
-private extension SendCryptoSelectReceiverFollowingRowView {
+private extension SendCryptoAssetSelectReceiverFollowingRowView {
     func onAppear() {
         loadProfileFor(domainName: domainName)
     }
@@ -66,7 +66,7 @@ private extension SendCryptoSelectReceiverFollowingRowView {
 }
 
 // MARK: - Private methods
-private extension SendCryptoSelectReceiverFollowingRowView {
+private extension SendCryptoAssetSelectReceiverFollowingRowView {
     @ViewBuilder
     func contentView() -> some View {
         HStack(spacing: 16) {
@@ -100,5 +100,5 @@ private extension SendCryptoSelectReceiverFollowingRowView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverFollowingRowView(domainName: "oleg.x")
+    SendCryptoAssetSelectReceiverFollowingRowView(domainName: "oleg.x")
 }

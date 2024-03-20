@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SendCryptoSelectReceiverWalletRowView: View {
+struct SendCryptoAssetSelectReceiverWalletRowView: View {
     
     @Environment(\.imageLoadingService) private var imageLoadingService
 
@@ -27,7 +27,7 @@ struct SendCryptoSelectReceiverWalletRowView: View {
 }
 
 // MARK: - Private methods
-private extension SendCryptoSelectReceiverWalletRowView {
+private extension SendCryptoAssetSelectReceiverWalletRowView {
     func onAppear() {
         guard let rrDomain = wallet.rrDomain else {
             domainAvatarImage = nil
@@ -69,5 +69,5 @@ private extension SendCryptoSelectReceiverWalletRowView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverWalletRowView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
+    SendCryptoAssetSelectReceiverWalletRowView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }

@@ -1,5 +1,5 @@
 //
-//  SendCryptoViewModel.swift
+//  SendCryptoAssetViewModel.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 20.03.2024.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-final class SendCryptoViewModel: ObservableObject {
+final class SendCryptoAssetViewModel: ObservableObject {
         
     @Published var sourceWallet: WalletEntity
     @Published var navigationState: NavigationStateManager?
     
-    @Published var navPath: [SendCryptoNavigationDestination] = []
+    @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
     
-    init(initialData: SendCryptoInitialData) {
+    init(initialData: SendCryptoAsset.InitialData) {
         self.sourceWallet = initialData.sourceWallet
     }
     

@@ -10,8 +10,8 @@ import UIKit
 extension MockEntitiesFabric {
     enum SendCrypto {
         
-        static func mockViewModel() -> SendCryptoViewModel {
-            SendCryptoViewModel(initialData: .init(sourceWallet: Wallet.mockEntities()[0]))
+        static func mockViewModel() -> SendCryptoAssetViewModel {
+            SendCryptoAssetViewModel(initialData: .init(sourceWallet: Wallet.mockEntities()[0]))
         }
         
     }
