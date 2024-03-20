@@ -9,14 +9,26 @@ import SwiftUI
 
 struct SelectTokenAssetAmountToSendView: View {
     
-    @State private var interpreter = NumberPadInputInterpreter()
-
     let token: BalanceTokenUIDescription
     
+    @State private var interpreter = NumberPadInputInterpreter()
+    
     var body: some View {
-        UDNumberPadView(inputCallback: { inputType in
-            interpreter.addInput(inputType)
-        })
+        VStack {
+            inputValueView()
+            UDNumberPadView(inputCallback: { inputType in
+                interpreter.addInput(inputType)
+            })
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension SelectTokenAssetAmountToSendView {
+    @ViewBuilder
+    func inputValueView() -> some View {
+        Text(interpreter.getInput())
+            .font(.currentFont(size: 56, weight: .bold))
     }
 }
 

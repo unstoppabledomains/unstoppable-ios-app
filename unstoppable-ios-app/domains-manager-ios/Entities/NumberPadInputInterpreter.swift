@@ -13,6 +13,10 @@ struct NumberPadInputInterpreter {
     mutating func addInput(_ inputType: UDNumberButtonView.InputType) {
         switch inputType {
         case .number(let num):
+            if num == 0,
+               input == "0" {
+                return 
+            }
             input.append(String(num))
         case .dot:
             if !isContainsDot() {

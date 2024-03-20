@@ -17,66 +17,66 @@ final class NumberPadInputInterpreterTests: BaseTestClass {
     }
     
     func testInitialValue() {
-        XCTAssert(interpreter.getInput() == "0")
-        XCTAssert(interpreter.getInterpretedNumber() == 0)
+        XCTAssertEqual(interpreter.getInput(), "0")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
     }
     
     func testEraseEmpty() {
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "0")
-        XCTAssert(interpreter.getInterpretedNumber() == 0)
+        XCTAssertEqual(interpreter.getInput(), "0")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
     }
     
     func testAddingInput() {
         interpreter.addInput(.number(1))
-        XCTAssert(interpreter.getInput() == "1")
-        XCTAssert(interpreter.getInterpretedNumber() == 1)
+        XCTAssertEqual(interpreter.getInput(), "1")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 1)
         
         interpreter.addInput(.number(2))
-        XCTAssert(interpreter.getInput() == "12")
-        XCTAssert(interpreter.getInterpretedNumber() == 12)
+        XCTAssertEqual(interpreter.getInput(), "12")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12)
         
         interpreter.addInput(.dot)
-        XCTAssert(interpreter.getInput() == "12.")
-        XCTAssert(interpreter.getInterpretedNumber() == 12)
+        XCTAssertEqual(interpreter.getInput(), "12.")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12)
         
         interpreter.addInput(.number(4))
-        XCTAssert(interpreter.getInput() == "12.4")
-        XCTAssert(interpreter.getInterpretedNumber() == 12.4)
+        XCTAssertEqual(interpreter.getInput(), "12.4")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12.4)
         
         interpreter.addInput(.number(5))
-        XCTAssert(interpreter.getInput() == "12.45")
-        XCTAssert(interpreter.getInterpretedNumber() == 12.45)
+        XCTAssertEqual(interpreter.getInput(), "12.45")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12.45)
         
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "12.4")
-        XCTAssert(interpreter.getInterpretedNumber() == 12.4)
+        XCTAssertEqual(interpreter.getInput(), "12.4")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12.4)
         
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "12.")
-        XCTAssert(interpreter.getInterpretedNumber() == 12)
+        XCTAssertEqual(interpreter.getInput(), "12.")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12)
         
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "12")
-        XCTAssert(interpreter.getInterpretedNumber() == 12)
+        XCTAssertEqual(interpreter.getInput(), "12")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 12)
         
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "1")
-        XCTAssert(interpreter.getInterpretedNumber() == 1)
+        XCTAssertEqual(interpreter.getInput(), "1")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 1)
         
         interpreter.addInput(.erase)
-        XCTAssert(interpreter.getInput() == "0")
-        XCTAssert(interpreter.getInterpretedNumber() == 0)
+        XCTAssertEqual(interpreter.getInput(), "0")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
     }
     
     func testDoubleDotEntered() {
         interpreter.addInput(.dot)
-        XCTAssert(interpreter.getInput() == "0.")
-        XCTAssert(interpreter.getInterpretedNumber() == 0)
+        XCTAssertEqual(interpreter.getInput(), "0.")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
         
         interpreter.addInput(.dot)
-        XCTAssert(interpreter.getInput() == "0.")
-        XCTAssert(interpreter.getInterpretedNumber() == 0)
+        XCTAssertEqual(interpreter.getInput(), "0.")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
     }
     
     func testSecondDotEnteredInTheMiddle() {
@@ -84,8 +84,19 @@ final class NumberPadInputInterpreterTests: BaseTestClass {
         interpreter.addInput(.dot)
         interpreter.addInput(.number(2))
         interpreter.addInput(.dot)
-        XCTAssert(interpreter.getInput() == "1.2")
-        XCTAssert(interpreter.getInterpretedNumber() == 1.2)
+        XCTAssertEqual(interpreter.getInput(), "1.2")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 1.2)
+    }
+    
+    func testZerosInput() {
+        interpreter.addInput(.number(0))
+        XCTAssertEqual(interpreter.getInput(), "0")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
+        interpreter.addInput(.number(0))
+        interpreter.addInput(.number(0))
+        interpreter.addInput(.number(0))
+        XCTAssertEqual(interpreter.getInput(), "0")
+        XCTAssertEqual(interpreter.getInterpretedNumber(), 0)
     }
 }
 
