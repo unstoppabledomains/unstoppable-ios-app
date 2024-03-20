@@ -68,8 +68,18 @@ private extension SelectCryptoAssetToSendView {
     @ViewBuilder
     func tokensListView() -> some View {
         ForEach(tokens) { token in
+            selectableTokenRow(token)
+        }
+    }
+    
+    @ViewBuilder
+    func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+        } label: {
             SelectCryptoAssetToSendTokenView(token: token)
         }
+        .buttonStyle(.plain)
     }
     
     @ViewBuilder
