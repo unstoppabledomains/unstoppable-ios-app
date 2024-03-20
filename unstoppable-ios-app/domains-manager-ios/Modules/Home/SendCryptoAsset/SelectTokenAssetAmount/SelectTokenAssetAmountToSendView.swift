@@ -55,7 +55,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdInputString: String {
-        "$\(interpreter.getInput())"
+        usdString(interpreter.getInput())
     }
     
     @ViewBuilder
@@ -117,7 +117,11 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdConvertedString: String {
-        "$\(interpreter.getInput())"
+        usdString(interpreter.getInput())
+    }
+    
+    func usdString(_ str: String) -> String {
+        "$\(str)"
     }
     
     @ViewBuilder
