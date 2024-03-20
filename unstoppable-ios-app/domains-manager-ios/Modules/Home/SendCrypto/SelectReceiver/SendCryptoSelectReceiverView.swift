@@ -13,42 +13,41 @@ struct SendCryptoSelectReceiverView: View, ViewAnalyticsLogger {
     
     @Environment(\.domainProfilesService) var domainProfilesService
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject var viewModel: SendCryptoViewModel
+    
+    @EnvironmentObject var viewModel: SendCryptoViewModel
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
+
 
     @State private var followingList: [DomainName] = []
     @State private var inputText: String = ""
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
     
     var body: some View {
-        NavigationStack {
-            List {
-                inputFieldView()
-                    .listRowSeparator(.hidden)
-                scanQRView()
-                    .listRowSeparator(.hidden)
-                userWalletsSection()
-                    .listRowSeparator(.hidden)
-                followingsSection()
-                    .listRowSeparator(.hidden)
+        List {
+            inputFieldView()
+                .listRowSeparator(.hidden)
+            scanQRView()
+                .listRowSeparator(.hidden)
+            userWalletsSection()
+                .listRowSeparator(.hidden)
+            followingsSection()
+                .listRowSeparator(.hidden)
+        }
+        .listStyle(.plain)
+        .animation(.default, value: UUID())
+        .navigationTitle(String.Constants.send.localized())
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                closeButton()
             }
-            .listStyle(.plain)
-            .animation(.default, value: UUID())
-            .navigationTitle(String.Constants.send.localized())
-            .navigationBarTitleDisplayMode(.inline)
-            .trackAppearanceAnalytics(analyticsLogger: self)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    closeButton()
+        }
+        .task {
+            socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
+                .receive(on: DispatchQueue.main)
+                .sink { relationshipDetails in
+                    followingList = relationshipDetails.socialDetails?.getFollowersListFor(relationshipType: .following) ?? []
                 }
-            }
-            .task {
-                socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
-                    .receive(on: DispatchQueue.main)
-                    .sink { relationshipDetails in
-                        followingList = relationshipDetails.socialDetails?.getFollowersListFor(relationshipType: .following) ?? []
-                    }
-            }
         }
     }
 }
@@ -89,7 +88,7 @@ private extension SendCryptoSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         } callback: {
-            
+            viewModel.navPath.append(.selectAssetToSend)
         }
     }
     
@@ -157,5 +156,6 @@ private extension SendCryptoSelectReceiverView {
 }
 
 #Preview {
-    SendCryptoSelectReceiverView(viewModel: SendCryptoViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
+    SendCryptoSelectReceiverView()
+        .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

@@ -10,6 +10,9 @@ import Foundation
 final class SendCryptoViewModel: ObservableObject {
         
     @Published var sourceWallet: WalletEntity
+    @Published var navigationState: NavigationStateManager?
+    
+    @Published var navPath: [SendCryptoNavigationDestination] = []
     
     init(initialData: SendCryptoInitialData) {
         self.sourceWallet = initialData.sourceWallet

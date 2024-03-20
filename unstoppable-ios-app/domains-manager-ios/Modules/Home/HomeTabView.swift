@@ -72,7 +72,7 @@ struct HomeTabView: View {
                 .presentationDetents([.large])
         })
         .sheet(item: $router.sendCryptoInitialData, content: { initialData in
-            SendCryptoSelectReceiverView(viewModel: SendCryptoViewModel(initialData: initialData))
+            SendCryptoRootView(viewModel: SendCryptoViewModel(initialData: initialData))
         })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
