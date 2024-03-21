@@ -44,7 +44,7 @@ extension SendCryptoAsset {
         case globalProfileSelected(SearchDomainProfile)
         case globalWalletAddressSelected(HexAddress)
         
-        case userTokenSelected(BalanceTokenUIDescription)
+        case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(BalanceTokenUIDescription)
         
         case userDomainSelected(DomainDisplayInfo)
@@ -88,7 +88,10 @@ extension SendCryptoAsset {
 }
 
 extension SendCryptoAsset {
-//    struct SelectAssetToSend
+    struct SelectTokenAmountToSendData: Hashable {
+        let receiver: AssetReceiver
+        let token: BalanceTokenUIDescription
+    }
 }
 
 extension SendCryptoAsset {

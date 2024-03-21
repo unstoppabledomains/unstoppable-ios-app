@@ -11,7 +11,8 @@ struct SelectTokenAssetAmountToSendView: View {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
-    let token: BalanceTokenUIDescription
+    let data: SendCryptoAsset.SelectTokenAmountToSendData
+    private var token: BalanceTokenUIDescription { data.token }
 
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
@@ -219,7 +220,8 @@ private extension SelectTokenAssetAmountToSendView {
 
 #Preview {
     NavigationStack {
-        SelectTokenAssetAmountToSendView(token: MockEntitiesFabric.Tokens.mockUIToken())
+        SelectTokenAssetAmountToSendView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                                      token: MockEntitiesFabric.Tokens.mockUIToken()))
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

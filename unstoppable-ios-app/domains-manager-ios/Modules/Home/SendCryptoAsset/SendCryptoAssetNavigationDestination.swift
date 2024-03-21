@@ -10,7 +10,7 @@ import SwiftUI
 extension SendCryptoAsset {
     enum NavigationDestination: Hashable {
         case selectAssetToSend(AssetReceiver)
-        case selectTokenAmountToSend(BalanceTokenUIDescription)
+        case selectTokenAmountToSend(SelectTokenAmountToSendData)
         case confirmSendToken(BalanceTokenUIDescription)
     }
     
@@ -21,8 +21,8 @@ extension SendCryptoAsset {
             switch navigationDestination {
             case .selectAssetToSend(let receiver):
                 SelectCryptoAssetToSendView(receiver: receiver)
-            case .selectTokenAmountToSend(let token):
-                SelectTokenAssetAmountToSendView(token: token)
+            case .selectTokenAmountToSend(let data):
+                SelectTokenAssetAmountToSendView(data: data)
             case .confirmSendToken(let token):
                 ConfirmSendTokenView(token: token)
             }

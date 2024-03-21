@@ -31,8 +31,8 @@ final class SendCryptoAssetViewModel: ObservableObject {
         case .globalWalletAddressSelected(let address):
             navPath.append(.selectAssetToSend(.init(walletAddress: address)))
             
-        case .userTokenSelected(let token):
-            navPath.append(.selectTokenAmountToSend(token))
+        case .userTokenToSendSelected(let data):
+            navPath.append(.selectTokenAmountToSend(data))
         case .userTokenValueSelected(let token):
             navPath.append(.confirmSendToken(token))
             

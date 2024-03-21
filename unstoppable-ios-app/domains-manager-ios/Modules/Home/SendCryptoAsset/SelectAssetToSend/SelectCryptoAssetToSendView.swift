@@ -79,7 +79,8 @@ private extension SelectCryptoAssetToSendView {
     func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            viewModel.handleAction(.userTokenSelected(token))
+            viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
+                                                                  token: token)))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
         }
