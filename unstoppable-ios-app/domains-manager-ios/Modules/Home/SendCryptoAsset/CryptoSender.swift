@@ -11,14 +11,19 @@ import BigInt
 
 
 class DemoCryptoSender: CryptoSenderProtocol {
-    static let instance: DemoCryptoSender = DemoCryptoSender()
-    private init() {}
-
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws -> String {
+    let wallet: UDWallet
+    
+    required init(wallet: UDWallet) {
+        self.wallet = wallet
+    }
+    
+    func sendCrypto(token: String, amount: Double, toAddress: HexAddress, chain: BlockchainType) async throws -> String {
 
         
         // create TX
-        
+        let tx = try await createNativeSendTransaction(fromAddress: self.wallet.address,
+                                                       toAddress: toAddress,
+                                                       chainId: chain.supportedChainId(isTestNet: true))
         
         // send Tx
         
@@ -73,7 +78,7 @@ class DemoCryptoSender: CryptoSenderProtocol {
 
     }
     
-    private func createTransaction(fromAddress: HexAddress,
+    private func createNativeSendTransaction(fromAddress: HexAddress,
                                    toAddress: HexAddress,
                                    chainId: Int) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
@@ -81,17 +86,24 @@ class DemoCryptoSender: CryptoSenderProtocol {
         let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
-        var transaction = EthereumTransaction(nonce: nonce,
+        let transaction = EthereumTransaction(nonce: nonce,
                                               gasPrice: gasPrice,
+                                              gas: try EthereumQuantity(21000.gwei),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(ethereumValue: 1))
+                                              value: try EthereumQuantity(1.gwei)
+        )
         
         
         // TODO:
         
         
         return transaction
+    }
+    
+    private func send(transaction: EthereumTransaction, chainId: Int) async throws -> String {
+        // TODO: extract from WC2
+        return ""
     }
     
     

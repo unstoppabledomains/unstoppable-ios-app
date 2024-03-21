@@ -8,6 +8,7 @@
 import Foundation
 
 protocol CryptoSenderProtocol {
+    init(wallet: UDWallet)
     
     /// Indicates if Sender supports sending of a token on the chain
     /// - Parameters:
@@ -23,7 +24,7 @@ protocol CryptoSenderProtocol {
     ///   - address: address of the receiver
     ///   - chain: chain of the transaction
     /// - Returns: TX Hash if success
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws -> String
+    func sendCrypto(token: String, amount: Double, toAddress: HexAddress, chain: BlockchainType) async throws -> String
 }
 
 
