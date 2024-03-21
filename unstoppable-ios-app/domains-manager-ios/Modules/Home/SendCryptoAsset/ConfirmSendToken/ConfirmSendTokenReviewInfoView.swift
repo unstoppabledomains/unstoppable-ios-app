@@ -112,13 +112,13 @@ private extension ConfirmSendTokenReviewInfoView {
                           icon: .ethereumIcon,
                           value: "Ethereum")),
          .infoValue(.init(title: "Speed",
-                          icon: .ethereumIcon,
+                          icon: .chevronGrabberVertical,
                           iconColor: .foregroundSecondary,
                           value: "Fast",
                           valueColor: .foregroundWarning,
                           subValue: "~ 4 sec")),
          .infoValue(.init(title: "Fee estimate",
-                          icon: .ethereumIcon,
+                          icon: .tildaIcon,
                           value: "$4.20")),
          .info("Review the above before confirming.\nOnce made, your transaction is irreversible")]
     }
