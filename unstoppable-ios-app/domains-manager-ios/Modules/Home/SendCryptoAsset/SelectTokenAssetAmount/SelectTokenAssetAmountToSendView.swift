@@ -66,7 +66,10 @@ private extension SelectTokenAssetAmountToSendView {
     
     @ViewBuilder
     func tokenInputValue() -> some View {
-        primaryInputAmountText(interpreter.getInput())
+        HStack(spacing: 12) {
+            BalanceTokenIconsView(token: token)
+            primaryInputAmountText(interpreter.getInput())
+        }
     }
     
     @ViewBuilder
@@ -142,7 +145,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
 }
 
-// MARK: - Private methods
+// MARK: - Token info
 private extension SelectTokenAssetAmountToSendView {
     @ViewBuilder
     func tokenInfoView() -> some View {
