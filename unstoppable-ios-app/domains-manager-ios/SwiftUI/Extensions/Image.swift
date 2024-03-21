@@ -93,6 +93,7 @@ extension Image {
     static let arrowDown = Image("arrowDown")
     static let paperPlaneTopRight = Image("paperPlaneTopRight")
     static let arrowsTopBottom = Image("arrowsTopBottom")
+    static let confirmSendTokenGrid = Image("confirmSendTokenGrid")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

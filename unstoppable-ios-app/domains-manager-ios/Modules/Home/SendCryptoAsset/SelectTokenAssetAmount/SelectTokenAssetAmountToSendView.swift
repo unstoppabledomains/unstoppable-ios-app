@@ -9,8 +9,10 @@ import SwiftUI
 
 struct SelectTokenAssetAmountToSendView: View {
     
+    @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+
     let token: BalanceTokenUIDescription
-    
+
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
     
@@ -209,12 +211,15 @@ private extension SelectTokenAssetAmountToSendView {
     func confirmButton() -> some View {
         UDButtonView(text: String.Constants.review.localized(),
                      style: .large(.raisedPrimary)) {
-            
+            viewModel.handleAction(.userTokenValueSelected(token))
         }
                      .disabled(interpreter.getInterpretedNumber() <= 0)
     }
 }
 
 #Preview {
-    SelectTokenAssetAmountToSendView(token: MockEntitiesFabric.Tokens.mockUIToken())
+    NavigationStack {
+        SelectTokenAssetAmountToSendView(token: MockEntitiesFabric.Tokens.mockUIToken())
+    }
+        .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

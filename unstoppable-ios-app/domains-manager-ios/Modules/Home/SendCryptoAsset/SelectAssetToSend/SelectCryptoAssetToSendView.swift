@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct SelectCryptoAssetToSendView: View {
-    
-    
+        
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens

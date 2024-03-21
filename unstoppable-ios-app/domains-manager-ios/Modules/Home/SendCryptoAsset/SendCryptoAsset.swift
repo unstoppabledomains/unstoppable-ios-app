@@ -45,6 +45,8 @@ extension SendCryptoAsset {
         case globalWalletAddressSelected(HexAddress)
         
         case userTokenSelected(BalanceTokenUIDescription)
+        case userTokenValueSelected(BalanceTokenUIDescription)
+        
         case userDomainSelected(DomainDisplayInfo)
     }
 }
