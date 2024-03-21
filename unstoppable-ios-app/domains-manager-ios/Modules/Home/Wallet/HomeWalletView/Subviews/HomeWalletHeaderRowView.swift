@@ -172,7 +172,7 @@ private extension HomeWalletHeaderRowView {
     @ViewBuilder
     func totalBalanceView() -> some View {
         HStack(spacing: 8) {
-            Text(BalanceStringFormatter.tokensBalanceString(wallet.totalBalance))
+            Text(BalanceStringFormatter.tokensBalanceUSDString(wallet.totalBalance))
                 .titleText()
             receiveButtonView()
         }

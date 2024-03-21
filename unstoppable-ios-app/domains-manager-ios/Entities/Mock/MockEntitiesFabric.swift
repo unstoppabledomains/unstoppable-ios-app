@@ -225,7 +225,7 @@ extension MockEntitiesFabric {
                                       name: "Ethereum",
                                       balance: 1,
                                       balanceUsd: 1,
-                                      marketUsd: 1)
+                                      marketUsd: 3900.34)
         }
     }
 }

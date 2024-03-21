@@ -83,11 +83,11 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
 // MARK: - Open methods
 extension BalanceTokenUIDescription {
     var formattedBalanceWithSymbol: String {
-        "\(balance.formatted(toMaxNumberAfterComa: 2)) \(symbol)"
+        BalanceStringFormatter.tokenBalanceString(self)
     }
     
     var formattedBalanceUSD: String {
-        "$\(balanceUsd.formatted(toMaxNumberAfterComa: 2))"
+        BalanceStringFormatter.tokensBalanceUSDString(balanceUsd)
     }
 }
 

@@ -109,5 +109,19 @@ extension SendCryptoAsset {
     enum TokenAssetAmountInput: Hashable {
         case usdAmount(Double)
         case tokenAmount(Double)
+        
+        func valueOf(type: TokenAssetAmountInputType,
+                     for token: BalanceTokenUIDescription) -> Double {
+            switch (self, type) {
+                case (.usdAmount(let usdAmount), .usdAmount):
+                    return usdAmount
+                case (.tokenAmount(let tokenAmount), .tokenAmount):
+                    return tokenAmount
+                case (.usdAmount(let usdAmount), .tokenAmount):
+                    return usdAmount / (token.marketUsd ?? 1)
+                case (.tokenAmount(let tokenAmount), .usdAmount):
+                    return tokenAmount * (token.marketUsd ?? 1)
+            }
+        }
     }
 }

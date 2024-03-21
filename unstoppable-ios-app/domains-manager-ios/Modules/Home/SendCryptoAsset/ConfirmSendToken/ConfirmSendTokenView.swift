@@ -87,12 +87,18 @@ private extension ConfirmSendTokenView {
         }
     
     var tilesVerticalPadding: CGFloat { isIPSE ? 8 : 16 }
+    var sendingUSDAmount: Double { data.amount.valueOf(type: .usdAmount,
+                                                      for: token) }
+    var sendingTokenAmount: Double { data.amount.valueOf(type: .tokenAmount,
+                                                      for: token) }
+    
     
     @ViewBuilder
     func tokenSendingValuesView() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            primaryTextView(token.formattedBalanceUSD)
-            secondaryTextView(token.formattedBalanceWithSymbol)
+            primaryTextView(BalanceStringFormatter.tokensBalanceUSDString(sendingUSDAmount))
+            secondaryTextView(BalanceStringFormatter.tokenFullBalanceString(balance: sendingTokenAmount,
+                                                                        symbol: token.symbol))
         }
         .lineLimit(1)
         .minimumScaleFactor(0.5)
@@ -189,7 +195,7 @@ private extension ConfirmSendTokenView {
     NavigationStack {
         ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
                                          token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                         amount: .usdAmount(1)))
+                                         amount: .usdAmount(39.3)))
             .navigationBarTitleDisplayMode(.inline)
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())

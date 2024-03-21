@@ -9,8 +9,23 @@ import Foundation
 
 struct BalanceStringFormatter {
     
-    static func tokensBalanceString(_ balance: Double) -> String {
-        "$\(balance.formatted(toMaxNumberAfterComa: 2))"
+    static func tokenBalanceString(_ token: BalanceTokenUIDescription) -> String {
+        tokenBalanceString(balance: token.balance,
+                           symbol: token.symbol)
+    }
+    
+    static func tokenBalanceString(balance: Double, 
+                                   symbol: String) -> String {
+        "\(balance.formattedBalance()) \(symbol)"
+    }
+    
+    static func tokenFullBalanceString(balance: Double,
+                                       symbol: String) -> String {
+        "\(balance.formatted(toMaxNumberAfterComa: 8)) \(symbol)"
+    }
+    
+    static func tokensBalanceUSDString(_ balance: Double) -> String {
+        "$\(balance.formattedBalance())"
     }
     
 }

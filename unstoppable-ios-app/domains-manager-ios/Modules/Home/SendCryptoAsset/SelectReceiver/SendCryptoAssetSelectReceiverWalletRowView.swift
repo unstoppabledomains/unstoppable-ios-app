@@ -45,7 +45,7 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
     }
     
     var subtitle: String {
-        BalanceStringFormatter.tokensBalanceString(wallet.totalBalance)
+        BalanceStringFormatter.tokensBalanceUSDString(wallet.totalBalance)
     }
     
     func imageTypeForWallet() -> UDListItemView.ImageType {

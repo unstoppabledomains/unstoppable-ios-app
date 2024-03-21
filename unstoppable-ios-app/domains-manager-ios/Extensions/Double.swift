@@ -28,4 +28,8 @@ extension Double {
     func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int) -> String {
         String(format: "%.\(maxNumberAfterComa)f", self)
     }
+    
+    func formattedBalance() -> String {
+        formatted(toMaxNumberAfterComa: 2)
+    }
 }
