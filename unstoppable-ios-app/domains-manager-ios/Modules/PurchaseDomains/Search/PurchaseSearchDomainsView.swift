@@ -477,19 +477,3 @@ private extension PurchaseSearchDomainsView {
     PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
         .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }
-
-public final class DebounceObject: ObservableObject {
-    @Published var text: String = ""
-    @Published var debouncedText: String = ""
-    private var bag = Set<AnyCancellable>()
-    
-    public init(dueTime: TimeInterval = 0.5) {
-        $text
-            .removeDuplicates()
-            .debounce(for: .seconds(dueTime), scheduler: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] value in
-                self?.debouncedText = value
-            })
-            .store(in: &bag)
-    }
-}

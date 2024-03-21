@@ -11,9 +11,18 @@ final class DomainsGlobalSearchService {
     typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
     private var currentTask: SearchProfilesTask?
     
+    func searchForGlobalProfilesExcludingUsers(with searchKey: String,
+                                               walletsDataService: WalletsDataServiceProtocol) async throws -> [SearchDomainProfile] {
+        let profiles = try await searchForGlobalProfiles(with: searchKey)
+        let userDomains = walletsDataService.wallets.combinedDomains()
+        let userDomainsNames = Set(userDomains.map({ $0.name }))
+        return profiles.filter({ !userDomainsNames.contains($0.name) && $0.ownerAddress != nil })
+    }
+    
     func searchForGlobalProfiles(with searchKey: String) async throws -> [SearchDomainProfile] {
         // Cancel previous search task if it exists
         currentTask?.cancel()
+        let searchKey = searchKey.trimmedSpaces.lowercased()
         
         let task: SearchProfilesTask = Task.detached {
             do {

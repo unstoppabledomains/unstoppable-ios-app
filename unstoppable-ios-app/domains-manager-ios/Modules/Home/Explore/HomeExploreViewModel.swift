@@ -334,9 +334,8 @@ private extension HomeExploreViewModel {
         isLoadingGlobalProfiles = true
         Task {
             do {
-                let profiles = try await searchService.searchForGlobalProfiles(with: getLowercasedTrimmedSearchKey())
-                let userDomains = Set(self.userDomains.map({ $0.name }))
-                self.globalProfiles = profiles.filter({ !userDomains.contains($0.name) && $0.ownerAddress != nil })
+                self.globalProfiles = try await searchService.searchForGlobalProfilesExcludingUsers(with: searchKey,
+                                                                                                    walletsDataService: walletsDataService)
             }
             isLoadingGlobalProfiles = false
         }
