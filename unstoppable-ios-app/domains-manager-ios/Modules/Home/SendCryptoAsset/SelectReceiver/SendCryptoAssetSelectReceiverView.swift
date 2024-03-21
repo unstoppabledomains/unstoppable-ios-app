@@ -159,12 +159,31 @@ private extension SendCryptoAssetSelectReceiverView {
             .listRowSeparator(.hidden)
     }
     
+    enum GlobalSearchResult {
+        case profiles([SearchDomainProfile])
+        case fullAddress(HexAddress)
+    }
+    
+    func getCurrentGlobalSearchResult() -> GlobalSearchResult? {
+        if !globalProfiles.isEmpty {
+            return .profiles(globalProfiles)
+        } else if inputText.isValidAddress() {
+            return .fullAddress(inputText)
+        }
+        return nil
+    }
+    
     @ViewBuilder
     func globalSearchResultOrEmptyView() -> some View {
-        if !globalProfiles.isEmpty {
+        if let result = getCurrentGlobalSearchResult() {
             Section {
-                ForEach(globalProfiles, id: \.self) { profile in
-                    selectableGlobalProfileView(profile: profile)
+                switch result {
+                case .profiles(let globalProfiles):
+                    ForEach(globalProfiles, id: \.self) { profile in
+                        selectableGlobalProfileView(profile: profile)
+                    }
+                case .fullAddress(let address):
+                    selectableGlobalAddressRowView(address)
                 }
             } header: {
                 sectionHeaderViewWith(title: String.Constants.results.localized())
@@ -172,6 +191,25 @@ private extension SendCryptoAssetSelectReceiverView {
         } else {
             HomeExploreEmptySearchResultView()
         }
+    }
+    
+    @ViewBuilder
+    func selectableGlobalAddressRowView(_ address: HexAddress) -> some View {
+        selectableRowView({
+            UDListItemView(title: address.walletAddressTruncated,
+                           titleColor: .foregroundDefault,
+                           subtitle: nil,
+                           subtitleStyle: .default,
+                           value: nil,
+                           imageType: .image(.walletExternalIcon),
+                           imageStyle: .centred(offset: .init(8),
+                                                foreground: .foregroundDefault,
+                                                background: .backgroundMuted2,
+                                                bordered: true),
+                           rightViewStyle: nil)
+        }, callback: {
+            viewModel.handleAction(.globalWalletAddressSelected(address))
+        })
     }
     
     @ViewBuilder
