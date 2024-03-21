@@ -825,10 +825,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         var txBuilding = transaction
         
         if txBuilding.gasPrice == nil {
-            guard let gasPrice = try await fetchGasPrice(chainId: chainId) else {
-                throw WalletConnectRequestError.failedFetchGas
-            }
-            txBuilding.gasPrice = EthereumQuantity(quantity: gasPrice)
+            let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
+            txBuilding.gasPrice = gasPrice
         }
                 
         txBuilding = try await ensureGasLimit(transaction: txBuilding, chainId: chainId)
@@ -838,15 +836,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             txBuilding.value = 0
         }
         return txBuilding
-    }
-    
-    private func fetchGasPrice(chainId: Int) async throws -> BigUInt? {
-        guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch gasPrice", critical: false)
-            throw WalletConnectRequestError.failedFetchGas
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
-        return BigUInt(gasPrice.droppedHexPrefix, radix: 16)
     }
     
     private func ensureGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
@@ -876,17 +865,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     
     private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async -> String? {
         guard let addressString = transaction.from?.hex() else { return nil }
-        return await fetchNonce(address: addressString, chainId: chainId)
-    }
-    
-    private func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
-        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
-                                                                     chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
-            return nil
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
-        return nonceString
+        return await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
     }
     
     private func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> BigUInt {

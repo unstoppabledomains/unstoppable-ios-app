@@ -35,7 +35,6 @@ extension CryptoSenderProtocol {
         
         // send TX to the chain
         
-        // store TX in the storage
     }
     
     private func createTX() {
@@ -44,23 +43,5 @@ extension CryptoSenderProtocol {
     
     private func sendTX() {
         // TODO:
-    }
-}
-
-// ==========================
-
-
-class DemoCryptoSender: CryptoSenderProtocol {
-    static let instance: DemoCryptoSender = DemoCryptoSender()
-    private init() {}
-    
-    @discardableResult
-    func sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) -> String {
-        // TODO:
-        return "0x"
-    }
-    
-    func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
-        return false
     }
 }
