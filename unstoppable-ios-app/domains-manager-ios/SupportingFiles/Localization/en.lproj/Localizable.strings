@@ -1054,3 +1054,7 @@ More tabs are coming in the next updates.";
 "SELECT_PULL_UP_BUY_TOKENS_TITLE" = "Buy crypto";
 "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE" = "Find and acquire new domain names";
 "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE" = "With Apple Pay or card";
+
+"REVIEW" = "Review";
+"USING_MAX" = "Using Max";
+"USE_MAX" = "Use Max";

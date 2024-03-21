@@ -46,3 +46,15 @@ extension SendCryptoAsset {
         case userDomainSelected(DomainDisplayInfo)
     }
 }
+
+extension SendCryptoAsset {
+    enum TokenAssetAmountInputType {
+        case usdAmount
+        case tokenAmount
+    }
+    
+    enum TokenAssetAmountInput {
+        case usdAmount(Double)
+        case tokenAmount(Double)
+    }
+}

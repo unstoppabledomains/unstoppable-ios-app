@@ -68,7 +68,7 @@ private extension SendCryptoAssetSelectReceiverView {
     func inputFieldView() -> some View {
         UDTextFieldView(text: $inputText,
                         placeholder: String.Constants.domainOrAddress.localized(),
-                        hint: String.Constants.to.localized(),
+                        hint: String.Constants.to.localized() + ":",
                         rightViewType: .paste,
                         rightViewMode: .always,
                         autocapitalization: .never,
