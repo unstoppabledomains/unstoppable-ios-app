@@ -40,7 +40,7 @@ extension SendCryptoAsset {
     enum FlowAction {
         case scanQRSelected
         case userWalletSelected(WalletEntity)
-        case followingDomainSelected(DomainName)
+        case followingDomainSelected(DomainProfileDisplayInfo)
         case globalProfileSelected(SearchDomainProfile)
         case globalWalletAddressSelected(HexAddress)
         
@@ -49,6 +49,46 @@ extension SendCryptoAsset {
         
         case userDomainSelected(DomainDisplayInfo)
     }
+}
+
+extension SendCryptoAsset {
+    struct AssetReceiver: Hashable {
+        let walletAddress: String
+        let domainName: DomainName?
+        let pfpURL: URL?
+        
+        init(wallet: WalletEntity) {
+            self.walletAddress = wallet.address
+            self.domainName = wallet.rrDomain?.name
+            self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+        }
+        
+        init(followingDomain profile: DomainProfileDisplayInfo) {
+            self.walletAddress = profile.ownerWallet
+            self.domainName = profile.domainName
+            self.pfpURL = profile.pfpURL
+        }
+        
+        init?(globalProfile: SearchDomainProfile) {
+            guard let walletAddress = globalProfile.ownerAddress else {
+                Debugger.printFailure("Failed to create crypto asset receiver with SearchDomainProfile \(globalProfile.name)", critical: true)
+                return nil
+            }
+            self.walletAddress = walletAddress
+            self.domainName = globalProfile.name
+            self.pfpURL = globalProfile.imagePath?.asURL
+        }
+        
+        init(walletAddress: HexAddress) {
+            self.walletAddress = walletAddress
+            self.domainName = nil
+            self.pfpURL = nil
+        }
+    }
+}
+
+extension SendCryptoAsset {
+//    struct SelectAssetToSend
 }
 
 extension SendCryptoAsset {

@@ -26,7 +26,6 @@ struct SendCryptoAssetRootView: View {
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
         .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
-
     }
     
 }

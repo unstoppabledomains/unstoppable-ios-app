@@ -1237,4 +1237,8 @@ extension String {
             return self
         }
     }
+    
+    var asURL: URL? {
+        URL(string: self)
+    }
 }

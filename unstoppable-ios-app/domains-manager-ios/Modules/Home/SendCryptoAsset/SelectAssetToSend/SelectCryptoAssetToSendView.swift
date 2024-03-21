@@ -15,6 +15,8 @@ struct SelectCryptoAssetToSendView: View {
     @State private var tokens: [BalanceTokenUIDescription] = []
     @State private var domains: [DomainDisplayInfo] = []
     
+    let receiver: SendCryptoAsset.AssetReceiver
+    
     var body: some View {
         List {
             assetTypePickerView()
@@ -104,6 +106,6 @@ private extension SelectCryptoAssetToSendView {
 }
 
 #Preview {
-    SelectCryptoAssetToSendView()
+    SelectCryptoAssetToSendView(receiver: MockEntitiesFabric.SendCrypto.mockReceiver())
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

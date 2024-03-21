@@ -25,6 +25,7 @@ struct SelectCryptoAssetToSendDomainView: View {
             primaryIndicatorView()
         }
         .frame(maxWidth: .infinity)
+        .onAppear(perform: onAppear)
     }
 }
 
