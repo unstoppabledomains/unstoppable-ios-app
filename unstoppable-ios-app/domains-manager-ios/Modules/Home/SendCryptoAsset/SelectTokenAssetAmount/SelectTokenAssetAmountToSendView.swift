@@ -212,9 +212,20 @@ private extension SelectTokenAssetAmountToSendView {
     func confirmButton() -> some View {
         UDButtonView(text: String.Constants.review.localized(),
                      style: .large(.raisedPrimary)) {
-            viewModel.handleAction(.userTokenValueSelected(token))
+            viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
+                                                                 token: token,
+                                                                 amount: getCurrentInput())))
         }
                      .disabled(interpreter.getInterpretedNumber() <= 0)
+    }
+    
+    func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {
+        switch inputType {
+        case .usdAmount:
+            .usdAmount(interpreter.getInterpretedNumber())
+        case .tokenAmount:
+            .tokenAmount(interpreter.getInterpretedNumber())
+        }
     }
 }
 

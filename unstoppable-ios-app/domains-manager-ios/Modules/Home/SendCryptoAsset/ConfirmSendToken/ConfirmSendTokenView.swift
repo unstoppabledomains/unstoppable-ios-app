@@ -11,7 +11,9 @@ struct ConfirmSendTokenView: View {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
-    let token: BalanceTokenUIDescription
+    let data: SendCryptoAsset.SendTokenAssetData
+    
+    private var token: BalanceTokenUIDescription { data.token }
     
     @State private var receiverAvatar: UIImage?
 
@@ -158,7 +160,9 @@ private extension ConfirmSendTokenView {
 
 #Preview {
     NavigationStack {
-        ConfirmSendTokenView(token: MockEntitiesFabric.Tokens.mockUIToken())
+        ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                         token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                         amount: .usdAmount(1)))
             .navigationBarTitleDisplayMode(.inline)
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())

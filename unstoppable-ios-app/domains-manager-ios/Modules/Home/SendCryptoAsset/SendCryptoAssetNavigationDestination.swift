@@ -11,7 +11,7 @@ extension SendCryptoAsset {
     enum NavigationDestination: Hashable {
         case selectAssetToSend(AssetReceiver)
         case selectTokenAmountToSend(SelectTokenAmountToSendData)
-        case confirmSendToken(BalanceTokenUIDescription)
+        case confirmSendToken(SendTokenAssetData)
     }
     
     struct LinkNavigationDestination {
@@ -23,8 +23,8 @@ extension SendCryptoAsset {
                 SelectCryptoAssetToSendView(receiver: receiver)
             case .selectTokenAmountToSend(let data):
                 SelectTokenAssetAmountToSendView(data: data)
-            case .confirmSendToken(let token):
-                ConfirmSendTokenView(token: token)
+            case .confirmSendToken(let data):
+                ConfirmSendTokenView(data: data)
             }
         }
         

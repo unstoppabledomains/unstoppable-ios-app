@@ -45,7 +45,7 @@ extension SendCryptoAsset {
         case globalWalletAddressSelected(HexAddress)
         
         case userTokenToSendSelected(SelectTokenAmountToSendData)
-        case userTokenValueSelected(BalanceTokenUIDescription)
+        case userTokenValueSelected(SendTokenAssetData)
         
         case userDomainSelected(DomainDisplayInfo)
     }
@@ -92,6 +92,12 @@ extension SendCryptoAsset {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
     }
+    
+    struct SendTokenAssetData: Hashable {
+        let receiver: AssetReceiver
+        let token: BalanceTokenUIDescription
+        let amount: TokenAssetAmountInput
+    }
 }
 
 extension SendCryptoAsset {
@@ -100,7 +106,7 @@ extension SendCryptoAsset {
         case tokenAmount
     }
     
-    enum TokenAssetAmountInput {
+    enum TokenAssetAmountInput: Hashable {
         case usdAmount(Double)
         case tokenAmount(Double)
     }
