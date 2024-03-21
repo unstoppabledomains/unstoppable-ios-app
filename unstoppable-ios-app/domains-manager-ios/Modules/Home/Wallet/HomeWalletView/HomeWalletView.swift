@@ -86,7 +86,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeWalletView {
     func walletActions() -> [WalletAction] {
-        [.send, .buy, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
+        [.buy, .send, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
     }
     
     func onAppear() {
