@@ -11,7 +11,8 @@ struct ConfirmSendTokenReviewInfoView: View {
     
     private let lineWidth: CGFloat = 1
     private let sectionHeight: CGFloat = 48
-    private let numberOfSections = 5
+    
+    let token: BalanceTokenUIDescription
 
     var body: some View {
         ZStack {
@@ -109,8 +110,8 @@ private extension ConfirmSendTokenReviewInfoView {
                           icon: .domainSharePlaceholder,
                           value: "dans.crypto")),
          .infoValue(.init(title: String.Constants.chain.localized(),
-                          icon: .ethereumIcon,
-                          value: "Ethereum")),
+                          icon: chainIcon,
+                          value: token.name)),
          .infoValue(.init(title: String.Constants.speed.localized(),
                           icon: .chevronGrabberVertical,
                           iconColor: .foregroundSecondary,
@@ -122,10 +123,21 @@ private extension ConfirmSendTokenReviewInfoView {
                           value: "$4.20")),
          .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
     }
+    
+    var chainIcon: UIImage {
+        switch BlockchainType(rawValue: token.symbol) {
+        case .Ethereum:
+            .ethereumIcon
+        default:
+            .polygonIcon
+        }
+    }
 }
 
 // MARK: - Private methods
 private extension ConfirmSendTokenReviewInfoView {
+    var numberOfSections: Int { getCurrentSections().count }
+
     @ViewBuilder
     func curveLine() -> some View {
         ConnectCurve(radius: 24,
@@ -173,7 +185,7 @@ private extension ConfirmSendTokenReviewInfoView {
         
         func addFinalDot(in path: inout Path,
                          rect: CGRect) {
-            let sectionRect = getRectForSection(numberOfSections - 1, in: rect)
+            let rect = getRectForSection(numberOfSections - 1, in: rect)
             let minX = rect.minX + lineWidth
 
             let center = CGPoint(x: minX,
@@ -257,5 +269,5 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 #Preview {
-    ConfirmSendTokenReviewInfoView()
+    ConfirmSendTokenReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken())
 }

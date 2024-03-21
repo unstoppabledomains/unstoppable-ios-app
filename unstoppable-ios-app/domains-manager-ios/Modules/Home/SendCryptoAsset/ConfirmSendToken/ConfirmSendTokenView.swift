@@ -68,10 +68,12 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func tokenSendingValuesView() -> some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             primaryTextView(token.formattedBalanceUSD)
             secondaryTextView(token.formattedBalanceWithSymbol)
         }
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
     }
 }
 
@@ -101,6 +103,7 @@ private extension ConfirmSendTokenView {
             primaryTextView(token.formattedBalanceUSD)
             secondaryTextView(token.formattedBalanceWithSymbol)
         }
+        .lineLimit(1)
     }
 }
 
@@ -113,7 +116,7 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func reviewInfoView() -> some View {
-        ConfirmSendTokenReviewInfoView()
+        ConfirmSendTokenReviewInfoView(token: token)
     }
     
     @ViewBuilder
