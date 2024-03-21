@@ -28,7 +28,7 @@ struct ConfirmSendTokenView: View {
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
-        .navigationTitle(String.Constants.send.localized())
+        .navigationTitle(String.Constants.youAreSending.localized())
     }
 }
 

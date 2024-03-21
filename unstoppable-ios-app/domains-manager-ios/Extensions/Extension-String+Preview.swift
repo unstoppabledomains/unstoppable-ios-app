@@ -1159,6 +1159,11 @@ extension String {
         static let usingMax = "USING_MAX"
         static let useMax = "USE_MAX"
         static let results = "RESULTS"
+        static let youAreSending = "YOU_ARE_SENDING"
+        static let from = "FROM"
+        static let speed = "SPEED"
+        static let feeEstimate = "FEE_ESTIMATE"
+        static let sendCryptoReviewPromptMessage = "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE"
     }
     
     enum BlockChainIcons: String {
