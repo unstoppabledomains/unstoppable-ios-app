@@ -15,12 +15,12 @@ struct SelectTokenAssetAmountToSendView: View {
     @State private var interpreter = NumberPadInputInterpreter()
     
     var body: some View {
-        VStack(spacing: 57) {
+        VStack(spacing: isIPSE ? 8 : 57) {
             VStack(spacing: 8) {
                 inputValueView()
                 convertedValueView()
             }
-            VStack(spacing: 32) {
+            VStack(spacing: isIPSE ? 8 : 32) {
                 VStack(spacing: 16) {
                     tokenInfoView()
                     UDNumberPadView(inputCallback: { inputType in
@@ -32,6 +32,8 @@ struct SelectTokenAssetAmountToSendView: View {
         }
         .padding(16)
         .animation(.default, value: UUID())
+        .addNavigationTopSafeAreaOffset()
+        .navigationTitle(String.Constants.send.localized())
     }
 }
 
