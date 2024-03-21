@@ -61,7 +61,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdInputString: String {
-        usdString(interpreter.getInput())
+        formatCartPrice(interpreter.getInterpretedNumber())
     }
     
     @ViewBuilder
@@ -126,21 +126,24 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdConvertedString: String {
-        usdString(interpreter.getInput())
+        formatCartPrice(getCurrentInput().valueOf(type: .usdAmount,
+                                                  for: token))
     }
     
-    func usdString(_ str: String) -> String {
-        "$\(str)"
+    var tokenConvertedString: String {
+        BalanceStringFormatter.tokenFullBalanceString(balance: getCurrentInput().valueOf(type: .tokenAmount,
+                                                                                         for: token),
+                                                      symbol: token.symbol)
     }
     
     @ViewBuilder
     func usdConvertedValue() -> some View {
-        convertedAmountText(usdInputString)
+        convertedAmountText(usdConvertedString)
     }
     
     @ViewBuilder
     func tokenConvertedValue() -> some View {
-        convertedAmountText("\(interpreter.getInput()) \(token.symbol)")
+        convertedAmountText(tokenConvertedString)
     }
     
     @ViewBuilder

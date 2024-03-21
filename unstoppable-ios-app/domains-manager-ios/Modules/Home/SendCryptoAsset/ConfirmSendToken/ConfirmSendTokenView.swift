@@ -96,7 +96,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func tokenSendingValuesView() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            primaryTextView(BalanceStringFormatter.tokensBalanceUSDString(sendingUSDAmount))
+            primaryTextView(formatCartPrice(sendingUSDAmount))
             secondaryTextView(BalanceStringFormatter.tokenFullBalanceString(balance: sendingTokenAmount,
                                                                         symbol: token.symbol))
         }
@@ -195,7 +195,7 @@ private extension ConfirmSendTokenView {
     NavigationStack {
         ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
                                          token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                         amount: .usdAmount(39.3)))
+                                         amount: .usdAmount(3998234.3)))
             .navigationBarTitleDisplayMode(.inline)
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
