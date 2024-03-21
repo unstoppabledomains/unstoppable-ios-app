@@ -9,11 +9,13 @@ import SwiftUI
 
 struct ConfirmSendTokenView: View {
     
+    @Environment(\.imageLoadingService) var imageLoadingService
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
     let data: SendCryptoAsset.SendTokenAssetData
     
     private var token: BalanceTokenUIDescription { data.token }
+    private var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
     
     @State private var receiverAvatar: UIImage?
 
@@ -31,6 +33,20 @@ struct ConfirmSendTokenView: View {
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
+        .onAppear(perform: onAppear)
+    }
+}
+
+// MARK: - Private methods
+private extension ConfirmSendTokenView {
+    func onAppear() {
+        Task {
+            if let url = receiver.pfpURL {
+                receiverAvatar = await imageLoadingService.loadImage(from: .url(url,
+                                                                                maxSize: nil),
+                                                                     downsampleDescription: .mid)
+            }
+        }
     }
 }
 
@@ -101,11 +117,17 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func receiverAddressInfoView() -> some View {
-        VStack(spacing: 0) {
-            primaryTextView(token.formattedBalanceUSD)
-            secondaryTextView(token.formattedBalanceWithSymbol)
+        VStack(alignment: .leading, spacing: 0) {
+            if let name = receiver.domainName {
+                primaryTextView(name)
+                secondaryTextView(receiver.walletAddress.walletAddressTruncated)
+            } else {
+                primaryTextView(receiver.walletAddress.walletAddressTruncated)
+            }
         }
+        .frame(height: 60)
         .lineLimit(1)
+        .minimumScaleFactor(Constants.domainNameMinimumScaleFactor)
     }
 }
 
