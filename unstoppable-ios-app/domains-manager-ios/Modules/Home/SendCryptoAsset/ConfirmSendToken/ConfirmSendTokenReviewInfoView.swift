@@ -9,15 +9,33 @@ import SwiftUI
 
 struct ConfirmSendTokenReviewInfoView: View {
     
+    @Environment(\.imageLoadingService) var imageLoadingService
+    
     private let lineWidth: CGFloat = 1
     private let sectionHeight: CGFloat = 48
     
     let token: BalanceTokenUIDescription
+    let sourceWallet: WalletEntity
+    @State private var fromUserAvatar: UIImage?
 
     var body: some View {
         ZStack {
             curveLine()
             infoSectionsView()
+        }
+        .onAppear(perform: onAppear)
+    }
+}
+
+// MARK: - Private methods
+private extension ConfirmSendTokenReviewInfoView {
+    func onAppear() {
+        Task {
+            if let domain = sourceWallet.rrDomain {
+                fromUserAvatar = await imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
+                                                                                                 size: .default),
+                                                                     downsampleDescription: .mid)
+            }
         }
     }
 }
@@ -105,10 +123,21 @@ private extension ConfirmSendTokenReviewInfoView {
         var subValue: String? = nil
     }
     
+    var fromWalletInfoValue: String {
+        if let domainName = sourceWallet.rrDomain?.name {
+            return domainName
+        }
+        return sourceWallet.address.walletAddressTruncated
+    }
+    
+    func getFromWalletInfoSection() -> SectionType {
+        .infoValue(.init(title: String.Constants.from.localized(),
+                         icon: fromUserAvatar ?? .walletExternalIcon,
+                         value: fromWalletInfoValue))
+    }
+    
     func getCurrentSections() -> [SectionType] {
-        [.infoValue(.init(title: String.Constants.from.localized(),
-                          icon: .domainSharePlaceholder,
-                          value: "dans.crypto")),
+        [getFromWalletInfoSection(),
          .infoValue(.init(title: String.Constants.chain.localized(),
                           icon: chainIcon,
                           value: token.name)),
@@ -269,5 +298,6 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 #Preview {
-    ConfirmSendTokenReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken())
+    ConfirmSendTokenReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                   sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }

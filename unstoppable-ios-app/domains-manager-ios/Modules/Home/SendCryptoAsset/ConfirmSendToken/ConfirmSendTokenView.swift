@@ -45,6 +45,10 @@ private extension ConfirmSendTokenView {
                 receiverAvatar = await imageLoadingService.loadImage(from: .url(url,
                                                                                 maxSize: nil),
                                                                      downsampleDescription: .mid)
+            } else if let domainName = receiver.domainName {
+                receiverAvatar = await imageLoadingService.loadImage(from: .domainNameInitials(domainName,
+                                                                                               size: .default),
+                                                                     downsampleDescription: .mid)
             }
         }
     }
@@ -140,7 +144,8 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func reviewInfoView() -> some View {
-        ConfirmSendTokenReviewInfoView(token: token)
+        ConfirmSendTokenReviewInfoView(token: token,
+                                       sourceWallet: viewModel.sourceWallet)
     }
     
     @ViewBuilder

@@ -166,6 +166,7 @@ extension UIImage {
     static let verticalLines = UIImage(named: "verticalLines")!
     static let chevronGrabberVertical = UIImage(named: "chevronGrabberVertical")!
     static let tildaIcon = UIImage(named: "tildaIcon")!
+    static let walletExternalIcon = UIImage(named: "walletExternalIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
