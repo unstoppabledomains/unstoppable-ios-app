@@ -33,14 +33,9 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
             inputFieldView()
                 .listRowSeparator(.hidden)
             scanQRView()
-            if !isSearchingInProgress {
-                userWalletsSection()
-                followingsSection()
-            } else {
-                if !isLoadingGlobalProfiles {
-                    globalSearchResultSection()
-                }
-            }
+            userWalletsSection()
+            followingsSection()
+            globalSearchResultSection()
         }
         .listStyle(.plain)
         .animation(.default, value: UUID())
@@ -111,11 +106,15 @@ private extension SendCryptoAssetSelectReceiverView {
     func userWalletsSection() -> some View {
         if !userWallets.isEmpty {
             Section {
-                ForEach(userWallets) { wallet in
-                    selectableUserWalletView(wallet: wallet)
+                if !isSearchingInProgress {
+                    ForEach(userWallets) { wallet in
+                        selectableUserWalletView(wallet: wallet)
+                    }
                 }
             } header: {
-                sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
+                if !isSearchingInProgress {
+                    sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
+                }
             }
             .listRowSeparator(.hidden)
         }
@@ -132,7 +131,7 @@ private extension SendCryptoAssetSelectReceiverView {
     
     @ViewBuilder
     func followingsSection() -> some View {
-        if !followingList.isEmpty {
+        if !followingList.isEmpty, !isSearchingInProgress {
             Section {
                 ForEach(followingList, id: \.self) { following in
                     selectableFollowingView(following: following)
@@ -155,8 +154,11 @@ private extension SendCryptoAssetSelectReceiverView {
     
     @ViewBuilder
     func globalSearchResultSection() -> some View {
-        globalSearchResultOrEmptyView()
-            .listRowSeparator(.hidden)
+        if isSearchingInProgress,
+           !isLoadingGlobalProfiles {
+            globalSearchResultOrEmptyView()
+                .listRowSeparator(.hidden)
+        }
     }
     
     enum GlobalSearchResult {
