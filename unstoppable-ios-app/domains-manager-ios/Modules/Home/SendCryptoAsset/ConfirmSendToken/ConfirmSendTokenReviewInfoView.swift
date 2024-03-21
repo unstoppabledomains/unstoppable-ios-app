@@ -72,6 +72,7 @@ private extension ConfirmSendTokenReviewInfoView {
                 }
                 Spacer()
             }
+            .lineLimit(1)
             .frame(height: geom.size.height)
         }
     }

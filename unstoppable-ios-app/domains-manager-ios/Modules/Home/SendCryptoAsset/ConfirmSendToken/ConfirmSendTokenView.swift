@@ -22,6 +22,7 @@ struct ConfirmSendTokenView: View {
             receiverInfoView()
             reviewInfoView()
             Spacer()
+            confirmButton()
         }
         .padding(16)
         .background(Color.backgroundDefault)
@@ -45,7 +46,7 @@ private extension ConfirmSendTokenView {
                     Spacer()
                 }
             }
-            .padding(16)
+            .padding(.init(horizontal: 16, vertical: tilesVerticalPadding))
             .background(
                 LinearGradient(
                     stops: [
@@ -62,6 +63,8 @@ private extension ConfirmSendTokenView {
             }
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
+    
+    var tilesVerticalPadding: CGFloat { isIPSE ? 8 : 16 }
     
     @ViewBuilder
     func tokenSendingValuesView() -> some View {
@@ -83,7 +86,7 @@ private extension ConfirmSendTokenView {
             receiverAddressInfoView()
             Spacer()
         }
-        .padding(16)
+        .padding(.init(horizontal: 16, vertical: tilesVerticalPadding))
         .background(Color.backgroundOverlay)
         .overlay {
             RoundedRectangle(cornerRadius: 12)
@@ -111,6 +114,23 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func reviewInfoView() -> some View {
         ConfirmSendTokenReviewInfoView()
+    }
+    
+    @ViewBuilder
+    func confirmButton() -> some View {
+        UDButtonView(text: String.Constants.confirm.localized(),
+                     icon: confirmIcon,
+                     style: .large(.raisedPrimary)) {
+            
+        }
+    }
+    
+    var confirmIcon: Image? {
+        if User.instance.getSettings().touchIdActivated,
+           let icon = appContext.authentificationService.biometricIcon {
+            return Image(uiImage: icon)
+        }
+        return nil
     }
 }
 
