@@ -615,6 +615,8 @@
 		C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
 		C62AC1FC2BABE565003FB69E /* ConfirmSendTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62AC1FB2BABE565003FB69E /* ConfirmSendTokenView.swift */; };
 		C62AC1FD2BABE565003FB69E /* ConfirmSendTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62AC1FB2BABE565003FB69E /* ConfirmSendTokenView.swift */; };
+		C62AC1FF2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62AC1FE2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift */; };
+		C62AC2002BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62AC1FE2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift */; };
 		C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
 		C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */; };
 		C62C3F8B283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
@@ -2943,6 +2945,7 @@
 		C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageImageBase64TypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
 		C62AC1FB2BABE565003FB69E /* ConfirmSendTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenView.swift; sourceTree = "<group>"; };
+		C62AC1FE2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenSenderReceiverConnectView.swift; sourceTree = "<group>"; };
 		C62BDA402B5E4104008E21AD /* MessagingBlockUserInChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingBlockUserInChatType.swift; sourceTree = "<group>"; };
 		C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResendCodeButton.swift; sourceTree = "<group>"; };
 		C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
@@ -5252,6 +5255,7 @@
 			isa = PBXGroup;
 			children = (
 				C62AC1FB2BABE565003FB69E /* ConfirmSendTokenView.swift */,
+				C62AC1FE2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift */,
 			);
 			path = ConfirmSendToken;
 			sourceTree = "<group>";
@@ -8673,6 +8677,7 @@
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
+				C62AC1FF2BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift in Sources */,
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
@@ -10137,6 +10142,7 @@
 				C6D6468A2B1ED12D00D724AC /* DomainProfileTopInfoSection.swift in Sources */,
 				C6D645892B1DBACB00D724AC /* CGSize.swift in Sources */,
 				C6D6467D2B1ED12900D724AC /* DomainProfileSection.swift in Sources */,
+				C62AC2002BABF0D0003FB69E /* ConfirmSendTokenSenderReceiverConnectView.swift in Sources */,
 				C6D645852B1DBA9D00D724AC /* BaseButton.swift in Sources */,
 				C64939FD2B637DDB00457363 /* ReverseResolutionSelectionView.swift in Sources */,
 				C6D646A82B1ED15A00D724AC /* PublicProfileCryptoListView.swift in Sources */,
