@@ -12,27 +12,35 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     
     
     @Environment(\.domainProfilesService) var domainProfilesService
+    @Environment(\.walletsDataService) var walletsDataService
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
 
-
     @State private var userWallets: [WalletEntity] = []
     @State private var followingList: [DomainName] = []
+    @State private var globalProfiles: [SearchDomainProfile] = []
+    @StateObject private var debounceObject = DebounceObject()
     @State private var inputText: String = ""
+    @State private var isLoadingGlobalProfiles = false
+
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
+    private let searchService = DomainsGlobalSearchService()
     
     var body: some View {
         List {
             inputFieldView()
                 .listRowSeparator(.hidden)
             scanQRView()
-                .listRowSeparator(.hidden)
-            userWalletsSection()
-                .listRowSeparator(.hidden)
-            followingsSection()
-                .listRowSeparator(.hidden)
+            if !isSearchingInProgress {
+                userWalletsSection()
+                followingsSection()
+            } else {
+                if !isLoadingGlobalProfiles {
+                    globalSearchResultSection()
+                }
+            }
         }
         .listStyle(.plain)
         .animation(.default, value: UUID())
@@ -66,13 +74,17 @@ private extension SendCryptoAssetSelectReceiverView {
     
     @ViewBuilder
     func inputFieldView() -> some View {
-        UDTextFieldView(text: $inputText,
+        UDTextFieldView(text: $debounceObject.text,
                         placeholder: String.Constants.domainOrAddress.localized(),
                         hint: String.Constants.to.localized() + ":",
                         rightViewType: .paste,
                         rightViewMode: .always,
                         autocapitalization: .never,
                         autocorrectionDisabled: true)
+        .onChange(of: debounceObject.debouncedText) { text in
+            inputText = text.lowercased().trimmedSpaces
+            searchForGlobalProfiles()
+        }
     }
     
     @ViewBuilder
@@ -92,6 +104,7 @@ private extension SendCryptoAssetSelectReceiverView {
         } callback: {
             viewModel.handleAction(.scanQRSelected)
         }
+        .listRowSeparator(.hidden)
     }
     
     @ViewBuilder
@@ -104,6 +117,7 @@ private extension SendCryptoAssetSelectReceiverView {
             } header: {
                 sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
             }
+            .listRowSeparator(.hidden)
         }
     }
     
@@ -126,6 +140,7 @@ private extension SendCryptoAssetSelectReceiverView {
             } header: {
                 sectionHeaderViewWith(title: String.Constants.following.localized())
             }
+            .listRowSeparator(.hidden)
         }
     }
     
@@ -135,6 +150,36 @@ private extension SendCryptoAssetSelectReceiverView {
             SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
             viewModel.handleAction(.followingDomainSelected(following))
+        }
+    }
+    
+    @ViewBuilder
+    func globalSearchResultSection() -> some View {
+        globalSearchResultOrEmptyView()
+            .listRowSeparator(.hidden)
+    }
+    
+    @ViewBuilder
+    func globalSearchResultOrEmptyView() -> some View {
+        if !globalProfiles.isEmpty {
+            Section {
+                ForEach(globalProfiles, id: \.self) { profile in
+                    selectableGlobalProfileView(profile: profile)
+                }
+            } header: {
+                sectionHeaderViewWith(title: String.Constants.results.localized())
+            }
+        } else {
+            HomeExploreEmptySearchResultView()
+        }
+    }
+    
+    @ViewBuilder
+    func selectableGlobalProfileView(profile: SearchDomainProfile) -> some View {
+        selectableRowView {
+            DomainSearchResultProfileRowView(profile: profile)
+        } callback: {
+            viewModel.handleAction(.globalProfileSelected(profile))
         }
     }
     
@@ -161,7 +206,32 @@ private extension SendCryptoAssetSelectReceiverView {
     }
 }
 
+// MARK: - Private methods
+private extension SendCryptoAssetSelectReceiverView {
+    var isSearchingInProgress: Bool {
+        !inputText.isEmpty
+    }
+    
+    func searchForGlobalProfiles() {
+        guard isSearchingInProgress else {
+            globalProfiles = []
+            return
+        }
+        
+        isLoadingGlobalProfiles = true
+        Task {
+            do {
+                self.globalProfiles = try await searchService.searchForGlobalProfilesExcludingUsers(with: inputText,
+                                                                                                    walletsDataService: walletsDataService)
+            }
+            isLoadingGlobalProfiles = false
+        }
+    }
+}
+
 #Preview {
-    SendCryptoAssetSelectReceiverView()
+    NavigationStack {
+        SendCryptoAssetSelectReceiverView()
+    }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

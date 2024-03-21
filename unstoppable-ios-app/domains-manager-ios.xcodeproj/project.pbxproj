@@ -994,6 +994,8 @@
 		C66FCD1E2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C66FCD192845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib */; };
 		C66FFD052B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */; };
 		C670695628981C84001FD241 /* TextWarningButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C670695528981C84001FD241 /* TextWarningButton.swift */; };
+		C67097AC2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */; };
+		C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */; };
 		C671E38728FE85C800A2B3A0 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38628FE85C800A2B3A0 /* CarouselView.swift */; };
 		C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */; };
 		C671E39228FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */; };
@@ -3262,6 +3264,7 @@
 		C66FCD192845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionMintingInProgressCell.xib; sourceTree = "<group>"; };
 		C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingStorageServiceTests.swift; sourceTree = "<group>"; };
 		C670695528981C84001FD241 /* TextWarningButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWarningButton.swift; sourceTree = "<group>"; };
+		C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebounceObject.swift; sourceTree = "<group>"; };
 		C671E38628FE85C800A2B3A0 /* CarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselView.swift; sourceTree = "<group>"; };
 		C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -5538,7 +5541,6 @@
 			isa = PBXGroup;
 			children = (
 				C63AD09C2B956D2A00BF8C83 /* HomeExploreGlobalSearchResultSectionView.swift */,
-				C6170EBD2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift */,
 			);
 			path = "Global search";
 			sourceTree = "<group>";
@@ -7255,6 +7257,7 @@
 				C60D2716295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift */,
 				30472D8B2672435200B0D7A7 /* Debugger.swift */,
 				307852632771FB020039FF40 /* DeepLinks.swift */,
+				C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */,
 				C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */,
 				C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */,
 				C6D011C42B996A5C0008BF40 /* DomainProfileSuggestion.swift */,
@@ -7723,6 +7726,7 @@
 				C6098314282B6F7000546392 /* EmptyRootNavigationController.swift */,
 				C62247A4283B92C0002A0CBD /* UDNavigationController.swift */,
 				C62900ED2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift */,
+				C6170EBD2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift */,
 				C6B65F4D2B54DA6D006D1812 /* Home */,
 				C60982A7282A724400546392 /* AddWallet */,
 				C6386835285C0EB3000F98C4 /* AppUpdatedRequired */,
@@ -8874,6 +8878,7 @@
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6F9FBD92A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */,
 				C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
+				C67097AC2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
 				C6C8F94C2B21853900A9834D /* AppReviewServiceProtocol.swift in Sources */,
 				C66FCD0D2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
@@ -9894,6 +9899,7 @@
 				C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */,
 				C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
+				C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
 				C6D6462C2B1DC2BC00D724AC /* ResizableRoundedImageView.swift in Sources */,
 				C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */,
 				C6D646742B1ED11B00D724AC /* DomainProfileUpdateDataRequestType.swift in Sources */,

@@ -1158,6 +1158,7 @@ extension String {
         static let review = "REVIEW"
         static let usingMax = "USING_MAX"
         static let useMax = "USE_MAX"
+        static let results = "RESULTS"
     }
     
     enum BlockChainIcons: String {
