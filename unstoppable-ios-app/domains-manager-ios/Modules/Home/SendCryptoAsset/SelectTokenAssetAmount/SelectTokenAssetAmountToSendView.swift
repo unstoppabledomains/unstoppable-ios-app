@@ -40,6 +40,7 @@ private extension SelectTokenAssetAmountToSendView {
     @ViewBuilder
     func inputValueView() -> some View {
         currentInputTypeValueView()
+            .withoutAnimation()
             .lineLimit(1)
             .minimumScaleFactor(0.5)
     }
