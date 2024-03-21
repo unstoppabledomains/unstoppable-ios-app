@@ -20,9 +20,14 @@ struct ConfirmSendTokenView: View {
             sendingTokenInfoView()
             senderReceiverConnectorView()
             receiverInfoView()
+            reviewInfoView()
+            Spacer()
         }
+        .padding(16)
         .background(Color.backgroundDefault)
-
+        .animation(.default, value: UUID())
+        .addNavigationTopSafeAreaOffset()
+        .navigationTitle(String.Constants.send.localized())
     }
 }
 
@@ -102,6 +107,11 @@ private extension ConfirmSendTokenView {
     func senderReceiverConnectorView() -> some View {
         ConfirmSendTokenSenderReceiverConnectView()
     }
+    
+    @ViewBuilder
+    func reviewInfoView() -> some View {
+        ConfirmSendTokenReviewInfoView()
+    }
 }
 
 // MARK: - Private methods
@@ -126,6 +136,7 @@ private extension ConfirmSendTokenView {
 #Preview {
     NavigationStack {
         ConfirmSendTokenView(token: MockEntitiesFabric.Tokens.mockUIToken())
+            .navigationBarTitleDisplayMode(.inline)
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

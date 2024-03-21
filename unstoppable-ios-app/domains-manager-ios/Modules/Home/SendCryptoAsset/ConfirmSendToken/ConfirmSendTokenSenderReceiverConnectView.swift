@@ -59,22 +59,23 @@ private extension ConfirmSendTokenSenderReceiverConnectView {
     struct ConnectCurve: Shape {
         let radius: CGFloat
         let lineWidth: CGFloat
+        let padding: CGFloat = 16
         
         func path(in rect: CGRect) -> Path {
             var path = Path()
-            let startPoint = CGPoint(x: rect.minX + lineWidth,
+            let startPoint = CGPoint(x: rect.minX + padding,
                                      y: rect.minY)
             path.move(to: startPoint)
             
             path.addArc(tangent1End: CGPoint(x: startPoint.x,
                                              y: rect.midY),
-                        tangent2End: CGPoint(x: rect.minX + radius,
+                        tangent2End: CGPoint(x: rect.minX + radius + padding,
                                              y: rect.midY),
                         radius: radius,
                         transform: .identity)
-            path.addLine(to: CGPoint(x: rect.maxX - radius,
+            path.addLine(to: CGPoint(x: rect.maxX - radius - padding,
                                      y: rect.midY))
-            let maxX = rect.maxX - lineWidth
+            let maxX = rect.maxX - lineWidth - padding
             path.addArc(tangent1End: CGPoint(x: maxX,
                                              y: rect.midY),
                         tangent2End: CGPoint(x: maxX,
