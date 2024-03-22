@@ -14,6 +14,7 @@ struct JRPC_Client {
 
     enum Error: Swift.Error {
         case failedFetchGas
+        case failedFetchGasLimit
     }
     
     func fetchNonce(address: HexAddress, chainId: Int) async throws -> EthereumQuantity {
@@ -46,6 +47,31 @@ struct JRPC_Client {
             throw Self.Error.failedFetchGas
         }
         return EthereumQuantity(quantity: gasPriceBigUInt)
+    }
+    
+    func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumQuantity {
+        do {
+            let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,
+                                                                             chainId: chainId)
+            guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
+                Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
+                throw Self.Error.failedFetchGasLimit
+            }
+            Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
+            return EthereumQuantity(quantity: result)
+        } catch {
+            if let jrpcError = error as? NetworkService.JRPCError {
+                switch jrpcError {
+                case .gasRequiredExceedsAllowance:
+                    Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
+                    throw WalletConnectRequestError.lowAllowance
+                default: throw WalletConnectRequestError.failedFetchGas
+                }
+            } else {
+                Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
+                throw WalletConnectRequestError.failedFetchGas
+            }
+        }
     }
     
     func sendTx(transaction: EthereumTransaction,
@@ -86,7 +112,7 @@ struct JRPC_Client {
                         }
                         continuation.resume(with: .success(result))
                     }.catch { error in
-                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription)")
+                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription), \(error.displayTitleAndMessage())")
                         continuation.resume(with: .failure(WalletConnectRequestError.failedSendTx))
                         return
                     }

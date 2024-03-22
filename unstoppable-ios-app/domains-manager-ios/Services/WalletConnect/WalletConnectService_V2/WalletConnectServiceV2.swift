@@ -843,9 +843,9 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             return transaction
         }
         
-        let gas = try await fetchGasLimit(transaction: transaction, chainId: chainId)
+//        let gas = try await fetchGasLimit(transaction: transaction, chainId: chainId)
         var newTx = transaction
-        newTx.gas = EthereumQuantity(quantity: gas)
+        newTx.gas = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
         return newTx
     }
     
@@ -866,31 +866,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async -> String? {
         guard let addressString = transaction.from?.hex() else { return nil }
         return await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
-    }
-    
-    private func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> BigUInt {
-        do {
-            let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,
-                                                                             chainId: chainId)
-            guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
-                Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
-                throw WalletConnectRequestError.failedFetchGas
-            }
-            Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
-            return result
-        } catch {
-            if let jrpcError = error as? NetworkService.JRPCError {
-                switch jrpcError {
-                case .gasRequiredExceedsAllowance:
-                    Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                    throw WalletConnectRequestError.lowAllowance
-                default: throw WalletConnectRequestError.failedFetchGas
-                }
-            } else {
-                Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
-                throw WalletConnectRequestError.failedFetchGas
-            }
-        }
     }
 }
 
