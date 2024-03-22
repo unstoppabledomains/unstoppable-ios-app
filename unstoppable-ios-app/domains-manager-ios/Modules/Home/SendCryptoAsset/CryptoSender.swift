@@ -10,24 +10,29 @@ import Boilertalk_Web3
 import BigInt
 
 
-class DemoCryptoSender: CryptoSenderProtocol {
+struct DemoCryptoSender: CryptoSenderProtocol {
     let wallet: UDWallet
     
-    required init(wallet: UDWallet) {
+    init(wallet: UDWallet) {
         self.wallet = wallet
     }
     
-    func sendCrypto(token: String, amount: Double, toAddress: HexAddress, chain: BlockchainType) async throws -> String {
+    func sendCrypto(token: String,
+                    amount: Double,
+                    toAddress: HexAddress,
+                    chain: BlockchainType) async throws -> String {
 
+        let chainId = chain.supportedChainId(isTestNet: true)
         
         // create TX
         let tx = try await createNativeSendTransaction(fromAddress: self.wallet.address,
                                                        toAddress: toAddress,
-                                                       chainId: chain.supportedChainId(isTestNet: true))
+                                                       chainId: chainId)
         
         // send Tx
+        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chainId)
         
-        
+        return hash
         
 //        // Set up your Infura URL and Ethereum addresses
 //        let infuraUrl = "https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY"
@@ -74,8 +79,6 @@ class DemoCryptoSender: CryptoSenderProtocol {
 //        }
 
         
-        return ""
-
     }
     
     private func createNativeSendTransaction(fromAddress: HexAddress,
@@ -95,20 +98,12 @@ class DemoCryptoSender: CryptoSenderProtocol {
         )
         
         
-        // TODO:
+        // TODO: gas limit, value
         
         
         return transaction
     }
-    
-    private func send(transaction: EthereumTransaction, chainId: Int) async throws -> String {
-        // TODO: extract from WC2
-        return ""
-    }
-    
-    
-    
-    
+        
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
         return false
     }
