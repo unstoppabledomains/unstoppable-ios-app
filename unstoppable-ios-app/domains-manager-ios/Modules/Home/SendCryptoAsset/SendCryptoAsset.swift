@@ -40,12 +40,63 @@ extension SendCryptoAsset {
     enum FlowAction {
         case scanQRSelected
         case userWalletSelected(WalletEntity)
-        case followingDomainSelected(DomainName)
+        case followingDomainSelected(DomainProfileDisplayInfo)
         case globalProfileSelected(SearchDomainProfile)
         case globalWalletAddressSelected(HexAddress)
         
-        case userTokenSelected(BalanceTokenUIDescription)
+        case userTokenToSendSelected(SelectTokenAmountToSendData)
+        case userTokenValueSelected(SendTokenAssetData)
+        
         case userDomainSelected(DomainDisplayInfo)
+    }
+}
+
+extension SendCryptoAsset {
+    struct AssetReceiver: Hashable {
+        let walletAddress: String
+        let domainName: DomainName?
+        let pfpURL: URL?
+        
+        init(wallet: WalletEntity) {
+            self.walletAddress = wallet.address
+            self.domainName = wallet.rrDomain?.name
+            self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+        }
+        
+        init(followingDomain profile: DomainProfileDisplayInfo) {
+            self.walletAddress = profile.ownerWallet
+            self.domainName = profile.domainName
+            self.pfpURL = profile.pfpURL
+        }
+        
+        init?(globalProfile: SearchDomainProfile) {
+            guard let walletAddress = globalProfile.ownerAddress else {
+                Debugger.printFailure("Failed to create crypto asset receiver with SearchDomainProfile \(globalProfile.name)", critical: true)
+                return nil
+            }
+            self.walletAddress = walletAddress
+            self.domainName = globalProfile.name
+            self.pfpURL = globalProfile.imagePath?.asURL
+        }
+        
+        init(walletAddress: HexAddress) {
+            self.walletAddress = walletAddress
+            self.domainName = nil
+            self.pfpURL = nil
+        }
+    }
+}
+
+extension SendCryptoAsset {
+    struct SelectTokenAmountToSendData: Hashable {
+        let receiver: AssetReceiver
+        let token: BalanceTokenUIDescription
+    }
+    
+    struct SendTokenAssetData: Hashable {
+        let receiver: AssetReceiver
+        let token: BalanceTokenUIDescription
+        let amount: TokenAssetAmountInput
     }
 }
 
@@ -55,8 +106,22 @@ extension SendCryptoAsset {
         case tokenAmount
     }
     
-    enum TokenAssetAmountInput {
+    enum TokenAssetAmountInput: Hashable {
         case usdAmount(Double)
         case tokenAmount(Double)
+        
+        func valueOf(type: TokenAssetAmountInputType,
+                     for token: BalanceTokenUIDescription) -> Double {
+            switch (self, type) {
+                case (.usdAmount(let usdAmount), .usdAmount):
+                    return usdAmount
+                case (.tokenAmount(let tokenAmount), .tokenAmount):
+                    return tokenAmount
+                case (.usdAmount(let usdAmount), .tokenAmount):
+                    return usdAmount / (token.marketUsd ?? 1)
+                case (.tokenAmount(let tokenAmount), .usdAmount):
+                    return tokenAmount * (token.marketUsd ?? 1)
+            }
+        }
     }
 }

@@ -222,10 +222,10 @@ extension MockEntitiesFabric {
         static func mockUIToken() -> BalanceTokenUIDescription {
             BalanceTokenUIDescription(chain: "ETH",
                                       symbol: "ETH",
-                                      name: "ETH",
+                                      name: "Ethereum",
                                       balance: 1,
                                       balanceUsd: 1,
-                                      marketUsd: 1)
+                                      marketUsd: 3900.34)
         }
     }
 }

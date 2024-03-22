@@ -11,7 +11,6 @@ final class SendCryptoAssetViewModel: ObservableObject {
         
     @Published var sourceWallet: WalletEntity
     @Published var navigationState: NavigationStateManager?
-    
     @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
     
     init(initialData: SendCryptoAsset.InitialData) {
@@ -21,17 +20,22 @@ final class SendCryptoAssetViewModel: ObservableObject {
     func handleAction(_ action: SendCryptoAsset.FlowAction) {
         switch action {
         case .scanQRSelected:
-            navPath.append(.selectAssetToSend)
+            return
         case .userWalletSelected(let walletEntity):
-            navPath.append(.selectAssetToSend)
-        case .followingDomainSelected(let domainName):
-            navPath.append(.selectAssetToSend)
-        case .globalProfileSelected:
-            navPath.append(.selectAssetToSend)   
-        case .globalWalletAddressSelected:
-            navPath.append(.selectAssetToSend)
-        case .userTokenSelected(let token):
-            navPath.append(.selectTokenAmountToSend(token))
+            navPath.append(.selectAssetToSend(.init(wallet: walletEntity)))
+        case .followingDomainSelected(let domainProfile):
+            navPath.append(.selectAssetToSend(.init(followingDomain: domainProfile)))
+        case .globalProfileSelected(let profile):
+            guard let receiver = SendCryptoAsset.AssetReceiver(globalProfile: profile) else { return }
+            navPath.append(.selectAssetToSend(receiver))
+        case .globalWalletAddressSelected(let address):
+            navPath.append(.selectAssetToSend(.init(walletAddress: address)))
+            
+        case .userTokenToSendSelected(let data):
+            navPath.append(.selectTokenAmountToSend(data))
+        case .userTokenValueSelected(let data):
+            navPath.append(.confirmSendToken(data))
+            
         case .userDomainSelected(let domain):
             return
         }

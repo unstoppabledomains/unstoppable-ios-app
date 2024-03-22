@@ -9,8 +9,9 @@ import SwiftUI
 
 extension SendCryptoAsset {
     enum NavigationDestination: Hashable {
-        case selectAssetToSend
-        case selectTokenAmountToSend(BalanceTokenUIDescription)
+        case selectAssetToSend(AssetReceiver)
+        case selectTokenAmountToSend(SelectTokenAmountToSendData)
+        case confirmSendToken(SendTokenAssetData)
     }
     
     struct LinkNavigationDestination {
@@ -18,10 +19,12 @@ extension SendCryptoAsset {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .selectAssetToSend:
-                SelectCryptoAssetToSendView()
-            case .selectTokenAmountToSend(let token):
-                SelectTokenAssetAmountToSendView(token: token)
+            case .selectAssetToSend(let receiver):
+                SelectCryptoAssetToSendView(receiver: receiver)
+            case .selectTokenAmountToSend(let data):
+                SelectTokenAssetAmountToSendView(data: data)
+            case .confirmSendToken(let data):
+                ConfirmSendTokenView(data: data)
             }
         }
         

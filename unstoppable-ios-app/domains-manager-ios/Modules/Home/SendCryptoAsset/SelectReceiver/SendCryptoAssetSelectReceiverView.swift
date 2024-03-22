@@ -148,7 +148,11 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
-            viewModel.handleAction(.followingDomainSelected(following))
+            guard let profile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: following) else {
+                Debugger.printFailure("Failed to get cached domain profile for following: \(following)")
+                return
+            }
+            viewModel.handleAction(.followingDomainSelected(profile))
         }
     }
     

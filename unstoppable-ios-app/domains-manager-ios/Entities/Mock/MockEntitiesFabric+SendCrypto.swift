@@ -14,5 +14,9 @@ extension MockEntitiesFabric {
             SendCryptoAssetViewModel(initialData: .init(sourceWallet: Wallet.mockEntities()[0]))
         }
         
+        static func mockReceiver() -> SendCryptoAsset.AssetReceiver {
+            .init(wallet: Wallet.mockEntities()[1])
+        }
+        
     }
 }

@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct SelectCryptoAssetToSendView: View {
-    
-    
+        
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
     @State private var tokens: [BalanceTokenUIDescription] = []
     @State private var domains: [DomainDisplayInfo] = []
+    
+    let receiver: SendCryptoAsset.AssetReceiver
     
     var body: some View {
         List {
@@ -78,7 +79,8 @@ private extension SelectCryptoAssetToSendView {
     func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            viewModel.handleAction(.userTokenSelected(token))
+            viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
+                                                                  token: token)))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
         }
@@ -105,6 +107,6 @@ private extension SelectCryptoAssetToSendView {
 }
 
 #Preview {
-    SelectCryptoAssetToSendView()
+    SelectCryptoAssetToSendView(receiver: MockEntitiesFabric.SendCrypto.mockReceiver())
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

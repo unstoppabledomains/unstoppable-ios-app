@@ -9,8 +9,11 @@ import SwiftUI
 
 struct SelectTokenAssetAmountToSendView: View {
     
-    let token: BalanceTokenUIDescription
-    
+    @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+
+    let data: SendCryptoAsset.SelectTokenAmountToSendData
+    private var token: BalanceTokenUIDescription { data.token }
+
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
     
@@ -58,7 +61,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdInputString: String {
-        usdString(interpreter.getInput())
+        formatCartPrice(interpreter.getInterpretedNumber())
     }
     
     @ViewBuilder
@@ -123,21 +126,24 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdConvertedString: String {
-        usdString(interpreter.getInput())
+        formatCartPrice(getCurrentInput().valueOf(type: .usdAmount,
+                                                  for: token))
     }
     
-    func usdString(_ str: String) -> String {
-        "$\(str)"
+    var tokenConvertedString: String {
+        BalanceStringFormatter.tokenFullBalanceString(balance: getCurrentInput().valueOf(type: .tokenAmount,
+                                                                                         for: token),
+                                                      symbol: token.symbol)
     }
     
     @ViewBuilder
     func usdConvertedValue() -> some View {
-        convertedAmountText(usdInputString)
+        convertedAmountText(usdConvertedString)
     }
     
     @ViewBuilder
     func tokenConvertedValue() -> some View {
-        convertedAmountText("\(interpreter.getInput()) \(token.symbol)")
+        convertedAmountText(tokenConvertedString)
     }
     
     @ViewBuilder
@@ -209,12 +215,27 @@ private extension SelectTokenAssetAmountToSendView {
     func confirmButton() -> some View {
         UDButtonView(text: String.Constants.review.localized(),
                      style: .large(.raisedPrimary)) {
-            
+            viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
+                                                                 token: token,
+                                                                 amount: getCurrentInput())))
         }
                      .disabled(interpreter.getInterpretedNumber() <= 0)
+    }
+    
+    func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {
+        switch inputType {
+        case .usdAmount:
+            .usdAmount(interpreter.getInterpretedNumber())
+        case .tokenAmount:
+            .tokenAmount(interpreter.getInterpretedNumber())
+        }
     }
 }
 
 #Preview {
-    SelectTokenAssetAmountToSendView(token: MockEntitiesFabric.Tokens.mockUIToken())
+    NavigationStack {
+        SelectTokenAssetAmountToSendView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                                      token: MockEntitiesFabric.Tokens.mockUIToken()))
+    }
+        .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }
