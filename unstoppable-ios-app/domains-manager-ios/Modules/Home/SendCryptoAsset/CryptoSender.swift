@@ -25,7 +25,7 @@ struct DemoCryptoSender: CryptoSenderProtocol {
         case sendingNotSupported
     }
 
-    static let defaultSendTxGasPrice = 21_000
+    static let defaultSendTxGasPrice: BigUInt = 21_000
     
     let wallet: UDWallet
     
@@ -60,10 +60,10 @@ struct DemoCryptoSender: CryptoSenderProtocol {
         
         var transaction = EthereumTransaction(nonce: nonce,
                                               gasPrice: gasPrice,
-                                              gas: try EthereumQuantity(ethereumValue: Self.defaultSendTxGasPrice),
+                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(amount)
+                                              value: try EthereumQuantity(amount.gwei)
         )
         
         let gasEstimate = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
