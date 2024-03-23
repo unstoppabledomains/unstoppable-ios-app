@@ -24,13 +24,13 @@ protocol CryptoSenderProtocol {
     ///   - address: address of the receiver
     ///   - chain: chain of the transaction
     /// - Returns: TX Hash if success
-    func sendCrypto(token: String, amount: Double, toAddress: HexAddress, chain: BlockchainType) async throws -> String
+    func sendCrypto(crypto: CryptoSpec,
+                    chain: ChainSpec,
+                    toAddress: HexAddress) async throws -> String
 }
 
-
-
-
 extension CryptoSenderProtocol {
+    
     private func _sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws {
         // create the TX
         

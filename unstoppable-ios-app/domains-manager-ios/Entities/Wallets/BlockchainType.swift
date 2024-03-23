@@ -50,6 +50,11 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         }
     }
     
+    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
+        supportedChainId(isTestNet: env == .testnet)
+    }
+
+    
     enum InitError: Error {
         case invalidBlockchainAbbreviation
     }
