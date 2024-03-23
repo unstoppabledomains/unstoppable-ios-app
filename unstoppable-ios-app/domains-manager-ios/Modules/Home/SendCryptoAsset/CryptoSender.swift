@@ -25,7 +25,7 @@ struct CryptoSpec {
 }
 
 
-struct DemoCryptoSender: CryptoSenderProtocol {
+struct NativeCryptoSender: CryptoSenderProtocol {
     enum Error: Swift.Error {
         case sendingNotSupported
     }
@@ -77,8 +77,9 @@ struct DemoCryptoSender: CryptoSenderProtocol {
                                               value: try EthereumQuantity(amount.gwei)
         )
         
-        let gasEstimate = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
-        transaction.gas = gasEstimate
+        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
+            transaction.gas = gasEstimate
+        }
         return transaction
     }
         
