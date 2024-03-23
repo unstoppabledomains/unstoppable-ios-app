@@ -12,6 +12,11 @@ import BigInt
 struct ChainSpec {
     let blockchainType: BlockchainType
     let env: UnsConfigManager.BlockchainEnvironment
+
+    init(blockchainType: BlockchainType, env: UnsConfigManager.BlockchainEnvironment = .mainnet) {
+        self.blockchainType = blockchainType
+        self.env = env
+    }
 }
 
 struct CryptoSpec {
