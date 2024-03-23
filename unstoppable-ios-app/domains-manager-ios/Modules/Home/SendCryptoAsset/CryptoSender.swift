@@ -31,6 +31,8 @@ struct DemoCryptoSender: CryptoSenderProtocol {
     }
 
     static let defaultSendTxGasPrice: BigUInt = 21_000
+    static let ethTicker = "crypto.ETH.address"
+    static let maticTicker = "crypto.MATIC.version.MATIC.address"
     
     let wallet: UDWallet
     
@@ -41,6 +43,10 @@ struct DemoCryptoSender: CryptoSenderProtocol {
     func sendCrypto(crypto: CryptoSpec,
                     chain: ChainSpec,
                     toAddress: HexAddress) async throws -> String {
+        
+        guard canSendCrypto(token: crypto.token, chain: chain.blockchainType) else {
+            throw Error.sendingNotSupported
+        }
 
         let chainId = chain.blockchainType.supportedChainId(env: chain.env)
         let tx = try await createNativeSendTransaction(crypto: crypto,
@@ -73,15 +79,12 @@ struct DemoCryptoSender: CryptoSenderProtocol {
         
         let gasEstimate = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
         transaction.gas = gasEstimate
-        
-        
-        // TODO: value
-        
-        
         return transaction
     }
         
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
-        return false
+        // only native tokens supported
+        return (token == Self.ethTicker && chain == .Ethereum) ||
+        (token == Self.maticTicker && chain == .Matic)
     }
 }
