@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import BigInt
 
 protocol CryptoSenderProtocol {
     init(wallet: UDWallet)
@@ -24,25 +25,17 @@ protocol CryptoSenderProtocol {
     ///   - address: address of the receiver
     ///   - chain: chain of the transaction
     /// - Returns: TX Hash if success
-    func sendCrypto(crypto: CryptoSpec,
+    func sendCrypto(crypto: CryptoSendingSpec,
                     chain: ChainSpec,
                     toAddress: HexAddress) async throws -> String
+    
+    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
+                           on chain: ChainSpec,
+                           toAddress: HexAddress) async throws -> BigUInt
 }
 
 extension CryptoSenderProtocol {
-    
-    private func _sendCrypto(token: String, amount: Double, address: HexAddress, chain: BlockchainType) async throws {
-        // create the TX
-        
-        // send TX to the chain
-        
-    }
-    
-    private func createTX() {
-        // TODO:
-    }
-    
-    private func sendTX() {
-        // TODO:
-    }
+    static var defaultSendTxGasPrice: BigUInt { 21_000 }
+    static var ethTicker: String { "crypto.ETH.address" }
+    static var maticTicker: String { "crypto.MATIC.version.MATIC.address" }
 }
