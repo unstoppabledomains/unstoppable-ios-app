@@ -29,9 +29,15 @@ protocol CryptoSenderProtocol {
                     chain: ChainSpec,
                     toAddress: HexAddress) async throws -> String
     
+    /// Calculates the amount of crypto needed to be spent as gas fee
+    /// - Parameters:
+    ///   - maxCrypto: max crypto available for the send transaction
+    ///   - chain: chain where tx will be placed
+    ///   - toAddress: recepient address of the crypto
+    /// - Returns: Amount of crypto that must be deducted from maxCrypto as the gas fee in the future tx
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
-                           toAddress: HexAddress) async throws -> BigUInt
+                           toAddress: HexAddress) async throws -> Double
 }
 
 extension CryptoSenderProtocol {
