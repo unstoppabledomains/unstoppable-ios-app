@@ -842,8 +842,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         guard transaction.gas == nil else {
             return transaction
         }
-        
-//        let gas = try await fetchGasLimit(transaction: transaction, chainId: chainId)
         var newTx = transaction
         newTx.gas = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
         return newTx

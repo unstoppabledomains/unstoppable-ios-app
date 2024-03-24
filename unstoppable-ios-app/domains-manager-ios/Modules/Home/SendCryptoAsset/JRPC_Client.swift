@@ -85,6 +85,8 @@ struct JRPC_Client {
                 return
             }
             let web3 = Web3(rpcURL: urlString)
+            
+            // TODO: Handle an external wallet
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
                 continuation.resume(with: .failure(WalletConnectRequestError.failedToGetPrivateKey))
