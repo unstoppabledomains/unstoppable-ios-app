@@ -42,14 +42,9 @@ struct CryptoSender: CryptoSenderProtocol {
 
     let wallet: UDWallet
     
-    init(wallet: UDWallet) {
-        self.wallet = wallet
-    }
-
     func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
-        // only native tokens supported
-        return (token == Self.ethTicker && chain == .Ethereum) ||
-        (token == Self.maticTicker && chain == .Matic)
+        // only native tokens supported for Ethereum and Polygon
+        return NativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chain: chain)
     }
 
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
@@ -75,11 +70,11 @@ struct CryptoSender: CryptoSenderProtocol {
 }
 
 struct NativeCryptoSender: CryptoSenderProtocol {
-    let wallet: UDWallet
+    static let defaultSendTxGasPrice: BigUInt = 21_000
+    static var ethTicker = "crypto.ETH.address"
+    static var maticTicker = "crypto.MATIC.version.MATIC.address"
     
-    init(wallet: UDWallet) {
-        self.wallet = wallet
-    }
+    let wallet: UDWallet
     
     func sendCrypto(crypto: CryptoSendingSpec,
                     chain: ChainSpec,

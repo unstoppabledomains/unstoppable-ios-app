@@ -39,9 +39,3 @@ protocol CryptoSenderProtocol {
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> Double
 }
-
-extension CryptoSenderProtocol {
-    static var defaultSendTxGasPrice: BigUInt { 21_000 }
-    static var ethTicker: String { "crypto.ETH.address" }
-    static var maticTicker: String { "crypto.MATIC.version.MATIC.address" }
-}
