@@ -65,8 +65,6 @@ struct CryptoSender: CryptoSenderProtocol {
                                                         on: chain,
                                                         toAddress: toAddress)
     }
-    
-    
 }
 
 struct NativeCryptoSender: CryptoSenderProtocol {
@@ -75,6 +73,13 @@ struct NativeCryptoSender: CryptoSenderProtocol {
     static var maticTicker = "crypto.MATIC.version.MATIC.address"
     
     let wallet: UDWallet
+    
+    
+    func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
+        // only native tokens supported
+        return (token == Self.ethTicker && chain == .Ethereum) ||
+        (token == Self.maticTicker && chain == .Matic)
+    }
     
     func sendCrypto(crypto: CryptoSendingSpec,
                     chain: ChainSpec,
@@ -150,11 +155,5 @@ struct NativeCryptoSender: CryptoSenderProtocol {
             return downMultiplication(Self.defaultSendTxGasPrice, gasPrice.quantity)
         }
         return  downMultiplication(gasEstimate.quantity, gasPrice.quantity)
-    }
-        
-    func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
-        // only native tokens supported
-        return (token == Self.ethTicker && chain == .Ethereum) ||
-        (token == Self.maticTicker && chain == .Matic)
     }
 }
