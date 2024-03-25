@@ -10,10 +10,12 @@ import SwiftUI
 struct SelectCryptoAssetToSendView: View {
         
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+    @EnvironmentObject var tabRouter: HomeTabRouter
     
     @State private var searchDomainsKey = ""
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
     @State private var tokens: [BalanceTokenUIDescription] = []
+    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], subdomains: [])
     @State private var allDomains: [DomainDisplayInfo] = []
     
     let receiver: SendCryptoAsset.AssetReceiver
@@ -44,10 +46,13 @@ private extension SelectCryptoAssetToSendView {
             lhs.balanceUsd > rhs.balanceUsd
         })
         
-        allDomains = viewModel.sourceWallet.domains
-            .sorted(by: { lhs, rhs in
-            lhs.name < rhs.name
-        })
+        allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain }
+        setDomainsData()
+    }
+    
+    func setDomainsData() {
+        domainsData.setDomains(filteredDomains)
+        domainsData.sortDomains(.alphabeticalAZ)
     }
     
     @ViewBuilder
@@ -98,10 +103,21 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-        domainsSearchView()
-        ForEach(filteredDomains) { domain in
-            selectableDomainRow(domain)
+        if !allDomains.isEmpty {
+            domainsSearchView()
         }
+        domainsContentView()
+    }
+    
+    @ViewBuilder
+    func domainsContentView() -> some View {
+        HomeWalletsDomainsSectionView(domainsData: $domainsData,
+                                      domainSelectedCallback: { domain in
+            viewModel.handleAction(.userDomainSelected(domain))
+        },
+                                      buyDomainCallback: {
+            tabRouter.runPurchaseFlow()
+        })
     }
     
     @ViewBuilder
@@ -112,17 +128,9 @@ private extension SelectCryptoAssetToSendView {
                         autocapitalization: .never,
                         autocorrectionDisabled: true,
                         height: 36)
-    }
-
-    @ViewBuilder
-    func selectableDomainRow(_ domain: DomainDisplayInfo) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            viewModel.handleAction(.userDomainSelected(domain))
-        } label: {
-            SelectCryptoAssetToSendDomainView(domain: domain)
-        }
-        .buttonStyle(.plain)
+        .onChange(of: searchDomainsKey, perform: { _ in
+            setDomainsData()
+        })
     }
 }
 

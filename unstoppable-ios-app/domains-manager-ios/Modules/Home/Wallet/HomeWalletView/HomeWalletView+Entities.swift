@@ -302,10 +302,14 @@ extension HomeWalletView {
         private(set) var subdomains: [DomainDisplayInfo]
         var isSubdomainsVisible: Bool = false
         var domainsTLDsExpandedList: Set<String> = []
+    
+        mutating func setDomains(_ domains: [DomainDisplayInfo]) {
+            domainsGroups = DomainsTLDGroup.createFrom(domains: domains.filter({ !$0.isSubdomain }))
+            subdomains = domains.filter({ $0.isSubdomain })
+        }
         
         mutating func setDomainsFrom(wallet: WalletEntity) {
-            domainsGroups = DomainsTLDGroup.createFrom(domains: wallet.domains.filter({ !$0.isSubdomain }))
-            subdomains = wallet.domains.filter({ $0.isSubdomain })
+            setDomains(wallet.domains)
         }
         
         mutating func sortDomains(_ sortOption: HomeWalletView.DomainsSortingOptions) {
