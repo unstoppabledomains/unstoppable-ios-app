@@ -295,3 +295,33 @@ extension HomeWalletView {
         var analyticsName: String { rawValue }
     }
 }
+
+extension HomeWalletView {
+    struct DomainsSectionData {
+        private(set) var domainsGroups: [DomainsTLDGroup]
+        private(set) var subdomains: [DomainDisplayInfo]
+        var isSubdomainsVisible: Bool = false
+        var domainsTLDsExpandedList: Set<String> = []
+        
+        mutating func setDomainsFrom(wallet: WalletEntity) {
+            domainsGroups = DomainsTLDGroup.createFrom(domains: wallet.domains.filter({ !$0.isSubdomain }))
+            subdomains = wallet.domains.filter({ $0.isSubdomain })
+        }
+        
+        mutating func sortDomains(_ sortOption: HomeWalletView.DomainsSortingOptions) {
+            subdomains = subdomains.sorted(by: { lhs, rhs in
+                lhs.name < rhs.name
+            })
+            switch sortOption {
+            case .alphabeticalAZ:
+                domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                    lhs.tld < rhs.tld
+                })
+            case .alphabeticalZA:
+                domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                    lhs.tld > rhs.tld
+                })
+            }
+        }
+    }
+}
