@@ -87,7 +87,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         guard canSendCrypto(token: crypto.token, chain: chain.blockchainType) else {
             throw CryptoSender.Error.sendingNotSupported
         }
-
+        
         let chainId = chain.blockchainType.supportedChainId(env: chain.env)
         let tx = try await createNativeSendTransaction(crypto: crypto,
                                                        fromAddress: self.wallet.address,
@@ -95,10 +95,10 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                        chainId: chainId)
         
         guard wallet.walletState != .externalLinked else {
-            let response = try await wallet.signViaWalletConnectTransaction(tx: tx)
+            let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chainId)
             return response
         }
-
+        
         
         let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chainId)
         return hash
