@@ -259,25 +259,6 @@ extension HomeWalletView {
     }
 }
 
-
-extension HomeWalletView {
-    struct DomainsGroup: Hashable, Identifiable {
-        var id: String { tld }
-        
-        let domains: [DomainDisplayInfo]
-        let tld: String
-        let numberOfDomains: Int
-        
-        init(domains: [DomainDisplayInfo], tld: String) {
-            self.domains = domains.sorted(by: { lhs, rhs in
-                lhs.name < rhs.name
-            })
-            self.tld = tld
-            numberOfDomains = domains.count
-        }
-    }
-}
-
 extension HomeWalletView {
     enum BuyOptions: String, CaseIterable, PullUpCollectionViewCellItem  {
         case domains, crypto

@@ -236,8 +236,7 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
-                                      subdomains: viewModel.subdomains,
+        HomeWalletsDomainsSectionView(domainsData: viewModel.domainsData,
                                       domainSelectedCallback: viewModel.didSelectDomain,
                                       buyDomainCallback: viewModel.buyDomainPressed,
                                       isSubdomainsVisible: $viewModel.isSubdomainsVisible,
