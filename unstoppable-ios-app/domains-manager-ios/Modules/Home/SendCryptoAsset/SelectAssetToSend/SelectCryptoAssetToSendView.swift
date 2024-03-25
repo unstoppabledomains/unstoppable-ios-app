@@ -24,10 +24,14 @@ struct SelectCryptoAssetToSendView: View {
         List {
             assetTypePickerView()
                 .listRowSeparator(.hidden)
+                .listRowInsets(.init(horizontal: 16))
             selectedAssetsList()
                 .listRowSeparator(.hidden)
+                .listRowInsets(.init(horizontal: 16))
+
         }
         .addNavigationTopSafeAreaOffset()
+        .listRowSpacing(0)
         .navigationTitle(String.Constants.send.localized())
         .listStyle(.plain)
         .animation(.default, value: UUID())
@@ -89,6 +93,7 @@ private extension SelectCryptoAssetToSendView {
                                                                   token: token)))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
+                .padding(.init(vertical: 10))
         }
         .buttonStyle(.plain)
     }
