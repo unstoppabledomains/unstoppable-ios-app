@@ -160,9 +160,11 @@ private extension SelectTokenAssetAmountToSendView {
         HStack {
             HStack(spacing: 16) {
                 BalanceTokenIconsView(token: token)
-                tokenNameAndBalance()
-                Spacer()
-                usingMaxButton()
+                HStack(spacing: 0) {
+                    tokenNameAndBalance()
+                    Spacer()
+                    usingMaxButton()
+                }
             }
         }
         .padding(12)
