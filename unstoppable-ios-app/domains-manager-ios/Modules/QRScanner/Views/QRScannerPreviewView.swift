@@ -49,6 +49,7 @@ extension QRScannerPreviewView {
                 await self.startCamera()
             }
             self.cameraSessionService.startCaptureSession()
+            await self.setScanningState()
         }
     }
     
@@ -98,7 +99,7 @@ private extension QRScannerPreviewView {
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
             
             if isGranted {
-                await self?.setScanningState()
+                await self?.startCaptureSession()
             } else {
                 await self?.setState(.permissionsDenied)
             }
@@ -113,7 +114,6 @@ private extension QRScannerPreviewView {
                                                                                   in: view,
                                                                                   shouldShowAlertIfNotGranted: false)
             if isGranted {
-                setScanningState()
                 startCaptureSession()
             } else {
                 view.openAppSettings()
@@ -278,6 +278,7 @@ import SwiftUI
 struct QRScannerView: UIViewRepresentable {
     
     let hint: QRScannerHint
+    var isTorchOn: Bool = false
     var onEvent: ((QRScannerPreviewView.Event) -> Void)
     
     func makeUIView(context: Context) -> QRScannerPreviewView {
@@ -288,5 +289,7 @@ struct QRScannerView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: QRScannerPreviewView, context: Context) { }
+    func updateUIView(_ uiView: QRScannerPreviewView, context: Context) {
+        uiView.setTorchOn(isTorchOn)
+    }
 }

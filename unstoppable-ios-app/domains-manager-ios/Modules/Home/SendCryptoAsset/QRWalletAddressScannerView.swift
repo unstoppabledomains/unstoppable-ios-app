@@ -14,7 +14,9 @@ struct QRWalletAddressScannerView: View {
     
     var body: some View {
         ZStack {
-            QRScannerView(hint: .walletAddress, onEvent: handleQRScannerViewEvent)
+            QRScannerView(hint: .walletAddress, 
+                          isTorchOn: isTorchOn,
+                          onEvent: handleQRScannerViewEvent)
             .ignoresSafeArea()
         }
         .toolbar {

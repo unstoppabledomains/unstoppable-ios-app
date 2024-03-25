@@ -9,6 +9,7 @@ import SwiftUI
 
 extension SendCryptoAsset {
     enum NavigationDestination: Hashable {
+        case scanWalletAddress
         case selectAssetToSend(AssetReceiver)
         case selectTokenAmountToSend(SelectTokenAmountToSendData)
         case confirmSendToken(SendTokenAssetData)
@@ -19,6 +20,8 @@ extension SendCryptoAsset {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
+            case .scanWalletAddress:
+                QRWalletAddressScannerView()
             case .selectAssetToSend(let receiver):
                 SelectCryptoAssetToSendView(receiver: receiver)
             case .selectTokenAmountToSend(let data):
