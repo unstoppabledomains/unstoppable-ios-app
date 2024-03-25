@@ -194,7 +194,7 @@ private extension SelectTokenAssetAmountToSendView {
         if isUsingMax {
             String.Constants.usingMax.localized()
         } else {
-            String.Constants.useMax.localized()
+            String.Constants.max.localized()
         }
     }
     
