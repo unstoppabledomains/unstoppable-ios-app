@@ -236,12 +236,9 @@ private extension HomeWalletView {
     
     @ViewBuilder
     func domainsContentView() -> some View {
-        HomeWalletsDomainsSectionView(domainsGroups: viewModel.domainsGroups,
-                                      subdomains: viewModel.subdomains,
+        HomeWalletsDomainsSectionView(domainsData: $viewModel.domainsData,
                                       domainSelectedCallback: viewModel.didSelectDomain,
-                                      buyDomainCallback: viewModel.buyDomainPressed,
-                                      isSubdomainsVisible: $viewModel.isSubdomainsVisible,
-                                      domainsTLDsExpandedList: $viewModel.domainsTLDsExpandedList)
+                                      buyDomainCallback: viewModel.buyDomainPressed)
     }
     
     @ViewBuilder
@@ -266,6 +263,9 @@ private extension HomeWalletView {
         } label: {
             Image.dotsIcon
                 .foregroundStyle(Color.white)
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: HomeWalletView.WalletAction.more.analyticButton)
         }
     }
     

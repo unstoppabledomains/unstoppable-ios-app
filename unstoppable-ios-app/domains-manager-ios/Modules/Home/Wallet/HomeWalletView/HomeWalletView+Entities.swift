@@ -259,25 +259,6 @@ extension HomeWalletView {
     }
 }
 
-
-extension HomeWalletView {
-    struct DomainsGroup: Hashable, Identifiable {
-        var id: String { tld }
-        
-        let domains: [DomainDisplayInfo]
-        let tld: String
-        let numberOfDomains: Int
-        
-        init(domains: [DomainDisplayInfo], tld: String) {
-            self.domains = domains.sorted(by: { lhs, rhs in
-                lhs.name < rhs.name
-            })
-            self.tld = tld
-            numberOfDomains = domains.count
-        }
-    }
-}
-
 extension HomeWalletView {
     enum BuyOptions: String, CaseIterable, PullUpCollectionViewCellItem  {
         case domains, crypto
@@ -312,5 +293,39 @@ extension HomeWalletView {
         }
         
         var analyticsName: String { rawValue }
+    }
+}
+
+extension HomeWalletView {
+    struct DomainsSectionData {
+        private(set) var domainsGroups: [DomainsTLDGroup]
+        private(set) var subdomains: [DomainDisplayInfo]
+        var isSubdomainsVisible: Bool = false
+        var domainsTLDsExpandedList: Set<String> = []
+    
+        mutating func setDomains(_ domains: [DomainDisplayInfo]) {
+            domainsGroups = DomainsTLDGroup.createFrom(domains: domains.filter({ !$0.isSubdomain }))
+            subdomains = domains.filter({ $0.isSubdomain })
+        }
+        
+        mutating func setDomainsFrom(wallet: WalletEntity) {
+            setDomains(wallet.domains)
+        }
+        
+        mutating func sortDomains(_ sortOption: HomeWalletView.DomainsSortingOptions) {
+            subdomains = subdomains.sorted(by: { lhs, rhs in
+                lhs.name < rhs.name
+            })
+            switch sortOption {
+            case .alphabeticalAZ:
+                domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                    lhs.tld < rhs.tld
+                })
+            case .alphabeticalZA:
+                domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
+                    lhs.tld > rhs.tld
+                })
+            }
+        }
     }
 }

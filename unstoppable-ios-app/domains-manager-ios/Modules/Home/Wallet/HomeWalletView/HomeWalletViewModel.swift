@@ -20,16 +20,13 @@ extension HomeWalletView {
         @Published private(set) var selectedWallet: WalletEntity
         @Published private(set) var tokens: [BalanceTokenUIDescription] = []
         @Published private(set) var nftsCollections: [NFTsCollectionDescription] = []
-        @Published private(set) var domainsGroups: [DomainsGroup] = []
-        @Published private(set) var subdomains: [DomainDisplayInfo] = []
         @Published private(set) var chainsNotMatch: [HomeWalletView.NotMatchedRecordsDescription] = []
+        @Published var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], subdomains: [])
         @Published var nftsCollectionsExpandedIds: Set<String> = []
-        @Published var domainsTLDsExpandedList: Set<String> = []
         @Published var selectedContentType: ContentType = .tokens
         @Published var selectedTokensSortingOption: TokensSortingOptions = .highestValue
         @Published var selectedCollectiblesSortingOption: CollectiblesSortingOptions = .mostCollected
         @Published var selectedDomainsSortingOption: DomainsSortingOptions = .alphabeticalAZ
-        @Published var isSubdomainsVisible: Bool = false
         @Published var isNotMatchingTokensVisible: Bool = false
         
         private var cancellables: Set<AnyCancellable> = []
@@ -158,9 +155,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func setSelectedWallet(_ wallet: WalletEntity) {
         selectedWallet = wallet
         tokens = wallet.balance.map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }.flatMap({ $0 })
-        let domains = wallet.domains.filter({ !$0.isSubdomain })
-        self.domainsGroups = [String : [DomainDisplayInfo]].init(grouping: domains, by: { $0.name.getTldName() ?? "" }).map { HomeWalletView.DomainsGroup(domains: $0.value, tld: $0.key) }
-        subdomains = wallet.domains.filter({ $0.isSubdomain })
+        
+        self.domainsData.setDomainsFrom(wallet: wallet)
         
         let collectionNameToNFTs: [String : [NFTDisplayInfo]] = .init(grouping: wallet.nfts, by: { $0.collection })
         var collections: [HomeWalletView.NFTsCollectionDescription] = []
@@ -225,19 +221,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     }
     
     func sortDomains(_ sortOption: HomeWalletView.DomainsSortingOptions) {
-        subdomains = subdomains.sorted(by: { lhs, rhs in
-            lhs.name < rhs.name
-        })
-        switch sortOption {
-        case .alphabeticalAZ:
-            domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
-                lhs.tld < rhs.tld
-            })
-        case .alphabeticalZA:
-            domainsGroups = domainsGroups.sorted(by: { lhs, rhs in
-                lhs.tld > rhs.tld
-            })
-        }
+        domainsData.sortDomains(sortOption)
     }
     
     func runSelectRRDomainInSelectedWalletIfNeeded() {

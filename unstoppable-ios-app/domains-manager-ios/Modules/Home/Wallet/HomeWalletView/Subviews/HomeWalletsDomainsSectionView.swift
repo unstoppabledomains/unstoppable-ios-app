@@ -12,12 +12,9 @@ struct HomeWalletsDomainsSectionView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsViewName) var analyticsName
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
-    let domainsGroups: [HomeWalletView.DomainsGroup]
-    let subdomains: [DomainDisplayInfo]
+    @Binding var domainsData: HomeWalletView.DomainsSectionData
     let domainSelectedCallback: (DomainDisplayInfo)->()
     let buyDomainCallback: EmptyCallback
-    @Binding var isSubdomainsVisible: Bool
-    @Binding var domainsTLDsExpandedList: Set<String>
     private let minNumOfVisibleSubdomains = 2
 
     private let gridColumns = [
@@ -45,8 +42,14 @@ struct HomeWalletsDomainsSectionView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension HomeWalletsDomainsSectionView {
+    var domainsGroups: [DomainsTLDGroup] { domainsData.domainsGroups }
+    var subdomains: [DomainDisplayInfo] { domainsData.subdomains }
+    var isSubdomainsVisible: Bool { domainsData.isSubdomainsVisible }
+    var domainsTLDsExpandedList: Set<String> { domainsData.domainsTLDsExpandedList }
+    
+    
     @ViewBuilder
-    func domainsGroupSectionHeader(_ domainsGroup: HomeWalletView.DomainsGroup) -> some View {
+    func domainsGroupSectionHeader(_ domainsGroup: DomainsTLDGroup) -> some View {
         HomeWalletExpandableSectionHeaderView(title: ".\(domainsGroup.tld)",
                                               isExpandable: domainsGroup.numberOfDomains > minNumOfVisibleSubdomains,
                                               numberOfItemsInSection: domainsGroup.numberOfDomains,
@@ -59,14 +62,14 @@ private extension HomeWalletsDomainsSectionView {
                                                         .tld : tld,
                                                         .numberOfItemsInSection: String(domainsGroup.numberOfDomains)])
             if isExpanded {
-                domainsTLDsExpandedList.remove(tld)
+                domainsData.domainsTLDsExpandedList.remove(tld)
             } else {
-                domainsTLDsExpandedList.insert(tld)
+                domainsData.domainsTLDsExpandedList.insert(tld)
             }
         })
     }
     
-    func numberOfDomainsVisible(in domainsGroup: HomeWalletView.DomainsGroup) -> Int {
+    func numberOfDomainsVisible(in domainsGroup: DomainsTLDGroup) -> Int {
         let numberOfNFTs = domainsGroup.numberOfDomains
         return domainsTLDsExpandedList.contains(domainsGroup.tld) ? numberOfNFTs : min(numberOfNFTs, minNumOfVisibleSubdomains) //Take no more then 2 domains
     }
@@ -78,7 +81,7 @@ private extension HomeWalletsDomainsSectionView {
                                               numberOfItemsInSection: subdomains.count,
                                               isExpanded: isSubdomainsVisible,
                                               actionCallback: {
-            isSubdomainsVisible.toggle()
+            domainsData.isSubdomainsVisible.toggle()
             logButtonPressedAnalyticEvents(button: .subdomainsSectionHeader,
                                            parameters: [.expand : String(!isSubdomainsVisible),
                                                         .numberOfItemsInSection: String(subdomains.count)])
@@ -151,13 +154,11 @@ private extension HomeWalletsDomainsSectionView {
 }
 
 #Preview {
-    HomeWalletsDomainsSectionView(domainsGroups: [.init(domains: [.init(name: "oleg.x", ownerWallet: "123", isSetForRR: false)],
-                                                        tld: "x")],
-                                  subdomains: [.init(name: "oleg.oleg.x", ownerWallet: "123", isSetForRR: false)],
+    HomeWalletsDomainsSectionView(domainsData: .constant(.init(domainsGroups: [.init(domains: [.init(name: "oleg.x", ownerWallet: "123", isSetForRR: false)],
+                                                                                     tld: "x")],
+                                                               subdomains: [.init(name: "oleg.oleg.x", ownerWallet: "123", isSetForRR: false)])),
                                   domainSelectedCallback: { _ in },
-                                  buyDomainCallback: { },
-                                  isSubdomainsVisible: .constant(true),
-                                  domainsTLDsExpandedList: .constant([]))
+                                  buyDomainCallback: { })
     .frame(width: 390)
     .padding()
 }

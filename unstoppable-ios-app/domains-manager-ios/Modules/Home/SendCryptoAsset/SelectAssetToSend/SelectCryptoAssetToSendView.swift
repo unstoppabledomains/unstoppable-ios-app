@@ -10,10 +10,13 @@ import SwiftUI
 struct SelectCryptoAssetToSendView: View {
         
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+    @EnvironmentObject var tabRouter: HomeTabRouter
     
+    @State private var searchDomainsKey = ""
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
     @State private var tokens: [BalanceTokenUIDescription] = []
-    @State private var domains: [DomainDisplayInfo] = []
+    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], subdomains: [])
+    @State private var allDomains: [DomainDisplayInfo] = []
     
     let receiver: SendCryptoAsset.AssetReceiver
     
@@ -21,10 +24,14 @@ struct SelectCryptoAssetToSendView: View {
         List {
             assetTypePickerView()
                 .listRowSeparator(.hidden)
+                .listRowInsets(.init(horizontal: 16))
             selectedAssetsList()
                 .listRowSeparator(.hidden)
+                .listRowInsets(.init(horizontal: 16))
+
         }
         .addNavigationTopSafeAreaOffset()
+        .listRowSpacing(0)
         .navigationTitle(String.Constants.send.localized())
         .listStyle(.plain)
         .animation(.default, value: UUID())
@@ -43,10 +50,13 @@ private extension SelectCryptoAssetToSendView {
             lhs.balanceUsd > rhs.balanceUsd
         })
         
-        domains = viewModel.sourceWallet.domains
-            .sorted(by: { lhs, rhs in
-            lhs.name < rhs.name
-        })
+        allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain }
+        setDomainsData()
+    }
+    
+    func setDomainsData() {
+        domainsData.setDomains(filteredDomains)
+        domainsData.sortDomains(.alphabeticalAZ)
     }
     
     @ViewBuilder
@@ -83,26 +93,49 @@ private extension SelectCryptoAssetToSendView {
                                                                   token: token)))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
+                .padding(.init(vertical: 10))
         }
         .buttonStyle(.plain)
+    }
+    
+    var filteredDomains: [DomainDisplayInfo] {
+        if searchDomainsKey.isEmpty {
+            return allDomains
+        } else {
+            return allDomains.filter { $0.name.lowercased().contains(searchDomainsKey.lowercased()) }
+        }
     }
     
     @ViewBuilder
     func domainsListView() -> some View {
-        ForEach(domains) { domain in
-            selectableDomainRow(domain)
+        if !allDomains.isEmpty {
+            domainsSearchView()
         }
+        domainsContentView()
     }
     
     @ViewBuilder
-    func selectableDomainRow(_ domain: DomainDisplayInfo) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
+    func domainsContentView() -> some View {
+        HomeWalletsDomainsSectionView(domainsData: $domainsData,
+                                      domainSelectedCallback: { domain in
             viewModel.handleAction(.userDomainSelected(domain))
-        } label: {
-            SelectCryptoAssetToSendDomainView(domain: domain)
-        }
-        .buttonStyle(.plain)
+        },
+                                      buyDomainCallback: {
+            tabRouter.runPurchaseFlow()
+        })
+    }
+    
+    @ViewBuilder
+    func domainsSearchView() -> some View {
+        UDTextFieldView(text: $searchDomainsKey,
+                        placeholder: String.Constants.search.localized(),
+                        leftViewType: .search,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true,
+                        height: 36)
+        .onChange(of: searchDomainsKey, perform: { _ in
+            setDomainsData()
+        })
     }
 }
 
