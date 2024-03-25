@@ -55,20 +55,9 @@ typealias QRCode = String
 // MARK: - QRScannerViewPresenterProtocol
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     func viewDidLoad() {
-        guard let view = self.view else { return }
         appContext.wcRequestsHandlingService.addListener(self)
         showNumberOfAppsConnected()
         setSelected(wallet: selectedWallet)
-    }
-    
-    func viewDidAppear() {
-        Task {
-            let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
-            
-            if isGranted {
-                view?.startCaptureSession()
-            }
-        }
     }
     
     func didActivateCamera() {

@@ -535,6 +535,8 @@
 		C621A4402BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */; };
 		C621A4422BB1137900CB5CB9 /* QRScannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4412BB1137900CB5CB9 /* QRScannerState.swift */; };
 		C621A4432BB1137900CB5CB9 /* QRScannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4412BB1137900CB5CB9 /* QRScannerState.swift */; };
+		C621A4452BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4442BB11B0100CB5CB9 /* QRScannerHint.swift */; };
+		C621A4462BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4442BB11B0100CB5CB9 /* QRScannerHint.swift */; };
 		C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A4283B92C0002A0CBD /* UDNavigationController.swift */; };
 		C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A9283B9548002A0CBD /* CAAnimation.swift */; };
@@ -2881,6 +2883,7 @@
 		C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRWalletAddressScannerView.swift; sourceTree = "<group>"; };
 		C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerPreviewView.swift; sourceTree = "<group>"; };
 		C621A4412BB1137900CB5CB9 /* QRScannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerState.swift; sourceTree = "<group>"; };
+		C621A4442BB11B0100CB5CB9 /* QRScannerHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerHint.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
 		C62247A4283B92C0002A0CBD /* UDNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNavigationController.swift; sourceTree = "<group>"; };
 		C62247A9283B9548002A0CBD /* CAAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAAnimation.swift; sourceTree = "<group>"; };
@@ -7036,6 +7039,7 @@
 				C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */,
 				C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */,
 				C621A4412BB1137900CB5CB9 /* QRScannerState.swift */,
+				C621A4442BB11B0100CB5CB9 /* QRScannerHint.swift */,
 				C6A2D575284F9EAD00327C47 /* ConnectedAppsList */,
 				C6A2D553284F3DF700327C47 /* Views */,
 			);
@@ -8704,6 +8708,7 @@
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C61DB10E2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */,
+				C621A4452BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,
 				C63095D32B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C617D0B02B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
@@ -10473,6 +10478,7 @@
 				C6D645BD2B1DBCF000D724AC /* DashesView.swift in Sources */,
 				C6D645FE2B1DBFBA00D724AC /* DomainsPurchasedDetails.swift in Sources */,
 				C6D6472D2B1ED9A400D724AC /* WalletCopyAddressAction.swift in Sources */,
+				C621A4462BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,
 				C6D6468F2B1ED13C00D724AC /* AddCurrencyCell.swift in Sources */,
 				C618084A2B19B9930032E543 /* PreviewDomainRecordsService.swift in Sources */,
 				C6D645B92B1DBC5000D724AC /* UIAction.swift in Sources */,

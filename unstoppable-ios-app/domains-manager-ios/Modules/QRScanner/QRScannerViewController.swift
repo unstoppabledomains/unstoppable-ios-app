@@ -151,6 +151,7 @@ private extension QRScannerViewController {
         navigationController?.navigationBar.tintColor = .white
         appsConnectedItemView.isHidden = true
         
+        scannerPreviewView.setHint(.walletConnect)
         scannerPreviewView.onEvent = { [weak self] event in
             DispatchQueue.main.async {
                 self?.handleScannerPreviewEvent(event)

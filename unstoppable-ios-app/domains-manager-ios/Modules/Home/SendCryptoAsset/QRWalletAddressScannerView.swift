@@ -13,7 +13,7 @@ struct QRWalletAddressScannerView: View {
     
     var body: some View {
         ZStack {
-            QRScannerView { event in
+            QRScannerView(hint: .walletAddress) { event in
                 
             }
             .ignoresSafeArea()
@@ -24,7 +24,7 @@ struct QRWalletAddressScannerView: View {
             }
         }
         .animation(.default, value: UUID())
-        .navigationTitle("Scan QR code")
+        .navigationTitle(String.Constants.scanQRCodeTitle.localized())
     }
 }
 

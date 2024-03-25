@@ -57,6 +57,10 @@ extension QRScannerPreviewView {
             await cameraSessionService.stopCaptureSession()
         }
     }
+    
+    func setHint(_ hint: QRScannerHint) {
+        scannerSightView.setHint(hint)
+    }
 }
 
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
@@ -249,11 +253,13 @@ import SwiftUI
 
 struct QRScannerView: UIViewRepresentable {
     
+    let hint: QRScannerHint
     var onEvent: ((QRScannerPreviewView.Event) -> Void)
     
     func makeUIView(context: Context) -> QRScannerPreviewView {
         let view = QRScannerPreviewView()
         view.onEvent = onEvent
+        view.setHint(hint)
         
         return view
     }

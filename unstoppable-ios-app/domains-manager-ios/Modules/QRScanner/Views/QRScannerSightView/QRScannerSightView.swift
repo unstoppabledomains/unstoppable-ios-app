@@ -12,7 +12,8 @@ final class QRScannerSightView: UIView, SelfNameable, NibInstantiateable {
     @IBOutlet var containerView: UIView!
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var aimView: UIView!
-    @IBOutlet private weak var walletConnectLabel: UILabel!
+    @IBOutlet private weak var hintImageView: UIImageView!
+    @IBOutlet private weak var hintLabel: UILabel!
     @IBOutlet private weak var blurView: UIVisualEffectView!
 
     fileprivate var maskLayer: CAShapeLayer!
@@ -47,17 +48,21 @@ extension QRScannerSightView {
     func setBlurHidden(_ hidden: Bool) {
         blurView.isHidden = hidden
     }
+    
+    func setHint(_ hint: QRScannerHint) {
+        hintLabel.setAttributedTextWith(text: hint.title,
+                                        font: .currentFont(withSize: 14, weight: .medium),
+                                        textColor: .foregroundOnEmphasisOpacity)
+        hintImageView.image = hint.icon
+        hintImageView.isHidden = hint.icon == nil
+    }
 }
 
 // MARK: - Setup methods
 private extension QRScannerSightView {
     func setup() {
         commonViewInit()
-        
         backgroundColor = .clear
-        walletConnectLabel.setAttributedTextWith(text: String.Constants.walletConnectCompatible.localized(),
-                                                 font: .currentFont(withSize: 14, weight: .medium),
-                                                 textColor: .foregroundOnEmphasisOpacity)
         setupAimLayer()
     }
     
@@ -100,6 +105,7 @@ private extension QRScannerSightView {
         }
     }
 }
+
 // MARK: - Private methods
 private extension QRScannerSightView {
     enum Corner: CaseIterable {

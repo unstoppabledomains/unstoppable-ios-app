@@ -1164,6 +1164,7 @@ extension String {
         static let speed = "SPEED"
         static let feeEstimate = "FEE_ESTIMATE"
         static let sendCryptoReviewPromptMessage = "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE"
+        static let scanWalletAddressHint = "SCAN_WALLET_ADDRESS_HINT"
     }
     
     enum BlockChainIcons: String {
