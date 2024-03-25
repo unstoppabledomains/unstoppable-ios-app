@@ -129,10 +129,12 @@ extension WalletsDataService: WalletsDataServiceProtocol {
             guard !additionalAddresses.isEmpty else { return [] }
             
             let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses)
+            WalletBalancesStorage.instance.cacheBalances(balances, for: domainName)
+            
             return balances
         } catch {
             Debugger.printFailure("Failed to load additional tokens for domain: \(domainName)")
-            return []
+            return WalletBalancesStorage.instance.getCachedBalancesFor(domainName: domainName)
         }
     }
 }

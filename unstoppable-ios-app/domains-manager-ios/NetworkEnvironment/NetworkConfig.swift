@@ -39,7 +39,7 @@ struct NetworkConfig {
     }
     
     static var buyCryptoUrl: String {
-        websiteBaseUrl + "/fiat-ramps"
+        websiteBaseUrl + "/fiat-ramps?utm_source=ud_ios url"
     }
     
     static var baseDomainProfileUrl: String {
