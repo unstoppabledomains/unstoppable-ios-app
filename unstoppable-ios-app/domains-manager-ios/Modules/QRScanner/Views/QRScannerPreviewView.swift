@@ -45,21 +45,25 @@ extension QRScannerPreviewView {
         Task.detached(priority: .background) { [weak self] in
             guard let self else { return }
             
-            if !(await self.cameraSessionService.isSessionSet) {
+            if !(self.cameraSessionService.isSessionSet) {
                 await self.startCamera()
             }
-            await self.cameraSessionService.startCaptureSession()
+            self.cameraSessionService.startCaptureSession()
         }
     }
     
     func stopCaptureSession() {
-        Task {
-            await cameraSessionService.stopCaptureSession()
-        }
+        cameraSessionService.stopCaptureSession()
     }
     
     func setHint(_ hint: QRScannerHint) {
         scannerSightView.setHint(hint)
+    }
+    
+    var isTorchAvailable: Bool { cameraSessionService.isTorchAvailable }
+    
+    func setTorchOn(_ on: Bool) {
+        cameraSessionService.setTorchOn(on)
     }
 }
 
@@ -94,7 +98,7 @@ private extension QRScannerPreviewView {
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
             
             if isGranted {
-                await self?.setState(.scanning)
+                await self?.setScanningState()
             } else {
                 await self?.setState(.permissionsDenied)
             }
@@ -109,7 +113,7 @@ private extension QRScannerPreviewView {
                                                                                   in: view,
                                                                                   shouldShowAlertIfNotGranted: false)
             if isGranted {
-                setState(.scanning)
+                setScanningState()
                 startCaptureSession()
             } else {
                 view.openAppSettings()
@@ -117,28 +121,33 @@ private extension QRScannerPreviewView {
         }
     }
     
+    func setScanningState() {
+        let capabilities = QRScannerCapabilities(isTorchAvailable: cameraSessionService.isTorchAvailable)
+        setState(.scanning(capabilities))
+    }
+    
     func updateRectOfInterest()  {
         Task {
             let aimFrame = scannerSightView.aimFrame
             let rect = previewLayer?.metadataOutputRectConverted(fromLayerRect: aimFrame) ?? .zero
-            await self.cameraSessionService.setRectOfInterest(rect)
+            self.cameraSessionService.setRectOfInterest(rect)
         }
     }
     
-    func startCamera() async {
-        let availableToRunSession = await self.cameraSessionService.setupCaptureSession()
-        let output = await self.cameraSessionService.metadataOutput
+    func startCamera() {
+        let availableToRunSession = self.cameraSessionService.setupCaptureSession()
+        let output = self.cameraSessionService.metadataOutput
         output?.setMetadataObjectsDelegate(self, queue: .main)
         
         if availableToRunSession == true {
-            await self.addPreviewLayer()
+            self.addPreviewLayer()
         } else {
             onEvent?(.didFailToSetupCaptureSession)
         }
     }
     
-    func addPreviewLayer() async {
-        guard let previewLayer = await self.cameraSessionService.getPreviewLayer() else { return }
+    func addPreviewLayer() {
+        guard let previewLayer = self.cameraSessionService.getPreviewLayer() else { return }
         
         previewLayer.frame = captureSessionContainerView.layer.bounds
         previewLayer.videoGravity = .resizeAspectFill
@@ -161,7 +170,7 @@ private extension QRScannerPreviewView {
             permissionsView.enableCameraButtonPressedCallback = { [weak self] in
                 self?.didTapEnableCameraAccess()
             }
-            if state == .cameraNotAvailable {
+            if case .cameraNotAvailable = state {
                 permissionsView.setCameraNotAvailable()
             }
             bringSubviewToFront(permissionsView)
@@ -177,7 +186,7 @@ extension QRScannerPreviewView {
     }
 }
 
-private actor CameraSessionService {
+private final class CameraSessionService {
     
     private var captureSession: AVCaptureSession?
     private var videoCaptureDevice: AVCaptureDevice?
@@ -245,6 +254,21 @@ private actor CameraSessionService {
     
     func setRectOfInterest(_ rect: CGRect) {
         metadataOutput?.rectOfInterest = rect
+    }
+    
+    var isTorchAvailable: Bool { videoCaptureDevice?.isTorchAvailable ?? false }
+    
+    func setTorchOn(_ on: Bool) {
+        guard isTorchAvailable,
+              let videoCaptureDevice else { return }
+        
+        do {
+            try videoCaptureDevice.lockForConfiguration()
+            videoCaptureDevice.torchMode = on ? .on : .off
+            videoCaptureDevice.unlockForConfiguration()
+        } catch {
+            Debugger.printFailure("Failed to run on the torch: \(error.localizedDescription)")
+        }
     }
 }
 

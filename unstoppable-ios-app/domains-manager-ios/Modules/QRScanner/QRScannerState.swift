@@ -9,7 +9,11 @@ import Foundation
 
 enum QRScannerState {
     case askingForPermissions
-    case scanning
+    case scanning(QRScannerCapabilities)
     case permissionsDenied
     case cameraNotAvailable
+}
+
+struct QRScannerCapabilities {
+    let isTorchAvailable: Bool
 }

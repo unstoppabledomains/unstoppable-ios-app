@@ -9,18 +9,19 @@ import SwiftUI
 
 struct QRWalletAddressScannerView: View {
 
+    @State private var isTorchAvailable = false
     @State private var isTorchOn = false
     
     var body: some View {
         ZStack {
-            QRScannerView(hint: .walletAddress) { event in
-                
-            }
+            QRScannerView(hint: .walletAddress, onEvent: handleQRScannerViewEvent)
             .ignoresSafeArea()
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                torchButton()
+            if isTorchAvailable {
+                ToolbarItem(placement: .topBarTrailing) {
+                    torchButton()
+                }
             }
         }
         .animation(.default, value: UUID())
@@ -30,6 +31,13 @@ struct QRWalletAddressScannerView: View {
 
 // MARK: - Private methods
 private extension QRWalletAddressScannerView {
+    func handleQRScannerViewEvent(_ event: QRScannerPreviewView.Event) {
+        if case .didChangeState(let state) = event,
+           case .scanning(let capabilities) = state {
+            isTorchAvailable = capabilities.isTorchAvailable
+        }
+    }
+    
     @ViewBuilder
     func torchButton() -> some View {
         Button {
@@ -44,12 +52,17 @@ private extension QRWalletAddressScannerView {
     @ViewBuilder
     func currentTorchIcon() -> some View {
         if isTorchOn {
-            Image(systemName: "bolt.fill")
+            Image.bolt
                 .resizable()
                 .foregroundStyle(Color.brandElectricYellow)
-                .shadow(color: Color(red: 0.9, green: 0.98, blue: 0.2).opacity(0.72), radius: 8, x: 0, y: 2)
+                .shadow(color: Color(red: 0.9, 
+                                     green: 0.98,
+                                     blue: 0.2).opacity(0.72),
+                        radius: 8,
+                        x: 0,
+                        y: 2)
         } else {
-            Image(systemName: "bolt.slash")
+            Image.boltSlash
                 .resizable()
                 .foregroundStyle(.white)
         }
