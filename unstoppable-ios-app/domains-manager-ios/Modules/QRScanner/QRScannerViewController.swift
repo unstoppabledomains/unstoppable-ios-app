@@ -12,7 +12,6 @@ import AVFoundation
 protocol QRScannerViewProtocol: BaseViewControllerProtocol {
     func startCaptureSession()
     func stopCaptureSession()
-    func setState(_ state: QRScannerViewController.State)
     func setWith(wallet: WalletEntity, isSelectable: Bool)
     func setWith(appsConnected: Int)
     func setBlockchainTypeSelectionWith(availableTypes: [BlockchainType], selectedType: BlockchainType)
@@ -22,14 +21,11 @@ protocol QRScannerViewProtocol: BaseViewControllerProtocol {
 @MainActor
 final class QRScannerViewController: BaseViewController {
     
-    @IBOutlet private weak var captureSessionContainerView: UIView!
-    @IBOutlet private weak var scannerSightView: QRScannerSightView!
+    @IBOutlet private weak var scannerPreviewView: QRScannerPreviewView!
     @IBOutlet private weak var selectionItemsStack: UIStackView!
     @IBOutlet private weak var appsConnectedItemView: ListItemView!
     @IBOutlet private weak var selectedDomainItemView: QRScannerDomainInfoView!
     
-    private let cameraSessionService = CameraSessionService()
-    private var previewLayer: AVCaptureVideoPreviewLayer?
     private var availableBlockchainTypes: [BlockchainType] = []
     private var selectedBlockchainType: BlockchainType?
 
@@ -58,14 +54,6 @@ final class QRScannerViewController: BaseViewController {
         setNavBarTint(.white)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.updateRectOfInterest()
-        }
-    }
-    
     override var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundOnEmphasis,
                                                                      .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
     
@@ -75,42 +63,11 @@ final class QRScannerViewController: BaseViewController {
 // MARK: - QRScannerViewProtocol
 extension QRScannerViewController: QRScannerViewProtocol {
     func startCaptureSession() {
-        Task.detached(priority: .background) { [weak self] in
-            guard let self else { return }
-            
-            if !(await self.cameraSessionService.isSessionSet) {
-                await self.startCamera()
-            }
-            await self.cameraSessionService.startCaptureSession()
-        }
+        scannerPreviewView.startCaptureSession()
     }
     
     func stopCaptureSession() {
-        Task {
-            await cameraSessionService.stopCaptureSession()
-        }
-    }
-    
-    func setState(_ state: QRScannerViewController.State) {
-        switch state {
-        case .scanning:
-            selectionItemsStack.isHidden = false
-            view.firstSubviewOfType(QRScannerPermissionsView.self)?.removeFromSuperview()
-            scannerSightView.setBlurHidden(false)
-        case .askingForPermissions:
-            scannerSightView.setBlurHidden(true)
-        case .permissionsDenied, .cameraNotAvailable:
-            selectionItemsStack.isHidden = true
-            let permissionsView = QRScannerPermissionsView()
-            permissionsView.embedInSuperView(view)
-            permissionsView.enableCameraButtonPressedCallback = { [weak self] in
-                self?.presenter.didTapEnableCameraAccess()
-            }
-            if state == .cameraNotAvailable {
-                permissionsView.setCameraNotAvailable()
-            }
-            view.bringSubviewToFront(permissionsView)
-        }
+        scannerPreviewView.stopCaptureSession()
     }
     
     func setWith(wallet: WalletEntity, isSelectable: Bool) {
@@ -163,16 +120,6 @@ extension QRScannerViewController: QRScannerViewProtocol {
     }
 }
 
-// MARK: - AVCaptureMetadataOutputObjectsDelegate
-extension QRScannerViewController: AVCaptureMetadataOutputObjectsDelegate {
-    func metadataOutput(_ output: AVCaptureMetadataOutput,
-                        didOutput metadataObjects: [AVMetadataObject],
-                        from connection: AVCaptureConnection) {
-        let codes = Array(metadataObjects.lazy.compactMap({ ($0 as? AVMetadataMachineReadableCodeObject)?.stringValue }).filter({ !$0.isEmpty }))
-        presenter.didRecognizeQRCodes(codes)
-    }
-}
-
 // MARK: - Actions
 private extension QRScannerViewController {
     @IBAction func didTapConnectedAppsView() {
@@ -188,14 +135,6 @@ private extension QRScannerViewController {
 
 // MARK: - Private functions
 private extension QRScannerViewController {
-    func updateRectOfInterest()  {
-        Task {
-            let aimFrame = scannerSightView.aimFrame
-            let rect = previewLayer?.metadataOutputRectConverted(fromLayerRect: aimFrame) ?? .zero
-            await self.cameraSessionService.setRectOfInterest(rect)
-        }
-    }
-    
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
         logAnalytic(event: .didSelectChainNetwork,
                     parameters: [.chainNetwork: blockchainType.rawValue])
@@ -211,108 +150,31 @@ private extension QRScannerViewController {
         title = String.Constants.scanQRCodeTitle.localized()
         navigationController?.navigationBar.tintColor = .white
         appsConnectedItemView.isHidden = true
-    }
-    
-    func startCamera() async {
-        let availableToRunSession = await self.cameraSessionService.setupCaptureSession()
-        let output = await self.cameraSessionService.metadataOutput
-        output?.setMetadataObjectsDelegate(self, queue: .main)
         
-        if availableToRunSession == true {
-            await self.addPreviewLayer()
-        } else {
-            self.presenter.failedToSetupCaptureSession()
-        }
-    }
-    
-    func addPreviewLayer() async {
-        guard let previewLayer = await self.cameraSessionService.getPreviewLayer() else { return }
-        
-        previewLayer.frame = captureSessionContainerView.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        captureSessionContainerView.layer.addSublayer(previewLayer)
-        self.previewLayer = previewLayer
-        updateRectOfInterest()
-    }
-}
-
-private actor CameraSessionService {
-    
-    private var captureSession: AVCaptureSession?
-    private var videoCaptureDevice: AVCaptureDevice?
-    private var videoInput: AVCaptureDeviceInput?
-    private var previewLayer: AVCaptureVideoPreviewLayer?
-    private(set) var metadataOutput: AVCaptureMetadataOutput?
-
-    var isSessionSet: Bool { captureSession != nil }
-    var isSessionRunning: Bool { captureSession?.isRunning == true }
-
-    func setupCaptureSession() -> Bool {
-        let captureSession = AVCaptureSession()
-        captureSession.sessionPreset = .hd1920x1080
-        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return false }
-        self.videoCaptureDevice = videoCaptureDevice
-        
-        do {
-            let videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
-            if (captureSession.canAddInput(videoInput)) {
-                captureSession.addInput(videoInput)
-            } else {
-                return false
+        scannerPreviewView.onEvent = { [weak self] event in
+            DispatchQueue.main.async {
+                self?.handleScannerPreviewEvent(event)
             }
-            
-            let metadataOutput = AVCaptureMetadataOutput()
-            if (captureSession.canAddOutput(metadataOutput)) {
-                captureSession.addOutput(metadataOutput)
-                metadataOutput.metadataObjectTypes = metadataOutput.availableMetadataObjectTypes
-            } else {
-                return false
+        }
+    }
+    
+    func handleScannerPreviewEvent(_ event: QRScannerPreviewView.Event) {
+        switch event {
+        case .didChangeState(let state):
+            switch state {
+            case .scanning:
+                selectionItemsStack.isHidden = false
+                presenter.didActivateCamera()
+            case .askingForPermissions:
+                return
+            case .permissionsDenied, .cameraNotAvailable:
+                selectionItemsStack.isHidden = true
             }
-            
-            self.captureSession = captureSession
-            self.videoInput = videoInput
-            self.metadataOutput = metadataOutput
-            
-            return true
-        } catch {
-            return false
+        case .didRecognizeQRCodes(let codes):
+            presenter.didRecognizeQRCodes(codes)
+        case .didFailToSetupCaptureSession:
+            presenter.failedToSetupCaptureSession()
         }
-    }
-  
-    func startCaptureSession() {
-        guard !isSessionRunning else { return }
-        
-        captureSession?.startRunning()
-    }
-    
-    func stopCaptureSession() {
-        guard isSessionRunning else { return }
-        
-        captureSession?.stopRunning()
-    }
-    
-    func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
-        if let previewLayer = self.previewLayer {
-            return previewLayer
-        }
-        guard let captureSession = self.captureSession else { return nil }
-        
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.previewLayer = previewLayer
-        return previewLayer
-    }
-    
-    func setRectOfInterest(_ rect: CGRect) {
-        metadataOutput?.rectOfInterest = rect
-    }
-}
-
-extension QRScannerViewController {
-    enum State {
-        case askingForPermissions
-        case scanning
-        case permissionsDenied
-        case cameraNotAvailable
     }
 }
 

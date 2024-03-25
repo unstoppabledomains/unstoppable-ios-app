@@ -10,9 +10,9 @@ import Combine
 
 @MainActor
 protocol QRScannerViewPresenterProtocol: BasePresenterProtocol {
+    func didActivateCamera()
     func didRecognizeQRCodes(_ qrCodes: [QRCode])
     func failedToSetupCaptureSession()
-    func didTapEnableCameraAccess()
     func didTapConnectedAppsView()
     func didTapDomainInfoView()
     func didSelectBlockchainType(_ blockchainType: BlockchainType)
@@ -57,21 +57,8 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     func viewDidLoad() {
         guard let view = self.view else { return }
         appContext.wcRequestsHandlingService.addListener(self)
-        view.setState(.askingForPermissions)
-        let selectedDomain = self.selectedWallet
-        Task.detached(priority: .low) { [weak self] in
-            let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
-            
-            if isGranted {
-                await self?.setBlockchainTypePicker()
-                await view.setState(.scanning)
-            } else {
-                await view.setState(.permissionsDenied)
-            }
-            
-            await self?.showNumberOfAppsConnected()
-            await self?.setSelected(wallet: selectedDomain)
-        }
+        showNumberOfAppsConnected()
+        setSelected(wallet: selectedWallet)
     }
     
     func viewDidAppear() {
@@ -82,6 +69,10 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
                 view?.startCaptureSession()
             }
         }
+    }
+    
+    func didActivateCamera() {
+        setBlockchainTypePicker()
     }
    
     func didRecognizeQRCodes(_ qrCodes: [QRCode]) {
@@ -115,25 +106,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     }
     
     func failedToSetupCaptureSession() {
-        view?.setState(.cameraNotAvailable)
         view?.removeBlockchainTypeSelection()
-    }
-    
-    func didTapEnableCameraAccess() {
-        Task {
-            guard let view = self.view else { return }
-            
-            let isGranted = await appContext.permissionsService.askPermissionsFor(functionality: .camera,
-                                                                                  in: view,
-                                                                                  shouldShowAlertIfNotGranted: false)
-            if isGranted {
-                setBlockchainTypePicker()
-                view.setState(.scanning)
-                view.startCaptureSession()
-            } else {
-                view.openAppSettings()
-            }
-        }
     }
     
     func didTapConnectedAppsView() {

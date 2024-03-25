@@ -529,6 +529,12 @@
 		C6203A632B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */; };
 		C6203A642B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */; };
 		C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
+		C621A43C2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */; };
+		C621A43D2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */; };
+		C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */; };
+		C621A4402BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */; };
+		C621A4422BB1137900CB5CB9 /* QRScannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4412BB1137900CB5CB9 /* QRScannerState.swift */; };
+		C621A4432BB1137900CB5CB9 /* QRScannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4412BB1137900CB5CB9 /* QRScannerState.swift */; };
 		C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A4283B92C0002A0CBD /* UDNavigationController.swift */; };
 		C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62247A9283B9548002A0CBD /* CAAnimation.swift */; };
@@ -2872,6 +2878,9 @@
 		C6203A5E2B883EF3000A1A8E /* HomeExploreFollowersSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowersSectionView.swift; sourceTree = "<group>"; };
 		C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerCellView.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
+		C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
+		C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerPreviewView.swift; sourceTree = "<group>"; };
+		C621A4412BB1137900CB5CB9 /* QRScannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerState.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
 		C62247A4283B92C0002A0CBD /* UDNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNavigationController.swift; sourceTree = "<group>"; };
 		C62247A9283B9548002A0CBD /* CAAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAAnimation.swift; sourceTree = "<group>"; };
@@ -6321,6 +6330,7 @@
 				C67213E12BAA967C0075B9C7 /* SendCryptoAssetRootView.swift */,
 				C62900E12BAAB392008B35A2 /* SendCryptoAsset.swift */,
 				C67213DE2BAA96170075B9C7 /* SendCryptoAssetNavigationDestination.swift */,
+				C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
 				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
@@ -7025,6 +7035,7 @@
 				C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */,
 				C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */,
 				C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */,
+				C621A4412BB1137900CB5CB9 /* QRScannerState.swift */,
 				C6A2D575284F9EAD00327C47 /* ConnectedAppsList */,
 				C6A2D553284F3DF700327C47 /* Views */,
 			);
@@ -7061,6 +7072,7 @@
 		C6A2D553284F3DF700327C47 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */,
 				C6A2D543284E3A8C00327C47 /* QRScannerDomainInfoView */,
 				C6A2D538284E138100327C47 /* QRScannerPermissionsView */,
 				C6A2D512284DBDD000327C47 /* QRScannerSightView */,
@@ -8770,6 +8782,7 @@
 				C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */,
 				C609821C2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C6C9958E289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
+				C621A4422BB1137900CB5CB9 /* QRScannerState.swift in Sources */,
 				C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E7F283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
 				C6D646C22B1ED22400D724AC /* NetworkService+ProfilesEntities.swift in Sources */,
@@ -9096,7 +9109,9 @@
 				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C6B2E20C2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */,
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
+				C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
+				C621A43C2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
 				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C62900DF2BAAB1A8008B35A2 /* UDTabsPickerView.swift in Sources */,
@@ -9895,6 +9910,7 @@
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,
 				C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
 				C6D645BC2B1DBCE400D724AC /* ScrollViewOffsetListener.swift in Sources */,
+				C621A43D2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */,
 				C6C8F8352B217E9600A9834D /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C6D645E82B1DBE6B00D724AC /* RaisedTertiaryButton.swift in Sources */,
 				C62AC2032BABF532003FB69E /* ConfirmSendTokenReviewInfoView.swift in Sources */,
@@ -10405,6 +10421,7 @@
 				C6D6470D2B1ED7D000D724AC /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C6C8F83E2B217E9600A9834D /* RecoveryPhraseViewController.swift in Sources */,
 				C6C8F8742B21822700A9834D /* TutorialStepViewController.swift in Sources */,
+				C621A4432BB1137900CB5CB9 /* QRScannerState.swift in Sources */,
 				C6C8F8BF2B2182E400A9834D /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				C62900FC2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */,
 				C6C8F82A2B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
@@ -10517,6 +10534,7 @@
 				C6102FC82B6A339A0098AF75 /* HomeWebAccountView.swift in Sources */,
 				C6BF6BDD2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,
 				C61807BE2B19A0CB0032E543 /* Extension-String+Preview.swift in Sources */,
+				C621A4402BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
 				C64939F32B6357A600457363 /* HomeTabRouter.swift in Sources */,
 				C61807E62B19A5910032E543 /* DeepLinksServiceProtocol.swift in Sources */,
 				C6C8F9992B218E2400A9834D /* ConfettiImageView.swift in Sources */,
