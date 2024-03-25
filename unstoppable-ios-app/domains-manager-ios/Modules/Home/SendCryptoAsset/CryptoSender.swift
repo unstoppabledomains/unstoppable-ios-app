@@ -93,6 +93,13 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                        fromAddress: self.wallet.address,
                                                        toAddress: toAddress,
                                                        chainId: chainId)
+        
+        guard wallet.walletState != .externalLinked else {
+            let response = try await wallet.signViaWalletConnectTransaction(tx: tx)
+            return response
+        }
+
+        
         let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chainId)
         return hash
     }

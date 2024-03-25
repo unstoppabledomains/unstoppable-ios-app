@@ -1234,6 +1234,26 @@ extension WalletConnectServiceV2 {
                                      in: wallet)
     }
     
+    func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                    chainId: Int,
+                    tx: EthereumTransaction,
+                    address: HexAddress,
+                    in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
+            throw WalletConnectRequestError.noWCSessionFound
+        }
+        
+        guard let txAdapted = TransactionV2(ethTx: tx) else {
+            throw WalletConnectRequestError.failedEncodeTransaction
+        }
+        let params = WalletConnectServiceV2.getParamsSignTx(tx: txAdapted)
+        return try await sendRequest(method: .personalSign,
+                                     session: sessionSettled,
+                                     chainId: chainId,
+                                     requestParams: params,
+                                     in: wallet)
+    }
+    
     func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy],
                           chainId: Int,
                           dataString: String,
