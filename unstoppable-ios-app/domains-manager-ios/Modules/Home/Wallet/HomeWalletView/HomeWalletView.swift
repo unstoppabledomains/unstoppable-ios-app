@@ -72,6 +72,9 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                     HomeSettingsNavButtonView()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
+                    moreActionsNavButton()
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     qrNavButtonView()
                 }
             })
@@ -86,7 +89,7 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension HomeWalletView {
     func walletActions() -> [WalletAction] {
-        [.buy, .send, .profile(enabled: viewModel.isProfileButtonEnabled), .more]
+        [.buy, .send, .receive, .profile(enabled: viewModel.isProfileButtonEnabled)]
     }
     
     func onAppear() {
@@ -251,6 +254,32 @@ private extension HomeWalletView {
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: .qrCode)
+        }
+    }
+    
+    @ViewBuilder
+    func moreActionsNavButton() -> some View {
+        Menu {
+            ForEach(HomeWalletView.WalletAction.more.subActions, id: \.rawValue) { subAction in
+                viewForMoreSubAction(subAction)
+            }
+        } label: {
+            Image.dotsIcon
+                .foregroundStyle(Color.white)
+        }
+    }
+    
+    @ViewBuilder
+    func viewForMoreSubAction(_ subAction: HomeWalletView.WalletSubAction) -> some View {
+        Button(role: subAction.isDestructive ? .destructive : .cancel) {
+            UDVibration.buttonTap.vibrate()
+            viewModel.walletSubActionPressed(subAction)
+            logButtonPressedAnalyticEvents(button: subAction.analyticButton)
+        } label: {
+            Label(
+                title: { Text(subAction.title) },
+                icon: { subAction.icon }
+            )
         }
     }
 }

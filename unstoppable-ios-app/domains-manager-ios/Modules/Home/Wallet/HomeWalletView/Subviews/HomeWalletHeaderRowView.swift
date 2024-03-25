@@ -174,17 +174,6 @@ private extension HomeWalletHeaderRowView {
         HStack(spacing: 8) {
             Text(BalanceStringFormatter.tokensBalanceUSDString(wallet.totalBalance))
                 .titleText()
-            receiveButtonView()
-        }
-    }
-    
-    @ViewBuilder
-    func receiveButtonView() -> some View {
-        UDButtonView(text: "",
-                     icon: .arrowDown,
-                     style: .small(.raisedTertiary)) {
-            logButtonPressedAnalyticEvents(button: .receive)
-            actionCallback(.receive)
         }
     }
 }
