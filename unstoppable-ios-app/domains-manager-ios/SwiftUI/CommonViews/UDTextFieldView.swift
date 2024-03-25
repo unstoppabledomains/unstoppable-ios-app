@@ -19,6 +19,7 @@ struct UDTextFieldView: View {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     var autocorrectionDisabled: Bool = false
+    var height: CGFloat = 56
     @State private var state: TextFieldState = .rest
     @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
@@ -31,7 +32,7 @@ struct UDTextFieldView: View {
                 getTextFieldContent()
                     .sideInsets(16)
             }
-            .frame(height: 56)
+            .frame(height: height)
         }
         .frame(maxWidth: .infinity)
         .animation(.default, value: UUID())

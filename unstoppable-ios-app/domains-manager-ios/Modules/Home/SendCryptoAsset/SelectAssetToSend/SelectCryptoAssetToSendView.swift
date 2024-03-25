@@ -11,9 +11,10 @@ struct SelectCryptoAssetToSendView: View {
         
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     
+    @State private var searchDomainsKey = ""
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
     @State private var tokens: [BalanceTokenUIDescription] = []
-    @State private var domains: [DomainDisplayInfo] = []
+    @State private var allDomains: [DomainDisplayInfo] = []
     
     let receiver: SendCryptoAsset.AssetReceiver
     
@@ -43,7 +44,7 @@ private extension SelectCryptoAssetToSendView {
             lhs.balanceUsd > rhs.balanceUsd
         })
         
-        domains = viewModel.sourceWallet.domains
+        allDomains = viewModel.sourceWallet.domains
             .sorted(by: { lhs, rhs in
             lhs.name < rhs.name
         })
@@ -87,13 +88,32 @@ private extension SelectCryptoAssetToSendView {
         .buttonStyle(.plain)
     }
     
+    var filteredDomains: [DomainDisplayInfo] {
+        if searchDomainsKey.isEmpty {
+            return allDomains
+        } else {
+            return allDomains.filter { $0.name.lowercased().contains(searchDomainsKey.lowercased()) }
+        }
+    }
+    
     @ViewBuilder
     func domainsListView() -> some View {
-        ForEach(domains) { domain in
+        domainsSearchView()
+        ForEach(filteredDomains) { domain in
             selectableDomainRow(domain)
         }
     }
     
+    @ViewBuilder
+    func domainsSearchView() -> some View {
+        UDTextFieldView(text: $searchDomainsKey,
+                        placeholder: String.Constants.search.localized(),
+                        leftViewType: .search,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true,
+                        height: 36)
+    }
+
     @ViewBuilder
     func selectableDomainRow(_ domain: DomainDisplayInfo) -> some View {
         Button {
