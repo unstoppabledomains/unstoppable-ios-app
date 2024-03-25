@@ -9,8 +9,12 @@ import SwiftUI
 
 struct QRWalletAddressScannerView: View {
 
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+
     @State private var isTorchAvailable = false
     @State private var isTorchOn = false
+    @State private var didRecognizeAddress = false
     
     var body: some View {
         ZStack {
@@ -34,12 +38,34 @@ struct QRWalletAddressScannerView: View {
 // MARK: - Private methods
 private extension QRWalletAddressScannerView {
     func handleQRScannerViewEvent(_ event: QRScannerPreviewView.Event) {
-        if case .didChangeState(let state) = event,
-           case .scanning(let capabilities) = state {
-            isTorchAvailable = capabilities.isTorchAvailable
+        switch event {
+        case .didChangeState(let state):
+            if case .scanning(let capabilities) = state {
+                isTorchAvailable = capabilities.isTorchAvailable
+            }
+        case .didRecognizeQRCodes(let codes):
+            if let walletAddress = codes.first(where: { $0.isValidAddress() }) {
+                didRecognizeWalletAddress(walletAddress)
+            }
+        case .didFailToSetupCaptureSession:
+            return
         }
     }
     
+    func didRecognizeWalletAddress(_ walletAddress: HexAddress) {
+        guard !didRecognizeAddress else { return }
+        
+        didRecognizeAddress = true
+        dismiss()
+        viewModel.navPath.removeLast()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            viewModel.handleAction(.globalWalletAddressSelected(walletAddress))
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension QRWalletAddressScannerView {
     @ViewBuilder
     func torchButton() -> some View {
         Button {
