@@ -101,9 +101,9 @@ extension String {
             case .unstoppableDomainSearch(let searchKey):
                 return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             case .buyCryptoToDomain(let domainName):
-                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+                return "\(NetworkConfig.buyCryptoUrl)&domain=\(domainName)"
             case .buyCryptoToWallet(let walletAddress):
-                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
+                return "\(NetworkConfig.buyCryptoUrl)&address=\(walletAddress)"
             }
         }
         
