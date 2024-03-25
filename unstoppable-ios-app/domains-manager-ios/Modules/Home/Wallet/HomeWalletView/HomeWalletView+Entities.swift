@@ -51,7 +51,7 @@ extension HomeWalletView {
     }
     
     
-    enum WalletAction: HomeWalletActionItem {
+    enum WalletAction: HomeWalletActionItem {   
         
         var id: String {
             switch self {

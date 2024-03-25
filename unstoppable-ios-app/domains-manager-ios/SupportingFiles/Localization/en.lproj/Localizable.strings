@@ -1064,3 +1064,5 @@ More tabs are coming in the next updates.";
 "SPEED" = "Speed";
 "FEE_ESTIMATE" = "Fee estimate";
 "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE" = "Review the above before confirming.\nOnce made, your transaction is irreversible";
+"SCAN_WALLET_ADDRESS_HINT" = "Scan an Ethereum or Polygon wallet address";
+"MAX" = "Max";

@@ -75,7 +75,7 @@ private extension HomeWalletActionsView {
                 icon
                     .resizable()
                     .renderingMode(.template)
-                    .squareFrame(20)
+                    .squareFrame(24)
                 Text(title)
                     .font(.currentFont(size: 13, weight: .medium))
                     .frame(height: 20)
