@@ -529,8 +529,8 @@
 		C6203A632B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */; };
 		C6203A642B884018000A1A8E /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */; };
 		C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
-		C621A43C2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */; };
-		C621A43D2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */; };
+		C621A43C2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */; };
+		C621A43D2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */; };
 		C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */; };
 		C621A4402BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */; };
 		C621A4422BB1137900CB5CB9 /* QRScannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C621A4412BB1137900CB5CB9 /* QRScannerState.swift */; };
@@ -2878,7 +2878,7 @@
 		C6203A5E2B883EF3000A1A8E /* HomeExploreFollowersSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowersSectionView.swift; sourceTree = "<group>"; };
 		C6203A622B884018000A1A8E /* HomeExploreFollowerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerCellView.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
-		C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
+		C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRWalletAddressScannerView.swift; sourceTree = "<group>"; };
 		C621A43E2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerPreviewView.swift; sourceTree = "<group>"; };
 		C621A4412BB1137900CB5CB9 /* QRScannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerState.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
@@ -6330,7 +6330,7 @@
 				C67213E12BAA967C0075B9C7 /* SendCryptoAssetRootView.swift */,
 				C62900E12BAAB392008B35A2 /* SendCryptoAsset.swift */,
 				C67213DE2BAA96170075B9C7 /* SendCryptoAssetNavigationDestination.swift */,
-				C621A43B2BB10D2900CB5CB9 /* QRScannerView.swift */,
+				C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
 				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
@@ -9111,7 +9111,7 @@
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
-				C621A43C2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */,
+				C621A43C2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
 				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
 				C62900DF2BAAB1A8008B35A2 /* UDTabsPickerView.swift in Sources */,
@@ -9910,7 +9910,7 @@
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,
 				C6C837A22B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
 				C6D645BC2B1DBCE400D724AC /* ScrollViewOffsetListener.swift in Sources */,
-				C621A43D2BB10D2900CB5CB9 /* QRScannerView.swift in Sources */,
+				C621A43D2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift in Sources */,
 				C6C8F8352B217E9600A9834D /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C6D645E82B1DBE6B00D724AC /* RaisedTertiaryButton.swift in Sources */,
 				C62AC2032BABF532003FB69E /* ConfirmSendTokenReviewInfoView.swift in Sources */,

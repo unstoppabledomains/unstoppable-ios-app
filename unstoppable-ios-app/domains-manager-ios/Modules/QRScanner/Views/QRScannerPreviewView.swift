@@ -243,3 +243,20 @@ private actor CameraSessionService {
         metadataOutput?.rectOfInterest = rect
     }
 }
+
+
+import SwiftUI
+
+struct QRScannerView: UIViewRepresentable {
+    
+    var onEvent: ((QRScannerPreviewView.Event) -> Void)
+    
+    func makeUIView(context: Context) -> QRScannerPreviewView {
+        let view = QRScannerPreviewView()
+        view.onEvent = onEvent
+        
+        return view
+    }
+    
+    func updateUIView(_ uiView: QRScannerPreviewView, context: Context) { }
+}
