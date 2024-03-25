@@ -264,6 +264,9 @@ private extension HomeWalletView {
             Image.dotsIcon
                 .foregroundStyle(Color.white)
         }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: HomeWalletView.WalletAction.more.analyticButton)
+        }
     }
     
     @ViewBuilder
