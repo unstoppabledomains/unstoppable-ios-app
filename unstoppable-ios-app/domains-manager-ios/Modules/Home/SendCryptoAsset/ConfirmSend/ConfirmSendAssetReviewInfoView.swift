@@ -123,17 +123,10 @@ private extension ConfirmSendAssetReviewInfoView {
         var subValue: String? = nil
     }
     
-    var fromWalletInfoValue: String {
-        if let domainName = sourceWallet.rrDomain?.name {
-            return domainName
-        }
-        return sourceWallet.address.walletAddressTruncated
-    }
-    
     func getFromWalletInfoSection() -> SectionType {
         .infoValue(.init(title: String.Constants.from.localized(),
-                         icon: fromUserAvatar ?? .walletExternalIcon,
-                         value: fromWalletInfoValue))
+                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.listIcon,
+                         value: sourceWallet.domainOrDisplayName))
     }
     
     func getChainInfoSection() -> SectionType {
