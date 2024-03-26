@@ -9,12 +9,33 @@ import SwiftUI
 
 struct ConfirmSendAssetReceiverInfoView: View, ConfirmSendTokenViewsBuilderProtocol {
     
+    @Environment(\.imageLoadingService) var imageLoadingService
+
     let receiver: SendCryptoAsset.AssetReceiver
     
     @State private var receiverAvatar: UIImage?
 
     var body: some View {
         receiverInfoView()
+            .onAppear(perform: onAppear)
+
+    }
+}
+
+// MARK: - Private methods
+private extension ConfirmSendAssetReceiverInfoView {
+    func onAppear() {
+        Task {
+            if let url = receiver.pfpURL {
+                receiverAvatar = await imageLoadingService.loadImage(from: .url(url,
+                                                                                maxSize: nil),
+                                                                     downsampleDescription: .mid)
+            } else if let domainName = receiver.domainName {
+                receiverAvatar = await imageLoadingService.loadImage(from: .domainNameInitials(domainName,
+                                                                                               size: .default),
+                                                                     downsampleDescription: .mid)
+            }
+        }
     }
 }
 

@@ -56,6 +56,10 @@ private extension ConfirmSendAssetSendingInfoView {
         switch asset {
         case .token(let token, _):
             BalanceTokenIconsView(token: token)
+        case .domain:
+            Image.udLogoBlueSquare
+                .resizable()
+                .squareFrame(40)
         }
         tokenSendingValuesView()
     }
@@ -65,6 +69,8 @@ private extension ConfirmSendAssetSendingInfoView {
         case.token(let token, let amount):
             formatCartPrice(amount.valueOf(type: .usdAmount,
                                            for: token))
+        case .domain(let domain):
+            domain.name
         }
     }
     
@@ -74,6 +80,8 @@ private extension ConfirmSendAssetSendingInfoView {
             BalanceStringFormatter.tokenFullBalanceString(balance: amount.valueOf(type: .tokenAmount,
                                                                                   for: token),
                                                           symbol: token.symbol)
+        case .domain:
+            String.Constants.domain.localized()
         }
     }
     
@@ -92,6 +100,7 @@ private extension ConfirmSendAssetSendingInfoView {
 extension ConfirmSendAssetSendingInfoView {
     enum Asset {
         case token(token: BalanceTokenUIDescription, amount: SendCryptoAsset.TokenAssetAmountInput)
+        case domain(DomainDisplayInfo)
     }
 }
 

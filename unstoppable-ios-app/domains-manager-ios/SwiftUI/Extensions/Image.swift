@@ -97,6 +97,7 @@ extension Image {
     static let chevronDoubleDown = Image("chevronDoubleDown")
     static let bolt = Image("bolt")
     static let boltSlash = Image("boltSlash")
+    static let udLogoBlueSquare = Image("udLogoBlueSquare")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

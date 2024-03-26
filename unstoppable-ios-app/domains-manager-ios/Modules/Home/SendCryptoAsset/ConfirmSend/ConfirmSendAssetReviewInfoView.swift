@@ -14,7 +14,7 @@ struct ConfirmSendAssetReviewInfoView: View {
     private let lineWidth: CGFloat = 1
     private let sectionHeight: CGFloat = 48
     
-    let token: BalanceTokenUIDescription
+    let asset: Asset
     let sourceWallet: WalletEntity
     @State private var fromUserAvatar: UIImage?
 
@@ -136,11 +136,33 @@ private extension ConfirmSendAssetReviewInfoView {
                          value: fromWalletInfoValue))
     }
     
+    func getChainInfoSection() -> SectionType {
+        .infoValue(.init(title: String.Constants.chain.localized(),
+                         icon: chainIcon,
+                         value: getBlockchainType().fullName))
+    }
+    
+    func getBlockchainType() -> BlockchainType {
+        switch asset {
+        case .token(let token):
+            BlockchainType(rawValue: token.symbol) ?? .Matic
+        case .domain(let domain):
+            domain.blockchain ?? .Matic
+        }
+    }
+    
     func getCurrentSections() -> [SectionType] {
+        switch asset {
+        case .token:
+            getSectionsForToken()
+        case .domain:
+            getSectionsForDomain()
+        }
+    }
+    
+    func getSectionsForToken() -> [SectionType] {
         [getFromWalletInfoSection(),
-         .infoValue(.init(title: String.Constants.chain.localized(),
-                          icon: chainIcon,
-                          value: token.name)),
+         getChainInfoSection(),
          .infoValue(.init(title: String.Constants.speed.localized(),
                           icon: .chevronGrabberVertical,
                           iconColor: .foregroundSecondary,
@@ -153,8 +175,14 @@ private extension ConfirmSendAssetReviewInfoView {
          .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
     }
     
+    func getSectionsForDomain() -> [SectionType] {
+        [getFromWalletInfoSection(),
+         getChainInfoSection(),
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+    }
+    
     var chainIcon: UIImage {
-        switch BlockchainType(rawValue: token.symbol) {
+        switch getBlockchainType() {
         case .Ethereum:
             .ethereumIcon
         default:
@@ -297,7 +325,15 @@ private extension ConfirmSendAssetReviewInfoView {
     }
 }
 
+// MARK: - Open methods
+extension ConfirmSendAssetReviewInfoView {
+    enum Asset {
+        case token(BalanceTokenUIDescription)
+        case domain(DomainDisplayInfo)
+    }
+}
+
 #Preview {
-    ConfirmSendAssetReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken(),
+    ConfirmSendAssetReviewInfoView(asset: .token(MockEntitiesFabric.Tokens.mockUIToken()),
                                    sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }

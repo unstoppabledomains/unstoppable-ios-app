@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ConfirmSendTokenView: View {
     
-    @Environment(\.imageLoadingService) var imageLoadingService
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
     let data: SendCryptoAsset.SendTokenAssetData
@@ -17,8 +16,6 @@ struct ConfirmSendTokenView: View {
     private var token: BalanceTokenUIDescription { data.token }
     private var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
     
-    @State private var receiverAvatar: UIImage?
-
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -33,24 +30,6 @@ struct ConfirmSendTokenView: View {
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
-        .onAppear(perform: onAppear)
-    }
-}
-
-// MARK: - Private methods
-private extension ConfirmSendTokenView {
-    func onAppear() {
-        Task {
-            if let url = receiver.pfpURL {
-                receiverAvatar = await imageLoadingService.loadImage(from: .url(url,
-                                                                                maxSize: nil),
-                                                                     downsampleDescription: .mid)
-            } else if let domainName = receiver.domainName {
-                receiverAvatar = await imageLoadingService.loadImage(from: .domainNameInitials(domainName,
-                                                                                               size: .default),
-                                                                     downsampleDescription: .mid)
-            }
-        }
     }
 }
 
@@ -61,18 +40,12 @@ private extension ConfirmSendTokenView {
         ConfirmSendAssetSendingInfoView(asset: .token(token: token,
                                                       amount: data.amount))
     }
-}
-
-// MARK: - Private methods
-private extension ConfirmSendTokenView {
+    
     @ViewBuilder
     func receiverInfoView() -> some View {
         ConfirmSendAssetReceiverInfoView(receiver: receiver)
     }
-}
-
-// MARK: - Private methods
-private extension ConfirmSendTokenView {
+    
     @ViewBuilder
     func senderReceiverConnectorView() -> some View {
         ConfirmSendAssetSenderReceiverConnectView()
@@ -80,7 +53,7 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func reviewInfoView() -> some View {
-        ConfirmSendAssetReviewInfoView(token: token,
+        ConfirmSendAssetReviewInfoView(asset: .token(token),
                                        sourceWallet: viewModel.sourceWallet)
     }
     
