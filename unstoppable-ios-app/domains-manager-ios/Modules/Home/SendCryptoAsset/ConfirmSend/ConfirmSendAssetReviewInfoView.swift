@@ -205,7 +205,7 @@ private extension ConfirmSendAssetReviewInfoView {
     
     func getTransactionSpeedActions() -> [InfoActionDescription] {
         [.init(title: "Urgent",
-               subtitle: "Gwei",
+               subtitle: "41-53 Gwei (~1 sec)",
                iconName: "flame",
                tintColor: .foregroundDanger,
                action: { didSelectTransactionSpeed() }),
@@ -215,7 +215,7 @@ private extension ConfirmSendAssetReviewInfoView {
                tintColor: .foregroundWarning,
                action: { didSelectTransactionSpeed() }),
          .init(title: "Normal",
-               subtitle: "Gwei",
+               subtitle: "43-51 Gwei (~12 sec)",
                iconName: "clock",
                tintColor: .foregroundDefault,
                action: { didSelectTransactionSpeed() })].reversed()
