@@ -10,7 +10,8 @@ import SwiftUI
 struct SendCryptoAssetSuccessView: View {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
-    
+    @EnvironmentObject var tabRouter: HomeTabRouter
+
     var asset: Asset
     
     @ObservedObject private var transactionTracker = TransactionStatusTracker()
@@ -33,7 +34,11 @@ struct SendCryptoAssetSuccessView: View {
         .multilineTextAlignment(.center)
         .padding(16)
         .animation(.default, value: UUID())
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear(perform: onAppear)
+        .onDisappear(perform: {
+            transactionTracker.stopTracking()
+        })
     }
 }
 
@@ -143,7 +148,7 @@ private extension SendCryptoAssetSuccessView {
     }
     
     func doneAction() {
-        
+        tabRouter.sendCryptoInitialData = nil
     }
 }
 

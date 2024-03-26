@@ -17,18 +17,13 @@ struct ConfirmTransferDomainView: View {
     @State private var error: Error?
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 4) {
-                sendingTokenInfoView()
-                senderReceiverConnectorView()
-                receiverInfoView()
-                reviewInfoView()
-                Spacer()
-                continueButton()
-            }
-            if isLoading {
-                ProgressView()
-            }
+        VStack(spacing: 4) {
+            sendingTokenInfoView()
+            senderReceiverConnectorView()
+            receiverInfoView()
+            reviewInfoView()
+            Spacer()
+            continueButton()
         }
         .padding(16)
         .background(Color.backgroundDefault)
@@ -66,17 +61,9 @@ private extension ConfirmTransferDomainView {
     @ViewBuilder
     func continueButton() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
-                     icon: confirmIcon,
                      style: .large(.raisedPrimary),
+                     isLoading: isLoading,
                      callback: continueButtonPressed)
-    }
-    
-    var confirmIcon: Image? {
-        if User.instance.getSettings().touchIdActivated,
-           let icon = appContext.authentificationService.biometricIcon {
-            return Image(uiImage: icon)
-        }
-        return nil
     }
     
     func continueButtonPressed() {
@@ -87,15 +74,15 @@ private extension ConfirmTransferDomainView {
         pullUp = nil
         Task {
             isLoading = true
+            await Task.sleep(seconds: 0.35)
             
             do {
                 let domain = self.data.domain
                 let recipientAddress = self.data.receiver.walletAddress
                 let configuration = TransferDomainConfiguration(resetRecords: confirmationData.shouldClearRecords)
-//                try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
-//                                                                          to: recipientAddress,
-//                                                                          configuration: configuration)
-                await Task.sleep(seconds: 0.5)
+                try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
+                                                                          to: recipientAddress,
+                                                                          configuration: configuration)
                 appContext.analyticsService.log(event: .didTransferDomain,
                                                 withParameters: [.domainName: domain.name,
                                                                  .fromWallet: domain.ownerWallet ?? "",

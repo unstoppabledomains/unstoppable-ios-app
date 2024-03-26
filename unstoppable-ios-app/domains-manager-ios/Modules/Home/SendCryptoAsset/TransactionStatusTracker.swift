@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class TransactionStatusTracker: ObservableObject {
     
     @Published private(set) var txHash: String?
@@ -19,6 +20,13 @@ final class TransactionStatusTracker: ObservableObject {
         guard self.trackingTransaction == nil else { return }
         
         self.trackingTransaction = type
+        refreshTransactionStatus()
+        startRefreshTransactionsTimer()
+    }
+    
+    func stopTracking() {
+        trackingTransaction = nil
+        stopRefreshDomainsTimer()
     }
     
 }
@@ -26,7 +34,7 @@ final class TransactionStatusTracker: ObservableObject {
 // MARK: - Private methods
 private extension TransactionStatusTracker {
     func startRefreshTransactionsTimer() {
-        refreshTimer = Timer.scheduledTimer(timeInterval: Constants.updateInterval,
+        refreshTimer = Timer.scheduledTimer(timeInterval: 5,
                                             target: self,
                                             selector: #selector(refreshTransactionStatus),
                                             userInfo: nil,
@@ -53,6 +61,7 @@ private extension TransactionStatusTracker {
         }
     }
     
+    @MainActor
     func refreshTransactionStatusForDomain(_ domain: DomainName) async throws {
         let transactions = try await appContext.domainTransactionsService.updatePendingTransactionsListFor(domains: [domain])
         
