@@ -49,6 +49,15 @@ struct JRPC_Client {
         return EthereumQuantity(quantity: gasPriceBigUInt)
     }
     
+    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> Int {
+        let prices = try await NetworkService().getStatusGasPrices(chainId: chainId)
+        switch speed {
+        case .normal: return prices.safeLow
+        case .fast: return prices.fast
+        case .urgent: return prices.fastest
+        }
+    }
+    
     func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumQuantity {
         do {
             let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,

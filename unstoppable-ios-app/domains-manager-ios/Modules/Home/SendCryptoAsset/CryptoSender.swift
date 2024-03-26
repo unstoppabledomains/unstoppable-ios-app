@@ -111,6 +111,10 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
                                                                                 chainId: chainId)
         let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
+        
+        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
+                                                                         for: crypto.speed)
+        
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
         

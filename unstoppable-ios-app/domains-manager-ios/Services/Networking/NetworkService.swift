@@ -296,6 +296,16 @@ extension NetworkService {
         let error: ErrorDescription
     }
     
+    struct StatusGasPricesInfo: Decodable {
+        struct AverageGasPrices: Decodable {
+            let safeLow: Int
+            let fast: Int
+            let fastest: Int
+        }
+        let ETH: AverageGasPrices
+        let MATIC: AverageGasPrices
+    }
+    
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String
@@ -305,6 +315,7 @@ extension NetworkService {
         case failedBuildUrl
         case gasRequiredExceedsAllowance
         case genericError(String)
+        case failedGetStatus
         
         init(message: String) {
             if message.lowercased().starts(with: "gas required exceeds allowance") {
@@ -356,6 +367,23 @@ extension NetworkService {
         try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_gasPrice",
                                                     paramsBuilder: { "[]"} ))
+    }
+    
+    func getStatusGasPrices() async throws -> StatusGasPricesInfo {
+        let url = URL(string: "https://unstoppabledomains.com/api/v1/status")!
+        let data = try await NetworkService().fetchData(for: url, method: .get)
+        guard let response = try? JSONDecoder().decode(StatusGasPricesInfo.self, from: data) else {
+            throw JRPCError.failedGetStatus
+        }
+        return response
+    }
+    
+    func getStatusGasPrices(chainId: Int) async throws -> StatusGasPricesInfo.AverageGasPrices {
+        switch chainId {
+        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices().ETH
+        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices().MATIC
+        default: throw JRPCError.failedGetStatus
+        }
     }
 }
 
