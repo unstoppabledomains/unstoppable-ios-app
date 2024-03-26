@@ -13,6 +13,8 @@ extension SendCryptoAsset {
         case selectAssetToSend(AssetReceiver)
         case selectTokenAmountToSend(SelectTokenAmountToSendData)
         case confirmSendToken(SendTokenAssetData)
+        
+        case confirmTransferDomain(TransferDomainData)
     }
     
     struct LinkNavigationDestination {
@@ -28,6 +30,9 @@ extension SendCryptoAsset {
                 SelectTokenAssetAmountToSendView(data: data)
             case .confirmSendToken(let data):
                 ConfirmSendTokenView(data: data)
+                
+            case .confirmTransferDomain(let data):
+                ConfirmTransferDomainView(data: data)
             }
         }
         

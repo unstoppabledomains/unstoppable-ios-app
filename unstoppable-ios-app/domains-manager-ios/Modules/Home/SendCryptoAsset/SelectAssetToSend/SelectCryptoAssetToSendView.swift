@@ -118,7 +118,7 @@ private extension SelectCryptoAssetToSendView {
     func domainsContentView() -> some View {
         HomeWalletsDomainsSectionView(domainsData: $domainsData,
                                       domainSelectedCallback: { domain in
-            viewModel.handleAction(.userDomainSelected(domain))
+            viewModel.handleAction(.userDomainSelected(.init(receiver: receiver, domain: domain)))
         },
                                       buyDomainCallback: {
             tabRouter.runPurchaseFlow()

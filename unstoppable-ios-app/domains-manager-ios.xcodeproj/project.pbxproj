@@ -2397,10 +2397,12 @@
 		C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
 		C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */; };
 		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
-		C6F4332F2BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */; };
-		C6F433302BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */; };
 		C6F4332C2BB15066000C5E46 /* WalletBalancesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332B2BB15066000C5E46 /* WalletBalancesStorage.swift */; };
 		C6F4332D2BB15066000C5E46 /* WalletBalancesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332B2BB15066000C5E46 /* WalletBalancesStorage.swift */; };
+		C6F4332F2BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */; };
+		C6F433302BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */; };
+		C6F433382BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433372BB257F7000C5E46 /* ConfirmTransferDomainView.swift */; };
+		C6F433392BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433372BB257F7000C5E46 /* ConfirmTransferDomainView.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
 		C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
@@ -3854,8 +3856,9 @@
 		C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceIdentifier.swift; sourceTree = "<group>"; };
 		C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserProfile.swift"; sourceTree = "<group>"; };
 		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
-		C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsTLDGroup.swift; sourceTree = "<group>"; };
 		C6F4332B2BB15066000C5E46 /* WalletBalancesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBalancesStorage.swift; sourceTree = "<group>"; };
+		C6F4332E2BB15641000C5E46 /* DomainsTLDGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsTLDGroup.swift; sourceTree = "<group>"; };
+		C6F433372BB257F7000C5E46 /* ConfirmTransferDomainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmTransferDomainView.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
 		C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
@@ -6345,6 +6348,7 @@
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
 				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
 				C62AC1FA2BABE544003FB69E /* ConfirmSendToken */,
+				C6F433362BB257DC000C5E46 /* ConfirmTransferDomain */,
 			);
 			path = SendCryptoAsset;
 			sourceTree = "<group>";
@@ -8065,6 +8069,14 @@
 			path = PullUp;
 			sourceTree = "<group>";
 		};
+		C6F433362BB257DC000C5E46 /* ConfirmTransferDomain */ = {
+			isa = PBXGroup;
+			children = (
+				C6F433372BB257F7000C5E46 /* ConfirmTransferDomainView.swift */,
+			);
+			path = ConfirmTransferDomain;
+			sourceTree = "<group>";
+		};
 		C6F6AF5728A24D3100A7B571 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -9105,6 +9117,7 @@
 				C6E041D8295588C90080F8E3 /* UDPageControl.swift in Sources */,
 				C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */,
+				C6F433382BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */,
 				C63095F22B0DA66400205054 /* MockFirebaseInteractionsService.swift in Sources */,
 				C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */,
 				C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
@@ -10091,6 +10104,7 @@
 				C6D6471D2B1ED85C00D724AC /* WalletError.swift in Sources */,
 				C6D646982B1ED14400D724AC /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
 				C6D6469C2B1ED14E00D724AC /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
+				C6F433392BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */,
 				C6D645D62B1DBD4900D724AC /* CBaseTransitioningAnimation.swift in Sources */,
 				C6D645D02B1DBD4100D724AC /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6D646A52B1ED15A00D724AC /* PublicProfileFollowersViewModel.swift in Sources */,

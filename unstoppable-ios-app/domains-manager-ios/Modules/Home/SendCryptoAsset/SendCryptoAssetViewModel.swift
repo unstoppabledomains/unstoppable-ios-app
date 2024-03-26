@@ -36,8 +36,8 @@ final class SendCryptoAssetViewModel: ObservableObject {
         case .userTokenValueSelected(let data):
             navPath.append(.confirmSendToken(data))
             
-        case .userDomainSelected(let domain):
-            return
+        case .userDomainSelected(let data):
+            navPath.append(.confirmTransferDomain(data))
         }
     }
     
