@@ -406,7 +406,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
         guard let topVC else { return }
         
-        UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: topVC)
+        UDRouter().showTransferInProgressScreen(domain: domain, in: topVC)
     }
     
 }
