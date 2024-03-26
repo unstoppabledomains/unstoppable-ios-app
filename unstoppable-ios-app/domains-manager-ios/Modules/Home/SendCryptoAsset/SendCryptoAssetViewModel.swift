@@ -39,7 +39,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
         case .userDomainSelected(let data):
             navPath.append(.confirmTransferDomain(data))
         case.didTransferDomain(let domain):
-            return
+            navPath.append(.domainTransferSuccess(domain))
         }
     }
     

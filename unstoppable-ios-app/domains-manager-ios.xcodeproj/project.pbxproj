@@ -2415,6 +2415,8 @@
 		C6F433492BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */; };
 		C6F4334B2BB2760D000C5E46 /* PaymentConfirmationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4334A2BB2760D000C5E46 /* PaymentConfirmationHandler.swift */; };
 		C6F4334C2BB2760D000C5E46 /* PaymentConfirmationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4334A2BB2760D000C5E46 /* PaymentConfirmationHandler.swift */; };
+		C6F433512BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */; };
+		C6F433522BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
 		C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
@@ -3877,6 +3879,7 @@
 		C6F433442BB268B1000C5E46 /* TransferDomainConfirmationPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferDomainConfirmationPullUpView.swift; sourceTree = "<group>"; };
 		C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBoxView.swift; sourceTree = "<group>"; };
 		C6F4334A2BB2760D000C5E46 /* PaymentConfirmationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentConfirmationHandler.swift; sourceTree = "<group>"; };
+		C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoAssetSuccessView.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
 		C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
@@ -6361,6 +6364,7 @@
 				C62900E12BAAB392008B35A2 /* SendCryptoAsset.swift */,
 				C67213DE2BAA96170075B9C7 /* SendCryptoAssetNavigationDestination.swift */,
 				C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */,
+				C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */,
 				C6F4333A2BB2598A000C5E46 /* ConfirmSend */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
@@ -9308,6 +9312,7 @@
 				307852642771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
+				C6F433512BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */,
 				C650E28A2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */,
 				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C68BAC922B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */,
@@ -10613,6 +10618,7 @@
 				C6C8F9672B21878200A9834D /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C6D647102B1ED7D000D724AC /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C6960C592B199A2C00B79E28 /* Codable.swift in Sources */,
+				C6F433522BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift in Sources */,
 				C6C8F8462B217E9600A9834D /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				C6D646FD2B1ED7B900D724AC /* MessagingChatDisplayInfo.swift in Sources */,
 				C6D646A32B1ED15A00D724AC /* PublicProfileFollowersView.swift in Sources */,

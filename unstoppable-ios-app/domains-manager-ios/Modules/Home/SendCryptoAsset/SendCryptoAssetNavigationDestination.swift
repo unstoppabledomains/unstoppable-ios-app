@@ -15,6 +15,7 @@ extension SendCryptoAsset {
         case confirmSendToken(SendTokenAssetData)
         
         case confirmTransferDomain(TransferDomainData)
+        case domainTransferSuccess(DomainDisplayInfo)
     }
     
     struct LinkNavigationDestination {
@@ -33,6 +34,8 @@ extension SendCryptoAsset {
                 
             case .confirmTransferDomain(let data):
                 ConfirmTransferDomainView(data: data)
+            case .domainTransferSuccess(let domain):
+                SendCryptoAssetSuccessView(asset: .domain(domain))
             }
         }
         

@@ -92,9 +92,10 @@ private extension ConfirmTransferDomainView {
                 let domain = self.data.domain
                 let recipientAddress = self.data.receiver.walletAddress
                 let configuration = TransferDomainConfiguration(resetRecords: confirmationData.shouldClearRecords)
-                try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
-                                                                          to: recipientAddress,
-                                                                          configuration: configuration)
+//                try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
+//                                                                          to: recipientAddress,
+//                                                                          configuration: configuration)
+                await Task.sleep(seconds: 0.5)
                 appContext.analyticsService.log(event: .didTransferDomain,
                                                 withParameters: [.domainName: domain.name,
                                                                  .fromWallet: domain.ownerWallet ?? "",
