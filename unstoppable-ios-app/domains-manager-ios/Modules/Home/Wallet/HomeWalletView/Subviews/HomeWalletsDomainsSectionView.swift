@@ -96,7 +96,8 @@ private extension HomeWalletsDomainsSectionView {
     
     @ViewBuilder
     func domainsGroupsView() -> some View {
-        if domainsGroups.isEmpty {
+        if domainsGroups.isEmpty,
+           !domainsData.isSearching {
             buyDomainView()
         } else {
             ForEach(domainsGroups) { domainsGroup in
