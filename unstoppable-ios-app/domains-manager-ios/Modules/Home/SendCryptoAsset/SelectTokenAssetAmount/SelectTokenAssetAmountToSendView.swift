@@ -89,23 +89,45 @@ private extension SelectTokenAssetAmountToSendView {
 
 // MARK: - Converted value
 private extension SelectTokenAssetAmountToSendView {
+    var isSufficientFunds: Bool {
+        getCurrentInput().valueOf(type: .tokenAmount,
+                                  for: token) <= token.balance
+    }
+    
     @ViewBuilder
     func convertedValueView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             switchInputType()
         } label: {
-            HStack(spacing: 8) {
-                currentConvertedTypeValueView()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                Image.arrowsTopBottom
-                    .resizable()
-                    .squareFrame(24)
+            if isSufficientFunds {
+                convertedValueLabel()
+            } else {
+                insufficientFundsLabel()
             }
-            .foregroundStyle(Color.foregroundSecondary)
         }
         .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func convertedValueLabel() -> some View {
+        HStack(spacing: 8) {
+            currentConvertedTypeValueView()
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+            Image.arrowsTopBottom
+                .resizable()
+                .squareFrame(24)
+        }
+        .foregroundStyle(Color.foregroundSecondary)
+    }
+    
+    @ViewBuilder
+    func insufficientFundsLabel() -> some View {
+        Text(String.Constants.notEnoughToken.localized(token.symbol))
+            .font(.currentFont(size: 16, weight: .medium))
+            .foregroundStyle(Color.foregroundDanger)
+            .frame(height: 24)
     }
     
     func switchInputType() {
