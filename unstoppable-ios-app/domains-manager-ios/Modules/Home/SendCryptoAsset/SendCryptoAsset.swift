@@ -132,3 +132,10 @@ extension SendCryptoAsset {
         }
     }
 }
+
+extension SendCryptoAsset {
+    struct Constants {
+        @MainActor
+        static var tilesVerticalPadding: CGFloat { deviceSize.isIPSE ? 8 : 16 }
+    }
+}

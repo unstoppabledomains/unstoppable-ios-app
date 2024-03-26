@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmSendTokenReviewInfoView: View {
+struct ConfirmSendAssetReviewInfoView: View {
     
     @Environment(\.imageLoadingService) var imageLoadingService
     
@@ -28,7 +28,7 @@ struct ConfirmSendTokenReviewInfoView: View {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     func onAppear() {
         Task {
             if let domain = sourceWallet.rrDomain {
@@ -41,7 +41,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     @ViewBuilder
     func infoSectionsView() -> some View {
         VStack(spacing: 0) {
@@ -108,7 +108,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     enum SectionType: Hashable {
         case infoValue(InfoWithValueDescription)
         case info(String)
@@ -164,7 +164,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     var numberOfSections: Int { getCurrentSections().count }
 
     @ViewBuilder
@@ -182,7 +182,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     struct ConnectCurve: Shape {
         let radius: CGFloat
         let lineWidth: CGFloat
@@ -298,6 +298,6 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 #Preview {
-    ConfirmSendTokenReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken(),
+    ConfirmSendAssetReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken(),
                                    sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }
