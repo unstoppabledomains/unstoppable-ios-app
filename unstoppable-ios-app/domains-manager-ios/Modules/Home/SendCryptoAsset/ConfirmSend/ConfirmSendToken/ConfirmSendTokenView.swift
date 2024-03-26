@@ -57,13 +57,34 @@ private extension ConfirmSendTokenView {
                                        sourceWallet: viewModel.sourceWallet)
     }
     
+    var isSufficientFunds: Bool { true }
+    
     @ViewBuilder
     func confirmButton() -> some View {
-        UDButtonView(text: String.Constants.confirm.localized(),
-                     icon: confirmIcon,
-                     style: .large(.raisedPrimary)) {
-            
+        VStack(spacing: isIPSE ? 6 : 24) {
+            if !isSufficientFunds {
+                insufficientFundsLabel()
+            }
+            UDButtonView(text: String.Constants.confirm.localized(),
+                         icon: confirmIcon,
+                         style: .large(.raisedPrimary)) {
+                
+            }
+                         .disabled(!isSufficientFunds)
         }
+    }
+    
+    @ViewBuilder
+    func insufficientFundsLabel() -> some View {
+        HStack(spacing: 8) {
+            Image.infoIcon
+                .resizable()
+                .squareFrame(16)
+            Text(String.Constants.notEnoughToken.localized(token.symbol))
+                .font(.currentFont(size: 14, weight: .medium))
+        }
+        .foregroundStyle(Color.foregroundDanger)
+        .frame(height: 20)
     }
     
     var confirmIcon: Image? {
