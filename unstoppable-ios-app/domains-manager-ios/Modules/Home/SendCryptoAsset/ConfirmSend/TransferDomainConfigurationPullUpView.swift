@@ -16,7 +16,7 @@ struct TransferDomainConfigurationPullUpView: View {
     var body: some View {
         VStack(spacing: 24) {
             DismissIndicatorView(color: .foregroundMuted)
-            VStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 16) {
                 confirmRowWith(isOn: $confirmationData.isConsentNotExchangeConfirmed,
                                title: String.Constants.transferConsentNotExchange.localized())
                 HomeExploreSeparatorView()
@@ -47,6 +47,8 @@ private extension TransferDomainConfigurationPullUpView {
                                 title: String,
                                 subtitle: String? = nil) -> some View {
         HStack(spacing: 16) {
+            // TODO: - Pass analytics button to UDCheckBoxView
+
             UDCheckBoxView(isOn: isOn)
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
@@ -58,14 +60,13 @@ private extension TransferDomainConfigurationPullUpView {
                         .foregroundStyle(Color.foregroundSecondary)
                 }
             }
-            Spacer()
         }
         .frame(height: 48)
     }
     
     @ViewBuilder
     func warningText() -> some View {
-        Text("By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.")
+        Text(String.Constants.transferDomainConfirmationHint.localized())
             .font(.currentFont(size: 13))
             .foregroundStyle(Color.foregroundSecondary)
             .multilineTextAlignment(.center)

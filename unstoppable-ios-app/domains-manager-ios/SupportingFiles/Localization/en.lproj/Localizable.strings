@@ -800,7 +800,7 @@
 "REVIEW_AND_CONFIRM" = "Review and confirm";
 "TRANSFER_CONSENT_ACTION_IRREVERSIBLE" = "I understand that I am transferring ownership of this domain and this action is irreversible";
 "TRANSFER_CONSENT_NOT_EXCHANGE" = "I’m not transferring to an exchange address";
-"TRANSFER_CONSENT_VALID_ADDRESS" = "I’m transferring to an ETH or Polygon wallet address";
+"TRANSFER_CONSENT_VALID_ADDRESS" = "I’m transferring to an Ethereum address";
 "CLEAR_RECORDS_UPON_TRANSFER" = "Clear records upon transfer";
 "OPTIONAL" = "Optional";
 "TRANSFER_IN_PROGRESS" = "Transfer in progress";
@@ -1066,3 +1066,4 @@ More tabs are coming in the next updates.";
 "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE" = "Review the above before confirming.\nOnce made, your transaction is irreversible";
 "SCAN_WALLET_ADDRESS_HINT" = "Scan an Ethereum or Polygon wallet address";
 "MAX" = "Max";
+"TRANSFER_DOMAIN_CONFIRMATION_HINT" = "By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.";
