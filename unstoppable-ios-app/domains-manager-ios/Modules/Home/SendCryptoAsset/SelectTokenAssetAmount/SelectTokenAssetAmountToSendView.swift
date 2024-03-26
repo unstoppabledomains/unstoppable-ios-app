@@ -14,6 +14,7 @@ struct SelectTokenAssetAmountToSendView: View {
     let data: SendCryptoAsset.SelectTokenAmountToSendData
     private var token: BalanceTokenUIDescription { data.token }
 
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
     
@@ -36,6 +37,7 @@ struct SelectTokenAssetAmountToSendView: View {
         .padding(16)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
+        .viewPullUp($pullUp)
         .navigationTitle(String.Constants.send.localized())
     }
 }
@@ -87,23 +89,45 @@ private extension SelectTokenAssetAmountToSendView {
 
 // MARK: - Converted value
 private extension SelectTokenAssetAmountToSendView {
+    var isSufficientFunds: Bool {
+        getCurrentInput().valueOf(type: .tokenAmount,
+                                  for: token) <= token.balance
+    }
+    
     @ViewBuilder
     func convertedValueView() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             switchInputType()
         } label: {
-            HStack(spacing: 8) {
-                currentConvertedTypeValueView()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                Image.arrowsTopBottom
-                    .resizable()
-                    .squareFrame(24)
+            if isSufficientFunds {
+                convertedValueLabel()
+            } else {
+                insufficientFundsLabel()
             }
-            .foregroundStyle(Color.foregroundSecondary)
         }
         .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func convertedValueLabel() -> some View {
+        HStack(spacing: 8) {
+            currentConvertedTypeValueView()
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+            Image.arrowsTopBottom
+                .resizable()
+                .squareFrame(24)
+        }
+        .foregroundStyle(Color.foregroundSecondary)
+    }
+    
+    @ViewBuilder
+    func insufficientFundsLabel() -> some View {
+        Text(String.Constants.notEnoughToken.localized(token.symbol))
+            .font(.currentFont(size: 16, weight: .medium))
+            .foregroundStyle(Color.foregroundDanger)
+            .frame(height: 24)
     }
     
     func switchInputType() {
@@ -202,12 +226,20 @@ private extension SelectTokenAssetAmountToSendView {
     func usingMaxButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            maxButtonPressed()
         } label: {
             Text(useMaxButtonTitle)
                 .foregroundStyle(isUsingMax ? Color.foregroundAccentMuted : Color.foregroundAccent)
         }
         .buttonStyle(.plain)
         .padding(.init(horizontal: 16))
+    }
+    
+    func maxButtonPressed() {
+        if !UserDefaults.didShowSendMaxCryptoInfoPullUp {
+            UserDefaults.didShowSendMaxCryptoInfoPullUp = true
+            pullUp = .default(.maxCryptoSendInfoPullUp())
+        }
     }
 }
 
@@ -221,7 +253,7 @@ private extension SelectTokenAssetAmountToSendView {
                                                                  token: token,
                                                                  amount: getCurrentInput())))
         }
-                     .disabled(interpreter.getInterpretedNumber() <= 0)
+                     .disabled(interpreter.getInterpretedNumber() <= 0 || !isSufficientFunds)
     }
     
     func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {

@@ -101,12 +101,7 @@ private extension UserProfileSelectionRowView {
             if let domainAvatarImage {
                 return .uiImage(domainAvatarImage)
             }
-            switch wallet.udWallet.type {
-            case .defaultGeneratedLocally, .generatedLocally:
-                return .image(.vaultSafeIcon)
-            default:
-                return .image(.walletExternalIcon)
-            }
+            return .uiImage(wallet.displayInfo.source.listIcon)
         case .webAccount:
             return .image(.globeIcon)
         }

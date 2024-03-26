@@ -52,12 +52,7 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
         if let domainAvatarImage {
             return .uiImage(domainAvatarImage)
         }
-        switch wallet.udWallet.type {
-        case .defaultGeneratedLocally, .generatedLocally:
-            return .image(.vaultSafeIcon)
-        default:
-            return .image(.walletExternalIcon)
-        }
+        return .uiImage(wallet.displayInfo.source.listIcon)
     }
     
     func imageStyleForWallet() -> UDListItemView.ImageStyle {

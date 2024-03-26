@@ -58,9 +58,36 @@ private extension ConfirmSendAssetReviewInfoView {
     func viewForSection(_ section: SectionType) -> some View {
         switch section {
         case .infoValue(let info):
-            viewForInfoValueSection(info)
+            actionableViewForInfoValueSection(info)
         case .info(let info):
             viewForInfoSection(info)
+        }
+    }
+    
+    @ViewBuilder
+    func actionableViewForInfoValueSection(_ info: InfoWithValueDescription) -> some View {
+        if info.actions.isEmpty {
+            viewForInfoValueSection(info)
+        } else {
+            Menu {
+                ForEach(info.actions, id: \.self) { action in
+                    Button {
+                        UDVibration.buttonTap.vibrate()
+                        action.action()
+                    } label: {
+                        Label(
+                            title: { Text(action.title) },
+                            icon: { Image(systemName: action.iconName) }
+                        )
+                        Text(action.subtitle)
+                    }
+                }
+            } label: {
+                viewForInfoValueSection(info)
+            }
+            .onButtonTap {
+                
+            }
         }
     }
     
@@ -121,19 +148,35 @@ private extension ConfirmSendAssetReviewInfoView {
         let value: String
         var valueColor: Color = .foregroundDefault
         var subValue: String? = nil
+        var actions: [InfoActionDescription] = []
     }
     
-    var fromWalletInfoValue: String {
-        if let domainName = sourceWallet.rrDomain?.name {
-            return domainName
+    struct InfoActionDescription: Hashable {
+        
+        let title: String
+        let subtitle: String
+        let iconName: String
+        let tintColor: UIColor
+        let action: EmptyCallback
+        
+        static func == (lhs: ConfirmSendAssetReviewInfoView.InfoActionDescription, rhs: ConfirmSendAssetReviewInfoView.InfoActionDescription) -> Bool {
+            lhs.title == rhs.title &&
+            lhs.subtitle == rhs.subtitle &&
+            lhs.iconName == rhs.iconName
         }
-        return sourceWallet.address.walletAddressTruncated
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(title)
+            hasher.combine(subtitle)
+            hasher.combine(iconName)
+        }
+        
     }
     
     func getFromWalletInfoSection() -> SectionType {
         .infoValue(.init(title: String.Constants.from.localized(),
-                         icon: fromUserAvatar ?? .walletExternalIcon,
-                         value: fromWalletInfoValue))
+                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.listIcon,
+                         value: sourceWallet.domainOrDisplayName))
     }
     
     func getChainInfoSection() -> SectionType {
@@ -160,6 +203,28 @@ private extension ConfirmSendAssetReviewInfoView {
         }
     }
     
+    func getTransactionSpeedActions() -> [InfoActionDescription] {
+        [.init(title: "Urgent",
+               subtitle: "41-53 Gwei (~1 sec)",
+               iconName: "flame",
+               tintColor: .foregroundDanger,
+               action: { didSelectTransactionSpeed() }),
+         .init(title: "Fast",
+               subtitle: "44-54 Gwei (~4 sec)",
+               iconName: "bolt",
+               tintColor: .foregroundWarning,
+               action: { didSelectTransactionSpeed() }),
+         .init(title: "Normal",
+               subtitle: "43-51 Gwei (~12 sec)",
+               iconName: "clock",
+               tintColor: .foregroundDefault,
+               action: { didSelectTransactionSpeed() })].reversed()
+    }
+    
+    func didSelectTransactionSpeed() {
+        
+    }
+    
     func getSectionsForToken() -> [SectionType] {
         [getFromWalletInfoSection(),
          getChainInfoSection(),
@@ -168,7 +233,8 @@ private extension ConfirmSendAssetReviewInfoView {
                           iconColor: .foregroundSecondary,
                           value: "Fast",
                           valueColor: .foregroundWarning,
-                          subValue: "~ 4 sec")),
+                          subValue: "~ 4 sec",
+                          actions: getTransactionSpeedActions())),
          .infoValue(.init(title: String.Constants.feeEstimate.localized(),
                           icon: .tildaIcon,
                           value: "$4.20")),
