@@ -1166,8 +1166,11 @@ extension String {
         static let sendCryptoReviewPromptMessage = "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE"
         static let scanWalletAddressHint = "SCAN_WALLET_ADDRESS_HINT"
         static let max = "MAX"
+        static let transferDomainConfirmationHint = "TRANSFER_DOMAIN_CONFIRMATION_HINT"
+        static let transferDomainSuccessTitle = "TRANSFER_DOMAIN_SUCCESS_TITLE"
+        static let sendCryptoSuccessTitle = "SEND_CRYPTO_SUCCESS_TITLE"
+        static let transactionTakesNMinutes = "TRANSACTION_TAKES_N_MINUTES"
     }
-
     
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"

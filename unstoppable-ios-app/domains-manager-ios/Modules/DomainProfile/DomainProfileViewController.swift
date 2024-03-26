@@ -224,12 +224,6 @@ private extension DomainProfileViewController {
         UDVibration.buttonTap.vibrate()
         presenter.didTapMintedOnChainButton()
     }
-    
-    @objc func didTapTransferButton() {
-        logProfileButtonPressedAnalyticEvents(button: .transfer)
-        UDVibration.buttonTap.vibrate()
-        presenter.didTapTransferButton()
-    }
 }
 
 // MARK: - Private functions
@@ -339,11 +333,6 @@ private extension DomainProfileViewController {
                             image: .getNetworkSmallIcon(by: chain),
                             identifier: .init(UUID().uuidString),
                             handler: { [weak self] _ in  self?.didTapMintedOnChainButton() })
-        case .transfer:
-            return UIAction(title: String.Constants.transfer.localized(),
-                            image: .systemArrowTurnUpRight,
-                            identifier: .init(UUID().uuidString),
-                            handler: { [weak self] _ in  self?.didTapTransferButton() })
         }
     }
     
@@ -671,7 +660,6 @@ extension DomainProfileViewController {
     enum Action: Hashable {
         case copyDomain, viewWallet(subtitle: String), viewInBrowser, setReverseResolution(isEnabled: Bool)
         case aboutProfiles, mintedOn(chain: BlockchainType)
-        case transfer
     }
     
     enum ActionButtonStyle {

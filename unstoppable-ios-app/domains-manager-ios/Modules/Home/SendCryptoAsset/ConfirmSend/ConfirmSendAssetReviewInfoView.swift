@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct ConfirmSendTokenReviewInfoView: View {
+struct ConfirmSendAssetReviewInfoView: View {
     
     @Environment(\.imageLoadingService) var imageLoadingService
     
     private let lineWidth: CGFloat = 1
     private let sectionHeight: CGFloat = 48
     
-    let token: BalanceTokenUIDescription
+    let asset: Asset
     let sourceWallet: WalletEntity
     @State private var fromUserAvatar: UIImage?
 
@@ -28,7 +28,7 @@ struct ConfirmSendTokenReviewInfoView: View {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     func onAppear() {
         Task {
             if let domain = sourceWallet.rrDomain {
@@ -41,7 +41,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     @ViewBuilder
     func infoSectionsView() -> some View {
         VStack(spacing: 0) {
@@ -108,7 +108,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     enum SectionType: Hashable {
         case infoValue(InfoWithValueDescription)
         case info(String)
@@ -136,11 +136,33 @@ private extension ConfirmSendTokenReviewInfoView {
                          value: fromWalletInfoValue))
     }
     
+    func getChainInfoSection() -> SectionType {
+        .infoValue(.init(title: String.Constants.chain.localized(),
+                         icon: chainIcon,
+                         value: getBlockchainType().fullName))
+    }
+    
+    func getBlockchainType() -> BlockchainType {
+        switch asset {
+        case .token(let token):
+            BlockchainType(rawValue: token.symbol) ?? .Matic
+        case .domain(let domain):
+            domain.blockchain ?? .Matic
+        }
+    }
+    
     func getCurrentSections() -> [SectionType] {
+        switch asset {
+        case .token:
+            getSectionsForToken()
+        case .domain:
+            getSectionsForDomain()
+        }
+    }
+    
+    func getSectionsForToken() -> [SectionType] {
         [getFromWalletInfoSection(),
-         .infoValue(.init(title: String.Constants.chain.localized(),
-                          icon: chainIcon,
-                          value: token.name)),
+         getChainInfoSection(),
          .infoValue(.init(title: String.Constants.speed.localized(),
                           icon: .chevronGrabberVertical,
                           iconColor: .foregroundSecondary,
@@ -153,8 +175,14 @@ private extension ConfirmSendTokenReviewInfoView {
          .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
     }
     
+    func getSectionsForDomain() -> [SectionType] {
+        [getFromWalletInfoSection(),
+         getChainInfoSection(),
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+    }
+    
     var chainIcon: UIImage {
-        switch BlockchainType(rawValue: token.symbol) {
+        switch getBlockchainType() {
         case .Ethereum:
             .ethereumIcon
         default:
@@ -164,7 +192,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     var numberOfSections: Int { getCurrentSections().count }
 
     @ViewBuilder
@@ -182,7 +210,7 @@ private extension ConfirmSendTokenReviewInfoView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenReviewInfoView {
+private extension ConfirmSendAssetReviewInfoView {
     struct ConnectCurve: Shape {
         let radius: CGFloat
         let lineWidth: CGFloat
@@ -297,7 +325,15 @@ private extension ConfirmSendTokenReviewInfoView {
     }
 }
 
+// MARK: - Open methods
+extension ConfirmSendAssetReviewInfoView {
+    enum Asset {
+        case token(BalanceTokenUIDescription)
+        case domain(DomainDisplayInfo)
+    }
+}
+
 #Preview {
-    ConfirmSendTokenReviewInfoView(token: MockEntitiesFabric.Tokens.mockUIToken(),
+    ConfirmSendAssetReviewInfoView(asset: .token(MockEntitiesFabric.Tokens.mockUIToken()),
                                    sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }

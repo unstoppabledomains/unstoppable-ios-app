@@ -144,7 +144,8 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
 
     func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? { nil }
     func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName? { nil }
-    func setReverseResolution(to domain: DomainName, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws { }
+    func setReverseResolution(to domain: DomainItem,
+                              paymentConfirmationHandler: PaymentConfirmationHandler) async throws { }
 }
 
 // MARK: - Private methods

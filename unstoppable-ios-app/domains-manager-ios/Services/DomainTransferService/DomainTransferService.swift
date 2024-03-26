@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DomainTransferService {
+final class DomainTransferService: PaymentConfirmationHandler {
     
 }
 
@@ -15,14 +15,13 @@ final class DomainTransferService {
 extension DomainTransferService: DomainTransferServiceProtocol {
     func transferDomain(domain: DomainItem,
                         to receiverAddress: HexAddress,
-                        configuration: TransferDomainConfiguration,
-                        paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+                        configuration: TransferDomainConfiguration) async throws {
         let request = try getRequestForTransferDomain(domain,
                                                       to: receiverAddress,
                                                       configuration: configuration)
         let txIds = try await NetworkService().makeActionsAPIRequest(request,
-                                                         forDomain: domain,
-                                                         paymentConfirmationDelegate: paymentConfirmationDelegate)
+                                                                     forDomain: domain,
+                                                                     paymentConfirmationHandler: self)
         
         let domainName = domain.name
         var transactions = appContext.domainTransactionsService.getCachedTransactionsFor(domainNames: [domainName])

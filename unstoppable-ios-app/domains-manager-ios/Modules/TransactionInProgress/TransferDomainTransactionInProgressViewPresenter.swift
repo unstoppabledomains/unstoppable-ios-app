@@ -15,15 +15,11 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
     override var content: TransactionInProgressViewController.HeaderDescription.Content { .transfer }
     
     
-    private weak var transferDomainFlowManager: TransferDomainFlowManager?
-
     init(view: TransactionInProgressViewProtocol,
          domainDisplayInfo: DomainDisplayInfo,
          transactionsService: DomainTransactionsServiceProtocol,
-         notificationsService: NotificationsServiceProtocol,
-         transferDomainFlowManager: TransferDomainFlowManager?) {
+         notificationsService: NotificationsServiceProtocol) {
         self.domainDisplayInfo = domainDisplayInfo
-        self.transferDomainFlowManager = transferDomainFlowManager
         super.init(view: view,
                    transactionsService: transactionsService,
                    notificationsService: notificationsService)
@@ -62,20 +58,6 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
             } else {
                 showData()
             }
-        }
-    }
-    
-    @MainActor
-    override func dismiss() {
-        guard let transferDomainFlowManager else {
-            super.dismiss()
-            return
-        }
-        
-        stopTimer()
-        
-        Task {
-            try? await transferDomainFlowManager.handle(action: .transactionFinished)
         }
     }
 }

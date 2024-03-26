@@ -15,7 +15,9 @@ struct SelectCryptoAssetToSendView: View {
     @State private var searchDomainsKey = ""
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
     @State private var tokens: [BalanceTokenUIDescription] = []
-    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], subdomains: [])
+    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], 
+                                                                              subdomains: [],
+                                                                              isSearching: false)
     @State private var allDomains: [DomainDisplayInfo] = []
     
     let receiver: SendCryptoAsset.AssetReceiver
@@ -28,7 +30,6 @@ struct SelectCryptoAssetToSendView: View {
             selectedAssetsList()
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(horizontal: 16))
-
         }
         .addNavigationTopSafeAreaOffset()
         .listRowSpacing(0)
@@ -50,13 +51,14 @@ private extension SelectCryptoAssetToSendView {
             lhs.balanceUsd > rhs.balanceUsd
         })
         
-        allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain }
+        allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain && $0.isAbleToTransfer }
         setDomainsData()
     }
     
     func setDomainsData() {
         domainsData.setDomains(filteredDomains)
         domainsData.sortDomains(.alphabeticalAZ)
+        domainsData.isSearching = !searchDomainsKey.isEmpty
     }
     
     @ViewBuilder
@@ -108,8 +110,10 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-        if !allDomains.isEmpty {
-            domainsSearchView()
+        ZStack {
+            if !allDomains.isEmpty {
+                domainsSearchView()
+            }
         }
         domainsContentView()
     }
@@ -118,7 +122,7 @@ private extension SelectCryptoAssetToSendView {
     func domainsContentView() -> some View {
         HomeWalletsDomainsSectionView(domainsData: $domainsData,
                                       domainSelectedCallback: { domain in
-            viewModel.handleAction(.userDomainSelected(domain))
+            viewModel.handleAction(.userDomainSelected(.init(receiver: receiver, domain: domain)))
         },
                                       buyDomainCallback: {
             tabRouter.runPurchaseFlow()

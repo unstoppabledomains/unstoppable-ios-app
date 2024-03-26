@@ -52,7 +52,7 @@ class SetupReverseResolutionViewPresenter {
         
         let domain = domain.toDomainItem()
         try await udWalletsService.setReverseResolution(to: domain,
-                                                        paymentConfirmationDelegate: view)
+                                                        paymentConfirmationHandler: view)
     }
 }
 

@@ -302,6 +302,7 @@ extension HomeWalletView {
         private(set) var subdomains: [DomainDisplayInfo]
         var isSubdomainsVisible: Bool = false
         var domainsTLDsExpandedList: Set<String> = []
+        var isSearching: Bool = false
     
         mutating func setDomains(_ domains: [DomainDisplayInfo]) {
             domainsGroups = DomainsTLDGroup.createFrom(domains: domains.filter({ !$0.isSubdomain }))

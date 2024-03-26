@@ -10,8 +10,7 @@ import Foundation
 protocol DomainTransferServiceProtocol {
     func transferDomain(domain: DomainItem,
                         to receiverAddress: HexAddress,
-                        configuration: TransferDomainConfiguration,
-                        paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
+                        configuration: TransferDomainConfiguration) async throws
 }
 
 struct TransferDomainConfiguration {

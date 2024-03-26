@@ -1,5 +1,5 @@
 //
-//  ConfirmSendTokenSenderReceiverConnectView.swift
+//  ConfirmSendAssetSenderReceiverConnectView.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 21.03.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmSendTokenSenderReceiverConnectView: View {
+struct ConfirmSendAssetSenderReceiverConnectView: View {
     private let radius: CGFloat = 24
     private let lineWidth: CGFloat = 1
     
@@ -20,7 +20,7 @@ struct ConfirmSendTokenSenderReceiverConnectView: View {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenSenderReceiverConnectView {
+private extension ConfirmSendAssetSenderReceiverConnectView {
     @ViewBuilder
     func curveLine() -> some View {
         ConnectCurve(radius: 24,
@@ -55,7 +55,7 @@ private extension ConfirmSendTokenSenderReceiverConnectView {
 }
 
 // MARK: - Private methods
-private extension ConfirmSendTokenSenderReceiverConnectView {
+private extension ConfirmSendAssetSenderReceiverConnectView {
     struct ConnectCurve: Shape {
         let radius: CGFloat
         let lineWidth: CGFloat
@@ -89,5 +89,5 @@ private extension ConfirmSendTokenSenderReceiverConnectView {
 }
 
 #Preview {
-    ConfirmSendTokenSenderReceiverConnectView()
+    ConfirmSendAssetSenderReceiverConnectView()
 }

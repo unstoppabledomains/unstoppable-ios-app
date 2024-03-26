@@ -47,7 +47,8 @@ extension SendCryptoAsset {
         case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(SendTokenAssetData)
         
-        case userDomainSelected(DomainDisplayInfo)
+        case userDomainSelected(TransferDomainData)
+        case didTransferDomain(DomainDisplayInfo)
     }
 }
 
@@ -101,6 +102,17 @@ extension SendCryptoAsset {
 }
 
 extension SendCryptoAsset {
+    struct TransferDomainData: Hashable {
+        let receiver: AssetReceiver
+        let domain: DomainDisplayInfo
+    }
+    
+    struct TransferDomainConfirmationData {
+        let shouldClearRecords: Bool
+    }
+}
+
+extension SendCryptoAsset {
     enum TokenAssetAmountInputType {
         case usdAmount
         case tokenAmount
@@ -123,5 +135,12 @@ extension SendCryptoAsset {
                     return tokenAmount * (token.marketUsd ?? 1)
             }
         }
+    }
+}
+
+extension SendCryptoAsset {
+    struct Constants {
+        @MainActor
+        static var tilesVerticalPadding: CGFloat { deviceSize.isIPSE ? 8 : 16 }
     }
 }

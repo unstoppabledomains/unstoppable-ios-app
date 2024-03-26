@@ -27,6 +27,7 @@ struct UDButtonView: View {
         } label: {
             Text("")
         }
+        .allowsHitTesting(!isLoading)
         .buttonStyle(ControllableButtonStyle(state: .init(isEnabled: isEnabled,
                                                           isLoading: self.isLoading,
                                                           isSuccess: self.isSuccess),

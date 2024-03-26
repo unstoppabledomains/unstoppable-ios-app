@@ -57,7 +57,7 @@ private extension QRWalletAddressScannerView {
         
         didRecognizeAddress = true
         dismiss()
-        viewModel.navPath.removeLast()
+        Vibration.success.vibrate()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             viewModel.handleAction(.globalWalletAddressSelected(walletAddress))
         }

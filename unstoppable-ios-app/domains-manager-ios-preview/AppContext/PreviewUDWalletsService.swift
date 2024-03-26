@@ -91,7 +91,7 @@ final class UDWalletsService: UDWalletsServiceProtocol {
         nil
     }
     
-    func setReverseResolution(to domain: DomainItem, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+    func setReverseResolution(to domain: DomainItem, paymentConfirmationHandler: PaymentConfirmationHandler) async throws {
         
     }
     

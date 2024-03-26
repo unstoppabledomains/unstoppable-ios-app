@@ -267,6 +267,14 @@ extension NetworkService {
     struct TxPayload {
         
     }
+    
+    
+    struct ActionsPaymentInfo: Decodable {
+        let id: String
+        let clientSecret: String
+        let totalAmount: UInt
+    }
+    
 }
 
 enum NetworkLayerError: LocalizedError, RawValueLocalizable {

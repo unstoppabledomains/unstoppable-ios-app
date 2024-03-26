@@ -287,11 +287,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     func setReverseResolution(to domain: DomainItem,
-                              paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+                              paymentConfirmationHandler: PaymentConfirmationHandler) async throws {
         let request = try getRequestForActionReverseResolution(domain, remove: false)
         let txs = try await NetworkService().makeActionsAPIRequest(request,
                                                                    forDomain: domain,
-                                                                   paymentConfirmationDelegate: paymentConfirmationDelegate)
+                                                                   paymentConfirmationHandler: paymentConfirmationHandler)
         Debugger.printInfo(topic: .Domain, "Successful setReverseResolution for domain: \(domain.name)")
         let txIds = txs.map({$0.id})
         self.notifyListeners(.reverseResolutionDomainChanged(domainName: domain.name,
