@@ -58,16 +58,10 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
         case .recipientSelected(let recipient, let domain):
             moveToStep(.reviewAndConfirmTransferOf(domain: domain, recipient: recipient))
         case .confirmedTransferOf(let domainDisplayInfo, let recipient, let configuration ):
-            guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
-                dismiss(result: .cancelled)
-                Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
-                return
-            }
             let domain = domainDisplayInfo.toDomainItem()
             try await appContext.domainTransferService.transferDomain(domain: domain,
                                                                       to: recipient.ownerAddress,
-                                                                      configuration: configuration,
-                                                                      paymentConfirmationDelegate: topViewController)
+                                                                      configuration: configuration)
             appContext.analyticsService.log(event: .didTransferDomain, withParameters: [.domainName: domain.name,
                                                                                         .fromWallet: domain.ownerWallet ?? "",
                                                                                         .toWallet: recipient.ownerAddress])

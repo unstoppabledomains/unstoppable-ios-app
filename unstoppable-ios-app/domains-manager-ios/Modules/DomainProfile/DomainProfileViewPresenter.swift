@@ -772,7 +772,7 @@ private extension DomainProfileViewPresenter {
         let domain = try await getCurrentDomain()
         try await appContext.domainRecordsService.saveRecords(records: records,
                                                               in: domain,
-                                                              paymentConfirmationDelegate: view)
+                                                              paymentConfirmationHandler: view)
     }
     
     func saveProfile(_ request: ProfileUpdateRequest) async throws {

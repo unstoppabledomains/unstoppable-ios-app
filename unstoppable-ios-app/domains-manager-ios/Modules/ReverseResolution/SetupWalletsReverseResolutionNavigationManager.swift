@@ -58,14 +58,14 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
         case .continueReverseResolutionSetup:
             moveToStep(.chooseDomainForReverseResolution(mode: .chooseFirstDomain))
         case .didSelectDomainForReverseResolution(let domainDisplayInfo):
-            guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
+            guard let topViewController = self.topViewController else {
                 dismiss(result: .cancelled)
                 Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
                 return
             }
             let domain = domainDisplayInfo.toDomainItem()
             try await udWalletsService.setReverseResolution(to: domain,
-                                                            paymentConfirmationDelegate: topViewController)
+                                                            paymentConfirmationHandler: topViewController)
             dismiss(result: .set(domain: domainDisplayInfo))
         case .didFailToSetupRequiredReverseResolution:
             dismiss(result: .failed)

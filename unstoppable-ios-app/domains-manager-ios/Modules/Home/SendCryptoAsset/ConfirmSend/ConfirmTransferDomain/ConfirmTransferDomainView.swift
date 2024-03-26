@@ -13,21 +13,29 @@ struct ConfirmTransferDomainView: View {
 
     let data: SendCryptoAsset.TransferDomainData
     @State private var pullUp: ViewPullUpConfigurationType?
+    @State private var isLoading: Bool = false
+    @State private var error: Error?
 
     var body: some View {
-        VStack(spacing: 4) {
-            sendingTokenInfoView()
-            senderReceiverConnectorView()
-            receiverInfoView()
-            reviewInfoView()
-            Spacer()
-            continueButton()
+        ZStack {
+            VStack(spacing: 4) {
+                sendingTokenInfoView()
+                senderReceiverConnectorView()
+                receiverInfoView()
+                reviewInfoView()
+                Spacer()
+                continueButton()
+            }
+            if isLoading {
+                ProgressView()
+            }
         }
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
+        .displayError($error)
         .navigationTitle(String.Constants.youAreSending.localized())
     }
 }
@@ -75,8 +83,33 @@ private extension ConfirmTransferDomainView {
         pullUp = .custom(.transferDomainConfirmationPullUp(confirmCallback: transferConfirmed))
     }
     
-    func transferConfirmed() {
+    func transferConfirmed(_ confirmationData: SendCryptoAsset.TransferDomainConfirmationData) {
         pullUp = nil
+        Task {
+            isLoading = true
+            
+            do {
+                let domain = self.data.domain
+                let recipientAddress = self.data.receiver.walletAddress
+                let configuration = TransferDomainConfiguration(resetRecords: confirmationData.shouldClearRecords)
+                try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
+                                                                          to: recipientAddress,
+                                                                          configuration: configuration)
+                appContext.analyticsService.log(event: .didTransferDomain,
+                                                withParameters: [.domainName: domain.name,
+                                                                 .fromWallet: domain.ownerWallet ?? "",
+                                                                 .toWallet: recipientAddress])
+                Task.detached {
+                    try? await appContext.walletsDataService.refreshDataForWallet(viewModel.sourceWallet)
+                }
+                
+                viewModel.handleAction(.didTransferDomain(domain))
+            } catch {
+                self.error = error
+            }
+            
+            isLoading = false
+        }
     }
 }
 

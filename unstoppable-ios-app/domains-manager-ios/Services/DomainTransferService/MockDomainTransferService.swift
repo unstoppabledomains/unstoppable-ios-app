@@ -12,6 +12,5 @@ final class MockDomainTransferService { }
 extension MockDomainTransferService: DomainTransferServiceProtocol {
     func transferDomain(domain: DomainItem,
                         to receiverAddress: HexAddress,
-                        configuration: TransferDomainConfiguration,
-                        paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws { }
+                        configuration: TransferDomainConfiguration) async throws { }
 }

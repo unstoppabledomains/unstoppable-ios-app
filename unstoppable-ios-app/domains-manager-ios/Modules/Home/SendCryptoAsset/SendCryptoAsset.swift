@@ -48,6 +48,7 @@ extension SendCryptoAsset {
         case userTokenValueSelected(SendTokenAssetData)
         
         case userDomainSelected(TransferDomainData)
+        case didTransferDomain(DomainDisplayInfo)
     }
 }
 
@@ -104,6 +105,10 @@ extension SendCryptoAsset {
     struct TransferDomainData: Hashable {
         let receiver: AssetReceiver
         let domain: DomainDisplayInfo
+    }
+    
+    struct TransferDomainConfirmationData {
+        let shouldClearRecords: Bool
     }
 }
 

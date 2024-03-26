@@ -8,9 +8,9 @@
 import Foundation
 
 final class DomainTransferService: DomainTransferServiceProtocol {
-    func transferDomain(domain: DomainItem, to receiverAddress: HexAddress, configuration: TransferDomainConfiguration, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+    func transferDomain(domain: DomainItem,
+                        to receiverAddress: HexAddress,
+                        configuration: TransferDomainConfiguration) async throws {
         
     }
-    
-    
 }

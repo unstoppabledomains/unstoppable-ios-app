@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct TransferDomainConfigurationPullUpView: View {
+typealias TransferDomainConfirmationCallback = @MainActor (SendCryptoAsset.TransferDomainConfirmationData)->()
+
+struct TransferDomainConfirmationPullUpView: View {
     
-    let confirmCallback: MainActorCallback
+    let confirmCallback: TransferDomainConfirmationCallback
     
     @State private var confirmationData = ConfirmationData()
     
@@ -41,7 +43,7 @@ struct TransferDomainConfigurationPullUpView: View {
 }
 
 // MARK: - Private methods
-private extension TransferDomainConfigurationPullUpView {
+private extension TransferDomainConfirmationPullUpView {
     @ViewBuilder
     func confirmRowWith(isOn: Binding<Bool>,
                                 title: String,
@@ -91,7 +93,7 @@ private extension TransferDomainConfigurationPullUpView {
 }
 
 // MARK: - Private methods
-private extension TransferDomainConfigurationPullUpView {
+private extension TransferDomainConfirmationPullUpView {
     struct ConfirmationData {
         var isConsentNotExchangeConfirmed: Bool = false
         var isConsentValidAddressConfirmed: Bool = false
@@ -107,12 +109,12 @@ private extension TransferDomainConfigurationPullUpView {
             guard let view = await appContext.coreAppCoordinator.topVC else { return }
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                await confirmCallback()
+                await confirmCallback(.init(shouldClearRecords: confirmationData.resetRecords))
             }
         }
     }
 }
 
 #Preview {
-    TransferDomainConfigurationPullUpView(confirmCallback: { })
+    TransferDomainConfirmationPullUpView(confirmCallback: { _ in })
 }

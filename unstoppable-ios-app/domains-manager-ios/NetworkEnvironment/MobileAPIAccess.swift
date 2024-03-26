@@ -547,14 +547,17 @@ extension NetworkService {
     @discardableResult
     func makeActionsAPIRequest(_ request: APIRequest,
                                forDomain domain: DomainItem,
-                               paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws -> [ActionsTxInfo] {
+                               paymentConfirmationHandler: PaymentConfirmationHandler) async throws -> [ActionsTxInfo] {
         let actionsResponse = try await NetworkService().getActions(request: request)
         let blockchain = try BlockchainType.getType(abbreviation: actionsResponse.domain.blockchain)
         
         let payloadReturned: NetworkService.TxPayload
         if let paymentInfo = actionsResponse.paymentInfo {
-            let payloadFormed = try DomainItem.createTxPayload(blockchain: blockchain, paymentInfo: paymentInfo, txs: actionsResponse.txs)
-            payloadReturned = try await paymentConfirmationDelegate.fetchPaymentConfirmationAsync(for: domain, payload: payloadFormed)
+            payloadReturned = try DomainItem.createTxPayload(blockchain: blockchain,
+                                                             paymentInfo: paymentInfo,
+                                                             txs: actionsResponse.txs)
+            try await paymentConfirmationHandler.payIfNeededToUpdate(domain: domain,
+                                                                     using: paymentInfo)
         } else {
             let messages = actionsResponse.txs.compactMap { $0.messageToSign }
             guard messages.count == actionsResponse.txs.count else { throw NetworkLayerError.noMessageError }
