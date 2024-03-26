@@ -253,7 +253,7 @@ private extension SelectTokenAssetAmountToSendView {
                                                                  token: token,
                                                                  amount: getCurrentInput())))
         }
-                     .disabled(interpreter.getInterpretedNumber() <= 0)
+                     .disabled(interpreter.getInterpretedNumber() <= 0 || !isSufficientFunds)
     }
     
     func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {
