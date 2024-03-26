@@ -1247,7 +1247,7 @@ extension WalletConnectServiceV2 {
             throw WalletConnectRequestError.failedEncodeTransaction
         }
         let params = WalletConnectServiceV2.getParamsSignTx(tx: txAdapted)
-        return try await sendRequest(method: .personalSign,
+        return try await sendRequest(method: .ethSendTransaction,
                                      session: sessionSettled,
                                      chainId: chainId,
                                      requestParams: params,
@@ -1325,7 +1325,7 @@ extension WalletConnectServiceV2 {
     }
     
     static func getParamsSignTx(tx: TransactionV2) -> WCAnyCodable {
-        WCAnyCodable(tx)
+        WCAnyCodable([tx])
     }
     
     static func getParamsPersonalSign(message: String, address: HexAddress) -> WCAnyCodable {
