@@ -2409,6 +2409,10 @@
 		C6F433402BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F4333E2BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift */; };
 		C6F433422BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433412BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift */; };
 		C6F433432BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433412BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift */; };
+		C6F433452BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433442BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift */; };
+		C6F433462BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433442BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift */; };
+		C6F433482BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */; };
+		C6F433492BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
 		C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
@@ -3868,6 +3872,8 @@
 		C6F4333B2BB25B1C000C5E46 /* ConfirmSendAssetReceiverInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendAssetReceiverInfoView.swift; sourceTree = "<group>"; };
 		C6F4333E2BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenViewsBuilderProtocol.swift; sourceTree = "<group>"; };
 		C6F433412BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendAssetSendingInfoView.swift; sourceTree = "<group>"; };
+		C6F433442BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferDomainConfigurationPullUpView.swift; sourceTree = "<group>"; };
+		C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCheckBoxView.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
 		C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
@@ -6919,6 +6925,7 @@
 				C61C33292B90527200BD11F5 /* UDSegmentedControlView.swift */,
 				C6DDF24C2B147F1A006D1F0B /* UDTextFieldView.swift */,
 				C655CA9B2B16E5BE00FDA063 /* UDToggleStyle.swift */,
+				C6F433472BB26AF2000C5E46 /* UDCheckBoxView.swift */,
 				C62900DE2BAAB1A8008B35A2 /* UDTabsPickerView.swift */,
 				C607A5D62B32A1030088ECF3 /* NavigationContentView.swift */,
 				C6B65FAC2B57A5BB006D1812 /* DismissIndicatorView.swift */,
@@ -8091,6 +8098,7 @@
 				C6F433412BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift */,
 				C62AC2012BABF532003FB69E /* ConfirmSendAssetReviewInfoView.swift */,
 				C6F4333E2BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift */,
+				C6F433442BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift */,
 				C62AC1FA2BABE544003FB69E /* ConfirmSendToken */,
 				C6F433362BB257DC000C5E46 /* ConfirmTransferDomain */,
 			);
@@ -8930,6 +8938,7 @@
 				C6A89C4F2B315B8D008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
 				C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C6B65F772B550FC2006D1812 /* WalletNFTsService.swift in Sources */,
+				C6F433482BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */,
 				C6BF0C5B2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */,
 				C685A96F2840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C692C31F282E485C00C31393 /* SecuritySettingsViewController.swift in Sources */,
@@ -9347,6 +9356,7 @@
 				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F2A280030AB00A517D5 /* UICollectionView.swift in Sources */,
 				C64836B8282BADB1007BD3F1 /* PullUpViewService.swift in Sources */,
+				C6F433452BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift in Sources */,
 				C6752C462B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */,
 				C6DDF2562B147F1A006D1F0B /* UDTextFieldView.swift in Sources */,
 				C665B9BA28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
@@ -10075,6 +10085,7 @@
 				C6F433432BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift in Sources */,
 				C6C8F8372B217E9600A9834D /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6D646612B1ED11400D724AC /* DomainProfileSectionHeader.swift in Sources */,
+				C6F433462BB268B1000C5E46 /* TransferDomainConfigurationPullUpView.swift in Sources */,
 				C6C8F8A02B2182AE00A9834D /* WalletDetailsViewPresenter.swift in Sources */,
 				C6C8F8362B217E9600A9834D /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C6C8F8212B217CC000A9834D /* AddWalletNavigationController.swift in Sources */,
@@ -10507,6 +10518,7 @@
 				C618081C2B19AB0D0032E543 /* PendingPurchasedDomain.swift in Sources */,
 				C6D646B02B1ED17E00D724AC /* SocialsDomainImagePreviewView.swift in Sources */,
 				C6C8F91F2B2183AB00A9834D /* InviteFriendsViewPresenter.swift in Sources */,
+				C6F433492BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */,
 				C6D646932B1ED14400D724AC /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C61808482B19B9680032E543 /* PreviewAppLaunchService.swift in Sources */,
 				C62BDA422B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,

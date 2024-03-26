@@ -12,6 +12,7 @@ struct ConfirmTransferDomainView: View {
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
     let data: SendCryptoAsset.TransferDomainData
+    @State private var pullUp: ViewPullUpConfigurationType?
 
     var body: some View {
         VStack(spacing: 4) {
@@ -26,6 +27,7 @@ struct ConfirmTransferDomainView: View {
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
+        .viewPullUp($pullUp)
         .navigationTitle(String.Constants.youAreSending.localized())
     }
 }
@@ -57,9 +59,8 @@ private extension ConfirmTransferDomainView {
     func continueButton() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
                      icon: confirmIcon,
-                     style: .large(.raisedPrimary)) {
-            
-        }
+                     style: .large(.raisedPrimary),
+                     callback: continueButtonPressed)
     }
     
     var confirmIcon: Image? {
@@ -68,6 +69,14 @@ private extension ConfirmTransferDomainView {
             return Image(uiImage: icon)
         }
         return nil
+    }
+    
+    func continueButtonPressed() {
+        pullUp = .custom(.transferDomainConfirmationPullUp(confirmCallback: transferConfirmed))
+    }
+    
+    func transferConfirmed() {
+        pullUp = nil
     }
 }
 

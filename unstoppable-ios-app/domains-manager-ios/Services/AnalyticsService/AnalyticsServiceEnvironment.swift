@@ -450,6 +450,7 @@ extension Analytics {
         case searchPurchaseDomainNotSupported
         case createYourProfile
         case homeWalletBuyOptions
+        case transferDomainConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
