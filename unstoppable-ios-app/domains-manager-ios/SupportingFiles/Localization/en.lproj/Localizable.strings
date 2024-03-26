@@ -1067,3 +1067,6 @@ More tabs are coming in the next updates.";
 "SCAN_WALLET_ADDRESS_HINT" = "Scan an Ethereum or Polygon wallet address";
 "MAX" = "Max";
 "TRANSFER_DOMAIN_CONFIRMATION_HINT" = "By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.";
+"TRANSFER_DOMAIN_SUCCESS_TITLE" = "Domain transfer\nhas started";
+"SEND_CRYPTO_SUCCESS_TITLE" = "Successfully sent";
+"TRANSACTION_TAKES_N_MINUTES" = "This transaction usually takes ~%i minutes.";

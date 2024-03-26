@@ -49,9 +49,9 @@ private extension SendCryptoAssetSuccessView {
     var currentTitle: String {
         switch asset {
         case .domain:
-            "Domain transfer\nhas started"
+            String.Constants.transferDomainSuccessTitle.localized()
         case .token:
-            "Successfully sent"
+            String.Constants.sendCryptoSuccessTitle.localized()
         }
     }
     
@@ -66,8 +66,8 @@ private extension SendCryptoAssetSuccessView {
         switch asset {
         case .domain(let domain):
             domain.name
-        case .token:
-            "Successfully sent"
+        case .token(let token, let amount):
+            "\(formatCartPrice(amount.valueOf(type: .usdAmount, for: token))) · \(amount.valueOf(type: .tokenAmount, for: token).formatted(toMaxNumberAfterComa: 6)) \(token.symbol)"
         }
     }
     
@@ -82,9 +82,9 @@ private extension SendCryptoAssetSuccessView {
     var currentTimeEstimation: String {
         switch asset {
         case .domain:
-            "This transaction usually takes ~5 minutes."
+            String.Constants.transactionTakesNMinutes.localized(5)
         case .token:
-            "This transaction usually takes ~5 minutes."
+            String.Constants.transactionTakesNMinutes.localized(3)
         }
     }
     
@@ -98,7 +98,7 @@ private extension SendCryptoAssetSuccessView {
     
     @ViewBuilder
     func actionButtons() -> some View {
-        VStack {
+        VStack(spacing: 16) {
             viewTransactionButton()
             doneButton()
         }
@@ -136,5 +136,7 @@ extension SendCryptoAssetSuccessView {
 }
 
 #Preview {
-    SendCryptoAssetSuccessView(asset: .domain(MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
+    SendCryptoAssetSuccessView(asset: .token(token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                             amount: .tokenAmount(0.0324)))
+//    SendCryptoAssetSuccessView(asset: .domain(MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
 }
