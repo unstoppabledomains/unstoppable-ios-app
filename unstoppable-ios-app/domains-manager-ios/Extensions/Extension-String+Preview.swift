@@ -1170,6 +1170,7 @@ extension String {
         static let transferDomainSuccessTitle = "TRANSFER_DOMAIN_SUCCESS_TITLE"
         static let sendCryptoSuccessTitle = "SEND_CRYPTO_SUCCESS_TITLE"
         static let transactionTakesNMinutes = "TRANSACTION_TAKES_N_MINUTES"
+        static let sendMaxCryptoInfoPullUpTitle = "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE"
     }
     
     enum BlockChainIcons: String {

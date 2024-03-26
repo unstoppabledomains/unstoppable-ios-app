@@ -14,6 +14,7 @@ struct SelectTokenAssetAmountToSendView: View {
     let data: SendCryptoAsset.SelectTokenAmountToSendData
     private var token: BalanceTokenUIDescription { data.token }
 
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
     
@@ -36,6 +37,7 @@ struct SelectTokenAssetAmountToSendView: View {
         .padding(16)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
+        .viewPullUp($pullUp)
         .navigationTitle(String.Constants.send.localized())
     }
 }
@@ -202,12 +204,20 @@ private extension SelectTokenAssetAmountToSendView {
     func usingMaxButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            maxButtonPressed()
         } label: {
             Text(useMaxButtonTitle)
                 .foregroundStyle(isUsingMax ? Color.foregroundAccentMuted : Color.foregroundAccent)
         }
         .buttonStyle(.plain)
         .padding(.init(horizontal: 16))
+    }
+    
+    func maxButtonPressed() {
+        if !UserDefaults.didShowSendMaxCryptoInfoPullUp {
+            UserDefaults.didShowSendMaxCryptoInfoPullUp = true
+            pullUp = .default(.maxCryptoSendInfoPullUp())
+        }
     }
 }
 
