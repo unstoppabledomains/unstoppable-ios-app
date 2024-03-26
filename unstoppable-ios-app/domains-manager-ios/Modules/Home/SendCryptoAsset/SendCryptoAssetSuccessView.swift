@@ -13,6 +13,8 @@ struct SendCryptoAssetSuccessView: View {
     
     var asset: Asset
     
+    @ObservedObject private var transactionTracker = TransactionStatusTracker()
+    
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
@@ -30,6 +32,20 @@ struct SendCryptoAssetSuccessView: View {
         }
         .multilineTextAlignment(.center)
         .padding(16)
+        .animation(.default, value: UUID())
+        .onAppear(perform: onAppear)
+    }
+}
+
+// MARK: - Private methods
+private extension SendCryptoAssetSuccessView {
+    func onAppear() {
+        switch asset {
+        case .domain(let domain):
+            transactionTracker.trackTransactionOf(type: .domainTransfer(domain.name))
+        case .token(let token, _):
+            return
+        }
     }
 }
 
@@ -99,20 +115,24 @@ private extension SendCryptoAssetSuccessView {
     @ViewBuilder
     func actionButtons() -> some View {
         VStack(spacing: 16) {
-            viewTransactionButton()
+            if let txHash = transactionTracker.txHash {
+                viewTransactionButton(txHash: txHash)
+            }
             doneButton()
         }
     }
     
     @ViewBuilder
-    func viewTransactionButton() -> some View {
+    func viewTransactionButton(txHash: String) -> some View {
         UDButtonView(text: String.Constants.viewTransaction.localized(),
                      style: .large(.ghostPrimary),
-                     callback: viewTransaction)
+                     callback: {
+            viewTransaction(txHash: txHash)
+        })
     }
     
-    func viewTransaction() {
-        
+    func viewTransaction(txHash: String) {
+        openLink(.polygonScanTransaction(txHash))
     }
     
     @ViewBuilder
