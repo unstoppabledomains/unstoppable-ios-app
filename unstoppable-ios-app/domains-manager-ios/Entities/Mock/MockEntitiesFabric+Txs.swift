@@ -10,6 +10,16 @@ import Foundation
 // MARK: - WalletTxs
 extension MockEntitiesFabric {
     enum WalletTxs {
+        @MainActor
+        static func createViewModel() -> HomeActivityViewModel {
+            createViewModelUsing(Home.createHomeTabRouter())
+        }
+        
+        @MainActor
+        static func createViewModelUsing(_ router: HomeTabRouter) -> HomeActivityViewModel {
+            HomeActivityViewModel(router: router)
+        }
+        
         static func createMockTxsResponses(canLoadMore: Bool = false,
                                           amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
             [createMockTxsResponse(chain: "ETH",

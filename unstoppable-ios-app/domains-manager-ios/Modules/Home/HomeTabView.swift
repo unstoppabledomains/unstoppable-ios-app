@@ -20,7 +20,7 @@ struct HomeTabView: View {
             HomeExploreView(viewModel: HomeExploreViewModel(router: router))
                 .modifier(HomeTabViewModifier(tab: .explore, isTabBarVisible: router.isTabBarVisible))
             
-            ActivityView()
+            HomeActivityView(viewModel: HomeActivityViewModel(router: router))
                 .modifier(HomeTabViewModifier(tab: .activity, isTabBarVisible: router.isTabBarVisible))
             
             ChatListView(viewModel: .init(presentOptions: .default,

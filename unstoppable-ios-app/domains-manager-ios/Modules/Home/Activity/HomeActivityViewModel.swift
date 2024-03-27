@@ -1,5 +1,5 @@
 //
-//  ActivityViewModel.swift
+//  HomeActivityViewModel.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 27.03.2024.
@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 @MainActor
-final class ActivityViewModel: ObservableObject, ViewAnalyticsLogger {
+final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .homeActivity }
     
@@ -40,7 +40,7 @@ final class ActivityViewModel: ObservableObject, ViewAnalyticsLogger {
 }
 
 // MARK: - Setup methods
-private extension ActivityViewModel {
+private extension HomeActivityViewModel {
     func setup() {
         userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile,

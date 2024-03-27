@@ -20,6 +20,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
     @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
     @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
+    @Published var activityTabNavPath: [HomeActivityNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicProfileViewConfiguration?
