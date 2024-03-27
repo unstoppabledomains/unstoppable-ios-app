@@ -246,7 +246,6 @@ extension HomeWalletView {
             lastAcquiredDate = nfts.lazy.compactMap({ $0.acquiredDate }).sorted(by: { $0 > $1 }).first
         }
     }
-    
 }
 
 extension HomeWalletView {

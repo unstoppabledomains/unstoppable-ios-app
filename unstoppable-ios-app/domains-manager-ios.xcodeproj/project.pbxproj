@@ -1425,6 +1425,8 @@
 		C6B761EE2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */; };
 		C6B761F02BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */; };
 		C6B761F12BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */; };
+		C6B761F32BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761F22BB3FD7500773943 /* WalletTransactionDisplayInfo.swift */; };
+		C6B761F42BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761F22BB3FD7500773943 /* WalletTransactionDisplayInfo.swift */; };
 		C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6BA746A2AD4398500628DC6 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74692AD4398500628DC6 /* Int.swift */; };
@@ -3607,6 +3609,7 @@
 		C6B761E92BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryWalletTransactionsCache.swift; sourceTree = "<group>"; };
 		C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Txs.swift"; sourceTree = "<group>"; };
 		C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsResponse.swift; sourceTree = "<group>"; };
+		C6B761F22BB3FD7500773943 /* WalletTransactionDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionDisplayInfo.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
 		C6BA74692AD4398500628DC6 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
@@ -7441,6 +7444,7 @@
 			children = (
 				C6B761D12BB3C19800773943 /* ActivityViewModel.swift */,
 				C6B761CB2BB3BEB700773943 /* ActivityView.swift */,
+				C6B761F22BB3FD7500773943 /* WalletTransactionDisplayInfo.swift */,
 			);
 			path = Activity;
 			sourceTree = "<group>";
@@ -9502,6 +9506,7 @@
 				30472D8C2672435200B0D7A7 /* Debugger.swift in Sources */,
 				C608C8312877F9D300EDEC6E /* Double.swift in Sources */,
 				C684A0282B85A8E500B751A5 /* MessageReactionSelectionView.swift in Sources */,
+				C6B761F32BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */,
 				C6D6471B2B1ED85C00D724AC /* WalletError.swift in Sources */,
 				C63095CD2B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift in Sources */,
 				C60D2717295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift in Sources */,
@@ -10779,6 +10784,7 @@
 				C6C8F96C2B21880200A9834D /* Int.swift in Sources */,
 				C6D6468D2B1ED13C00D724AC /* AddCurrencyViewController.swift in Sources */,
 				C6D6473A2B1ED9EF00D724AC /* BaseSignTransactionView.swift in Sources */,
+				C6B761F42BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */,
 				C6BF6BDE2B8F3602006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */,
 				C6C8F85C2B217FED00A9834D /* BackedUpWallet.swift in Sources */,
 				C6170EC52B7A0075008E9C93 /* ShowingWalletSelectionModifier.swift in Sources */,
