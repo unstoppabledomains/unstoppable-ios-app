@@ -6332,10 +6332,10 @@
 				C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */,
 				C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */,
 				C6F433532BB28809000C5E46 /* TransactionStatusTracker.swift */,
-				C6F4333A2BB2598A000C5E46 /* ConfirmSend */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
 				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
+				C6F4333A2BB2598A000C5E46 /* ConfirmSend */,
 			);
 			path = SendCryptoAsset;
 			sourceTree = "<group>";
