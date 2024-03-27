@@ -424,7 +424,7 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
 // MARK: - WalletTransactionsNetworkServiceProtocol
 extension NetworkService: WalletTransactionsNetworkServiceProtocol {
     private struct TransactionsPerChainResponseParser {
-        func parseTransactionsResponsesFrom(data: Data) throws -> [TransactionsPerChainResponse] {
+        static func parseTransactionsResponsesFrom(data: Data) throws -> [TransactionsPerChainResponse] {
             typealias JSON = [String : Any]
             
             guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : JSON] else {
@@ -455,8 +455,7 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
                                                              chain: chain)
         let data = try await fetchDataFor(endpoint: endpoint,
                                           method: .get)
-        let parser = TransactionsPerChainResponseParser()
-        let response = try parser.parseTransactionsResponsesFrom(data: data)
+        let response = try TransactionsPerChainResponseParser.parseTransactionsResponsesFrom(data: data)
         
         return response
     }
