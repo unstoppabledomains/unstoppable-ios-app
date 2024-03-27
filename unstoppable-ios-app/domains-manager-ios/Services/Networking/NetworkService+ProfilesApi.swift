@@ -421,3 +421,44 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
     }
 }
 
+// MARK: - WalletTransactionsNetworkServiceProtocol
+extension NetworkService: WalletTransactionsNetworkServiceProtocol {
+    private struct TransactionsPerChainResponseParser {
+        func parseTransactionsResponsesFrom(data: Data) throws -> [TransactionsPerChainResponse] {
+            typealias JSON = [String : Any]
+            
+            guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : JSON] else {
+                throw NetworkLayerError.failedParseTransactionsData
+            }
+            
+            var responses = [TransactionsPerChainResponse]()
+            for (key, value) in json {
+                guard let transactionsArrayJSON = value["data"] else {
+                    continue
+                }
+                let transactionsArrayData = try JSONSerialization.data(withJSONObject: transactionsArrayJSON)
+                let transactions = try [SerializedWalletTransaction].objectFromDataThrowing(transactionsArrayData)
+                let cursor = value["cursor"] as? String
+                let response = TransactionsPerChainResponse(chain: key,
+                                                            cursor: cursor,
+                                                            txs: transactions)
+                responses.append(response)
+            }
+            
+            return responses
+        }
+    }
+    
+    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [TransactionsPerChainResponse] {
+        let endpoint = Endpoint.getProfileWalletTransactions(for: wallet,
+                                                             cursor: cursor,
+                                                             chain: chain)
+        let data = try await fetchDataFor(endpoint: endpoint,
+                                          method: .get)
+        let parser = TransactionsPerChainResponseParser()
+        let response = try parser.parseTransactionsResponsesFrom(data: data)
+        
+        return response
+    }
+}
+

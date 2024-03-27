@@ -41,6 +41,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
+        
+        Task {
+            do {
+                let txs = try await NetworkService().getTransactionsFor(wallet: "0xd7a17898375100c1c0a6a5af7fcf537def2335bf", cursor: nil, chain: nil)
+                print("Ha")
+            } catch {
+                print("Failed with error: \(error.localizedDescription)")
+            }
+        }
+        
         #endif
          
         setup()
