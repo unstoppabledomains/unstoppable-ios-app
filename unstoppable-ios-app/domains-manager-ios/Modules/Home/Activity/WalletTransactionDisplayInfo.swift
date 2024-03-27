@@ -14,8 +14,9 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     let success: Bool
     let value: Double
     let gas: Double
-    let link: String
-    let imageUrl: String
+    let link: URL?
+    let imageUrl: URL?
+    let symbol: String
     let type: TransactionType
     let from: Participant
     let to: Participant
@@ -23,36 +24,55 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     struct Participant: Hashable {
         let address: String
         let domainName: String?
-        let link: String
+        let link: URL?
+        
+        var displayName: String {
+            domainName ?? address.walletAddressTruncated
+        }
+        
+        init(address: String, domainName: String?, link: URL?) {
+            self.address = address
+            self.domainName = domainName
+            self.link = link
+        }
+        
+        init(serializedParticipant: SerializedWalletTransaction.Participant) {
+            self.address = serializedParticipant.address
+            self.domainName = serializedParticipant.label
+            self.link = URL(string: serializedParticipant.link)
+        }
     }
     
 }
 
 // MARK: - Open methods
 extension WalletTransactionDisplayInfo {
-    init(serializedTransaction: SerializedWalletTransaction) {
+    init(serializedTransaction: SerializedWalletTransaction,
+         userWallet: String) {
         self.id = serializedTransaction.id
         self.time = serializedTransaction.timestamp
         self.success = serializedTransaction.success
         self.value = serializedTransaction.value
         self.gas = serializedTransaction.gas
-        self.link = serializedTransaction.link
-        self.imageUrl = serializedTransaction.imageUrl
+        self.link = URL(string: serializedTransaction.link)
+        self.imageUrl = URL(string: serializedTransaction.imageUrl)
+        self.symbol = serializedTransaction.symbol
         
-        self.type = .tokenTransfer
+        if serializedTransaction.from.address == userWallet {
+            self.type = .tokenWithdrawal
+        } else {
+            self.type = .tokenDeposit
+        }
         
-        self.from = Participant(address: serializedTransaction.from.address,
-                                domainName: serializedTransaction.from.label,
-                                link: serializedTransaction.from.link)
-        self.to = Participant(address: serializedTransaction.to.address,
-                              domainName: serializedTransaction.to.label,
-                              link: serializedTransaction.to.link)
+        self.from = Participant(serializedParticipant: serializedTransaction.from)
+        self.to = Participant(serializedParticipant: serializedTransaction.to)
     }
 }
 
 // MARK: - Open methods
 extension WalletTransactionDisplayInfo {
     enum TransactionType {
-        case tokenTransfer
+        case tokenDeposit
+        case tokenWithdrawal
     }
 }

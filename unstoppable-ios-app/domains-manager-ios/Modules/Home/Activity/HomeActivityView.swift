@@ -85,7 +85,17 @@ private extension HomeActivityView {
 private extension HomeActivityView {
     @ViewBuilder
     func contentList() -> some View {
-        Text("Activities list")
+        List {
+            txsList()
+        }
+        .listStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func txsList() -> some View {
+        ForEach(viewModel.groupedTxs, id: \.self) { groupedTx in
+            HomeActivityTransactionsSectionView(groupedTxs: groupedTx)
+        }
     }
 }
 

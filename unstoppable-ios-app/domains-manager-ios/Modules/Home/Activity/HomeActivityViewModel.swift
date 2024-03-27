@@ -13,7 +13,6 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     
     var analyticsName: Analytics.ViewName { .homeActivity }
     
-    @Published private(set) var txsResponse: WalletTransactionsResponse?
     @Published var searchKey: String = ""
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
@@ -21,6 +20,7 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     private let router: HomeTabRouter
     private var selectedProfile: UserProfile
     private var cancellables: Set<AnyCancellable> = []
+    private var txsResponse: WalletTransactionsResponse?
  
     private let userProfileService: UserProfileServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
@@ -37,6 +37,26 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
         self.walletTransactionsService = walletTransactionsService
         setup()
     }
+}
+
+// MARK: - Open methods
+extension HomeActivityViewModel {
+    var groupedTxs: [HomeActivity.GroupedTransactions] {
+        HomeActivity.GroupedTransactions.buildGroupsFrom(txs: txsDisplayInfo)
+    }
+    
+    private var txsDisplayInfo: [WalletTransactionDisplayInfo] {
+        switch selectedProfile {
+        case .wallet(let wallet):
+            return txsResponse?.txs.map {
+                WalletTransactionDisplayInfo(serializedTransaction: $0,
+                                             userWallet: wallet.address)
+            } ?? []
+        case .webAccount:
+            return []
+        }
+    }
+    
 }
 
 // MARK: - Setup methods
@@ -63,8 +83,9 @@ private extension HomeActivityViewModel {
         
         Task {
             do {
-                txsResponse = try await walletTransactionsService.getTransactionsFor(wallet: wallet.address,
-                                                                                     forceReload: forceReload)
+                let txsResponse = try await walletTransactionsService.getTransactionsFor(wallet: wallet.address,
+                                                                                         forceReload: forceReload)
+                self.txsResponse = txsResponse
             } catch {
                 self.error = error
             }
