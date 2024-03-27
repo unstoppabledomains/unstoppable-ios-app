@@ -55,7 +55,7 @@ extension WalletTransactionDisplayInfo {
         self.value = serializedTransaction.value
         self.gas = serializedTransaction.gas
         self.link = URL(string: serializedTransaction.link)
-        self.imageUrl = URL(string: serializedTransaction.imageUrl)
+        self.imageUrl = URL(string: serializedTransaction.imageUrl ?? "")
         self.symbol = serializedTransaction.symbol
         
         if serializedTransaction.from.address == userWallet {

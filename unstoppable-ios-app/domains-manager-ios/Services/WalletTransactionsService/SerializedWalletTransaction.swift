@@ -18,7 +18,7 @@ struct SerializedWalletTransaction: Codable {
     let gas: Double
     let method: String
     let link: String
-    let imageUrl: String
+    let imageUrl: String?
     let symbol: String
     let type: String
     let from: Participant
