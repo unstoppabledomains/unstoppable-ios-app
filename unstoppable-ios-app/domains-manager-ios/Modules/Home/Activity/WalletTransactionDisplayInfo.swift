@@ -59,9 +59,17 @@ extension WalletTransactionDisplayInfo {
         self.symbol = serializedTransaction.symbol
         
         if serializedTransaction.from.address == userWallet {
-            self.type = .tokenWithdrawal
+            if serializedTransaction.type == "nft" {
+                self.type = .nftWithdrawal
+            } else {
+                self.type = .tokenWithdrawal
+            }
         } else {
-            self.type = .tokenDeposit
+            if serializedTransaction.type == "nft" {
+                self.type = .nftDeposit
+            } else {
+                self.type = .tokenDeposit
+            }
         }
         
         self.from = Participant(serializedParticipant: serializedTransaction.from)
@@ -74,5 +82,7 @@ extension WalletTransactionDisplayInfo {
     enum TransactionType {
         case tokenDeposit
         case tokenWithdrawal
+        case nftDeposit
+        case nftWithdrawal
     }
 }

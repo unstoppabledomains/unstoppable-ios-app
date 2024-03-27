@@ -66,18 +66,18 @@ private extension WalletTransactionDisplayInfoListItemView {
     
     var transactionTitle: String {
         switch transaction.type {
-        case .tokenDeposit:
+        case .tokenDeposit, .nftDeposit:
             "Received"
-        case .tokenWithdrawal:
+        case .tokenWithdrawal, .nftWithdrawal:
             "Sent"
         }
     }
     
     var sourceText: String {
         switch transaction.type {
-        case .tokenDeposit:
+        case .tokenDeposit, .nftDeposit:
             "From \(transaction.from.displayName)"
-        case .tokenWithdrawal:
+        case .tokenWithdrawal, .nftWithdrawal:
             "To \(transaction.to.displayName)"
         }
     }
@@ -104,6 +104,8 @@ private extension WalletTransactionDisplayInfoListItemView {
         case .tokenWithdrawal:
             Text("-\(transactionValue)")
                 .foregroundStyle(Color.foregroundDefault)
+        case .nftDeposit, .nftWithdrawal:
+            EmptyView()
         }
     }
     

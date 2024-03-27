@@ -9,21 +9,42 @@ import SwiftUI
 
 struct HomeActivityTransactionsSectionView: View {
     
+    @EnvironmentObject var viewModel: HomeActivityViewModel
     let groupedTxs: HomeActivity.GroupedTransactions
     
     var body: some View {
         Section {
             ForEach(groupedTxs.txs) { tx in
-                WalletTransactionDisplayInfoListItemView(transaction: tx)
+                clickableTxRowView(tx)
+                    .onAppear {
+                        viewModel.willDisplayTransaction(tx)
+                    }
             }
         } header:  {
             HStack {
-                Text(groupedTxs.date.formatted(.dateTime))
+                Text(DateFormattingService.shared.formatICloudBackUpDate(groupedTxs.date))
                     .font(.currentFont(size: 14, weight: .semibold))
                     .foregroundStyle(Color.foregroundSecondary)
                 Spacer()
             }
         }
+    }
+}
+
+// MARK: - Private methods
+private extension HomeActivityTransactionsSectionView {
+    @ViewBuilder
+    func clickableTxRowView(_ tx: WalletTransactionDisplayInfo) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            if let url = tx.link {
+                openLink(.direct(url: url))
+            }
+        } label: {
+            WalletTransactionDisplayInfoListItemView(transaction: tx)
+        }
+        .buttonStyle(.plain)
+        .allowsHitTesting(tx.link != nil)
     }
 }
 

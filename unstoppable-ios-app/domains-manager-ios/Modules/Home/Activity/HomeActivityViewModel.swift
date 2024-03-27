@@ -17,10 +17,11 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
     
+    private var isLoadingMore = false
     private let router: HomeTabRouter
     private var selectedProfile: UserProfile
     private var cancellables: Set<AnyCancellable> = []
-    private var txsResponse: WalletTransactionsResponse?
+    @Published private var txsResponse: WalletTransactionsResponse?
  
     private let userProfileService: UserProfileServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
@@ -57,6 +58,19 @@ extension HomeActivityViewModel {
         }
     }
     
+    func willDisplayTransaction(_ transaction: WalletTransactionDisplayInfo) {
+        let txsDisplayInfo = self.txsDisplayInfo.sorted(by: { $0.time > $1.time })
+        if txsResponse?.canLoadMore == true,
+           !isLoadingMore,
+           let i = txsDisplayInfo.firstIndex(where: { $0 == transaction }),
+           i >= txsDisplayInfo.count - 6 {
+            loadTxsForSelectedProfileNonBlocking(forceReload: false)
+        }
+    }
+    
+    func didPullToRefresh() async {
+        await loadTxsForSelectedProfile(forceReload: true)
+    }
 }
 
 // MARK: - Setup methods
@@ -70,25 +84,31 @@ private extension HomeActivityViewModel {
             }
         }.store(in: &cancellables)
         
-        loadTxsForSelectedProfile(forceReload: true)
+        loadTxsForSelectedProfileNonBlocking(forceReload: true)
     }
     
     func didUpdateSelectedProfile() {
         txsResponse = nil
-        loadTxsForSelectedProfile(forceReload: true)
+        loadTxsForSelectedProfileNonBlocking(forceReload: true)
     }
     
-    func loadTxsForSelectedProfile(forceReload: Bool) {
+    func loadTxsForSelectedProfileNonBlocking(forceReload: Bool) {
+        Task {
+            await loadTxsForSelectedProfile(forceReload: forceReload)
+        }
+    }
+    
+    func loadTxsForSelectedProfile(forceReload: Bool) async {
         guard case .wallet(let wallet) = selectedProfile else { return }
         
-        Task {
-            do {
-                let txsResponse = try await walletTransactionsService.getTransactionsFor(wallet: wallet.address,
-                                                                                         forceReload: forceReload)
-                self.txsResponse = txsResponse
-            } catch {
-                self.error = error
-            }
+        isLoadingMore = true
+        do {
+            let txsResponse = try await walletTransactionsService.getTransactionsFor(wallet: wallet.address,
+                                                                                     forceReload: forceReload)
+            self.txsResponse = txsResponse
+        } catch {
+            self.error = error
         }
+        isLoadingMore = false
     }
 }

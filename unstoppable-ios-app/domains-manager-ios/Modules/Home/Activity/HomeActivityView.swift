@@ -27,6 +27,10 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
+            .refreshable {
+                logAnalytic(event: .didPullToRefresh)
+                await viewModel.didPullToRefresh()
+            }
             .onReceive(keyboardPublisher) { value in
                 viewModel.isKeyboardActive = value
                 if !value {
