@@ -23,7 +23,6 @@ final class WalletTransactionsServiceTests: XCTestCase, WalletDataValidator {
                                             cache: cache)
     }
     
-  
 }
 
 // MARK: - Can load more
@@ -36,9 +35,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testCanLoadMoreIfAllCursorsNil() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         networkService.expectedResponse = expectedResponse
         let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -47,9 +46,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testCanLoadMoreIfNotAllCursorsNil() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         networkService.expectedResponse = expectedResponse
         let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -79,9 +78,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testRequestsWhenHasCachedNoCursorForceReload() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
         _ = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
@@ -90,9 +89,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testRequestsWhenHasCachedNoCursorNotForceReload() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
         _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -101,9 +100,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testRequestsWhenHasCachedWithCursorForceReload() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
         _ = try await service.getTransactionsFor(wallet: wallet, forceReload: true)
@@ -112,9 +111,9 @@ extension WalletTransactionsServiceTests {
     }
     
     func testRequestsWhenHasCachedWithCursorNotForceReload() async throws {
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
-            TransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: []),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: [])
         ]
         cache.cache[wallet] = expectedResponse
         _ = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -127,8 +126,8 @@ extension WalletTransactionsServiceTests {
 extension WalletTransactionsServiceTests {
     func testTxsResponseNoCache() async throws {
         let txs = createMockTxs()
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
         ]
         networkService.expectedResponse = expectedResponse
         let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -137,8 +136,8 @@ extension WalletTransactionsServiceTests {
     
     func testTxsResponseWithCacheNoCursor() async throws {
         let txs = createMockTxs()
-        let expectedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: txs)
+        let expectedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: txs)
         ]
         cache.cache[wallet] = expectedResponse
         let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
@@ -148,12 +147,12 @@ extension WalletTransactionsServiceTests {
     func testTxsResponseWithCacheWithCursorNoForceReload() async throws {
         let txs = createMockTxs()
         let newTxs = createMockTxs(range: 4...6)
-        let cachedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
+        let cachedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
         ]
         cache.cache[wallet] = cachedResponse
         let networkResponse = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
         ]
         networkService.expectedResponse = networkResponse
         
@@ -164,12 +163,12 @@ extension WalletTransactionsServiceTests {
     func testTxsResponseWithCacheWithCursorForceReload() async throws {
         let txs = createMockTxs()
         let newTxs = createMockTxs(range: 4...6)
-        let cachedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
+        let cachedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
         ]
         cache.cache[wallet] = cachedResponse
         let networkResponse = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
         ]
         networkService.expectedResponse = networkResponse
         
@@ -180,12 +179,12 @@ extension WalletTransactionsServiceTests {
     func testTxsResponseMerged() async throws {
         let txs = createMockTxs(range: 1...3)
         let newTxs = createMockTxs(range: 2...4)
-        let cachedResponse: [TransactionsPerChainResponse] = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
+        let cachedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs)
         ]
         cache.cache[wallet] = cachedResponse
         let networkResponse = [
-            TransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
         ]
         networkService.expectedResponse = networkResponse
         
@@ -197,23 +196,7 @@ extension WalletTransactionsServiceTests {
 // MARK: - Private methods
 private extension WalletTransactionsServiceTests {
     func createMockTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-        range.map { createTxWith(id: "\($0)") }
-    }
-    
-    func createTxWith(id: String) -> SerializedWalletTransaction {
-        SerializedWalletTransaction(hash: id,
-                                    block: "",
-                                    timestamp: "",
-                                    success: true,
-                                    value: 1,
-                                    gas: 1,
-                                    method: "",
-                                    link: "",
-                                    imageUrl: "",
-                                    symbol: "",
-                                    type: "",
-                                    from: .init(address: "1", label: nil, link: ""),
-                                    to: .init(address: "2", label: nil, link: ""))
+        MockEntitiesFabric.WalletTxs.createMockEmptyTxs(range: range)
     }
     
     func isSameTxs(_ lhsTxs: [SerializedWalletTransaction], _ rhsTxs: [SerializedWalletTransaction]) {
@@ -226,11 +209,11 @@ private extension WalletTransactionsServiceTests {
 }
 
 private final class MockNetworkService: WalletTransactionsNetworkServiceProtocol, FailableService {
-    var expectedResponse: [TransactionsPerChainResponse] = []
+    var expectedResponse: [WalletTransactionsPerChainResponse] = []
     var shouldFail: Bool = false
     var requests = [Request]()
     
-    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [TransactionsPerChainResponse] {
+    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse] {
         requests.append(.init(wallet: wallet, cursor: cursor, chain: chain))
         try failIfNeeded()
         return expectedResponse
@@ -244,13 +227,13 @@ private final class MockNetworkService: WalletTransactionsNetworkServiceProtocol
 }
 
 private final class MockCache: WalletTransactionsCacheProtocol {
-    var cache: [String: [TransactionsPerChainResponse]] = [:]
+    var cache: [String: [WalletTransactionsPerChainResponse]] = [:]
     
-    func fetchTransactionsFromCache(wallet: HexAddress) async -> [TransactionsPerChainResponse]? {
+    func fetchTransactionsFromCache(wallet: HexAddress) async -> [WalletTransactionsPerChainResponse]? {
         cache[wallet]
     }
     
-    func setTransactionsToCache(_ txs: [TransactionsPerChainResponse], for wallet: HexAddress) async {
+    func setTransactionsToCache(_ txs: [WalletTransactionsPerChainResponse], for wallet: HexAddress) async {
         cache[wallet] = txs
     }
 }

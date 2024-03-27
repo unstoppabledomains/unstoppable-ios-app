@@ -424,14 +424,14 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
 // MARK: - WalletTransactionsNetworkServiceProtocol
 extension NetworkService: WalletTransactionsNetworkServiceProtocol {
     private struct TransactionsPerChainResponseParser {
-        static func parseTransactionsResponsesFrom(data: Data) throws -> [TransactionsPerChainResponse] {
+        static func parseTransactionsResponsesFrom(data: Data) throws -> [WalletTransactionsPerChainResponse] {
             typealias JSON = [String : Any]
             
             guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : JSON] else {
                 throw NetworkLayerError.failedParseTransactionsData
             }
             
-            var responses = [TransactionsPerChainResponse]()
+            var responses = [WalletTransactionsPerChainResponse]()
             for (key, value) in json {
                 guard let transactionsArrayJSON = value["data"] else {
                     continue
@@ -439,7 +439,7 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
                 let transactionsArrayData = try JSONSerialization.data(withJSONObject: transactionsArrayJSON)
                 let transactions = try [SerializedWalletTransaction].objectFromDataThrowing(transactionsArrayData)
                 let cursor = value["cursor"] as? String
-                let response = TransactionsPerChainResponse(chain: key,
+                let response = WalletTransactionsPerChainResponse(chain: key,
                                                             cursor: cursor,
                                                             txs: transactions)
                 responses.append(response)
@@ -449,7 +449,7 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
         }
     }
     
-    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [TransactionsPerChainResponse] {
+    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse] {
         let endpoint = Endpoint.getProfileWalletTransactions(for: wallet,
                                                              cursor: cursor,
                                                              chain: chain)

@@ -8,13 +8,13 @@
 import Foundation
 
 actor InMemoryWalletTransactionsCache: WalletTransactionsCacheProtocol {
-    private var cache: [String: [TransactionsPerChainResponse]] = [:]
+    private var cache: [String: [WalletTransactionsPerChainResponse]] = [:]
     
-    func fetchTransactionsFromCache(wallet: HexAddress) async -> [TransactionsPerChainResponse]? {
+    func fetchTransactionsFromCache(wallet: HexAddress) async -> [WalletTransactionsPerChainResponse]? {
         cache[wallet]
     }
     
-    func setTransactionsToCache(_ txs: [TransactionsPerChainResponse], for wallet: HexAddress) async {
+    func setTransactionsToCache(_ txs: [WalletTransactionsPerChainResponse], for wallet: HexAddress) async {
         cache[wallet] = txs
     }
 }

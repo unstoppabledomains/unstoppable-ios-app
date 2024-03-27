@@ -1414,13 +1414,17 @@
 		C6B761DD2BB3D02B00773943 /* WalletTransactionsNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761DB2BB3D02B00773943 /* WalletTransactionsNetworkServiceProtocol.swift */; };
 		C6B761DF2BB3D78F00773943 /* SerializedWalletTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761DE2BB3D78E00773943 /* SerializedWalletTransaction.swift */; };
 		C6B761E02BB3D78F00773943 /* SerializedWalletTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761DE2BB3D78E00773943 /* SerializedWalletTransaction.swift */; };
-		C6B761E22BB3D79400773943 /* TransactionsPerChainResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E12BB3D79400773943 /* TransactionsPerChainResponse.swift */; };
-		C6B761E32BB3D79400773943 /* TransactionsPerChainResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E12BB3D79400773943 /* TransactionsPerChainResponse.swift */; };
+		C6B761E22BB3D79400773943 /* WalletTransactionsPerChainResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E12BB3D79400773943 /* WalletTransactionsPerChainResponse.swift */; };
+		C6B761E32BB3D79400773943 /* WalletTransactionsPerChainResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E12BB3D79400773943 /* WalletTransactionsPerChainResponse.swift */; };
 		C6B761E52BB3DF7F00773943 /* WalletTransactionsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E42BB3DF7F00773943 /* WalletTransactionsServiceTests.swift */; };
 		C6B761E72BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E62BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift */; };
 		C6B761E82BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E62BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift */; };
 		C6B761EA2BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E92BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift */; };
 		C6B761EB2BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761E92BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift */; };
+		C6B761ED2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */; };
+		C6B761EE2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */; };
+		C6B761F02BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */; };
+		C6B761F12BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */; };
 		C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6BA746A2AD4398500628DC6 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74692AD4398500628DC6 /* Int.swift */; };
@@ -3597,10 +3601,12 @@
 		C6B761D82BB3CDDE00773943 /* WalletTransactionsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B761DB2BB3D02B00773943 /* WalletTransactionsNetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsNetworkServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B761DE2BB3D78E00773943 /* SerializedWalletTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializedWalletTransaction.swift; sourceTree = "<group>"; };
-		C6B761E12BB3D79400773943 /* TransactionsPerChainResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsPerChainResponse.swift; sourceTree = "<group>"; };
+		C6B761E12BB3D79400773943 /* WalletTransactionsPerChainResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsPerChainResponse.swift; sourceTree = "<group>"; };
 		C6B761E42BB3DF7F00773943 /* WalletTransactionsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsServiceTests.swift; sourceTree = "<group>"; };
 		C6B761E62BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsCacheProtocol.swift; sourceTree = "<group>"; };
 		C6B761E92BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryWalletTransactionsCache.swift; sourceTree = "<group>"; };
+		C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockEntitiesFabric+Txs.swift"; sourceTree = "<group>"; };
+		C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsResponse.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
 		C6BA74692AD4398500628DC6 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
@@ -4803,6 +4809,7 @@
 				C6203A582B883847000A1A8E /* MockEntitiesFabric+Messaging.swift */,
 				C6203A5B2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift */,
 				C61C332C2B906DCE00BD11F5 /* MockEntitiesFabric+Explore.swift */,
+				C6B761EC2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift */,
 				C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */,
 			);
 			path = Mock;
@@ -7446,7 +7453,8 @@
 				C6B761E92BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift */,
 				C6B761E62BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift */,
 				C6B761DB2BB3D02B00773943 /* WalletTransactionsNetworkServiceProtocol.swift */,
-				C6B761E12BB3D79400773943 /* TransactionsPerChainResponse.swift */,
+				C6B761E12BB3D79400773943 /* WalletTransactionsPerChainResponse.swift */,
+				C6B761EF2BB3F9D900773943 /* WalletTransactionsResponse.swift */,
 				C6B761DE2BB3D78E00773943 /* SerializedWalletTransaction.swift */,
 			);
 			path = WalletTransactionsService;
@@ -8724,6 +8732,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6B761ED2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */,
 				C61B6C702B9F050B007408FD /* PublicProfileBadgeTileView.swift in Sources */,
 				C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */,
 				C63095F62B0DA66400205054 /* FirebaseDomainsService.swift in Sources */,
@@ -9007,6 +9016,7 @@
 				C6203A4E2B882959000A1A8E /* HomeExploreView.swift in Sources */,
 				C61DB1052B95879200CDA243 /* PublicProfilePrimaryLargeTextView.swift in Sources */,
 				C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */,
+				C6B761F02BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */,
 				C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */,
 				C6C8F85E2B21800E00A9834D /* ValetProtocol.swift in Sources */,
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
@@ -9375,7 +9385,7 @@
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C67213D32BAA8B8D0075B9C7 /* SendCryptoAssetSelectReceiverWalletRowView.swift in Sources */,
-				C6B761E22BB3D79400773943 /* TransactionsPerChainResponse.swift in Sources */,
+				C6B761E22BB3D79400773943 /* WalletTransactionsPerChainResponse.swift in Sources */,
 				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C6C1E9342B74C33B00030447 /* AnalyticAppearanceTrackerModifier.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
@@ -9946,6 +9956,7 @@
 				C6D646E02B1ED46200D724AC /* WalletConnectController.swift in Sources */,
 				C6D646782B1ED12100D724AC /* RecordChangeType.swift in Sources */,
 				C688C1802B845FE500BD233A /* ChatListUserRowView.swift in Sources */,
+				C6B761F12BB3F9D900773943 /* WalletTransactionsResponse.swift in Sources */,
 				C6960C3E2B19980200B79E28 /* MessagingServiceIdentifier.swift in Sources */,
 				C61808002B19A8B80032E543 /* MessagingChatUserDisplayInfo.swift in Sources */,
 				C6C8F88F2B21829000A9834D /* AppearanceSettingsViewPresenter.swift in Sources */,
@@ -10137,7 +10148,7 @@
 				C6D6469C2B1ED14E00D724AC /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
 				C6F433392BB257F7000C5E46 /* ConfirmTransferDomainView.swift in Sources */,
 				C6D645D62B1DBD4900D724AC /* CBaseTransitioningAnimation.swift in Sources */,
-				C6B761E32BB3D79400773943 /* TransactionsPerChainResponse.swift in Sources */,
+				C6B761E32BB3D79400773943 /* WalletTransactionsPerChainResponse.swift in Sources */,
 				C6D645D02B1DBD4100D724AC /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6D646A52B1ED15A00D724AC /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6C8F8162B217CC000A9834D /* CreateWalletViewController.swift in Sources */,
@@ -10848,6 +10859,7 @@
 				C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */,
 				C6D645B22B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift in Sources */,
 				C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
+				C6B761EE2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */,
 				C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C6D646552B1ED10100D724AC /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C6D6462E2B1DC31700D724AC /* CollectionDashesHeaderReusableView.swift in Sources */,

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TransactionsPerChainResponse: Codable {
+struct WalletTransactionsPerChainResponse: Codable {
     let chain: String
     let cursor: String?
     let txs: [SerializedWalletTransaction]

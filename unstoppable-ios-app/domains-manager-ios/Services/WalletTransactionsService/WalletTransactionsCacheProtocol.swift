@@ -8,6 +8,6 @@
 import Foundation
 
 protocol WalletTransactionsCacheProtocol {
-    func fetchTransactionsFromCache(wallet: HexAddress) async -> [TransactionsPerChainResponse]?
-    func setTransactionsToCache(_ txs: [TransactionsPerChainResponse], for wallet: HexAddress) async
+    func fetchTransactionsFromCache(wallet: HexAddress) async -> [WalletTransactionsPerChainResponse]?
+    func setTransactionsToCache(_ txs: [WalletTransactionsPerChainResponse], for wallet: HexAddress) async
 }
