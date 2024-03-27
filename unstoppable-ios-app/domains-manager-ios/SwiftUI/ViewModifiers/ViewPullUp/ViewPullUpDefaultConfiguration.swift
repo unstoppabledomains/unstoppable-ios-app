@@ -416,10 +416,10 @@ extension ViewPullUpDefaultConfiguration {
         })
     }
     
-    static func maxCryptoSendInfoPullUp() -> ViewPullUpDefaultConfiguration {
+    static func maxCryptoSendInfoPullUp(token: BalanceTokenUIDescription) -> ViewPullUpDefaultConfiguration {
         .init(icon: .init(icon: .infoBubble,
                           size: .small),
-              title: .text(String.Constants.sendMaxCryptoInfoPullUpTitle.localized()),
+              title: .text(String.Constants.sendMaxCryptoInfoPullUpTitle.localized(token.name)),
               cancelButton: .continueButton,
               analyticName: .sendMaxCryptoInfo)
     }
