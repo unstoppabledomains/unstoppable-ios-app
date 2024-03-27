@@ -10,10 +10,12 @@ import Foundation
 final class WalletTransactionsService {
 
     private let networkService: WalletTransactionsNetworkServiceProtocol
-    private var cache = TransactionsCache()
+    private var cache: WalletTransactionsCacheProtocol
 
-    init(networkService: WalletTransactionsNetworkServiceProtocol) {
+    init(networkService: WalletTransactionsNetworkServiceProtocol,
+         cache: WalletTransactionsCacheProtocol) {
         self.networkService = networkService
+        self.cache = cache
     }
    
 }
@@ -22,14 +24,16 @@ final class WalletTransactionsService {
 extension WalletTransactionsService: WalletTransactionsServiceProtocol {
     func getTransactionsFor(wallet: HexAddress, forceReload: Bool) async throws -> TransactionsResponse {
         if !forceReload, let cachedResponse = await cache.fetchTransactionsFromCache(wallet: wallet) {
-            // Use cached response if forceReload is false and cache exists
-            return TransactionsResponse(canLoadMore: cachedResponse.hasAnyToLoadMore(), 
-                                        txs: cachedResponse.combinedTxs())
+            var response: [TransactionsPerChainResponse] = []
+            if cachedResponse.hasAnyToLoadMore() {
+                response = try await fetchAndCacheMoreTransactions(for: wallet, responses: cachedResponse)
+            } else {
+                response = cachedResponse
+            }
+            return TransactionsResponse(canLoadMore: response.hasAnyToLoadMore(),
+                                        txs: response.combinedTxs())
         } else {
-            // Fetch new transactions
-            let newResponse = try await fetchTransactions(for: wallet, cursor: nil, chain: nil)
-            // Merge with existing cache
-            await mergeResponses(newResponse, for: wallet)
+            let newResponse = try await fetchAndCacheTransactions(for: wallet, cursor: nil, chain: nil, forceReload: true)
             return TransactionsResponse(canLoadMore: newResponse.hasAnyToLoadMore(),
                                         txs: newResponse.combinedTxs())
         }
@@ -38,11 +42,44 @@ extension WalletTransactionsService: WalletTransactionsServiceProtocol {
 
 // MARK: - Private methods
 private extension WalletTransactionsService {
+    func fetchAndCacheMoreTransactions(for wallet: HexAddress, responses: [TransactionsPerChainResponse]) async throws -> [TransactionsPerChainResponse] {
+        var result: [TransactionsPerChainResponse] = []
+        
+        try await withThrowingTaskGroup(of: [TransactionsPerChainResponse].self) { group in
+            for response in responses {
+                if let cursor = response.cursor {
+                    group.addTask {
+                        try await self.fetchAndCacheTransactions(for: wallet, cursor: response.cursor, chain: response.chain, forceReload: false)
+                    }
+                } else {
+                    result.append(response)
+                }
+            }
+            
+            for try await response in group {
+                result.append(contentsOf: response.compactMap { $0 })
+            }
+        }
+        
+        return result
+    }
+    
+    func fetchAndCacheTransactions(for wallet: HexAddress, cursor: String?, chain: String?, forceReload: Bool) async throws -> [TransactionsPerChainResponse] {
+        let newResponse = try await fetchTransactions(for: wallet, cursor: cursor, chain: chain)
+        if forceReload {
+            await cache.setTransactionsToCache(newResponse, for: wallet)
+            return newResponse
+        } else {
+            let finalResult = await mergeResponsesWithLocalCache(newResponse, for: wallet)
+            return finalResult
+        }
+    }
+    
     func fetchTransactions(for wallet: HexAddress, cursor: String?, chain: String?) async throws -> [TransactionsPerChainResponse] {
         try await networkService.getTransactionsFor(wallet: wallet, cursor: cursor, chain: chain)
     }
     
-    func mergeResponses(_ newResponses: [TransactionsPerChainResponse], for wallet: HexAddress) async {
+    func mergeResponsesWithLocalCache(_ newResponses: [TransactionsPerChainResponse], for wallet: HexAddress) async -> [TransactionsPerChainResponse] {
         var finalResponses: [TransactionsPerChainResponse] = []
         let existingResponse = await cache.fetchTransactionsFromCache(wallet: wallet) ?? []
         for newResponse in newResponses {
@@ -61,21 +98,7 @@ private extension WalletTransactionsService {
             }
         }
         await cache.setTransactionsToCache(finalResponses, for: wallet)
-    }
-}
-
-// MARK: - Private methods
-private extension WalletTransactionsService {
-    actor TransactionsCache {
-        private var cache: [String: [TransactionsPerChainResponse]] = [:]
-        
-        func fetchTransactionsFromCache(wallet: HexAddress) async -> [TransactionsPerChainResponse]? {
-            cache[wallet]
-        }
-        
-        func setTransactionsToCache(_ txs: [TransactionsPerChainResponse], for wallet: HexAddress) async {
-            cache[wallet] = txs
-        }
+        return finalResponses
     }
 }
 
