@@ -103,7 +103,7 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
         rrDomainNamePerWallet[walletAddress]
     }
     
-    func setReverseResolution(to domain: DomainItem, paymentConfirmationDelegate: any PaymentConfirmationDelegate) async throws {
+    func setReverseResolution(to domain: DomainItem, paymentConfirmationHandler: any PaymentConfirmationHandler) async throws {
         
     }
     

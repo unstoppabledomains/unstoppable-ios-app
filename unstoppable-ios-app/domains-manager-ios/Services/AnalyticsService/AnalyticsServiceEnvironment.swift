@@ -223,6 +223,7 @@ extension Analytics {
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
         case homeExplore
+        case homeActivity
         
         case sendCryptoReceiverSelection
     }

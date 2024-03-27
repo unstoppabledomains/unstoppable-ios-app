@@ -462,6 +462,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     case failedParseUnsRegistryAddress
     case failedToValidateResolver
     case failedParseProfileData
+    case failedParseTransactionsData
     case domainHasNullRecordValue
     case connectionLost
     case requestCancelled
@@ -504,6 +505,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
         case .failedFetchBalance: return "failedFetchBalance"
         case .backendThrottle: return "backendThrottle"
         case .failedParseProfileData: return "failedParseProfileData"
+        case .failedParseTransactionsData: return "failedParseTransactionsData"
         case .failedToFindOwnerWallet: return "failedToFindOwnerWallet"
         case .emptyParameters: return "emptyParameters"
         case .invalidMessageError: return "invalidMessageError"

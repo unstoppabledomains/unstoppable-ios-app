@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
+        
         #endif
          
         setup()

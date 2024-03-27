@@ -43,6 +43,7 @@ protocol AppContextProtocol {
     var walletNFTsService: WalletNFTsServiceProtocol { get }
     var walletsDataService: WalletsDataServiceProtocol { get }
     var domainProfilesService: DomainProfilesServiceProtocol { get }
+    var walletTransactionsService: WalletTransactionsServiceProtocol { get }
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     

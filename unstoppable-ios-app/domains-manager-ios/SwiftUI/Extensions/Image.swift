@@ -98,6 +98,7 @@ extension Image {
     static let bolt = Image("bolt")
     static let boltSlash = Image("boltSlash")
     static let udLogoBlueSquare = Image("udLogoBlueSquare")
+    static let clock = Image("clock")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

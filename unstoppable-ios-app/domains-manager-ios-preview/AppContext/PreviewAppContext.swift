@@ -75,6 +75,7 @@ final class AppContext: AppContextProtocol {
     var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: PreviewHotFeaturesSuggestionsFetcher())
     var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
     var domainProfilesService: DomainProfilesServiceProtocol
+    var walletTransactionsService: WalletTransactionsServiceProtocol
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
@@ -86,6 +87,9 @@ final class AppContext: AppContextProtocol {
                                                 walletsDataService: walletsDataService)
         domainProfilesService = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService(),
                                                       walletsDataService: walletsDataService)
+        
+        walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
+                                                              cache: InMemoryWalletTransactionsCache())
     }
 }
 
