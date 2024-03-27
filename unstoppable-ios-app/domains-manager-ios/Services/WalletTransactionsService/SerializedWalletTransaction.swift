@@ -12,7 +12,7 @@ struct SerializedWalletTransaction: Codable {
     
     let hash: String
     let block: String
-    let timestamp: String
+    let timestamp: Date
     let success: Bool
     let value: Double
     let gas: Double

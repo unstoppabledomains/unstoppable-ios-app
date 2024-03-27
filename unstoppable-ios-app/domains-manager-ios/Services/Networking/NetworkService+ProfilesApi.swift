@@ -437,7 +437,8 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
                     continue
                 }
                 let transactionsArrayData = try JSONSerialization.data(withJSONObject: transactionsArrayJSON)
-                let transactions = try [SerializedWalletTransaction].objectFromDataThrowing(transactionsArrayData)
+                let transactions = try [SerializedWalletTransaction].objectFromDataThrowing(transactionsArrayData,
+                                                                                            dateDecodingStrategy: .defaultDateDecodingStrategy())
                 let cursor = value["cursor"] as? String
                 let response = WalletTransactionsPerChainResponse(chain: key,
                                                             cursor: cursor,

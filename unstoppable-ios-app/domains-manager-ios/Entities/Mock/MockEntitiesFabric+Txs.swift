@@ -33,13 +33,14 @@ extension MockEntitiesFabric {
         
         
         static func createMockEmptyTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-            range.map { createMockEmptyTx(id: "\($0)") }
+            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0)) }
         }
         
-        static func createMockEmptyTx(id: String = "1") -> SerializedWalletTransaction {
+        static func createMockEmptyTx(id: String = "1",
+                                      dateOffset: TimeInterval = 0) -> SerializedWalletTransaction {
             SerializedWalletTransaction(hash: id,
                                         block: "",
-                                        timestamp: "",
+                                        timestamp: Date().addingTimeInterval(dateOffset),
                                         success: true,
                                         value: 1,
                                         gas: 1,
