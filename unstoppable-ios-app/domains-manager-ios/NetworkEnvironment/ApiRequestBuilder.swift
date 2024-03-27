@@ -901,7 +901,8 @@ extension Endpoint {
     
     static func getProfileWalletTransactions(for wallet: String,
                                              cursor: String?,
-                                             chain: String?) -> Endpoint {
+                                             chain: String?,
+                                             forceRefresh: Bool) -> Endpoint {
         //https://api.ud-staging.com/profile/user/0xcd0dadab45baf9a06ce1279d1342ecc3f44845af/transactions
         var queryItems: [URLQueryItem] = []
         if let cursor {
@@ -910,13 +911,16 @@ extension Endpoint {
         if let chain {
             queryItems.append(URLQueryItem(name: "symbols", value: chain))
         }
-        
+        var headers = NetworkService.profilesAPIHeader
+        if forceRefresh {
+            headers = headers.appending(dict2: ["refreshCache" : String(Date().timeIntervalSince1970)])
+        }
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/user/\(wallet)/transactions",
             queryItems: queryItems,
             body: "",
-            headers: NetworkService.profilesAPIHeader
+            headers: headers
         )
     }
 }

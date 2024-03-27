@@ -450,10 +450,14 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
         }
     }
     
-    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse] {
+    func getTransactionsFor(wallet: HexAddress, 
+                            cursor: String?,
+                            chain: String?,
+                            forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
         let endpoint = Endpoint.getProfileWalletTransactions(for: wallet,
                                                              cursor: cursor,
-                                                             chain: chain)
+                                                             chain: chain,
+                                                             forceRefresh: forceRefresh)
         let data = try await fetchDataFor(endpoint: endpoint,
                                           method: .get)
         let response = try TransactionsPerChainResponseParser.parseTransactionsResponsesFrom(data: data)

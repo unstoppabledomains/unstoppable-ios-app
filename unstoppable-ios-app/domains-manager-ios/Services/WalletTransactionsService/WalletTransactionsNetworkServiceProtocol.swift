@@ -8,5 +8,8 @@
 import Foundation
 
 protocol WalletTransactionsNetworkServiceProtocol {
-    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse]
+    func getTransactionsFor(wallet: HexAddress, 
+                            cursor: String?, 
+                            chain: String?,
+                            forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse]
 }

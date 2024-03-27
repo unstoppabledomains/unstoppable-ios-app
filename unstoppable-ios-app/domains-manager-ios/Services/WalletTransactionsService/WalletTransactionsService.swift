@@ -65,7 +65,7 @@ private extension WalletTransactionsService {
     }
     
     func fetchAndCacheTransactions(for wallet: HexAddress, cursor: String?, chain: String?, forceReload: Bool) async throws -> [WalletTransactionsPerChainResponse] {
-        let newResponse = try await fetchTransactions(for: wallet, cursor: cursor, chain: chain)
+        let newResponse = try await fetchTransactions(for: wallet, cursor: cursor, chain: chain, forceRefresh: forceReload)
         if forceReload {
             await cache.setTransactionsToCache(newResponse, for: wallet)
             return newResponse
@@ -75,8 +75,11 @@ private extension WalletTransactionsService {
         }
     }
     
-    func fetchTransactions(for wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse] {
-        try await networkService.getTransactionsFor(wallet: wallet, cursor: cursor, chain: chain)
+    func fetchTransactions(for wallet: HexAddress, 
+                           cursor: String?,
+                           chain: String?,
+                           forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
+        try await networkService.getTransactionsFor(wallet: wallet, cursor: cursor, chain: chain, forceRefresh: forceRefresh)
     }
     
     func mergeResponsesWithLocalCache(_ newResponses: [WalletTransactionsPerChainResponse], for wallet: HexAddress) async -> [WalletTransactionsPerChainResponse] {

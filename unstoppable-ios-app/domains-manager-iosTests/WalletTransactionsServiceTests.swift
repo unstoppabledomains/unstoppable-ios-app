@@ -213,7 +213,10 @@ private final class MockNetworkService: WalletTransactionsNetworkServiceProtocol
     var shouldFail: Bool = false
     var requests = [Request]()
     
-    func getTransactionsFor(wallet: HexAddress, cursor: String?, chain: String?) async throws -> [WalletTransactionsPerChainResponse] {
+    func getTransactionsFor(wallet: HexAddress, 
+                            cursor: String?,
+                            chain: String?,
+                            forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
         requests.append(.init(wallet: wallet, cursor: cursor, chain: chain))
         try failIfNeeded()
         return expectedResponse
