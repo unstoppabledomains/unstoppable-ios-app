@@ -8,6 +8,8 @@
 import Foundation
 
 struct SerializedWalletTransaction: Codable {
+    var id: String { hash }
+    
     let hash: String
     let block: String
     let timestamp: String
