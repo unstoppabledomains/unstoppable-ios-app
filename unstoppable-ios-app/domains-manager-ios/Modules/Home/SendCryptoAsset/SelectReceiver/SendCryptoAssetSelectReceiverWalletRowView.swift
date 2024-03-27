@@ -59,6 +59,9 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
         if domainAvatarImage != nil {
             return .full
         }
+        if case .external = wallet.displayInfo.source {
+            return .full
+        }
         return .centred()
     }
 }
