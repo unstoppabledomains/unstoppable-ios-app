@@ -1400,6 +1400,10 @@
 		C6B6B043296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B042296FF7D600D4E30F /* DomainsSortOrderStorage.swift */; };
 		C6B6B048297039E500D4E30F /* DateFormattingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B047297039E500D4E30F /* DateFormattingService.swift */; };
 		C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B8722B91A4F900565ED2 /* TaskWithDeadlineTests.swift */; };
+		C6B761CC2BB3BEB700773943 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761CB2BB3BEB700773943 /* ActivityView.swift */; };
+		C6B761CD2BB3BEB700773943 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761CB2BB3BEB700773943 /* ActivityView.swift */; };
+		C6B761CF2BB3C11800773943 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761CE2BB3C11800773943 /* HomeTab.swift */; };
+		C6B761D02BB3C11800773943 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B761CE2BB3C11800773943 /* HomeTab.swift */; };
 		C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6BA746A2AD4398500628DC6 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74692AD4398500628DC6 /* Int.swift */; };
@@ -3569,6 +3573,8 @@
 		C6B6B042296FF7D600D4E30F /* DomainsSortOrderStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsSortOrderStorage.swift; sourceTree = "<group>"; };
 		C6B6B047297039E500D4E30F /* DateFormattingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormattingService.swift; sourceTree = "<group>"; };
 		C6B6B8722B91A4F900565ED2 /* TaskWithDeadlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskWithDeadlineTests.swift; sourceTree = "<group>"; };
+		C6B761CB2BB3BEB700773943 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		C6B761CE2BB3C11800773943 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
 		C6BA74692AD4398500628DC6 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
@@ -7309,6 +7315,7 @@
 		C6B65F4D2B54DA6D006D1812 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C6B761C72BB3BE9300773943 /* Activity */,
 				C67213CC2BAA803C0075B9C7 /* SendCryptoAsset */,
 				C6203A4C2B882909000A1A8E /* Explore */,
 				C663A4D42B7D09390099BCE8 /* UpdateToWalletGreetingsView */,
@@ -7318,6 +7325,7 @@
 				C6B65F992B566B7A006D1812 /* NFTDetailsView */,
 				C67213D12BAA864C0075B9C7 /* Wallet */,
 				C6B65F932B5665F0006D1812 /* HomeTabView.swift */,
+				C6B761CE2BB3C11800773943 /* HomeTab.swift */,
 				C64939F12B6357A600457363 /* HomeTabRouter.swift */,
 				C64939EE2B63579700457363 /* HomeTabPullUpHandlerModifier.swift */,
 				C617FDA92B590B6600B93433 /* NavigationViewWithCustomTitle.swift */,
@@ -7391,6 +7399,14 @@
 				C6B6859528008747000F9037 /* allDoneConfettiAnimation.gif */,
 			);
 			path = Animations;
+			sourceTree = "<group>";
+		};
+		C6B761C72BB3BE9300773943 /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				C6B761CB2BB3BEB700773943 /* ActivityView.swift */,
+			);
+			path = Activity;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -9121,6 +9137,7 @@
 				C6D6E5162817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32C26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
 				C6098310282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
+				C6B761CF2BB3C11800773943 /* HomeTab.swift in Sources */,
 				C6109E3728E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */,
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
@@ -9645,6 +9662,7 @@
 				C6FBCAA52B91CA1C00BA39DF /* HomeExploreTrendingProfilesSectionView.swift in Sources */,
 				C60DCEE2282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */,
 				C61808822B19BC680032E543 /* TransactionError.swift in Sources */,
+				C6B761CC2BB3BEB700773943 /* ActivityView.swift in Sources */,
 				C6D647442B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift in Sources */,
 				C6124CE12924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C69F992C2A9F1264004B1958 /* Color.swift in Sources */,
@@ -10241,6 +10259,7 @@
 				C6C8F8772B21826700A9834D /* UDRouter.swift in Sources */,
 				C6C8F8992B2182A200A9834D /* WalletsListHeaderView.swift in Sources */,
 				C6D6457C2B1D8ADE00D724AC /* AttributedText.swift in Sources */,
+				C6B761CD2BB3BEB700773943 /* ActivityView.swift in Sources */,
 				C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */,
 				C61808462B19B93E0032E543 /* PreviewAnalyticsService.swift in Sources */,
 				C6C8F86E2B2181F400A9834D /* UIStackView.swift in Sources */,
@@ -10671,6 +10690,7 @@
 				C6D645E22B1DBD9000D724AC /* BasePresenterProtocol.swift in Sources */,
 				C6960C662B199B6F00B79E28 /* PreviewDomainItem.swift in Sources */,
 				C6D011BD2B994A6F0008BF40 /* HomeExploreSuggestedProfilesSectionView.swift in Sources */,
+				C6B761D02BB3C11800773943 /* HomeTab.swift in Sources */,
 				C618087E2B19BC380032E543 /* DomainAvatarImageView.swift in Sources */,
 				C6D6464F2B1ED0F300D724AC /* ManageDomainLoadingCell.swift in Sources */,
 				C6C8F8A52B2182AE00A9834D /* RenameWalletViewPresenter.swift in Sources */,

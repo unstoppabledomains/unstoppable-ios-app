@@ -1072,3 +1072,4 @@ More tabs are coming in the next updates.";
 "TRANSACTION_TAKES_N_MINUTES" = "This transaction usually takes ~%i minutes.";
 "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE" = "We will send all %@ less required network costs";
 "NOT_ENOUGH_TOKEN" = "Not enough %@";
+"ACTIVITY" = "Activity";
