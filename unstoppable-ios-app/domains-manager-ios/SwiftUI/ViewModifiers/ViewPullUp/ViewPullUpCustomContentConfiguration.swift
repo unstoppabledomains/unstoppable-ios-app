@@ -34,7 +34,7 @@ extension ViewPullUpCustomContentConfiguration {
         .init(content: {
             TransferDomainConfirmationPullUpView(confirmCallback: confirmCallback)
         },
-              height: 428,
+              height: 448,
               analyticName: .transferDomainConfirmation)
     }
 }

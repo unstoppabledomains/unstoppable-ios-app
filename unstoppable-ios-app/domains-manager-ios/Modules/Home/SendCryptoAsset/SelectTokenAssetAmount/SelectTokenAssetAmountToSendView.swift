@@ -238,7 +238,7 @@ private extension SelectTokenAssetAmountToSendView {
     func maxButtonPressed() {
         if !UserDefaults.didShowSendMaxCryptoInfoPullUp {
             UserDefaults.didShowSendMaxCryptoInfoPullUp = true
-            pullUp = .default(.maxCryptoSendInfoPullUp())
+            pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
         }
     }
 }
