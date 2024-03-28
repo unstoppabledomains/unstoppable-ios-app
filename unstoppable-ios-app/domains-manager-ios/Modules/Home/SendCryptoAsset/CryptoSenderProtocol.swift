@@ -34,7 +34,7 @@ protocol CryptoSenderProtocol {
     ///   - maxCrypto: max crypto available for the send transaction
     ///   - chain: chain where tx will be placed
     ///   - toAddress: recepient address of the crypto
-    /// - Returns: Amount of crypto that must be deducted from maxCrypto as the gas fee in the future tx
+    /// - Returns: Amount of crypto that must be deducted from maxCrypto as the gas fee in the future tx, in Gwei
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> Double

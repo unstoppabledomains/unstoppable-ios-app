@@ -38,6 +38,7 @@ struct CryptoSendingSpec {
 struct CryptoSender: CryptoSenderProtocol {
     enum Error: Swift.Error {
         case sendingNotSupported
+        case failedFetchGasPrice
     }
     
     enum SupportedToken: String {
@@ -70,7 +71,6 @@ struct NativeCryptoSender: CryptoSenderProtocol {
     static let defaultSendTxGasPrice: BigUInt = 21_000
     
     let wallet: UDWallet
-    
     
     func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
         // only native tokens supported
@@ -105,12 +105,6 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> Double {
         
-        func downMultiplication (_ a1: BigUInt, _ a2: BigUInt) -> Double {
-            let m1 = Double(a1) / 1_000_000_000.0
-            let m2 = Double(a2) / 1_000_000_000.0
-            return  m1 * m2
-        }
-        
         guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
             throw CryptoSender.Error.sendingNotSupported
         }
@@ -120,7 +114,13 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                                 fromAddress: self.wallet.address,
                                                                 toAddress: toAddress,
                                                                 chainId: chainId)
-        return  downMultiplication(transaction.gas?.quantity ?? 0, transaction.gasPrice?.quantity ?? 0)
+        
+        guard let gasPriceWei = transaction.gasPrice?.quantity else {
+            throw CryptoSender.Error.failedFetchGasPrice
+        }
+        let gas = transaction.gas?.quantity ?? Self.defaultSendTxGasPrice
+        
+        return   (Double(gasPriceWei) / 1_000_000_000.0) * Double(gas) // in Gwei
     }
     
     // Private methods
@@ -141,20 +141,18 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
         
-        let amount = BigUInt(1_000_000_000.0 * crypto.amount)
+        let amountInGwei = BigUInt(1_000_000_000.0 * crypto.amount)
         
         var transaction = EthereumTransaction(nonce: nonce,
                                               gasPrice: gasPrice,
                                               gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(amount.gwei)
-        )
+                                              value: try EthereumQuantity(amountInGwei.gwei) )
         
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
             transaction.gas = gasEstimate
         }
         return transaction
     }
-
 }
