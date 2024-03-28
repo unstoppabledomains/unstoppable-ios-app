@@ -102,17 +102,27 @@ private extension SendCryptoAssetSelectReceiverView {
         .listRowSeparator(.hidden)
     }
     
+    var filteredWallets: [WalletEntity] {
+        if inputText.isEmpty {
+            return userWallets
+        } else {
+            return userWallets.filter { $0.profileDomainName?.contains(inputText.lowercased()) == true }
+        }
+    }
+    
+    var shouldShowWalletsSection: Bool { !filteredWallets.isEmpty }
+    
     @ViewBuilder
     func userWalletsSection() -> some View {
         if !userWallets.isEmpty {
             Section {
-                if !isSearchingInProgress {
-                    ForEach(userWallets) { wallet in
+                if shouldShowWalletsSection {
+                    ForEach(filteredWallets) { wallet in
                         selectableUserWalletView(wallet: wallet)
                     }
                 }
             } header: {
-                if !isSearchingInProgress {
+                if shouldShowWalletsSection {
                     sectionHeaderViewWith(title: String.Constants.yourWallets.localized())
                 }
             }
