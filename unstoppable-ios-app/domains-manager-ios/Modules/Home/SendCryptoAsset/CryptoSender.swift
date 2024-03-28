@@ -120,7 +120,10 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         }
         let gas = transaction.gas?.quantity ?? Self.defaultSendTxGasPrice
         
-        return   (Double(gasPriceWei) / 1_000_000_000.0) * Double(gas) // in Gwei
+        let gasPriceGwei = (Double(gasPriceWei) / 1_000_000_000.0)
+        let gasFee = gasPriceGwei * Double(gas) / 1_000_000_000.0 // in token units
+        
+        return  gasFee
     }
     
     // Private methods
