@@ -24,11 +24,11 @@ struct CryptoSendingSpec {
         case normal, fast, urgent
     }
     
-    let token: String
+    let token: CryptoSender.SupportedToken
     let amount: Double
     let speed: TxSpeed
     
-    init(token: String, amount: Double, speed: TxSpeed = .normal) {
+    init(token: CryptoSender.SupportedToken, amount: Double, speed: TxSpeed = .normal) {
         self.token = token
         self.amount = amount
         self.speed = speed
@@ -39,16 +39,21 @@ struct CryptoSender: CryptoSenderProtocol {
     enum Error: Swift.Error {
         case sendingNotSupported
     }
+    
+    enum SupportedToken: String {
+        case eth = "ETH"
+        case matic = "MATIC"
+    }
 
     let wallet: UDWallet
     
-    func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
         // only native tokens supported for Ethereum and Polygon
-        return NativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chain: chain)
+        return NativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType)
     }
 
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
-        guard canSendCrypto(token: crypto.token, chain: chain.blockchainType) else {
+        guard canSendCrypto(token: crypto.token, chainType: chain.blockchainType) else {
             throw Error.sendingNotSupported
         }
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
@@ -57,7 +62,7 @@ struct CryptoSender: CryptoSenderProtocol {
     }
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> Double {
-        guard canSendCrypto(token: maxCrypto.token, chain: chain.blockchainType) else {
+        guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
             throw Error.sendingNotSupported
         }
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
@@ -69,22 +74,20 @@ struct CryptoSender: CryptoSenderProtocol {
 
 struct NativeCryptoSender: CryptoSenderProtocol {
     static let defaultSendTxGasPrice: BigUInt = 21_000
-    static var ethTicker = "crypto.ETH.address"
-    static var maticTicker = "crypto.MATIC.version.MATIC.address"
     
     let wallet: UDWallet
     
     
-    func canSendCrypto(token: String, chain: BlockchainType) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
         // only native tokens supported
-        return (token == Self.ethTicker && chain == .Ethereum) ||
-        (token == Self.maticTicker && chain == .Matic)
+        return (token == CryptoSender.SupportedToken.eth && chainType == .Ethereum) ||
+        (token == CryptoSender.SupportedToken.matic && chainType == .Matic)
     }
     
     func sendCrypto(crypto: CryptoSendingSpec,
                     chain: ChainSpec,
                     toAddress: HexAddress) async throws -> String {
-        guard canSendCrypto(token: crypto.token, chain: chain.blockchainType) else {
+        guard canSendCrypto(token: crypto.token, chainType: chain.blockchainType) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         
@@ -112,13 +115,15 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                                                 chainId: chainId)
         let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
         
-        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
-                                                                         for: crypto.speed)
+//        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
+//                                                                         for: crypto.speed)
+//        
+//        let otherGasPrice = 54
         
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
         
-        let amount = BigUInt(1_000_000_000 * crypto.amount)
+        let amount = BigUInt(1_000_000_000.0 * crypto.amount)
         
         var transaction = EthereumTransaction(nonce: nonce,
                                               gasPrice: gasPrice,
@@ -152,7 +157,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
         
-        let amount = BigUInt(1_000_000_000 * maxCrypto.amount)
+        let amount = BigUInt(1_000_000_000.0 * maxCrypto.amount)
         
         let transaction = EthereumTransaction(nonce: nonce,
                                               gasPrice: gasPrice,
