@@ -126,7 +126,7 @@ struct NetworkService {
     }
     
     func fetchDataHandlingThrottle(for url: URL,
-                                   body: String = "",
+                                   body: String? = nil,
                                    method: HttpRequestMethod = .post,
                                    extraHeaders: [String: String]  = [:]) async throws -> Data {
         let data: Data
@@ -157,7 +157,7 @@ struct NetworkService {
     }
     
     func fetchData(for url: URL,
-                   body: String = "",
+                   body: String? = nil,
                    method: HttpRequestMethod = .post,
                    extraHeaders: [String: String]  = [:]) async throws -> Data {
         let urlRequest = urlRequest(for: url, body: body, method: method, extraHeaders: extraHeaders)
@@ -232,13 +232,13 @@ struct NetworkService {
     }
     
     private func urlRequest(for url: URL,
-                            body: String = "",
+                            body: String? = nil,
                             method: HttpRequestMethod = .post,
                             extraHeaders: [String: String]  = [:]) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         
         urlRequest.httpMethod = method.string
-        urlRequest.httpBody = body.data(using: .utf8)
+        urlRequest.httpBody = body?.data(using: .utf8)
         Self.headers.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         
