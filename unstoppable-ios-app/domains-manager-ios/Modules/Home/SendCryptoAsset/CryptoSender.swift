@@ -116,27 +116,11 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         }
         
         let chainId = chain.blockchainType.supportedChainId(env: chain.env)
-        let fromAddress = self.wallet.address
-        let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
-                                                                                chainId: chainId)
-        let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
-        let sender = EthereumAddress(hexString: fromAddress)
-        let receiver = EthereumAddress(hexString: toAddress)
-        
-        let amount = BigUInt(1_000_000_000.0 * maxCrypto.amount)
-        
-        let transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: gasPrice,
-                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
-                                              from: sender,
-                                              to: receiver,
-                                              value: try EthereumQuantity(amount.gwei)
-        )
-        
-        guard let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) else {
-            return downMultiplication(Self.defaultSendTxGasPrice, gasPrice.quantity)
-        }
-        return  downMultiplication(gasEstimate.quantity, gasPrice.quantity)
+        let transaction = try await createNativeSendTransaction(crypto: maxCrypto,
+                                                                fromAddress: self.wallet.address,
+                                                                toAddress: toAddress,
+                                                                chainId: chainId)
+        return  downMultiplication(transaction.gas?.quantity ?? 0, transaction.gasPrice?.quantity ?? 0)
     }
     
     // Private methods
