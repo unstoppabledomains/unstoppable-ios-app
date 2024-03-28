@@ -22,6 +22,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, tx: EthereumTransaction, address: HexAddress, in wallet: UDWallet) async throws -> ResponseV2 {
+        throw WalletConnectRequestError.failedToSignMessage
+    }
+    
     func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.failedToSignMessage
     }

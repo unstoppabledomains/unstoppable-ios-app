@@ -41,14 +41,19 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         }
     }
     
-    func supportedChainId(isTestNet: Bool) -> Int? {
+    func supportedChainId(isTestNet: Bool) -> Int {
         switch self {
         case .Ethereum:
             return isTestNet ? 5 : 1 // Goerly or Mainnet
         case .Matic:
-            return isTestNet ? 80001 : 137 // Mumbai or
+            return isTestNet ? 80001 : 137 // Mumbai or Polygon
         }
     }
+    
+    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
+        supportedChainId(isTestNet: env == .testnet)
+    }
+
     
     enum InitError: Error {
         case invalidBlockchainAbbreviation
