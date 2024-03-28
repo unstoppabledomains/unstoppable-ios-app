@@ -53,18 +53,12 @@ struct CryptoSender: CryptoSenderProtocol {
     }
 
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
-        guard canSendCrypto(token: crypto.token, chainType: chain.blockchainType) else {
-            throw Error.sendingNotSupported
-        }
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
         return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
 
     }
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> Double {
-        guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
-            throw Error.sendingNotSupported
-        }
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
         return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto,
                                                         on: chain,
@@ -106,39 +100,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chainId)
         return hash
     }
-    
-    private func createNativeSendTransaction(crypto: CryptoSendingSpec,
-                                             fromAddress: HexAddress,
-                                             toAddress: HexAddress,
-                                             chainId: Int) async throws -> EthereumTransaction {
-        let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
-                                                                                chainId: chainId)
-        let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
         
-//        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
-//                                                                         for: crypto.speed)
-//        
-//        let otherGasPrice = 54
-        
-        let sender = EthereumAddress(hexString: fromAddress)
-        let receiver = EthereumAddress(hexString: toAddress)
-        
-        let amount = BigUInt(1_000_000_000.0 * crypto.amount)
-        
-        var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: gasPrice,
-                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
-                                              from: sender,
-                                              to: receiver,
-                                              value: try EthereumQuantity(amount.gwei)
-        )
-        
-        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
-            transaction.gas = gasEstimate
-        }
-        return transaction
-    }
-    
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> Double {
@@ -147,6 +109,10 @@ struct NativeCryptoSender: CryptoSenderProtocol {
             let m1 = Double(a1) / 1_000_000_000.0
             let m2 = Double(a2) / 1_000_000_000.0
             return  m1 * m2
+        }
+        
+        guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
+            throw CryptoSender.Error.sendingNotSupported
         }
         
         let chainId = chain.blockchainType.supportedChainId(env: chain.env)
@@ -172,4 +138,39 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         }
         return  downMultiplication(gasEstimate.quantity, gasPrice.quantity)
     }
+    
+    // Private methods
+    
+    private func createNativeSendTransaction(crypto: CryptoSendingSpec,
+                                             fromAddress: HexAddress,
+                                             toAddress: HexAddress,
+                                             chainId: Int) async throws -> EthereumTransaction {
+        let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
+                                                                                chainId: chainId)
+        let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
+        
+//        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
+//                                                                         for: crypto.speed)
+//
+//        let otherGasPrice = 54
+        
+        let sender = EthereumAddress(hexString: fromAddress)
+        let receiver = EthereumAddress(hexString: toAddress)
+        
+        let amount = BigUInt(1_000_000_000.0 * crypto.amount)
+        
+        var transaction = EthereumTransaction(nonce: nonce,
+                                              gasPrice: gasPrice,
+                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
+                                              from: sender,
+                                              to: receiver,
+                                              value: try EthereumQuantity(amount.gwei)
+        )
+        
+        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
+            transaction.gas = gasEstimate
+        }
+        return transaction
+    }
+
 }
