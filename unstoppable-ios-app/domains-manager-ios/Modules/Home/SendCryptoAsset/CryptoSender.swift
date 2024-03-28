@@ -134,20 +134,15 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                              chainId: Int) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
                                                                                 chainId: chainId)
-        let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
-        
-//        let otherGasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId,
-//                                                                         for: crypto.speed)
-//
-//        let otherGasPrice = 54
+        let speedBasedGasPriceGwei = try await NetworkService().fetchGasPrice(chainId: chainId,
+                                                                         for: crypto.speed)
         
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
-        
         let amountInGwei = BigUInt(1_000_000_000.0 * crypto.amount)
         
         var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: gasPrice,
+                                              gasPrice: try EthereumQuantity(speedBasedGasPriceGwei.gwei),
                                               gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
