@@ -38,7 +38,6 @@ struct SelectTokenAssetAmountToSendView: View {
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
-        .navigationTitle(String.Constants.send.localized())
     }
 }
 

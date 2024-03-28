@@ -1278,6 +1278,10 @@
 		C6A2D5C228508DA800327C47 /* PaymentTransactionCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D5C128508DA800327C47 /* PaymentTransactionCostView.swift */; };
 		C6A2D5C728508DB900327C47 /* PaymentTransactionCostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A2D5C628508DB900327C47 /* PaymentTransactionCostView.xib */; };
 		C6A2D5CD2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D5CC2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift */; };
+		C6A359272BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */; };
+		C6A359282BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */; };
+		C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
+		C6A3592B2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
 		C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474C629D149560073415F /* LoginFlowNavigationController.swift */; };
 		C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */; };
 		C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */; };
@@ -3524,6 +3528,8 @@
 		C6A2D5C128508DA800327C47 /* PaymentTransactionCostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionCostView.swift; sourceTree = "<group>"; };
 		C6A2D5C628508DB900327C47 /* PaymentTransactionCostView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTransactionCostView.xib; sourceTree = "<group>"; };
 		C6A2D5CC2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectServerRequestConfirmationView.swift; sourceTree = "<group>"; };
+		C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoReceiverInfoTitleView.swift; sourceTree = "<group>"; };
+		C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTrackerViewModifier.swift; sourceTree = "<group>"; };
 		C6A474C629D149560073415F /* LoginFlowNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowNavigationController.swift; sourceTree = "<group>"; };
 		C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewPresenter.swift; sourceTree = "<group>"; };
 		C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewController.swift; sourceTree = "<group>"; };
@@ -6387,6 +6393,7 @@
 				C621A43B2BB10D2900CB5CB9 /* QRWalletAddressScannerView.swift */,
 				C6F433502BB27AEF000C5E46 /* SendCryptoAssetSuccessView.swift */,
 				C6F433532BB28809000C5E46 /* TransactionStatusTracker.swift */,
+				C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */,
 				C67213CD2BAA80670075B9C7 /* SelectReceiver */,
 				C67213E72BAA98EC0075B9C7 /* SelectAssetToSend */,
 				C62900F32BAAC821008B35A2 /* SelectTokenAssetAmount */,
@@ -6958,6 +6965,7 @@
 				C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */,
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
 				C64939F72B6373EC00457363 /* DeviceShakeViewModifier.swift */,
+				C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */,
 				C630E4AB2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift */,
 				C62900EA2BAAC135008B35A2 /* NavigationTopSafeAreaOffset.swift */,
 				C685803A2B357EF400907568 /* NavBarVisibleModifier.swift */,
@@ -9403,6 +9411,7 @@
 				C6F060C42ACAA35B00BA2E7E /* MessagingService+Tools.swift in Sources */,
 				C67213E22BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
+				C6A359272BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */,
 				C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */,
 				C688C1862B846F1B00BD233A /* ChannelView.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
@@ -9810,6 +9819,7 @@
 				C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */,
 				C6C9958A289D313D00367362 /* CNavigationBarBackButton.swift in Sources */,
 				C6E6A001288AEAC6000A8346 /* ExternalEventsStorage.swift in Sources */,
+				C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */,
 				C666E0A129CB3FEA0003DECB /* ParkedDomainCell.swift in Sources */,
 				29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C624D79A281BCA3100F55530 /* SettingsPresenter.swift in Sources */,
@@ -10533,6 +10543,7 @@
 				C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */,
 				C6D647532B1EDB7C00D724AC /* SelectorButton.swift in Sources */,
 				C6C8F8AB2B2182CF00A9834D /* EnterEmailViewController.swift in Sources */,
+				C6A3592B2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */,
 				C6D646ED2B1ED5A900D724AC /* ImportExistingExternalWalletPresenter.swift in Sources */,
 				C61807C32B19A2F80032E543 /* SafeContinuation.swift in Sources */,
 				C6C8F8DF2B21836400A9834D /* ParkedDomainCell.swift in Sources */,
@@ -10762,6 +10773,7 @@
 				C6C8F85B2B217FB500A9834D /* WalletBackUpPassword.swift in Sources */,
 				C6D647812B1EE1FC00D724AC /* UDCheckBox.swift in Sources */,
 				C6D646522B1ED10100D724AC /* DomainProfileSocialCell.swift in Sources */,
+				C6A359282BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */,
 				C6C8F8632B21802C00A9834D /* TestsEnum.swift in Sources */,
 				C6D645CA2B1DBD3C00D724AC /* CNavigationControllerChild.swift in Sources */,
 				C6D645C72B1DBD3900D724AC /* CNavigationBarScrollingController.swift in Sources */,
