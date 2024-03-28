@@ -15,7 +15,7 @@ struct SendCryptoAssetSelectReceiverWalletRowView: View {
     @State private var domainAvatarImage: UIImage?
 
     var body: some View {
-        UDListItemView(title: wallet.displayName,
+        UDListItemView(title: wallet.domainOrDisplayName,
                        titleColor: .foregroundDefault,
                        subtitle: subtitle,
                        subtitleStyle: .default,
