@@ -387,7 +387,7 @@ extension NetworkService {
     
     func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
         let prices: EstimatedGasPrices = try await getStatusGasPrices(chainId: chainId)
-        return prices.feeForSpeed(speed)
+        return prices.getPriceForSpeed(speed)
     }
     
     func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
@@ -398,9 +398,9 @@ extension NetworkService {
               let urgent = prices["fastest"] else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
-        return EstimatedGasPrices(normalFee: EVMTokenAmount(gwei: normal),
-                                          fastFee: EVMTokenAmount(gwei: fast),
-                                          urgentFee: EVMTokenAmount(gwei: urgent))
+        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: normal),
+                                          fast: EVMTokenAmount(gwei: fast),
+                                          urgent: EVMTokenAmount(gwei: urgent))
     }
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
