@@ -43,6 +43,7 @@ struct CryptoSender: CryptoSenderProtocol {
     enum Error: Swift.Error {
         case sendingNotSupported
         case failedFetchGasPrice
+        case insufficientFunds
     }
     
     enum SupportedToken: String {

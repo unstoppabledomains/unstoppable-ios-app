@@ -59,11 +59,33 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func sendCryptoTokenWith(sendData: SendCryptoAsset.SendTokenAssetData,
                              txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> String {
-        let crypto = try getCryptoSendingSpecFor(sendData: sendData, txSpeed: txSpeed)
+        let crypto: CryptoSendingSpec
+        
+        if sendData.isSendingAllTokens() {
+            crypto = try await getMaxTokenAmountToSendConsideringGasFee(sendData: sendData, txSpeed: txSpeed)
+        } else {
+            crypto = try getCryptoSendingSpecFor(sendData: sendData, txSpeed: txSpeed)
+        }
+        
         let chain = try getChainSpecFor(balanceToken: sendData.token)
         let toAddress = sendData.receiverAddress
         
         return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
+    }
+    
+    private func getMaxTokenAmountToSendConsideringGasFee(sendData: SendCryptoAsset.SendTokenAssetData,
+                                                          txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> CryptoSendingSpec {
+        let gasPrice = try await computeGasFeeFor(sendData: sendData, txSpeed: txSpeed)
+        let tokenAmountToSend = sendData.getTokenAmountValue() - gasPrice
+        guard tokenAmountToSend > 0 else {
+            throw CryptoSender.Error.insufficientFunds
+        }
+        
+        let token = sendData.token
+        
+        return try getCryptoSendingSpecFor(token: token,
+                                           tokenAmount: tokenAmountToSend,
+                                           txSpeed: txSpeed)
     }
     
     func computeGasFeeFor(sendData: SendCryptoAsset.SendTokenAssetData,
@@ -77,15 +99,24 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func getGasPrices(sendData: SendCryptoAsset.SendTokenAssetData) async throws -> EstimatedGasPrices {
         let chain = try getChainSpecFor(balanceToken: sendData.token)
-        let toAddress = sendData.receiverAddress
         
         return try await cryptoSender.fetchGasPrices(on: chain)
     }
     
     private func getCryptoSendingSpecFor(sendData: SendCryptoAsset.SendTokenAssetData,
                                          txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
-        let token = try getSupportedTokenFor(balanceToken: sendData.token)
+        let token = sendData.token
         let tokenAmount = sendData.getTokenAmountValue()
+        
+        return try getCryptoSendingSpecFor(token: token,
+                                           tokenAmount: tokenAmount,
+                                           txSpeed: txSpeed)
+    }
+    
+    private func getCryptoSendingSpecFor(token: BalanceTokenUIDescription,
+                                         tokenAmount: Double,
+                                         txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
+        let token = try getSupportedTokenFor(balanceToken: token)
         let amount = EVMTokenAmount(units: tokenAmount)
         let speed = getSpecTransactionSpeedFor(txSpeed: txSpeed)
         

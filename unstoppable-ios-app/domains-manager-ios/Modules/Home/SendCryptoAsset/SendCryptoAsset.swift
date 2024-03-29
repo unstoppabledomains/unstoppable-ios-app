@@ -107,6 +107,10 @@ extension SendCryptoAsset {
         func getTokenAmountValue() -> Double {
             amount.valueOf(type: .tokenAmount, for: token)
         }
+        
+        func isSendingAllTokens() -> Bool {
+            getTokenAmountValue() >= token.balance
+        }
     }
     
     enum TransactionSpeed: CaseIterable {
