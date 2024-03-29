@@ -15,8 +15,10 @@ struct ConfirmSendTokenView: View {
     @State private var error: Error?
     @State private var isLoading = false
     @State private var stateId = UUID()
+    @State private var lastRefreshGasTime = Date()
     private var token: BalanceTokenUIDescription { dataModel.token }
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(spacing: 4) {
@@ -29,6 +31,9 @@ struct ConfirmSendTokenView: View {
         }
         .onChange(of: dataModel.txSpeed) { _ in
             refreshGasAmount()
+        }
+        .onReceive(timer) { _ in
+            refreshGasIfNeeded()
         }
         .padding(16)
         .background(Color.backgroundDefault)
@@ -52,6 +57,7 @@ private extension ConfirmSendTokenView {
     }
     
     func refreshGasAmount() {
+        lastRefreshGasTime = Date()
         dataModel.gasAmount = nil
         updateStateId()
         Task {
@@ -81,6 +87,13 @@ private extension ConfirmSendTokenView {
     
     func updateStateId() {
         stateId = UUID()
+    }
+    
+    func refreshGasIfNeeded() {
+        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasTime)
+        if timeSinceLastRefresh >= 60 {
+            refreshGasAmount()
+        }
     }
 }
 
