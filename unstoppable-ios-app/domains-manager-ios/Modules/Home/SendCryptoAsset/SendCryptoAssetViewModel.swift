@@ -46,14 +46,13 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     func canSendToken(_ token: BalanceTokenUIDescription) -> Bool {
-        guard let supportedToken = supportedTokenFrom(token: token),
-              let chainType = token.blockchainType() else { return false }
-        
+        guard let supportedToken = getSupportedTokenFor(balanceToken: token),
+              let chainType = token.blockchainType else { return false }
         
         return cryptoSender.canSendCrypto(token: supportedToken, chainType: chainType)
     }
         
-    func supportedTokenFrom(token: BalanceTokenUIDescription) -> CryptoSender.SupportedToken? {
-        CryptoSender.SupportedToken(rawValue: token.symbol.uppercased())
+    private func getSupportedTokenFor(balanceToken: BalanceTokenUIDescription) -> CryptoSender.SupportedToken? {
+        CryptoSender.SupportedToken(rawValue: balanceToken.symbol.uppercased())
     }
 }

@@ -78,7 +78,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         return [tokenDescription] + subTokenDescriptions
     }
 
-    func blockchainType() -> BlockchainType? {
+    var blockchainType: BlockchainType? {
         BlockchainType(rawValue: chain)
     }
 }
