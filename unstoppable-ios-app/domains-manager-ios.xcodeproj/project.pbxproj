@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		29018C8D2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
 		29018C8E2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
-		29018C8F2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
 		290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A60412950A89900882109 /* WalletConnectServiceV2.swift */; };
 		290A60482950AA1600882109 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60472950AA1600882109 /* WalletConnect */; };
 		290A604A2950AA1600882109 /* WalletConnectAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60492950AA1600882109 /* WalletConnectAuth */; };
@@ -34,10 +33,8 @@
 		299713D728F693F600743003 /* EIP712TypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713D628F693F600743003 /* EIP712TypedData.swift */; };
 		29AA6AA42BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
 		29AA6AA52BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
-		29AA6AA62BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
 		29AA6AA82BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
 		29AA6AA92BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
-		29AA6AAA2BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
 		29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */; };
 		29AEA050292F941F003BB5B4 /* PersistedSignaturesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04F292F941F003BB5B4 /* PersistedSignaturesStorage.swift */; };
 		29AEA05529367785003BB5B4 /* UDWallet+Signing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */; };
@@ -10178,7 +10175,6 @@
 				C6C8F9412B21841B00A9834D /* MessagingServiceProtocol.swift in Sources */,
 				C618083E2B19B0680032E543 /* PreviewDeepLinksService.swift in Sources */,
 				C6D646822B1ED12900D724AC /* DomainProfileGeneralData.swift in Sources */,
-				29AA6AA62BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */,
 				C6C8F9402B2183FA00A9834D /* UIUserInterfaceStyle.swift in Sources */,
 				C6D647922B1EE75A00D724AC /* PreviewCoinRecordsService.swift in Sources */,
 				C6D646C52B1ED24300D724AC /* GroupedCoinRecord.swift in Sources */,
@@ -10301,7 +10297,6 @@
 				C630E4AD2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				C6D646E22B1ED49D00D724AC /* TableViewSelectionCell.swift in Sources */,
 				C6FBCAA32B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */,
-				29AA6AAA2BAC389D00D24FB5 /* CryptoSender.swift in Sources */,
 				C6C8F8262B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6D647182B1ED83800D724AC /* CollectionTextFooterReusableView.swift in Sources */,
 				C61B6C712B9F056C007408FD /* PublicProfileBadgeTileView.swift in Sources */,
@@ -10735,7 +10730,6 @@
 				C61807C52B19A3580032E543 /* PreviewAppContext.swift in Sources */,
 				C6960C3D2B1997F600B79E28 /* Constants.swift in Sources */,
 				C6960C602B199AC900B79E28 /* Version.swift in Sources */,
-				29018C8F2BACB7BC0004545D /* JRPC_Client.swift in Sources */,
 				C63AD0982B955BE600BF8C83 /* HomeExploreDomainRowView.swift in Sources */,
 				C6D646532B1ED10100D724AC /* DomainProfileUpdatingRecordsCell.swift in Sources */,
 				C6D646892B1ED12D00D724AC /* DomainProfileGeneralInfoSection.swift in Sources */,
