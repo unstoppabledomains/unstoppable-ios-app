@@ -8,6 +8,9 @@
 import Foundation
 import BigInt
 
+// Unified container for the token amount.
+// Init with units, gwei's or wei's
+// Read in units, gwei's or wei's
 struct EVMTokenAmount {
     static let Billion = 1_000_000_000.0 
     private let gweiTotal: Double
@@ -36,12 +39,12 @@ struct EVMTokenAmount {
         gweiTotal
     }
     
-    var wei: Double {
-        gweiTotal * Self.Billion
+    var wei: BigUInt { // can only be integer and may be very big
+        BigUInt(gweiTotal * Self.Billion)
     }
 }
 
-struct TransactionEstimatedGasFee {
+struct EstimatedGasPrices {
     let normalFee: EVMTokenAmount
     let fastFee: EVMTokenAmount
     let urgentFee: EVMTokenAmount
@@ -57,7 +60,6 @@ struct TransactionEstimatedGasFee {
         }
     }
 }
-
 
 
 protocol CryptoSenderProtocol {
@@ -91,5 +93,5 @@ protocol CryptoSenderProtocol {
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> EVMTokenAmount
     
-    func fetchGasPrices(on chain: ChainSpec) async throws -> TransactionEstimatedGasFee
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices
 }

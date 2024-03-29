@@ -70,7 +70,7 @@ struct CryptoSender: CryptoSenderProtocol {
                                                         toAddress: toAddress)
     }
     
-    func fetchGasPrices(on chain: ChainSpec) async throws -> TransactionEstimatedGasFee {
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
         return try await cryptoSender.fetchGasPrices(on: chain)
     }
@@ -132,7 +132,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         return  gasFee
     }
     
-    func fetchGasPrices(on chain: ChainSpec) async throws -> TransactionEstimatedGasFee {
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
         try await NetworkService().getStatusGasPrices(chainId: chain.id)
     }
     
@@ -151,11 +151,11 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let receiver = EthereumAddress(hexString: toAddress)
         
         var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: try EthereumQuantity(BigUInt(speedBasedGasPrice.wei)),
+                                              gasPrice: try EthereumQuantity(speedBasedGasPrice.wei),
                                               gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(BigUInt(crypto.amount.wei))
+                                              value: try EthereumQuantity(crypto.amount.wei)
                                               )
         
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
