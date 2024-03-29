@@ -144,7 +144,18 @@ private extension ConfirmSendTokenView {
         .id(stateId)
     }
     
-    var isSufficientFunds: Bool { true }
+    var isSufficientFunds: Bool {
+        guard let gasFee = dataModel.gasFee else { return true }
+        
+        let sendData = dataModel.data
+        let balance = sendData.token.balance
+        if sendData.isSendingAllTokens() {
+            return balance >= gasFee
+        }
+        
+        let tokenAmountToSend = sendData.getTokenAmountValueToSend()
+        return balance > tokenAmountToSend + gasFee
+    }
     
     @ViewBuilder
     func confirmButton() -> some View {

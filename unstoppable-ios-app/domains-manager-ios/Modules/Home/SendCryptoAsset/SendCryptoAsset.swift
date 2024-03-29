@@ -104,12 +104,12 @@ extension SendCryptoAsset {
             receiver.walletAddress
         }
         
-        func getTokenAmountValue() -> Double {
+        func getTokenAmountValueToSend() -> Double {
             amount.valueOf(type: .tokenAmount, for: token)
         }
         
         func isSendingAllTokens() -> Bool {
-            getTokenAmountValue() >= token.balance
+            getTokenAmountValueToSend() >= token.balance
         }
     }
     

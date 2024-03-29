@@ -76,7 +76,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     private func getMaxTokenAmountToSendConsideringGasFee(sendData: SendCryptoAsset.SendTokenAssetData,
                                                           txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> CryptoSendingSpec {
         let gasPrice = try await computeGasFeeFor(sendData: sendData, txSpeed: txSpeed)
-        let tokenAmountToSend = sendData.getTokenAmountValue() - gasPrice
+        let tokenAmountToSend = sendData.getTokenAmountValueToSend() - gasPrice
         guard tokenAmountToSend > 0 else {
             throw CryptoSender.Error.insufficientFunds
         }
@@ -106,7 +106,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     private func getCryptoSendingSpecFor(sendData: SendCryptoAsset.SendTokenAssetData,
                                          txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
         let token = sendData.token
-        let tokenAmount = sendData.getTokenAmountValue()
+        let tokenAmount = sendData.getTokenAmountValueToSend()
         
         return try getCryptoSendingSpecFor(token: token,
                                            tokenAmount: tokenAmount,
