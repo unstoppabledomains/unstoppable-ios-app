@@ -187,7 +187,7 @@ private extension ConfirmSendAssetReviewInfoView {
         switch asset {
         case .token(let dataModel):
             getSectionsForToken(selectedTxSpeed: dataModel.txSpeed,
-                                gasUsd: dataModel.gasUsd)
+                                gasUsd: dataModel.gasFeeUsd)
         case .domain:
             getSectionsForDomain()
         }
@@ -196,11 +196,18 @@ private extension ConfirmSendAssetReviewInfoView {
     func getTransactionSpeedActions() -> [InfoActionDescription] {
         SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
             InfoActionDescription(title: txSpeed.title,
-                                  subtitle: txSpeed.subtitle,
+                                  subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
                                   iconName: txSpeed.iconName,
                                   tintColor: tintColorFor(txSpeed: txSpeed),
                                   action: { didSelectTransactionSpeed(txSpeed) })
         }
+    }
+    
+    func txSpeedSubtitleFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> String {
+        guard case .token(let dataModel) = asset,
+              let gwei = dataModel.gasGweiFor(speed: txSpeed) else { return "" }
+        
+        return "\(gwei) Gwei"
     }
     
     func tintColorFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> UIColor {

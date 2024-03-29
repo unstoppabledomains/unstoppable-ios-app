@@ -72,18 +72,26 @@ final class SendCryptoAssetViewModel: ObservableObject {
         let chain = try getChainSpecFor(balanceToken: sendData.token)
         let toAddress = sendData.receiverAddress
         
-        return try await cryptoSender.computeGasFeeFrom(maxCrypto: crypto, on: chain, toAddress: toAddress)
+        return try await cryptoSender.computeGasFeeFrom(maxCrypto: crypto, on: chain, toAddress: toAddress).units
+    }
+    
+    func getGasPrices(sendData: SendCryptoAsset.SendTokenAssetData) async throws -> EstimatedGasPrices {
+        let chain = try getChainSpecFor(balanceToken: sendData.token)
+        let toAddress = sendData.receiverAddress
+        
+        return try await cryptoSender.fetchGasPrices(on: chain)
     }
     
     private func getCryptoSendingSpecFor(sendData: SendCryptoAsset.SendTokenAssetData,
                                          txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
         let token = try getSupportedTokenFor(balanceToken: sendData.token)
-        let amount = sendData.getTokenAmountValue()
+        let tokenAmount = sendData.getTokenAmountValue()
+        let amount = EVMTokenAmount(units: tokenAmount)
         let speed = getSpecTransactionSpeedFor(txSpeed: txSpeed)
         
         return CryptoSendingSpec(token: token,
-                           amount: amount,
-                          speed: speed)
+                                 amount: amount,
+                                 speed: speed)
     }
     
     private func getChainSpecFor(balanceToken: BalanceTokenUIDescription) throws -> ChainSpec {

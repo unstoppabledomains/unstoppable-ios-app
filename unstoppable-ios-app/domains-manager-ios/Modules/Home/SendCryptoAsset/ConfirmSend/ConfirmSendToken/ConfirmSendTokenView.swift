@@ -58,13 +58,14 @@ private extension ConfirmSendTokenView {
     
     func refreshGasAmount() {
         lastRefreshGasTime = Date()
-        dataModel.gasAmount = nil
+        dataModel.gasPrices = nil
         updateStateId()
         Task {
             isLoading = true
             do {
-                dataModel.gasAmount = try await viewModel.computeGasFeeFor(sendData: dataModel.data,
-                                                                           txSpeed: dataModel.txSpeed)
+                dataModel.gasFee = try await viewModel.computeGasFeeFor(sendData: dataModel.data,
+                                                                        txSpeed: dataModel.txSpeed)
+                dataModel.gasPrices = try await viewModel.getGasPrices(sendData: dataModel.data)
                 updateStateId()
             } catch {
                 self.error = error

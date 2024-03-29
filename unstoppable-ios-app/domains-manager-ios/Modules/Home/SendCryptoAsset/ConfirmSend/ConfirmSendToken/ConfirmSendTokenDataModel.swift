@@ -7,19 +7,20 @@
 
 import SwiftUI
 
-final class ConfirmSendTokenDataModel: ObservableObject, Hashable {
+final class ConfirmSendTokenDataModel: ObservableObject {
  
     let data: SendCryptoAsset.SendTokenAssetData
     @Published var txSpeed: SendCryptoAsset.TransactionSpeed = .normal
-    @Published var gasAmount: Double? = nil
+    @Published var gasFee: Double? = nil
+    @Published var gasPrices: EstimatedGasPrices? = nil
 
     var token: BalanceTokenUIDescription { data.token }
     var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
     var amount: SendCryptoAsset.TokenAssetAmountInput { data.amount }
-    var gasUsd: Double? {
-        if let gasAmount,
+    var gasFeeUsd: Double? {
+        if let gasFee,
            let marketUsd = data.token.marketUsd {
-            return gasAmount * marketUsd
+            return gasFee * marketUsd
         }
         return nil
     }
@@ -28,16 +29,24 @@ final class ConfirmSendTokenDataModel: ObservableObject, Hashable {
         self.data = data
     }
     
-    static func == (lhs: ConfirmSendTokenDataModel, rhs: ConfirmSendTokenDataModel) -> Bool {
-        lhs.data == rhs.data &&
-        lhs.txSpeed == rhs.txSpeed &&
-        lhs.gasAmount == rhs.gasAmount
+    func gasGweiFor(speed: SendCryptoAsset.TransactionSpeed) -> Int? {
+        guard let gasPrices else { return nil }
+        
+        let evmSpeed = evmTxSpeedFor(transactionSpeed: speed)
+        let feeForSpeed = gasPrices.feeForSpeed(evmSpeed)
+
+        return Int(feeForSpeed.gwei)
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(data)
-        hasher.combine(txSpeed)
-        hasher.combine(gasAmount)
+    private func evmTxSpeedFor(transactionSpeed: SendCryptoAsset.TransactionSpeed) -> CryptoSendingSpec.TxSpeed {
+        switch transactionSpeed {
+        case .normal:
+            return .normal
+        case .fast:
+            return .fast
+        case .urgent:
+            return .urgent
+        }
     }
     
 }

@@ -123,17 +123,6 @@ extension SendCryptoAsset {
             }
         }
         
-        var subtitle: String {
-            switch self {
-            case .normal:
-                return "43-51 Gwei"
-            case .fast:
-                return "44-54 Gwei "
-            case .urgent:
-                return "41-53 Gwei"
-            }
-        }
-        
         var iconName: String {
             switch self {
             case .normal:

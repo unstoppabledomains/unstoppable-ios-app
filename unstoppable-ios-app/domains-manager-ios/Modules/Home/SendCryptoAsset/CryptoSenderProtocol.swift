@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import BigInt
 
 // Unified container for the token amount.
 // Init with units, gwei's or wei's
