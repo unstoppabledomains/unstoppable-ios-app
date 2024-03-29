@@ -98,6 +98,18 @@ extension SendCryptoAsset {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
         let amount: TokenAssetAmountInput
+        
+        var receiverAddress: HexAddress {
+            receiver.walletAddress
+        }
+        
+        func getTokenAmountValue() -> Double {
+            amount.valueOf(type: .tokenAmount, for: token)
+        }
+    }
+    
+    enum TransactionSpeed {
+        case normal, fast, urgent
     }
 }
 
