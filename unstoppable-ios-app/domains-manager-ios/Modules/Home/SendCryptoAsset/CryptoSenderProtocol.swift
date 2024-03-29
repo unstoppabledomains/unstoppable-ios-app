@@ -8,6 +8,58 @@
 import Foundation
 import BigInt
 
+struct EVMTokenAmount {
+    static let Billion = 1_000_000_000.0 
+    private let gweiTotal: Double
+    
+    init(units: Double) {
+        self.gweiTotal = units * Self.Billion
+    }
+    
+    init(gwei: Double) {
+        self.gweiTotal = gwei
+    }
+    
+    init(gwei: Int) {
+        self.gweiTotal = Double(gwei)
+    }
+    
+    init(wei: BigUInt) {
+        self.gweiTotal = Double(wei) / Self.Billion
+    }
+    
+    var units: Double {
+        gweiTotal / Self.Billion
+    }
+    
+    var gwei: Double {
+        gweiTotal
+    }
+    
+    var wei: Double {
+        gweiTotal * Self.Billion
+    }
+}
+
+struct TransactionEstimatedGasFee {
+    let normalFee: EVMTokenAmount
+    let fastFee: EVMTokenAmount
+    let urgentFee: EVMTokenAmount
+    
+    func feeForSpeed(_ txSpeed: CryptoSendingSpec.TxSpeed) -> EVMTokenAmount {
+        switch txSpeed {
+        case .normal:
+            return normalFee
+        case .fast:
+            return fastFee
+        case .urgent:
+            return urgentFee
+        }
+    }
+}
+
+
+
 protocol CryptoSenderProtocol {
     init(wallet: UDWallet)
     
@@ -37,5 +89,7 @@ protocol CryptoSenderProtocol {
     /// - Returns: Amount of crypto that must be deducted from maxCrypto as the gas fee in the future tx, in token units
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
-                           toAddress: HexAddress) async throws -> Double
+                           toAddress: HexAddress) async throws -> EVMTokenAmount
+    
+    func fetchGasPrices(on chain: ChainSpec) async throws -> TransactionEstimatedGasFee
 }
