@@ -19,8 +19,7 @@ struct ConfirmSendTokenView: View {
     @State private var lastRefreshGasPricesTime = Date()
     private var token: BalanceTokenUIDescription { dataModel.token }
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
-    private let refreshGasFeeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    private let refreshGasPricesTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let refreshGasTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(spacing: 4) {
@@ -34,10 +33,8 @@ struct ConfirmSendTokenView: View {
         .onChange(of: dataModel.txSpeed) { _ in
             refreshGasFeeForSelectedSpeed()
         }
-        .onReceive(refreshGasFeeTimer) { _ in
+        .onReceive(refreshGasTimer) { _ in
             refreshGasFeeForSelectedSpeedIfNeeded()
-        }
-        .onReceive(refreshGasPricesTimer) { _ in
             refreshGasPricesIfNeeded()
         }
         .padding(16)
@@ -64,7 +61,7 @@ private extension ConfirmSendTokenView {
     
     func refreshGasFeeForSelectedSpeed() {
         lastRefreshGasFeeTime = Date()
-        dataModel.gasPrices = nil
+        dataModel.gasFee = nil
         updateStateId()
         Task {
             isLoading = true
