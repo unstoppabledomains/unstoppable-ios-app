@@ -204,24 +204,28 @@ private extension ConfirmSendAssetReviewInfoView {
     }
     
     func getTransactionSpeedActions() -> [InfoActionDescription] {
-        [.init(title: "Urgent",
-               subtitle: "41-53 Gwei (~1 sec)",
-               iconName: "flame",
-               tintColor: .foregroundDanger,
-               action: { didSelectTransactionSpeed() }),
-         .init(title: "Fast",
-               subtitle: "44-54 Gwei (~4 sec)",
-               iconName: "bolt",
-               tintColor: .foregroundWarning,
-               action: { didSelectTransactionSpeed() }),
-         .init(title: "Normal",
-               subtitle: "43-51 Gwei (~12 sec)",
-               iconName: "clock",
-               tintColor: .foregroundDefault,
-               action: { didSelectTransactionSpeed() })].reversed()
+        SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
+            InfoActionDescription(title: txSpeed.title,
+                                  subtitle: txSpeed.subtitle,
+                                  iconName: txSpeed.iconName,
+                                  tintColor: tintColorFor(txSpeed: txSpeed),
+                                  action: { didSelectTransactionSpeed(txSpeed) })
+        }
     }
     
-    func didSelectTransactionSpeed() {
+    func tintColorFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> UIColor {
+        switch txSpeed {
+        case .normal:
+                .foregroundDefault
+        case .fast:
+                .foregroundWarning
+        case .urgent:
+                .foregroundDanger
+        }
+    }
+    
+    
+    func didSelectTransactionSpeed(_ transactionSpeed: SendCryptoAsset.TransactionSpeed) {
         
     }
     

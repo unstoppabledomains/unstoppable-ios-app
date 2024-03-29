@@ -108,8 +108,42 @@ extension SendCryptoAsset {
         }
     }
     
-    enum TransactionSpeed {
+    enum TransactionSpeed: CaseIterable {
         case normal, fast, urgent
+        
+        var title: String {
+            switch self {
+            case .normal:
+                return "Normal"
+            case .fast:
+                return "Fast"
+            case .urgent:
+                return "Urgent"
+            }
+        }
+        
+        var subtitle: String {
+            switch self {
+            case .normal:
+                return "43-51 Gwei (~12 sec)"
+            case .fast:
+                return "44-54 Gwei (~4 sec)"
+            case .urgent:
+                return "41-53 Gwei (~1 sec)"
+            }
+        }
+        
+        var iconName: String {
+            switch self {
+            case .normal:
+                "clock"
+            case .fast:
+                "bolt"
+            case .urgent:
+                "flame"
+            }
+        }
+      
     }
 }
 

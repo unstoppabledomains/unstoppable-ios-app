@@ -13,6 +13,7 @@ struct ConfirmSendTokenView: View {
 
     let data: SendCryptoAsset.SendTokenAssetData
     
+    @State private var txSpeed: SendCryptoAsset.TransactionSpeed = .normal
     private var token: BalanceTokenUIDescription { data.token }
     private var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
     
