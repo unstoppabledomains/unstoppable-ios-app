@@ -10,13 +10,14 @@ import SwiftUI
 struct ConfirmSendTokenView: View {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+    
+    @ObservedObject private var dataModel: ConfirmSendTokenDataModel
+    @State private var error: Error?
+    @State private var isLoading = false
+    @State private var stateId = UUID()
+    private var token: BalanceTokenUIDescription { dataModel.token }
+    private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
 
-    let data: SendCryptoAsset.SendTokenAssetData
-    
-    @State private var txSpeed: SendCryptoAsset.TransactionSpeed = .normal
-    private var token: BalanceTokenUIDescription { data.token }
-    private var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
-    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -26,11 +27,60 @@ struct ConfirmSendTokenView: View {
             Spacer()
             confirmButton()
         }
+        .onChange(of: dataModel.txSpeed) { _ in
+            refreshGasAmount()
+        }
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
+        .displayError($error)
+        .onAppear(perform: onAppear)
+    }
+    
+    init(data: SendCryptoAsset.SendTokenAssetData) {
+        self.dataModel = ConfirmSendTokenDataModel(data: data)
+    }
+    
+}
+
+// MARK: - Private methods
+private extension ConfirmSendTokenView {
+    func onAppear() {
+        refreshGasAmount()
+    }
+    
+    func refreshGasAmount() {
+        dataModel.gasAmount = nil
+        updateStateId()
+        Task {
+            isLoading = true
+            do {
+                dataModel.gasAmount = try await viewModel.computeGasFeeFor(sendData: dataModel.data,
+                                                                           txSpeed: dataModel.txSpeed)
+                updateStateId()
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
+    }
+    
+    func confirmSending() {
+        Task {
+            isLoading = true
+            do {
+//                try await viewModel.sendToken(data: dataModel.data)
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
+    }
+    
+    func updateStateId() {
+        stateId = UUID()
     }
 }
 
@@ -39,7 +89,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func sendingTokenInfoView() -> some View {
         ConfirmSendAssetSendingInfoView(asset: .token(token: token,
-                                                      amount: data.amount))
+                                                      amount: dataModel.amount))
     }
     
     @ViewBuilder
@@ -54,8 +104,9 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func reviewInfoView() -> some View {
-        ConfirmSendAssetReviewInfoView(asset: .token(token),
+        ConfirmSendAssetReviewInfoView(asset: .token(dataModel),
                                        sourceWallet: viewModel.sourceWallet)
+        .id(stateId)
     }
     
     var isSufficientFunds: Bool { true }
@@ -68,8 +119,9 @@ private extension ConfirmSendTokenView {
             }
             UDButtonView(text: String.Constants.confirm.localized(),
                          icon: confirmIcon,
-                         style: .large(.raisedPrimary)) {
-                
+                         style: .large(.raisedPrimary),
+                         isLoading: isLoading) {
+                confirmSending()
             }
                          .disabled(!isSufficientFunds)
         }

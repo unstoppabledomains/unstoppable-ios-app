@@ -1289,6 +1289,8 @@
 		C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
 		C6A3592B2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
 		C6A3592F2BB68D9B00B1209A /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
+		C6A359322BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
+		C6A359332BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
 		C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474C629D149560073415F /* LoginFlowNavigationController.swift */; };
 		C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */; };
 		C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */; };
@@ -3540,6 +3542,7 @@
 		C6A2D5CC2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectServerRequestConfirmationView.swift; sourceTree = "<group>"; };
 		C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoReceiverInfoTitleView.swift; sourceTree = "<group>"; };
 		C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTrackerViewModifier.swift; sourceTree = "<group>"; };
+		C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenDataModel.swift; sourceTree = "<group>"; };
 		C6A474C629D149560073415F /* LoginFlowNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowNavigationController.swift; sourceTree = "<group>"; };
 		C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewPresenter.swift; sourceTree = "<group>"; };
 		C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewController.swift; sourceTree = "<group>"; };
@@ -5339,6 +5342,7 @@
 			isa = PBXGroup;
 			children = (
 				C62AC1FB2BABE565003FB69E /* ConfirmSendTokenView.swift */,
+				C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */,
 			);
 			path = ConfirmSendToken;
 			sourceTree = "<group>";
@@ -9146,6 +9150,7 @@
 				C6B65F902B565C70006D1812 /* HomeWalletSortingSelectorView.swift in Sources */,
 				C688C19E2B848D0600BD233A /* ChatRequestsListView.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
+				C6A359322BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6DDF2502B147F1A006D1F0B /* UDButtonStyle.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
@@ -10550,6 +10555,7 @@
 				C6B761D72BB3CDD900773943 /* WalletTransactionsService.swift in Sources */,
 				C6C8F83E2B217E9600A9834D /* RecoveryPhraseViewController.swift in Sources */,
 				C6C8F8742B21822700A9834D /* TutorialStepViewController.swift in Sources */,
+				C6A359332BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */,
 				C621A4432BB1137900CB5CB9 /* QRScannerState.swift in Sources */,
 				C6C8F8BF2B2182E400A9834D /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				C62900FC2BAACCD2008B35A2 /* UDNumberPadView.swift in Sources */,
