@@ -21,6 +21,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func handleAction(_ action: SendCryptoAsset.FlowAction) {
         switch action {
+            // Common path
         case .scanQRSelected:
             navPath.append(.scanWalletAddress)
         case .userWalletSelected(let walletEntity):
@@ -33,11 +34,15 @@ final class SendCryptoAssetViewModel: ObservableObject {
         case .globalWalletAddressSelected(let address):
             navPath.append(.selectAssetToSend(.init(walletAddress: address)))
             
+            // Send crypto
         case .userTokenToSendSelected(let data):
             navPath.append(.selectTokenAmountToSend(data))
         case .userTokenValueSelected(let data):
             navPath.append(.confirmSendToken(data))
+        case .didSendCrypto(let data, let txHash):
+            navPath.append(.cryptoSendSuccess(data: data, txHash: txHash))
             
+            // Transfer domain
         case .userDomainSelected(let data):
             navPath.append(.confirmTransferDomain(data))
         case.didTransferDomain(let domain):
@@ -92,7 +97,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     private func getCurrentEnvironment() -> UnsConfigManager.BlockchainEnvironment {
-        .mainnet
+        User.instance.getSettings().isTestnetUsed ? .testnet : .mainnet
     }
     
     private func getSupportedTokenFor(balanceToken: BalanceTokenUIDescription) throws -> CryptoSender.SupportedToken {

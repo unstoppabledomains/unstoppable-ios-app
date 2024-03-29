@@ -77,7 +77,9 @@ private extension ConfirmSendTokenView {
         Task {
             isLoading = true
             do {
-//                try await viewModel.sendToken(data: dataModel.data)
+                let txHash = try await viewModel.sendCryptoTokenWith(sendData: dataModel.data,
+                                                                     txSpeed: dataModel.txSpeed)
+                viewModel.handleAction(.didSendCrypto(data: dataModel.data, txHash: txHash))
             } catch {
                 self.error = error
             }

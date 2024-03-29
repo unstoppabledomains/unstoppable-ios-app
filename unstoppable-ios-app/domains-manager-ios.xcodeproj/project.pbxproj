@@ -1291,6 +1291,8 @@
 		C6A3592F2BB68D9B00B1209A /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
 		C6A359322BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
 		C6A359332BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
+		C6A359352BB6BB2100B1209A /* TxHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359342BB6BB2000B1209A /* TxHash.swift */; };
+		C6A359362BB6BB2100B1209A /* TxHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359342BB6BB2000B1209A /* TxHash.swift */; };
 		C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474C629D149560073415F /* LoginFlowNavigationController.swift */; };
 		C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */; };
 		C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */; };
@@ -3543,6 +3545,7 @@
 		C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoReceiverInfoTitleView.swift; sourceTree = "<group>"; };
 		C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTrackerViewModifier.swift; sourceTree = "<group>"; };
 		C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenDataModel.swift; sourceTree = "<group>"; };
+		C6A359342BB6BB2000B1209A /* TxHash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxHash.swift; sourceTree = "<group>"; };
 		C6A474C629D149560073415F /* LoginFlowNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowNavigationController.swift; sourceTree = "<group>"; };
 		C6A474CD29D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewPresenter.swift; sourceTree = "<group>"; };
 		C6A474CE29D150A40073415F /* NoParkedDomainsFoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundViewController.swift; sourceTree = "<group>"; };
@@ -7359,6 +7362,7 @@
 				C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */,
 				C6109EA128E6B1CC0027D5D8 /* Toast.swift */,
 				307EC19A25383EF600D62BA1 /* TransactionItem.swift */,
+				C6A359342BB6BB2000B1209A /* TxHash.swift */,
 				C6C8F98E2B2189CB00A9834D /* TxOperation.swift */,
 				C61808812B19BC680032E543 /* TransactionError.swift */,
 				306486CC25273C4400388026 /* User.swift */,
@@ -9664,6 +9668,7 @@
 				C664B679291551E600A76154 /* LinkPresentationService.swift in Sources */,
 				C6F9FBBE2A25C32700102F81 /* MessagingWebSocketEvent.swift in Sources */,
 				C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
+				C6A359352BB6BB2100B1209A /* TxHash.swift in Sources */,
 				C6E041CE29554C370080F8E3 /* GhostTertiaryButton.swift in Sources */,
 				C60E9B9C2821347F00CD7593 /* WalletsListHeaderView.swift in Sources */,
 				C6B65FA42B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */,
@@ -10538,6 +10543,7 @@
 				C63AD09B2B95657C00BF8C83 /* LineView.swift in Sources */,
 				C6D6463B2B1DC50600D724AC /* AppReviewActionEvent.swift in Sources */,
 				C6C8F8B32B2182CF00A9834D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
+				C6A359362BB6BB2100B1209A /* TxHash.swift in Sources */,
 				C61808052B19A9C20032E543 /* Toast.swift in Sources */,
 				C6C8F8452B217E9600A9834D /* BackupWalletViewController.swift in Sources */,
 				C6C8F9502B21856200A9834D /* PreviewKeychainPrivateKeyStorage.swift in Sources */,

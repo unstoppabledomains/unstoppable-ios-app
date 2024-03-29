@@ -21,19 +21,19 @@ final class TransactionStatusTracker: ObservableObject {
         
         self.trackingTransaction = type
         refreshTransactionStatus()
-        startRefreshTransactionsTimer()
+        startRefreshTimer()
     }
     
     func stopTracking() {
         trackingTransaction = nil
-        stopRefreshDomainsTimer()
+        stopRefreshTimer()
     }
     
 }
 
 // MARK: - Private methods
 private extension TransactionStatusTracker {
-    func startRefreshTransactionsTimer() {
+    func startRefreshTimer() {
         refreshTimer = Timer.scheduledTimer(timeInterval: 5,
                                             target: self,
                                             selector: #selector(refreshTransactionStatus),
@@ -41,7 +41,7 @@ private extension TransactionStatusTracker {
                                             repeats: true)
     }
     
-    func stopRefreshDomainsTimer() {
+    func stopRefreshTimer() {
         refreshTimer?.invalidate()
         refreshTimer = nil
     }
@@ -52,8 +52,11 @@ private extension TransactionStatusTracker {
                 switch trackingTransaction {
                 case .domainTransfer(let domainName):
                     try await refreshTransactionStatusForDomain(domainName)
+                case .txHash(let txHash):
+                    self.txHash = txHash
+                    stopRefreshTimer()
                 case .none:
-                    stopRefreshDomainsTimer()
+                    stopRefreshTimer()
                 }
             } catch {
                 
@@ -79,5 +82,6 @@ private extension TransactionStatusTracker {
 extension TransactionStatusTracker {
     enum TransactionType {
         case domainTransfer(DomainName)
+        case txHash(TxHash)
     }
 }

@@ -46,6 +46,7 @@ extension SendCryptoAsset {
         
         case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(SendTokenAssetData)
+        case didSendCrypto(data: SendTokenAssetData, txHash: String)
         
         case userDomainSelected(TransferDomainData)
         case didTransferDomain(DomainDisplayInfo)
