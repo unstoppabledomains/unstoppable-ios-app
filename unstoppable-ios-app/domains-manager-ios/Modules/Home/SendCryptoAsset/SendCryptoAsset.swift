@@ -125,11 +125,11 @@ extension SendCryptoAsset {
         var subtitle: String {
             switch self {
             case .normal:
-                return "43-51 Gwei (~12 sec)"
+                return "43-51 Gwei"
             case .fast:
-                return "44-54 Gwei (~4 sec)"
+                return "44-54 Gwei "
             case .urgent:
-                return "41-53 Gwei (~1 sec)"
+                return "41-53 Gwei"
             }
         }
         

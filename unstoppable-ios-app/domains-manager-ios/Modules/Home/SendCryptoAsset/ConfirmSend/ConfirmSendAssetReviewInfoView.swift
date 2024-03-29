@@ -233,7 +233,6 @@ private extension ConfirmSendAssetReviewInfoView {
                           iconColor: .foregroundSecondary,
                           value: selectedTxSpeed.title,
                           valueColor: Color(uiColor: tintColorFor(txSpeed: selectedTxSpeed)),
-                          subValue: selectedTxSpeed.subtitle,
                           actions: getTransactionSpeedActions())),
          .infoValue(.init(title: String.Constants.feeEstimate.localized(),
                           icon: .tildaIcon,
