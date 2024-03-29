@@ -45,18 +45,18 @@ struct EVMTokenAmount {
 }
 
 struct EstimatedGasPrices {
-    let normalFee: EVMTokenAmount
-    let fastFee: EVMTokenAmount
-    let urgentFee: EVMTokenAmount
+    let normal: EVMTokenAmount
+    let fast: EVMTokenAmount
+    let urgent: EVMTokenAmount
     
-    func feeForSpeed(_ txSpeed: CryptoSendingSpec.TxSpeed) -> EVMTokenAmount {
+    func getPriceForSpeed(_ txSpeed: CryptoSendingSpec.TxSpeed) -> EVMTokenAmount {
         switch txSpeed {
         case .normal:
-            return normalFee
+            return normal
         case .fast:
-            return fastFee
+            return fast
         case .urgent:
-            return urgentFee
+            return urgent
         }
     }
 }
