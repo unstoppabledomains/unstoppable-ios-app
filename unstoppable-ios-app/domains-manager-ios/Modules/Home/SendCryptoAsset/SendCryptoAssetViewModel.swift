@@ -12,9 +12,11 @@ final class SendCryptoAssetViewModel: ObservableObject {
     @Published var sourceWallet: WalletEntity
     @Published var navigationState: NavigationStateManager?
     @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
+    private let cryptoSender: CryptoSenderProtocol
     
     init(initialData: SendCryptoAsset.InitialData) {
         self.sourceWallet = initialData.sourceWallet
+        self.cryptoSender = CryptoSender.init(wallet: initialData.sourceWallet.udWallet)
     }
     
     func handleAction(_ action: SendCryptoAsset.FlowAction) {
@@ -43,4 +45,15 @@ final class SendCryptoAssetViewModel: ObservableObject {
         }
     }
     
+    func canSendToken(_ token: BalanceTokenUIDescription) -> Bool {
+        guard let supportedToken = supportedTokenFrom(token: token),
+              let chainType = token.blockchainType() else { return false }
+        
+        
+        return cryptoSender.canSendCrypto(token: supportedToken, chainType: chainType)
+    }
+        
+    func supportedTokenFrom(token: BalanceTokenUIDescription) -> CryptoSender.SupportedToken? {
+        CryptoSender.SupportedToken(rawValue: token.symbol.uppercased())
+    }
 }

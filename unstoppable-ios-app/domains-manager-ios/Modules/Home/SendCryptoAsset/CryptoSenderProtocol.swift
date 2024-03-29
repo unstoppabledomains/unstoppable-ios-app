@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import BigInt
 
 protocol CryptoSenderProtocol {
     init(wallet: UDWallet)
