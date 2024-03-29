@@ -33,7 +33,7 @@ final class ConfirmSendTokenDataModel: ObservableObject {
         guard let gasPrices else { return nil }
         
         let evmSpeed = evmTxSpeedFor(transactionSpeed: speed)
-        let feeForSpeed = gasPrices.feeForSpeed(evmSpeed)
+        let feeForSpeed = gasPrices.getPriceForSpeed(evmSpeed)
 
         return Int(feeForSpeed.gwei)
     }
