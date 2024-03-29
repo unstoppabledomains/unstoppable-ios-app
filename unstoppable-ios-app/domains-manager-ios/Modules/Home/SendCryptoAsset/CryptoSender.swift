@@ -151,11 +151,11 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         let receiver = EthereumAddress(hexString: toAddress)
         
         var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: try EthereumQuantity(BigUInt(speedBasedGasPrice.gwei)),
+                                              gasPrice: try EthereumQuantity(BigUInt(speedBasedGasPrice.wei)),
                                               gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(BigUInt(crypto.amount.gwei))
+                                              value: try EthereumQuantity(BigUInt(crypto.amount.wei))
                                               )
         
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
