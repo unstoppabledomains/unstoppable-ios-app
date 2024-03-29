@@ -16,7 +16,7 @@ struct BalanceStringFormatter {
     
     static func tokenBalanceString(balance: Double, 
                                    symbol: String) -> String {
-        "\(balance.formattedBalance()) \(symbol)"
+        "\(balance.formatted(toMaxNumberAfterComa: 5)) \(symbol)"
     }
     
     static func tokenFullBalanceString(balance: Double,
