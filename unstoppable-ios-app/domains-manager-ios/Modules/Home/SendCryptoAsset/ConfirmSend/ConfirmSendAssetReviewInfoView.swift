@@ -255,7 +255,7 @@ private extension ConfirmSendAssetReviewInfoView {
     
     func gasUsdTitleFor(gasUsd: Double?) -> String {
         if let gasUsd {
-            return formatCartPrice(gasUsd)
+            return "$\(gasUsd.formatted(toMaxNumberAfterComa: 4))"
         }
         return ""
     }
