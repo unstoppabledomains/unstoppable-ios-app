@@ -38,7 +38,6 @@ struct SelectTokenAssetAmountToSendView: View {
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
-        .navigationTitle(String.Constants.send.localized())
     }
 }
 
@@ -90,8 +89,7 @@ private extension SelectTokenAssetAmountToSendView {
 // MARK: - Converted value
 private extension SelectTokenAssetAmountToSendView {
     var isSufficientFunds: Bool {
-        getCurrentInput().valueOf(type: .tokenAmount,
-                                  for: token) <= token.balance
+        inputValueFor(inputType: .tokenAmount) <= token.balance
     }
     
     @ViewBuilder
@@ -149,14 +147,17 @@ private extension SelectTokenAssetAmountToSendView {
         }
     }
     
+    func inputValueFor(inputType: SendCryptoAsset.TokenAssetAmountInputType) -> Double {
+        getCurrentInput().valueOf(type: inputType,
+                                  for: token)
+    }
+    
     var usdConvertedString: String {
-        formatCartPrice(getCurrentInput().valueOf(type: .usdAmount,
-                                                  for: token))
+        formatCartPrice(inputValueFor(inputType: .usdAmount))
     }
     
     var tokenConvertedString: String {
-        BalanceStringFormatter.tokenFullBalanceString(balance: getCurrentInput().valueOf(type: .tokenAmount,
-                                                                                         for: token),
+        BalanceStringFormatter.tokenFullBalanceString(balance: inputValueFor(inputType: .tokenAmount),
                                                       symbol: token.symbol)
     }
     
@@ -213,7 +214,14 @@ private extension SelectTokenAssetAmountToSendView {
         }
     }
     
-    var isUsingMax: Bool { false }
+    var isUsingMax: Bool { 
+        switch inputType {
+        case .usdAmount:
+            return inputValueFor(inputType: .usdAmount) == token.balanceUsd
+        case .tokenAmount:
+            return inputValueFor(inputType: .tokenAmount) == token.balance
+        }
+    }
     var useMaxButtonTitle: String {
         if isUsingMax {
             String.Constants.usingMax.localized()
@@ -236,10 +244,15 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     func maxButtonPressed() {
-        if !UserDefaults.didShowSendMaxCryptoInfoPullUp {
-            UserDefaults.didShowSendMaxCryptoInfoPullUp = true
-            pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
-        }
+        guard !isUsingMax else { return }
+        
+        pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
+        setMaxInputValue()
+    }
+    
+    func setMaxInputValue() {
+        self.inputType = .tokenAmount
+        interpreter.setInput(token.balance)
     }
 }
 

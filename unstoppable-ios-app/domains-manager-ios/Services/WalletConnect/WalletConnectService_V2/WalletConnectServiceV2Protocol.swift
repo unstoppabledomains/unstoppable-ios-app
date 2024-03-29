@@ -27,6 +27,11 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> ResponseV2
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress,
                      in wallet: UDWallet) async throws -> ResponseV2
+    func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                         chainId: Int,
+                         tx: EthereumTransaction,
+                         address: HexAddress,
+                         in wallet: UDWallet) async throws -> ResponseV2
     func handle(response: ResponseV2) throws -> String
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
                                    sessions: [SessionV2Proxy],

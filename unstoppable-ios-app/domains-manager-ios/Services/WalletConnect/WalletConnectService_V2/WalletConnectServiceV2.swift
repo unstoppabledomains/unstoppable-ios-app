@@ -750,7 +750,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 return response
             }
             
-            let hash = try await sendTx(transaction: completedTx,
+            let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
                                         udWallet: udWallet,
                                         chainIdInt: chainIdInt)
             let hashCodable = WCAnyCodable(hash)
@@ -825,10 +825,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         var txBuilding = transaction
         
         if txBuilding.gasPrice == nil {
-            guard let gasPrice = try await fetchGasPrice(chainId: chainId) else {
-                throw WalletConnectRequestError.failedFetchGas
-            }
-            txBuilding.gasPrice = EthereumQuantity(quantity: gasPrice)
+            let gasPrice = try await JRPC_Client.instance.fetchGasPrice(chainId: chainId)
+            txBuilding.gasPrice = gasPrice
         }
                 
         txBuilding = try await ensureGasLimit(transaction: txBuilding, chainId: chainId)
@@ -840,23 +838,12 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         return txBuilding
     }
     
-    private func fetchGasPrice(chainId: Int) async throws -> BigUInt? {
-        guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch gasPrice", critical: false)
-            throw WalletConnectRequestError.failedFetchGas
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
-        return BigUInt(gasPrice.droppedHexPrefix, radix: 16)
-    }
-    
     private func ensureGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
         guard transaction.gas == nil else {
             return transaction
         }
-        
-        let gas = try await fetchGasLimit(transaction: transaction, chainId: chainId)
         var newTx = transaction
-        newTx.gas = EthereumQuantity(quantity: gas)
+        newTx.gas = try await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId)
         return newTx
     }
     
@@ -876,42 +863,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     
     private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async -> String? {
         guard let addressString = transaction.from?.hex() else { return nil }
-        return await fetchNonce(address: addressString, chainId: chainId)
-    }
-    
-    private func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
-        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
-                                                                     chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
-            return nil
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
-        return nonceString
-    }
-    
-    private func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> BigUInt {
-        do {
-            let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,
-                                                                             chainId: chainId)
-            guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
-                Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
-                throw WalletConnectRequestError.failedFetchGas
-            }
-            Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
-            return result
-        } catch {
-            if let jrpcError = error as? NetworkService.JRPCError {
-                switch jrpcError {
-                case .gasRequiredExceedsAllowance:
-                    Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                    throw WalletConnectRequestError.lowAllowance
-                default: throw WalletConnectRequestError.failedFetchGas
-                }
-            } else {
-                Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
-                throw WalletConnectRequestError.failedFetchGas
-            }
-        }
+        return await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
     }
 }
 
@@ -1018,57 +970,6 @@ extension WalletConnectServiceV2 {
             throw WalletConnectRequestError.invalidWCRequest
         }
         return String(parts[2])
-    }
-
-    private func sendTx(transaction: EthereumTransaction,
-                        udWallet: UDWallet,
-                        chainIdInt: Int) async throws -> String {
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
-                Debugger.printFailure("Failed to get net name for chain Id: \(chainIdInt)", critical: true)
-                continuation.resume(with: .failure(WalletConnectRequestError.failedToDetermineChainId))
-                return
-            }
-            let web3 = Web3(rpcURL: urlString)
-            guard let privKeyString = udWallet.getPrivateKey() else {
-                Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                continuation.resume(with: .failure(WalletConnectRequestError.failedToGetPrivateKey))
-                return
-            }
-            guard let privateKey = try? EthereumPrivateKey(hexPrivateKey: privKeyString) else {
-                Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                continuation.resume(with: .failure(WalletConnectRequestError.failedToGetPrivateKey))
-                return
-            }
-            let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
-
-            let gweiAmount = (transaction.gas ?? 0).quantity * (transaction.gasPrice ?? 0).quantity + (transaction.value ?? 0).quantity
-            Debugger.printInfo(topic: .WalletConnectV2, "Total balance should be \(gweiAmount / ( BigUInt(10).power(12)) ) millionth of eth")
-
-            do {
-                try transaction.sign(with: privateKey, chainId: chainId).promise
-                    .then { tx in
-                        web3.eth.sendRawTransaction(transaction: tx) }
-                    .done { hash in
-                        guard let result = hash.ethereumValue().string else {
-                            Debugger.printFailure("Failed to parse response from sending: \(transaction)")
-                            continuation.resume(with: .failure(WalletConnectRequestError.failedParseSendTxResponse))
-                            return
-                        }
-                        continuation.resume(with: .success(result))
-                    }.catch { error in
-                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription)")
-                        continuation.resume(with: .failure(WalletConnectRequestError.failedSendTx))
-                        return
-                    }
-            } catch {
-                Debugger.printFailure("Signing a TX was failed: \(error.localizedDescription)")
-                continuation.resume(with: .failure(WalletConnectRequestError.failedToSignTransaction))
-                return
-            }
-        }
-        
     }
     
     func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
@@ -1333,6 +1234,26 @@ extension WalletConnectServiceV2 {
                                      in: wallet)
     }
     
+    func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                    chainId: Int,
+                    tx: EthereumTransaction,
+                    address: HexAddress,
+                    in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
+            throw WalletConnectRequestError.noWCSessionFound
+        }
+        
+        guard let txAdapted = TransactionV2(ethTx: tx) else {
+            throw WalletConnectRequestError.failedEncodeTransaction
+        }
+        let params = WalletConnectServiceV2.getParamsSignTx(tx: txAdapted)
+        return try await sendRequest(method: .ethSendTransaction,
+                                     session: sessionSettled,
+                                     chainId: chainId,
+                                     requestParams: params,
+                                     in: wallet)
+    }
+    
     func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy],
                           chainId: Int,
                           dataString: String,
@@ -1404,7 +1325,7 @@ extension WalletConnectServiceV2 {
     }
     
     static func getParamsSignTx(tx: TransactionV2) -> WCAnyCodable {
-        WCAnyCodable(tx)
+        WCAnyCodable([tx])
     }
     
     static func getParamsPersonalSign(message: String, address: HexAddress) -> WCAnyCodable {

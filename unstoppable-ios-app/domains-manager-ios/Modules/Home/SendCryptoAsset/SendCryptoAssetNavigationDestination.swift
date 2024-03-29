@@ -16,6 +16,15 @@ extension SendCryptoAsset {
         
         case confirmTransferDomain(TransferDomainData)
         case domainTransferSuccess(DomainDisplayInfo)
+        
+        var isWithCustomTitle: Bool {
+            switch self {
+            case .selectTokenAmountToSend, .selectAssetToSend:
+                return true
+            case .scanWalletAddress, .confirmTransferDomain, .domainTransferSuccess, .confirmSendToken:
+                return false
+            }
+        }
     }
     
     struct LinkNavigationDestination {

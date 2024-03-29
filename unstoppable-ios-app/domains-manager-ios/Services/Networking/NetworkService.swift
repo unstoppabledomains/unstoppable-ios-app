@@ -126,7 +126,7 @@ struct NetworkService {
     }
     
     func fetchDataHandlingThrottle(for url: URL,
-                                   body: String = "",
+                                   body: String? = nil,
                                    method: HttpRequestMethod = .post,
                                    extraHeaders: [String: String]  = [:]) async throws -> Data {
         let data: Data
@@ -157,7 +157,7 @@ struct NetworkService {
     }
     
     func fetchData(for url: URL,
-                   body: String = "",
+                   body: String? = nil,
                    method: HttpRequestMethod = .post,
                    extraHeaders: [String: String]  = [:]) async throws -> Data {
         let urlRequest = urlRequest(for: url, body: body, method: method, extraHeaders: extraHeaders)
@@ -232,13 +232,13 @@ struct NetworkService {
     }
     
     private func urlRequest(for url: URL,
-                            body: String = "",
+                            body: String? = nil,
                             method: HttpRequestMethod = .post,
                             extraHeaders: [String: String]  = [:]) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         
         urlRequest.httpMethod = method.string
-        urlRequest.httpBody = body.data(using: .utf8)
+        urlRequest.httpBody = body?.data(using: .utf8)
         Self.headers.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         
@@ -278,7 +278,9 @@ extension NetworkService {
     }
     
     func getJRPCProviderUrl(chainId: Int) -> URL? {
-        guard let netName = BlockchainNetwork(rawValue: chainId)?.name else { return nil }
+        guard let netName = BlockchainNetwork(rawValue: chainId)?.name else {
+            return nil
+        }
         return URL(string: "https://\(netName).infura.io/v3/\(NetworkService.chooseInfuraProjectId())")!
     }
     
@@ -294,6 +296,16 @@ extension NetworkService {
         let error: ErrorDescription
     }
     
+    struct StatusGasPricesInfo: Decodable {
+        struct AverageGasPrices: Decodable {
+            let safeLow: Int
+            let fast: Int
+            let fastest: Int
+        }
+        let ETH: AverageGasPrices
+        let MATIC: AverageGasPrices
+    }
+    
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String
@@ -303,6 +315,7 @@ extension NetworkService {
         case failedBuildUrl
         case gasRequiredExceedsAllowance
         case genericError(String)
+        case failedGetStatus
         
         init(message: String) {
             if message.lowercased().starts(with: "gas required exceeds allowance") {
@@ -354,6 +367,23 @@ extension NetworkService {
         try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_gasPrice",
                                                     paramsBuilder: { "[]"} ))
+    }
+    
+    func getStatusGasPrices() async throws -> StatusGasPricesInfo {
+        let url = URL(string: "https://unstoppabledomains.com/api/v1/status")!
+        let data = try await NetworkService().fetchData(for: url, method: .get)
+        guard let response = try? JSONDecoder().decode(StatusGasPricesInfo.self, from: data) else {
+            throw JRPCError.failedGetStatus
+        }
+        return response
+    }
+    
+    func getStatusGasPrices(chainId: Int) async throws -> StatusGasPricesInfo.AverageGasPrices {
+        switch chainId {
+        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices().ETH
+        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices().MATIC
+        default: throw JRPCError.failedGetStatus
+        }
     }
 }
 

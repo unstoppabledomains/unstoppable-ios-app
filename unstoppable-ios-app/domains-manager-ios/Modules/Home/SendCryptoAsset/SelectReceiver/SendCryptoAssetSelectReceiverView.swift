@@ -54,11 +54,18 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
                     followingList = relationshipDetails.socialDetails?.getFollowersListFor(relationshipType: .following) ?? []
                 }
         }
+        .onAppear(perform: onAppear)
     }
 }
 
 // MARK: - Private methods
 private extension SendCryptoAssetSelectReceiverView {
+    func onAppear() {
+        withAnimation {
+            viewModel.navigationState?.isTitleVisible = false
+        }
+    }
+    
     @ViewBuilder
     func closeButton() -> some View {
         CloseButtonView {
@@ -287,5 +294,5 @@ private extension SendCryptoAssetSelectReceiverView {
     NavigationStack {
         SendCryptoAssetSelectReceiverView()
     }
-        .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
+    .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

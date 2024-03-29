@@ -33,7 +33,6 @@ struct SelectCryptoAssetToSendView: View {
         }
         .addNavigationTopSafeAreaOffset()
         .listRowSpacing(0)
-        .navigationTitle(String.Constants.send.localized())
         .listStyle(.plain)
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
@@ -53,6 +52,15 @@ private extension SelectCryptoAssetToSendView {
         
         allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain && $0.isAbleToTransfer }
         setDomainsData()
+        setupTitle()
+    }
+    
+    func setupTitle() {
+        withAnimation {
+            viewModel.navigationState?.setCustomTitle(customTitle: { SendCryptoReceiverInfoTitleView(receiver: receiver) },
+                                                      id: UUID().uuidString)
+            viewModel.navigationState?.isTitleVisible = true
+        }
     }
     
     func setDomainsData() {

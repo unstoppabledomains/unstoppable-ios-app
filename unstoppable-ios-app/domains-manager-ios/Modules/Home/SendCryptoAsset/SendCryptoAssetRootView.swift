@@ -22,6 +22,10 @@ struct SendCryptoAssetRootView: View {
                         .ignoresSafeArea()
                         .environmentObject(viewModel)
                 }
+                .onChange(of: viewModel.navPath) { _ in
+                    updateTitleView()
+                }
+                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
@@ -30,6 +34,25 @@ struct SendCryptoAssetRootView: View {
     
 }
 
+// MARK: - Private methods
+private extension SendCryptoAssetRootView {
+    func updateTitleView() {
+        viewModel.navigationState?.yOffset = -2
+        withAnimation {
+            viewModel.navigationState?.isTitleVisible = viewModel.navPath.last?.isWithCustomTitle == true
+        }
+    }
+}
+
 #Preview {
-    SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
+    struct PresenterView: View {
+        var body: some View {
+            Text("")
+                .sheet(isPresented: .constant(true), content: {
+                    SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
+                })
+        }
+    }
+    
+    return PresenterView()
 }

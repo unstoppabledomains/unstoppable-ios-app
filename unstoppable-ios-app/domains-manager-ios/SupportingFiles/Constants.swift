@@ -187,6 +187,7 @@ enum BlockchainNetwork: Int, CaseIterable {
     case ethMainnet = 1
     case ethRinkby = 4
     case ethGoerli = 5
+    case ethSepolia = 11155111
     case polygonMainnet = 137
     case polygonMumbai = 80001
     
@@ -200,6 +201,8 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "rinkby"
         case .ethGoerli:
             return "goerli"
+        case .ethSepolia:
+            return "sepolia"
         case .polygonMainnet:
             return "polygon-mainnet"
         case .polygonMumbai:
@@ -215,6 +218,8 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "Ethereum: Rinkby"
         case .ethGoerli:
             return "Ethereum: Goerli"
+        case .ethSepolia:
+            return "Ethereum: Sepolia"
         case .polygonMainnet:
             return "Polygon"
         case .polygonMumbai:
