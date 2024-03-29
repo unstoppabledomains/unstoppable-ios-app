@@ -49,7 +49,7 @@ private extension WalletTransactionsService {
             for response in responses {
                 if let cursor = response.cursor {
                     group.addTask {
-                        try await self.fetchAndCacheTransactions(for: wallet, cursor: response.cursor, chain: response.chain, forceReload: false)
+                        try await self.fetchAndCacheTransactions(for: wallet, cursor: cursor, chain: response.chain, forceReload: false)
                     }
                 } else {
                     result.append(response)

@@ -454,7 +454,7 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
                             cursor: String?,
                             chain: String?,
                             forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
-        let endpoint = Endpoint.getProfileWalletTransactions(for: wallet,
+        let endpoint = Endpoint.getProfileWalletTransactions(for: wallet, 
                                                              cursor: cursor,
                                                              chain: chain,
                                                              forceRefresh: forceRefresh)
