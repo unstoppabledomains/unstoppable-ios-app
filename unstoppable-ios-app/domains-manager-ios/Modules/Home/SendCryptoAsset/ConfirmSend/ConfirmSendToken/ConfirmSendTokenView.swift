@@ -15,10 +15,12 @@ struct ConfirmSendTokenView: View {
     @State private var error: Error?
     @State private var isLoading = false
     @State private var stateId = UUID()
-    @State private var lastRefreshGasTime = Date()
+    @State private var lastRefreshGasFeeTime = Date()
+    @State private var lastRefreshGasPricesTime = Date()
     private var token: BalanceTokenUIDescription { dataModel.token }
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let refreshGasFeeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let refreshGasPricesTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(spacing: 4) {
@@ -30,10 +32,13 @@ struct ConfirmSendTokenView: View {
             confirmButton()
         }
         .onChange(of: dataModel.txSpeed) { _ in
-            refreshGasAmount()
+            refreshGasFeeForSelectedSpeed()
         }
-        .onReceive(timer) { _ in
-            refreshGasIfNeeded()
+        .onReceive(refreshGasFeeTimer) { _ in
+            refreshGasFeeForSelectedSpeedIfNeeded()
+        }
+        .onReceive(refreshGasPricesTimer) { _ in
+            refreshGasPricesIfNeeded()
         }
         .padding(16)
         .background(Color.backgroundDefault)
@@ -53,11 +58,12 @@ struct ConfirmSendTokenView: View {
 // MARK: - Private methods
 private extension ConfirmSendTokenView {
     func onAppear() {
-        refreshGasAmount()
+        refreshGasFeeForSelectedSpeed()
+        refreshGasPrices()
     }
     
-    func refreshGasAmount() {
-        lastRefreshGasTime = Date()
+    func refreshGasFeeForSelectedSpeed() {
+        lastRefreshGasFeeTime = Date()
         dataModel.gasPrices = nil
         updateStateId()
         Task {
@@ -65,13 +71,40 @@ private extension ConfirmSendTokenView {
             do {
                 dataModel.gasFee = try await viewModel.computeGasFeeFor(sendData: dataModel.data,
                                                                         txSpeed: dataModel.txSpeed)
-                dataModel.gasPrices = try await viewModel.getGasPrices(sendData: dataModel.data)
                 updateStateId()
             } catch {
                 self.error = error
             }
             isLoading = false
         }
+    }
+    
+    func refreshGasFeeForSelectedSpeedIfNeeded() {
+        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasFeeTime)
+        if timeSinceLastRefresh >= 60 {
+            refreshGasFeeForSelectedSpeed()
+        }
+    }
+    
+    func refreshGasPrices() {
+        lastRefreshGasPricesTime = Date()
+        Task {
+            do {
+                dataModel.gasPrices = try await viewModel.getGasPrices(sendData: dataModel.data)
+                updateStateId()
+            } catch { }
+        }
+    }
+    
+    func refreshGasPricesIfNeeded() {
+        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasPricesTime)
+        if timeSinceLastRefresh >= 60 {
+            refreshGasPrices()
+        }
+    }
+    
+    func updateStateId() {
+        stateId = UUID()
     }
     
     func confirmSending() {
@@ -85,17 +118,6 @@ private extension ConfirmSendTokenView {
                 self.error = error
             }
             isLoading = false
-        }
-    }
-    
-    func updateStateId() {
-        stateId = UUID()
-    }
-    
-    func refreshGasIfNeeded() {
-        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasTime)
-        if timeSinceLastRefresh >= 60 {
-            refreshGasAmount()
         }
     }
 }
