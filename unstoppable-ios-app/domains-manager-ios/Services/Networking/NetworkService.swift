@@ -385,16 +385,25 @@ extension NetworkService {
         return ["ETH": ethPrices, "MATIC": maticPrices]
     }
     
-    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> Int {
-        let prices = try await getStatusGasPrices(chainId: chainId)
-        switch speed {
-        case .normal: return prices["safeLow"]!
-        case .fast: return prices["fast"]!
-        case .urgent: return prices["fastest"]!
-        }
+    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
+        let prices: EstimatedGasPrices = try await getStatusGasPrices(chainId: chainId)
+        return prices.feeForSpeed(speed)
     }
     
-    func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
+    func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
+        let prices: [String: Int] = try await getStatusGasPrices(chainId: chainId)
+        
+        guard let normal = prices["safeLow"],
+              let fast = prices["fast"],
+              let urgent = prices["fastest"] else {
+            throw CryptoSender.Error.failedFetchGasPrice
+        }
+        return EstimatedGasPrices(normalFee: EVMTokenAmount(gwei: normal),
+                                          fastFee: EVMTokenAmount(gwei: fast),
+                                          urgentFee: EVMTokenAmount(gwei: urgent))
+    }
+
+    private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
         case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
         case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!

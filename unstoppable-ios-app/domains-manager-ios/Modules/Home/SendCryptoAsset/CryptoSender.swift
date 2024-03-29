@@ -17,6 +17,10 @@ struct ChainSpec {
         self.blockchainType = blockchainType
         self.env = env
     }
+    
+    var id: Int {
+        self.blockchainType.supportedChainId(env: self.env)
+    }
 }
 
 struct CryptoSendingSpec {
@@ -25,10 +29,10 @@ struct CryptoSendingSpec {
     }
     
     let token: CryptoSender.SupportedToken
-    let amount: Double
+    let amount: EVMTokenAmount
     let speed: TxSpeed
     
-    init(token: CryptoSender.SupportedToken, amount: Double, speed: TxSpeed = .normal) {
+    init(token: CryptoSender.SupportedToken, amount: EVMTokenAmount, speed: TxSpeed = .normal) {
         self.token = token
         self.amount = amount
         self.speed = speed
@@ -59,11 +63,16 @@ struct CryptoSender: CryptoSenderProtocol {
 
     }
     
-    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> Double {
+    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMTokenAmount {
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
         return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto,
                                                         on: chain,
                                                         toAddress: toAddress)
+    }
+    
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
+        let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
+        return try await cryptoSender.fetchGasPrices(on: chain)
     }
 }
 
@@ -85,45 +94,46 @@ struct NativeCryptoSender: CryptoSenderProtocol {
             throw CryptoSender.Error.sendingNotSupported
         }
         
-        let chainId = chain.blockchainType.supportedChainId(env: chain.env)
         let tx = try await createNativeSendTransaction(crypto: crypto,
                                                        fromAddress: self.wallet.address,
                                                        toAddress: toAddress,
-                                                       chainId: chainId)
+                                                       chainId: chain.id)
         
         guard wallet.walletState != .externalLinked else {
-            let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chainId)
+            let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response
         }
         
         
-        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chainId)
+        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
         return hash
     }
         
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
-                           toAddress: HexAddress) async throws -> Double {
+                           toAddress: HexAddress) async throws -> EVMTokenAmount {
         
         guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         
-        let chainId = chain.blockchainType.supportedChainId(env: chain.env)
         let transaction = try await createNativeSendTransaction(crypto: maxCrypto,
                                                                 fromAddress: self.wallet.address,
                                                                 toAddress: toAddress,
-                                                                chainId: chainId)
+                                                                chainId: chain.id)
         
         guard let gasPriceWei = transaction.gasPrice?.quantity else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
+        let gasPrice = EVMTokenAmount(wei: gasPriceWei)
+
         let gas = transaction.gas?.quantity ?? Self.defaultSendTxGasPrice
-        
-        let gasPriceGwei = (Double(gasPriceWei) / 1_000_000_000.0)
-        let gasFee = gasPriceGwei * Double(gas) / 1_000_000_000.0 // in token units
-        
+        let gasFee = EVMTokenAmount(gwei: gasPrice.gwei * Double(gas))
         return  gasFee
+    }
+    
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
+        try await NetworkService().getStatusGasPrices(chainId: chain.id)
     }
     
     // Private methods
@@ -134,19 +144,19 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                              chainId: Int) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
                                                                                 chainId: chainId)
-        let speedBasedGasPriceGwei = try await NetworkService().fetchGasPrice(chainId: chainId,
+        let speedBasedGasPrice = try await NetworkService().fetchGasPrice(chainId: chainId,
                                                                          for: crypto.speed)
         
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
-        let amountInGwei = BigUInt(1_000_000_000.0 * crypto.amount)
         
         var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: try EthereumQuantity(speedBasedGasPriceGwei.gwei),
+                                              gasPrice: try EthereumQuantity(speedBasedGasPrice.wei),
                                               gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(amountInGwei.gwei) )
+                                              value: try EthereumQuantity(crypto.amount.wei)
+                                              )
         
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
             transaction.gas = gasEstimate
