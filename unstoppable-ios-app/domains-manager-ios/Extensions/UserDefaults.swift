@@ -31,7 +31,6 @@ public enum UserDefaultsKey: String {
     case selectedProfileId
     case firebaseUser
     case didUpdateToWalletVersion
-    case didShowSendMaxCryptoInfoPullUp
     
     // Purchase domains
     case purchasedDomains
@@ -45,7 +44,6 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didMigrateXMTPConsentsListFromUD, defaultValue: false) static var didMigrateXMTPConsentsListFromUD: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didUpdateToWalletVersion, defaultValue: false) static var didUpdateToWalletVersion: Bool
-    @UserDefaultsValue(key: UserDefaultsKey.didShowSendMaxCryptoInfoPullUp, defaultValue: false) static var didShowSendMaxCryptoInfoPullUp: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType

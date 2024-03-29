@@ -48,4 +48,8 @@ struct NumberPadInputInterpreter {
         }
         return input
     }
+    
+    mutating func setInput(_ input: Double) {
+        self.input = String(input)
+    }
 }
