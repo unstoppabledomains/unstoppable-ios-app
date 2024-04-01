@@ -168,7 +168,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
-            logAnalytic(event: .followingProfilePressed, parameters: [.domainName : domainName])
+            logAnalytic(event: .followingProfilePressed, parameters: [.domainName : following])
             guard let profile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: following) else {
                 Debugger.printFailure("Failed to get cached domain profile for following: \(following)")
                 return
