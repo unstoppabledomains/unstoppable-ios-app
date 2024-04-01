@@ -9,48 +9,8 @@ import Foundation
 import Boilertalk_Web3
 import BigInt
 
-struct ChainSpec {
-    let blockchainType: BlockchainType
-    let env: UnsConfigManager.BlockchainEnvironment
-
-    init(blockchainType: BlockchainType, env: UnsConfigManager.BlockchainEnvironment = .mainnet) {
-        self.blockchainType = blockchainType
-        self.env = env
-    }
-    
-    var id: Int {
-        self.blockchainType.supportedChainId(env: self.env)
-    }
-}
-
-struct CryptoSendingSpec {
-    enum TxSpeed {
-        case normal, fast, urgent
-    }
-    
-    let token: CryptoSender.SupportedToken
-    let amount: EVMTokenAmount
-    let speed: TxSpeed
-    
-    init(token: CryptoSender.SupportedToken, amount: EVMTokenAmount, speed: TxSpeed = .normal) {
-        self.token = token
-        self.amount = amount
-        self.speed = speed
-    }
-}
-
 struct CryptoSender: CryptoSenderProtocol {
-    enum Error: Swift.Error {
-        case sendingNotSupported
-        case failedFetchGasPrice
-        case insufficientFunds
-    }
-    
-    enum SupportedToken: String {
-        case eth = "ETH"
-        case matic = "MATIC"
-    }
-
+  
     let wallet: UDWallet
     
     func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
