@@ -106,6 +106,9 @@ private extension ConfirmSendTokenView {
     
     func confirmSending() {
         Task {
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+            try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+
             isLoading = true
             do {
                 let txHash = try await viewModel.sendCryptoTokenWith(sendData: dataModel.data,
