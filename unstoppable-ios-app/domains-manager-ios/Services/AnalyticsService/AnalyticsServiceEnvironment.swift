@@ -141,6 +141,7 @@ extension Analytics {
         case tab
         case token
         case assetType
+        case didClearRecords
     }
 }
 
@@ -404,6 +405,7 @@ extension Analytics {
         case assetTypeSwitcher
         case cryptoToken
         case useMax
+        case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
     }
 }
 

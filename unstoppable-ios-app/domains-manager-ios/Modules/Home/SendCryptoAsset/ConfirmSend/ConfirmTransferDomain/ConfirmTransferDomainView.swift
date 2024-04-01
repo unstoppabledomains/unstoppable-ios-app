@@ -72,6 +72,7 @@ private extension ConfirmTransferDomainView {
     }
     
     func continueButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         pullUp = .custom(.transferDomainConfirmationPullUp(confirmCallback: transferConfirmed))
     }
     
@@ -84,14 +85,17 @@ private extension ConfirmTransferDomainView {
             do {
                 let domain = self.data.domain
                 let recipientAddress = self.data.receiver.walletAddress
-                let configuration = TransferDomainConfiguration(resetRecords: confirmationData.shouldClearRecords)
+                let shouldClearRecords = confirmationData.shouldClearRecords
+                
+                let configuration = TransferDomainConfiguration(resetRecords: shouldClearRecords)
                 try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
                                                                           to: recipientAddress,
                                                                           configuration: configuration)
                 appContext.analyticsService.log(event: .didTransferDomain,
                                                 withParameters: [.domainName: domain.name,
                                                                  .fromWallet: domain.ownerWallet ?? "",
-                                                                 .toWallet: recipientAddress])
+                                                                 .toWallet: recipientAddress,
+                                                                 .didClearRecords: String(shouldClearRecords)])
                 Task.detached {
                     try? await appContext.walletsDataService.refreshDataForWallet(viewModel.sourceWallet)
                 }
