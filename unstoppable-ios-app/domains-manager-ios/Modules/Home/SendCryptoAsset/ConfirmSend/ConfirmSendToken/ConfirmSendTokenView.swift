@@ -10,12 +10,17 @@ import SwiftUI
 struct ConfirmSendTokenView: View {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
+    
+    @ObservedObject private var dataModel: ConfirmSendTokenDataModel
+    @State private var error: Error?
+    @State private var isLoading = false
+    @State private var stateId = UUID()
+    @State private var lastRefreshGasFeeTime = Date()
+    @State private var lastRefreshGasPricesTime = Date()
+    private var token: BalanceTokenUIDescription { dataModel.token }
+    private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
+    private let refreshGasTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    let data: SendCryptoAsset.SendTokenAssetData
-    
-    private var token: BalanceTokenUIDescription { data.token }
-    private var receiver: SendCryptoAsset.AssetReceiver { data.receiver }
-    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -25,11 +30,95 @@ struct ConfirmSendTokenView: View {
             Spacer()
             confirmButton()
         }
+        .onChange(of: dataModel.txSpeed) { _ in
+            refreshGasFeeForSelectedSpeed()
+        }
+        .onReceive(refreshGasTimer) { _ in
+            refreshGasFeeForSelectedSpeedIfNeeded()
+            refreshGasPricesIfNeeded()
+        }
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
+        .displayError($error)
+        .onAppear(perform: onAppear)
+    }
+    
+    init(data: SendCryptoAsset.SendTokenAssetData) {
+        self.dataModel = ConfirmSendTokenDataModel(data: data)
+    }
+    
+}
+
+// MARK: - Private methods
+private extension ConfirmSendTokenView {
+    func onAppear() {
+        refreshGasFeeForSelectedSpeed()
+        refreshGasPrices()
+    }
+    
+    func refreshGasFeeForSelectedSpeed() {
+        lastRefreshGasFeeTime = Date()
+        dataModel.gasFee = nil
+        updateStateId()
+        Task {
+            isLoading = true
+            do {
+                dataModel.gasFee = try await viewModel.computeGasFeeFor(sendData: dataModel.data,
+                                                                        txSpeed: dataModel.txSpeed)
+                updateStateId()
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
+    }
+    
+    func refreshGasFeeForSelectedSpeedIfNeeded() {
+        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasFeeTime)
+        if timeSinceLastRefresh >= 60 {
+            refreshGasFeeForSelectedSpeed()
+        }
+    }
+    
+    func refreshGasPrices() {
+        lastRefreshGasPricesTime = Date()
+        Task {
+            do {
+                dataModel.gasPrices = try await viewModel.getGasPrices(sendData: dataModel.data)
+                updateStateId()
+            } catch { }
+        }
+    }
+    
+    func refreshGasPricesIfNeeded() {
+        let timeSinceLastRefresh = Date().timeIntervalSince(lastRefreshGasPricesTime)
+        if timeSinceLastRefresh >= 60 {
+            refreshGasPrices()
+        }
+    }
+    
+    func updateStateId() {
+        stateId = UUID()
+    }
+    
+    func confirmSending() {
+        Task {
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+            try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+
+            isLoading = true
+            do {
+                let txHash = try await viewModel.sendCryptoTokenWith(sendData: dataModel.data,
+                                                                     txSpeed: dataModel.txSpeed)
+                viewModel.handleAction(.didSendCrypto(data: dataModel.data, txHash: txHash))
+            } catch {
+                self.error = error
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -38,7 +127,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func sendingTokenInfoView() -> some View {
         ConfirmSendAssetSendingInfoView(asset: .token(token: token,
-                                                      amount: data.amount))
+                                                      amount: dataModel.amount))
     }
     
     @ViewBuilder
@@ -53,11 +142,23 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func reviewInfoView() -> some View {
-        ConfirmSendAssetReviewInfoView(asset: .token(token),
+        ConfirmSendAssetReviewInfoView(asset: .token(dataModel),
                                        sourceWallet: viewModel.sourceWallet)
+        .id(stateId)
     }
     
-    var isSufficientFunds: Bool { true }
+    var isSufficientFunds: Bool {
+        guard let gasFee = dataModel.gasFee else { return true }
+        
+        let sendData = dataModel.data
+        let balance = sendData.token.balance
+        if sendData.isSendingAllTokens() {
+            return balance >= gasFee
+        }
+        
+        let tokenAmountToSend = sendData.getTokenAmountValueToSend()
+        return balance > tokenAmountToSend + gasFee
+    }
     
     @ViewBuilder
     func confirmButton() -> some View {
@@ -67,8 +168,9 @@ private extension ConfirmSendTokenView {
             }
             UDButtonView(text: String.Constants.confirm.localized(),
                          icon: confirmIcon,
-                         style: .large(.raisedPrimary)) {
-                
+                         style: .large(.raisedPrimary),
+                         isLoading: isLoading) {
+                confirmSending()
             }
                          .disabled(!isSufficientFunds)
         }

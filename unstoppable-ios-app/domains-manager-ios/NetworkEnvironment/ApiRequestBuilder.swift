@@ -890,10 +890,12 @@ extension Endpoint {
 extension Endpoint {
     static func getCryptoPortfolio(for wallet: String) -> Endpoint {
         //https://api.ud-staging.com/profile/user/0xcd0dadab45baf9a06ce1279d1342ecc3f44845af/wallets
+        let queryItems: [URLQueryItem] = [.init(name: "walletFields", value: "native,token"),
+                                          .init(name: "forceRefresh", value: String(Int(Date().timeIntervalSince1970)))]
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/user/\(wallet)/wallets",
-            queryItems: [],
+            queryItems: queryItems,
             body: "",
             headers: NetworkService.profilesAPIHeader
         )

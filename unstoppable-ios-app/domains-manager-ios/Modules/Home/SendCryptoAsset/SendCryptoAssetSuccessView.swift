@@ -48,8 +48,8 @@ private extension SendCryptoAssetSuccessView {
         switch asset {
         case .domain(let domain):
             transactionTracker.trackTransactionOf(type: .domainTransfer(domain.name))
-        case .token(let token, _):
-            return
+        case .token(_, _, let txHash):
+            transactionTracker.trackTransactionOf(type: .txHash(txHash))
         }
     }
 }
@@ -87,7 +87,7 @@ private extension SendCryptoAssetSuccessView {
         switch asset {
         case .domain(let domain):
             domain.name
-        case .token(let token, let amount):
+        case .token(let token, let amount, _):
             "\(formatCartPrice(amount.valueOf(type: .usdAmount, for: token))) · \(amount.valueOf(type: .tokenAmount, for: token).formatted(toMaxNumberAfterComa: 6)) \(token.symbol)"
         }
     }
@@ -155,13 +155,14 @@ private extension SendCryptoAssetSuccessView {
 // MARK: - Open methods
 extension SendCryptoAssetSuccessView {
     enum Asset {
-        case token(token: BalanceTokenUIDescription, amount: SendCryptoAsset.TokenAssetAmountInput)
+        case token(token: BalanceTokenUIDescription, amount: SendCryptoAsset.TokenAssetAmountInput, txHash: TxHash)
         case domain(DomainDisplayInfo)
     }
 }
 
 #Preview {
     SendCryptoAssetSuccessView(asset: .token(token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                             amount: .tokenAmount(0.0324)))
+                                             amount: .tokenAmount(0.0324), 
+                                             txHash: ""))
 //    SendCryptoAssetSuccessView(asset: .domain(MockEntitiesFabric.Domains.mockDomainDisplayInfo()))
 }

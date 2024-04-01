@@ -29,7 +29,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.chain = walletBalance.symbol
         self.symbol = walletBalance.symbol
         self.name = walletBalance.name
-        self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
+        self.balance = walletBalance.balanceAmt
         self.balanceUsd = walletBalance.value.walletUsdAmt
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
@@ -56,7 +56,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.chain = chain
         self.symbol = walletToken.symbol
         self.name = walletToken.name
-        self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
+        self.balance = walletToken.balanceAmt
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
@@ -78,6 +78,9 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         return [tokenDescription] + subTokenDescriptions
     }
 
+    var blockchainType: BlockchainType? {
+        BlockchainType(rawValue: chain)
+    }
 }
 
 // MARK: - Open methods

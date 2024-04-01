@@ -159,8 +159,13 @@ struct NetworkService {
     func fetchData(for url: URL,
                    body: String? = nil,
                    method: HttpRequestMethod = .post,
-                   extraHeaders: [String: String]  = [:]) async throws -> Data {
-        let urlRequest = urlRequest(for: url, body: body, method: method, extraHeaders: extraHeaders)
+                   extraHeaders: [String: String]  = [:],
+                   includeStandardJsonHeaders: Bool = true) async throws -> Data {
+        let urlRequest = urlRequest(for: url,
+                                    body: body,
+                                    method: method,
+                                    extraHeaders: extraHeaders,
+                                    includeStandardJsonHeaders: includeStandardJsonHeaders)
         
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
@@ -234,14 +239,18 @@ struct NetworkService {
     private func urlRequest(for url: URL,
                             body: String? = nil,
                             method: HttpRequestMethod = .post,
-                            extraHeaders: [String: String]  = [:]) -> URLRequest {
+                            extraHeaders: [String: String]  = [:],
+                            includeStandardJsonHeaders: Bool) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         
         urlRequest.httpMethod = method.string
         urlRequest.httpBody = body?.data(using: .utf8)
-        Self.headers.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
-        extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         
+        if includeStandardJsonHeaders {
+            Self.headers.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
+        }
+        
+        extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
         
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
@@ -296,16 +305,6 @@ extension NetworkService {
         let error: ErrorDescription
     }
     
-    struct StatusGasPricesInfo: Decodable {
-        struct AverageGasPrices: Decodable {
-            let safeLow: Int
-            let fast: Int
-            let fastest: Int
-        }
-        let ETH: AverageGasPrices
-        let MATIC: AverageGasPrices
-    }
-    
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String
@@ -316,6 +315,8 @@ extension NetworkService {
         case gasRequiredExceedsAllowance
         case genericError(String)
         case failedGetStatus
+        case failedParseStatusPrices
+        case unknownChain
         
         init(message: String) {
             if message.lowercased().starts(with: "gas required exceeds allowance") {
@@ -369,20 +370,47 @@ extension NetworkService {
                                                     paramsBuilder: { "[]"} ))
     }
     
-    func getStatusGasPrices() async throws -> StatusGasPricesInfo {
-        let url = URL(string: "https://unstoppabledomains.com/api/v1/status")!
+    func getStatusGasPrices(env: UnsConfigManager.BlockchainEnvironment) async throws -> [String: [String: Int]]{
+        let url = env == .mainnet ? URL(string: "https://api.unstoppabledomains.com/api/v1/status")! :
+                                    URL(string: "https://api.ud-staging.com/api/v1/status")!
         let data = try await NetworkService().fetchData(for: url, method: .get)
-        guard let response = try? JSONDecoder().decode(StatusGasPricesInfo.self, from: data) else {
-            throw JRPCError.failedGetStatus
-        }
-        return response
+        
+        guard let jsonPrices = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+              let eth = jsonPrices["ETH"] as? [String: Any],
+              let ethPrices = eth["averageGasPrices"] as? [String: Int],
+              let matic = jsonPrices["MATIC"] as? [String: Any],
+              let maticPrices = matic["averageGasPrices"] as? [String: Int] else {
+                 throw JRPCError.failedGetStatus
+             }
+        return ["ETH": ethPrices, "MATIC": maticPrices]
     }
     
-    func getStatusGasPrices(chainId: Int) async throws -> StatusGasPricesInfo.AverageGasPrices {
+    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
+        let prices: EstimatedGasPrices = try await getStatusGasPrices(chainId: chainId)
+        return prices.getPriceForSpeed(speed)
+    }
+    
+    func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
+        let prices: [String: Int] = try await getStatusGasPrices(chainId: chainId)
+        
+        guard let normal = prices["safeLow"],
+              let fast = prices["fast"],
+              let urgent = prices["fastest"] else {
+            throw CryptoSender.Error.failedFetchGasPrice
+        }
+        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: normal),
+                                          fast: EVMTokenAmount(gwei: fast),
+                                          urgent: EVMTokenAmount(gwei: urgent))
+    }
+
+    private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
-        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices().ETH
-        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices().MATIC
-        default: throw JRPCError.failedGetStatus
+        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
+        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!
+        case BlockchainNetwork.ethGoerli.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
+        case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
+        case BlockchainNetwork.polygonMumbai.rawValue: return try await getStatusGasPrices(env: .testnet)["MATIC"]!
+        default: throw JRPCError.unknownChain
         }
     }
 }

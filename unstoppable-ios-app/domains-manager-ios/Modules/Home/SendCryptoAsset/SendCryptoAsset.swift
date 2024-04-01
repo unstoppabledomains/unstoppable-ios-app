@@ -46,6 +46,7 @@ extension SendCryptoAsset {
         
         case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(SendTokenAssetData)
+        case didSendCrypto(data: SendTokenAssetData, txHash: String)
         
         case userDomainSelected(TransferDomainData)
         case didTransferDomain(DomainDisplayInfo)
@@ -98,6 +99,45 @@ extension SendCryptoAsset {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
         let amount: TokenAssetAmountInput
+        
+        var receiverAddress: HexAddress {
+            receiver.walletAddress
+        }
+        
+        func getTokenAmountValueToSend() -> Double {
+            amount.valueOf(type: .tokenAmount, for: token)
+        }
+        
+        func isSendingAllTokens() -> Bool {
+            getTokenAmountValueToSend() >= token.balance
+        }
+    }
+    
+    enum TransactionSpeed: CaseIterable {
+        case normal, fast, urgent
+        
+        var title: String {
+            switch self {
+            case .normal:
+                return "Normal"
+            case .fast:
+                return "Fast"
+            case .urgent:
+                return "Urgent"
+            }
+        }
+        
+        var iconName: String {
+            switch self {
+            case .normal:
+                "clock"
+            case .fast:
+                "bolt"
+            case .urgent:
+                "flame"
+            }
+        }
+      
     }
 }
 

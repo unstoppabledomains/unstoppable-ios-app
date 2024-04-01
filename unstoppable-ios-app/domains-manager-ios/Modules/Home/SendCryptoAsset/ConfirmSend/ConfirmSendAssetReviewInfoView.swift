@@ -13,9 +13,10 @@ struct ConfirmSendAssetReviewInfoView: View {
     
     private let lineWidth: CGFloat = 1
     private let sectionHeight: CGFloat = 48
-    
+
     let asset: Asset
     let sourceWallet: WalletEntity
+    
     @State private var fromUserAvatar: UIImage?
 
     var body: some View {
@@ -173,6 +174,79 @@ private extension ConfirmSendAssetReviewInfoView {
         
     }
     
+    func getBlockchainType() -> BlockchainType {
+        switch asset {
+        case .token(let dataModel):
+            BlockchainType(rawValue: dataModel.token.symbol) ?? .Matic
+        case .domain(let domain):
+            domain.blockchain ?? .Matic
+        }
+    }
+    
+    func getCurrentSections() -> [SectionType] {
+        switch asset {
+        case .token(let dataModel):
+            getSectionsForToken(selectedTxSpeed: dataModel.txSpeed,
+                                gasUsd: dataModel.gasFeeUsd)
+        case .domain:
+            getSectionsForDomain()
+        }
+    }
+    
+    func getTransactionSpeedActions() -> [InfoActionDescription] {
+        SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
+            InfoActionDescription(title: txSpeed.title,
+                                  subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
+                                  iconName: txSpeed.iconName,
+                                  tintColor: tintColorFor(txSpeed: txSpeed),
+                                  action: { didSelectTransactionSpeed(txSpeed) })
+        }
+    }
+    
+    func txSpeedSubtitleFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> String {
+        guard case .token(let dataModel) = asset,
+              let gwei = dataModel.gasGweiFor(speed: txSpeed) else { return "" }
+        
+        return "\(gwei) Gwei"
+    }
+    
+    func tintColorFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> UIColor {
+        switch txSpeed {
+        case .normal:
+                .foregroundDefault
+        case .fast:
+                .foregroundWarning
+        case .urgent:
+                .foregroundDanger
+        }
+    }
+    
+    
+    func didSelectTransactionSpeed(_ transactionSpeed: SendCryptoAsset.TransactionSpeed) {
+        switch asset {
+        case .token(let dataModel):
+            dataModel.txSpeed = transactionSpeed
+        case .domain:
+            Debugger.printFailure("Incorrect state", critical: true)
+        }
+    }
+    
+    func getSectionsForToken(selectedTxSpeed: SendCryptoAsset.TransactionSpeed,
+                             gasUsd: Double?) -> [SectionType] {
+        [getFromWalletInfoSection(),
+         getChainInfoSection(),
+         .infoValue(.init(title: String.Constants.speed.localized(),
+                          icon: .chevronGrabberVertical,
+                          iconColor: .foregroundSecondary,
+                          value: selectedTxSpeed.title,
+                          valueColor: Color(uiColor: tintColorFor(txSpeed: selectedTxSpeed)),
+                          actions: getTransactionSpeedActions())),
+         .infoValue(.init(title: String.Constants.feeEstimate.localized(),
+                          icon: .tildaIcon,
+                          value: gasUsdTitleFor(gasUsd: gasUsd))),
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+    }
+    
     func getFromWalletInfoSection() -> SectionType {
         .infoValue(.init(title: String.Constants.from.localized(),
                          icon: fromUserAvatar ?? sourceWallet.displayInfo.source.listIcon,
@@ -185,60 +259,11 @@ private extension ConfirmSendAssetReviewInfoView {
                          value: getBlockchainType().fullName))
     }
     
-    func getBlockchainType() -> BlockchainType {
-        switch asset {
-        case .token(let token):
-            BlockchainType(rawValue: token.symbol) ?? .Matic
-        case .domain(let domain):
-            domain.blockchain ?? .Matic
+    func gasUsdTitleFor(gasUsd: Double?) -> String {
+        if let gasUsd {
+            return "$\(gasUsd.formatted(toMaxNumberAfterComa: 4))"
         }
-    }
-    
-    func getCurrentSections() -> [SectionType] {
-        switch asset {
-        case .token:
-            getSectionsForToken()
-        case .domain:
-            getSectionsForDomain()
-        }
-    }
-    
-    func getTransactionSpeedActions() -> [InfoActionDescription] {
-        [.init(title: "Urgent",
-               subtitle: "41-53 Gwei (~1 sec)",
-               iconName: "flame",
-               tintColor: .foregroundDanger,
-               action: { didSelectTransactionSpeed() }),
-         .init(title: "Fast",
-               subtitle: "44-54 Gwei (~4 sec)",
-               iconName: "bolt",
-               tintColor: .foregroundWarning,
-               action: { didSelectTransactionSpeed() }),
-         .init(title: "Normal",
-               subtitle: "43-51 Gwei (~12 sec)",
-               iconName: "clock",
-               tintColor: .foregroundDefault,
-               action: { didSelectTransactionSpeed() })].reversed()
-    }
-    
-    func didSelectTransactionSpeed() {
-        
-    }
-    
-    func getSectionsForToken() -> [SectionType] {
-        [getFromWalletInfoSection(),
-         getChainInfoSection(),
-         .infoValue(.init(title: String.Constants.speed.localized(),
-                          icon: .chevronGrabberVertical,
-                          iconColor: .foregroundSecondary,
-                          value: "Fast",
-                          valueColor: .foregroundWarning,
-                          subValue: "~ 4 sec",
-                          actions: getTransactionSpeedActions())),
-         .infoValue(.init(title: String.Constants.feeEstimate.localized(),
-                          icon: .tildaIcon,
-                          value: "$4.20")),
-         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+        return ""
     }
     
     func getSectionsForDomain() -> [SectionType] {
@@ -394,12 +419,14 @@ private extension ConfirmSendAssetReviewInfoView {
 // MARK: - Open methods
 extension ConfirmSendAssetReviewInfoView {
     enum Asset {
-        case token(BalanceTokenUIDescription)
+        case token(ConfirmSendTokenDataModel)
         case domain(DomainDisplayInfo)
     }
 }
 
 #Preview {
-    ConfirmSendAssetReviewInfoView(asset: .token(MockEntitiesFabric.Tokens.mockUIToken()),
+    ConfirmSendAssetReviewInfoView(asset: .token(.init(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                                                   token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                                                   amount: .usdAmount(3998234.3)))),
                                    sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }

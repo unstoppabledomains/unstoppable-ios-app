@@ -13,6 +13,7 @@ extension SendCryptoAsset {
         case selectAssetToSend(AssetReceiver)
         case selectTokenAmountToSend(SelectTokenAmountToSendData)
         case confirmSendToken(SendTokenAssetData)
+        case cryptoSendSuccess(data: SendTokenAssetData, txHash: String)
         
         case confirmTransferDomain(TransferDomainData)
         case domainTransferSuccess(DomainDisplayInfo)
@@ -21,7 +22,7 @@ extension SendCryptoAsset {
             switch self {
             case .selectTokenAmountToSend, .selectAssetToSend:
                 return true
-            case .scanWalletAddress, .confirmTransferDomain, .domainTransferSuccess, .confirmSendToken:
+            case .scanWalletAddress, .confirmTransferDomain, .domainTransferSuccess, .confirmSendToken, .cryptoSendSuccess:
                 return false
             }
         }
@@ -40,6 +41,10 @@ extension SendCryptoAsset {
                 SelectTokenAssetAmountToSendView(data: data)
             case .confirmSendToken(let data):
                 ConfirmSendTokenView(data: data)
+            case .cryptoSendSuccess(let data, let txHash):
+                SendCryptoAssetSuccessView(asset: .token(token: data.token,
+                                                         amount: data.amount,
+                                                         txHash: txHash))
                 
             case .confirmTransferDomain(let data):
                 ConfirmTransferDomainView(data: data)

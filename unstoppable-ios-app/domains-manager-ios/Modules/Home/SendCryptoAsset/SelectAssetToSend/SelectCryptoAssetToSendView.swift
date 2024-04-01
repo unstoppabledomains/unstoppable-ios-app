@@ -45,6 +45,7 @@ private extension SelectCryptoAssetToSendView {
         tokens = viewModel.sourceWallet.balance
             .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
             .flatMap({ $0 })
+            .filter { viewModel.canSendToken($0) }
             .filter { $0.balanceUsd > 1 }
             .sorted(by: { lhs, rhs in
             lhs.balanceUsd > rhs.balanceUsd
