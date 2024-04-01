@@ -222,13 +222,6 @@ private extension SelectTokenAssetAmountToSendView {
             return inputValueFor(inputType: .tokenAmount) == token.balance
         }
     }
-    var useMaxButtonTitle: String {
-        if isUsingMax {
-            String.Constants.usingMax.localized()
-        } else {
-            String.Constants.max.localized()
-        }
-    }
     
     @ViewBuilder
     func usingMaxButton() -> some View {
@@ -236,7 +229,7 @@ private extension SelectTokenAssetAmountToSendView {
             UDVibration.buttonTap.vibrate()
             maxButtonPressed()
         } label: {
-            Text(useMaxButtonTitle)
+            Text(String.Constants.max.localized())
                 .foregroundStyle(isUsingMax ? Color.foregroundAccentMuted : Color.foregroundAccent)
         }
         .buttonStyle(.plain)
