@@ -128,6 +128,9 @@ private extension ConfirmSendTokenView {
                             parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
                 viewModel.handleAction(.didSendCrypto(data: dataModel.data, txHash: txHash))
             } catch {
+                logAnalytic(event: .didFailToSendCrypto,
+                            parameters: [.transactionSpeed: dataModel.txSpeed.rawValue,
+                                         .error: error.localizedDescription])
                 self.error = error
             }
             isLoading = false

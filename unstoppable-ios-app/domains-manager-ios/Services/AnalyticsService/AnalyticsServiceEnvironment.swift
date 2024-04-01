@@ -43,7 +43,7 @@ extension Analytics {
         case websiteLoginOptionSelected
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
-        case didTransferDomain
+        case didTransferDomain, didFailToTransferDomain
         case searchProfilePressed, recentSearchProfilePressed, searchWalletAddressPressed, followingProfilePressed, userWalletPressed
         case trendingProfilePressed
         
@@ -78,7 +78,7 @@ extension Analytics {
         case shareResult, didSelectHomeTab
         case didPullToRefresh
         
-        case didSendCrypto
+        case didSendCrypto, didFailToSendCrypto
     }
 }
 

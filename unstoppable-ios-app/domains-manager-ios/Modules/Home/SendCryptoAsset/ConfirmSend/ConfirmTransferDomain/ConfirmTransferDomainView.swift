@@ -82,26 +82,25 @@ private extension ConfirmTransferDomainView {
             isLoading = true
             await Task.sleep(seconds: 0.35)
             
+            let domain = self.data.domain
+            let recipientAddress = self.data.receiver.walletAddress
+            let shouldClearRecords = confirmationData.shouldClearRecords
             do {
-                let domain = self.data.domain
-                let recipientAddress = self.data.receiver.walletAddress
-                let shouldClearRecords = confirmationData.shouldClearRecords
                 
                 let configuration = TransferDomainConfiguration(resetRecords: shouldClearRecords)
                 try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
                                                                           to: recipientAddress,
                                                                           configuration: configuration)
-                appContext.analyticsService.log(event: .didTransferDomain,
-                                                withParameters: [.domainName: domain.name,
-                                                                 .fromWallet: domain.ownerWallet ?? "",
-                                                                 .toWallet: recipientAddress,
-                                                                 .didClearRecords: String(shouldClearRecords)])
+                logAnalytic(event: .didTransferDomain, parameters: [.didClearRecords: String(shouldClearRecords)])
                 Task.detached {
                     try? await appContext.walletsDataService.refreshDataForWallet(viewModel.sourceWallet)
                 }
                 
                 viewModel.handleAction(.didTransferDomain(domain))
             } catch {
+                logAnalytic(event: .didFailToTransferDomain,
+                            parameters: [.didClearRecords: String(shouldClearRecords),
+                                         .error: error.localizedDescription])
                 self.error = error
             }
             
