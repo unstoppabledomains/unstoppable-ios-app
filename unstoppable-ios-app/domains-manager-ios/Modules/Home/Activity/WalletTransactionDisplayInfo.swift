@@ -53,7 +53,7 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
 extension WalletTransactionDisplayInfo {
     init(serializedTransaction: SerializedWalletTransaction,
          userWallet: String) {
-        self.id = serializedTransaction.id
+        self.id = serializedTransaction.id + serializedTransaction.method
         self.time = serializedTransaction.timestamp
         self.success = serializedTransaction.success
         self.value = serializedTransaction.value
