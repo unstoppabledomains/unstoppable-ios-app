@@ -67,18 +67,18 @@ private extension WalletTransactionDisplayInfoListItemView {
     var transactionTitle: String {
         switch transaction.type {
         case .tokenDeposit, .nftDeposit:
-            "Received"
+            String.Constants.received.localized()
         case .tokenWithdrawal, .nftWithdrawal:
-            "Sent"
+            String.Constants.sent.localized()
         }
     }
     
     var sourceText: String {
         switch transaction.type {
         case .tokenDeposit, .nftDeposit:
-            "From \(transaction.from.displayName)"
+            String.Constants.from.localized() + " \(transaction.from.displayName)"
         case .tokenWithdrawal, .nftWithdrawal:
-            "To \(transaction.to.displayName)"
+            String.Constants.to.localized() + " \(transaction.to.displayName)"
         }
     }
     
@@ -112,7 +112,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     @ViewBuilder
     func gasFeeLabel() -> some View {
         if transaction.gas > 0 {
-            Text("-\(transaction.gas.formatted(toMaxNumberAfterComa: 4)) Tx fee")
+            Text("-\(transaction.gas.formatted(toMaxNumberAfterComa: 4)) " + String.Constants.txFee.localized())
                 .font(.currentFont(size: 14))
                 .foregroundStyle(Color.foregroundSecondary)
         }

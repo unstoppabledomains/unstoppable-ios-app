@@ -23,22 +23,26 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     
     struct Participant: Hashable {
         let address: String
-        let domainName: String?
+        let label: String?
         let link: URL?
         
         var displayName: String {
-            domainName ?? address.walletAddressTruncated
+            if let label,
+               label.isValidDomainName() {
+                return label
+            }
+            return address.walletAddressTruncated
         }
         
         init(address: String, domainName: String?, link: URL?) {
             self.address = address
-            self.domainName = domainName
+            self.label = domainName
             self.link = link
         }
         
         init(serializedParticipant: SerializedWalletTransaction.Participant) {
             self.address = serializedParticipant.address
-            self.domainName = serializedParticipant.label
+            self.label = serializedParticipant.label
             self.link = URL(string: serializedParticipant.link)
         }
     }

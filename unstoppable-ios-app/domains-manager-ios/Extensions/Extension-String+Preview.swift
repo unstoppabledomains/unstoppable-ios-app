@@ -1176,6 +1176,9 @@ extension String {
         static let normal = "NORMAL"
         static let fast = "FAST"
         static let urgent = "URGENT"
+        static let received = "RECEIVED"
+        static let sent = "SENT"
+        static let txFee = "TX_FEE"
     }
     
     enum BlockChainIcons: String {
