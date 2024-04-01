@@ -232,6 +232,7 @@ extension Analytics {
         case homeActivity
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
+        case transferDomainSuccess, sendCryptoSuccess
     }
 }
 
