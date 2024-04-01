@@ -163,7 +163,7 @@ private extension ConfirmSendTokenView {
         .id(stateId)
     }
     
-    var isSufficientFunds: Bool {
+    var hasSufficientFunds: Bool {
         guard let gasFee = dataModel.gasFee else { return true }
         
         let sendData = dataModel.data
@@ -179,7 +179,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func confirmButton() -> some View {
         VStack(spacing: isIPSE ? 6 : 24) {
-            if !isSufficientFunds {
+            if !hasSufficientFunds {
                 insufficientFundsLabel()
             }
             UDButtonView(text: String.Constants.confirm.localized(),
@@ -188,7 +188,7 @@ private extension ConfirmSendTokenView {
                          isLoading: isLoading) {
                 confirmSending()
             }
-                         .disabled(!isSufficientFunds)
+                         .disabled(!hasSufficientFunds)
         }
     }
     

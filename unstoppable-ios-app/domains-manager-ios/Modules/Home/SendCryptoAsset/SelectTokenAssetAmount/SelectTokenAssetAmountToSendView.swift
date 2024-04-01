@@ -93,7 +93,7 @@ private extension SelectTokenAssetAmountToSendView {
 
 // MARK: - Converted value
 private extension SelectTokenAssetAmountToSendView {
-    var isSufficientFunds: Bool {
+    var hasSufficientFunds: Bool {
         inputValueFor(inputType: .tokenAmount) <= token.balance
     }
     
@@ -103,7 +103,7 @@ private extension SelectTokenAssetAmountToSendView {
             UDVibration.buttonTap.vibrate()
             switchInputType()
         } label: {
-            if isSufficientFunds {
+            if hasSufficientFunds {
                 convertedValueLabel()
             } else {
                 insufficientFundsLabel()
@@ -268,7 +268,7 @@ private extension SelectTokenAssetAmountToSendView {
                                                                  token: token,
                                                                  amount: getCurrentInput())))
         }
-                     .disabled(interpreter.getInterpretedNumber() <= 0 || !isSufficientFunds)
+                     .disabled(interpreter.getInterpretedNumber() <= 0 || !hasSufficientFunds)
     }
     
     func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {
