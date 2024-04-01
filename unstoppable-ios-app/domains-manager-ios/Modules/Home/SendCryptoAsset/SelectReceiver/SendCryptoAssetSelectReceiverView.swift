@@ -83,8 +83,12 @@ private extension SendCryptoAssetSelectReceiverView {
                         rightViewType: .paste,
                         rightViewMode: .always,
                         autocapitalization: .never,
-                        autocorrectionDisabled: true)
+                        autocorrectionDisabled: true,
+                        focusedStateChangedCallback: { isFocused in
+            logAnalytic(event: isFocused ? .didStartSearching : .didStopSearching)
+        })
         .onChange(of: debounceObject.debouncedText) { text in
+            logAnalytic(event: .didSearch, parameters: [.value : text])
             inputText = text.lowercased().trimmedSpaces
             searchForGlobalProfiles()
         }

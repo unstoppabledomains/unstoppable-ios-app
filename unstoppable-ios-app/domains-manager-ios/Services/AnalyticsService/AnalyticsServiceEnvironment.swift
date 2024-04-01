@@ -32,7 +32,7 @@ extension Analytics {
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
-        case didRecognizeQRCode
+        case didRecognizeQRCode, didRecognizeQRWalletAddress
         case didSelectChainNetwork
         case didReceivePushNotification
         case didReceiveLocalPushNotification
@@ -226,7 +226,7 @@ extension Analytics {
         case homeExplore
         case homeActivity
         
-        case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation
+        case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
     }
 }
 
@@ -399,6 +399,7 @@ extension Analytics {
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
         
         case sendCrypto
+        case cameraTorch
     }
 }
 
