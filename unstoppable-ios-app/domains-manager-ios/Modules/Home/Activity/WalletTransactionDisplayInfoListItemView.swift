@@ -47,10 +47,21 @@ private extension WalletTransactionDisplayInfoListItemView {
 private extension WalletTransactionDisplayInfoListItemView {
     @ViewBuilder
     func iconView() -> some View {
+        switch transaction.type {
+        case .tokenDeposit, .tokenWithdrawal:
+            currentIconView()
+                .clipShape(Circle())
+        case .nftDeposit, .nftWithdrawal:
+            currentIconView()
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+    }
+    
+    @ViewBuilder
+    func currentIconView() -> some View {
         Image(uiImage: icon ?? .appleIcon)
             .resizable()
             .squareFrame(40)
-            .clipShape(Circle())
     }
     
     @ViewBuilder
