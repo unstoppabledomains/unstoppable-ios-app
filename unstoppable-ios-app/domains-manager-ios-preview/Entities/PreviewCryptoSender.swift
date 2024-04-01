@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias BigUInt = Int
+typealias UDBigUInt = Int
 
 struct CryptoSender: CryptoSenderProtocol {
   

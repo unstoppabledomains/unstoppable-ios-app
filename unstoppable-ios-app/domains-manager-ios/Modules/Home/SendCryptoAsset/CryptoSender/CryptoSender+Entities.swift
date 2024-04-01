@@ -26,7 +26,7 @@ struct EVMTokenAmount {
         self.gweiTotal = Double(gwei)
     }
     
-    init(wei: BigUInt) {
+    init(wei: UDBigUInt) {
         self.gweiTotal = Double(wei) / Self.Billion
     }
     
@@ -38,8 +38,8 @@ struct EVMTokenAmount {
         gweiTotal
     }
     
-    var wei: BigUInt { // can only be integer and may be very big
-        BigUInt(gweiTotal * Self.Billion)
+    var wei: UDBigUInt { // can only be integer and may be very big
+        UDBigUInt(gweiTotal * Self.Billion)
     }
 }
 

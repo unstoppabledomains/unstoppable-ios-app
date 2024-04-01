@@ -9,6 +9,8 @@ import Foundation
 import Boilertalk_Web3
 import BigInt
 
+typealias UDBigUInt = BigUInt
+
 struct CryptoSender: CryptoSenderProtocol {
   
     let wallet: UDWallet
