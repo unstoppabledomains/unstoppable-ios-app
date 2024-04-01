@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct ConfirmSendAssetReviewInfoView: View {
+struct ConfirmSendAssetReviewInfoView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     @Environment(\.imageLoadingService) var imageLoadingService
     
     private let lineWidth: CGFloat = 1
@@ -74,6 +76,8 @@ private extension ConfirmSendAssetReviewInfoView {
                 ForEach(info.actions, id: \.self) { action in
                     Button {
                         UDVibration.buttonTap.vibrate()
+                        logButtonPressedAnalyticEvents(button: action.analyticName, 
+                                                       parameters: action.analyticParameters)
                         action.action()
                     } label: {
                         Label(
@@ -87,7 +91,9 @@ private extension ConfirmSendAssetReviewInfoView {
                 viewForInfoValueSection(info)
             }
             .onButtonTap {
-                
+                if let analyticName = info.analyticName {
+                    logButtonPressedAnalyticEvents(button: analyticName)
+                }
             }
         }
     }
@@ -150,6 +156,7 @@ private extension ConfirmSendAssetReviewInfoView {
         var valueColor: Color = .foregroundDefault
         var subValue: String? = nil
         var actions: [InfoActionDescription] = []
+        var analyticName: Analytics.Button? = nil
     }
     
     struct InfoActionDescription: Hashable {
@@ -158,6 +165,8 @@ private extension ConfirmSendAssetReviewInfoView {
         let subtitle: String
         let iconName: String
         let tintColor: UIColor
+        var analyticName: Analytics.Button
+        var analyticParameters: Analytics.EventParameters
         let action: EmptyCallback
         
         static func == (lhs: ConfirmSendAssetReviewInfoView.InfoActionDescription, rhs: ConfirmSendAssetReviewInfoView.InfoActionDescription) -> Bool {
@@ -199,6 +208,8 @@ private extension ConfirmSendAssetReviewInfoView {
                                   subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
                                   iconName: txSpeed.iconName,
                                   tintColor: tintColorFor(txSpeed: txSpeed),
+                                  analyticName: .selectTransactionSpeed,
+                                  analyticParameters: [.transactionSpeed: txSpeed.rawValue],
                                   action: { didSelectTransactionSpeed(txSpeed) })
         }
     }
@@ -240,7 +251,8 @@ private extension ConfirmSendAssetReviewInfoView {
                           iconColor: .foregroundSecondary,
                           value: selectedTxSpeed.title,
                           valueColor: Color(uiColor: tintColorFor(txSpeed: selectedTxSpeed)),
-                          actions: getTransactionSpeedActions())),
+                          actions: getTransactionSpeedActions(),
+                          analyticName: .transactionSpeedSelection)),
          .infoValue(.init(title: String.Constants.feeEstimate.localized(),
                           icon: .tildaIcon,
                           value: gasUsdTitleFor(gasUsd: gasUsd))),

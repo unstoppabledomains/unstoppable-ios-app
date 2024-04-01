@@ -77,6 +77,8 @@ extension Analytics {
         
         case shareResult, didSelectHomeTab
         case didPullToRefresh
+        
+        case didSendCrypto
     }
 }
 
@@ -142,6 +144,7 @@ extension Analytics {
         case token
         case assetType
         case didClearRecords
+        case transactionSpeed
     }
 }
 
@@ -406,6 +409,7 @@ extension Analytics {
         case cryptoToken
         case useMax
         case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
+        case transactionSpeedSelection, selectTransactionSpeed
     }
 }
 

@@ -113,17 +113,17 @@ extension SendCryptoAsset {
         }
     }
     
-    enum TransactionSpeed: CaseIterable {
+    enum TransactionSpeed: String, CaseIterable {
         case normal, fast, urgent
         
         var title: String {
             switch self {
             case .normal:
-                return "Normal"
+                return String.Constants.normal.localized()
             case .fast:
-                return "Fast"
+                return String.Constants.fast.localized()
             case .urgent:
-                return "Urgent"
+                return String.Constants.urgent.localized()
             }
         }
         

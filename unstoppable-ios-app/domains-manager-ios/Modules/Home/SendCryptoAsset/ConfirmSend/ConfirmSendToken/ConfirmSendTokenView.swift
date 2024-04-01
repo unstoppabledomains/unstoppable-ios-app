@@ -113,6 +113,9 @@ private extension ConfirmSendTokenView {
     }
     
     func confirmSending() {
+        logButtonPressedAnalyticEvents(button: .confirm,
+                                       parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
+
         Task {
             guard let view = appContext.coreAppCoordinator.topVC else { return }
             try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
@@ -121,6 +124,8 @@ private extension ConfirmSendTokenView {
             do {
                 let txHash = try await viewModel.sendCryptoTokenWith(sendData: dataModel.data,
                                                                      txSpeed: dataModel.txSpeed)
+                logAnalytic(event: .didSendCrypto,
+                            parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
                 viewModel.handleAction(.didSendCrypto(data: dataModel.data, txHash: txHash))
             } catch {
                 self.error = error
