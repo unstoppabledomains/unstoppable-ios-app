@@ -18,6 +18,9 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
+                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
         VStack(spacing: isIPSE ? 8 : 57) {
@@ -229,11 +232,13 @@ private extension SelectTokenAssetAmountToSendView {
     func usingMaxButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .useMax)
             maxButtonPressed()
         } label: {
             Text(String.Constants.max.localized())
                 .foregroundStyle(isUsingMax ? Color.foregroundAccentMuted : Color.foregroundAccent)
         }
+        .disabled(isUsingMax)
         .buttonStyle(.plain)
         .padding(.init(horizontal: 16))
     }
@@ -257,6 +262,8 @@ private extension SelectTokenAssetAmountToSendView {
     func confirmButton() -> some View {
         UDButtonView(text: String.Constants.review.localized(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .confirm,
+                                           parameters: [.value: String(getCurrentInput().valueOf(type: .tokenAmount, for: token))])
             viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
                                                                  token: token,
                                                                  amount: getCurrentInput())))

@@ -22,7 +22,8 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
     
     let receiver: SendCryptoAsset.AssetReceiver
     var analyticsName: Analytics.ViewName { .sendCryptoAssetSelection }
-    
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.toWallet: receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
     var body: some View {
         List {
             assetTypePickerView()
@@ -32,6 +33,10 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(horizontal: 16))
         }
+        .onChange(of: selectedType, perform: { newValue in
+            logButtonPressedAnalyticEvents(button: .assetTypeSwitcher, 
+                                           parameters: [.assetType : newValue.rawValue])
+        })
         .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .listRowSpacing(0)
@@ -102,6 +107,8 @@ private extension SelectCryptoAssetToSendView {
     func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .cryptoToken,
+                                           parameters: [.token : token.id])
             viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
                                                                   token: token)))
         } label: {
@@ -147,8 +154,12 @@ private extension SelectCryptoAssetToSendView {
                         leftViewType: .search,
                         autocapitalization: .never,
                         autocorrectionDisabled: true,
-                        height: 36)
-        .onChange(of: searchDomainsKey, perform: { _ in
+                        height: 36,
+                        focusedStateChangedCallback: { isFocused in
+            logAnalytic(event: isFocused ? .didStartSearching : .didStopSearching)
+        })
+        .onChange(of: searchDomainsKey, perform: { text in
+            logAnalytic(event: .didSearch, parameters: [.value : text])
             setDomainsData()
         })
     }

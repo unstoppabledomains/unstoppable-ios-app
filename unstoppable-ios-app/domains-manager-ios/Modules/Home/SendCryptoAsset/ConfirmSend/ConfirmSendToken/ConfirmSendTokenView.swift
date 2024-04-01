@@ -21,7 +21,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
     private let refreshGasTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenConfirmation }
-    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.symbol,
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
                                                                          .value: String(dataModel.amount.valueOf(type: .tokenAmount,
                                                                                                           for: token)),
                                                                          .toWallet: dataModel.receiver.walletAddress,

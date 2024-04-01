@@ -140,6 +140,7 @@ extension Analytics {
         case success
         case tab
         case token
+        case assetType
     }
 }
 
@@ -400,6 +401,9 @@ extension Analytics {
         
         case sendCrypto
         case cameraTorch
+        case assetTypeSwitcher
+        case cryptoToken
+        case useMax
     }
 }
 
