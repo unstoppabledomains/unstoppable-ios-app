@@ -17,6 +17,7 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     var analyticsName: Analytics.ViewName { .sendCryptoReceiverSelection }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.fromWallet: viewModel.sourceWallet.address] }
 
     @State private var userWallets: [WalletEntity] = []
     @State private var followingList: [DomainName] = []
@@ -104,6 +105,7 @@ private extension SendCryptoAssetSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         } callback: {
+            logButtonPressedAnalyticEvents(button: .qrCode)
             viewModel.handleAction(.scanQRSelected)
         }
         .listRowSeparator(.hidden)
@@ -142,6 +144,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverWalletRowView(wallet: wallet)
         } callback: {
+            logAnalytic(event: .userWalletPressed, parameters: [.wallet: wallet.address])
             viewModel.handleAction(.userWalletSelected(wallet))
         }
     }
@@ -165,6 +168,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             SendCryptoAssetSelectReceiverFollowingRowView(domainName: following)
         } callback: {
+            logAnalytic(event: .followingProfilePressed, parameters: [.domainName : domainName])
             guard let profile = domainProfilesService.getCachedDomainProfileDisplayInfo(for: following) else {
                 Debugger.printFailure("Failed to get cached domain profile for following: \(following)")
                 return
@@ -231,6 +235,7 @@ private extension SendCryptoAssetSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         }, callback: {
+            logAnalytic(event: .searchWalletAddressPressed, parameters: [.wallet : address])
             viewModel.handleAction(.globalWalletAddressSelected(address))
         })
     }
@@ -240,6 +245,7 @@ private extension SendCryptoAssetSelectReceiverView {
         selectableRowView {
             DomainSearchResultProfileRowView(profile: profile)
         } callback: {
+            logAnalytic(event: .searchProfilePressed, parameters: [.domainName : profile.name])
             viewModel.handleAction(.globalProfileSelected(profile))
         }
     }

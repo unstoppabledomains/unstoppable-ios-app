@@ -29,6 +29,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .environmentObject(viewModel)
+            .trackAppearanceAnalytics(analyticsLogger: self)
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)

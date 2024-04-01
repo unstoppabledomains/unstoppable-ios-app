@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmSendTokenView: View {
+struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     
@@ -20,7 +20,13 @@ struct ConfirmSendTokenView: View {
     private var token: BalanceTokenUIDescription { dataModel.token }
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
     private let refreshGasTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
+    var analyticsName: Analytics.ViewName { .sendCryptoTokenConfirmation }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.symbol,
+                                                                         .value: String(dataModel.amount.valueOf(type: .tokenAmount,
+                                                                                                          for: token)),
+                                                                         .toWallet: dataModel.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
+    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -40,6 +46,8 @@ struct ConfirmSendTokenView: View {
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .passViewAnalyticsDetails(logger: self)
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
         .displayError($error)

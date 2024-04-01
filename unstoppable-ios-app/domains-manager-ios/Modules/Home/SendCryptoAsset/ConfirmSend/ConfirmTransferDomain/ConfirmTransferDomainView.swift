@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmTransferDomainView: View {
+struct ConfirmTransferDomainView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
@@ -15,7 +15,11 @@ struct ConfirmTransferDomainView: View {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var isLoading: Bool = false
     @State private var error: Error?
-
+    var analyticsName: Analytics.ViewName { .sendCryptoDomainTransferConfirmation }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName: data.domain.name,
+                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
+    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -28,6 +32,7 @@ struct ConfirmTransferDomainView: View {
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
         .displayError($error)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectTokenAssetAmountToSendView: View {
+struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
@@ -17,6 +17,7 @@ struct SelectTokenAssetAmountToSendView: View {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
+    var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
     
     var body: some View {
         VStack(spacing: isIPSE ? 8 : 57) {
@@ -36,6 +37,7 @@ struct SelectTokenAssetAmountToSendView: View {
         }
         .padding(16)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
     }

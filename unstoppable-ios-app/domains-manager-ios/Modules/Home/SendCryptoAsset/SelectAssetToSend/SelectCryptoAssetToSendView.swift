@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectCryptoAssetToSendView: View {
+struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
         
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     @EnvironmentObject var tabRouter: HomeTabRouter
@@ -21,6 +21,7 @@ struct SelectCryptoAssetToSendView: View {
     @State private var allDomains: [DomainDisplayInfo] = []
     
     let receiver: SendCryptoAsset.AssetReceiver
+    var analyticsName: Analytics.ViewName { .sendCryptoAssetSelection }
     
     var body: some View {
         List {
@@ -31,6 +32,7 @@ struct SelectCryptoAssetToSendView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(horizontal: 16))
         }
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .listRowSpacing(0)
         .listStyle(.plain)

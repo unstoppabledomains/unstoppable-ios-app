@@ -44,7 +44,7 @@ extension Analytics {
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
         case didTransferDomain
-        case searchProfilePressed, recentSearchProfilePressed
+        case searchProfilePressed, recentSearchProfilePressed, searchWalletAddressPressed, followingProfilePressed, userWalletPressed
         case trendingProfilePressed
         
         // Domains Collection
@@ -139,6 +139,7 @@ extension Analytics {
         case numberOfItemsInSection
         case success
         case tab
+        case token
     }
 }
 
@@ -225,7 +226,7 @@ extension Analytics {
         case homeExplore
         case homeActivity
         
-        case sendCryptoReceiverSelection
+        case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation
     }
 }
 
