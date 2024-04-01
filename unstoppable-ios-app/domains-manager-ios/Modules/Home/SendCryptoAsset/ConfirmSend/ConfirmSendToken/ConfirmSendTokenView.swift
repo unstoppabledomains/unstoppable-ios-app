@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmSendTokenView: View {
+struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     
@@ -20,7 +20,13 @@ struct ConfirmSendTokenView: View {
     private var token: BalanceTokenUIDescription { dataModel.token }
     private var receiver: SendCryptoAsset.AssetReceiver { dataModel.receiver }
     private let refreshGasTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
+    var analyticsName: Analytics.ViewName { .sendCryptoTokenConfirmation }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
+                                                                         .value: String(dataModel.amount.valueOf(type: .tokenAmount,
+                                                                                                          for: token)),
+                                                                         .toWallet: dataModel.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
+    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -40,6 +46,8 @@ struct ConfirmSendTokenView: View {
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .passViewAnalyticsDetails(logger: self)
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
         .displayError($error)
@@ -105,6 +113,9 @@ private extension ConfirmSendTokenView {
     }
     
     func confirmSending() {
+        logButtonPressedAnalyticEvents(button: .confirm,
+                                       parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
+
         Task {
             guard let view = appContext.coreAppCoordinator.topVC else { return }
             try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
@@ -113,8 +124,13 @@ private extension ConfirmSendTokenView {
             do {
                 let txHash = try await viewModel.sendCryptoTokenWith(sendData: dataModel.data,
                                                                      txSpeed: dataModel.txSpeed)
+                logAnalytic(event: .didSendCrypto,
+                            parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
                 viewModel.handleAction(.didSendCrypto(data: dataModel.data, txHash: txHash))
             } catch {
+                logAnalytic(event: .didFailToSendCrypto,
+                            parameters: [.transactionSpeed: dataModel.txSpeed.rawValue,
+                                         .error: error.localizedDescription])
                 self.error = error
             }
             isLoading = false
@@ -147,7 +163,7 @@ private extension ConfirmSendTokenView {
         .id(stateId)
     }
     
-    var isSufficientFunds: Bool {
+    var hasSufficientFunds: Bool {
         guard let gasFee = dataModel.gasFee else { return true }
         
         let sendData = dataModel.data
@@ -163,7 +179,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func confirmButton() -> some View {
         VStack(spacing: isIPSE ? 6 : 24) {
-            if !isSufficientFunds {
+            if !hasSufficientFunds {
                 insufficientFundsLabel()
             }
             UDButtonView(text: String.Constants.confirm.localized(),
@@ -172,7 +188,7 @@ private extension ConfirmSendTokenView {
                          isLoading: isLoading) {
                 confirmSending()
             }
-                         .disabled(!isSufficientFunds)
+                         .disabled(!hasSufficientFunds)
         }
     }
     

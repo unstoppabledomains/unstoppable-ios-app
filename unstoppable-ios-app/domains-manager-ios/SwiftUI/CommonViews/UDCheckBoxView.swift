@@ -12,11 +12,17 @@ struct UDCheckBoxView: View {
     @Environment(\.isEnabled) private var isEnabled
 
     @Binding var isOn: Bool
+    var analyticsName: Analytics.Button? = nil
     
     var body: some View {
         Button {
             UDVibration.buttonTap.vibrate()
             isOn.toggle()
+            if let analyticsName {
+                appContext.analyticsService.log(event: .buttonPressed,
+                                                withParameters: [.button: analyticsName.rawValue,
+                                                                 .value: String(isOn)])
+            }
         } label: {
             ZStack {
                 if isOn {

@@ -32,7 +32,7 @@ extension Analytics {
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
-        case didRecognizeQRCode
+        case didRecognizeQRCode, didRecognizeQRWalletAddress
         case didSelectChainNetwork
         case didReceivePushNotification
         case didReceiveLocalPushNotification
@@ -43,8 +43,8 @@ extension Analytics {
         case websiteLoginOptionSelected
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
-        case didTransferDomain
-        case searchProfilePressed, recentSearchProfilePressed
+        case didTransferDomain, didFailToTransferDomain
+        case searchProfilePressed, recentSearchProfilePressed, searchWalletAddressPressed, followingProfilePressed, userWalletPressed
         case trendingProfilePressed
         
         // Domains Collection
@@ -77,6 +77,8 @@ extension Analytics {
         
         case shareResult, didSelectHomeTab
         case didPullToRefresh
+        
+        case didSendCrypto, didFailToSendCrypto
     }
 }
 
@@ -139,6 +141,10 @@ extension Analytics {
         case numberOfItemsInSection
         case success
         case tab
+        case token
+        case assetType
+        case didClearRecords
+        case transactionSpeed
     }
 }
 
@@ -225,7 +231,8 @@ extension Analytics {
         case homeExplore
         case homeActivity
         
-        case sendCryptoReceiverSelection
+        case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
+        case transferDomainSuccess, sendCryptoSuccess
     }
 }
 
@@ -398,6 +405,12 @@ extension Analytics {
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
         
         case sendCrypto
+        case cameraTorch
+        case assetTypeSwitcher
+        case cryptoToken
+        case useMax
+        case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
+        case transactionSpeedSelection, selectTransactionSpeed
     }
 }
 

@@ -7,11 +7,12 @@
 
 import SwiftUI
 
-struct QRWalletAddressScannerView: View {
+struct SendCryptoQRWalletAddressScannerView: View, ViewAnalyticsLogger {
 
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
-
+    var analyticsName: Analytics.ViewName { .sendCryptoScanQRCode }
+    
     @State private var isTorchAvailable = false
     @State private var isTorchOn = false
     @State private var didRecognizeAddress = false
@@ -31,12 +32,14 @@ struct QRWalletAddressScannerView: View {
             }
         }
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .passViewAnalyticsDetails(logger: self)
         .navigationTitle(String.Constants.scanQRCodeTitle.localized())
     }
 }
 
 // MARK: - Private methods
-private extension QRWalletAddressScannerView {
+private extension SendCryptoQRWalletAddressScannerView {
     func handleQRScannerViewEvent(_ event: QRScannerPreviewView.Event) {
         switch event {
         case .didChangeState(let state):
@@ -56,6 +59,7 @@ private extension QRWalletAddressScannerView {
         guard !didRecognizeAddress else { return }
         
         didRecognizeAddress = true
+        logAnalytic(event: .didRecognizeQRWalletAddress, parameters: [.wallet: walletAddress])
         dismiss()
         Vibration.success.vibrate()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
@@ -65,12 +69,13 @@ private extension QRWalletAddressScannerView {
 }
 
 // MARK: - Private methods
-private extension QRWalletAddressScannerView {
+private extension SendCryptoQRWalletAddressScannerView {
     @ViewBuilder
     func torchButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             isTorchOn.toggle()
+            logButtonPressedAnalyticEvents(button: .cameraTorch, parameters: [.isOn: String(isTorchOn)])
         } label: {
             currentTorchIcon()
                 .squareFrame(24)
@@ -99,7 +104,7 @@ private extension QRWalletAddressScannerView {
 
 #Preview {
     NavigationStack {
-        QRWalletAddressScannerView()
+        SendCryptoQRWalletAddressScannerView()
     }
 }
 

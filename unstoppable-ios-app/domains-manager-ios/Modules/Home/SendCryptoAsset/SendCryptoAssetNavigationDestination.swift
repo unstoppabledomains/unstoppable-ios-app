@@ -34,7 +34,7 @@ extension SendCryptoAsset {
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
             case .scanWalletAddress:
-                QRWalletAddressScannerView()
+                SendCryptoQRWalletAddressScannerView()
             case .selectAssetToSend(let receiver):
                 SelectCryptoAssetToSendView(receiver: receiver)
             case .selectTokenAmountToSend(let data):

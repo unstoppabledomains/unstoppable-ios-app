@@ -20,14 +20,17 @@ struct TransferDomainConfirmationPullUpView: View {
             DismissIndicatorView(color: .foregroundMuted)
             VStack(alignment: .leading, spacing: 16) {
                 confirmRowWith(isOn: $confirmationData.isConsentNotExchangeConfirmed,
-                               title: String.Constants.transferConsentNotExchange.localized())
+                               title: String.Constants.transferConsentNotExchange.localized(), 
+                               analyticsName: .transferDomainExchangeToggle)
                 HomeExploreSeparatorView()
                 confirmRowWith(isOn: $confirmationData.isConsentValidAddressConfirmed,
-                               title: String.Constants.transferConsentValidAddress.localized())
+                               title: String.Constants.transferConsentValidAddress.localized(),
+                               analyticsName: .transferDomainConfirmAddressToggle)
                 HomeExploreSeparatorView()
                 confirmRowWith(isOn: $confirmationData.resetRecords,
                                title: String.Constants.clearRecordsUponTransfer.localized(),
-                               subtitle: String.Constants.optional.localized())
+                               subtitle: String.Constants.optional.localized(),
+                               analyticsName: .transferDomainClearRecordsToggle)
                 HomeExploreSeparatorView()
                 warningText()
             }
@@ -46,12 +49,12 @@ struct TransferDomainConfirmationPullUpView: View {
 private extension TransferDomainConfirmationPullUpView {
     @ViewBuilder
     func confirmRowWith(isOn: Binding<Bool>,
-                                title: String,
-                                subtitle: String? = nil) -> some View {
+                        title: String,
+                        subtitle: String? = nil,
+                        analyticsName: Analytics.Button) -> some View {
         HStack(spacing: 16) {
-            // TODO: - Pass analytics button to UDCheckBoxView
-
-            UDCheckBoxView(isOn: isOn)
+            UDCheckBoxView(isOn: isOn,
+                           analyticsName: analyticsName)
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
                     .font(.currentFont(size: 16, weight: .medium))
@@ -106,6 +109,9 @@ private extension TransferDomainConfirmationPullUpView {
     
     func confirmTransfer() {
         Task {
+            appContext.analyticsService.log(event: .buttonPressed,
+                                            withParameters: [.button: Analytics.Button.confirm.rawValue,
+                                                             .pullUpName: Analytics.PullUp.transferDomainConfirmation.rawValue])
             guard let view = await appContext.coreAppCoordinator.topVC else { return }
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)

@@ -1173,6 +1173,9 @@ extension String {
         static let sendMaxCryptoInfoPullUpTitle = "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE"
         static let notEnoughToken = "NOT_ENOUGH_TOKEN"
         static let activity = "ACTIVITY"
+        static let normal = "NORMAL"
+        static let fast = "FAST"
+        static let urgent = "URGENT"
     }
     
     enum BlockChainIcons: String {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectTokenAssetAmountToSendView: View {
+struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
@@ -17,6 +17,10 @@ struct SelectTokenAssetAmountToSendView: View {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
     @State private var interpreter = NumberPadInputInterpreter()
+    var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
+                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
         VStack(spacing: isIPSE ? 8 : 57) {
@@ -36,6 +40,7 @@ struct SelectTokenAssetAmountToSendView: View {
         }
         .padding(16)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
     }
@@ -88,7 +93,7 @@ private extension SelectTokenAssetAmountToSendView {
 
 // MARK: - Converted value
 private extension SelectTokenAssetAmountToSendView {
-    var isSufficientFunds: Bool {
+    var hasSufficientFunds: Bool {
         inputValueFor(inputType: .tokenAmount) <= token.balance
     }
     
@@ -98,7 +103,7 @@ private extension SelectTokenAssetAmountToSendView {
             UDVibration.buttonTap.vibrate()
             switchInputType()
         } label: {
-            if isSufficientFunds {
+            if hasSufficientFunds {
                 convertedValueLabel()
             } else {
                 insufficientFundsLabel()
@@ -227,11 +232,13 @@ private extension SelectTokenAssetAmountToSendView {
     func usingMaxButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .useMax)
             maxButtonPressed()
         } label: {
             Text(String.Constants.max.localized())
                 .foregroundStyle(isUsingMax ? Color.foregroundAccentMuted : Color.foregroundAccent)
         }
+        .disabled(isUsingMax)
         .buttonStyle(.plain)
         .padding(.init(horizontal: 16))
     }
@@ -255,11 +262,13 @@ private extension SelectTokenAssetAmountToSendView {
     func confirmButton() -> some View {
         UDButtonView(text: String.Constants.review.localized(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .confirm,
+                                           parameters: [.value: String(getCurrentInput().valueOf(type: .tokenAmount, for: token))])
             viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
                                                                  token: token,
                                                                  amount: getCurrentInput())))
         }
-                     .disabled(interpreter.getInterpretedNumber() <= 0 || !isSufficientFunds)
+                     .disabled(interpreter.getInterpretedNumber() <= 0 || !hasSufficientFunds)
     }
     
     func getCurrentInput() -> SendCryptoAsset.TokenAssetAmountInput {

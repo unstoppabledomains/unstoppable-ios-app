@@ -1073,3 +1073,6 @@ More tabs are coming in the next updates.";
 "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE" = "We will send all %@ less required network costs";
 "NOT_ENOUGH_TOKEN" = "Not enough %@";
 "ACTIVITY" = "Activity";
+"NORMAL" = "Normal";
+"FAST" = "Fast";
+"URGENT" = "Urgent";

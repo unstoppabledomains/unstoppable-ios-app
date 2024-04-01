@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConfirmTransferDomainView: View {
+struct ConfirmTransferDomainView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
 
@@ -15,7 +15,11 @@ struct ConfirmTransferDomainView: View {
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var isLoading: Bool = false
     @State private var error: Error?
-
+    var analyticsName: Analytics.ViewName { .sendCryptoDomainTransferConfirmation }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName: data.domain.name,
+                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .fromWallet: viewModel.sourceWallet.address] }
+    
     var body: some View {
         VStack(spacing: 4) {
             sendingTokenInfoView()
@@ -28,6 +32,7 @@ struct ConfirmTransferDomainView: View {
         .padding(16)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
         .viewPullUp($pullUp)
         .displayError($error)
@@ -67,6 +72,7 @@ private extension ConfirmTransferDomainView {
     }
     
     func continueButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         pullUp = .custom(.transferDomainConfirmationPullUp(confirmCallback: transferConfirmed))
     }
     
@@ -76,23 +82,25 @@ private extension ConfirmTransferDomainView {
             isLoading = true
             await Task.sleep(seconds: 0.35)
             
+            let domain = self.data.domain
+            let recipientAddress = self.data.receiver.walletAddress
+            let shouldClearRecords = confirmationData.shouldClearRecords
             do {
-                let domain = self.data.domain
-                let recipientAddress = self.data.receiver.walletAddress
-                let configuration = TransferDomainConfiguration(resetRecords: confirmationData.shouldClearRecords)
+                
+                let configuration = TransferDomainConfiguration(resetRecords: shouldClearRecords)
                 try await appContext.domainTransferService.transferDomain(domain: domain.toDomainItem(),
                                                                           to: recipientAddress,
                                                                           configuration: configuration)
-                appContext.analyticsService.log(event: .didTransferDomain,
-                                                withParameters: [.domainName: domain.name,
-                                                                 .fromWallet: domain.ownerWallet ?? "",
-                                                                 .toWallet: recipientAddress])
+                logAnalytic(event: .didTransferDomain, parameters: [.didClearRecords: String(shouldClearRecords)])
                 Task.detached {
                     try? await appContext.walletsDataService.refreshDataForWallet(viewModel.sourceWallet)
                 }
                 
                 viewModel.handleAction(.didTransferDomain(domain))
             } catch {
+                logAnalytic(event: .didFailToTransferDomain,
+                            parameters: [.didClearRecords: String(shouldClearRecords),
+                                         .error: error.localizedDescription])
                 self.error = error
             }
             

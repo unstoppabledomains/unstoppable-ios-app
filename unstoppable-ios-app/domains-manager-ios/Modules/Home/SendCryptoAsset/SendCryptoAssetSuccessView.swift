@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct SendCryptoAssetSuccessView: View {
+struct SendCryptoAssetSuccessView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: SendCryptoAssetViewModel
     @EnvironmentObject var tabRouter: HomeTabRouter
 
     var asset: Asset
-    
+    var analyticsName: Analytics.ViewName { asset.viewName }
     @ObservedObject private var transactionTracker = TransactionStatusTracker()
     
     var body: some View {
@@ -36,6 +36,7 @@ struct SendCryptoAssetSuccessView: View {
         .animation(.default, value: UUID())
         .toolbar(.hidden, for: .navigationBar)
         .onAppear(perform: onAppear)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .onDisappear(perform: {
             transactionTracker.stopTracking()
         })
@@ -132,6 +133,7 @@ private extension SendCryptoAssetSuccessView {
         UDButtonView(text: String.Constants.viewTransaction.localized(),
                      style: .large(.ghostPrimary),
                      callback: {
+            logButtonPressedAnalyticEvents(button: .viewTransaction)
             viewTransaction(txHash: txHash)
         })
     }
@@ -148,6 +150,7 @@ private extension SendCryptoAssetSuccessView {
     }
     
     func doneAction() {
+        logButtonPressedAnalyticEvents(button: .done)
         tabRouter.sendCryptoInitialData = nil
     }
 }
@@ -157,6 +160,15 @@ extension SendCryptoAssetSuccessView {
     enum Asset {
         case token(token: BalanceTokenUIDescription, amount: SendCryptoAsset.TokenAssetAmountInput, txHash: TxHash)
         case domain(DomainDisplayInfo)
+        
+        var viewName: Analytics.ViewName {
+            switch self {
+            case .token:
+                return .sendCryptoSuccess
+            case .domain:
+                return .transferDomainSuccess
+            }
+        }
     }
 }
 

@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct UDTextFieldView: View {
+struct UDTextFieldView: View, ViewAnalyticsLogger {
+    
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     @Binding var text: String
     let placeholder: String
@@ -20,6 +23,7 @@ struct UDTextFieldView: View {
     var autocapitalization: TextInputAutocapitalization = .sentences
     var autocorrectionDisabled: Bool = false
     var height: CGFloat = 56
+    var focusedStateChangedCallback: ((Bool)->())? = nil
     @State private var state: TextFieldState = .rest
     @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
@@ -128,11 +132,7 @@ private extension UDTextFieldView {
                 .textInputAutocapitalization(autocapitalization)
                 .autocorrectionDisabled(autocorrectionDisabled)
                 .onChange(of: isTextFieldFocused) { isFocused in
-                    if isFocused {
-                        // began editing...
-                    } else {
-                        // ended editing...
-                    }
+                    focusedStateChangedCallback?(isFocused)
                     setState()
                 }
                 .frame(height: 24)
@@ -151,6 +151,7 @@ private extension UDTextFieldView {
                 case .clear:
                     text = ""
                 case .paste:
+                    logButtonPressedAnalyticEvents(button: .pasteFromClipboard)
                     text = UIPasteboard.general.string ?? ""
                 case .cancel(let callback):
                     if isInspiring {
