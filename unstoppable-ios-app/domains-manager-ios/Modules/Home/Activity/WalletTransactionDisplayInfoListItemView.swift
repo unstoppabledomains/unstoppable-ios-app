@@ -16,12 +16,13 @@ struct WalletTransactionDisplayInfoListItemView: View {
     @State private var icon: UIImage?
     
     var body: some View {
-        HStack {
+        HStack(spacing: 24) {
             iconView()
             transactionTypeDetails()
             Spacer()
             transactionValueDetails()
         }
+        .lineLimit(1)
         .onAppear(perform: onAppear)
     }
 }
@@ -61,6 +62,7 @@ private extension WalletTransactionDisplayInfoListItemView {
             Text(sourceText)
                 .font(.currentFont(size: 14))
                 .foregroundStyle(Color.foregroundSecondary)
+                .truncationMode(.middle)
         }
     }
     

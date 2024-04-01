@@ -59,7 +59,7 @@ extension MockEntitiesFabric {
                                         imageUrl: "",
                                         symbol: "",
                                         type: "",
-                                        from: .init(address: "1", label: nil, link: ""),
+                                        from: .init(address: "0", label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x", link: ""),
                                         to: .init(address: "2", label: nil, link: ""))
         }
     }
