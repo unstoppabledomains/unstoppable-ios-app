@@ -396,7 +396,7 @@ extension NetworkService {
     
     func fetchInfuraGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
         let url = URL(string: "https://gas.api.infura.io/networks/\(chainId)/suggestedGasFees")!
-        let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: ["Authorization": "Basic ODdmOWFlNjcxNmI1NGYyNTkyYjU2YTNkYTI5MDc1MmM6NWFkZThkNTRjNWQyNGRjMjhlN2U0ZGYwZDI1OTMwNDE="])
+        let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: Self.infuraBasicAuthHeader)
         let jsonInf = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
         
         var priceDict: [InfuraSpeedCase: Double] = [:]
