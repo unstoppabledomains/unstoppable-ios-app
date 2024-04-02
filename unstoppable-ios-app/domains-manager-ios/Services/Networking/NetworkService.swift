@@ -316,6 +316,7 @@ extension NetworkService {
         case genericError(String)
         case failedGetStatus
         case failedParseStatusPrices
+        case failedParseInfuraPrices
         case unknownChain
         
         init(message: String) {
@@ -383,6 +384,31 @@ extension NetworkService {
                  throw JRPCError.failedGetStatus
              }
         return ["ETH": ethPrices, "MATIC": maticPrices]
+    }
+    
+    enum InfuraSpeedCase: String, CaseIterable {
+        case low, medium, high
+    }
+    
+    func fetchInfuraGasPrices(chain: ChainSpec) async throws -> EstimatedGasPrices {
+        let url = URL(string: "https://gas.api.infura.io/networks/\(chain.id)/suggestedGasFees")!
+        let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: ["Authorization": "Basic ODdmOWFlNjcxNmI1NGYyNTkyYjU2YTNkYTI5MDc1MmM6NWFkZThkNTRjNWQyNGRjMjhlN2U0ZGYwZDI1OTMwNDE="])
+        let jsonInf = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+        
+        var priceDict: [InfuraSpeedCase: Double] = [:]
+        try Self.InfuraSpeedCase.allCases.forEach {
+            guard let section = jsonInf[$0.rawValue] as? [String: Any],
+                  let priceString = section["suggestedMaxFeePerGas"] as? String,
+                let price = Double(priceString) else {
+                throw JRPCError.failedParseInfuraPrices
+            }
+            priceDict[$0] = price
+        }
+        assert(priceDict.count == Self.InfuraSpeedCase.allCases.count) // always true after forEach
+        
+        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.low]!),
+                                  fast: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
+                                  urgent: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.high]!))
     }
     
     func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
