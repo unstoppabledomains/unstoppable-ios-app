@@ -96,9 +96,9 @@ struct NativeCryptoSender: CryptoSenderProtocol {
     }
     
     func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
-        try await NetworkService().getStatusGasPrices(chainId: chain.id)
+        try await fetchGasPrices(chainId: chain.id)
     }
-    
+        
     // Private methods
     
     private func createNativeSendTransaction(crypto: CryptoSendingSpec,
@@ -107,8 +107,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                              chainId: Int) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
                                                                                 chainId: chainId)
-        let speedBasedGasPrice = try await NetworkService().fetchGasPrice(chainId: chainId,
-                                                                         for: crypto.speed)
+        let speedBasedGasPrice = try await fetchGasPrice(chainId: chainId, for: crypto.speed)
         
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
@@ -125,5 +124,15 @@ struct NativeCryptoSender: CryptoSenderProtocol {
             transaction.gas = gasEstimate
         }
         return transaction
+    }
+    
+    private func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
+        let prices: EstimatedGasPrices = try await fetchGasPrices(chainId: chainId)
+        return prices.getPriceForSpeed(speed)
+    }
+    
+    private func fetchGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
+        // here routes to Status or Infura source
+        try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
     }
 }

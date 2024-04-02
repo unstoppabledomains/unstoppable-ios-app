@@ -391,7 +391,11 @@ extension NetworkService {
     }
     
     func fetchInfuraGasPrices(chain: ChainSpec) async throws -> EstimatedGasPrices {
-        let url = URL(string: "https://gas.api.infura.io/networks/\(chain.id)/suggestedGasFees")!
+        try await fetchInfuraGasPrices(chainId: chain.id)
+    }
+    
+    func fetchInfuraGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
+        let url = URL(string: "https://gas.api.infura.io/networks/\(chainId)/suggestedGasFees")!
         let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: ["Authorization": "Basic ODdmOWFlNjcxNmI1NGYyNTkyYjU2YTNkYTI5MDc1MmM6NWFkZThkNTRjNWQyNGRjMjhlN2U0ZGYwZDI1OTMwNDE="])
         let jsonInf = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
         
@@ -409,11 +413,6 @@ extension NetworkService {
         return EstimatedGasPrices(normal: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.low]!),
                                   fast: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
                                   urgent: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.high]!))
-    }
-    
-    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
-        let prices: EstimatedGasPrices = try await getStatusGasPrices(chainId: chainId)
-        return prices.getPriceForSpeed(speed)
     }
     
     func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
