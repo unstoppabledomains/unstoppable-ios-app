@@ -1010,6 +1010,7 @@ extension String {
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
         static let findYourDomain = "FIND_YOUR_DOMAIN"
+        static let searchForANewDomain = "SEARCH_FOR_A_NEW_DOMAIN"
         static let trending = "TRENDING"
         static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
         static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"
