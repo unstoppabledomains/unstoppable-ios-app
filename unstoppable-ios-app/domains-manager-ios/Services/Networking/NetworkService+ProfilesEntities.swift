@@ -11,7 +11,6 @@ struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
     let metadata: PublicDomainProfileMetaData
     let socialAccounts: SocialAccounts?
-    let referralCode: String?
     let social: DomainProfileSocialInfo?
     let records: [String : String]?
     let walletBalances: [ProfileWalletBalance]?
@@ -606,7 +605,7 @@ struct ProfileUpdateRequest: Encodable, Hashable {
 }
 
 enum GetDomainProfileField: String {
-    case profile, socialAccounts, messaging, cryptoVerifications, records, humanityCheck, referralCode
+    case profile, socialAccounts, messaging, cryptoVerifications, records, humanityCheck
 }
 
 struct SocialAccount: Hashable, Encodable {
