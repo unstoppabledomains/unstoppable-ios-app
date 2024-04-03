@@ -98,8 +98,15 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func tokensListView() -> some View {
-        ForEach(tokens) { token in
-            selectableTokenRow(token)
+        if tokens.isEmpty {
+            SelectCryptoAssetToSendEmptyView(assetType: .tokens,
+                                             actionCallback: {
+                tabRouter.runBuyCryptoFlowTo(wallet: viewModel.sourceWallet)
+            })
+        } else {
+            ForEach(tokens) { token in
+                selectableTokenRow(token)
+            }
         }
     }
     
@@ -128,12 +135,13 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-        ZStack {
-            if !allDomains.isEmpty {
-                domainsSearchView()
-            }
+        if !allDomains.isEmpty {
+            domainsSearchView()
+            domainsContentView()
+        } else {
+            SelectCryptoAssetToSendEmptyView(assetType: .domains,
+                                             actionCallback: tabRouter.runPurchaseFlow)
         }
-        domainsContentView()
     }
     
     @ViewBuilder

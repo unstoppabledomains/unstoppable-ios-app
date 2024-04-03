@@ -1073,3 +1073,7 @@ More tabs are coming in the next updates.";
 "RECEIVED_FROM_N" = "Received from %@";
 "SENT_TO_N" = "Sent to %@";
 "TX_FEE" = "Tx fee";
+"SEND_ASSET_NO_DOMAINS_TITLE" = "No domains available to transfer in your wallet";
+"SEND_ASSET_NO_TOKENS_TITLE" = "No tokens available to send\nin your wallet";
+"SEND_ASSET_NO_TOKENS_SUBTITLE" = "Currently, the app supports only Ethereum and Polygon tokens for sending.";
+"TOTAL_ESTIMATE" = "Total Estimate";

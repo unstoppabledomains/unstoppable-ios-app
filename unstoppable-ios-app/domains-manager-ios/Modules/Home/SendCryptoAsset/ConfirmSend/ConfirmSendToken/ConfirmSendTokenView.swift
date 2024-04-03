@@ -178,9 +178,11 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func confirmButton() -> some View {
-        VStack(spacing: isIPSE ? 6 : 24) {
+        VStack(spacing: isIPSE ? 6 : 16) {
             if !hasSufficientFunds {
                 insufficientFundsLabel()
+            } else {
+                totalValueLabel()
             }
             UDButtonView(text: String.Constants.confirm.localized(),
                          icon: confirmIcon,
@@ -203,6 +205,44 @@ private extension ConfirmSendTokenView {
         }
         .foregroundStyle(Color.foregroundDanger)
         .frame(height: 20)
+    }
+        
+    func totalValue(gasFee: Double) -> Double {
+        let sendData = dataModel.data
+        var amountToSpend = sendData.amount.valueOf(type: .tokenAmount, for: token)
+        if !sendData.isSendingAllTokens() {
+            amountToSpend += gasFee
+        }
+        return amountToSpend
+    }
+    
+    func totalValueInUSD(gasFee: Double) -> String {
+        guard let marketUsd = token.marketUsd else { return "" }
+        
+        let amountToSpend = totalValue(gasFee: gasFee)
+        let amountInUSD = amountToSpend * marketUsd
+        let formattedUSDAmount = formatCartPrice(amountInUSD)
+        return formattedUSDAmount
+    }
+    
+    func totalValueFormatted(gasFee: Double) -> String {
+        let amountToSpend = totalValue(gasFee: gasFee)
+        let formattedAmount = BalanceStringFormatter.tokenFullBalanceString(balance: amountToSpend, symbol: token.symbol)
+        return "(\(formattedAmount))"
+    }
+    
+    @ViewBuilder
+    func totalValueLabel() -> some View {
+        if let gasFee = dataModel.gasFee {
+            HStack(alignment: .top) {
+                Text(String.Constants.totalEstimate.localized())
+                Spacer()
+                Text("\(totalValueInUSD(gasFee: gasFee)) \(totalValueFormatted(gasFee: gasFee))")
+            }
+            .font(.currentFont(size: 16))
+            .foregroundStyle(Color.foregroundSecondary)
+            .multilineTextAlignment(.trailing)
+        }
     }
     
     var confirmIcon: Image? {
