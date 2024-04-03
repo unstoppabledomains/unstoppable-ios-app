@@ -99,9 +99,12 @@ private extension WalletTransactionDisplayInfoListItemView {
     
     var transactionTitle: String {
         if transaction.type.isDeposit {
-            String.Constants.receivedFromN.localized(transaction.from.displayName)
+            if transaction.from.address.isEmpty {
+                return String.Constants.received.localized()
+            }
+            return String.Constants.receivedFromN.localized(transaction.from.displayName)
         } else {
-            String.Constants.sentToN.localized(transaction.to.displayName)
+            return String.Constants.sentToN.localized(transaction.to.displayName)
         }
     }
     

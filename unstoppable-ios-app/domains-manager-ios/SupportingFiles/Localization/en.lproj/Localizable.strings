@@ -1069,6 +1069,7 @@ More tabs are coming in the next updates.";
 "NORMAL" = "Normal";
 "FAST" = "Fast";
 "URGENT" = "Urgent";
+"RECEIVED" = "Received";
 "RECEIVED_FROM_N" = "Received from %@";
 "SENT_TO_N" = "Sent to %@";
 "TX_FEE" = "Tx fee";
