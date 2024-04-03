@@ -14,7 +14,8 @@ struct ConfirmSendAssetReviewInfoView: View, ViewAnalyticsLogger {
     @Environment(\.imageLoadingService) var imageLoadingService
     
     private let lineWidth: CGFloat = 1
-    private let sectionHeight: CGFloat = 48
+    @MainActor
+    private var sectionHeight: CGFloat { isIPSE ? 40 : 48 }
 
     let asset: Asset
     let sourceWallet: WalletEntity
@@ -45,6 +46,7 @@ private extension ConfirmSendAssetReviewInfoView {
 
 // MARK: - Private methods
 private extension ConfirmSendAssetReviewInfoView {
+    @MainActor
     @ViewBuilder
     func infoSectionsView() -> some View {
         VStack(spacing: 0) {
@@ -298,6 +300,7 @@ private extension ConfirmSendAssetReviewInfoView {
 private extension ConfirmSendAssetReviewInfoView {
     var numberOfSections: Int { getCurrentSections().count }
 
+    @MainActor
     @ViewBuilder
     func curveLine() -> some View {
         ConnectCurve(radius: 24,
