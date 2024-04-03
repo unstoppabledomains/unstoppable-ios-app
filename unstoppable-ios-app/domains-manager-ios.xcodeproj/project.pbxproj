@@ -2394,6 +2394,8 @@
 		C6E6A001288AEAC6000A8346 /* ExternalEventsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */; };
 		C6E6E03B2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */; };
 		C6E6E03C2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */; };
+		C6E856262BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */; };
+		C6E856272BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */; };
 		C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */; };
 		C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */; };
 		C6ECBF6628D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */; };
@@ -3885,6 +3887,7 @@
 		C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEvent.swift; sourceTree = "<group>"; };
 		C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsStorage.swift; sourceTree = "<group>"; };
 		C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreEmptyStateView.swift; sourceTree = "<group>"; };
+		C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCryptoAssetToSendEmptyView.swift; sourceTree = "<group>"; };
 		C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAnalyticsLogger.swift; sourceTree = "<group>"; };
 		C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintingNotPrimaryDomainsInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectWalletsReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -6440,6 +6443,7 @@
 				C67213E82BAA99080075B9C7 /* SelectCryptoAssetToSendView.swift */,
 				C62900E42BAAB6E8008B35A2 /* SelectCryptoAssetToSendTokenView.swift */,
 				C62900E72BAAB6F6008B35A2 /* SelectCryptoAssetToSendDomainView.swift */,
+				C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */,
 			);
 			path = SelectAssetToSend;
 			sourceTree = "<group>";
@@ -8820,6 +8824,7 @@
 				C6D3B9CA2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				C6ED31E3295BF8DF00BC6919 /* Equatable.swift in Sources */,
 				C60982252823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
+				C6E856262BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */,
 				C630BC812B1847F800E29318 /* PendingPurchasedDomain.swift in Sources */,
 				C6E1188828F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C6526DD929D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
@@ -10908,6 +10913,7 @@
 				C61807B22B199DD70032E543 /* UIView.swift in Sources */,
 				C6203A552B88356E000A1A8E /* HomeExploreNavigationDestination.swift in Sources */,
 				C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */,
+				C6E856272BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */,
 				C6D645B22B1DBBCE00D724AC /* PreviewConnectedAppsImageCache.swift in Sources */,
 				C6A89C5F2B31654E008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
 				C6B761EE2BB3F8C900773943 /* MockEntitiesFabric+Txs.swift in Sources */,
