@@ -91,8 +91,9 @@ private extension HomeActivityView {
     func contentList() -> some View {
         List {
             txsList()
-        }
+        }.environment(\.defaultMinListRowHeight, 28)
         .listStyle(.plain)
+        .listRowSpacing(0)
     }
     
     @ViewBuilder

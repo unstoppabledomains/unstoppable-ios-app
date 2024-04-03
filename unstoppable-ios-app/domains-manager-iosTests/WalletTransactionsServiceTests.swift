@@ -191,6 +191,28 @@ extension WalletTransactionsServiceTests {
         let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
         isSameTxsIds((1...4).map { String($0)}, transactionsResponse.txs.map { $0.id })
     }
+    
+    func testTxsResponseIncludeLoadedChains() async throws {
+        let txs = createMockTxs(range: 1...3)
+        let otherChaintxs = createMockTxs(range: 7...9)
+        let newTxs = createMockTxs(range: 4...6)
+        let cachedResponse: [WalletTransactionsPerChainResponse] = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: "1", txs: txs),
+            WalletTransactionsPerChainResponse(chain: "MATIC", cursor: nil, txs: otherChaintxs)
+        ]
+        cache.cache[wallet] = cachedResponse
+        let networkResponse = [
+            WalletTransactionsPerChainResponse(chain: "ETH", cursor: nil, txs: newTxs)
+        ]
+        networkService.expectedResponse = networkResponse
+        
+        let transactionsResponse = try await service.getTransactionsFor(wallet: wallet, forceReload: false)
+        isSameTxs(txs + newTxs + otherChaintxs, transactionsResponse.txs)
+        let updatedCache = await cache.fetchTransactionsFromCache(wallet: wallet)!
+        XCTAssertEqual(updatedCache.count, 2)
+        isSameTxs(txs + newTxs + otherChaintxs, updatedCache.combinedTxs())
+        
+    }
 }
 
 // MARK: - Private methods

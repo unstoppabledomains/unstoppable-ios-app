@@ -48,6 +48,10 @@ extension Date {
         Date.isoCalendar.startOfDay(for: self)
     }
     
+    var monthStart: Date {
+        Date.isoCalendar.date(from: DateComponents(year: yearNumber, month: monthNumber))!
+    }
+    
     var isToday: Bool {
         Date.isoCalendar.isDateInToday(self)
     }
@@ -62,6 +66,10 @@ extension Date {
     
     var yearNumber: Int {
         Date.isoCalendar.component(.year, from: self)
+    }
+    
+    var monthNumber: Int {
+        Date.isoCalendar.component(.month, from: self)
     }
     
     var isCurrentWeek: Bool {

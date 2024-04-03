@@ -17,28 +17,33 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     let link: URL?
     let imageUrl: URL?
     let symbol: String
+    let nftName: String
     let type: TransactionType
     let from: Participant
     let to: Participant
     
     struct Participant: Hashable {
         let address: String
-        let domainName: String?
+        let label: String?
         let link: URL?
         
         var displayName: String {
-            domainName ?? address.walletAddressTruncated
+            if let label,
+               label.isValidDomainName() {
+                return label
+            }
+            return address.walletAddressTruncated
         }
         
         init(address: String, domainName: String?, link: URL?) {
             self.address = address
-            self.domainName = domainName
+            self.label = domainName
             self.link = link
         }
         
         init(serializedParticipant: SerializedWalletTransaction.Participant) {
             self.address = serializedParticipant.address
-            self.domainName = serializedParticipant.label
+            self.label = serializedParticipant.label
             self.link = URL(string: serializedParticipant.link)
         }
     }
@@ -49,7 +54,7 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
 extension WalletTransactionDisplayInfo {
     init(serializedTransaction: SerializedWalletTransaction,
          userWallet: String) {
-        self.id = serializedTransaction.id
+        self.id = serializedTransaction.id + serializedTransaction.method
         self.time = serializedTransaction.timestamp
         self.success = serializedTransaction.success
         self.value = serializedTransaction.value
@@ -57,6 +62,7 @@ extension WalletTransactionDisplayInfo {
         self.link = URL(string: serializedTransaction.link)
         self.imageUrl = URL(string: serializedTransaction.imageUrl ?? "")
         self.symbol = serializedTransaction.symbol
+        self.nftName = serializedTransaction.method
         
         if serializedTransaction.from.address == userWallet {
             if serializedTransaction.type == "nft" {
@@ -84,5 +90,14 @@ extension WalletTransactionDisplayInfo {
         case tokenWithdrawal
         case nftDeposit
         case nftWithdrawal
+        
+        var isDeposit: Bool {
+            switch self {
+            case .tokenDeposit, .nftDeposit:
+                true
+            case .tokenWithdrawal, .nftWithdrawal:
+                false
+            }
+        }
     }
 }

@@ -9,6 +9,10 @@ import Foundation
 @testable import domains_manager_ios
 
 final class TestableWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendSignTx(sessions: [domains_manager_ios.WCConnectedAppsStorageV2.SessionProxy], chainId: Int, tx: domains_manager_ios.EthereumTransaction, address: domains_manager_ios.HexAddress, in wallet: domains_manager_ios.UDWallet) async throws -> domains_manager_ios.ResponseV2 {
+        throw TestableGenericError.generic
+    }
+    
     var delegate: (any WalletConnectDelegate)?
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI {
