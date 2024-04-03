@@ -135,15 +135,13 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func domainsListView() -> some View {
-//        ZStack {
-            if !allDomains.isEmpty {
-                domainsSearchView()
-                domainsContentView()
-            } else {
-                SelectCryptoAssetToSendEmptyView(assetType: .domains,
-                                                 actionCallback: tabRouter.runPurchaseFlow)
-            }
-//        }
+        if !allDomains.isEmpty {
+            domainsSearchView()
+            domainsContentView()
+        } else {
+            SelectCryptoAssetToSendEmptyView(assetType: .domains,
+                                             actionCallback: tabRouter.runPurchaseFlow)
+        }
     }
     
     @ViewBuilder
