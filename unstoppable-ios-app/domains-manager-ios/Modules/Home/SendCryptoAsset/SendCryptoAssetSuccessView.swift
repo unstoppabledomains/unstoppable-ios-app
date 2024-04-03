@@ -101,21 +101,23 @@ private extension SendCryptoAssetSuccessView {
             .multilineTextAlignment(.center)
     }
     
-    var currentTimeEstimation: String {
+    var currentTimeEstimation: String? {
         switch asset {
         case .domain:
             String.Constants.transactionTakesNMinutes.localized(5)
         case .token:
-            String.Constants.transactionTakesNMinutes.localized(3)
+            nil
         }
     }
     
     @ViewBuilder
     func estimateTimeTextView() -> some View {
-        Text(currentTimeEstimation)
-            .font(.currentFont(size: 16, weight: .medium))
-            .foregroundStyle(Color.foregroundSecondary)
-            .multilineTextAlignment(.center)
+        if let currentTimeEstimation {
+            Text(currentTimeEstimation)
+                .font(.currentFont(size: 16, weight: .medium))
+                .foregroundStyle(Color.foregroundSecondary)
+                .multilineTextAlignment(.center)
+        }
     }
     
     @ViewBuilder
