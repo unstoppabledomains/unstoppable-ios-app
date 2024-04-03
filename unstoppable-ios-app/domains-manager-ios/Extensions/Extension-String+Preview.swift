@@ -1176,8 +1176,8 @@ extension String {
         static let normal = "NORMAL"
         static let fast = "FAST"
         static let urgent = "URGENT"
-        static let received = "RECEIVED"
-        static let sent = "SENT"
+        static let receivedFromN = "RECEIVED_FROM_N"
+        static let sentToN = "SENT_TO_N"
         static let txFee = "TX_FEE"
     }
     

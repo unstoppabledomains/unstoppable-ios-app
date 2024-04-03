@@ -54,10 +54,10 @@ extension MockEntitiesFabric {
                                         success: true,
                                         value: 1,
                                         gas: 1,
-                                        method: "",
+                                        method: "Unknown",
                                         link: "",
-                                        imageUrl: "",
-                                        symbol: "",
+                                        imageUrl: ImageURLs.aiAvatar.rawValue,
+                                        symbol: "MATIC",
                                         type: "",
                                         from: .init(address: "0", label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x", link: ""),
                                         to: .init(address: "2", label: nil, link: ""))
