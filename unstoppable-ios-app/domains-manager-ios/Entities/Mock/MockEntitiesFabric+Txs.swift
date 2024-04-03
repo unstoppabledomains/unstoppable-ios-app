@@ -43,7 +43,7 @@ extension MockEntitiesFabric {
         
         
         static func createMockEmptyTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0)) }
+            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0 * -14000)) }
         }
         
         enum TxType {
