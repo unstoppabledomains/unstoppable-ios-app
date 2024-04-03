@@ -12,6 +12,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     
     let chain: String
     let symbol: String
+    let gasCurrency: String
     let name: String
     let balance: Double
     let balanceUsd: Double
@@ -25,14 +26,24 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     static let iconSize: InitialsView.InitialsSize = .default
     static let iconStyle: InitialsView.Style = .gray
     
+    var balanceSymbol: String {
+        // For 'parent' token we show gas currency (which is ETH for Base token)
+        if parentSymbol == nil {
+            return gasCurrency
+        }
+        return symbol
+    }
+    
     init(walletBalance: WalletTokenPortfolio) {
         self.chain = walletBalance.symbol
         self.symbol = walletBalance.symbol
+        self.gasCurrency = walletBalance.gasCurrency
         self.name = walletBalance.name
         self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
         self.balanceUsd = walletBalance.value.walletUsdAmt
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
+        self.logoURL = URL(string: walletBalance.logoUrl ?? "")
     }
     
     init(chain: String,
@@ -41,10 +52,10 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
          balance: Double,
          balanceUsd: Double,
          marketUsd: Double? = nil,
-         marketPctChange24Hr: Double? = nil,
-         icon: UIImage? = nil) {
+         marketPctChange24Hr: Double? = nil) {
         self.chain = chain
         self.symbol = symbol
+        self.gasCurrency = symbol
         self.name = name
         self.balance = balance
         self.balanceUsd = balanceUsd
@@ -55,12 +66,14 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     init(chain: String, walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
         self.chain = chain
         self.symbol = walletToken.symbol
+        self.gasCurrency = walletToken.gasCurrency
         self.name = walletToken.name
         self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
         self.parentSymbol = parentSymbol
+        self.parentLogoURL = parentLogoURL
         self.logoURL = URL(string: walletToken.logoUrl ?? "")
     }
     
