@@ -11,7 +11,7 @@ struct BalanceStringFormatter {
     
     static func tokenBalanceString(_ token: BalanceTokenUIDescription) -> String {
         tokenBalanceString(balance: token.balance,
-                           symbol: token.symbol)
+                           symbol: token.balanceSymbol)
     }
     
     static func tokenBalanceString(balance: Double, 

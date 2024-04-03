@@ -56,7 +56,7 @@ private extension PurchaseSearchDomainsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.findYourDomain.localized())
+            Text(String.Constants.searchForANewDomain.localized())
                 .titleText()
         }
         .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))

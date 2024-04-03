@@ -544,13 +544,6 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-    func showInviteFriendsScreen(domain: DomainItem,
-                                 in nav: CNavigationController) {
-        let vc = buildInviteFriendsModule(domain: domain)
-        
-        nav.pushViewController(vc, animated: true)
-    }
-    
 //    func showChatsListScreen(in nav: CNavigationController,
 //                             presentOptions: ChatsList.PresentOptions) {
 //        let vc = buildChatsListModule(presentOptions: presentOptions)
@@ -931,14 +924,6 @@ private extension UDRouter {
         return vc
     }
     
-    func buildInviteFriendsModule(domain: DomainItem) -> UIViewController {
-        let vc = InviteFriendsViewController.nibInstance()
-        let presenter = InviteFriendsViewPresenter(view: vc,
-                                                   domain: domain)
-        vc.presenter = presenter
-        return vc
-    }
-   
 //    func buildChatRequestsModuleWith(dataType: ChatsRequestsListViewPresenter.DataType,
 //                                     profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
 //        let vc = ChatsListViewController.nibInstance()

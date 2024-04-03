@@ -216,7 +216,6 @@ extension Analytics {
         case loginWithWebsiteAccount, loginWithEmailAndPassword
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
-        case inviteFriends
         case chatsHome, chatRequestsList, chatChannelsSpamList
         case chatDialog, channelFeed
         case publicDomainProfile
@@ -296,7 +295,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount, settingsInviteFriends
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount
 
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen

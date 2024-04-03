@@ -1054,10 +1054,6 @@
 		C673D59629FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59529FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift */; };
 		C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
-		C673D5AC29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
-		C673D5B029FB725B001CC77C /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
-		C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
-		C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6752C432B708DF400E54367 /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* UserProfileService.swift */; };
 		C6752C462B708E1900E54367 /* UserProfileServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */; };
@@ -1697,10 +1693,6 @@
 		C6C8F8EB2B21836400A9834D /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */; };
 		C6C8F91A2B2183A400A9834D /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
 		C6C8F91B2B2183A400A9834D /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6637A7028100D3A0000AE56 /* LaunchViewController.xib */; };
-		C6C8F91C2B2183AB00A9834D /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
-		C6C8F91D2B2183AB00A9834D /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
-		C6C8F91E2B2183AB00A9834D /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
-		C6C8F91F2B2183AB00A9834D /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
 		C6C8F9202B2183B700A9834D /* DigitalKeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804B9280D9EC7007E6390 /* DigitalKeyboardViewController.swift */; };
 		C6C8F9212B2183B700A9834D /* EnterPasscodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C66804BC280D9EC7007E6390 /* EnterPasscodeViewController.xib */; };
 		C6C8F9222B2183B700A9834D /* EnterPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804BE280D9EC7007E6390 /* EnterPasscodeViewController.swift */; };
@@ -3374,10 +3366,6 @@
 		C673D59529FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferDomainTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
-		C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewPresenter.swift; sourceTree = "<group>"; };
-		C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewController.swift; sourceTree = "<group>"; };
-		C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InviteFriendsViewController.xib; sourceTree = "<group>"; };
-		C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendStepView.swift; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C6752C452B708E1900E54367 /* UserProfileServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileServiceProtocol.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
@@ -6483,25 +6471,6 @@
 			path = DomainTransactionInProgressCell;
 			sourceTree = "<group>";
 		};
-		C673D5A829FB723E001CC77C /* InviteFriends */ = {
-			isa = PBXGroup;
-			children = (
-				C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */,
-				C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */,
-				C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */,
-				C673D5B829FB7266001CC77C /* Views */,
-			);
-			path = InviteFriends;
-			sourceTree = "<group>";
-		};
-		C673D5B829FB7266001CC77C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		C674598D280E9C560074CBE5 /* WebViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -7870,7 +7839,6 @@
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
 				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
-				C673D5A829FB723E001CC77C /* InviteFriends */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
 				C63DD35D29C89FCB002D45B2 /* LoginViewController */,
 				C65271DD2A148D74001A084C /* Messaging */,
@@ -8472,7 +8440,6 @@
 				C62C3FC1283F6E410094FC93 /* MintDomainsConfigurationViewController.xib in Resources */,
 				C60982F4282A7D7200546392 /* ConfirmWordConfirmationCell.xib in Resources */,
 				C60982D4282A7A8E00546392 /* AddWalletViewController.xib in Resources */,
-				C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C66FCD1E2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */,
@@ -8701,7 +8668,6 @@
 				C6D646902B1ED13C00D724AC /* AddCurrencyEmptyCell.xib in Resources */,
 				C6D646F02B1ED5B200D724AC /* AddWalletViewController.xib in Resources */,
 				C6C8F9282B2183C700A9834D /* DomainsCollectionSearchEmptyCell.xib in Resources */,
-				C6C8F91C2B2183AB00A9834D /* InviteFriendsViewController.xib in Resources */,
 				C6C8F8422B217E9600A9834D /* CreatePasswordViewController.xib in Resources */,
 				C6C8F89E2B2182AE00A9834D /* RenameWalletViewController.xib in Resources */,
 				C6C8F8512B217E9600A9834D /* ConfirmWordConfirmationCell.xib in Resources */,
@@ -8876,7 +8842,6 @@
 				C61C332A2B90527200BD11F5 /* UDSegmentedControlView.swift in Sources */,
 				C6668941281150FA002062B4 /* SecondaryButton.swift in Sources */,
 				C62247BA283CFF23002A0CBD /* MockDomainTransactionsService.swift in Sources */,
-				C673D5AC29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
 				C6D3B9CF2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift in Sources */,
 				306486CD25273C4400388026 /* User.swift in Sources */,
 				C62396A92A28D7D200363F60 /* PushChannel.swift in Sources */,
@@ -9126,7 +9091,6 @@
 				C6FF2DA628F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C664311528D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C666893728114D7A002062B4 /* LinkButton.swift in Sources */,
-				C673D5B029FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */,
 				C69F99212A9F1264004B1958 /* HexagonShape.swift in Sources */,
 				C66689502811717C002062B4 /* PasscodeButton.swift in Sources */,
@@ -9562,7 +9526,6 @@
 				C62C3FA1283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C664B670291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
-				C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				C688C17C2B8443CA00BD233A /* ChatListEmptyStateView.swift in Sources */,
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				C6B65FAD2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
@@ -10244,7 +10207,6 @@
 				C618086C2B19BC0C0032E543 /* Line.swift in Sources */,
 				C6C8F8A82B2182AE00A9834D /* RenameWalletViewController.swift in Sources */,
 				C67213D02BAA80890075B9C7 /* SendCryptoAssetSelectReceiverView.swift in Sources */,
-				C6C8F91D2B2183AB00A9834D /* InviteFriendsViewController.swift in Sources */,
 				C6C8F97C2B2188FA00A9834D /* QRScannerViewPresenter.swift in Sources */,
 				C688C1872B846F1B00BD233A /* ChannelView.swift in Sources */,
 				C6960C352B19962800B79E28 /* BlockchainType.swift in Sources */,
@@ -10501,7 +10463,6 @@
 				C6D647392B1ED9EF00D724AC /* SignMessageRequestConfirmationView.swift in Sources */,
 				C6C8F8E82B21836400A9834D /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
 				C6C8F8272B217D3500A9834D /* WCCompatibleWallet.swift in Sources */,
-				C6C8F91E2B2183AB00A9834D /* InviteFriendStepView.swift in Sources */,
 				C6D646912B1ED13C00D724AC /* AddCurrencyViewPresenter.swift in Sources */,
 				C65CEB8C2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
 				C6C8F83D2B217E9600A9834D /* OnboardingBackupWalletPresenter.swift in Sources */,
@@ -10615,7 +10576,6 @@
 				C6D645E42B1DBD9000D724AC /* BaseDiffableCollectionViewControllerProtocol.swift in Sources */,
 				C618081C2B19AB0D0032E543 /* PendingPurchasedDomain.swift in Sources */,
 				C6D646B02B1ED17E00D724AC /* SocialsDomainImagePreviewView.swift in Sources */,
-				C6C8F91F2B2183AB00A9834D /* InviteFriendsViewPresenter.swift in Sources */,
 				C6F433492BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */,
 				C6D646932B1ED14400D724AC /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6B761EB2BB3EF5A00773943 /* InMemoryWalletTransactionsCache.swift in Sources */,
