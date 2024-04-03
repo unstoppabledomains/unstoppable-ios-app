@@ -120,7 +120,6 @@ extension MockEntitiesFabric {
             .init(profile: attributes,
                   metadata: createPublicDomainMetadata(domain: domain, walletAddress: walletAddress),
                   socialAccounts: socialAccounts,
-                  referralCode: nil,
                   social: social,
                   records: nil,
                   walletBalances: walletBalance)

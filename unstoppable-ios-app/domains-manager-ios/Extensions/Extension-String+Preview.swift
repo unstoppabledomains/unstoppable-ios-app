@@ -101,9 +101,9 @@ extension String {
             case .unstoppableDomainSearch(let searchKey):
                 return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             case .buyCryptoToDomain(let domainName):
-                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+                return "\(NetworkConfig.buyCryptoUrl)&domain=\(domainName)"
             case .buyCryptoToWallet(let walletAddress):
-                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
+                return "\(NetworkConfig.buyCryptoUrl)&address=\(walletAddress)"
             }
         }
         
@@ -434,7 +434,6 @@ extension String {
         static let settingsFollowTwitter = "SETTINGS_FOLLOW_TWITTER"
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
-        static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
         
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
@@ -900,13 +899,6 @@ extension String {
         static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
-        
-        // Referral
-        static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
-        static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
-        static let inviteFriendsStep1Message = "INVITE_FRIENDS_STEP_1_MESSAGE"
-        static let inviteFriendsStep2Message = "INVITE_FRIENDS_STEP_2_MESSAGE"
-        static let inviteFriendsStep3Message = "INVITE_FRIENDS_STEP_3_MESSAGE"
         static let copyLink = "COPY_LINK"
         
         // Apple Pay required
@@ -1010,6 +1002,7 @@ extension String {
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
         static let findYourDomain = "FIND_YOUR_DOMAIN"
+        static let searchForANewDomain = "SEARCH_FOR_A_NEW_DOMAIN"
         static let trending = "TRENDING"
         static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
         static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"

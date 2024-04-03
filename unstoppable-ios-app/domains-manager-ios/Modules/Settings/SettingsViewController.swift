@@ -203,7 +203,6 @@ extension SettingsViewController {
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
         case websiteAccount(user: FirebaseUser?)
-        case inviteFriends
         
         var title: String {
             switch self {
@@ -227,14 +226,12 @@ extension SettingsViewController {
                 return "Testnet"
             case .websiteAccount:
                 return String.Constants.viewVaultedDomains.localized()
-            case .inviteFriends:
-                return String.Constants.settingsInviteFriends.localized()
             }
         }
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .inviteFriends:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet:
                 return nil
             case .websiteAccount:
                 return String.Constants.protectedByUD.localized()
@@ -263,8 +260,6 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconTestnet")!
             case .websiteAccount:
                 return .domainsProfileIcon
-            case .inviteFriends:
-                return .giftBoxIcon20
             }
         }
         
@@ -282,7 +277,7 @@ extension SettingsViewController {
                 return .brandUnstoppablePink
             case .testnet:
                 return .brandSkyBlue
-            case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .backgroundMuted2
             case .websiteAccount:
                 return .brandDeepBlue
@@ -300,7 +295,7 @@ extension SettingsViewController {
                     return .chevron(value: user.email ?? "Twitter")
                 }
                 return .chevron(value: nil)
-            case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .empty
             case .testnet(let isOn):
                 return .switcher(isOn: isOn)
@@ -342,8 +337,6 @@ extension SettingsViewController {
                 return .settingsTestnet
             case .websiteAccount:
                 return .settingsWebsiteAccount
-            case .inviteFriends:
-                return .settingsInviteFriends
             }
         }
     }

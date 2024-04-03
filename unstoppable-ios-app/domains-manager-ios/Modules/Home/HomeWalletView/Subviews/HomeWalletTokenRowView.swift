@@ -49,7 +49,7 @@ struct HomeWalletTokenRowView: View {
                     .frame(height: token.isSkeleton ? 16 : 24)
                     .skeletonable()
                     .skeletonCornerRadius(12)
-                Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.symbol)")
+                Text("\(token.balance.formatted(toMaxNumberAfterComa: 2)) \(token.balanceSymbol)")
                     .font(.currentFont(size: 14, weight: .regular))
                     .foregroundStyle(secondaryColor)
                     .frame(height: token.isSkeleton ? 12 : 20)
