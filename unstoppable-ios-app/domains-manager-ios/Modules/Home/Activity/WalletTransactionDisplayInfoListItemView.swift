@@ -140,7 +140,7 @@ private extension WalletTransactionDisplayInfoListItemView {
             Text("-\(transactionValue)")
                 .foregroundStyle(Color.foregroundDefault)
         case .nftDeposit, .nftWithdrawal:
-            EmptyView()
+            nftTxValueView()
         }
     }
     
@@ -152,8 +152,39 @@ private extension WalletTransactionDisplayInfoListItemView {
                 .foregroundStyle(Color.foregroundSecondary)
         }
     }
+    
+    @ViewBuilder
+    func nftTxValueView() -> some View {
+        if transaction.nftName.isValidDomainName() {
+            nftTxValueViewWith(name: String.Constants.domain.localized())
+        } else {
+            nftTxValueViewWith(name: "NFT")
+            
+        }
+    }
+    
+    @ViewBuilder
+    func nftTxValueViewWith(name: String) -> some View {
+        Text(name)
+            .font(.currentFont(size: 14, weight: .medium))
+            .foregroundStyle(Color.foregroundDefault)
+            .frame(height: 20)
+            .padding(.horizontal, 6)
+            .background(Color.backgroundMuted)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(Color.backgroundDefault, lineWidth: 1)
+            )
+            .overlay(
+                Capsule()
+                    .inset(by: -1)
+                    .stroke(Color.borderEmphasis, lineWidth: 1)
+            )
+            .offset(x: -1)
+    }
 }
 
 #Preview {
-    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockTxOf(type: .nft, userWallet: "1", isDeposit: true), userWallet: "1"))
+    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockTxOf(type: .domain, userWallet: "1", isDeposit: false), userWallet: "1"))
 }
