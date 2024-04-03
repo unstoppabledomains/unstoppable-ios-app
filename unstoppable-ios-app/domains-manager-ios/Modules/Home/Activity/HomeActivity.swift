@@ -15,19 +15,44 @@ extension HomeActivity {
     struct GroupedTransactions: Hashable {
         let date: Date
         let txs: [WalletTransactionDisplayInfo]
-        
+                
         init(date: Date, txs: [WalletTransactionDisplayInfo]) {
             self.date = date
             self.txs = txs.sorted { $0.time > $1.time }
         }
         
         static func buildGroupsFrom(txs: [WalletTransactionDisplayInfo]) -> [GroupedTransactions] {
-            txs.reduce(into: [Date: [WalletTransactionDisplayInfo]]()) { result, tx in
-                let date = tx.time.dayStart
+            let (todayTxs, otherTxs) = breakTxsByTodayAndOthers(txs: txs)
+           
+            let otherGroups = otherTxs.reduce(into: [Date: [WalletTransactionDisplayInfo]]()) { result, tx in
+                let date = tx.time.monthStart
                 result[date, default: []].append(tx)
             }
-            .map { GroupedTransactions(date: $0.key, txs: $0.value) }
-            .sorted { $0.date > $1.date }
+                .map { GroupedTransactions(date: $0.key, txs: $0.value) }
+                .sorted { $0.date > $1.date }
+            
+            if todayTxs.isEmpty {
+                return otherGroups
+            }
+            
+            let todayGroup = GroupedTransactions(date: Date(), txs: todayTxs)
+
+            return [todayGroup] + otherGroups
+        }
+        
+        private static func breakTxsByTodayAndOthers(txs: [WalletTransactionDisplayInfo]) -> (today: [WalletTransactionDisplayInfo], other: [WalletTransactionDisplayInfo]) {
+            var todayTxs = [WalletTransactionDisplayInfo]()
+            var otherTxs = [WalletTransactionDisplayInfo]()
+            
+            for tx in txs {
+                if tx.time.isToday {
+                    todayTxs.append(tx)
+                } else {
+                    otherTxs.append(tx)
+                }
+            }
+            
+            return (todayTxs, otherTxs)
         }
         
     }
