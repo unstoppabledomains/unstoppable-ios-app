@@ -155,5 +155,5 @@ private extension WalletTransactionDisplayInfoListItemView {
 }
 
 #Preview {
-    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockEmptyTx(), userWallet: ""))
+    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockTxOf(type: .nft, userWallet: "1", isDeposit: true), userWallet: "1"))
 }
