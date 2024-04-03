@@ -10,6 +10,7 @@ import Foundation
 protocol DateFormattingServiceProtocol {
     func formatICloudBackUpDate(_ date: Date) -> String
     func formatRecentActivityDate(_ date: Date) -> String
+    func formatWalletActivityDate(_ date: Date) -> String
     func formatParkingExpiresDate(_ date: Date) -> String
 }
 
@@ -35,6 +36,20 @@ extension DateFormattingService: DateFormattingServiceProtocol {
     
     func formatRecentActivityDate(_ date: Date) -> String {
         recentActivityDateFormatter.string(from: date)
+    }
+    
+    func formatWalletActivityDate(_ date: Date) -> String {
+        if date.isToday {
+            return String.Constants.today.localized()
+        } else if date.isCurrentYear {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "LLLL"
+            return dateFormatter.string(from: date)
+        } else {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "LLLL yyyy"
+            return dateFormatter.string(from: date)
+        }
     }
     
     func formatParkingExpiresDate(_ date: Date) -> String {

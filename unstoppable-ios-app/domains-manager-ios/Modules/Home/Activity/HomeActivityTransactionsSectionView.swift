@@ -16,18 +16,27 @@ struct HomeActivityTransactionsSectionView: View {
         Section {
             ForEach(groupedTxs.txs) { tx in
                 clickableTxRowView(tx)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                     .onAppear {
                         viewModel.willDisplayTransaction(tx)
                     }
             }
+            HomeExploreSeparatorView()
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(.init(horizontal: 16, vertical: 0))
         } header:  {
             HStack {
-                Text(DateFormattingService.shared.formatICloudBackUpDate(groupedTxs.date))
-                    .font(.currentFont(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.foregroundSecondary)
+                Text(DateFormattingService.shared.formatWalletActivityDate(groupedTxs.date))
+                    .font(.currentFont(size: 16, weight: .medium))
+                    .foregroundStyle(Color.foregroundDefault)
                 Spacer()
             }
+            .listRowBackground(Color.clear)
+            .background(Color.clear)
         }
+        
     }
 }
 

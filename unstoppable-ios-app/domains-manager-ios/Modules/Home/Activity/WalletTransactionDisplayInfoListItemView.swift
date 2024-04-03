@@ -16,7 +16,7 @@ struct WalletTransactionDisplayInfoListItemView: View {
     @State private var icon: UIImage?
     
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 16) {
             iconView()
             transactionTypeDetails()
             Spacer()
@@ -47,18 +47,36 @@ private extension WalletTransactionDisplayInfoListItemView {
 private extension WalletTransactionDisplayInfoListItemView {
     @ViewBuilder
     func iconView() -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            iconViewForTransactionType()
+            txTypeIndicatorView()
+                .offset(x: 4, y: 4)
+        }
+    }
+    
+    @ViewBuilder
+    func txTypeIndicatorView() -> some View {
+        WalletTransactionTypeIndicatorView(type: transaction.type)
+            .overlay {
+                Circle()
+                    .stroke(Color.backgroundDefault, lineWidth: 3)
+            }
+    }
+    
+    @ViewBuilder
+    func iconViewForTransactionType() -> some View {
         switch transaction.type {
         case .tokenDeposit, .tokenWithdrawal:
-            currentIconView()
+            currentIcon()
                 .clipShape(Circle())
         case .nftDeposit, .nftWithdrawal:
-            currentIconView()
+            currentIcon()
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
     
     @ViewBuilder
-    func currentIconView() -> some View {
+    func currentIcon() -> some View {
         Image(uiImage: icon ?? .appleIcon)
             .resizable()
             .squareFrame(40)
@@ -66,32 +84,36 @@ private extension WalletTransactionDisplayInfoListItemView {
     
     @ViewBuilder
     func transactionTypeDetails() -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(transactionTitle)
-                .font(.currentFont(size: 16, weight: .medium))
-                .foregroundStyle(Color.foregroundDefault)
-            Text(sourceText)
                 .font(.currentFont(size: 14))
                 .foregroundStyle(Color.foregroundSecondary)
                 .truncationMode(.middle)
+                .frame(height: 20)
+            Text(sourceText)
+                .font(.currentFont(size: 16, weight: .medium))
+                .foregroundStyle(Color.foregroundDefault)
+                .frame(height: 24)
         }
     }
     
     var transactionTitle: String {
-        switch transaction.type {
-        case .tokenDeposit, .nftDeposit:
-            String.Constants.received.localized()
-        case .tokenWithdrawal, .nftWithdrawal:
-            String.Constants.sent.localized()
+        if transaction.type.isDeposit {
+            String.Constants.receivedFromN.localized(transaction.from.displayName)
+        } else {
+            String.Constants.sentToN.localized(transaction.to.displayName)
         }
     }
     
     var sourceText: String {
         switch transaction.type {
-        case .tokenDeposit, .nftDeposit:
-            String.Constants.from.localized() + " \(transaction.from.displayName)"
-        case .tokenWithdrawal, .nftWithdrawal:
-            String.Constants.to.localized() + " \(transaction.to.displayName)"
+        case .tokenWithdrawal, .tokenDeposit:
+            if let chainType = BlockchainType(rawValue: transaction.symbol) {
+                return chainType.fullName
+            }
+            return transaction.symbol
+        case .nftDeposit, .nftWithdrawal:
+            return transaction.nftName
         }
     }
     
@@ -118,7 +140,7 @@ private extension WalletTransactionDisplayInfoListItemView {
             Text("-\(transactionValue)")
                 .foregroundStyle(Color.foregroundDefault)
         case .nftDeposit, .nftWithdrawal:
-            EmptyView()
+            nftTxValueView()
         }
     }
     
@@ -130,8 +152,39 @@ private extension WalletTransactionDisplayInfoListItemView {
                 .foregroundStyle(Color.foregroundSecondary)
         }
     }
+    
+    @ViewBuilder
+    func nftTxValueView() -> some View {
+        if transaction.nftName.isValidDomainName() {
+            nftTxValueViewWith(name: String.Constants.domain.localized())
+        } else {
+            nftTxValueViewWith(name: "NFT")
+            
+        }
+    }
+    
+    @ViewBuilder
+    func nftTxValueViewWith(name: String) -> some View {
+        Text(name)
+            .font(.currentFont(size: 14, weight: .medium))
+            .foregroundStyle(Color.foregroundDefault)
+            .frame(height: 20)
+            .padding(.horizontal, 6)
+            .background(Color.backgroundMuted)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(Color.backgroundDefault, lineWidth: 1)
+            )
+            .overlay(
+                Capsule()
+                    .inset(by: -1)
+                    .stroke(Color.borderEmphasis, lineWidth: 1)
+            )
+            .offset(x: -1)
+    }
 }
 
 #Preview {
-    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockEmptyTx(), userWallet: ""))
+    WalletTransactionDisplayInfoListItemView(transaction: .init(serializedTransaction: MockEntitiesFabric.WalletTxs.createMockTxOf(type: .domain, userWallet: "1", isDeposit: false), userWallet: "1"))
 }

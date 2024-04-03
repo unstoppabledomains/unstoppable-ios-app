@@ -43,7 +43,75 @@ extension MockEntitiesFabric {
         
         
         static func createMockEmptyTxs(range: ClosedRange<Int> = 1...3) -> [SerializedWalletTransaction] {
-            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0)) }
+            range.map { createMockEmptyTx(id: "\($0)", dateOffset: TimeInterval($0 * -14000)) }
+        }
+        
+        enum TxType {
+            case crypto
+            case nft
+            case domain
+        }
+        
+        static func createMockTxOf(type: TxType,
+                                   userWallet: String,
+                                   id: String = "1",
+                                   dateOffset: TimeInterval = 0,
+                                   isDeposit: Bool = true) -> SerializedWalletTransaction {
+            let fromAddress = isDeposit ? "0" : userWallet
+            let from: SerializedWalletTransaction.Participant = .init(address: fromAddress,
+                                                                      label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x",
+                                                                      link: "")
+            let toAddress = !isDeposit ? "0" : userWallet
+            let to: SerializedWalletTransaction.Participant = .init(address: toAddress,
+                                                                    label: nil,
+                                                                    link: "")
+            switch type {
+            case .crypto:
+                return SerializedWalletTransaction(hash: id,
+                                            block: "",
+                                            timestamp: Date().addingTimeInterval(dateOffset),
+                                            success: true,
+                                            value: 1,
+                                            gas: 1,
+                                            method: "Unknown",
+                                            link: "",
+                                            imageUrl: ImageURLs.sunset.rawValue,
+                                            symbol: "MATIC",
+                                            type: "native",
+                                            from: from,
+                                            to: to)
+                
+            case .domain:
+                return SerializedWalletTransaction(hash: id,
+                                            block: "",
+                                            timestamp: Date().addingTimeInterval(dateOffset),
+                                            success: true,
+                                            value: 0,
+                                            gas: 0,
+                                            method: "oleg.x",
+                                            link: "",
+                                            imageUrl: ImageURLs.aiAvatar.rawValue,
+                                            symbol: "MATIC",
+                                            type: "nft",
+                                            from: from,
+                                            to: to)
+
+            case .nft:
+                return SerializedWalletTransaction(hash: id,
+                                            block: "",
+                                            timestamp: Date().addingTimeInterval(dateOffset),
+                                            success: true,
+                                            value: 0,
+                                            gas: 0,
+                                            method: "May the Grooves be with you",
+                                            link: "",
+                                            imageUrl: ImageURLs.aiAvatar.rawValue,
+                                            symbol: "MATIC",
+                                            type: "nft",
+                                            from: from,
+                                            to: to)
+
+            }
         }
         
         static func createMockEmptyTx(id: String = "1",
@@ -54,10 +122,10 @@ extension MockEntitiesFabric {
                                         success: true,
                                         value: 1,
                                         gas: 1,
-                                        method: "",
+                                        method: "Unknown",
                                         link: "",
-                                        imageUrl: "",
-                                        symbol: "",
+                                        imageUrl: ImageURLs.aiAvatar.rawValue,
+                                        symbol: "MATIC",
                                         type: "",
                                         from: .init(address: "0", label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x", link: ""),
                                         to: .init(address: "2", label: nil, link: ""))

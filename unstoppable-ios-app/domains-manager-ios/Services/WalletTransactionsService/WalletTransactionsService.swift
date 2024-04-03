@@ -31,9 +31,9 @@ extension WalletTransactionsService: WalletTransactionsServiceProtocol {
                 response = cachedResponse
             }
             return WalletTransactionsResponse(canLoadMore: response.hasAnyToLoadMore(),
-                                        txs: response.combinedTxs())
+                                              txs: response.combinedTxs())
         } else {
-            let newResponse = try await fetchAndCacheTransactions(for: wallet, cursor: nil, chain: nil, forceReload: true)
+            let newResponse = try await fetchAndCacheOnlyTransactions(for: wallet)
             return WalletTransactionsResponse(canLoadMore: newResponse.hasAnyToLoadMore(),
                                         txs: newResponse.combinedTxs())
         }
@@ -43,36 +43,32 @@ extension WalletTransactionsService: WalletTransactionsServiceProtocol {
 // MARK: - Private methods
 private extension WalletTransactionsService {
     func fetchAndCacheMoreTransactions(for wallet: HexAddress, responses: [WalletTransactionsPerChainResponse]) async throws -> [WalletTransactionsPerChainResponse] {
-        var result: [WalletTransactionsPerChainResponse] = []
+        var newResponses: [WalletTransactionsPerChainResponse] = []
         
         try await withThrowingTaskGroup(of: [WalletTransactionsPerChainResponse].self) { group in
             for response in responses {
                 if let cursor = response.cursor {
                     group.addTask {
-                        try await self.fetchAndCacheTransactions(for: wallet, cursor: cursor, chain: response.chain, forceReload: false)
+                        try await self.fetchTransactions(for: wallet, cursor: cursor, chain: response.chain, forceRefresh: false)
                     }
                 } else {
-                    result.append(response)
+                    newResponses.append(response)
                 }
             }
             
             for try await response in group {
-                result.append(contentsOf: response.compactMap { $0 })
+                newResponses.append(contentsOf: response.compactMap { $0 })
             }
         }
         
-        return result
+        let finalResult = await mergeResponsesWithLocalCache(newResponses, for: wallet)
+        return finalResult
     }
     
-    func fetchAndCacheTransactions(for wallet: HexAddress, cursor: String?, chain: String?, forceReload: Bool) async throws -> [WalletTransactionsPerChainResponse] {
-        let newResponse = try await fetchTransactions(for: wallet, cursor: cursor, chain: chain, forceRefresh: forceReload)
-        if forceReload {
-            await cache.setTransactionsToCache(newResponse, for: wallet)
-            return newResponse
-        } else {
-            let finalResult = await mergeResponsesWithLocalCache(newResponse, for: wallet)
-            return finalResult
-        }
+    func fetchAndCacheOnlyTransactions(for wallet: HexAddress) async throws -> [WalletTransactionsPerChainResponse] {
+        let newResponse = try await fetchTransactions(for: wallet, cursor: nil, chain: nil, forceRefresh: true)
+        await cache.setTransactionsToCache(newResponse, for: wallet)
+        return newResponse
     }
     
     func fetchTransactions(for wallet: HexAddress, 
@@ -105,7 +101,7 @@ private extension WalletTransactionsService {
     }
 }
 
-private extension Array where Element == WalletTransactionsPerChainResponse {
+extension Array where Element == WalletTransactionsPerChainResponse {
     func hasAnyToLoadMore() -> Bool {
         first(where: { $0.cursor != nil }) != nil
     }
