@@ -229,7 +229,7 @@ extension WCWalletsProvider {
                 #if DEBUG
                 return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent, .Guarda, .Blockchain, .imToken, .Exodus, .Mew]
                 #else
-                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni]
+                return [.MetaMask, .TrustWallet, .OKX, .Rainbow, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .Mew]
                 #endif
             }
         }
