@@ -124,17 +124,19 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     }
     
     func loadAdditionalBalancesFor(domainName: DomainName) async -> [WalletTokenPortfolio] {
+        let cachedBalances = WalletBalancesStorage.instance.getCachedBalancesFor(domainName: domainName)
         do {
             let additionalAddresses = try await getAdditionalWalletAddressesToLoadBalanceFor(domainName: domainName)
             guard !additionalAddresses.isEmpty else { return [] }
             
-            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses)
+            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses,
+                                                           using: cachedBalances)
             WalletBalancesStorage.instance.cacheBalances(balances, for: domainName)
             
             return balances
         } catch {
             Debugger.printFailure("Failed to load additional tokens for domain: \(domainName)")
-            return WalletBalancesStorage.instance.getCachedBalancesFor(domainName: domainName)
+            return cachedBalances
         }
     }
 }
@@ -524,7 +526,8 @@ private extension WalletsDataService {
         return balances
     }
     
-    func loadAdditionalBalancesFor(addresses: Set<String>) async -> [WalletTokenPortfolio] {
+    func loadAdditionalBalancesFor(addresses: Set<String>,
+                                   using cachedBalances: [WalletTokenPortfolio]) async -> [WalletTokenPortfolio] {
         var balances = [WalletTokenPortfolio]()
         
         await withTaskGroup(of: [WalletTokenPortfolio].self) { group in
@@ -535,7 +538,7 @@ private extension WalletsDataService {
                         return tokens
                     } catch {
                         // Do not fail everything if one of additional tokens failed
-                        return []
+                        return cachedBalances.filter({ $0.address == address })
                     }
                 }
             }
