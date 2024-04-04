@@ -118,10 +118,8 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         loadMoreSocialIfAbleFor(relationshipType: relationshipType, walletAddress: wallet.address)
     }
     
-    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
-        guard let rrDomain = wallet.rrDomain else { return [] } // No suggestions for user without domain
-        
-        let serializedSuggestions = try await networkService.getProfileSuggestions(for: rrDomain.name)
+    func getSuggestionsFor(domainName: DomainName) async throws -> [DomainProfileSuggestion] {
+        let serializedSuggestions = try await networkService.getProfileSuggestions(for: domainName)
         let profileSuggestions = serializedSuggestions.map { DomainProfileSuggestion(serializedProfile: $0) }
         return profileSuggestions
     }
@@ -206,7 +204,12 @@ private extension DomainProfilesService {
     
     func getProfileDomainNameFor(walletAddress: HexAddress) -> DomainName? {
         let wallet = walletsDataService.wallets.findWithAddress(walletAddress)
-        return wallet?.profileDomainName
+        switch wallet?.getCurrentWalletProfileState() {
+        case .noProfile, nil:
+            return nil
+        case .udDomain(let domain), .ensDomain(let domain):
+            return domain.name
+        }
     }
     
     func getSerializedPublicDomainProfile(for domainName: DomainName) async throws -> SerializedPublicDomainProfile {

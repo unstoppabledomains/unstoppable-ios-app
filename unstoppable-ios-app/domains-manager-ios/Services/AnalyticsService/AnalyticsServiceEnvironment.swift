@@ -145,6 +145,7 @@ extension Analytics {
         case assetType
         case didClearRecords
         case transactionSpeed
+        case isApplePaySupported
     }
 }
 

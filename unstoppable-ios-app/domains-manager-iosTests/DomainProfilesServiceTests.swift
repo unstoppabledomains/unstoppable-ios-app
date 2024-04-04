@@ -207,19 +207,12 @@ final class DomainProfilesServiceTests: BaseTestClass {
     }
     
     // MARK: - Profile Suggestions tests
-    func testEmptyProfileSuggestionsIfNoDomainInWallet() async throws {
-        let walletWithoutDomain = MockEntitiesFabric.Wallet.mockEntities(hasRRDomain: false).first!
-        let suggestions = try await service.getSuggestionsFor(wallet: walletWithoutDomain)
-        
-        XCTAssertTrue(networkService.suggestionsCallDomainNames.isEmpty)
-        XCTAssertTrue(suggestions.isEmpty)
-    }
-    
     func testProfileSuggestionsReturnSuccess() async throws {
         let wallet = mockWallet()
-        let suggestions = try await service.getSuggestionsFor(wallet: wallet)
+        let domainName = wallet.rrDomain!.name
+        let suggestions = try await service.getSuggestionsFor(domainName: domainName)
         
-        XCTAssertEqual(networkService.suggestionsCallDomainNames, [wallet.rrDomain!.name])
+        XCTAssertEqual(networkService.suggestionsCallDomainNames, [domainName])
         XCTAssertEqual(suggestions.map { $0.domain }, networkService.suggestionToReturn.map { $0.domain })
     }
     
@@ -227,7 +220,8 @@ final class DomainProfilesServiceTests: BaseTestClass {
         networkService.shouldFail = true
         do {
             let wallet = mockWallet()
-            let _ = try await service.getSuggestionsFor(wallet: wallet)
+            let domainName = wallet.rrDomain!.name
+            let _ = try await service.getSuggestionsFor(domainName: domainName)
             XCTFail("Expected network error")
         } catch {
             assertNetworkErrorThrown(error)
