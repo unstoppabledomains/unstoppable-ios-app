@@ -172,7 +172,7 @@ extension ViewPullUpDefaultConfiguration {
     func calculateHeight() -> CGFloat {
         let contentWidth = UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2)
         var height = ViewPullUp.headerSpacing
-        height += 40 // Safe area
+        height += 44 // Safe area
         
         if icon != nil {
             height += ViewPullUp.imageSize

@@ -10,7 +10,7 @@ import SwiftUI
 struct ViewPullUp: ViewModifier {
     
     static let sideOffset: CGFloat = 16
-    static let headerSpacing: CGFloat = 36
+    static let headerSpacing: CGFloat = 40
     static let imageSize: CGFloat = 40
     static let titleLineHeight: CGFloat = 28
     static let listContentPadding: CGFloat = 4
