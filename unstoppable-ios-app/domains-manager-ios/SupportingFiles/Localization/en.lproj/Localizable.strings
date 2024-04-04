@@ -906,7 +906,7 @@
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
-"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new domain";
+"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new\ndomain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
 "TRY_ENTER_DIFF_NAME" = "Try entering a different name.";

@@ -58,6 +58,7 @@ private extension PurchaseSearchDomainsView {
         VStack(spacing: 16) {
             Text(String.Constants.searchForANewDomain.localized())
                 .titleText()
+                .multilineTextAlignment(.center)
         }
         .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))
     }
