@@ -89,7 +89,7 @@ private extension StripeService {
     func payWithStripeAsync(callback: @escaping PurchaseResultCallback) {
         paymentDetails.resultCallback = callback
         DispatchQueue.main.async {
-            if StripeAPI.deviceSupportsApplePay() {
+            if StripeService.isApplePaySupported {
                 self.startPaymentWithApplePay()
             } else {
                 self.startPaymentWithoutApplePay()
