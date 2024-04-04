@@ -26,6 +26,16 @@ extension Double {
     }
     
     func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int) -> String {
-        String(format: "%.\(maxNumberAfterComa)f", self)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = maxNumberAfterComa
+        formatter.minimumFractionDigits = 0
+        formatter.roundingMode = .halfEven
+        
+        return formatter.string(from: self as NSNumber) ?? "0.0"
+    }
+    
+    func formattedBalance() -> String {
+        formatted(toMaxNumberAfterComa: 2)
     }
 }

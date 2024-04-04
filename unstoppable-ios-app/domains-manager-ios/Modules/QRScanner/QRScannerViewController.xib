@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,8 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QRScannerViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
                 <outlet property="appsConnectedItemView" destination="bFl-pu-9XN" id="qdB-zI-hi1"/>
-                <outlet property="captureSessionContainerView" destination="UDa-fl-a93" id="g7I-2X-4Jd"/>
-                <outlet property="scannerSightView" destination="rCw-Ak-meN" id="FBn-0e-TSF"/>
+                <outlet property="scannerPreviewView" destination="UDa-fl-a93" id="Dpy-Lx-EQz"/>
                 <outlet property="selectedDomainItemView" destination="TQA-uD-hg9" id="c3n-FH-Ufq"/>
                 <outlet property="selectionItemsStack" destination="V34-M2-SvI" id="QmW-Kw-vaC"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -27,12 +26,8 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n8V-xA-eJY">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UDa-fl-a93">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UDa-fl-a93" customClass="QRScannerPreviewView" customModule="domains_manager_ios" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rCw-Ak-meN" customClass="QRScannerSightView" customModule="domains_manager_ios" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="V34-M2-SvI">
                             <rect key="frame" x="24" y="704" width="366" height="144"/>
@@ -62,15 +57,11 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="rCw-Ak-meN" firstAttribute="top" secondItem="n8V-xA-eJY" secondAttribute="top" id="1Xo-o4-eo4"/>
-                        <constraint firstAttribute="trailing" secondItem="rCw-Ak-meN" secondAttribute="trailing" id="82c-ey-foE"/>
-                        <constraint firstItem="rCw-Ak-meN" firstAttribute="leading" secondItem="n8V-xA-eJY" secondAttribute="leading" id="Jdg-Yc-rGk"/>
                         <constraint firstItem="UDa-fl-a93" firstAttribute="leading" secondItem="n8V-xA-eJY" secondAttribute="leading" id="MrH-uO-mil"/>
                         <constraint firstItem="UDa-fl-a93" firstAttribute="top" secondItem="n8V-xA-eJY" secondAttribute="top" id="Qze-Bu-jxH"/>
                         <constraint firstItem="V34-M2-SvI" firstAttribute="centerX" secondItem="n8V-xA-eJY" secondAttribute="centerX" id="Rua-gN-xcq"/>
                         <constraint firstItem="V34-M2-SvI" firstAttribute="leading" secondItem="n8V-xA-eJY" secondAttribute="leading" constant="24" id="c0h-Zd-tn0"/>
                         <constraint firstAttribute="trailing" secondItem="UDa-fl-a93" secondAttribute="trailing" id="dzW-hn-Lc5"/>
-                        <constraint firstAttribute="bottom" secondItem="rCw-Ak-meN" secondAttribute="bottom" id="leb-l5-a51"/>
                         <constraint firstAttribute="bottom" secondItem="UDa-fl-a93" secondAttribute="bottom" id="wsZ-50-4Vc"/>
                     </constraints>
                 </view>

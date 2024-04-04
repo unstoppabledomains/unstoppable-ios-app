@@ -16,6 +16,7 @@ enum WalletConnectRequestError: String, Error, RawValueLocalizable {
     case failedToDetermineChainId
     case failedToDetermineIntent
     case failedToParseMessage
+    case failedEncodeTransaction
     case uiHandlerNotSet
     case networkNotSupported
     case noWCSessionFound
@@ -72,7 +73,8 @@ enum WalletConnectRequestError: String, Error, RawValueLocalizable {
                 .failedOpenExternalApp,
                 .failedToRelayTxToExternalWallet,
                 .failedToFindDomainToConnect,
-                .failedHashPersonalMessage: return .failedTx
+                .failedHashPersonalMessage,
+                .failedEncodeTransaction: return .failedTx
         case .methodUnsupported: return .methodUnsupported
         case .networkNotSupported: return .networkNotSupported
         case .lowAllowance: return .lowAllowance

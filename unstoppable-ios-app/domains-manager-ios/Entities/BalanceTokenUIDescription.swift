@@ -39,7 +39,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.symbol = walletBalance.symbol
         self.gasCurrency = walletBalance.gasCurrency
         self.name = walletBalance.name
-        self.balance = walletBalance.balanceAmt.rounded(toDecimalPlaces: 2)
+        self.balance = walletBalance.balanceAmt
         self.balanceUsd = walletBalance.value.walletUsdAmt
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
@@ -68,7 +68,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.symbol = walletToken.symbol
         self.gasCurrency = walletToken.gasCurrency
         self.name = walletToken.name
-        self.balance = walletToken.balanceAmt.rounded(toDecimalPlaces: 2)
+        self.balance = walletToken.balanceAmt
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
@@ -90,13 +90,25 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         
         return [tokenDescription] + subTokenDescriptions
     }
-    
-    static func createSkeletonEntity() -> BalanceTokenUIDescription {
-        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
-        token.isSkeleton = true
-        return token
+
+    var blockchainType: BlockchainType? {
+        BlockchainType(rawValue: chain)
+    }
+}
+
+// MARK: - Open methods
+extension BalanceTokenUIDescription {
+    var formattedBalanceWithSymbol: String {
+        BalanceStringFormatter.tokenBalanceString(self)
     }
     
+    var formattedBalanceUSD: String {
+        BalanceStringFormatter.tokensBalanceUSDString(balanceUsd)
+    }
+}
+
+// MARK: - Load icons
+extension BalanceTokenUIDescription {
     func loadTokenIcon(iconUpdated: @escaping (UIImage?)->()) {
         BalanceTokenUIDescription.loadIconFor(ticker: symbol, logoURL: logoURL, iconUpdated: iconUpdated)
     }
@@ -145,6 +157,15 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
                 iconUpdated(icon)
             }
         }
+    }
+}
+
+// MARK: - Skeleton
+extension BalanceTokenUIDescription {
+    static func createSkeletonEntity() -> BalanceTokenUIDescription {
+        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+        token.isSkeleton = true
+        return token
     }
 }
 

@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-enum HomeTab: String, Hashable {
-    case wallets
-    case explore
-    case messaging
-}
-
 struct HomeTabView: View {
     
     @StateObject var router: HomeTabRouter
@@ -21,29 +15,17 @@ struct HomeTabView: View {
     var body: some View {
         TabView(selection: $router.tabViewSelection) {
             HomeView()
-            .tabItem {
-                Label(title: { Text(String.Constants.home.localized()) },
-                      icon: { Image.homeLineIcon })
-            }
-            .tag(HomeTab.wallets)
-            .tabBarVisible(router.isTabBarVisible)
+                .modifier(HomeTabViewModifier(tab: .wallets, isTabBarVisible: router.isTabBarVisible))
             
             HomeExploreView(viewModel: HomeExploreViewModel(router: router))
-                .tabItem {
-                    Label(title: { Text(String.Constants.explore.localized()) },
-                          icon: { Image.exploreIcon })
-                }
-                .tag(HomeTab.explore)
-                .tabBarVisible(router.isTabBarVisible)
+                .modifier(HomeTabViewModifier(tab: .explore, isTabBarVisible: router.isTabBarVisible))
+            
+            HomeActivityView(viewModel: HomeActivityViewModel(router: router))
+                .modifier(HomeTabViewModifier(tab: .activity, isTabBarVisible: router.isTabBarVisible))
             
             ChatListView(viewModel: .init(presentOptions: .default,
                                           router: router))
-            .tabItem {
-                Label(title: { Text(String.Constants.messages.localized()) },
-                      icon: { Image.messageCircleIcon24 })
-            }
-            .tag(HomeTab.messaging)
-            .tabBarVisible(router.isTabBarVisible)
+                .modifier(HomeTabViewModifier(tab: .messaging, isTabBarVisible: router.isTabBarVisible))
         }
         .tint(.foregroundDefault)
         .onChange(of: router.tabViewSelection, perform: { selectedTab in
@@ -70,6 +52,9 @@ struct HomeTabView: View {
         .sheet(item: $router.showingWalletInfo, content: {
             ShareWalletInfoView(wallet: $0)
                 .presentationDetents([.large])
+        })
+        .sheet(item: $router.sendCryptoInitialData, content: { initialData in
+            SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: initialData))
         })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
@@ -101,6 +86,24 @@ struct HomeTabView: View {
         self._router = StateObject(wrappedValue: tabRouter)
         self.id = tabRouter.id
         UITabBar.appearance().unselectedItemTintColor = .foregroundSecondary
+    }
+}
+
+// MARK: - Private methods
+private extension HomeTabView {
+    struct HomeTabViewModifier: ViewModifier {
+        let tab: HomeTab
+        var isTabBarVisible: Bool
+        
+        func body(content: Content) -> some View {
+            content
+                .tabItem {
+                    Label(title: { Text(tab.title) },
+                          icon: { tab.icon })
+                }
+                .tag(tab)
+                .tabBarVisible(isTabBarVisible)
+        }
     }
 }
 

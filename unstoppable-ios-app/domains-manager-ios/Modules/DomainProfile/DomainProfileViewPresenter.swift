@@ -28,7 +28,6 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func didTapCopyDomainButton()
     func didTapAboutProfilesButton()
     func didTapMintedOnChainButton()
-    func didTapTransferButton()
 }
 
 @MainActor
@@ -229,21 +228,6 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
         
         let chain = dataHolder.domain.getBlockchainType()
         appContext.pullUpViewService.showDomainMintedOnChainDescriptionPullUp(in: view, chain: chain)
-    }
-    
-    func didTapTransferButton() {
-        guard let view else { return }
-        
-        UDRouter().runTransferDomainFlow(with: .singleDomainTransfer(domain: dataHolder.domain),
-                                         transferResultCallback: { [weak self] result in
-            switch result {
-            case .cancelled:
-                return
-            case .transferred:
-                self?.view?.presentingViewController?.dismiss(animated: true)
-            }
-        },
-                                         in: view)
     }
 }
 
@@ -772,7 +756,7 @@ private extension DomainProfileViewPresenter {
         let domain = try await getCurrentDomain()
         try await appContext.domainRecordsService.saveRecords(records: records,
                                                               in: domain,
-                                                              paymentConfirmationDelegate: view)
+                                                              paymentConfirmationHandler: view)
     }
     
     func saveProfile(_ request: ProfileUpdateRequest) async throws {
@@ -1060,11 +1044,6 @@ private extension DomainProfileViewPresenter {
             }
             topActionsGroup.append(.viewWallet(subtitle: viewWalletSubtitle))
             topActionsGroup.append(.viewInBrowser)
-            
-            if domain.isAbleToTransfer,
-               state == .default {
-                topActionsGroup.append(.transfer)
-            }
             
             if isSetReverseResolutionActionAvailable, isSetReverseResolutionActionVisible {
                 switch state {

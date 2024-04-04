@@ -421,3 +421,48 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
     }
 }
 
+// MARK: - WalletTransactionsNetworkServiceProtocol
+extension NetworkService: WalletTransactionsNetworkServiceProtocol {
+    private struct TransactionsPerChainResponseParser {
+        static func parseTransactionsResponsesFrom(data: Data) throws -> [WalletTransactionsPerChainResponse] {
+            typealias JSON = [String : Any]
+            
+            guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : JSON] else {
+                throw NetworkLayerError.failedParseTransactionsData
+            }
+            
+            var responses = [WalletTransactionsPerChainResponse]()
+            for (key, value) in json {
+                guard let transactionsArrayJSON = value["data"] else {
+                    continue
+                }
+                let transactionsArrayData = try JSONSerialization.data(withJSONObject: transactionsArrayJSON)
+                let transactions = try [SerializedWalletTransaction].objectFromDataThrowing(transactionsArrayData,
+                                                                                            dateDecodingStrategy: .defaultDateDecodingStrategy())
+                let cursor = value["cursor"] as? String
+                let response = WalletTransactionsPerChainResponse(chain: key,
+                                                            cursor: cursor,
+                                                            txs: transactions)
+                responses.append(response)
+            }
+            
+            return responses
+        }
+    }
+    
+    func getTransactionsFor(wallet: HexAddress, 
+                            cursor: String?,
+                            chain: String?,
+                            forceRefresh: Bool) async throws -> [WalletTransactionsPerChainResponse] {
+        let endpoint = Endpoint.getProfileWalletTransactions(for: wallet, 
+                                                             cursor: cursor,
+                                                             chain: chain,
+                                                             forceRefresh: forceRefresh)
+        let data = try await fetchDataFor(endpoint: endpoint,
+                                          method: .get)
+        let response = try TransactionsPerChainResponseParser.parseTransactionsResponsesFrom(data: data)
+        
+        return response
+    }
+}
+

@@ -9,8 +9,8 @@ import Foundation
 
 protocol DomainRecordsServiceProtocol {
     func saveRecords(records: [RecordToUpdate],
-                             in domain: DomainItem,
-                             paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
+                     in domain: DomainItem,
+                     paymentConfirmationHandler: PaymentConfirmationHandler) async throws
 }
 
 enum DomainRecordsServiceFetchError: String, LocalizedError {

@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
+        
         #endif
          
         setup()
@@ -108,25 +109,23 @@ private extension AppDelegate {
         backButtonAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.clear]
         backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
         
+        let image =  BaseViewController.NavBackIconStyle.arrow.icon
+        let backButtonBackgroundImage = image.withTintColor(.foregroundDefault, renderingMode: .alwaysOriginal).withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
+        
         let navigationBarStandardAppearance = UINavigationBarAppearance()
         navigationBarStandardAppearance.configureWithTransparentBackground()
         navigationBarStandardAppearance.backButtonAppearance = backButtonAppearance
+        navigationBarStandardAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
+        navigationBarStandardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
+                                                              transitionMaskImage: backButtonBackgroundImage)
         UINavigationBar.appearance().scrollEdgeAppearance = navigationBarStandardAppearance
         
         let navigationBarScrollingEdgeAppearance = UINavigationBarAppearance()
         navigationBarScrollingEdgeAppearance.backButtonAppearance = backButtonAppearance
+        navigationBarScrollingEdgeAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
+        navigationBarScrollingEdgeAppearance.setBackIndicatorImage(backButtonBackgroundImage,
+                                                                   transitionMaskImage: backButtonBackgroundImage)
         UINavigationBar.appearance().standardAppearance = navigationBarScrollingEdgeAppearance
-        
-        
-        let image =  BaseViewController.NavBackIconStyle.arrow.icon
-        let backButtonBackgroundImage = image.withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
-        
-        UINavigationBar.appearance().standardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                              
-                                                                              transitionMaskImage: backButtonBackgroundImage)
-        UINavigationBar.appearance().scrollEdgeAppearance?.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                                 
-                                                                                 transitionMaskImage: backButtonBackgroundImage)
     }
     
     func setupAppearance() {

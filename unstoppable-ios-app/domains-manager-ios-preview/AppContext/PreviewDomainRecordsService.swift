@@ -8,9 +8,7 @@
 import Foundation
 
 final class DomainRecordsService: DomainRecordsServiceProtocol {
-    func saveRecords(records: [RecordToUpdate], in domain: DomainItem, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+    func saveRecords(records: [RecordToUpdate], in domain: DomainItem, paymentConfirmationHandler: PaymentConfirmationHandler) async throws {
         
     }
-    
-    
 }

@@ -121,6 +121,10 @@ struct ViewPullUpDefaultConfiguration {
                                                                        icon: nil,
                                                                        analyticsName: .later,
                                                                        action: nil))
+        static let continueButton: ButtonType = .main(content: .init(title: String.Constants.continue.localized(),
+                                                                       icon: nil,
+                                                                       analyticsName: .continue,
+                                                                       action: nil))
         static func gotItButton(action: MainActorAsyncCallback? = nil) -> ButtonType {
             .secondary(content: .init(title: String.Constants.gotIt.localized(),
                                       icon: nil,
@@ -168,7 +172,7 @@ extension ViewPullUpDefaultConfiguration {
     func calculateHeight() -> CGFloat {
         let contentWidth = UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2)
         var height = ViewPullUp.headerSpacing
-        height += 40 // Safe area
+        height += 44 // Safe area
         
         if icon != nil {
             height += ViewPullUp.imageSize
@@ -412,6 +416,13 @@ extension ViewPullUpDefaultConfiguration {
         })
     }
     
+    static func maxCryptoSendInfoPullUp(token: BalanceTokenUIDescription) -> ViewPullUpDefaultConfiguration {
+        .init(icon: .init(icon: .infoBubble,
+                          size: .small),
+              title: .text(String.Constants.sendMaxCryptoInfoPullUpTitle.localized(token.symbol)),
+              cancelButton: .continueButton,
+              analyticName: .sendMaxCryptoInfo)
+    }
 }
 
 // MARK: - Open methods

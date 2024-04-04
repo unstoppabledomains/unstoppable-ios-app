@@ -65,7 +65,15 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
     }, navigationStateProvider: { _ in }, path: .constant(EmptyNavigationPath()))
 }
 
-final class NavigationStateManager: ObservableObject {
+final class NavigationStateManager: ObservableObject, Hashable {
+    static func == (lhs: NavigationStateManager, rhs: NavigationStateManager) -> Bool {
+        lhs.customViewID == rhs.customViewID
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(customViewID)
+    }
+    
     @Published var isTitleVisible: Bool = false
     @Published var yOffset: CGFloat = 0
     @Published private(set) var customTitle: (() -> any View)?

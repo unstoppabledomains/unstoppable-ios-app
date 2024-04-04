@@ -93,6 +93,7 @@ extension View {
     }
     
     var screenSize: CGSize { UIScreen.main.bounds.size }
+    var isIPSE: Bool { deviceSize == .i4_7Inch }
 }
 
 extension View {

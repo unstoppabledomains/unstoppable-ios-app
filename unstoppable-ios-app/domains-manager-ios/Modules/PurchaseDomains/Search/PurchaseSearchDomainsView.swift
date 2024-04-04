@@ -58,6 +58,7 @@ private extension PurchaseSearchDomainsView {
         VStack(spacing: 16) {
             Text(String.Constants.searchForANewDomain.localized())
                 .titleText()
+                .multilineTextAlignment(.center)
         }
         .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))
     }
@@ -476,20 +477,4 @@ private extension PurchaseSearchDomainsView {
 #Preview {
     PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
         .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
-}
-
-public final class DebounceObject: ObservableObject {
-    @Published var text: String = ""
-    @Published var debouncedText: String = ""
-    private var bag = Set<AnyCancellable>()
-    
-    public init(dueTime: TimeInterval = 0.5) {
-        $text
-            .removeDuplicates()
-            .debounce(for: .seconds(dueTime), scheduler: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] value in
-                self?.debouncedText = value
-            })
-            .store(in: &bag)
-    }
 }

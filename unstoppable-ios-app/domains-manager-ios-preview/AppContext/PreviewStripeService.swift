@@ -38,4 +38,7 @@ extension StripeService: StripeServiceProtocol {
     }
     
     
+    static var isApplePaySupported: Bool {
+        true
+    }
 }
