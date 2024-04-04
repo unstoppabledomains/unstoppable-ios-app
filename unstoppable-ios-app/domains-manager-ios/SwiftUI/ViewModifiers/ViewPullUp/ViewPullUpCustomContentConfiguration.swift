@@ -30,7 +30,15 @@ extension ViewPullUpCustomContentConfiguration {
               analyticName: .wcLoading)
     }
     
+    static func transferDomainConfirmationPullUp(confirmCallback: @escaping TransferDomainConfirmationCallback) -> ViewPullUpCustomContentConfiguration {
+        .init(content: {
+            TransferDomainConfirmationPullUpView(confirmCallback: confirmCallback)
+        },
+              height: 448,
+              analyticName: .transferDomainConfirmation)
+    }
 }
+
 
 // MARK: - Open methods
 extension ViewPullUpCustomContentConfiguration {

@@ -86,6 +86,7 @@ extension MockEntitiesFabric {
             
             let balance: [WalletTokenPortfolio] = [.init(address: address,
                                                          symbol: "ETH",
+                                                         gasCurrency: "ETH",
                                                          name: "Ethereum",
                                                          type: "native",
                                                          firstTx: nil, lastTx: nil,
@@ -102,7 +103,8 @@ extension MockEntitiesFabric {
                                                          totalValueUsd: "$2,206.70",
                                                          logoUrl: nil),
                                                    .init(address: address,
-                                                         symbol: "MATIC",
+                                                         symbol: "MATIC", 
+                                                         gasCurrency: "MATIC",
                                                          name: "Polygon",
                                                          type: "native",
                                                          firstTx: nil, lastTx: nil,
@@ -111,7 +113,8 @@ extension MockEntitiesFabric {
                                                          tokens: [.init(type: "erc20",
                                                                         name: "(PoS) Tether USD",
                                                                         address: address,
-                                                                        symbol: "USDT",
+                                                                        symbol: "USDT", 
+                                                                        gasCurrency: "MATIC",
                                                                         logoUrl: nil,
                                                                         balanceAmt: 9.2,
                                                                         value: .init(marketUsd: "$1",
@@ -215,6 +218,30 @@ extension MockEntitiesFabric {
                    mint: "6513349/109032")
             ]
             */
+        }
+    }
+    
+    enum Tokens {
+        static func mockUIToken() -> BalanceTokenUIDescription {
+            mockEthToken()
+        }
+        
+        static func mockEthToken() -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "ETH",
+                                      symbol: "ETH",
+                                      name: "Ethereum",
+                                      balance: 1,
+                                      balanceUsd: 1,
+                                      marketUsd: 3900.34)
+        }
+        
+        static func mockMaticToken() -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "MATIC",
+                                      symbol: "MATIC",
+                                      name: "Polygon",
+                                      balance: 1,
+                                      balanceUsd: 1,
+                                      marketUsd: 1.02)
         }
     }
 }

@@ -18,7 +18,7 @@ struct NetworkConfig {
         if isTestnetUsed {
             return "api.ud-staging.com"
         } else {
-            return "unstoppabledomains.com"
+            return "api.unstoppabledomains.com"
         }
     }
     
@@ -39,7 +39,7 @@ struct NetworkConfig {
     }
     
     static var buyCryptoUrl: String {
-        websiteBaseUrl + "/fiat-ramps"
+        websiteBaseUrl + "/fiat-ramps?utm_source=ud_ios url"
     }
     
     static var baseDomainProfileUrl: String {
@@ -140,8 +140,17 @@ struct NetworkConfig {
         return url
     }
     
+    private static var coinResolverHost: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return "api.ud-staging.com"
+        } else {
+            return "unstoppabledomains.com"
+        }
+    }
+    
     static func coinsResolverURL(version: String) -> String {
-        "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
+        "https://" + coinResolverHost + "/uns_resolver_keys.json?tag=\(version)"
     }
     
     static func hotFeatureSuggestionsURL() -> String {

@@ -52,10 +52,6 @@ final class TestableUDDomainsService: UDDomainsServiceProtocol {
         []
     }
     
-    func getReferralCodeFor(domain: DomainItem) async throws -> String? {
-        nil
-    }
-    
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress? {
         nil
     }

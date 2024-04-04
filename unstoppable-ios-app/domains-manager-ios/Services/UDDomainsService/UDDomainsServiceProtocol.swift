@@ -24,7 +24,6 @@ protocol UDDomainsServiceProtocol {
     
     func findDomains(by domainNames: [String]) -> [DomainItem]
     func getAllDomains() -> [DomainItem]
-    func getReferralCodeFor(domain: DomainItem) async throws -> String?
     
     // Resolution
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress?

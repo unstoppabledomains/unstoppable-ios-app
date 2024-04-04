@@ -45,4 +45,8 @@ final class PreviewWalletsDataService: WalletsDataServiceProtocol {
     func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
         MockEntitiesFabric.Wallet.mockEntities()[0].balance
     }
+    
+    func loadAdditionalBalancesFor(domainName: DomainName) async -> [WalletTokenPortfolio] {
+        []
+    }
 }

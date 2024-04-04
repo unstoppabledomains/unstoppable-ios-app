@@ -256,7 +256,7 @@ private extension ReverseResolutionSelectionView {
                 let domain = selectedDomain.toDomainItem()
                 
                 try await udWalletsService.setReverseResolution(to: domain,
-                                                                paymentConfirmationDelegate: paymentHandler)
+                                                                paymentConfirmationHandler: paymentHandler)
                 dismiss()
                 domainSetCallback?(selectedDomain)
             } catch {

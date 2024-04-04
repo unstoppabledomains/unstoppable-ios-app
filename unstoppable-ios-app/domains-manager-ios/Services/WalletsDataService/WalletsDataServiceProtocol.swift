@@ -23,4 +23,5 @@ protocol WalletsDataServiceProtocol {
     func didMintDomainsWith(domainNames: [String],
                             to wallet: WalletEntity) -> [MintingDomain]
     func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio]
+    func loadAdditionalBalancesFor(domainName: DomainName) async -> [WalletTokenPortfolio]
 }

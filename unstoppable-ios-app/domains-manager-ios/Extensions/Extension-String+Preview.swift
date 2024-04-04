@@ -101,9 +101,9 @@ extension String {
             case .unstoppableDomainSearch(let searchKey):
                 return "\(NetworkConfig.websiteBaseUrl)/search?searchTerm=\(searchKey)&searchRef=homepage&tab=relevant"
             case .buyCryptoToDomain(let domainName):
-                return "\(NetworkConfig.buyCryptoUrl)?domain=\(domainName)"
+                return "\(NetworkConfig.buyCryptoUrl)&domain=\(domainName)"
             case .buyCryptoToWallet(let walletAddress):
-                return "\(NetworkConfig.buyCryptoUrl)?address=\(walletAddress)"
+                return "\(NetworkConfig.buyCryptoUrl)&address=\(walletAddress)"
             }
         }
         
@@ -230,6 +230,10 @@ extension String {
         static let primary = "PRIMARY"
         static let collapse = "COLLAPSE"
         static let chat = "CHAT"
+        static let send = "SEND"
+        static let to = "TO"
+        static let domainOrAddress = "DOMAIN_OR_ADDRESS"
+        static let yourWallets = "YOUR_WALLETS"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -434,7 +438,6 @@ extension String {
         static let settingsFollowTwitter = "SETTINGS_FOLLOW_TWITTER"
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
-        static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
         
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
@@ -900,13 +903,6 @@ extension String {
         static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
-        
-        // Referral
-        static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
-        static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
-        static let inviteFriendsStep1Message = "INVITE_FRIENDS_STEP_1_MESSAGE"
-        static let inviteFriendsStep2Message = "INVITE_FRIENDS_STEP_2_MESSAGE"
-        static let inviteFriendsStep3Message = "INVITE_FRIENDS_STEP_3_MESSAGE"
         static let copyLink = "COPY_LINK"
         
         // Apple Pay required
@@ -1010,6 +1006,7 @@ extension String {
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
         static let findYourDomain = "FIND_YOUR_DOMAIN"
+        static let searchForANewDomain = "SEARCH_FOR_A_NEW_DOMAIN"
         static let trending = "TRENDING"
         static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
         static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"
@@ -1151,6 +1148,35 @@ extension String {
         static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
         static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
         
+        static let review = "REVIEW"
+        static let usingMax = "USING_MAX"
+        static let useMax = "USE_MAX"
+        static let results = "RESULTS"
+        static let youAreSending = "YOU_ARE_SENDING"
+        static let from = "FROM"
+        static let speed = "SPEED"
+        static let feeEstimate = "FEE_ESTIMATE"
+        static let sendCryptoReviewPromptMessage = "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE"
+        static let scanWalletAddressHint = "SCAN_WALLET_ADDRESS_HINT"
+        static let max = "MAX"
+        static let transferDomainConfirmationHint = "TRANSFER_DOMAIN_CONFIRMATION_HINT"
+        static let transferDomainSuccessTitle = "TRANSFER_DOMAIN_SUCCESS_TITLE"
+        static let sendCryptoSuccessTitle = "SEND_CRYPTO_SUCCESS_TITLE"
+        static let transactionTakesNMinutes = "TRANSACTION_TAKES_N_MINUTES"
+        static let sendMaxCryptoInfoPullUpTitle = "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE"
+        static let notEnoughToken = "NOT_ENOUGH_TOKEN"
+        static let activity = "ACTIVITY"
+        static let normal = "NORMAL"
+        static let fast = "FAST"
+        static let urgent = "URGENT"
+        static let received = "RECEIVED"
+        static let receivedFromN = "RECEIVED_FROM_N"
+        static let sentToN = "SENT_TO_N"
+        static let txFee = "TX_FEE"
+        static let sendAssetNoDomainsTitle = "SEND_ASSET_NO_DOMAINS_TITLE"
+        static let sendAssetNoTokensTitle = "SEND_ASSET_NO_TOKENS_TITLE"
+        static let sendAssetNoTokensSubtitle = "SEND_ASSET_NO_TOKENS_SUBTITLE"
+        static let totalEstimate = "TOTAL_ESTIMATE"
     }
     
     enum BlockChainIcons: String {
@@ -1223,5 +1249,9 @@ extension String {
         } else {
             return self
         }
+    }
+    
+    var asURL: URL? {
+        URL(string: self)
     }
 }

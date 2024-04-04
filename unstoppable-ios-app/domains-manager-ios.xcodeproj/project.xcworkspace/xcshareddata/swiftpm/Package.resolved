@@ -1,5 +1,5 @@
 {
-  "originHash" : "7ef48ccc75c726c1506bc02084c676ce9561560c2e5a8b11a64a3392d2a42f0c",
+  "originHash" : "57712317d52b57378eb742d2fbaf64669df05a363013ace30768d4859c34d342",
   "pins" : [
     {
       "identity" : "amplitude-ios",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bugsnag/bugsnag-cocoa",
       "state" : {
-        "revision" : "b260ddb5570883ee8fd35860d8d7ff381250d4a1",
-        "version" : "6.25.2"
+        "revision" : "16b9145fc66e5296f16e733f6feb5d0e450574e8",
+        "version" : "6.28.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/launchdarkly/ios-client-sdk.git",
       "state" : {
-        "revision" : "ce4a8459fcff7d4c9770798d5a1e6049dcebc168",
-        "version" : "9.1.1"
+        "revision" : "cf82f0687ee505b291f8e8f5fe978122892b74ab",
+        "version" : "9.5.0"
       }
     },
     {

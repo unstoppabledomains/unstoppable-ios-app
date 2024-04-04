@@ -55,7 +55,7 @@ private extension PublicProfileTokensSectionView {
     
     @ViewBuilder
     func totalValueView(tokens: [BalanceTokenUIDescription]) -> some View {
-        Text(String.Constants.totalN.localized(BalanceStringFormatter.tokensBalanceString(tokens.totalBalanceUSD())))
+        Text(String.Constants.totalN.localized(BalanceStringFormatter.tokensBalanceUSDString(tokens.totalBalanceUSD())))
             .foregroundStyle(Color.white.opacity(0.56))
             .font(.currentFont(size: 16, weight: .medium))
     }

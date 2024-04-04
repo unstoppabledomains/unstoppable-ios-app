@@ -122,6 +122,23 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
         try await networkService.fetchCryptoPortfolioFor(wallet: walletAddress)
     }
+    
+    func loadAdditionalBalancesFor(domainName: DomainName) async -> [WalletTokenPortfolio] {
+        let cachedBalances = WalletBalancesStorage.instance.getCachedBalancesFor(domainName: domainName)
+        do {
+            let additionalAddresses = try await getAdditionalWalletAddressesToLoadBalanceFor(domainName: domainName)
+            guard !additionalAddresses.isEmpty else { return [] }
+            
+            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses,
+                                                           using: cachedBalances)
+            WalletBalancesStorage.instance.cacheBalances(balances, for: domainName)
+            
+            return balances
+        } catch {
+            Debugger.printFailure("Failed to load additional tokens for domain: \(domainName)")
+            return cachedBalances
+        }
+    }
 }
 
 // MARK: - UDWalletsServiceListener
@@ -503,19 +520,14 @@ private extension WalletsDataService {
     }
     
     func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {
-        do {
-            let additionalAddresses = try await getAdditionalWalletAddressesToLoadBalanceFor(wallet: wallet)
-            guard !additionalAddresses.isEmpty else { return [] }
-            
-            let balances = await loadAdditionalBalancesFor(addresses: additionalAddresses)
-            return balances
-        } catch {
-            Debugger.printFailure("Failed to load additional tokens for wallet: \(wallet.address)")
-            return []
-        }
+        guard let profileDomainName = wallet.profileDomainName else { return [] }
+
+        let balances = await loadAdditionalBalancesFor(domainName: profileDomainName)
+        return balances
     }
     
-    func loadAdditionalBalancesFor(addresses: Set<String>) async -> [WalletTokenPortfolio] {
+    func loadAdditionalBalancesFor(addresses: Set<String>,
+                                   using cachedBalances: [WalletTokenPortfolio]) async -> [WalletTokenPortfolio] {
         var balances = [WalletTokenPortfolio]()
         
         await withTaskGroup(of: [WalletTokenPortfolio].self) { group in
@@ -526,7 +538,7 @@ private extension WalletsDataService {
                         return tokens
                     } catch {
                         // Do not fail everything if one of additional tokens failed
-                        return []
+                        return cachedBalances.filter({ $0.address == address })
                     }
                 }
             }
@@ -539,10 +551,8 @@ private extension WalletsDataService {
         return balances
     }
     
-    func getAdditionalWalletAddressesToLoadBalanceFor(wallet: WalletEntity) async throws -> Set<String> {
-        guard let profileDomainName = wallet.profileDomainName else { return [] }
-        
-        let records = try await networkService.fetchProfileRecordsFor(domainName: profileDomainName)
+    func getAdditionalWalletAddressesToLoadBalanceFor(domainName: DomainName) async throws -> Set<String> {
+        let records = try await networkService.fetchProfileRecordsFor(domainName: domainName)
         let additionalAddresses = Set(Constants.additionalSupportedTokens.compactMap({ records[$0] }))
         
         return additionalAddresses

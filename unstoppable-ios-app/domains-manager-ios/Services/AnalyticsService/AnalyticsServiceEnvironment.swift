@@ -32,7 +32,7 @@ extension Analytics {
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
-        case didRecognizeQRCode
+        case didRecognizeQRCode, didRecognizeQRWalletAddress
         case didSelectChainNetwork
         case didReceivePushNotification
         case didReceiveLocalPushNotification
@@ -43,8 +43,8 @@ extension Analytics {
         case websiteLoginOptionSelected
         case makeScreenshot, screenRecording
         case didConnectDApp, didDisconnectDApp
-        case didTransferDomain
-        case searchProfilePressed, recentSearchProfilePressed
+        case didTransferDomain, didFailToTransferDomain
+        case searchProfilePressed, recentSearchProfilePressed, searchWalletAddressPressed, followingProfilePressed, userWalletPressed
         case trendingProfilePressed
         
         // Domains Collection
@@ -77,6 +77,8 @@ extension Analytics {
         
         case shareResult, didSelectHomeTab
         case didPullToRefresh
+        
+        case didSendCrypto, didFailToSendCrypto
     }
 }
 
@@ -139,6 +141,11 @@ extension Analytics {
         case numberOfItemsInSection
         case success
         case tab
+        case token
+        case assetType
+        case didClearRecords
+        case transactionSpeed
+        case isApplePaySupported
     }
 }
 
@@ -210,7 +217,6 @@ extension Analytics {
         case loginWithWebsiteAccount, loginWithEmailAndPassword
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
-        case inviteFriends
         case chatsHome, chatRequestsList, chatChannelsSpamList
         case chatDialog, channelFeed
         case publicDomainProfile
@@ -223,6 +229,10 @@ extension Analytics {
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
         case homeExplore
+        case homeActivity
+        
+        case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
+        case transferDomainSuccess, sendCryptoSuccess
     }
 }
 
@@ -286,7 +296,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount, settingsInviteFriends
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount
 
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
@@ -393,6 +403,14 @@ extension Analytics {
         case exploreDomainsSearchType
         case exploreUserWalletsSectionHeader
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
+        
+        case sendCrypto
+        case cameraTorch
+        case assetTypeSwitcher
+        case cryptoToken
+        case useMax
+        case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
+        case transactionSpeedSelection, selectTransactionSpeed
     }
 }
 
@@ -446,6 +464,7 @@ extension Analytics {
         case searchPurchaseDomainNotSupported
         case createYourProfile
         case homeWalletBuyOptions
+        case transferDomainConfirmation, sendMaxCryptoInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

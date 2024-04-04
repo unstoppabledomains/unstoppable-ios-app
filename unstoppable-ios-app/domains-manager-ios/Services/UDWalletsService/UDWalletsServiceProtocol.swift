@@ -44,7 +44,7 @@ protocol UDWalletsServiceProtocol {
     func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName?
     func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName?
     func setReverseResolution(to domain: DomainItem,
-                                   paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
+                              paymentConfirmationHandler: PaymentConfirmationHandler) async throws
     
     // Migration
     func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws

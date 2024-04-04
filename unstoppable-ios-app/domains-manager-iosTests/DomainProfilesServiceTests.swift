@@ -207,19 +207,12 @@ final class DomainProfilesServiceTests: BaseTestClass {
     }
     
     // MARK: - Profile Suggestions tests
-    func testEmptyProfileSuggestionsIfNoDomainInWallet() async throws {
-        let walletWithoutDomain = MockEntitiesFabric.Wallet.mockEntities(hasRRDomain: false).first!
-        let suggestions = try await service.getSuggestionsFor(wallet: walletWithoutDomain)
-        
-        XCTAssertTrue(networkService.suggestionsCallDomainNames.isEmpty)
-        XCTAssertTrue(suggestions.isEmpty)
-    }
-    
     func testProfileSuggestionsReturnSuccess() async throws {
         let wallet = mockWallet()
-        let suggestions = try await service.getSuggestionsFor(wallet: wallet)
+        let domainName = wallet.rrDomain!.name
+        let suggestions = try await service.getSuggestionsFor(domainName: domainName)
         
-        XCTAssertEqual(networkService.suggestionsCallDomainNames, [wallet.rrDomain!.name])
+        XCTAssertEqual(networkService.suggestionsCallDomainNames, [domainName])
         XCTAssertEqual(suggestions.map { $0.domain }, networkService.suggestionToReturn.map { $0.domain })
     }
     
@@ -227,7 +220,8 @@ final class DomainProfilesServiceTests: BaseTestClass {
         networkService.shouldFail = true
         do {
             let wallet = mockWallet()
-            let _ = try await service.getSuggestionsFor(wallet: wallet)
+            let domainName = wallet.rrDomain!.name
+            let _ = try await service.getSuggestionsFor(domainName: domainName)
             XCTFail("Expected network error")
         } catch {
             assertNetworkErrorThrown(error)
@@ -277,12 +271,11 @@ private extension DomainProfilesServiceTests {
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
         receiver.clear()
         try await block()
-        await Task.sleep(seconds: 0.1) // Wait for new expected requests finished
+        await Task.sleep(seconds: 0.2) // Wait for new expected requests finished
         
-        XCTAssertEqual(receiver.capturedValues.count, 3) // Reset + followers + followings
+        XCTAssertEqual(receiver.capturedValues.count, 4) // Reset + followers + followings
         XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[1].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[2].socialDetails!))
+        XCTAssertEqual(receiver.capturedValues.filter({ isSocialRelationshipDetailsEmpty($0.socialDetails!) }).count, 2)
     }
     
     func ensureFollowingActionSend(action: DomainProfileFollowActionDetails,

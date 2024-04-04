@@ -77,8 +77,6 @@ extension SettingsPresenter: SettingsPresenterProtocol {
             showLegalOptions()
         case .websiteAccount:
             showLoginScreen()
-        case .inviteFriends:
-            showInviteFriendsScreen()
         }
     }
 }
@@ -105,9 +103,6 @@ private extension SettingsPresenter {
         
         
         snapshot.appendSections([.main(2)])
-        if !interactableDomains.isEmpty {
-            snapshot.appendItems([.inviteFriends])
-        }
         snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
         
         snapshot.appendSections([.main(3)])
@@ -201,21 +196,6 @@ private extension SettingsPresenter {
             },
                                     in: view)
         }
-    }
-    
-    func showInviteFriendsScreen() {
-        guard let nav = view?.cNavigationController else { return }
-
-        let interactableDomains = appContext.walletsDataService.wallets.combinedDomains().interactableItems()
-        
-        guard let domainDisplayInfo = interactableDomains.first else {
-            Debugger.printFailure("Failed to get domain for referral code", critical: true)
-            return }
-        
-        let domain = domainDisplayInfo.toDomainItem()
-        
-        UDRouter().showInviteFriendsScreen(domain: domain,
-                                           in: nav)
     }
 }
 

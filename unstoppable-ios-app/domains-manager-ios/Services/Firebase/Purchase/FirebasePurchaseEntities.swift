@@ -85,6 +85,7 @@ extension FirebasePurchaseDomainsService {
         case domain(DomainProductItem)
         case parking(DomainProductParking)
         case ensAutoRenewal(DomainProductParking)
+        case unknown(UnknownUDProduct)
         
         var id: String {
             switch self {
@@ -92,6 +93,8 @@ extension FirebasePurchaseDomainsService {
                 return domainProductItem.id
             case .parking(let domainProductParking), .ensAutoRenewal(let domainProductParking):
                 return domainProductParking.id
+            case .unknown(let product):
+                return product.id
             }
         }
         
@@ -101,6 +104,8 @@ extension FirebasePurchaseDomainsService {
                 return domainProductItem.fullPrice
             case .parking(let domainProductParking), .ensAutoRenewal(let domainProductParking):
                 return domainProductParking.price
+            case .unknown(let product):
+                return product.price
             }
         }
         
@@ -114,6 +119,8 @@ extension FirebasePurchaseDomainsService {
             case .domain(let product):
                 try container.encode(product)
             case .parking(let product), .ensAutoRenewal(let product):
+                try container.encode(product)
+            case .unknown(let product):
                 try container.encode(product)
             }
         }
@@ -134,11 +141,19 @@ extension FirebasePurchaseDomainsService {
                 let parkingProduct = try DomainProductParking(from: decoder)
                 self = .ensAutoRenewal(parkingProduct)
             case .none:
-                throw NSError()
+                let product = try UnknownUDProduct(from: decoder)
+                self = .unknown(product)
             }
         }
+    }
+    
+    struct UnknownUDProduct: Codable, Hashable, Identifiable {
+        var id: String { String(productId) }
         
-     
+        let price: Int
+        let productId: Int
+        let productType: String
+        let productCode: String
     }
     
     struct DomainProductParking: Codable, Hashable, Identifiable {
@@ -190,6 +205,25 @@ extension FirebasePurchaseDomainsService {
         let tags: [String]
         @DecodeHashableIgnoringFailed
         var hiddenProducts: [UDProduct]
+        
+        
+        init(from decoder: any Decoder) throws {
+            let container: KeyedDecodingContainer<FirebasePurchaseDomainsService.DomainProductItem.CodingKeys> = try decoder.container(keyedBy: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.self)
+            self.reservedForUserId = try container.decodeIfPresent(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.reservedForUserId)
+            self.availability = try container.decode(Bool.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.availability)
+            self.domain = try container.decode(FirebasePurchaseDomainsService.DomainProductDetails.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.domain)
+            self.price = try container.decode(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.price)
+            self.productId = try container.decodeIfPresent(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productId)
+            self.productType = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productType)
+            self.productCode = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productCode)
+            self.status = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.status)
+            self.tags = try container.decode([String].self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.tags)
+            if let hiddenProducts = try? container.decode(DecodeHashableIgnoringFailed<FirebasePurchaseDomainsService.UDProduct>.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.hiddenProducts) {
+                self._hiddenProducts = hiddenProducts
+            } else {
+                self._hiddenProducts = .init(value: [])
+            }
+        }
         
         // Custom field
         var availableProducts: [UDProduct]?

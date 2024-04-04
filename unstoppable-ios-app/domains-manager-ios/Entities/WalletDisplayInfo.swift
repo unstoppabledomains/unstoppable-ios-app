@@ -131,6 +131,17 @@ extension WalletDisplayInfo {
                 return .walletIcon
             }
         }
+        
+        var listIcon: UIImage {
+            switch self {
+            case .locallyGenerated:
+                return .vaultSafeIcon
+            case .external(_, let walletMake):
+                return walletMake.icon
+            case .imported:
+                return .walletExternalIcon
+            }
+        }
     }
 }
 

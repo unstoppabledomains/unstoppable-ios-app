@@ -20,12 +20,14 @@ final class HomeTabRouter: ObservableObject {
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
     @Published var chatTabNavPath: [HomeChatNavigationDestination] = []
     @Published var exploreTabNavPath: [HomeExploreNavigationDestination] = []
+    @Published var activityTabNavPath: [HomeActivityNavigationDestination] = []
     @Published var presentedNFT: NFTDisplayInfo?
     @Published var presentedDomain: DomainPresentationDetails?
     @Published var presentedPublicDomain: PublicProfileViewConfiguration?
     @Published var presentedUBTSearch: UBTSearchPresentationDetails?
     @Published var resolvingPrimaryDomainWallet: SelectRRPresentationDetails?
     @Published var showingWalletInfo: WalletEntity?
+    @Published var sendCryptoInitialData: SendCryptoAsset.InitialData?
     weak var mintingNav: MintDomainsNavigationController?
     weak var chatsListCoordinator: ChatsListCoordinator?
     weak var homeWalletViewCoordinator: HomeWalletViewCoordinator?
@@ -297,6 +299,7 @@ extension HomeTabRouter {
         presentedPublicDomain = nil
         resolvingPrimaryDomainWallet = nil
         showingWalletInfo = nil
+        sendCryptoInitialData = nil
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()
@@ -395,12 +398,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
         guard domain.isMinting,
               let topVC else { return }
         
-        let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
-        
-        guard let mintingDomain = mintingDomains.first(where: { $0.name == domain.name }) else { return }
-        
-        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(mintingDomain: mintingDomain,
-                                                                        displayInfo: domain)
+        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(displayInfo: domain)
         UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: [mintingDomainWithDisplayInfo],
                                                       mintingDomainSelectedCallback: { _ in },
                                                       in: topVC)
@@ -409,7 +407,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
         guard let topVC else { return }
         
-        UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: topVC)
+        UDRouter().showTransferInProgressScreen(domain: domain, in: topVC)
     }
     
 }
@@ -423,7 +421,7 @@ private extension HomeTabRouter {
     
     func waitForScreenClosed() async {
         await withSafeCheckedMainActorContinuation { completion in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 completion(Void())
             }
         }

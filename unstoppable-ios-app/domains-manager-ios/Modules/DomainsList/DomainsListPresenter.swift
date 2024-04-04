@@ -116,14 +116,7 @@ private extension DomainsListPresenter {
         guard let view else { return }
 
         let mintingDomainsDisplayInfo = domains.filter { $0.isMinting }
-        let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
-        
-        let mintingDomainsWithDisplayInfo = mintingDomainsDisplayInfo.compactMap({ mintingDomainDisplayInfo -> MintingDomainWithDisplayInfo? in
-            guard let mintingDomain = mintingDomains.first(where: { $0.name == mintingDomainDisplayInfo.name }) else { return nil }
-            
-            return MintingDomainWithDisplayInfo(mintingDomain: mintingDomain,
-                                                displayInfo: mintingDomainDisplayInfo)
-        })
+        let mintingDomainsWithDisplayInfo = mintingDomainsDisplayInfo.map { MintingDomainWithDisplayInfo(displayInfo: $0) }
         
         UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: mintingDomainsWithDisplayInfo,
                                                       mintingDomainSelectedCallback: nil,
