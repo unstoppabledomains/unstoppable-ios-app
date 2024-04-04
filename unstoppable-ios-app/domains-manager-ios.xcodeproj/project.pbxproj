@@ -2396,6 +2396,8 @@
 		C6E6E03C2B98A89200789050 /* HomeExploreEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */; };
 		C6E856262BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */; };
 		C6E856272BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */; };
+		C6E856292BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */; };
+		C6E8562A2BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */; };
 		C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */; };
 		C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */; };
 		C6ECBF6628D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */; };
@@ -3888,6 +3890,7 @@
 		C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsStorage.swift; sourceTree = "<group>"; };
 		C6E6E03A2B98A89200789050 /* HomeExploreEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeExploreEmptyStateView.swift; sourceTree = "<group>"; };
 		C6E856252BBD8EEE00AAFDE4 /* SelectCryptoAssetToSendEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCryptoAssetToSendEmptyView.swift; sourceTree = "<group>"; };
+		C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentAsModalPreviewView.swift; sourceTree = "<group>"; };
 		C6EA6D6228B36E7C00B2785F /* ViewAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewAnalyticsLogger.swift; sourceTree = "<group>"; };
 		C6EA6D6728B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MintingNotPrimaryDomainsInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C6ECBF6528D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectWalletsReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -6912,6 +6915,7 @@
 				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
 				C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */,
 				C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */,
+				C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */,
 				C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */,
 				C63AD0992B95657C00BF8C83 /* LineView.swift */,
 				C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */,
@@ -9554,6 +9558,7 @@
 				C629A4602A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */,
 				C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C64F8E012B60F2590075D37F /* ViewPullUpConfigurationType.swift in Sources */,
+				C6E856292BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */,
 				C67213E52BAA97540075B9C7 /* MockEntitiesFabric+SendCrypto.swift in Sources */,
 				C6D3B9B52A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift in Sources */,
 				C6D8FF272B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */,
@@ -10276,6 +10281,7 @@
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
 				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
+				C6E8562A2BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				C6A3592F2BB68D9B00B1209A /* CryptoSenderProtocol.swift in Sources */,
 				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,

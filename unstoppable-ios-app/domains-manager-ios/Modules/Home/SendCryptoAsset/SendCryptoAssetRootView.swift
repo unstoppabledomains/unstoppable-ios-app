@@ -45,14 +45,7 @@ private extension SendCryptoAssetRootView {
 }
 
 #Preview {
-    struct PresenterView: View {
-        var body: some View {
-            Text("")
-                .sheet(isPresented: .constant(true), content: {
-                    SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
-                })
-        }
+    PresentAsModalPreviewView {
+        SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: .init(sourceWallet:  MockEntitiesFabric.Wallet.mockEntities()[0])))
     }
-    
-    return PresenterView()
 }

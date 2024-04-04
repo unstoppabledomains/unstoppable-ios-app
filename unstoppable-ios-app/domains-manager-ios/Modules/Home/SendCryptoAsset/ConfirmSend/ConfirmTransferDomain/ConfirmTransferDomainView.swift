@@ -69,6 +69,7 @@ private extension ConfirmTransferDomainView {
                      style: .large(.raisedPrimary),
                      isLoading: isLoading,
                      callback: continueButtonPressed)
+        .padding(.bottom, safeAreaInset.bottom)
     }
     
     func continueButtonPressed() {

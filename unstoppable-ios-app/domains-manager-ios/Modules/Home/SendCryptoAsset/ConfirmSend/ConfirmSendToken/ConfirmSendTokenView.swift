@@ -192,6 +192,7 @@ private extension ConfirmSendTokenView {
             }
                          .disabled(!hasSufficientFunds)
         }
+        .padding(.bottom, safeAreaInset.bottom)
     }
     
     @ViewBuilder
@@ -255,11 +256,13 @@ private extension ConfirmSendTokenView {
 }
 
 #Preview {
-    NavigationStack {
-        ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
-                                         token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                         amount: .usdAmount(3998234.3)))
+    PresentAsModalPreviewView {
+        NavigationStack {
+            ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                             token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                             amount: .usdAmount(3998234.3)))
             .navigationBarTitleDisplayMode(.inline)
-    }
+        }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
+    }
 }
