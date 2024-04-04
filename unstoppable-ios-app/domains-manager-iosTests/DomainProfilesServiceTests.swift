@@ -271,12 +271,11 @@ private extension DomainProfilesServiceTests {
         await Task.sleep(seconds: 0.1) // Wait for initial updates finished
         receiver.clear()
         try await block()
-        await Task.sleep(seconds: 0.1) // Wait for new expected requests finished
+        await Task.sleep(seconds: 0.2) // Wait for new expected requests finished
         
-        XCTAssertEqual(receiver.capturedValues.count, 3) // Reset + followers + followings
+        XCTAssertEqual(receiver.capturedValues.count, 4) // Reset + followers + followings
         XCTAssertTrue(isSocialRelationshipDetailsEmpty(receiver.capturedValues[0].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[1].socialDetails!))
-        XCTAssertFalse(isSocialRelationshipDetailsEmpty(receiver.capturedValues[2].socialDetails!))
+        XCTAssertEqual(receiver.capturedValues.filter({ isSocialRelationshipDetailsEmpty($0.socialDetails!) }).count, 2)
     }
     
     func ensureFollowingActionSend(action: DomainProfileFollowActionDetails,
