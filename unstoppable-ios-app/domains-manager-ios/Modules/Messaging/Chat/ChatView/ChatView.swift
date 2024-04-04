@@ -18,13 +18,8 @@ struct ChatView: View, ViewAnalyticsLogger {
     
     var body: some View {
         ZStack {
-            if !viewModel.isLoading,
-               viewModel.messages.isEmpty {
-                ChatMessagesEmptyView(mode: emptyStateMode)
-            } else {
-                chatContentView()
-                    .opacity(viewModel.chatState == .loading ? 0 : 1)
-            }
+            chatContentView()
+                .opacity(viewModel.chatState == .loading ? 0 : 1)
             if viewModel.isLoading {
                 ProgressView()
             }
@@ -96,13 +91,19 @@ private extension ChatView {
     func chatContentView() -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 16) {
-                    if viewModel.isLoadingMessages {
-                        topLoadingView()
-                    }
-                    ForEach(viewModel.messages.reversed(), id: \.id) { message in
-                        messageRow(message)
-                            .id(message.id)
+                if !viewModel.isLoading,
+                   viewModel.messages.isEmpty {
+                    ChatMessagesEmptyView(mode: emptyStateMode)
+                        .padding(.top, 64)
+                } else {
+                    LazyVStack(spacing: 16) {
+                        if viewModel.isLoadingMessages {
+                            topLoadingView()
+                        }
+                        ForEach(viewModel.messages.reversed(), id: \.id) { message in
+                            messageRow(message)
+                                .id(message.id)
+                        }
                     }
                 }
             }

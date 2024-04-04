@@ -85,7 +85,7 @@ extension UIViewController {
             topController = presentedViewController
             
             if topController is UINavigationController {
-                topController = (topController as! UINavigationController).topViewController!
+                topController = (topController as! UINavigationController).topViewController ?? topController
             }
         }
         
