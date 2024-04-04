@@ -139,6 +139,7 @@ extension Analytics {
         case numberOfItemsInSection
         case success
         case tab
+        case isApplePaySupported
     }
 }
 
