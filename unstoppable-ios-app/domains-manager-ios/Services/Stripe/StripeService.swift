@@ -14,8 +14,9 @@ final class StripeService: NSObject {
     typealias PurchaseResult = Result<Void, PurchaseError>
     typealias PurchaseResultCallback = (PurchaseResult)->()
     
+    private let merchantIdentifier = "merchant.unstoppabledomains.pay"
     private(set) var paymentDetails: PaymentDetails
-    
+
     init(paymentDetails: PaymentDetails) {
         self.paymentDetails = paymentDetails
     }
@@ -87,19 +88,17 @@ extension StripeService: STPApplePayContextDelegate {
 private extension StripeService {
     func payWithStripeAsync(callback: @escaping PurchaseResultCallback) {
         paymentDetails.resultCallback = callback
-        guard StripeAPI.deviceSupportsApplePay() else {
-            finishWithResult(.failure(.applePayNotSupported))
-            return
-        }
-        
         DispatchQueue.main.async {
-            self.startStripePayment()
+            if StripeAPI.deviceSupportsApplePay() {
+                self.startPaymentWithApplePay()
+            } else {
+                self.startPaymentWithoutApplePay()
+            }
         }
     }
     
-    func startStripePayment() {
-        let countryCode = Locale.current.regionCode ?? PaymentConfiguration.usCountryCode
-        let merchantIdentifier = "merchant.unstoppabledomains.pay"
+    func startPaymentWithApplePay() {
+        let countryCode = Locale.current.region?.identifier ?? PaymentConfiguration.usCountryCode
         let paymentRequest = StripeAPI.paymentRequest(withMerchantIdentifier: merchantIdentifier,
                                                       country: countryCode,
                                                       currency: PaymentConfiguration.usdCurrencyLabel)
@@ -117,6 +116,34 @@ private extension StripeService {
             appC.presentApplePay()
         } else {
             finishWithResult(.failure(.cantInitStripe))
+        }
+    }
+    
+    @MainActor
+    func startPaymentWithoutApplePay() {
+        guard let topVC = appContext.coreAppCoordinator.topVC else {
+            finishWithResult(.failure(.applePayNotSupported))
+            return
+        }
+        
+        var conf = PaymentSheet.Configuration()
+        conf.merchantDisplayName = merchantIdentifier
+        conf.allowsDelayedPaymentMethods = false
+        let paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentDetails.paymentSecret,
+                                        configuration: conf)
+        paymentSheet.present(from: topVC) { [weak self] result in
+            self?.handlePaymentWithoutApplePayResult(result)
+        }
+    }
+    
+    func handlePaymentWithoutApplePayResult(_ result: PaymentSheetResult) {
+        switch result {
+        case .completed:
+            finishWithResult(.success(Void()))
+        case .canceled:
+            finishWithResult(.failure(.cancelled))
+        case .failed:
+            finishWithResult(.failure(.paymentFailed))
         }
     }
     
