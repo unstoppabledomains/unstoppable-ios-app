@@ -51,8 +51,8 @@ final class TestableDomainProfilesService: DomainProfilesServiceProtocol, Failab
         loadMoreCallsHistory.append(relationshipType)
     }
     
-    func getSuggestionsFor(wallet: WalletEntity) async throws -> [DomainProfileSuggestion] {
-        loadSuggestionsCallsHistory.append(wallet.address)
+    func getSuggestionsFor(domainName: DomainName) async throws -> [DomainProfileSuggestion] {
+        loadSuggestionsCallsHistory.append(domainName)
         try failIfNeeded()
         return profilesSuggestions
     }

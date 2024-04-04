@@ -234,8 +234,9 @@ private extension HomeExploreViewModel {
     }
     
     func loadSuggestedProfilesFor(wallet: WalletEntity) {
+        guard let rrDomain = getSelectedUserProfileRRDomain() else { return }
         Task {
-            let suggestedProfiles = try await domainProfilesService.getSuggestionsFor(wallet: wallet)
+            let suggestedProfiles = try await domainProfilesService.getSuggestionsFor(domainName: rrDomain.name)
             setSuggestedProfiles(suggestedProfiles)
         }
     }
@@ -288,7 +289,12 @@ private extension HomeExploreViewModel {
     func getSelectedUserProfileRRDomain() -> DomainDisplayInfo? {
         guard case .wallet(let wallet) = selectedProfile else { return nil }
         
-        return wallet.rrDomain
+        switch wallet.getCurrentWalletProfileState() {
+        case .udDomain(let domain), .ensDomain(let domain):
+            return domain
+        case .noProfile:
+            return nil
+        }
     }
   
     func loadNewProfileSuggestionsIfAllFollowing() {

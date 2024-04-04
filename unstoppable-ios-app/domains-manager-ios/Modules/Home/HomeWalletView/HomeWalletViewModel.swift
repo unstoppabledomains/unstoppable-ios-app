@@ -75,7 +75,7 @@ extension HomeWalletView {
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:
-                switch getCurrentWalletProfileState() {
+                switch selectedWallet.getCurrentWalletProfileState() {
                 case .udDomain(let domain), .ensDomain(let domain):
                     showProfile(of: domain)
                 case .noProfile:
@@ -142,7 +142,7 @@ extension HomeWalletView {
         }
         
         var isProfileButtonEnabled: Bool {
-            switch getCurrentWalletProfileState() {
+            switch selectedWallet.getCurrentWalletProfileState() {
             case .udDomain, .ensDomain:
                 return true
             case .noProfile:
@@ -308,21 +308,5 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
             UserDefaults.didUpdateToWalletVersion = false
             router.showingUpdatedToWalletGreetings = true
         }
-    }
-}
-
-fileprivate extension HomeWalletView.HomeWalletViewModel {
-    enum WalletProfileState {
-        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
-    }
-    
-    func getCurrentWalletProfileState() -> WalletProfileState {
-        if let rrDomain = selectedWallet.rrDomain {
-            return .udDomain(rrDomain)
-        } else if let ensDomain = selectedWallet.domains.first(where: { $0.isENSDomain }),
-                  !selectedWallet.isReverseResolutionChangeAllowed() {
-            return .ensDomain(ensDomain)
-        }
-        return .noProfile
     }
 }
