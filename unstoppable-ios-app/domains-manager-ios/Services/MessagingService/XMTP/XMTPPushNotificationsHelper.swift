@@ -23,8 +23,8 @@ struct XMTPPushNotificationsHelper {
 private extension XMTPPushNotificationsHelper {
     static func makeRequestFor(topics: [String], accepted: Bool?, blocked: Bool?, by client: Client) async throws {
         do {
-            let url = URL(string: "https://\(NetworkConfig.baseMessagingHost)/api/xmtp/topics/register")!
-            let subReq = try await buildSubscribeRequestFor(topics: topics, 
+            let url = URL(string: "https://\(NetworkConfig.baseAPIHost)/messaging/xmtp/topics/register")!
+            let subReq = try await buildSubscribeRequestFor(topics: topics,
                                                             accepted: accepted,
                                                             blocked: blocked,
                                                             by: client)
