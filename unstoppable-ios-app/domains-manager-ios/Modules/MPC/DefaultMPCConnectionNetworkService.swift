@@ -43,7 +43,7 @@ struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
         }
         
         let header = buildAuthBearerHeader(token: NetworkService.stagingWalletAPIAdminKey)
-        let body = Body(walletExternalId: "wa-wt-d890e86a-7680-4c6a-9d23-e80e00be44d9")
+        let body = Body(walletExternalId: "wa-wt-96633a1c-2b70-47ca-a06f-01bef6b8f36b")
         let request = try APIRequest(urlString: MPCNetwork.URLSList.tempGetCodeURL,
                                      body: body,
                                      method: .post,
