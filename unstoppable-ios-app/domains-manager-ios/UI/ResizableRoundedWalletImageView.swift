@@ -16,7 +16,8 @@ class ResizableRoundedWalletImageView: ResizableRoundedImageView {
         switch walletInfo.source {
         case .locallyGenerated, .external:
             setStyle(.largeImage)
-        case .imported:
+            // TODO: - MPC
+        case .imported, .mpc:
             setStyle(.imageCentered)
         }
     }

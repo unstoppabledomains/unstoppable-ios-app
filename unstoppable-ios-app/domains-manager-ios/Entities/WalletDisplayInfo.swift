@@ -24,7 +24,8 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
             switch source {
             case .locallyGenerated:
                 return .locallyGeneratedNotBackedUp
-            case .imported, .external:
+                // TODO: - MPC
+            case .imported, .external, .mpc:
                 return .importedNotBackedUp
             }
         }
@@ -33,7 +34,8 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
     var isNameSet: Bool { name != address }
     var isConnected: Bool {
         switch source {
-        case .locallyGenerated, .imported:
+            // TODO: - MPC
+        case .locallyGenerated, .imported, .mpc:
             return false
         case .external:
             return true
@@ -45,7 +47,8 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
             return name
         } else {
             switch source {
-            case .locallyGenerated, .imported:
+                // TODO: - MPC
+            case .locallyGenerated, .imported, .mpc:
                 return address.walletAddressTruncated
             case .external(let name, _):
                 return name
@@ -79,6 +82,10 @@ extension WalletDisplayInfo {
             case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
                 self.source = .imported
                 self.isWithPrivateKey = wallet.type == .privateKeyEntered
+                // TODO: - MPC
+            case .mpc:
+                self.source = .mpc
+                self.isWithPrivateKey = false
             }
         }
         self.name = wallet.aliasName
@@ -120,6 +127,8 @@ extension WalletDisplayInfo {
 extension WalletDisplayInfo {
     enum Source: Hashable, Codable {
         case locallyGenerated, imported, external(_ name: String, _ walletMake: ExternalWalletMake)
+        // TODO: - MPC
+        case mpc
         
         var displayIcon: UIImage {
             switch self {
@@ -127,7 +136,8 @@ extension WalletDisplayInfo {
                 return .udWalletListIcon
             case .external(_, let walletMake):
                 return walletMake.icon
-            case .imported:
+                // TODO: - MPC
+            case .imported, .mpc:
                 return .walletIcon
             }
         }
@@ -138,7 +148,8 @@ extension WalletDisplayInfo {
                 return .vaultSafeIcon
             case .external(_, let walletMake):
                 return walletMake.icon
-            case .imported:
+                // TODO: - MPC
+            case .imported, .mpc:
                 return .walletExternalIcon
             }
         }

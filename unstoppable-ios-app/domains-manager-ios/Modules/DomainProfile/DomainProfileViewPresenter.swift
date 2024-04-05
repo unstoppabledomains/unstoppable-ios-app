@@ -451,7 +451,8 @@ private extension DomainProfileViewPresenter {
         var results = [UpdateProfileResult]()
         
         switch dataHolder.wallet.displayInfo.source {
-        case .external:
+            // TODO: - MPC
+        case .external, .mpc:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for requestsWithChange in requestsWithChanges {
                 let result = await self.performRequestWithChanges(requestsWithChange)
