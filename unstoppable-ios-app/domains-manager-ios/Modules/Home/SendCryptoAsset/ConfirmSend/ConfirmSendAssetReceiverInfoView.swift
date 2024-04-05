@@ -12,6 +12,7 @@ struct ConfirmSendAssetReceiverInfoView: View, ConfirmSendTokenViewsBuilderProto
     @Environment(\.imageLoadingService) var imageLoadingService
 
     let receiver: SendCryptoAsset.AssetReceiver
+    let chainType: BlockchainType
     
     @State private var receiverAvatar: UIImage?
 
@@ -60,14 +61,16 @@ private extension ConfirmSendAssetReceiverInfoView {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
+    var receiverAddress: String { receiver.addressFor(chainType: chainType) }
+    
     @ViewBuilder
     func receiverAddressInfoView() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if let name = receiver.domainName {
                 primaryTextView(name)
-                secondaryTextView(receiver.walletAddress.walletAddressTruncated)
+                secondaryTextView(receiverAddress.walletAddressTruncated)
             } else {
-                primaryTextView(receiver.walletAddress.walletAddressTruncated)
+                primaryTextView(receiverAddress.walletAddressTruncated)
             }
         }
         .frame(height: 60)
@@ -77,5 +80,6 @@ private extension ConfirmSendAssetReceiverInfoView {
 }
 
 #Preview {
-    ConfirmSendAssetReceiverInfoView(receiver: MockEntitiesFabric.SendCrypto.mockReceiver())
+    ConfirmSendAssetReceiverInfoView(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
+                                     chainType: .Matic)
 }

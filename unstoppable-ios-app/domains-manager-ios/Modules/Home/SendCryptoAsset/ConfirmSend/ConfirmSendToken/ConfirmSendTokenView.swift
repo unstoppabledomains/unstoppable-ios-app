@@ -148,7 +148,8 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func receiverInfoView() -> some View {
-        ConfirmSendAssetReceiverInfoView(receiver: receiver)
+        ConfirmSendAssetReceiverInfoView(receiver: receiver,
+                                         chainType: token.blockchainType ?? .Matic)
     }
     
     @ViewBuilder

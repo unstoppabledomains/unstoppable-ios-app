@@ -14,22 +14,30 @@ struct SendCryptoAssetRootView: View {
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            SendCryptoAssetSelectReceiverView()
-                .environmentObject(viewModel)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(for: SendCryptoAsset.NavigationDestination.self) { destination in
-                    SendCryptoAsset.LinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
-                        .environmentObject(viewModel)
+            ZStack {
+                SendCryptoAssetSelectReceiverView()
+                    .environmentObject(viewModel)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationDestination(for: SendCryptoAsset.NavigationDestination.self) { destination in
+                        SendCryptoAsset.LinkNavigationDestination.viewFor(navigationDestination: destination)
+                            .ignoresSafeArea()
+                            .environmentObject(viewModel)
+                    }
+                    .onChange(of: viewModel.navPath) { _ in
+                        updateTitleView()
+                    }
+                    .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
+                
+                if viewModel.isLoading {
+                    ProgressView()
                 }
-                .onChange(of: viewModel.navPath) { _ in
-                    updateTitleView()
-                }
-                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
+            }
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
         .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
+        .displayError($viewModel.error)
+        .allowsHitTesting(!viewModel.isLoading)
     }
     
 }
