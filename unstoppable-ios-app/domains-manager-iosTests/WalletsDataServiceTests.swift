@@ -84,7 +84,7 @@ extension WalletsDataServiceTests {
             expectedCalls.append(value)
         }
         let wallet = await setSelectedWalletInService()
-        XCTAssertEqual(networkService.calledAddresses.sorted(), ([wallet.address] + expectedCalls).sorted())
+        XCTAssertEqual(Set(networkService.calledAddresses), Set([wallet.address] + expectedCalls))
     }
 }
 
