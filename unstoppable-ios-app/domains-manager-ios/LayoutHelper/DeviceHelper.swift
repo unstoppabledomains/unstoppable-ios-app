@@ -23,6 +23,9 @@ enum UIDeviceSize  {
     case i11_Inch
     case i12_9Inch
     case unknown
+    
+    var isIPSE: Bool { self == .i4_7Inch }
+
 }
 
 @MainActor

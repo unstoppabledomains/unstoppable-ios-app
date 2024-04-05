@@ -45,7 +45,6 @@ struct NFTDetailsView: View, ViewAnalyticsLogger {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButtonView {
                         logButtonPressedAnalyticEvents(button: .close)
-                        UDVibration.buttonTap.vibrate()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

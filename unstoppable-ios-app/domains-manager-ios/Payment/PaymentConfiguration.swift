@@ -32,6 +32,10 @@ public class PaymentConfiguration {
 }
 
 func formatCartPrice(_ price: Int) -> String {
-    let price = PaymentConfiguration.centsIntoDollars(cents: price) 
+    let price = PaymentConfiguration.centsIntoDollars(cents: price)
+    return formatCartPrice(price)
+}
+
+func formatCartPrice(_ price: Double) -> String {
     return PaymentConfiguration.cartPriceFormatter.string(from: price as NSNumber)!
 }

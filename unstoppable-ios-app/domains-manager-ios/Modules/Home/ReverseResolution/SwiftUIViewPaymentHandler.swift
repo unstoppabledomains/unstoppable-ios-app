@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-final class SwiftUIViewPaymentHandler: ObservableObject, PaymentConfirmationDelegate {
+final class SwiftUIViewPaymentHandler: ObservableObject, PaymentConfirmationDelegate, PaymentConfirmationHandler {
     var stripePaymentHelper: StripePaymentHelper?
     var storedPayload: NetworkService.TxPayload?
     var storedContinuation: CheckedContinuation<NetworkService.TxPayload, Error>?

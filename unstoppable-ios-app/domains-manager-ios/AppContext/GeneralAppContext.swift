@@ -31,6 +31,7 @@ final class GeneralAppContext: AppContextProtocol {
     let walletsDataService: WalletsDataServiceProtocol
     let walletNFTsService: WalletNFTsServiceProtocol
     let domainProfilesService: DomainProfilesServiceProtocol
+    let walletTransactionsService: WalletTransactionsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -62,6 +63,8 @@ final class GeneralAppContext: AppContextProtocol {
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
         walletNFTsService = WalletNFTsService()
+        walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
+                                                              cache: InMemoryWalletTransactionsCache())
         
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2

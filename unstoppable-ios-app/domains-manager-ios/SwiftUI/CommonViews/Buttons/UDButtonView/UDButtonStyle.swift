@@ -180,7 +180,7 @@ enum UDButtonStyle {
         case .large, .medium:
             return 20
         case .small:
-            return 16
+            return 20
         case .verySmall:
             return 12
         }

@@ -220,4 +220,28 @@ extension MockEntitiesFabric {
             */
         }
     }
+    
+    enum Tokens {
+        static func mockUIToken() -> BalanceTokenUIDescription {
+            mockEthToken()
+        }
+        
+        static func mockEthToken() -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "ETH",
+                                      symbol: "ETH",
+                                      name: "Ethereum",
+                                      balance: 1,
+                                      balanceUsd: 1,
+                                      marketUsd: 3900.34)
+        }
+        
+        static func mockMaticToken() -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "MATIC",
+                                      symbol: "MATIC",
+                                      name: "Polygon",
+                                      balance: 1,
+                                      balanceUsd: 1,
+                                      marketUsd: 1.02)
+        }
+    }
 }

@@ -42,7 +42,7 @@ extension WalletsDataServiceTests {
     }
     
     func testWalletsListSyncOnLaunch() {
-        XCTAssertEqual(Set(udWalletsService.wallets.map { $0.address }), Set(walletsDataService.wallets.map { $0.address }))
+        XCTAssertEqual(udWalletsService.wallets.map { $0.address }.sorted(), walletsDataService.wallets.map { $0.address }.sorted())
     }
     
     func testSelectedWalletNotAssignedAutomatically() {
@@ -84,7 +84,7 @@ extension WalletsDataServiceTests {
             expectedCalls.append(value)
         }
         let wallet = await setSelectedWalletInService()
-        XCTAssertEqual(Set(networkService.calledAddresses), Set([wallet.address] + expectedCalls))
+        XCTAssertEqual(networkService.calledAddresses.sorted(), ([wallet.address] + expectedCalls).sorted())
     }
 }
 

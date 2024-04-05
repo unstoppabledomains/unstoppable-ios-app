@@ -121,6 +121,22 @@ extension WalletEntity: Identifiable {
     var id: String { address }
 }
 
+extension WalletEntity {
+    enum WalletProfileState {
+        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
+    }
+    
+    func getCurrentWalletProfileState() -> WalletProfileState {
+        if let rrDomain = rrDomain {
+            return .udDomain(rrDomain)
+        } else if let ensDomain = domains.first(where: { $0.isENSDomain }),
+                  !isReverseResolutionChangeAllowed() {
+            return .ensDomain(ensDomain)
+        }
+        return .noProfile
+    }
+}
+
 extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
         guard let address = address?.normalized else { return nil }

@@ -43,19 +43,16 @@ extension UIViewController {
     }
 }
 
-extension UIViewController {
+extension UIViewController: NavigationControllerCustomiser {
     final class BarButtonItemWithoutMenu: UIBarButtonItem {
         override var menu: UIMenu? {  get { nil } set { } }
     }
     
-    func customiseNavigationBackButton(image: UIImage = BaseViewController.NavBackIconStyle.arrow.icon) {
-        let backButtonBackgroundImage = image.withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
-        self.navigationController?.navigationBar.standardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                                          transitionMaskImage: backButtonBackgroundImage)
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                                             transitionMaskImage: backButtonBackgroundImage)
+    func customiseNavigationBackButton(style: BaseViewController.NavBackIconStyle = .arrow) {
+        customiseNavigationBackButtonIn(nav: navigationController,
+                                        style: style)
     }
-
+    
     func showInfoScreenWith(preset: InfoScreen.Preset) {
         let vc = InfoScreen.instantiate(preset: preset)
         if let nav = cNavigationController {
@@ -85,7 +82,7 @@ extension UIViewController {
             topController = presentedViewController
             
             if topController is UINavigationController {
-                topController = (topController as! UINavigationController).topViewController!
+                topController = (topController as! UINavigationController).topViewController ?? topController
             }
         }
         

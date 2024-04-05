@@ -137,7 +137,7 @@ extension HomeExploreViewModelTests {
 extension HomeExploreViewModelTests {
     @MainActor
     func testSuggestionsLoadedOnLaunch() {
-        XCTAssertEqual(domainProfilesService.loadSuggestionsCallsHistory, [wallet.address])
+        XCTAssertEqual(domainProfilesService.loadSuggestionsCallsHistory, [wallet.rrDomain!.name])
         XCTAssertEqual(viewModel.suggestedProfiles, domainProfilesService.profilesSuggestions)
     }
     

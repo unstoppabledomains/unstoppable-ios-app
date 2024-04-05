@@ -20,7 +20,7 @@ final class MockFirebaseInteractionsService {
     }
     @Published var cartStatus: PurchaseDomainCartStatus
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
-    var isApplePaySupported: Bool { true }
+    var isApplePaySupported: Bool { false }
 
     @Published private(set) var parkedDomains: [FirebaseDomainDisplayInfo] = []
     var parkedDomainsPublisher: Published<[FirebaseDomainDisplayInfo]>.Publisher  { $parkedDomains }

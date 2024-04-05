@@ -11,6 +11,10 @@ typealias ResponseV2 = String
 typealias SessionV2Proxy = String
 
 final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, tx: EthereumTransaction, address: HexAddress, in wallet: UDWallet) async throws -> ResponseV2 {
+        throw NSError()
+    }
+    
     var delegate: WalletConnectDelegate?
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI {

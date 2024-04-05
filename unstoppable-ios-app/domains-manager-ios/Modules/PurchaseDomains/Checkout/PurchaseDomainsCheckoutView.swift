@@ -109,11 +109,6 @@ private extension PurchaseDomainsCheckoutView {
                     logButtonPressedAnalyticEvents(button: .openUnpaidDomainsInfo)
                     openLinkExternally(.unstoppableDomainSearch(searchKey: domain.name))
                 }
-            } else if !purchaseDomainsService.isApplePaySupported {
-                topWarningViewWith(message: .applePayNotSupported) {
-                    logButtonPressedAnalyticEvents(button: .openSetupApplePayInfo)
-                    openLinkExternally(.setupApplePayInstruction)
-                }
             }
         }
         .padding(EdgeInsets(top: 56, leading: 16, bottom: 0, trailing: 16))
@@ -421,9 +416,19 @@ private extension PurchaseDomainsCheckoutView {
         return String.Constants.pay.localized()
     }
     
+    var checkoutButtonIcon: Image? {
+        isApplePaySupported ? .appleIcon : nil
+    }
+    
+    var checkoutButtonStyle: UDButtonStyle {
+        isApplePaySupported ? .large(.applePay) : .large(.raisedPrimary)
+    }
+    
     @ViewBuilder
     func checkoutButton() -> some View {
-        UDButtonView(text: checkoutButtonTitle, icon: .appleIcon, style: .large(.applePay)) {
+        UDButtonView(text: checkoutButtonTitle,
+                     icon: checkoutButtonIcon,
+                     style: checkoutButtonStyle) {
             logButtonPressedAnalyticEvents(button: .pay, parameters: [.value : String(cartStatus.totalPrice)])
             startPurchaseDomains()
         }
@@ -433,17 +438,11 @@ private extension PurchaseDomainsCheckoutView {
     
     var shouldShowTotalDueInSummary: Bool {
         true
-//        switch deviceSize {
-//        case .i4Inch, .i4_7Inch:
-//            return false
-//        default:
-//            return true
-//        }
     }
     
     var isPayButtonDisabled: Bool {
         if case .ready = cartStatus {
-            return !purchaseDomainsService.isApplePaySupported
+            return false
         }
         return true
     }
@@ -451,11 +450,12 @@ private extension PurchaseDomainsCheckoutView {
 
 // MARK: - Private methods
 private extension PurchaseDomainsCheckoutView {
+    var isApplePaySupported: Bool { purchaseDomainsService.isApplePaySupported }
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         warnUserIfNeededAndSelectWallet(selectedWallet, forceReload: true)
         setDomainAvatar()
-        if !purchaseDomainsService.isApplePaySupported {
+        if !isApplePaySupported {
             logAnalytic(event: .applePayNotSupported)
         }
     }
@@ -509,11 +509,13 @@ private extension PurchaseDomainsCheckoutView {
                 guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.address }) else {
                     throw PurchaseError.failedToGetWalletToMint
                 }
-                        
+                
                 try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
                 purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
-                logAnalytic(event: .didPurchaseDomains, parameters: [.value : String(totalPrice),
-                                                                     .count: String(1)])
+                logAnalytic(event: .didPurchaseDomains,
+                            parameters: [.value : String(totalPrice),
+                                         .count: String(1),
+                                         .isApplePaySupported: String(isApplePaySupported)])
                 let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
                                                                     walletAddress: walletToMint.address)
                 PurchasedDomainsStorage.setPurchasedDomains([pendingPurchasedDomain])

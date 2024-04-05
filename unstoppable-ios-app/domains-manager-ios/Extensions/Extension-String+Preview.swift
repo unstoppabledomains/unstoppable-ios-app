@@ -230,6 +230,10 @@ extension String {
         static let primary = "PRIMARY"
         static let collapse = "COLLAPSE"
         static let chat = "CHAT"
+        static let send = "SEND"
+        static let to = "TO"
+        static let domainOrAddress = "DOMAIN_OR_ADDRESS"
+        static let yourWallets = "YOUR_WALLETS"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1144,6 +1148,35 @@ extension String {
         static let selectPullUpBuyDomainsSubtitle = "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE"
         static let selectPullUpBuyTokensSubtitle = "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE"
         
+        static let review = "REVIEW"
+        static let usingMax = "USING_MAX"
+        static let useMax = "USE_MAX"
+        static let results = "RESULTS"
+        static let youAreSending = "YOU_ARE_SENDING"
+        static let from = "FROM"
+        static let speed = "SPEED"
+        static let feeEstimate = "FEE_ESTIMATE"
+        static let sendCryptoReviewPromptMessage = "SEND_CRYPTO_REVIEW_PROMPT_MESSAGE"
+        static let scanWalletAddressHint = "SCAN_WALLET_ADDRESS_HINT"
+        static let max = "MAX"
+        static let transferDomainConfirmationHint = "TRANSFER_DOMAIN_CONFIRMATION_HINT"
+        static let transferDomainSuccessTitle = "TRANSFER_DOMAIN_SUCCESS_TITLE"
+        static let sendCryptoSuccessTitle = "SEND_CRYPTO_SUCCESS_TITLE"
+        static let transactionTakesNMinutes = "TRANSACTION_TAKES_N_MINUTES"
+        static let sendMaxCryptoInfoPullUpTitle = "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE"
+        static let notEnoughToken = "NOT_ENOUGH_TOKEN"
+        static let activity = "ACTIVITY"
+        static let normal = "NORMAL"
+        static let fast = "FAST"
+        static let urgent = "URGENT"
+        static let received = "RECEIVED"
+        static let receivedFromN = "RECEIVED_FROM_N"
+        static let sentToN = "SENT_TO_N"
+        static let txFee = "TX_FEE"
+        static let sendAssetNoDomainsTitle = "SEND_ASSET_NO_DOMAINS_TITLE"
+        static let sendAssetNoTokensTitle = "SEND_ASSET_NO_TOKENS_TITLE"
+        static let sendAssetNoTokensSubtitle = "SEND_ASSET_NO_TOKENS_SUBTITLE"
+        static let totalEstimate = "TOTAL_ESTIMATE"
     }
     
     enum BlockChainIcons: String {
@@ -1216,6 +1249,10 @@ extension String {
         } else {
             return self
         }
+    }
+    
+    var asURL: URL? {
+        URL(string: self)
     }
 }
 

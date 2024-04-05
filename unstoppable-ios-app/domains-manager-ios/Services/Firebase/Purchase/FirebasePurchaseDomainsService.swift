@@ -344,7 +344,7 @@ private extension FirebasePurchaseDomainsService {
             switch product {
             case .domain(let domainProductItem):
                 return domainProductItem
-            case .parking, .ensAutoRenewal:
+            case .parking, .ensAutoRenewal, .unknown:
                 return nil
             }
         }
@@ -465,7 +465,7 @@ private extension FirebasePurchaseDomainsService {
                         domain.availableProducts = availableProducts
                         
                         return .domain(domain)
-                    case .parking, .ensAutoRenewal:
+                    case .parking, .ensAutoRenewal, .unknown:
                         return product
                     }
                 }

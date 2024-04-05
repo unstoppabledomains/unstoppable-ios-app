@@ -48,7 +48,8 @@ private extension UDListItemView {
         switch imageStyle {
         case .centred(let offset, let foreground, let background, let bordered):
             imageForCurrentType(size: CGSize(width: iconSize - offset.leading - offset.trailing,
-                                             height: iconSize - offset.top - offset.bottom))
+                                             height: iconSize - offset.top - offset.bottom),
+                                tintColor: foreground.uiColor)
                 .foregroundStyle(foreground)
                 .padding(offset)
                 .background(background)
@@ -60,13 +61,15 @@ private extension UDListItemView {
                     }
                 }
         case .full:
-            imageForCurrentType(size: .square(size: iconSize))
+            imageForCurrentType(size: .square(size: iconSize),
+                                tintColor: nil)
                 .clipShape(Circle())
         }
     }
     
     @ViewBuilder
-    func imageForCurrentType(size: CGSize) -> some View {
+    func imageForCurrentType(size: CGSize,
+                             tintColor: UIColor?) -> some View {
         switch imageType {
         case .image(let image):
             image
@@ -74,7 +77,8 @@ private extension UDListItemView {
                 .frame(width: size.width,
                        height: size.height)
         case .uiImage(let uiImage):
-            UIImageBridgeView(image: uiImage)
+            UIImageBridgeView(image: uiImage,
+                              tintColor: tintColor)
             .frame(width: size.width,
                    height: size.height)
         }

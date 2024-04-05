@@ -171,6 +171,10 @@
 "PRIMARY" = "Primary";
 "COLLAPSE" = "Collapse";
 "CHAT" = "Chat";
+"SEND" = "Send";
+"TO" = "To";
+"DOMAIN_OR_ADDRESS" = "Domain or Address";
+"YOUR_WALLETS" = "Your Wallets";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -795,7 +799,7 @@
 "REVIEW_AND_CONFIRM" = "Review and confirm";
 "TRANSFER_CONSENT_ACTION_IRREVERSIBLE" = "I understand that I am transferring ownership of this domain and this action is irreversible";
 "TRANSFER_CONSENT_NOT_EXCHANGE" = "I’m not transferring to an exchange address";
-"TRANSFER_CONSENT_VALID_ADDRESS" = "I’m transferring to an ETH or Polygon wallet address";
+"TRANSFER_CONSENT_VALID_ADDRESS" = "I’m transferring to an Ethereum address";
 "CLEAR_RECORDS_UPON_TRANSFER" = "Clear records upon transfer";
 "OPTIONAL" = "Optional";
 "TRANSFER_IN_PROGRESS" = "Transfer in progress";
@@ -902,7 +906,7 @@
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
-"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new domain";
+"SEARCH_FOR_A_NEW_DOMAIN" = "Search for a new\ndomain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
 "TRY_ENTER_DIFF_NAME" = "Try entering a different name.";
@@ -1043,3 +1047,33 @@ More tabs are coming in the next updates.";
 "SELECT_PULL_UP_BUY_TOKENS_TITLE" = "Buy crypto";
 "SELECT_PULL_UP_BUY_DOMAINS_SUBTITLE" = "Find and acquire new domain names";
 "SELECT_PULL_UP_BUY_TOKENS_SUBTITLE" = "With Apple Pay or card";
+
+"REVIEW" = "Review";
+"USING_MAX" = "Using Max";
+"USE_MAX" = "Use Max";
+"RESULTS" = "Results";
+"YOU_ARE_SENDING" = "You are sending";
+"FROM" = "From";
+"SPEED" = "Speed";
+"FEE_ESTIMATE" = "Fee estimate";
+"SEND_CRYPTO_REVIEW_PROMPT_MESSAGE" = "Review the above before confirming.\nOnce made, your transaction is irreversible";
+"SCAN_WALLET_ADDRESS_HINT" = "Scan an Ethereum or Polygon wallet address";
+"MAX" = "Max";
+"TRANSFER_DOMAIN_CONFIRMATION_HINT" = "By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.";
+"TRANSFER_DOMAIN_SUCCESS_TITLE" = "Domain transfer\nhas started";
+"SEND_CRYPTO_SUCCESS_TITLE" = "Successfully sent";
+"TRANSACTION_TAKES_N_MINUTES" = "This transaction usually takes ~%i minutes.";
+"SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE" = "We will send all %@ less required network costs";
+"NOT_ENOUGH_TOKEN" = "Not enough %@";
+"ACTIVITY" = "Activity";
+"NORMAL" = "Normal";
+"FAST" = "Fast";
+"URGENT" = "Urgent";
+"RECEIVED" = "Received";
+"RECEIVED_FROM_N" = "Received from %@";
+"SENT_TO_N" = "Sent to %@";
+"TX_FEE" = "Tx fee";
+"SEND_ASSET_NO_DOMAINS_TITLE" = "No domains available to transfer in your wallet";
+"SEND_ASSET_NO_TOKENS_TITLE" = "No tokens available to send\nin your wallet";
+"SEND_ASSET_NO_TOKENS_SUBTITLE" = "Currently, the app supports only Ethereum and Polygon tokens for sending.";
+"TOTAL_ESTIMATE" = "Total Estimate";

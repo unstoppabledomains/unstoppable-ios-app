@@ -12,6 +12,7 @@ struct UIImageBridgeView: UIViewRepresentable {
     let image: UIImage?
     var flexibleWidth: Bool = true
     var flexibleHeight: Bool = true
+    var tintColor: UIColor? = nil
     
     private let serialQueue = DispatchQueue(label: "com.UIImageBridgeView.serial")
     
@@ -21,6 +22,10 @@ struct UIImageBridgeView: UIViewRepresentable {
         let imageView = UIImageView(image: image)
         imageView.contentMode = contentMode
         imageView.clipsToBounds = true
+        
+        if let tintColor {
+            imageView.tintColor = tintColor
+        }
         
         if flexibleWidth {
             imageView.setContentHuggingPriority(.defaultLow, for: .horizontal)

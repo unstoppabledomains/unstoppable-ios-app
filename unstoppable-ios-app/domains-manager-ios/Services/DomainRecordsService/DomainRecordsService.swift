@@ -12,11 +12,11 @@ final class DomainRecordsService: DomainRecordsServiceProtocol {
     
     func saveRecords(records: [RecordToUpdate],
                      in domain: DomainItem,
-                     paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+                     paymentConfirmationHandler: PaymentConfirmationHandler) async throws {
         let request = try getRequestForActionUpdateRecords(domain, records: records)
         try await NetworkService().makeActionsAPIRequest(request,
                                                          forDomain: domain,
-                                                         paymentConfirmationDelegate: paymentConfirmationDelegate)
+                                                         paymentConfirmationHandler: paymentConfirmationHandler)
     }
 }
 
