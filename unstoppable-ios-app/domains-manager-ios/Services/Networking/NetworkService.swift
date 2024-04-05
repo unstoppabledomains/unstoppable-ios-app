@@ -251,8 +251,11 @@ struct NetworkService {
         }
         
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
-        urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
-        
+        let version = Version.getCurrentAppVersionString() ?? "version n/a"
+        urlRequest.addValue(version, forHTTPHeaderField: Self.appVersionHeaderKey)
+        let userAgent = "UnstoppableDomainsMobile<IOS>/<\(version)>"
+        urlRequest.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")
