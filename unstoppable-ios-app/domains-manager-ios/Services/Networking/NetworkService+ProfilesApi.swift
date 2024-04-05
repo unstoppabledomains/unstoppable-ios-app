@@ -44,7 +44,6 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     }
     
     public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
-        // https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         guard let url = Endpoint.getBadgesInfo(for: domainName).url else {
             throw NetworkLayerError.creatingURLFailed
         }
@@ -69,7 +68,6 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     }
     
     public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
-        // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
         guard let url = Endpoint.getBadgeDetailedInfo(for: badge).url else {
             throw NetworkLayerError.creatingURLFailed
         }

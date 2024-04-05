@@ -59,14 +59,10 @@ struct NetworkConfig {
     }
     
     static var baseResolveUrl: String {
-        if User.instance.getSettings().isTestnetUsed {
-            return "https://resolve.ud-staging.com"
-        } else {
-            return "https://resolve.unstoppabledomains.com"
-        }
+        baseAPIUrl + "/resolve"
     }
     
-    static var baseProfileHost: String {
+    static var baseAPIHost: String {
         if User.instance.getSettings().isTestnetUsed {
             return "api.ud-staging.com"
         } else {
@@ -74,16 +70,8 @@ struct NetworkConfig {
         }
     }
     
-    static var baseProfileUrl: String {
-        "https://\(baseProfileHost)"
-    }
-    
-    static var baseMessagingHost: String {
-        if User.instance.getSettings().isTestnetUsed {
-            return "messaging.ud-staging.com"
-        } else {
-            return "messaging.unstoppabledomains.com"
-        }
+    static var baseAPIUrl: String {
+        "https://\(baseAPIHost)"
     }
     
     private static let StagingAccessApiKey = "mob-01-stg-8792ed66-f0d6-463d-b08b-7f5667980676"
