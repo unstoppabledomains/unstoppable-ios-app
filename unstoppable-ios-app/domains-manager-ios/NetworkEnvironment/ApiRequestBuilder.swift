@@ -913,16 +913,15 @@ extension Endpoint {
         if let chain {
             queryItems.append(URLQueryItem(name: "symbols", value: chain))
         }
-        var headers = NetworkService.profilesAPIHeader
         if forceRefresh {
-            headers = headers.appending(dict2: ["refreshCache" : String(Date().timeIntervalSince1970)])
+            queryItems.append(URLQueryItem(name: "forceRefresh", value: String(Int(Date().timeIntervalSince1970))))
         }
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/user/\(wallet)/transactions",
             queryItems: queryItems,
             body: "",
-            headers: headers
+            headers: NetworkService.profilesAPIHeader
         )
     }
 }
