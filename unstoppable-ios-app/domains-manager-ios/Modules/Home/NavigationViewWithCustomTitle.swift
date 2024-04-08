@@ -48,14 +48,7 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
     
     @MainActor
     private var currentDeviceOffset: CGFloat {
-        if #available(iOS 17, *) {
-            if (SceneDelegate.shared?.window?.safeAreaInsets.bottom ?? 0) > 0 {
-                return 6
-            }
-            return 11
-        } else {
-            return 11
-        }
+        return 11
     }
 }
 
