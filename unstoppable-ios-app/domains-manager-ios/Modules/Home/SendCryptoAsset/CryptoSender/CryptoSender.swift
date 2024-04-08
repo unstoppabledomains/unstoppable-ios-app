@@ -50,53 +50,6 @@ struct NativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
         (token == CryptoSender.SupportedToken.matic && chainType == .Matic)
     }
     
-//    func sendCrypto(crypto: CryptoSendingSpec,
-//                    chain: ChainSpec,
-//                    toAddress: HexAddress) async throws -> String {
-//        guard canSendCrypto(token: crypto.token, chainType: chain.blockchainType) else {
-//            throw CryptoSender.Error.sendingNotSupported
-//        }
-//        
-//        let tx = try await createSendTransaction(crypto: crypto,
-//                                                       fromAddress: self.wallet.address,
-//                                                       toAddress: toAddress,
-//                                                       chainId: chain.id)
-//        
-//        guard wallet.walletState != .externalLinked else {
-//            let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chain.id)
-//            return response
-//        }
-//        
-//        
-//        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
-//        return hash
-//    }
-//        
-//    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
-//                           on chain: ChainSpec,
-//                           toAddress: HexAddress) async throws -> EVMTokenAmount {
-//        
-//        guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
-//            throw CryptoSender.Error.sendingNotSupported
-//        }
-//        
-//        let transaction = try await createSendTransaction(crypto: maxCrypto,
-//                                                                fromAddress: self.wallet.address,
-//                                                                toAddress: toAddress,
-//                                                                chainId: chain.id)
-//        
-//        guard let gasPriceWei = transaction.gasPrice?.quantity else {
-//            throw CryptoSender.Error.failedFetchGasPrice
-//        }
-//        let gasPrice = EVMTokenAmount(wei: gasPriceWei)
-//
-//        let gas = transaction.gas?.quantity ?? Self.defaultSendTxGasPrice
-//        let gasFee = EVMTokenAmount(gwei: gasPrice.gwei * Double(gas))
-//        return  gasFee
-//    }
-    
-    // Private methods
-    
     internal func createSendTransaction(crypto: CryptoSendingSpec,
                                              fromAddress: HexAddress,
                                              toAddress: HexAddress,
@@ -133,9 +86,6 @@ struct NonNativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
         // only native tokens supported
         return (token == CryptoSender.SupportedToken.usdt && chainType == .Ethereum) // TODO:
     }
-    
-    
-    // Private methods
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,
                                               fromAddress: HexAddress,
