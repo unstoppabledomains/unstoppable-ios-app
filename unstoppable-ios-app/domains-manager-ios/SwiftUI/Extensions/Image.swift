@@ -48,7 +48,7 @@ extension Image {
     static let personIcon = Image(uiImage: .personIcon)
     static let arrowBottom = Image(uiImage: .arrowBottom)
     static let filterIcon = Image(uiImage: .filterIcon).renderingMode(.template)
-    static let gearshape = Image(uiImage: .gearshape).renderingMode(.template)
+    static let settingsIcon = Image("settingsIcon")
     static let qrBarCodeIcon = Image("qrBarCodeIcon")
     static let homeLineIcon = Image("homeLineIcon")
     static let homeLineFilledIcon = Image("homeLineFilledIcon")

@@ -38,7 +38,6 @@ extension UIImage {
     static let plusCircle = UIImage(named: "plusCircle")!
     static let minusCircle = UIImage(named: "minusCircle")!
     static let dotsIcon = UIImage(named: "dotsIcon")!
-    static let gearshape = UIImage(named: "gearshape")!
     static let appleIcon = UIImage(named: "appleIcon")!
     static let gasFeeIcon = UIImage(named: "gasFeeIcon")!
     static let sparklesIcon = UIImage(named: "sparklesIcon")!
