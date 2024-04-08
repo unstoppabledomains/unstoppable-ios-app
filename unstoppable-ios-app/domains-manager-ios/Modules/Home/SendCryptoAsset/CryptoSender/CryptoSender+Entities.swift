@@ -95,6 +95,7 @@ extension CryptoSender {
         case sendingNotSupported
         case failedFetchGasPrice
         case insufficientFunds
+        case invalidAddresses
     }
     
     enum SupportedToken: String {
