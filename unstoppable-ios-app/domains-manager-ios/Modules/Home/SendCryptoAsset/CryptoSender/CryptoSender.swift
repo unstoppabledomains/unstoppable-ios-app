@@ -194,67 +194,30 @@ struct NonNativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
         
-        var transaction = EthereumTransaction(nonce: nonce,
-                                              gasPrice: try EthereumQuantity(speedBasedGasPrice.wei),
-                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
-                                              from: sender,
-                                              to: receiver,
-                                              value: try EthereumQuantity(crypto.amount.wei)
-        )
+//        var transaction = EthereumTransaction(nonce: nonce,
+//                                              gasPrice: try EthereumQuantity(speedBasedGasPrice.wei),
+//                                              gas: try EthereumQuantity(Self.defaultSendTxGasPrice),
+//                                              from: sender,
+//                                              to: receiver,
+//                                              value: try EthereumQuantity(crypto.amount.wei)
+//        )
         
+        // Load ERC20 contract
+        let web3 = try JRPC_Client.instance.getWeb3(chainIdInt: chainId)
+        let usdtContractAddress = "0xdac17f958d2ee523a2206206994597c13d831ec7" // USDT contract address
+        
+        let erc20Contract = web3.eth.Contract(type: GenericERC20Contract.self, address: try EthereumAddress(usdtContractAddress))
+
+        guard let transactionCreated = try erc20Contract.transfer(to: EthereumAddress(hex: "0x3edB3b95DDe29580FFC04b46A68a31dD46106a4a", eip55: true), value: 100000).createTransaction(nonce: <#T##EthereumQuantity?#>, from: <#T##EthereumAddress#>, value: <#T##EthereumQuantity?#>, gas: <#T##EthereumQuantity#>, gasPrice: <#T##EthereumQuantity?#>) else {
+            throw JRPC_Client.Error.failedFetchGas
+        }
+        
+        var transaction = transactionCreated
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
             transaction.gas = gasEstimate
         }
         return transaction
     }
-    
-    private func sendUSDT() throws {
-
-        // Set up your Infura URL and Ethereum addresses
-        let infuraUrl = "https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY"
-        let senderAddress = "0xYourSenderAddress"
-        let privateKey = "YourPrivateKey"
-
-        // Set up Web3 provider
-        let web3 = Web3(rpcURL: "urlString")
-
-        // Load your Ethereum address and private key
-        let sender = try EthereumAddress(senderAddress)
-        let privateKeyData = Data.fromHex(privateKey)
-
-        // Load ERC20 contract
-        let usdtContractAddress = "0xdac17f958d2ee523a2206206994597c13d831ec7" // USDT contract address
-        
-        let erc20Contract = web3.eth.Contract(type: GenericERC20Contract.self, address: try EthereumAddress(usdtContractAddress))
-        
-        // Send some tokens to another address (locally signing the transaction)
-        let myPrivateKey = try EthereumPrivateKey(hexPrivateKey: "...")
-        firstly {
-            web3.eth.getTransactionCount(address: myPrivateKey.address, block: .latest)
-        }.then { nonce in
-//            try erc20Contract.transfer(to: EthereumAddress(hex: "0x3edB3b95DDe29580FFC04b46A68a31dD46106a4a", eip55: true), value: 100000).createTransaction(
-//                nonce: nonce,
-//                gasPrice: EthereumQuantity(quantity: 21.gwei),
-//                maxFeePerGas: nil,
-//                maxPriorityFeePerGas: nil,
-//                gasLimit: 100000,
-//                from: myPrivateKey.address,
-//                value: 0,
-//                accessList: [:],
-//                transactionType: .legacy
-//            )!.sign(with: myPrivateKey).promise
-            
-            try (erc20Contract.transfer(to: EthereumAddress(hex: "0x3edB3b95DDe29580FFC04b46A68a31dD46106a4a", eip55: true), value: 100000).createTransaction(nonce: <#T##EthereumQuantity?#>, from: <#T##EthereumAddress#>, value: <#T##EthereumQuantity?#>, gas: <#T##EthereumQuantity#>, gasPrice: <#T##EthereumQuantity?#>)?.sign(with: myPrivateKey).promise)!
-        }.then { tx in
-            web3.eth.sendRawTransaction(transaction: tx)
-        }.done { txHash in
-            print(txHash)
-        }.catch { error in
-            print(error)
-        }
-
-    }
-
 }
 
 

@@ -79,12 +79,11 @@ struct JRPC_Client {
                         chainIdInt: Int) async throws -> String {
         
         return try await withCheckedThrowingContinuation { continuation in
-            guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
+            guard let web3 = try? getWeb3(chainIdInt: chainIdInt) else {
                 Debugger.printFailure("Failed to get net name for chain Id: \(chainIdInt)", critical: true)
                 continuation.resume(with: .failure(WalletConnectRequestError.failedToDetermineChainId))
                 return
             }
-            let web3 = Web3(rpcURL: urlString)
             
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
@@ -123,6 +122,12 @@ struct JRPC_Client {
                 return
             }
         }
-        
+    }
+    
+    func getWeb3(chainIdInt: Int) throws -> Web3 {
+        guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
+            throw WalletConnectRequestError.failedToDetermineChainId
+        }
+        return Web3(rpcURL: urlString)
     }
 }
