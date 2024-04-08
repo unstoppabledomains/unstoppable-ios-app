@@ -30,7 +30,7 @@ struct HomeProfileSelectorNavTitleView: View {
                     .layoutPriority(-1)
                 HStack {
                     content()
-                    if selectable {
+                    if isSelectable {
                         Image.chevronDown
                             .resizable()
                             .squareFrame(20)
@@ -40,7 +40,7 @@ struct HomeProfileSelectorNavTitleView: View {
             }
         }
         .buttonStyle(.plain)
-        .allowsHitTesting(selectable)
+        .allowsHitTesting(isSelectable)
             .frame(maxWidth: 200)
             .onAppear(perform: loadAvatar)
             .onReceive(userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main), perform: { selectedProfile in
@@ -55,8 +55,8 @@ struct HomeProfileSelectorNavTitleView: View {
 
 // MARK: - Private methods
 private extension HomeProfileSelectorNavTitleView {
-    var selectable: Bool {
-        appContext.userProfileService.profiles.count > 1
+    var isSelectable: Bool {
+        true
     }
     
     @ViewBuilder
