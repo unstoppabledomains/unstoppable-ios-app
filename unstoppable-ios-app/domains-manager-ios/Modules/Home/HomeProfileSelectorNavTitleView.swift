@@ -28,10 +28,10 @@ struct HomeProfileSelectorNavTitleView: View {
                            height: 30)
                     .opacity(0.001)
                     .layoutPriority(-1)
-                HStack {
+                HStack(spacing: 8) {
                     content()
                     if isSelectable {
-                        Image.chevronDown
+                        Image.chevronGrabberVertical
                             .resizable()
                             .squareFrame(20)
                             .foregroundStyle(Color.foregroundDefault)
@@ -82,7 +82,7 @@ private extension HomeProfileSelectorNavTitleView {
     
     @ViewBuilder
     func contentForUser(_ user: FirebaseUser) -> some View {
-        HStack {
+        HStack(spacing: 8) {
             if !shouldHideAvatar {
                 headerIconView(size: 12)
                     .squareFrame(20)
@@ -110,7 +110,7 @@ private extension HomeProfileSelectorNavTitleView {
     @ViewBuilder
     func contentForWallet(_ wallet: WalletEntity) -> some View {
         if let rrDomain = wallet.rrDomain {
-            HStack {
+            HStack(spacing: 8) {
                 if !shouldHideAvatar {
                     UIImageBridgeView(image: avatar ?? .domainSharePlaceholder)
                         .squareFrame(20)
