@@ -102,15 +102,19 @@ struct NonNativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
                                                                                 chainId: chainId)
         let speedBasedGasPrice = try await fetchGasPrice(chainId: chainId, for: crypto.speed)
         
-        guard let sender = EthereumAddress(hexString: fromAddress),
-              let receiver = EthereumAddress(hexString: toAddress) else {
+        guard let sender = try? EthereumAddress(hex: fromAddress, eip55: false),
+              let receiver = try? EthereumAddress(hex: toAddress, eip55: false) else {
             throw CryptoSender.Error.invalidAddresses
         }
         // Load ERC20 contract
         let web3 = try JRPC_Client.instance.getWeb3(chainIdInt: chainId)
         let usdtContractAddress = "0xdac17f958d2ee523a2206206994597c13d831ec7" // USDT contract address
+        guard let contractAddress = try? EthereumAddress(hex: usdtContractAddress, eip55: false) else {
+            throw CryptoSender.Error.invalidAddresses
+        }
         
-        let erc20Contract = web3.eth.Contract(type: GenericERC20Contract.self, address: try EthereumAddress(usdtContractAddress))
+        let erc20Contract = web3.eth.Contract(type: GenericERC20Contract.self,
+                                              address: contractAddress)
 
         guard let transactionCreated = erc20Contract
             .transfer(to: receiver, value: crypto.amount.wei)
