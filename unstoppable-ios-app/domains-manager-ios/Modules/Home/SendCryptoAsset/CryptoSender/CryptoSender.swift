@@ -41,7 +41,7 @@ struct CryptoSender: CryptoSenderProtocol {
     }
 }
 
-struct NativeCryptoSender: CryptoSenderProtocol {
+struct NativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     static let defaultSendTxGasPrice: BigUInt = 21_000
     
     let wallet: UDWallet
@@ -97,13 +97,9 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         return  gasFee
     }
     
-    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
-        try await fetchGasPrices(chainId: chain.id)
-    }
-        
     // Private methods
     
-    private func createNativeSendTransaction(crypto: CryptoSendingSpec,
+    internal func createNativeSendTransaction(crypto: CryptoSendingSpec,
                                              fromAddress: HexAddress,
                                              toAddress: HexAddress,
                                              chainId: Int) async throws -> EthereumTransaction {
@@ -128,15 +124,6 @@ struct NativeCryptoSender: CryptoSenderProtocol {
         return transaction
     }
     
-    private func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
-        let prices: EstimatedGasPrices = try await fetchGasPrices(chainId: chainId)
-        return prices.getPriceForSpeed(speed)
-    }
-    
-    private func fetchGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
-        // here routes to Status or Infura source
-        try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
-    }
     
     
     private func sendUSDT() throws {
@@ -187,3 +174,33 @@ struct NativeCryptoSender: CryptoSenderProtocol {
     }
 }
 
+
+
+protocol EVMCryptoSender: CryptoSenderProtocol {
+    
+    
+    // Private methods
+    
+    func createNativeSendTransaction(crypto: CryptoSendingSpec,
+                                             fromAddress: HexAddress,
+                                             toAddress: HexAddress,
+                                             chainId: Int) async throws -> EthereumTransaction
+    
+    
+}
+
+extension EVMCryptoSender {
+    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
+        try await fetchGasPrices(chainId: chain.id)
+    }
+
+    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
+        let prices: EstimatedGasPrices = try await fetchGasPrices(chainId: chainId)
+        return prices.getPriceForSpeed(speed)
+    }
+    
+    private func fetchGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
+        // here routes to Status or Infura source
+        try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
+    }
+}
