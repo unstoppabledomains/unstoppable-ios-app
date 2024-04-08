@@ -74,10 +74,10 @@ extension HomeWalletView {
             case .receive:
                 router.showingWalletInfo = selectedWallet
             case .profile:
-                switch selectedWallet.getCurrentWalletProfileState() {
+                switch selectedWallet.getCurrentWalletRepresentingDomainState() {
                 case .udDomain(let domain), .ensDomain(let domain):
                     showProfile(of: domain)
-                case .noProfile:
+                case .noRRDomain:
                     router.pullUp = .default(.showCreateYourProfilePullUp(buyCallback: { [weak self] in
                         self?.router.runPurchaseFlow()
                     }))
@@ -141,10 +141,10 @@ extension HomeWalletView {
         }
         
         var isProfileButtonEnabled: Bool {
-            switch selectedWallet.getCurrentWalletProfileState() {
+            switch selectedWallet.getCurrentWalletRepresentingDomainState() {
             case .udDomain, .ensDomain:
                 return true
-            case .noProfile:
+            case .noRRDomain:
                 return false
             }
         }
