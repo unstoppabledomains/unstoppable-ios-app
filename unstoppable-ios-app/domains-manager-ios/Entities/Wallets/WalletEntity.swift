@@ -91,7 +91,7 @@ struct WalletEntity: Codable, Hashable {
 extension WalletEntity {
     
     var displayName: String { displayInfo.displayName }
-    var domainOrDisplayName: String { rrDomain == nil ? displayName : rrDomain!.name }
+    var domainOrDisplayName: String { nameOfCurrentRepresentingDomain == nil ? displayName : nameOfCurrentRepresentingDomain! }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
     var profileDomainName: String? { rrDomain?.name }
@@ -122,18 +122,27 @@ extension WalletEntity: Identifiable {
 }
 
 extension WalletEntity {
-    enum WalletProfileState {
-        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
+    enum RepresentingDomainState {
+        case noRRDomain, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
     }
     
-    func getCurrentWalletProfileState() -> WalletProfileState {
+    func getCurrentWalletRepresentingDomainState() -> RepresentingDomainState {
         if let rrDomain = rrDomain {
             return .udDomain(rrDomain)
         } else if let ensDomain = domains.first(where: { $0.isENSDomain }),
                   !isReverseResolutionChangeAllowed() {
             return .ensDomain(ensDomain)
         }
-        return .noProfile
+        return .noRRDomain
+    }
+    
+    var nameOfCurrentRepresentingDomain: String? {
+        switch getCurrentWalletRepresentingDomainState() {
+        case .udDomain(let domain), .ensDomain(let domain):
+            return domain.name
+        case .noRRDomain: 
+            return nil
+        }
     }
 }
 

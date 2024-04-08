@@ -289,10 +289,10 @@ private extension HomeExploreViewModel {
     func getSelectedUserProfileRRDomain() -> DomainDisplayInfo? {
         guard case .wallet(let wallet) = selectedProfile else { return nil }
         
-        switch wallet.getCurrentWalletProfileState() {
+        switch wallet.getCurrentWalletRepresentingDomainState() {
         case .udDomain(let domain), .ensDomain(let domain):
             return domain
-        case .noProfile:
+        case .noRRDomain:
             return nil
         }
     }

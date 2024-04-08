@@ -155,7 +155,7 @@ extension DomainProfileViewController {
             case .edit:
                 return .systemSquareAndPencil
             case .editForAllChains:
-                return UIImage(systemName: "gearshape") ?? .gearshape
+                return UIImage(systemName: "gearshape")!
             case .remove:
                 return .systemMinusCircle
             }

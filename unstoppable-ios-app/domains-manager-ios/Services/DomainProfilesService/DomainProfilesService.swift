@@ -204,8 +204,8 @@ private extension DomainProfilesService {
     
     func getProfileDomainNameFor(walletAddress: HexAddress) -> DomainName? {
         let wallet = walletsDataService.wallets.findWithAddress(walletAddress)
-        switch wallet?.getCurrentWalletProfileState() {
-        case .noProfile, nil:
+        switch wallet?.getCurrentWalletRepresentingDomainState() {
+        case .noRRDomain, nil:
             return nil
         case .udDomain(let domain), .ensDomain(let domain):
             return domain.name
