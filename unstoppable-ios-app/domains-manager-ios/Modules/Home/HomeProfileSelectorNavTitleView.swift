@@ -55,7 +55,7 @@ struct HomeProfileSelectorNavTitleView: View {
 
 // MARK: - Private methods
 private extension HomeProfileSelectorNavTitleView {
-    var selectable: Bool {
+    var isSelectable: Bool {
         true
     }
     
