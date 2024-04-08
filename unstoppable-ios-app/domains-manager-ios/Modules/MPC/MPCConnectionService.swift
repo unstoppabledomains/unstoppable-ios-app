@@ -100,7 +100,7 @@ extension MPCConnectionService {
                     
                     logMPC("Will verify final response \(finalAuthResponse)")
                     continuation.yield(.verifyingAccessToken)
-                    try await networkService.verifyAccessToken(finalAuthResponse.accessToken)
+                    try await networkService.verifyAccessToken(finalAuthResponse.accessToken.jwt)
                     logMPC("Did verify verify final response \(finalAuthResponse) success")
                     
                     let mpcWallet = UDMPCWallet(deviceId: deviceId,
@@ -109,11 +109,11 @@ extension MPCConnectionService {
                     continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
+                    mpcConnector.stopJoinWallet()
                     let logsURL = mpcConnector.getLogsURLs()
                     continuation.yield(.failed(logsURL))
                     continuation.finish()
                     
-//                    mpcConnector.stopJoinWallet()
 //                    continuation.finish(throwing: error)
                 }
             }

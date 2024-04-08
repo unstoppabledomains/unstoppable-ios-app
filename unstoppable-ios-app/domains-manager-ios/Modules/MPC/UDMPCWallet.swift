@@ -12,7 +12,7 @@ struct UDMPCWallet {
     let tokens: Tokens
     
     struct Tokens {
-        var refreshToken: String
-        var bootstrapToken: String
+        var refreshToken: JWToken
+        var bootstrapToken: JWToken
     }
 }
