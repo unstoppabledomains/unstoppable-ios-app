@@ -5,6 +5,14 @@
 //  Created by Oleg Kuplin on 14.03.2024.
 //
 
+
+///MPCWalletSetupService
+///MPCWalletSetupStep
+///
+///MPCConnector -> MPCProviderConnector
+///MPCConnectorBuilder -> MPCProviderConnectorBuilder
+///
+
 import Foundation
 
 func logMPC(_ message: String) {
@@ -37,7 +45,6 @@ extension MPCConnectionService {
                               recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
-                
                 continuation.yield(.submittingCode)
                 logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")
                 let submitCodeResponse = try await networkService.submitBootstrapCode(code)
