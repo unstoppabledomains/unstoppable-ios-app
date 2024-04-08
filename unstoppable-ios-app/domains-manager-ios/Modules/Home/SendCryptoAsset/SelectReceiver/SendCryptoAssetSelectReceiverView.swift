@@ -119,7 +119,7 @@ private extension SendCryptoAssetSelectReceiverView {
         if inputText.isEmpty {
             return userWallets
         } else {
-            return userWallets.filter { $0.profileDomainName?.contains(inputText.lowercased()) == true }
+            return userWallets.filter { $0.nameOfCurrentRepresentingDomain?.contains(inputText.lowercased()) == true }
         }
     }
     
