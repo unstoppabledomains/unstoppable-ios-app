@@ -858,6 +858,8 @@
 		C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
 		C65272662A15DEB9001A084C /* KeyboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272652A15DEB9001A084C /* KeyboardService.swift */; };
 		C65272802A165A3D001A084C /* MessagingChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* MessagingChatSender.swift */; };
+		C653304E2BC3941000A705AE /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = C653304D2BC3941000A705AE /* JWToken.swift */; };
+		C653304F2BC3941000A705AE /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = C653304D2BC3941000A705AE /* JWToken.swift */; };
 		C6534A6E2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */; };
 		C6534A6F2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */; };
 		C6534A702BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */; };
@@ -3247,6 +3249,7 @@
 		C652722A2A14B395001A084C /* MockMessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMessagingService.swift; sourceTree = "<group>"; };
 		C65272652A15DEB9001A084C /* KeyboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardService.swift; sourceTree = "<group>"; };
 		C652727F2A165A3D001A084C /* MessagingChatSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatSender.swift; sourceTree = "<group>"; };
+		C653304D2BC3941000A705AE /* JWToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWToken.swift; sourceTree = "<group>"; };
 		C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseView.swift; sourceTree = "<group>"; };
 		C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseViewController.swift; sourceTree = "<group>"; };
 		C6534A722BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerCellView.swift; sourceTree = "<group>"; };
@@ -7449,6 +7452,7 @@
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
 				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
+				C653304D2BC3941000A705AE /* JWToken.swift */,
 				C6B65F962B566B37006D1812 /* NFTDisplayInfo.swift */,
 				C62900FF2BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
@@ -10033,6 +10037,7 @@
 				C6E04182295057FE0080F8E3 /* DomainsListViewController.swift in Sources */,
 				C6A2D5B5285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C64BCB762A6FA61F00EF8B47 /* XMTPServiceHelper.swift in Sources */,
+				C653304E2BC3941000A705AE /* JWToken.swift in Sources */,
 				C63392FF2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */,
 				C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
 				C650E2902B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */,
@@ -11048,6 +11053,7 @@
 				C61808202B19AB1B0032E543 /* PurchaseDomainsCheckoutData.swift in Sources */,
 				C6C8F89A2B2182A200A9834D /* WalletsListViewPresenter.swift in Sources */,
 				C6C8F8952B2182A200A9834D /* WalletsListViewController.swift in Sources */,
+				C653304F2BC3941000A705AE /* JWToken.swift in Sources */,
 				C6D646462B1E084F00D724AC /* ViewPullUp.swift in Sources */,
 				C6C8F8832B21829000A9834D /* SecuritySettingsViewController.swift in Sources */,
 				C6C8F8E22B21836400A9834D /* ParkedDomainsFoundViewController.swift in Sources */,
