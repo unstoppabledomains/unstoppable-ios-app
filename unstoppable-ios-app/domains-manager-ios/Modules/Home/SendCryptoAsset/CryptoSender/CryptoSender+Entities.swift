@@ -100,5 +100,6 @@ extension CryptoSender {
     enum SupportedToken: String {
         case eth = "ETH"
         case matic = "MATIC"
+        case usdt = "USDT"
     }
 }
