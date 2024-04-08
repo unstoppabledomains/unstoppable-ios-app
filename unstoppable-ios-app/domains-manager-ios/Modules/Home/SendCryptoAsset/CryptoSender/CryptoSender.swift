@@ -18,13 +18,20 @@ struct CryptoSender: CryptoSenderProtocol {
     
     func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
         // only native tokens supported for Ethereum and Polygon
-        return NativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType)
+        return NativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType) || NonNativeCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType)
     }
 
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
-        return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
-
+        if cryptoSender.canSendCrypto(token: crypto.token, chainType: chain.blockchainType) {
+            return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
+        }
+        
+        let cryptoSender2: CryptoSenderProtocol = NonNativeCryptoSender(wallet: wallet)
+        if cryptoSender2.canSendCrypto(token: crypto.token, chainType: chain.blockchainType) {
+            return try await cryptoSender2.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
+        }
+        throw CryptoSender.Error.sendingNotSupported
     }
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMTokenAmount {
