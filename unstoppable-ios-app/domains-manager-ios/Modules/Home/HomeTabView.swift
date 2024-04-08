@@ -92,6 +92,8 @@ struct HomeTabView: View {
 // MARK: - Private methods
 private extension HomeTabView {
     struct HomeTabViewModifier: ViewModifier {
+        @EnvironmentObject var tabRouter: HomeTabRouter
+
         let tab: HomeTab
         var isTabBarVisible: Bool
         
@@ -99,7 +101,7 @@ private extension HomeTabView {
             content
                 .tabItem {
                     Label(title: { Text(tab.title) },
-                          icon: { tab.icon })
+                          icon: { tab == tabRouter.tabViewSelection ? tab.filledIcon : tab.icon })
                 }
                 .tag(tab)
                 .tabBarVisible(isTabBarVisible)

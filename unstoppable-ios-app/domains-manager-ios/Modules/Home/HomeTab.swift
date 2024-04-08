@@ -39,4 +39,18 @@ enum HomeTab: String, Hashable {
         }
     }
     
+    
+    var filledIcon: Image {
+        switch self {
+        case .wallets:
+                .homeLineFilledIcon
+        case .explore:
+                .exploreFilledIcon
+        case .activity:
+                .clockFilled
+        case .messaging:
+                .messageCircleFilledIcon
+        }
+    }
+    
 }
