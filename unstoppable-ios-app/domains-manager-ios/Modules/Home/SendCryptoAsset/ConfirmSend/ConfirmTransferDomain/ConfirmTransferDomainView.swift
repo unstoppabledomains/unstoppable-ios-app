@@ -49,7 +49,8 @@ private extension ConfirmTransferDomainView {
     
     @ViewBuilder
     func receiverInfoView() -> some View {
-        ConfirmSendAssetReceiverInfoView(receiver: data.receiver)
+        ConfirmSendAssetReceiverInfoView(receiver: data.receiver,
+                                         chainType: data.domain.blockchain ?? .Matic)
     }
     
     @ViewBuilder

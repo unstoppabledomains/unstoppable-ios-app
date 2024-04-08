@@ -19,7 +19,7 @@ struct SendCryptoReceiverInfoTitleView: View {
     var body: some View {
         HStack(spacing: 8) {
             iconView()
-            Text(receiver.walletAddress.walletAddressTruncated)
+            Text(receiver.domainName ?? receiver.walletAddress.walletAddressTruncated)
                 .font(.currentFont(size: 16, weight: .semibold))
         }
         .animation(.default, value: UUID())

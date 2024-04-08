@@ -303,10 +303,3 @@ extension PublicProfileView {
     }
     
 }
-
-func loadImageFrom(url: URL) async -> UIImage? {
-    let urlRequest = URLRequest(url: url)
-    guard let (imageData, _) = try? await URLSession.shared.data(for: urlRequest) else { return nil }
-    
-    return UIImage(data: imageData)
-}

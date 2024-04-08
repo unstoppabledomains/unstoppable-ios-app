@@ -253,8 +253,11 @@ struct NetworkService {
         }
         
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
-        urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
-        
+        let version = Version.getCurrentAppVersionString() ?? "version n/a"
+        urlRequest.addValue(version, forHTTPHeaderField: Self.appVersionHeaderKey)
+        let userAgent = "UnstoppableDomainsMobileIOS/\(version)"
+        urlRequest.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")
@@ -468,7 +471,7 @@ extension NetworkService {
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for identifier: HexAddress) async throws -> GlobalRR? {
         do {
-            guard let url = URL(string: "\(NetworkConfig.baseProfileUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
+            guard let url = URL(string: "\(NetworkConfig.baseAPIUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
             
             let data = try await NetworkService().fetchData(for: url,
                                                             method: .get)

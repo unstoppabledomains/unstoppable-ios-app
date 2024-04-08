@@ -57,34 +57,68 @@ extension SendCryptoAsset {
     struct AssetReceiver: Hashable {
         let walletAddress: String
         let domainName: DomainName?
-        let pfpURL: URL?
+        private(set) var pfpURL: URL?
+        var records: [String: String] = [:]
         
-        init(wallet: WalletEntity) {
+        func addressFor(chainType: BlockchainType) -> String {
+            switch chainType {
+            case .Ethereum:
+                if let ethRecord = records["crypto.ETH.address"] {
+                    return ethRecord
+                }
+            case .Matic:
+                if let maticRecord = records["crypto.MATIC.version.MATIC.address"] {
+                    return maticRecord
+                }
+            }
+            return walletAddress
+        }
+        
+        init(wallet: WalletEntity) async throws {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
             self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+            try await loadRecords()
         }
         
-        init(followingDomain profile: DomainProfileDisplayInfo) {
+        init(followingDomain profile: DomainProfileDisplayInfo) async throws {
             self.walletAddress = profile.ownerWallet
             self.domainName = profile.domainName
             self.pfpURL = profile.pfpURL
+            try await loadRecords()
         }
         
-        init?(globalProfile: SearchDomainProfile) {
+        init(globalProfile: SearchDomainProfile) async throws {
             guard let walletAddress = globalProfile.ownerAddress else {
                 Debugger.printFailure("Failed to create crypto asset receiver with SearchDomainProfile \(globalProfile.name)", critical: true)
-                return nil
+                throw AssetReceiverError.noWalletAddress
             }
             self.walletAddress = walletAddress
             self.domainName = globalProfile.name
             self.pfpURL = globalProfile.imagePath?.asURL
+            try await loadRecords()
         }
         
         init(walletAddress: HexAddress) {
             self.walletAddress = walletAddress
             self.domainName = nil
             self.pfpURL = nil
+        }
+        
+        mutating private func loadRecords() async throws {
+            guard let domainName else { return }
+            
+            let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: domainName)
+            self.records = profile.records 
+            self.pfpURL = profile.pfpURL
+        }
+        
+        enum AssetReceiverError: String, LocalizedError {
+            case noWalletAddress
+            
+            public var errorDescription: String? {
+                return rawValue
+            }
         }
     }
 }
@@ -101,7 +135,8 @@ extension SendCryptoAsset {
         let amount: TokenAssetAmountInput
         
         var receiverAddress: HexAddress {
-            receiver.walletAddress
+            let blockchainType = token.blockchainType ?? .Matic
+            return receiver.addressFor(chainType: blockchainType)
         }
         
         func getTokenAmountValueToSend() -> Double {
