@@ -36,9 +36,15 @@ struct CryptoSender: CryptoSenderProtocol {
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMTokenAmount {
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
-        return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto,
-                                                        on: chain,
-                                                        toAddress: toAddress)
+        if cryptoSender.canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) {
+            return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto, on: chain, toAddress: toAddress)
+        }
+        
+        let cryptoSender2: CryptoSenderProtocol = NonNativeCryptoSender(wallet: wallet)
+        if cryptoSender2.canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) {
+            return try await cryptoSender2.computeGasFeeFrom(maxCrypto: maxCrypto, on: chain, toAddress: toAddress)
+        }
+        throw CryptoSender.Error.sendingNotSupported
     }
     
     func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
