@@ -109,18 +109,22 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     try await networkService.verifyAccessToken(authTokens.accessToken.jwt)
                     logMPC("Did verify final response \(authTokens) success")
                     
-                    let walletDetails = try await getWalletDetailsForWalletWith(deviceId: deviceId,
-                                                                                authTokens: authTokens)
+                    let walletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
+                                                                                       authTokens: authTokens)
+                    logMPC("Did get wallet account details")
                     let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
                                                                      tokens: authTokens,
                                                                      accounts: walletDetails.accounts,
                                                                      assets: walletDetails.assets)
+                    logMPC("Will create UD Wallet")
                     let udWallet = try prepareAndSaveMPCWallet(mpcWallet)
+                    logMPC("Did create UD Wallet")
                     
                     continuation.yield(.finished(udWallet))
                     continuation.finish()
                 } catch {
                     mpcConnector.stopJoinWallet()
+                    logMPC("Did fail to create mpc wallet with error \(error.localizedDescription)")
                     /// Debug Fireblocks SDK issues
 //                    let logsURL = mpcConnector.getLogsURLs()
 //                    continuation.yield(.failed(logsURL))
@@ -149,7 +153,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let assets: [FB_UD_MPC.WalletAccountAsset]
     }
     
-    private func getWalletDetailsForWalletWith(deviceId: String,
+    private func getWalletAccountDetailsForWalletWith(deviceId: String,
                                                authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
         let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
         let accessToken = authTokens.accessToken.jwt
