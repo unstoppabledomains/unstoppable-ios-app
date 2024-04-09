@@ -5875,7 +5875,6 @@
 				C6952A462BC5105500F4B475 /* Connector */,
 				C6952A212BC4E03100F4B475 /* Fireblocks */,
 				C65330502BC3AC3800A705AE /* Entities */,
-				C650F8C62BA41C2F00BDA099 /* FireblocksRPCMessageHandler */,
 			);
 			path = "Fireblocks+UD";
 			sourceTree = "<group>";
@@ -7064,6 +7063,7 @@
 				C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */,
 				C650F8C32BA41A2A00BDA099 /* FireblocksKeyStorageProvider.swift */,
 				C6BF80342BA2ED7100CC4CB3 /* FireblockJoinWalletHandlerImplementation.swift */,
+				C650F8C62BA41C2F00BDA099 /* FireblocksRPCMessageHandler */,
 			);
 			path = Fireblocks;
 			sourceTree = "<group>";
