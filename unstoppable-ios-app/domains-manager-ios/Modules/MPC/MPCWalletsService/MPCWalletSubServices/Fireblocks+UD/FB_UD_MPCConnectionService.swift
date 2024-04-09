@@ -5,14 +5,6 @@
 //  Created by Oleg Kuplin on 14.03.2024.
 //
 
-
-///MPCWalletSetupService
-///MPCWalletSetupStep
-///
-///MPCConnector -> MPCProviderConnector
-///MPCConnectorBuilder -> MPCProviderConnectorBuilder
-///
-
 import Foundation
 
 func logMPC(_ message: String) {

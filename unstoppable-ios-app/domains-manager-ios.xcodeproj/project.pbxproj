@@ -5871,13 +5871,8 @@
 			children = (
 				C6952A1E2BC4DD8500F4B475 /* FB_UD_MPC.swift */,
 				C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */,
-				C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */,
-				C632BE4C2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift */,
-				C632BE5B2BA59F0700C95B2D /* FB_UD_DefaultMPCConnectionNetworkService.swift */,
-				C632BE402BA5962A00C95B2D /* FB_UD_MPCConnector.swift */,
-				C632BE432BA5978F00C95B2D /* FB_UD_MPCConnectorBuilder.swift */,
-				C632BE462BA597B700C95B2D /* FB_UD_DefaultMPCConnectorBuilder.swift */,
-				C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */,
+				C6952A452BC5104800F4B475 /* Network */,
+				C6952A462BC5105500F4B475 /* Connector */,
 				C6952A212BC4E03100F4B475 /* Fireblocks */,
 				C65330502BC3AC3800A705AE /* Entities */,
 				C650F8C62BA41C2F00BDA099 /* FireblocksRPCMessageHandler */,
@@ -6049,6 +6044,7 @@
 		C65330502BC3AC3800A705AE /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */,
 				C632BE582BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift */,
 				C632BE552BA59E8400C95B2D /* FB_UD_MPCSetupTokenResponse.swift */,
 				C632BE522BA59DFB00C95B2D /* FB_UD_MPCBootstrapCodeSubmitResponse.swift */,
@@ -7091,6 +7087,26 @@
 				C6952A312BC4EDFA00F4B475 /* MPCWalletSubServices */,
 			);
 			path = MPCWalletsService;
+			sourceTree = "<group>";
+		};
+		C6952A452BC5104800F4B475 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */,
+				C632BE4C2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift */,
+				C632BE5B2BA59F0700C95B2D /* FB_UD_DefaultMPCConnectionNetworkService.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		C6952A462BC5105500F4B475 /* Connector */ = {
+			isa = PBXGroup;
+			children = (
+				C632BE402BA5962A00C95B2D /* FB_UD_MPCConnector.swift */,
+				C632BE432BA5978F00C95B2D /* FB_UD_MPCConnectorBuilder.swift */,
+				C632BE462BA597B700C95B2D /* FB_UD_DefaultMPCConnectorBuilder.swift */,
+			);
+			path = Connector;
 			sourceTree = "<group>";
 		};
 		C6960C192B19939E00B79E28 /* domains-manager-ios-preview */ = {

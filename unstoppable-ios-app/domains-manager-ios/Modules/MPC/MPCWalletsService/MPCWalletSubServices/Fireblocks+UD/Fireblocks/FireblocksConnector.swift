@@ -24,13 +24,17 @@ final class FireblocksConnector {
         self.messageHandler = messageHandler
         
         do {
-            //        try Fireblocks.getInstance(deviceId: deviceId)
+            let storageProvider = FireblocksKeyStorageProvider()
+            // TODO: Check User.instance.getSettings().isTestnetUsed to select env
+            let env = FireblocksEnvironment.sandbox
+            let logLevel: FireblocksSDK.LogLevel = .debug
+            let fireblocksOptions = FireblocksOptions(env: env,
+                                                      eventHandlerDelegate: self,
+                                                      logLevel: logLevel)
             let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
                                                        messageHandlerDelegate: messageHandler,
-                                                       keyStorageDelegate: FireblocksKeyStorageProvider(),
-                                                       fireblocksOptions: FireblocksOptions(env: .sandbox, 
-                                                                                            eventHandlerDelegate: self,
-                                                                                            logLevel: .debug))
+                                                       keyStorageDelegate: storageProvider,
+                                                       fireblocksOptions: fireblocksOptions)
             self.fireblocks = fireblocks
         } catch {
             logMPC("Did fail to create fireblocks connector with error: \(error.localizedDescription)")
