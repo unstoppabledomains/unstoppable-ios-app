@@ -15,14 +15,17 @@ extension FB_UD_MPC {
     final class MPCConnectionService {
         
         let provider: MPCWalletProvider = .fireblocksUD
-
+        
         private let connectorBuilder: MPCConnectorBuilder
         private let networkService: MPCConnectionNetworkService
+        private let walletsDataStorage: MPCWalletsDataStorage
         
         init(connectorBuilder: MPCConnectorBuilder = DefaultMPCConnectorBuilder(),
-                     networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService()) {
+             networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
+             walletsDataStorage: MPCWalletsDataStorage = MPCWalletsDefaultDataStorage()) {
             self.connectorBuilder = connectorBuilder
             self.networkService = networkService
+            self.walletsDataStorage = walletsDataStorage
         }
     }
 }
@@ -109,6 +112,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                      tokens: authTokens,
                                                                      accounts: walletDetails.accounts,
                                                                      assets: walletDetails.assets)
+                    try storeConnectedWalletDetails(mpcWallet)
 //                    continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
@@ -147,6 +151,14 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return WalletDetails(accounts: accounts, assets: assets)
     }
     
+    private func storeConnectedWalletDetails(_ walletDetails: FB_UD_MPC.ConnectedWalletDetails) throws {
+        let tokens = walletDetails.tokens
+        let metadata = walletDetails.createUDWalletMetadata()
+        
+        try walletsDataStorage.storeAuthTokens(tokens, for: walletDetails.deviceId)
+        try walletsDataStorage.storeMetadata(metadata)
+    }
+    
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         
@@ -159,17 +171,20 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
 // MARK: - AuthTokenProvider
 extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     func getAuthTokens(wallet: FB_UD_MPC.ConnectedWalletDetails) async throws -> String {
-        let accessToken = wallet.tokens.accessToken
+        let deviceId = wallet.deviceId
+        let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+        let accessToken = tokens.accessToken
         if !accessToken.isExpired {
             return accessToken.jwt
         }
         
-        let refreshToken = wallet.tokens.refreshToken
+        let refreshToken = tokens.refreshToken
         guard !refreshToken.isExpired else {
             throw MPCConnectionServiceError.tokensExpired
         }
         
         let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
+        try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
         return refreshedTokens.accessToken.jwt
     }
 }

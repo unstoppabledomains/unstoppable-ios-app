@@ -1256,6 +1256,10 @@
 		C6952A402BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */; };
 		C6952A412BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */; };
 		C6952A432BC50D1D00F4B475 /* FireblocksWalletRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A422BC50D1D00F4B475 /* FireblocksWalletRPCMessageHandler.swift */; };
+		C6952A482BC526F800F4B475 /* FB_UD_MPCValetStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */; };
+		C6952A4B2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */; };
+		C6952A4C2BC5296200F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */; };
+		C6952A4E2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3578,6 +3582,9 @@
 		C6952A3C2BC5084000F4B475 /* NetworkBearerAuthorisationHeaderBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBearerAuthorisationHeaderBuilder.swift; sourceTree = "<group>"; };
 		C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletAuthTokenProvider.swift; sourceTree = "<group>"; };
 		C6952A422BC50D1D00F4B475 /* FireblocksWalletRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksWalletRPCMessageHandler.swift; sourceTree = "<group>"; };
+		C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCValetStorage.swift; sourceTree = "<group>"; };
+		C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDataStorage.swift; sourceTree = "<group>"; };
+		C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDefaultDataStorage.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -5871,6 +5878,7 @@
 			children = (
 				C6952A1E2BC4DD8500F4B475 /* FB_UD_MPC.swift */,
 				C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */,
+				C6952A492BC5294800F4B475 /* Storage */,
 				C6952A452BC5104800F4B475 /* Network */,
 				C6952A462BC5105500F4B475 /* Connector */,
 				C6952A212BC4E03100F4B475 /* Fireblocks */,
@@ -6048,6 +6056,7 @@
 				C632BE552BA59E8400C95B2D /* FB_UD_MPCSetupTokenResponse.swift */,
 				C632BE522BA59DFB00C95B2D /* FB_UD_MPCBootstrapCodeSubmitResponse.swift */,
 				C650F8BC2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift */,
+				C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */,
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
 				C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */,
 				C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */,
@@ -7107,6 +7116,15 @@
 				C632BE462BA597B700C95B2D /* FB_UD_DefaultMPCConnectorBuilder.swift */,
 			);
 			path = Connector;
+			sourceTree = "<group>";
+		};
+		C6952A492BC5294800F4B475 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */,
+				C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		C6960C192B19939E00B79E28 /* domains-manager-ios-preview */ = {
@@ -9529,6 +9547,7 @@
 				C6A474D029D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
 				C669C39E291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */,
 				C624D76B281AD2B900F55530 /* FABButton.swift in Sources */,
+				C6952A4E2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift in Sources */,
 				C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */,
 				C6B65F622B55015F006D1812 /* HomeWalletHeaderRowView.swift in Sources */,
 				C64BCB712A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift in Sources */,
@@ -9666,6 +9685,7 @@
 				C6E0DC5D2B71E2410069E100 /* ShareWalletInfoView.swift in Sources */,
 				C669C37529121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C6C8F8292B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
+				C6952A482BC526F800F4B475 /* FB_UD_MPCValetStorage.swift in Sources */,
 				C6D6476B2B1EDFAA00D724AC /* WalletConnectClientUIHandler.swift in Sources */,
 				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F2A280030AB00A517D5 /* UICollectionView.swift in Sources */,
@@ -9934,6 +9954,7 @@
 				C663A4D62B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */,
 				C61DB1082B9587B600CDA243 /* PublicProfileSecondaryLargeTextView.swift in Sources */,
 				C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */,
+				C6952A4B2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */,
 				C6534AA72BBFBA10008EEBB5 /* HomeExploreRecentProfilesSectionView.swift in Sources */,
 				C6DDF2592B147F5E006D1F0B /* UDTitleText.swift in Sources */,
 				C6B2E1FF2B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */,
@@ -11200,6 +11221,7 @@
 				C6D646AF2B1ED17100D724AC /* ShareDomainHandler.swift in Sources */,
 				C61808382B19AF150032E543 /* UITextView.swift in Sources */,
 				C650E2912B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */,
+				C6952A4C2BC5296200F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */,
 				C6D6475D2B1EDD8300D724AC /* WalletConnectRequestError.swift in Sources */,
 				C6960C312B1994EC00B79E28 /* PreviewDebugger.swift in Sources */,
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,
