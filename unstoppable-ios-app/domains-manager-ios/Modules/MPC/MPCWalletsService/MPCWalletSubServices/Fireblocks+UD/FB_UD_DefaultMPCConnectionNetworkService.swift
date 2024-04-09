@@ -154,16 +154,30 @@ extension FB_UD_MPC {
             return response
         }
         
-        func getAccountBalances(accountId: String,
-                                accessToken: String) async throws -> WalletAccountAssetsResponse {
-            
+        func getAccountAssets(accountId: String,
+                              accessToken: String,
+                              includeBalances: Bool) async throws -> WalletAccountAssetsResponse {
             let headers = buildAuthBearerHeader(token: accessToken)
-            let url = MPCNetwork.URLSList.accountAssetsURL(accountId: accountId) + "?$expand=balance"
+            var url = MPCNetwork.URLSList.accountAssetsURL(accountId: accountId)
+            if includeBalances {
+                url += "?$expand=balance"
+            }
             let request = try APIRequest(urlString: url,
                                          method: .get,
                                          headers: headers)
             
             let response: WalletAccountAssetsResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
+        func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.supportedBlockchainsURL
+            let request = try APIRequest(urlString: url,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: SupportedBlockchainAssetsResponse = try await makeDecodableAPIRequest(request)
             return response
         }
         

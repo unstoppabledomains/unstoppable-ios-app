@@ -12,7 +12,7 @@ extension FB_UD_MPC {
         let type: String
         let id: String
         let address: String
-        let balance: Balance
+        let balance: Balance?
         let blockchainAsset: BlockchainAsset
         
         private enum CodingKeys: String, CodingKey {
@@ -27,32 +27,10 @@ extension FB_UD_MPC {
             let total: String
             let decimals: Int
         }
-        
-        struct BlockchainAsset: Codable {
-            let type: String
-            let id: String
-            let name: String
-            let symbol: String
-            let blockchain: Blockchain
-            
-            private enum CodingKeys: String, CodingKey {
-                case type = "@type"
-                case id
-                case name
-                case symbol
-                case blockchain
-            }
-            
-            struct Blockchain: Codable {
-                let id: String
-                let name: String
-            }
-        }
     }
     
     struct WalletAccountAssetsResponse: Codable {
         let items: [WalletAccountAsset]
         let next: String?
     }
-    
 }

@@ -27,6 +27,8 @@ extension FB_UD_MPC {
             static var tokensVerifyURL: String { tokensURL.appendingURLPathComponents("verify") }
             static var tokensRefreshURL: String { tokensURL.appendingURLPathComponents("refresh") }
             
+            static var supportedBlockchainsURL: String { v1URL.appendingURLPathComponents("blockchain-assets") }
+            
             static var accountsURL: String { v1URL.appendingURLPathComponents("accounts") }
             static func accountAssetsURL(accountId: String) -> String {
                 accountsURL.appendingURLPathComponents(accountId, "assets")

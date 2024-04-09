@@ -1249,6 +1249,8 @@
 		C6952A352BC4FFC200F4B475 /* FB_UD_MPCAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */; };
 		C6952A372BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */; };
 		C6952A382BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */; };
+		C6952A3A2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */; };
+		C6952A3B2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3567,6 +3569,7 @@
 		C6952A2E2BC4EBB800F4B475 /* MPCWalletProviderSubServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletProviderSubServiceProtocol.swift; sourceTree = "<group>"; };
 		C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCAccount.swift; sourceTree = "<group>"; };
 		C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCAccountAsset.swift; sourceTree = "<group>"; };
+		C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCBlockchain.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -6042,6 +6045,7 @@
 				C650F8BC2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift */,
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
 				C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */,
+				C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -9435,6 +9439,7 @@
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
+				C6952A3A2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */,
 				C621A43C2BB10D2900CB5CB9 /* SendCryptoQRWalletAddressScannerView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
 				C62BDA412B5E4104008E21AD /* MessagingBlockUserInChatType.swift in Sources */,
@@ -10955,6 +10960,7 @@
 				C6D646D82B1ED2E700D724AC /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6D646E52B1ED4E500D724AC /* EnterEmailValuePresenter.swift in Sources */,
 				C6D645AC2B1DBB5700D724AC /* CollectionReusableRoundedBackground.swift in Sources */,
+				C6952A3B2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */,
 				C67213E32BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
 				C6C8F8E52B21836400A9834D /* ParkedDomainsFoundViewPresenter.swift in Sources */,
 				C61808212B19AB1E0032E543 /* DomainToPurchase.swift in Sources */,

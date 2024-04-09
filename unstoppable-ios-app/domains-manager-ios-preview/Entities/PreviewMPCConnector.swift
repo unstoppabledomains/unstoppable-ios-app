@@ -76,10 +76,17 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
             return .init(items: [], next: nil)
         }
-        func getAccountBalances(accountId: String,
-                                accessToken: String) async throws -> WalletAccountAssetsResponse {
+        
+        func getAccountAssets(accountId: String,
+                              accessToken: String,
+                              includeBalances: Bool) async throws -> WalletAccountAssetsResponse {
             await Task.sleep(seconds: 0.5)
             return .init(items: [], next: nil)
+        }
+        
+        func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse {
+            await Task.sleep(seconds: 0.5)
+            return .init(items: [])
         }
         
         private func createMockJWToken() throws -> JWToken {

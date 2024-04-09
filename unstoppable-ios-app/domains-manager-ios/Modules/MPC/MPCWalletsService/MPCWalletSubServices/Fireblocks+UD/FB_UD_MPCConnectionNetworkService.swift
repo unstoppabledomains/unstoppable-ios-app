@@ -22,7 +22,10 @@ extension FB_UD_MPC {
         func refreshToken(_ refreshToken: String) async throws -> SuccessAuthResponse
         
         func getAccounts(accessToken: String) async throws -> WalletAccountsResponse
-        func getAccountBalances(accountId: String,
-                                accessToken: String) async throws -> WalletAccountAssetsResponse
+        func getAccountAssets(accountId: String,
+                              accessToken: String,
+                              includeBalances: Bool) async throws -> WalletAccountAssetsResponse
+        
+        func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse 
     }
 }
