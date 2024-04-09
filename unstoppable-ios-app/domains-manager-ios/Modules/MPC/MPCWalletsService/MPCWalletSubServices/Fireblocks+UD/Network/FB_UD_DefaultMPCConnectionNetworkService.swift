@@ -8,7 +8,7 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+    struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService, NetworkBearerAuthorisationHeaderBuilder {
         
         private let networkService = NetworkService()
         
@@ -103,8 +103,7 @@ extension FB_UD_MPC {
             return response
         }
         
-        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse {
-            
+        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> AuthTokens {
             struct Body: Encodable {
                 var includeRefreshToken: Bool = true
                 var includeBootstrapToken: Bool = true
@@ -117,7 +116,7 @@ extension FB_UD_MPC {
                                          method: .post,
                                          headers: headers)
             
-            let response: SuccessAuthResponse = try await makeDecodableAPIRequest(request)
+            let response: AuthTokens = try await makeDecodableAPIRequest(request)
             return response
         }
         
@@ -127,6 +126,59 @@ extension FB_UD_MPC {
                                          method: .get,
                                          headers: headers)
             try await makeAPIRequest(request)
+        }
+        
+        func refreshToken(_ refreshToken: String) async throws -> AuthTokens {
+            struct Body: Encodable {
+                var refreshToken: String
+                var includeRefreshToken: Bool = true
+                var includeBootstrapToken: Bool = true
+            }
+            
+            let body = Body(refreshToken: refreshToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensRefreshURL,
+                                         body: body,
+                                         method: .post)
+            
+            let response: AuthTokens = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
+        func getAccounts(accessToken: String) async throws -> WalletAccountsResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.accountsURL,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: WalletAccountsResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
+        func getAccountAssets(accountId: String,
+                              accessToken: String,
+                              includeBalances: Bool) async throws -> WalletAccountAssetsResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            var url = MPCNetwork.URLSList.accountAssetsURL(accountId: accountId)
+            if includeBalances {
+                url += "?$expand=balance"
+            }
+            let request = try APIRequest(urlString: url,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: WalletAccountAssetsResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
+        func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.supportedBlockchainsURL
+            let request = try APIRequest(urlString: url,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: SupportedBlockchainAssetsResponse = try await makeDecodableAPIRequest(request)
+            return response
         }
         
         // MARK: - Private methods
@@ -156,10 +208,6 @@ extension FB_UD_MPC {
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
-        }
-        
-        private func buildAuthBearerHeader(token: String) -> [String : String] {
-            ["Authorization": "Bearer \(token)"]
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

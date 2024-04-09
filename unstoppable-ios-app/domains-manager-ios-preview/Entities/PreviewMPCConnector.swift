@@ -9,7 +9,11 @@ import Foundation
 
 extension FB_UD_MPC {
     struct DefaultMPCConnectorBuilder: MPCConnectorBuilder {
-        func buildMPCConnector(deviceId: String, accessToken: String) throws -> any MPCConnector {
+        func buildBootstrapMPCConnector(deviceId: String, accessToken: String) throws -> any MPCConnector {
+            PreviewMPCConnector()
+        }
+        
+        func buildWalletMPCConnector(wallet: ConnectedWalletDetails, authTokenProvider: any WalletAuthTokenProvider) throws -> any MPCConnector {
             PreviewMPCConnector()
         }
     }
@@ -58,19 +62,49 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
         }
         
-        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse {
+        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> AuthTokens {
             await Task.sleep(seconds: 0.5)
-            let jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2FwaS51bnN0b3BwYWJsZWRvbWFpbnMuY29tL2NsYWltcy90b2tlbi1wdXJwb3NlIjoiQUNDRVNTIiwiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbS9jbGFpbXMvYWNjb3VudCI6IldBTExFVF9VU0VSIiwiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbS9jbGFpbXMvY29udGV4dCI6Imo2L2UvYjUzbHM2NFNHL25peXRzUTZDek5HdEpPcENiQkJNV3YxNmIzSDh2VmtQOUZmUnUrM3dWM2M5VTBCSlBaZ3JtVGozaGlzNEk2M1M1RE5xNzhtU0ZVbG40ZTZDc1VpU3laenNKSFVVNURYdGVQQjRyZFBDNS9CVXlSMmtsajY0cldIdEVQSmJUcTM5RnJneFErdk5hOTRvT21na0hkRXAraWxJTU4zUHJLS3ExSHdmNzVKdUtJS2dFRnFKZUg5TDY1b1ZtTnNOZ0JGb0hmeW15RnVNcjhzKzdCU2twNXdTd00rZzVBbktydXA4d1MxZStPNWNHM29IblFYZFgwa3NhckxkSlpybEl4NXAvR0xjbVY4RTh3TWl4WkJqcTBuYm4rdDBDSDVyRWhtN25NQmZseGhRWDZPRjVLL1QyVGdWTVVaSmxPQXVLMWI1RDZwdUg4K09seEE5OTU2bWZNejBOQmZyekJ6cFowSmozSDNxcGh1aVNZbjgrT1BHRENwSDh6Qk1iOTJlUHYrWmxSVVlMNHNEYzlidXp6L1paQW9VUGZIclVNdW55cnlzaGFBb0p5aGhEelRWWW10QWg3Y3RnMTRIVFpjRnRiSG5vUkdIUnRrTTlLWVd0Vkd3bHRKMk94akJVUUpzYnl0dnlURFplWHJYM0UyZU1WQ0VMVFZJQk5RPT0iLCJpYXQiOjE3MTIzMDIyMjQsImV4cCI6MTcxMjMxNjYyNCwiYXVkIjoiOTY2MzNhMWMtMmI3MC00N2NhLWEwNmYtMDFiZWY2YjhmMzZiIiwiaXNzIjoiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbSJ9.A9AFzP-m7KvRdVMPNeYfmmFBSgFeZWBG_WONlmjp6lk"
-            let accessToken = try JWToken(jwt)
-            let refreshToken = try JWToken(jwt)
-            let bootstrapToken = try JWToken(jwt)
-            return .init(accessToken: accessToken,
-                         refreshToken: refreshToken,
-                         bootstrapToken: bootstrapToken)
+            return try createMockSuccessAuthResponse()
         }
         
         func verifyAccessToken(_ accessToken: String) async throws {
             await Task.sleep(seconds: 0.5)
+        }
+        
+        func refreshToken(_ refreshToken: String) async throws -> AuthTokens {
+            await Task.sleep(seconds: 0.5)
+            return try createMockSuccessAuthResponse()
+        }
+        
+        func getAccounts(accessToken: String) async throws -> WalletAccountsResponse {
+            await Task.sleep(seconds: 0.5)
+            return .init(items: [], next: nil)
+        }
+        
+        func getAccountAssets(accountId: String,
+                              accessToken: String,
+                              includeBalances: Bool) async throws -> WalletAccountAssetsResponse {
+            await Task.sleep(seconds: 0.5)
+            return .init(items: [], next: nil)
+        }
+        
+        func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse {
+            await Task.sleep(seconds: 0.5)
+            return .init(items: [])
+        }
+        
+        private func createMockJWToken() throws -> JWToken {
+            let jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2FwaS51bnN0b3BwYWJsZWRvbWFpbnMuY29tL2NsYWltcy90b2tlbi1wdXJwb3NlIjoiQUNDRVNTIiwiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbS9jbGFpbXMvYWNjb3VudCI6IldBTExFVF9VU0VSIiwiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbS9jbGFpbXMvY29udGV4dCI6Imo2L2UvYjUzbHM2NFNHL25peXRzUTZDek5HdEpPcENiQkJNV3YxNmIzSDh2VmtQOUZmUnUrM3dWM2M5VTBCSlBaZ3JtVGozaGlzNEk2M1M1RE5xNzhtU0ZVbG40ZTZDc1VpU3laenNKSFVVNURYdGVQQjRyZFBDNS9CVXlSMmtsajY0cldIdEVQSmJUcTM5RnJneFErdk5hOTRvT21na0hkRXAraWxJTU4zUHJLS3ExSHdmNzVKdUtJS2dFRnFKZUg5TDY1b1ZtTnNOZ0JGb0hmeW15RnVNcjhzKzdCU2twNXdTd00rZzVBbktydXA4d1MxZStPNWNHM29IblFYZFgwa3NhckxkSlpybEl4NXAvR0xjbVY4RTh3TWl4WkJqcTBuYm4rdDBDSDVyRWhtN25NQmZseGhRWDZPRjVLL1QyVGdWTVVaSmxPQXVLMWI1RDZwdUg4K09seEE5OTU2bWZNejBOQmZyekJ6cFowSmozSDNxcGh1aVNZbjgrT1BHRENwSDh6Qk1iOTJlUHYrWmxSVVlMNHNEYzlidXp6L1paQW9VUGZIclVNdW55cnlzaGFBb0p5aGhEelRWWW10QWg3Y3RnMTRIVFpjRnRiSG5vUkdIUnRrTTlLWVd0Vkd3bHRKMk94akJVUUpzYnl0dnlURFplWHJYM0UyZU1WQ0VMVFZJQk5RPT0iLCJpYXQiOjE3MTIzMDIyMjQsImV4cCI6MTcxMjMxNjYyNCwiYXVkIjoiOTY2MzNhMWMtMmI3MC00N2NhLWEwNmYtMDFiZWY2YjhmMzZiIiwiaXNzIjoiaHR0cHM6Ly9hcGkudW5zdG9wcGFibGVkb21haW5zLmNvbSJ9.A9AFzP-m7KvRdVMPNeYfmmFBSgFeZWBG_WONlmjp6lk"
+            return try JWToken(jwt)
+        }
+        
+        private func createMockSuccessAuthResponse() throws -> AuthTokens {
+            let accessToken = try createMockJWToken()
+            let refreshToken = try createMockJWToken()
+            let bootstrapToken = try createMockJWToken()
+            return .init(accessToken: accessToken,
+                         refreshToken: refreshToken,
+                         bootstrapToken: bootstrapToken)
         }
     }
 }
