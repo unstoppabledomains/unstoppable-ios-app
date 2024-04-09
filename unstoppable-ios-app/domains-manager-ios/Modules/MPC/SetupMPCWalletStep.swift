@@ -18,7 +18,7 @@ enum SetupMPCWalletStep {
     case signingTransaction
     case confirmingTransaction
     case verifyingAccessToken
-    case finished(UDMPCWallet)
+    case finished(UDWallet)
     case failed(URL?)
     
     var title: String {

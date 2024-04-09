@@ -148,7 +148,7 @@ private extension MPCEnterCodeView {
             isLoading = true
             do {
                 // Send email action
-                try await MPCConnectionService.shared.sendBootstrapCodeTo(email: input)
+                try await FB_UD_MPC.MPCConnectionService.shared.sendBootstrapCodeTo(email: input)
                 toggleInputType()
             } catch {
                 self.error = error

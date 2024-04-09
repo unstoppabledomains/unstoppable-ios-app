@@ -20,7 +20,7 @@ extension FireblocksRPCMessageHandler {
                 logMPC("Will handle outgoing message: \(payload)")
                 let body = RequestBody(message: payload)
                 let headers = buildAuthBearerHeader()
-                let request = try APIRequest(urlString: MPCNetwork.URLSList.rpcMessagesURL,
+                let request = try APIRequest(urlString: FB_UD_MPC.MPCNetwork.URLSList.rpcMessagesURL,
                                              body: body,
                                              method: .post,
                                              headers: headers)

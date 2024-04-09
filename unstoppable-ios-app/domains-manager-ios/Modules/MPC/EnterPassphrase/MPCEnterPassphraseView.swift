@@ -10,7 +10,7 @@ import SwiftUI
 struct MPCEnterPassphraseView: View {
     
     let code: String
-    let mpcWalletCreatedCallback: (UDMPCWallet)->()
+    let mpcWalletCreatedCallback: (UDWallet)->()
     @State private var input: String = ""
     @State private var isLoading = false
     @State private var error: Error?
@@ -79,7 +79,7 @@ private extension MPCEnterPassphraseView {
             
             isLoading = true
             do {
-                let mpcWalletStepsStream = MPCConnectionService.shared.signForNewDeviceWith(code: code, recoveryPhrase: input)
+                let mpcWalletStepsStream = FB_UD_MPC.MPCConnectionService.shared.signForNewDeviceWith(code: code, recoveryPhrase: input)
                 
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)

@@ -25,6 +25,7 @@ enum WalletType: String, Codable {
     case defaultGeneratedLocally
     case mnemonicsEntered
     case importedUnverified
+    case mpc
     
     func getICloudLabel() -> String? {
         switch self {

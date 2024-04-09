@@ -19,23 +19,25 @@ func logMPC(_ message: String) {
     print("MPC: - \(message)")
 }
 
-final class MPCConnectionService {
-    
-    private let connectorBuilder: MPCConnectorBuilder
-    private let networkService: MPCConnectionNetworkService
-    
-    static let shared = MPCConnectionService(connectorBuilder: DefaultMPCConnectorBuilder())
-    
-    private init(connectorBuilder: MPCConnectorBuilder,
-                 networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService()) {
-        self.connectorBuilder = connectorBuilder
-        self.networkService = networkService
+extension FB_UD_MPC {
+    final class MPCConnectionService {
+        
+        private let connectorBuilder: MPCConnectorBuilder
+        private let networkService: MPCConnectionNetworkService
+        
+        static let shared = MPCConnectionService(connectorBuilder: DefaultMPCConnectorBuilder())
+        
+        private init(connectorBuilder: MPCConnectorBuilder,
+                     networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService()) {
+            self.connectorBuilder = connectorBuilder
+            self.networkService = networkService
+        }
+        
     }
-    
 }
 
 // MARK: - Open methods
-extension MPCConnectionService {
+extension FB_UD_MPC.MPCConnectionService {
     /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
         try await networkService.sendBootstrapCodeTo(email: email)
@@ -110,10 +112,10 @@ extension MPCConnectionService {
                     try await networkService.verifyAccessToken(finalAuthResponse.accessToken.jwt)
                     logMPC("Did verify final response \(finalAuthResponse) success")
                     
-                    let mpcWallet = UDMPCWallet(deviceId: deviceId,
-                                                tokens: .init(refreshToken: finalAuthResponse.refreshToken,
-                                                              bootstrapToken: finalAuthResponse.bootstrapToken))
-                    continuation.yield(.finished(mpcWallet))
+                    let mpcWallet = FB_UD_MPC.WalletDetails(deviceId: deviceId,
+                                                            tokens: .init(refreshToken: finalAuthResponse.refreshToken,
+                                                                          bootstrapToken: finalAuthResponse.bootstrapToken))
+//                    continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
                     mpcConnector.stopJoinWallet()
