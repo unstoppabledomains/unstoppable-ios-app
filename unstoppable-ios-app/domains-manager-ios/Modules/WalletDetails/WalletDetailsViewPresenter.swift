@@ -141,7 +141,8 @@ private extension WalletDetailsViewPresenter {
             
             let isExternalWallet: Bool
             switch walletInfo.source {
-            case .locallyGenerated, .imported:
+                // TODO: - MPC
+            case .locallyGenerated, .imported, .mpc:
                 isExternalWallet = false
             case .external:
                 isExternalWallet = true

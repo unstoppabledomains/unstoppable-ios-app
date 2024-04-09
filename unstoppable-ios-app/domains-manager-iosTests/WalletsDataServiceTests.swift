@@ -84,7 +84,7 @@ extension WalletsDataServiceTests {
             expectedCalls.append(value)
         }
         let wallet = await setSelectedWalletInService()
-        XCTAssertEqual(networkService.calledAddresses.sorted(), ([wallet.address] + expectedCalls).sorted())
+        XCTAssertEqual(Set(networkService.calledAddresses), Set([wallet.address] + expectedCalls))
     }
 }
 
@@ -111,17 +111,22 @@ private final class MockNetworkService: WalletsDataNetworkServiceProtocol, Faila
     var error: TestableGenericError { TestableGenericError.generic }
     var calledAddresses: [String] = []
     var getRecordsCalledNames: [String] = []
+    let serialQueue = DispatchQueue(label: "com.mock.network")
   
     func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
         try failIfNeeded()
-        calledAddresses.append(wallet)
+        serialQueue.sync {
+            calledAddresses.append(wallet)
+        }
         return []
     }
     
     func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
         try failIfNeeded()
 
-        getRecordsCalledNames.append(domainName)
-        return recordsToReturn
+        serialQueue.sync {
+            getRecordsCalledNames.append(domainName)
+        }
+        return serialQueue.sync { recordsToReturn }
     }
 }

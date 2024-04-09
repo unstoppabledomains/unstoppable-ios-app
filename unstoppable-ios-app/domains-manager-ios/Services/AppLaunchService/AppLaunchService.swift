@@ -13,17 +13,17 @@ final class AppLaunchService {
     private var stateMachine = InitialMintingStateMachine()
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private let udWalletsService: UDWalletsServiceProtocol
-    private let userProfileService: UserProfileServiceProtocol
+    private let userProfilesService: UserProfilesServiceProtocol
     private var sceneDelegate: SceneDelegateProtocol?
     private var completion: EmptyAsyncCallback?
     private var listeners: [AppLaunchListenerHolder] = []
 
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         userProfileService: UserProfileServiceProtocol) {
+         userProfilesService: UserProfilesServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.udWalletsService = udWalletsService
-        self.userProfileService = userProfileService
+        self.userProfilesService = userProfilesService
     }
     
 }
@@ -64,7 +64,7 @@ private extension AppLaunchService {
                 await appVersionUpdated(appVersion)
                 
                 let onboardingDone = User.instance.getSettings().onboardingDone ?? false
-                if let profile = userProfileService.selectedProfile,
+                if let profile = userProfilesService.selectedProfile,
                    onboardingDone {
                     resolveInitialMintingState(startTime: startTime,
                                                profile: profile)

@@ -59,7 +59,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
         self.router = router
         self.messagingService = messagingService
         router.chatsListCoordinator = self
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        appContext.userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             guard self?.didResolveInitialState == true else { return }
             
             if case .wallet(let selectedWallet) = selectedProfile {
@@ -272,11 +272,11 @@ extension ChatListViewModel: ChatsListCoordinator {
         case .wallet(let wallet):
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet,
                wallet.address != selectedMessagingWallet.address  {
-                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfilesService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         case .webAccount:
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet {
-                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfilesService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         }
     }

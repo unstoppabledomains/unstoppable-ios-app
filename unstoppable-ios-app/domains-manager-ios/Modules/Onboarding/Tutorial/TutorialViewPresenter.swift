@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol TutorialViewPresenterProtocol: BasePresenterProtocol {
     func didPressCreateNewWalletButton()
     func didPressBuyDomain()
@@ -37,11 +38,9 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     func didPressBuyDomain() {
         guard let view = self.view else { return }
         
-        Task {
-            await UDRouter().showBuyDomainsWebView(in: view, requireMintingCallback: { details in
-                UserDefaults.onboardingDomainsPurchasedDetails = details
-            })
-        }
+        UDRouter().showBuyDomainsWebView(in: view, requireMintingCallback: { details in
+            UserDefaults.onboardingDomainsPurchasedDetails = details
+        })
     }
 }
 

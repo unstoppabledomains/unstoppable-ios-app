@@ -1,5 +1,5 @@
 {
-  "originHash" : "57712317d52b57378eb742d2fbaf64669df05a363013ace30768d4859c34d342",
+  "originHash" : "f99411f96d664cffc232bb9f36f9409781edb4d58110cf256f172f585edb9462",
   "pins" : [
     {
       "identity" : "amplitude-ios",
@@ -89,6 +89,15 @@
       "state" : {
         "revision" : "cf82f0687ee505b291f8e8f5fe978122892b74ab",
         "version" : "9.5.0"
+      }
+    },
+    {
+      "identity" : "ncw-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fireblocks/ncw-ios-sdk.git",
+      "state" : {
+        "revision" : "8993a97f6af6e1e789f0296cae409622905daf2c",
+        "version" : "2.3.7-beta-5"
       }
     },
     {

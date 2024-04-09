@@ -1,5 +1,5 @@
 //
-//  TestableUserProfileService.swift
+//  TestableUserProfilesService.swift
 //  domains-manager-iosTests
 //
 //  Created by Oleg Kuplin on 07.03.2024.
@@ -9,7 +9,7 @@ import Foundation
 @testable import domains_manager_ios
 import Combine
 
-final class TestableUserProfileService: UserProfileServiceProtocol {
+final class TestableUserProfilesService: UserProfilesServiceProtocol {
    
     @Published var selectedProfile: UserProfile?
     var selectedProfilePublisher: Published<UserProfile?>.Publisher { $selectedProfile }

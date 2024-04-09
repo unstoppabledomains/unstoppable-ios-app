@@ -10,7 +10,7 @@ import UIKit
 
 enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCellItem {
     
-    case create, recoveryOrKey, connect
+    case create, recoveryOrKey, connect, mpc
     
     var title: String {
         switch self {
@@ -20,6 +20,8 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
             return String.Constants.connectWalletRecovery.localized()
         case .connect:
             return String.Constants.connectWalletExternal.localized()
+        case .mpc:
+            return "Unstoppable guard"
         }
     }
     
@@ -31,6 +33,8 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
             return nil
         case .connect:
             return String.Constants.connectWalletExternalHint.localized()
+        case .mpc:
+            return "Advanced MPC technoloiges"
         }
     }
     
@@ -42,6 +46,8 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
             return .recoveryPhraseIcon
         case .connect:
             return .externalWalletIndicator
+        case .mpc:
+            return UIImage(systemName: "flame.fill")!
         }
     }
     
@@ -51,6 +57,8 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
             return .foregroundOnEmphasis
         case .recoveryOrKey, .connect:
             return .foregroundDefault
+        case .mpc:
+            return .brandOrange
         }
     }
 
@@ -58,7 +66,7 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
         switch self {
         case .create:
             return .backgroundAccentEmphasis
-        case .recoveryOrKey, .connect:
+        case .recoveryOrKey, .connect, .mpc:
             return .backgroundMuted2
         }
     }

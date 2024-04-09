@@ -10,7 +10,7 @@ import Foundation
 final class GeneralAppContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol
     
-    let userProfileService: UserProfileServiceProtocol
+    let userProfilesService: UserProfilesServiceProtocol
     let notificationsService: NotificationsServiceProtocol
     let permissionsService: PermissionsServiceProtocol
     let pullUpViewService: PullUpViewServiceProtocol
@@ -47,7 +47,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
         AppLaunchService(coreAppCoordinator: coreAppCoordinator,
                          udWalletsService: udWalletsService, 
-                         userProfileService: userProfileService)
+                         userProfilesService: userProfilesService)
     }()
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
@@ -56,6 +56,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
+    private(set) lazy var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService()
     
     init() {
         authentificationService = AuthentificationService()
@@ -158,11 +159,11 @@ final class GeneralAppContext: AppContextProtocol {
         firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
                                                               firebaseSigner: firebaseSigner)
         
-        let userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+        let userProfilesService = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
                                                 firebaseParkedDomainsService: firebaseParkedDomainsService,
                                                 walletsDataService: walletsDataService)
-        self.userProfileService = userProfileService
-        udWalletsService.addListener(userProfileService)
+        self.userProfilesService = userProfilesService
+        udWalletsService.addListener(userProfilesService)
 
         LocalNotificationsService.shared.setWith(firebaseDomainsService: firebaseParkedDomainsService)
         

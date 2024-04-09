@@ -66,6 +66,10 @@ extension KeyboardService {
         return keyboardInput.button(forKeyCode: key)?.isPressed == true
     }
     
+    func hideKeyboard() {
+        appContext.coreAppCoordinator.topVC?.view.endEditing(true)
+    }
+    
     func addListener(_ listener: KeyboardServiceListener) {
         if !listeners.contains(where: { $0.listener === listener }) {
             listeners.append(.init(listener: listener))

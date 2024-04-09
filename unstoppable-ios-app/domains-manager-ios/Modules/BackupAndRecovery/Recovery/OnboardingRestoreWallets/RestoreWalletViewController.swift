@@ -108,6 +108,8 @@ extension RestoreWalletViewController: UITableViewDelegate {
             onboardingFlowManager.moveToStep(.connectExternalWallet)
         case .websiteAccount:
             onboardingFlowManager.moveToStep(.loginWithWebsite)
+        case .mpc:
+            onboardingFlowManager.moveToStep(.mpcCode)
         }
     }
 }
@@ -136,7 +138,7 @@ private extension RestoreWalletViewController {
             self.restoreOptions.append(.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets)))
         }
         
-        self.restoreOptions.append(contentsOf: [.recoveryPhrase, .externalWallet, .websiteAccount])
+        self.restoreOptions.append(contentsOf: [.recoveryPhrase, .mpc, .externalWallet, .websiteAccount])
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
@@ -168,7 +170,7 @@ private extension RestoreWalletViewController {
 // MARK: - ProtectionType
 extension RestoreWalletViewController {
     enum RestoreType {
-        case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet, websiteAccount
+        case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet, websiteAccount, mpc
         
         var icon: UIImage {
             switch self {
@@ -182,6 +184,8 @@ extension RestoreWalletViewController {
                 return #imageLiteral(resourceName: "externalWalletIcon")
             case .websiteAccount:
                 return .domainsProfileIcon
+            case .mpc:
+                return UIImage(systemName: "flame.fill")!
             }
         }
         
@@ -197,6 +201,9 @@ extension RestoreWalletViewController {
                 return String.Constants.connectWalletExternal.localized()
             case .websiteAccount:
                 return String.Constants.viewVaultedDomains.localized()
+            case .mpc:
+                return "Unstoppable guard"
+
             }
         }
         
@@ -212,6 +219,9 @@ extension RestoreWalletViewController {
                 return String.Constants.connectWalletExternalHint.localized()
             case .websiteAccount:
                 return String.Constants.protectedByUD.localized()
+            case .mpc:
+                return "Advanced MPC technoloiges"
+
             }
         }
         
@@ -219,7 +229,7 @@ extension RestoreWalletViewController {
             switch self {
             case .iCloud:
                 return .blue
-            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount:
+            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount, .mpc:
                 return .grey
             }
         }
@@ -228,7 +238,7 @@ extension RestoreWalletViewController {
             switch self {
             case .iCloud:
                 return .accent
-            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount:
+            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount, .mpc:
                 return .grey
             }
         }
@@ -245,6 +255,8 @@ extension RestoreWalletViewController {
                 return .externalWallet
             case .websiteAccount:
                 return .websiteAccount
+            case .mpc:
+                return .mpc
             }
         }
     }

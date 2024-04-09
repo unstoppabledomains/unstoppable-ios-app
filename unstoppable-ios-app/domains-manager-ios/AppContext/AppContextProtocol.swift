@@ -9,7 +9,7 @@ import Foundation
 
 protocol AppContextProtocol {
     
-    var userProfileService: UserProfileServiceProtocol { get }
+    var userProfilesService: UserProfilesServiceProtocol { get }
     var notificationsService: NotificationsServiceProtocol { get }
     var permissionsService: PermissionsServiceProtocol { get }
     var pullUpViewService: PullUpViewServiceProtocol { get }
@@ -44,6 +44,7 @@ protocol AppContextProtocol {
     var walletsDataService: WalletsDataServiceProtocol { get }
     var domainProfilesService: DomainProfilesServiceProtocol { get }
     var walletTransactionsService: WalletTransactionsServiceProtocol { get }
+    var mpcWalletsService: MPCWalletsServiceProtocol { get }
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     

@@ -23,17 +23,17 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     private var cancellables: Set<AnyCancellable> = []
     @Published private var txsResponse: WalletTransactionsResponse?
  
-    private let userProfileService: UserProfileServiceProtocol
+    private let userProfilesService: UserProfilesServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
     private let walletTransactionsService: WalletTransactionsServiceProtocol
     
     init(router: HomeTabRouter,
-         userProfileService: UserProfileServiceProtocol = appContext.userProfileService,
+         userProfilesService: UserProfilesServiceProtocol = appContext.userProfilesService,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
          walletTransactionsService: WalletTransactionsServiceProtocol = appContext.walletTransactionsService) {
         self.selectedProfile = router.profile
         self.router = router
-        self.userProfileService = userProfileService
+        self.userProfilesService = userProfilesService
         self.walletsDataService = walletsDataService
         self.walletTransactionsService = walletTransactionsService
         setup()
@@ -76,7 +76,7 @@ extension HomeActivityViewModel {
 // MARK: - Setup methods
 private extension HomeActivityViewModel {
     func setup() {
-        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile,
                selectedProfile.id != self?.selectedProfile.id {
                 self?.selectedProfile = selectedProfile

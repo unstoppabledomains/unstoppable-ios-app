@@ -8,10 +8,12 @@
 import Foundation
 import UIKit
 
+@MainActor
 protocol OnboardingFlowManager: AnyObject {
     var onboardingFlow: OnboardingNavigationController.OnboardingFlow { get }
     var onboardingData: OnboardingData { get set }
     
+    func handle(action: OnboardingNavigationController.Action) async throws
     func moveToStep(_ step: OnboardingNavigationController.OnboardingStep)
     func setNewUserOnboardingSubFlow(_ onboardingSubFlow: OnboardingNavigationController.NewUserOnboardingSubFlow?)
     func didSetupProtectWallet()

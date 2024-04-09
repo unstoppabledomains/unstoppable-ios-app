@@ -17,7 +17,7 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
         return vc
     }
     
-    @Environment(\.userProfileService) private var userProfileService
+    @Environment(\.userProfilesService) private var userProfilesService
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var tabRouter: HomeTabRouter
 
@@ -50,10 +50,10 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension UserProfileSelectionView {
     func onAppear() {
-        let profiles = userProfileService.profiles
+        let profiles = userProfilesService.profiles
         switch mode {
         case .default:
-            self.selectedProfile = userProfileService.selectedProfile
+            self.selectedProfile = userProfilesService.selectedProfile
             self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
         case .walletProfileSelection(let selectedWallet):
             self.selectedProfile = .wallet(selectedWallet)
@@ -101,7 +101,7 @@ private extension UserProfileSelectionView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             presentationMode.wrappedValue.dismiss()
-            userProfileService.setActiveProfile(profile)
+            userProfilesService.setActiveProfile(profile)
             logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
         })
         .padding(EdgeInsets(4))

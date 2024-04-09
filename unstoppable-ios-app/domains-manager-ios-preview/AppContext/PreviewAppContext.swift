@@ -10,7 +10,7 @@ import Foundation
 let previewContext = AppContext()
 
 final class AppContext: AppContextProtocol {
-    var userProfileService: UserProfileServiceProtocol
+    var userProfilesService: UserProfilesServiceProtocol
     
     var notificationsService: NotificationsServiceProtocol = NotificationsService()
     
@@ -76,15 +76,16 @@ final class AppContext: AppContextProtocol {
     var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
     var domainProfilesService: DomainProfilesServiceProtocol
     var walletTransactionsService: WalletTransactionsServiceProtocol
+    var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService()
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
     }
     
     init() {
-        userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
-                                                firebaseParkedDomainsService: firebaseParkedDomainsService,
-                                                walletsDataService: walletsDataService)
+        userProfilesService = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+                                                  firebaseParkedDomainsService: firebaseParkedDomainsService,
+                                                  walletsDataService: walletsDataService)
         domainProfilesService = DomainProfilesService(storage: PreviewPublicDomainProfileDisplayInfoStorageService(),
                                                       walletsDataService: walletsDataService)
         

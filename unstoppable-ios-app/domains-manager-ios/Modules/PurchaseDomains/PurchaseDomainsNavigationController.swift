@@ -133,7 +133,7 @@ private extension PurchaseDomainsNavigationController {
             selectedWallet = wallet
         } else if let wallet = wallets.first {
             selectedWallet = wallet
-            appContext.userProfileService.setActiveProfile(.wallet(wallet))
+            appContext.userProfilesService.setActiveProfile(.wallet(wallet))
         } else {
             askUserToAddWalletToPurchase(domain: domain,
                                          profileChanges: profileChanges)

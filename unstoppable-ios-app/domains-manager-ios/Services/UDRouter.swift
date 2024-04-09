@@ -87,6 +87,8 @@ class UDRouter: DomainProfileSignatureValidator {
             showImportVerifiedWalletScreen(walletImportedCallback: addedCallback, in: viewController)
         case .connect:
             showConnectExternalWalletScreen(walletConnectedCallback: addedCallback, in: viewController)
+        case .mpc:
+            return
         }
     }
  

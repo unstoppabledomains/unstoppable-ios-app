@@ -8,11 +8,12 @@
 import Foundation
 import Combine
 
-final class UserProfileService {
+final class UserProfilesService {
     
     private let firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol
     private let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
+    private var storage: SelectedUserProfileInfoStorageProtocol
     
     @Published private(set) var profiles: [UserProfile] = []
     @Published private(set) var selectedProfile: UserProfile? = nil
@@ -21,10 +22,12 @@ final class UserProfileService {
 
     init(firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol,
          firebaseParkedDomainsService: FirebaseDomainsServiceProtocol,
-         walletsDataService: WalletsDataServiceProtocol) {
+         walletsDataService: WalletsDataServiceProtocol,
+         storage: SelectedUserProfileInfoStorageProtocol = UserDefaults.standard) {
         self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
         self.firebaseParkedDomainsService = firebaseParkedDomainsService
         self.walletsDataService = walletsDataService
+        self.storage = storage
         loadProfilesAndSetSelected()
         firebaseParkedDomainsService.parkedDomainsPublisher.receive(on: DispatchQueue.main).sink { [weak self] parkedDomains in
             if parkedDomains.isEmpty {
@@ -35,7 +38,7 @@ final class UserProfileService {
             self?.updateProfilesList()
         }.store(in: &cancellables)
         firebaseParkedDomainsAuthenticationService.authorizedUserPublisher.receive(on: DispatchQueue.main).sink { [weak self] userProfile in
-            if let userProfile {
+            if userProfile != nil {
                 self?.loadParkedDomainsAndCheckProfile()
             } else {
                 self?.updateProfilesList()
@@ -54,14 +57,14 @@ final class UserProfileService {
 }
 
 // MARK: - Open methods
-extension UserProfileService: UserProfileServiceProtocol {
+extension UserProfilesService: UserProfilesServiceProtocol {
     func setActiveProfile(_ profile: UserProfile) {
         setSelectedProfile(profile)
     }
 }
 
 // MARK: - UDWalletsServiceListener
-extension UserProfileService: UDWalletsServiceListener {
+extension UserProfilesService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
             switch notification {
@@ -75,7 +78,7 @@ extension UserProfileService: UDWalletsServiceListener {
 }
 
 // MARK: - Private methods
-private extension UserProfileService {
+private extension UserProfilesService {
     func loadProfilesAndSetSelected() {
         updateProfilesList()
         
@@ -91,7 +94,7 @@ private extension UserProfileService {
         let currentProfilesList = self.profiles
         let currentSelectedProfile = self.selectedProfile
         self.profiles = getAvailableProfiles()
-        let selectedProfile = profiles.first(where: { $0.id == UserDefaults.selectedProfileId }) ?? profiles.first
+        let selectedProfile = profiles.first(where: { $0.id == storage.selectedProfileId }) ?? profiles.first
         setSelectedProfile(selectedProfile)
         
         if profiles.isEmpty, !currentProfilesList.isEmpty {
@@ -119,7 +122,7 @@ private extension UserProfileService {
     
     func setSelectedProfile(_ profile: UserProfile?) {
         selectedProfile = profile
-        UserDefaults.selectedProfileId = profile?.id
+        storage.selectedProfileId = profile?.id
         
         switch profile {
         case .wallet(let walletEntity):
@@ -162,7 +165,7 @@ private extension UserProfileService {
 }
 
 // MARK: - Open methods
-extension UserProfileService {
+extension UserProfilesService {
     enum State {
         case noWalletsOrWebAccount
         case walletAdded(WalletEntity)

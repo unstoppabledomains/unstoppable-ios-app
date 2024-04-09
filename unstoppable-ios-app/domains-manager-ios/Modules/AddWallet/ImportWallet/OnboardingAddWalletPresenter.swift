@@ -22,14 +22,9 @@ final class OnboardingAddWalletPresenter: BaseAddWalletPresenter {
     
     @MainActor
     override func didCreateWallet(wallet: UDWallet) {
-        onboardingFlowManager?.modifyOnboardingData() { $0.wallets = [wallet] }
         super.didCreateWallet(wallet: wallet)
-        DispatchQueue.main.async { [weak self] in
-            if case .sameUserWithoutWallets = self?.onboardingFlowManager?.onboardingFlow {
-                self?.onboardingFlowManager?.didFinishOnboarding()
-            } else {
-                self?.onboardingFlowManager?.moveToStep(.protectWallet)
-            }
+        Task {
+            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
         }
     }
     

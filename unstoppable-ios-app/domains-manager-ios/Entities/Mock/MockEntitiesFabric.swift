@@ -38,9 +38,9 @@ extension MockEntitiesFabric {
         
         @MainActor
         static func createHomeTabRouterUsing(profile: UserProfile,
-                                             userProfileService: UserProfileServiceProtocol = appContext.userProfileService) -> HomeTabRouter {
+                                             userProfilesService: UserProfilesServiceProtocol = appContext.userProfilesService) -> HomeTabRouter {
             HomeTabRouter(profile: profile,
-                          userProfileService: userProfileService)
+                          userProfilesService: userProfilesService)
         }
     }
     
