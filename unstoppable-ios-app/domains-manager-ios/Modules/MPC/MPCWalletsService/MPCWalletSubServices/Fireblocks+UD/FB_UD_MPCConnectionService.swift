@@ -166,11 +166,12 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             throw MPCConnectionServiceError.failedToGetEthAddress
         }
         
-        let metadataEntity = FB_UD_MPC.UDWalletMetadata(deviceId: connectedWallet.deviceId)
-        let metadata = try metadataEntity.jsonDataThrowing()
+        let fireblocksMetadataEntity = FB_UD_MPC.UDWalletMetadata(deviceId: connectedWallet.deviceId)
+        let fireblocksMetadata = try fireblocksMetadataEntity.jsonDataThrowing()
+        let mpcMetadata = MPCWalletMetadata(provider: provider, metadata: fireblocksMetadata)
         let udWallet = UDWallet.createMPC(aliasName: "",
                                           address: ethAddress,
-                                          metadata: metadata)
+                                          mpcMetadata: mpcMetadata)
         
         return udWallet
     }

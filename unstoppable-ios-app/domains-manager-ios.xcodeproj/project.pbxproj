@@ -1260,6 +1260,8 @@
 		C6952A4B2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */; };
 		C6952A4C2BC5296200F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */; };
 		C6952A4E2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */; };
+		C6952A502BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */; };
+		C6952A512BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3585,6 +3587,7 @@
 		C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCValetStorage.swift; sourceTree = "<group>"; };
 		C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDataStorage.swift; sourceTree = "<group>"; };
 		C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDefaultDataStorage.swift; sourceTree = "<group>"; };
+		C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletMetadata.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -7090,6 +7093,7 @@
 				C6952A282BC4E9F700F4B475 /* MPCWalletsServiceProtocol.swift */,
 				C6952A2B2BC4E9FD00F4B475 /* MPCWalletsService.swift */,
 				C6952A222BC4E33000F4B475 /* MPCWalletProvider.swift */,
+				C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */,
 				C632BE4F2BA59D8400C95B2D /* SetupMPCWalletStep.swift */,
 				C6952A312BC4EDFA00F4B475 /* MPCWalletSubServices */,
 			);
@@ -9855,6 +9859,7 @@
 				C6D2F15328757C25005F4F2E /* UIImage+SVG.swift in Sources */,
 				C65DEA7329B5837600FF142B /* WalletConnectExternalWalletHandler.swift in Sources */,
 				C6DDF25F2B148300006D1F0B /* PurchaseSearchDomainsView.swift in Sources */,
+				C6952A502BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */,
 				C6D8FF242B82F8FE0094A21E /* RemoteContentMessageRowView.swift in Sources */,
 				C6D646BF2B1ED1BE00D724AC /* SaveDomainImageDescription.swift in Sources */,
 				C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
@@ -11116,6 +11121,7 @@
 				C62900F92BAAC922008B35A2 /* UDNumberButtonView.swift in Sources */,
 				C6D646052B1DC01700D724AC /* DashesProgressView.swift in Sources */,
 				C6C8F85B2B217FB500A9834D /* WalletBackUpPassword.swift in Sources */,
+				C6952A512BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */,
 				C6D647812B1EE1FC00D724AC /* UDCheckBox.swift in Sources */,
 				C6D646522B1ED10100D724AC /* DomainProfileSocialCell.swift in Sources */,
 				C6A359282BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */,
