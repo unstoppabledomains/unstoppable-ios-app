@@ -6055,7 +6055,6 @@
 				C632BE552BA59E8400C95B2D /* FB_UD_MPCSetupTokenResponse.swift */,
 				C632BE522BA59DFB00C95B2D /* FB_UD_MPCBootstrapCodeSubmitResponse.swift */,
 				C650F8BC2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift */,
-				C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */,
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
 				C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */,
 				C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */,
@@ -7123,6 +7122,7 @@
 			children = (
 				C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */,
 				C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */,
+				C6952A472BC526F800F4B475 /* FB_UD_MPCValetStorage.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
