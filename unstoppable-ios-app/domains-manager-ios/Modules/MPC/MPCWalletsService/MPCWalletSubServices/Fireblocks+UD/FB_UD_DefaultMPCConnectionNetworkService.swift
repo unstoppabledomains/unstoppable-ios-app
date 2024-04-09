@@ -144,6 +144,29 @@ extension FB_UD_MPC {
             return response
         }
         
+        func getAccounts(accessToken: String) async throws -> WalletAccountsResponse {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.accountsURL,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: WalletAccountsResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
+        func getAccountBalances(accountId: String,
+                                accessToken: String) async throws -> WalletAccountAssetsResponse {
+            
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.accountAssetsURL(accountId: accountId) + "?$expand=balance"
+            let request = try APIRequest(urlString: url,
+                                         method: .get,
+                                         headers: headers)
+            
+            let response: WalletAccountAssetsResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
         // MARK: - Private methods
         private func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
             do {
