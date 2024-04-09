@@ -26,7 +26,7 @@ final class MPCEnterPassphraseViewController: BaseViewController, ViewWithDashes
 private extension MPCEnterPassphraseViewController {
     func didCreateMPCWallet(_ wallet: UDWallet) {
         Task {
-//            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
+            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
         }
     }
 }
