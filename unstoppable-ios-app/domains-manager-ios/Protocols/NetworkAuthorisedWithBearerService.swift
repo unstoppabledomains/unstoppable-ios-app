@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol NetworkAuthorisedWithBearerService {
+protocol NetworkAuthorisedWithBearerService: NetworkBearerAuthorisationHeaderBuilder {
     var authToken: String { get }
 }
 
 extension NetworkAuthorisedWithBearerService {
     func buildAuthBearerHeader() -> [String : String] {
-        ["Authorization":"Bearer \(authToken)"]
+        buildAuthBearerHeader(token: authToken)
     }
 }

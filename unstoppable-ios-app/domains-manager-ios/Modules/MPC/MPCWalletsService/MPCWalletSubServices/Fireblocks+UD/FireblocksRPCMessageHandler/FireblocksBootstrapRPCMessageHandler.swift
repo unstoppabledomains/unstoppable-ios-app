@@ -10,7 +10,6 @@ import Foundation
 final class FireblocksBootstrapRPCMessageHandler: FireblocksRPCMessageHandler, FireblocksConnectorMessageHandler {
     
     let authToken: String
-    let networkService = NetworkService()
     
     init(authToken: String) {
         self.authToken = authToken

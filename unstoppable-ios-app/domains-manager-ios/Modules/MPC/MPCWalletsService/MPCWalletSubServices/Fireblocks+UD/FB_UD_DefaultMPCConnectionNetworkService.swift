@@ -8,7 +8,7 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+    struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService, NetworkBearerAuthorisationHeaderBuilder {
         
         private let networkService = NetworkService()
         
@@ -103,7 +103,7 @@ extension FB_UD_MPC {
             return response
         }
         
-        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse {
+        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> AuthTokens {
             struct Body: Encodable {
                 var includeRefreshToken: Bool = true
                 var includeBootstrapToken: Bool = true
@@ -116,7 +116,7 @@ extension FB_UD_MPC {
                                          method: .post,
                                          headers: headers)
             
-            let response: SuccessAuthResponse = try await makeDecodableAPIRequest(request)
+            let response: AuthTokens = try await makeDecodableAPIRequest(request)
             return response
         }
         
@@ -128,7 +128,7 @@ extension FB_UD_MPC {
             try await makeAPIRequest(request)
         }
         
-        func refreshToken(_ refreshToken: String) async throws -> SuccessAuthResponse {
+        func refreshToken(_ refreshToken: String) async throws -> AuthTokens {
             struct Body: Encodable {
                 var refreshToken: String
                 var includeRefreshToken: Bool = true
@@ -140,7 +140,7 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post)
             
-            let response: SuccessAuthResponse = try await makeDecodableAPIRequest(request)
+            let response: AuthTokens = try await makeDecodableAPIRequest(request)
             return response
         }
         
@@ -208,10 +208,6 @@ extension FB_UD_MPC {
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
-        }
-        
-        private func buildAuthBearerHeader(token: String) -> [String : String] {
-            ["Authorization": "Bearer \(token)"]
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

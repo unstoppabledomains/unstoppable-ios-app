@@ -10,11 +10,6 @@ import Foundation
 extension FB_UD_MPC {
     struct ConnectedWalletDetails {
         let deviceId: String
-        let tokens: Tokens
-        
-        struct Tokens {
-            var refreshToken: JWToken
-            var bootstrapToken: JWToken
-        }
+        let tokens: AuthTokens
     }
 }

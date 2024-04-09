@@ -9,7 +9,9 @@ import Foundation
 
 extension FB_UD_MPC {
     protocol MPCConnectorBuilder {
-        func buildMPCConnector(deviceId: String,
-                               accessToken: String) throws -> MPCConnector
+        func buildBootstrapMPCConnector(deviceId: String,
+                                        accessToken: String) throws -> MPCConnector
+        func buildWalletMPCConnector(wallet: ConnectedWalletDetails,
+                                     authTokenProvider: WalletAuthTokenProvider) throws -> MPCConnector
     }
 }

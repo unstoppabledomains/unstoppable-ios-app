@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol FireblocksRPCMessageHandler: NetworkAuthorisedWithBearerService { }
+protocol FireblocksRPCMessageHandler: NetworkBearerAuthorisationHeaderBuilder { }
 
 extension FireblocksRPCMessageHandler {
     func passRPC(payload: String,
@@ -19,7 +19,7 @@ extension FireblocksRPCMessageHandler {
             do {
                 logMPC("Will handle outgoing message: \(payload)")
                 let body = RequestBody(message: payload)
-                let headers = buildAuthBearerHeader()
+                let headers = buildAuthBearerHeader(token: authToken)
                 let request = try APIRequest(urlString: FB_UD_MPC.MPCNetwork.URLSList.rpcMessagesURL,
                                              body: body,
                                              method: .post,

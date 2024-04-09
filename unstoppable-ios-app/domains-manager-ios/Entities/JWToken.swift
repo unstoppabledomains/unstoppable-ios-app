@@ -15,6 +15,7 @@ struct JWToken: Codable {
     let jwt: String
     
     var expirationDate: Date { body.expirationDate }
+    var isExpired: Bool { expirationDate < Date().addingTimeInterval(5) }
     
     init(_ jwt: String) throws {
         let parts = jwt.components(separatedBy: ".")

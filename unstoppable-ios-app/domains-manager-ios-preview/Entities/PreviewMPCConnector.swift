@@ -9,7 +9,11 @@ import Foundation
 
 extension FB_UD_MPC {
     struct DefaultMPCConnectorBuilder: MPCConnectorBuilder {
-        func buildMPCConnector(deviceId: String, accessToken: String) throws -> any MPCConnector {
+        func buildBootstrapMPCConnector(deviceId: String, accessToken: String) throws -> any MPCConnector {
+            PreviewMPCConnector()
+        }
+        
+        func buildWalletMPCConnector(wallet: ConnectedWalletDetails, authTokenProvider: any WalletAuthTokenProvider) throws -> any MPCConnector {
             PreviewMPCConnector()
         }
     }
@@ -58,7 +62,7 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
         }
         
-        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse {
+        func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> AuthTokens {
             await Task.sleep(seconds: 0.5)
             return try createMockSuccessAuthResponse()
         }
@@ -67,7 +71,7 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
         }
         
-        func refreshToken(_ refreshToken: String) async throws -> SuccessAuthResponse {
+        func refreshToken(_ refreshToken: String) async throws -> AuthTokens {
             await Task.sleep(seconds: 0.5)
             return try createMockSuccessAuthResponse()
         }
@@ -94,7 +98,7 @@ extension FB_UD_MPC {
             return try JWToken(jwt)
         }
         
-        private func createMockSuccessAuthResponse() throws -> SuccessAuthResponse {
+        private func createMockSuccessAuthResponse() throws -> AuthTokens {
             let accessToken = try createMockJWToken()
             let refreshToken = try createMockJWToken()
             let bootstrapToken = try createMockJWToken()

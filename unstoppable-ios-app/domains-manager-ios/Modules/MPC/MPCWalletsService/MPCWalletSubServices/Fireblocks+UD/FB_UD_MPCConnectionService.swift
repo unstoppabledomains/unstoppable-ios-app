@@ -35,7 +35,7 @@ extension FB_UD_MPC {
     }
 }
 
-// MARK: - Open methods
+// MARK: - MPCWalletProviderSubServiceProtocol
 extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
@@ -56,7 +56,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                 continuation.yield(.initialiseFireblocks)
                 
                 logMPC("Will create fireblocks connector")
-                let mpcConnector = try connectorBuilder.buildMPCConnector(deviceId: deviceId, accessToken: accessToken)
+                let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
                 
                 mpcConnector.stopJoinWallet()
                 logMPC("Did create fireblocks connector")
@@ -103,17 +103,16 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     //    Once it is pending a signature, sign with the Fireblocks NCW SDK and confirm with the Wallets API that you have signed. After confirmation is validated, you’ll be returned an access token, a refresh token and a bootstrap token.
                     logMPC("Will confirm transaction is signed")
                     continuation.yield(.confirmingTransaction)
-                    let finalAuthResponse = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+                    let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
                     logMPC("Did confirm transaction is signed")
                     
-                    logMPC("Will verify final response \(finalAuthResponse)")
+                    logMPC("Will verify final response \(authTokens)")
                     continuation.yield(.verifyingAccessToken)
-                    try await networkService.verifyAccessToken(finalAuthResponse.accessToken.jwt)
-                    logMPC("Did verify final response \(finalAuthResponse) success")
+                    try await networkService.verifyAccessToken(authTokens.accessToken.jwt)
+                    logMPC("Did verify final response \(authTokens) success")
                     
                     let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
-                                                                     tokens: .init(refreshToken: finalAuthResponse.refreshToken,
-                                                                                   bootstrapToken: finalAuthResponse.bootstrapToken))
+                                                                     tokens: authTokens)
 //                    continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
@@ -127,5 +126,30 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             }
         }
     }
+    
+    enum MPCConnectionServiceError: String, LocalizedError {
+        case tokensExpired
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
+    }
 }
 
+// MARK: - AuthTokenProvider
+extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
+    func getAuthTokens(wallet: FB_UD_MPC.ConnectedWalletDetails) async throws -> String {
+        let accessToken = wallet.tokens.accessToken
+        if !accessToken.isExpired {
+            return accessToken.jwt
+        }
+        
+        let refreshToken = wallet.tokens.refreshToken
+        guard !refreshToken.isExpired else {
+            throw MPCConnectionServiceError.tokensExpired
+        }
+        
+        let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
+        return refreshedTokens.accessToken.jwt
+    }
+}
