@@ -17,9 +17,13 @@ extension FB_UD_MPC {
             static var v1URL: String { baseURL.appendingURLPathComponents("wallet", "v1") }
             
             static var tempGetCodeURL: String { v1URL.appendingURLPathComponents("admin", "auth", "bootstrap-code") }
-            static var submitCodeURL: String { v1URL.appendingURLPathComponents("auth", "bootstrap") }
+
+            static var authURL: String { v1URL.appendingURLPathComponents("auth") }
+            static var getCodeOnEmailURL: String { authURL.appendingURLPathComponents("bootstrap", "email") }
+            static var submitCodeURL: String { authURL.appendingURLPathComponents("bootstrap") }
+            static var devicesBootstrapURL: String { authURL.appendingURLPathComponents("devices", "bootstrap") }
+            
             static var rpcMessagesURL: String { v1URL.appendingURLPathComponents("rpc", "messages") }
-            static var devicesBootstrapURL: String { v1URL.appendingURLPathComponents("auth", "devices", "bootstrap") }
             
             static var tokensURL: String { v1URL.appendingURLPathComponents("auth", "tokens") }
             static var tokensSetupURL: String { tokensURL.appendingURLPathComponents("setup") }
