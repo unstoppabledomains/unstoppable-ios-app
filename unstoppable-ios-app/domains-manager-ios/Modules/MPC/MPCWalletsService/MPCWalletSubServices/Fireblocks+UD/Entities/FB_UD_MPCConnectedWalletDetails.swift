@@ -11,5 +11,7 @@ extension FB_UD_MPC {
     struct ConnectedWalletDetails {
         let deviceId: String
         let tokens: AuthTokens
+        let accounts: [WalletAccount]
+        let assets: [WalletAccountAsset]
     }
 }

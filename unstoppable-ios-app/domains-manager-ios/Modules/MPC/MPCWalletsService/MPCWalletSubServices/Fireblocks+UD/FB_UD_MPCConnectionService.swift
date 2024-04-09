@@ -103,8 +103,12 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     try await networkService.verifyAccessToken(authTokens.accessToken.jwt)
                     logMPC("Did verify final response \(authTokens) success")
                     
+                    let walletDetails = try await getWalletDetailsForWalletWith(deviceId: deviceId,
+                                                                                authTokens: authTokens)
                     let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
-                                                                     tokens: authTokens)
+                                                                     tokens: authTokens,
+                                                                     accounts: walletDetails.accounts,
+                                                                     assets: walletDetails.assets)
 //                    continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
@@ -117,6 +121,30 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                 }
             }
         }
+    }
+    
+    private struct WalletDetails {
+        let accounts: [FB_UD_MPC.WalletAccount]
+        let assets: [FB_UD_MPC.WalletAccountAsset]
+    }
+    
+    private func getWalletDetailsForWalletWith(deviceId: String,
+                                               authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
+        let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
+        let accessToken = authTokens.accessToken.jwt
+        
+        let accountsResponse = try await networkService.getAccounts(accessToken: accessToken)
+        let accounts = accountsResponse.items
+        var assets: [FB_UD_MPC.WalletAccountAsset] = []
+        for account in accounts {
+            let assetsResponse = try await networkService.getAccountAssets(accountId: account.id,
+                                                             accessToken: accessToken,
+                                                             includeBalances: false)
+            assets.append(contentsOf: assetsResponse.items)
+        }
+        
+        
+        return WalletDetails(accounts: accounts, assets: assets)
     }
     
     enum MPCConnectionServiceError: String, LocalizedError {
