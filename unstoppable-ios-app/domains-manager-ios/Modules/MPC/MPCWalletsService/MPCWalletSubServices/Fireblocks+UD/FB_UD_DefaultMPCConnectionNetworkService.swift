@@ -159,7 +159,7 @@ extension FB_UD_MPC {
         }
         
         private func buildAuthBearerHeader(token: String) -> [String : String] {
-            ["Authorization":"Bearer \(token)"]
+            ["Authorization": "Bearer \(token)"]
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

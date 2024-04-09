@@ -22,28 +22,27 @@ func logMPC(_ message: String) {
 extension FB_UD_MPC {
     final class MPCConnectionService {
         
+        let provider: MPCWalletProvider = .fireblocksUD
+
         private let connectorBuilder: MPCConnectorBuilder
         private let networkService: MPCConnectionNetworkService
         
-        static let shared = MPCConnectionService(connectorBuilder: DefaultMPCConnectorBuilder())
-        
-        private init(connectorBuilder: MPCConnectorBuilder,
+        init(connectorBuilder: MPCConnectorBuilder = DefaultMPCConnectorBuilder(),
                      networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService()) {
             self.connectorBuilder = connectorBuilder
             self.networkService = networkService
         }
-        
     }
 }
 
 // MARK: - Open methods
-extension FB_UD_MPC.MPCConnectionService {
+extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
         try await networkService.sendBootstrapCodeTo(email: email)
     }
 
-    func signForNewDeviceWith(code: String,
+    func setupMPCWalletWith(code: String,
                               recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
@@ -130,13 +129,3 @@ extension FB_UD_MPC.MPCConnectionService {
     }
 }
 
-
-protocol NetworkAuthorisedWithBearerService {
-    var authToken: String { get }
-}
-
-extension NetworkAuthorisedWithBearerService {
-    func buildAuthBearerHeader() -> [String : String] {
-        ["Authorization":"Bearer \(authToken)"]
-    }
-}

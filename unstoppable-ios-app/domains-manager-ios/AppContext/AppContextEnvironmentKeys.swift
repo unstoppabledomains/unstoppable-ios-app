@@ -79,3 +79,18 @@ extension EnvironmentValues {
         set { self[DomainProfilesServiceKey.self] = newValue }
     }
 }
+
+// MARK: - MPC Wallets service
+private struct MPCWalletsServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.mpcWalletsService
+}
+
+extension EnvironmentValues {
+    var mpcWalletsService: MPCWalletsServiceProtocol {
+        get { self[MPCWalletsServiceKey.self] }
+        set { self[MPCWalletsServiceKey.self] = newValue }
+    }
+}
+
+
+

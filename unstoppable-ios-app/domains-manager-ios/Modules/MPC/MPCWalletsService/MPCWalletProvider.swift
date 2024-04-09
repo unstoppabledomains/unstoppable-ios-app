@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum MPCWalletProvider {
+enum MPCWalletProvider: String, Codable, CaseIterable {
     case fireblocksUD // Fireblocks with UD as BE layer
 }

@@ -63,6 +63,7 @@ final class MockContext: AppContextProtocol {
                                                                                                        walletsDataService: walletsDataService)
     private(set) lazy var walletTransactionsService: WalletTransactionsServiceProtocol = WalletTransactionsService(networkService: NetworkService(),
                                                                                                                    cache: InMemoryWalletTransactionsCache())
+    private(set) lazy var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     

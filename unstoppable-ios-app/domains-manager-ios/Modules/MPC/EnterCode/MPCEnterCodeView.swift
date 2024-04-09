@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MPCEnterCodeView: View {
     
+    @Environment(\.mpcWalletsService) private var mpcWalletsService
+    
     let codeVerifiedCallback: (String)->()
     @State private var input: String = ""
     @State private var inputType: InputType = .code
@@ -148,7 +150,7 @@ private extension MPCEnterCodeView {
             isLoading = true
             do {
                 // Send email action
-                try await FB_UD_MPC.MPCConnectionService.shared.sendBootstrapCodeTo(email: input)
+                try await mpcWalletsService.sendBootstrapCodeTo(email: input)
                 toggleInputType()
             } catch {
                 self.error = error
