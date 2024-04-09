@@ -15,19 +15,17 @@ extension FB_UD_MPC {
         func sendBootstrapCodeTo(email: String) async throws {
             
             struct Body: Encodable {
-                let walletExternalId: String
+                let email: String
             }
             
             struct Response: Decodable {
                 let code: String
             }
             
-            let header = buildAuthBearerHeader(token: NetworkService.stagingWalletAPIAdminKey)
-            let body = Body(walletExternalId: "wa-wt-96633a1c-2b70-47ca-a06f-01bef6b8f36b")
-            let request = try APIRequest(urlString: MPCNetwork.URLSList.tempGetCodeURL,
+            let body = Body(email: email)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.getCodeOnEmailURL,
                                          body: body,
-                                         method: .post,
-                                         headers: header)
+                                         method: .post)
             
             let response: Response = try await makeDecodableAPIRequest(request)
             

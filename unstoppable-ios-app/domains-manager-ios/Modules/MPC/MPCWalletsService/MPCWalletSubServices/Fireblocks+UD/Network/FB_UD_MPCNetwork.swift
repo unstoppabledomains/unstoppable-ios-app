@@ -16,8 +16,6 @@ extension FB_UD_MPC {
             
             static var v1URL: String { baseURL.appendingURLPathComponents("wallet", "v1") }
             
-            static var tempGetCodeURL: String { v1URL.appendingURLPathComponents("admin", "auth", "bootstrap-code") }
-
             static var authURL: String { v1URL.appendingURLPathComponents("auth") }
             static var getCodeOnEmailURL: String { authURL.appendingURLPathComponents("bootstrap", "email") }
             static var submitCodeURL: String { authURL.appendingURLPathComponents("bootstrap") }
