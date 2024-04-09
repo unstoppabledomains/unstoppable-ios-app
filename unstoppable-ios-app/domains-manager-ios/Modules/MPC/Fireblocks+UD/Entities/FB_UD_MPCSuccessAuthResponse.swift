@@ -41,6 +41,5 @@ extension FB_UD_MPC {
             try container.encode(refreshToken, forKey: .refreshToken)
             try container.encode(bootstrapToken, forKey: .bootstrapToken)
         }
-        
     }
 }

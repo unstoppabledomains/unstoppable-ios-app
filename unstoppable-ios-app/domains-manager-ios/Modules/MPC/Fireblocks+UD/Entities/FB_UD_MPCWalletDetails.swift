@@ -8,7 +8,7 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct WalletDetails {
+    struct ConnectedWalletDetails {
         let deviceId: String
         let tokens: Tokens
         

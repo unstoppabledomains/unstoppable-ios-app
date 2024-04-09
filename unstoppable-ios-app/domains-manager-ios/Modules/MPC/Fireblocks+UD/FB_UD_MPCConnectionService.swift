@@ -112,9 +112,9 @@ extension FB_UD_MPC.MPCConnectionService {
                     try await networkService.verifyAccessToken(finalAuthResponse.accessToken.jwt)
                     logMPC("Did verify final response \(finalAuthResponse) success")
                     
-                    let mpcWallet = FB_UD_MPC.WalletDetails(deviceId: deviceId,
-                                                            tokens: .init(refreshToken: finalAuthResponse.refreshToken,
-                                                                          bootstrapToken: finalAuthResponse.bootstrapToken))
+                    let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
+                                                                     tokens: .init(refreshToken: finalAuthResponse.refreshToken,
+                                                                                   bootstrapToken: finalAuthResponse.bootstrapToken))
 //                    continuation.yield(.finished(mpcWallet))
                     continuation.finish()
                 } catch {
@@ -123,7 +123,7 @@ extension FB_UD_MPC.MPCConnectionService {
                     continuation.yield(.failed(logsURL))
                     continuation.finish()
                     
-//                    continuation.finish(throwing: error)
+                    //                    continuation.finish(throwing: error)
                 }
             }
         }
