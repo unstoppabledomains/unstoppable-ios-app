@@ -94,6 +94,7 @@ extension CryptoSender {
     enum Error: Swift.Error {
         case sendingNotSupported
         case failedFetchGasPrice
+        case failedCreateSendTransaction
         case insufficientFunds
         case invalidAddresses
     }

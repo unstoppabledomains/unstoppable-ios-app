@@ -320,6 +320,7 @@ extension NetworkService {
         case failedGetStatus
         case failedParseStatusPrices
         case failedParseInfuraPrices
+        case failedEncodeTxParameters
         case unknownChain
         
         init(message: String) {
@@ -362,10 +363,13 @@ extension NetworkService {
     
     func getGasEstimation(tx: EthereumTransaction,
                           chainId: Int) async throws -> String {
+        guard let params = tx.parameters else {
+            throw JRPCError.failedEncodeTxParameters
+        }
         
-        try await getJRPCRequest(chainId: chainId,
+        return try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_estimateGas",
-                                                    paramsBuilder: { "[\(tx.parameters), \"latest\"]"} ))
+                                                    paramsBuilder: { "[\(params), \"latest\"]"} ))
     }
     
     func getGasPrice(chainId: Int) async throws -> String {
@@ -497,7 +501,7 @@ extension NetworkService {
 }
 
 extension EthereumTransaction {
-    var parameters: String {
+    var parameters: String? {
         var object: [String: String] = [:]
         if let from = self.from {
             object["from"] = from.hex()
@@ -513,8 +517,10 @@ extension EthereumTransaction {
         }
         object["data"] = data.hex()
         
-        let data = (try? JSONEncoder().encode(object)) ?? Data()
-        return String(data: data, encoding: .utf8) ?? ""
+        guard let data = try? JSONEncoder().encode(object) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
     }
 }
 

@@ -129,7 +129,7 @@ struct NonNativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
                                value: 0, // zero native tokens transferred
                                gas: 100000, // TODO:
                                gasPrice:  try EthereumQuantity(speedBasedGasPrice.wei)) else {
-            throw JRPC_Client.Error.failedFetchGas
+            throw CryptoSender.Error.failedCreateSendTransaction
         }
         
         var transaction = transactionCreated
