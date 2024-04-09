@@ -8,17 +8,17 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct DefaultMPCConnectorBuilder: MPCConnectorBuilder {
-        func buildBootstrapMPCConnector(deviceId: String, accessToken: String) throws -> any MPCConnector {
+    struct DefaultFireblocksConnectorBuilder: FireblocksConnectorBuilder {
+        func buildBootstrapMPCConnector(deviceId: String, accessToken: String) throws -> any FireblocksConnectorProtocol {
             PreviewMPCConnector()
         }
         
-        func buildWalletMPCConnector(wallet: ConnectedWalletDetails, authTokenProvider: any WalletAuthTokenProvider) throws -> any MPCConnector {
+        func buildWalletMPCConnector(wallet: ConnectedWalletDetails, authTokenProvider: any WalletAuthTokenProvider) throws -> any FireblocksConnectorProtocol {
             PreviewMPCConnector()
         }
     }
     
-    final class PreviewMPCConnector: MPCConnector {
+    final class PreviewMPCConnector: FireblocksConnectorProtocol {
         func getLogsURLs() -> URL? {
             nil
         }

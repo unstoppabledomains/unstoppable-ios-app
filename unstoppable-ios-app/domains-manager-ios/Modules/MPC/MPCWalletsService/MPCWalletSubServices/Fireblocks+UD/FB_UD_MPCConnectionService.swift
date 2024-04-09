@@ -16,11 +16,11 @@ extension FB_UD_MPC {
         
         let provider: MPCWalletProvider = .fireblocksUD
         
-        private let connectorBuilder: MPCConnectorBuilder
+        private let connectorBuilder: FireblocksConnectorBuilder
         private let networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
         
-        init(connectorBuilder: MPCConnectorBuilder = DefaultMPCConnectorBuilder(),
+        init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
              walletsDataStorage: MPCWalletsDataStorage = MPCWalletsDefaultDataStorage()) {
             self.connectorBuilder = connectorBuilder
