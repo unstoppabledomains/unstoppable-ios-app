@@ -27,7 +27,7 @@ final class FireblocksConnector {
             //        try Fireblocks.getInstance(deviceId: deviceId)
             let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
                                                        messageHandlerDelegate: messageHandler,
-                                                       keyStorageDelegate: FireblocksKeyStorageProvider(deviceId: self.deviceId),
+                                                       keyStorageDelegate: FireblocksKeyStorageProvider(),
                                                        fireblocksOptions: FireblocksOptions(env: .sandbox, 
                                                                                             eventHandlerDelegate: self,
                                                                                             logLevel: .debug))

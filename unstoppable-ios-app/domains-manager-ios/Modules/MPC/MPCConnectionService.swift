@@ -108,7 +108,7 @@ extension MPCConnectionService {
                     logMPC("Will verify final response \(finalAuthResponse)")
                     continuation.yield(.verifyingAccessToken)
                     try await networkService.verifyAccessToken(finalAuthResponse.accessToken.jwt)
-                    logMPC("Did verify verify final response \(finalAuthResponse) success")
+                    logMPC("Did verify final response \(finalAuthResponse) success")
                     
                     let mpcWallet = UDMPCWallet(deviceId: deviceId,
                                                 tokens: .init(refreshToken: finalAuthResponse.refreshToken,
