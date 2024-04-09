@@ -25,6 +25,7 @@ extension FB_UD_MPC {
             static var tokensSetupURL: String { tokensURL.appendingURLPathComponents("setup") }
             static var tokensConfirmURL: String { tokensURL.appendingURLPathComponents("confirm") }
             static var tokensVerifyURL: String { tokensURL.appendingURLPathComponents("verify") }
+            static var tokensRefreshURL: String { tokensURL.appendingURLPathComponents("refresh") }
         }
     }
 }

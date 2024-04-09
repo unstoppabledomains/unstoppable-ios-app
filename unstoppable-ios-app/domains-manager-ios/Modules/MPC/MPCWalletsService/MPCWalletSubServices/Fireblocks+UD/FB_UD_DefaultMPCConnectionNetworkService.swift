@@ -104,7 +104,6 @@ extension FB_UD_MPC {
         }
         
         func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse {
-            
             struct Body: Encodable {
                 var includeRefreshToken: Bool = true
                 var includeBootstrapToken: Bool = true
@@ -127,6 +126,22 @@ extension FB_UD_MPC {
                                          method: .get,
                                          headers: headers)
             try await makeAPIRequest(request)
+        }
+        
+        func refreshToken(_ refreshToken: String) async throws -> SuccessAuthResponse {
+            struct Body: Encodable {
+                var refreshToken: String
+                var includeRefreshToken: Bool = true
+                var includeBootstrapToken: Bool = true
+            }
+            
+            let body = Body(refreshToken: refreshToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensRefreshURL,
+                                         body: body,
+                                         method: .post)
+            
+            let response: SuccessAuthResponse = try await makeDecodableAPIRequest(request)
+            return response
         }
         
         // MARK: - Private methods

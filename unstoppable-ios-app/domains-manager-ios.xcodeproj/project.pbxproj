@@ -5854,8 +5854,8 @@
 			children = (
 				C6952A1E2BC4DD8500F4B475 /* FB_UD_MPC.swift */,
 				C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */,
-				C632BE4C2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift */,
 				C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */,
+				C632BE4C2BA599E900C95B2D /* FB_UD_MPCConnectionNetworkService.swift */,
 				C632BE5B2BA59F0700C95B2D /* FB_UD_DefaultMPCConnectionNetworkService.swift */,
 				C632BE402BA5962A00C95B2D /* FB_UD_MPCConnector.swift */,
 				C632BE432BA5978F00C95B2D /* FB_UD_MPCConnectorBuilder.swift */,

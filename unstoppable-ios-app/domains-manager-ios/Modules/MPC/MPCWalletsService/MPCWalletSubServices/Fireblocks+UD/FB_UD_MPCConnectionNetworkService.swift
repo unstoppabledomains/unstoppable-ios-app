@@ -18,5 +18,7 @@ extension FB_UD_MPC {
         func waitForTransactionWithNewKeyMaterialsReady(accessToken: String) async throws
         func confirmTransactionWithNewKeyMaterialsSigned(accessToken: String) async throws -> SuccessAuthResponse
         func verifyAccessToken(_ accessToken: String) async throws
+        
+        func refreshToken(_ refreshToken: String) async throws -> SuccessAuthResponse
     }
 }
