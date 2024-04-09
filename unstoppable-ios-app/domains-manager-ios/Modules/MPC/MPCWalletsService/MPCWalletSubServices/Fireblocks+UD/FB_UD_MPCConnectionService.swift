@@ -19,13 +19,16 @@ extension FB_UD_MPC {
         private let connectorBuilder: FireblocksConnectorBuilder
         private let networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
-        
+        private let udWalletsService: UDWalletsServiceProtocol
+
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
-             walletsDataStorage: MPCWalletsDataStorage = MPCWalletsDefaultDataStorage()) {
+             walletsDataStorage: MPCWalletsDataStorage = MPCWalletsDefaultDataStorage(),
+             udWalletsService: UDWalletsServiceProtocol) {
             self.connectorBuilder = connectorBuilder
             self.networkService = networkService
             self.walletsDataStorage = walletsDataStorage
+            self.udWalletsService = udWalletsService
         }
     }
 }
@@ -112,8 +115,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                      tokens: authTokens,
                                                                      accounts: walletDetails.accounts,
                                                                      assets: walletDetails.assets)
-                    try storeConnectedWalletDetails(mpcWallet)
-                    let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
+                    let udWallet = try prepareAndSaveMPCWallet(mpcWallet)
+                    
                     continuation.yield(.finished(udWallet))
                     continuation.finish()
                 } catch {
@@ -126,6 +129,18 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     continuation.finish(throwing: error)
                 }
             }
+        }
+    }
+    
+    private func prepareAndSaveMPCWallet(_ mpcWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {
+        do {
+            try storeConnectedWalletDetails(mpcWallet)
+            let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
+            try udWalletsService.addMPCWallet(udWallet)
+            return udWallet
+        } catch {
+            try? clearConnectedWalletDetails(mpcWallet)
+            throw error
         }
     }
     
@@ -159,6 +174,12 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         
         try walletsDataStorage.storeAuthTokens(tokens, for: walletDetails.deviceId)
         try walletsDataStorage.storeAccountsDetails(accountsDetails)
+    }
+    
+    func clearConnectedWalletDetails(_ walletDetails: FB_UD_MPC.ConnectedWalletDetails) throws {
+        let deviceId = walletDetails.deviceId
+        try walletsDataStorage.clearAuthTokensFor(deviceId: deviceId)
+        try walletsDataStorage.clearAccountsDetailsFor(deviceId: deviceId)
     }
     
     private func createUDWalletFrom(connectedWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {

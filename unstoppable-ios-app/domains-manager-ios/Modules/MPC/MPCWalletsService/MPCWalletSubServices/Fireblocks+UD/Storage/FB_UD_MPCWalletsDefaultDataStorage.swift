@@ -21,6 +21,11 @@ extension FB_UD_MPC {
             try secureStorage.setObject(data, forKey: key)
         }
         
+        func clearAuthTokensFor(deviceId: String) throws {
+            let key = getSecureStorageKeyFor(deviceId: deviceId)
+            try secureStorage.removeObject(forKey: key)
+        }
+
         func retrieveAuthTokensFor(deviceId: String) throws -> AuthTokens {
             let key = getSecureStorageKeyFor(deviceId: deviceId)
             let data = try secureStorage.object(forKey: key)
@@ -38,6 +43,12 @@ extension FB_UD_MPC {
             storage.store(storedDetails)
         }
         
+        func clearAccountsDetailsFor(deviceId: String) throws {
+            var storedDetails = storage.retrieve() ?? []
+            storedDetails.removeAll(where: { $0.deviceId == deviceId })
+            storage.store(storedDetails)
+        }
+
         func retrieveAccountsDetailsFor(deviceId: String) throws -> ConnectedWalletAccountsDetails {
             let storedDetails = storage.retrieve() ?? []
             guard let details = storedDetails.first(where:{ $0.deviceId == deviceId }) else {

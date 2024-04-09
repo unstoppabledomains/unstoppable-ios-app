@@ -11,7 +11,10 @@ final class MPCWalletsService {
     
     private var subServices = [MPCWalletProviderSubServiceProtocol]()
     
-    init() {
+    private let udWalletsService: UDWalletsServiceProtocol
+    
+    init(udWalletsService: UDWalletsServiceProtocol) {
+        self.udWalletsService = udWalletsService
         setup()
     }
     
@@ -75,7 +78,7 @@ private extension MPCWalletsService {
     func createSubServiceFor(provider: MPCWalletProvider) -> MPCWalletProviderSubServiceProtocol {
         switch provider {
         case .fireblocksUD:
-            return FB_UD_MPC.MPCConnectionService()
+            return FB_UD_MPC.MPCConnectionService(udWalletsService: udWalletsService)
         }
     }
 }
