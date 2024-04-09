@@ -13,38 +13,38 @@ extension FB_UD_MPC {
         static let FBUDMPCWalletsStorageFileName = "fb-ud-mpc-wallets.data"
         
         private let secureStorage: ValetProtocol = FB_UD_MPC.ValetStorage()
-        private let storage = SpecificStorage<[UDWalletMetadata]>(fileName: MPCWalletsDefaultDataStorage.FBUDMPCWalletsStorageFileName)
+        private let storage = SpecificStorage<[ConnectedWalletAccountsDetails]>(fileName: MPCWalletsDefaultDataStorage.FBUDMPCWalletsStorageFileName)
         
-        func storeAuthTokens(_ tokens: FB_UD_MPC.AuthTokens, for deviceId: String) throws {
+        func storeAuthTokens(_ tokens: AuthTokens, for deviceId: String) throws {
             let data = try tokens.jsonDataThrowing()
             let key = getSecureStorageKeyFor(deviceId: deviceId)
             try secureStorage.setObject(data, forKey: key)
         }
         
-        func retrieveAuthTokensFor(deviceId: String) throws -> FB_UD_MPC.AuthTokens {
+        func retrieveAuthTokensFor(deviceId: String) throws -> AuthTokens {
             let key = getSecureStorageKeyFor(deviceId: deviceId)
             let data = try secureStorage.object(forKey: key)
             let authTokens = try AuthTokens.objectFromDataThrowing(data)
             return authTokens
         }
         
-        func storeMetadata(_ metadata: FB_UD_MPC.UDWalletMetadata) throws {
-            var storedMetadata = storage.retrieve() ?? []
-            if let i = storedMetadata.firstIndex(where: { $0.deviceId == metadata.deviceId }) {
-                storedMetadata[i] = metadata
+        func storeAccountsDetails(_ accountsDetails: ConnectedWalletAccountsDetails) throws {
+            var storedDetails = storage.retrieve() ?? []
+            if let i = storedDetails.firstIndex(where: { $0.deviceId == accountsDetails.deviceId }) {
+                storedDetails[i] = accountsDetails
             } else {
-                storedMetadata.append(metadata)
+                storedDetails.append(accountsDetails)
             }
-            storage.store(storedMetadata)
+            storage.store(storedDetails)
         }
         
-        func retrieveMetadataFor(deviceId: String) throws -> FB_UD_MPC.UDWalletMetadata {
-            let storedMetadata = storage.retrieve() ?? []
-            guard let metadata = storedMetadata.first(where:{ $0.deviceId == deviceId }) else {
+        func retrieveAccountsDetailsFor(deviceId: String) throws -> ConnectedWalletAccountsDetails {
+            let storedDetails = storage.retrieve() ?? []
+            guard let details = storedDetails.first(where:{ $0.deviceId == deviceId }) else {
                 throw MPCWalletsDefaultDataStorageError.metadataNotFound
             }
             
-            return metadata
+            return details
         }
         
         enum MPCWalletsDefaultDataStorageError: String, LocalizedError {

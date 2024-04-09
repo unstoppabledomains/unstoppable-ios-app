@@ -104,11 +104,10 @@ extension FB_UD_MPC {
             try createMockSuccessAuthResponse()
         }
         
-        func storeMetadata(_ metadata: UDWalletMetadata) throws { }
-        func retrieveMetadataFor(deviceId: String) throws -> UDWalletMetadata {
+        func storeAccountsDetails(_ accountsDetails: ConnectedWalletAccountsDetails) throws { }
+        func retrieveAccountsDetailsFor(deviceId: String) throws -> ConnectedWalletAccountsDetails {
             .init(deviceId: deviceId, accounts: [], assets: [])
         }
-        
     }
     
   

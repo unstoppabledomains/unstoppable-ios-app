@@ -103,6 +103,12 @@ struct UDWallet: Codable, Hashable {
     func getMnemonics() -> String? {
         nil
     }
+    
+    static func createMPC(aliasName: String,
+                          address: String,
+                          metadata: Data?) -> UDWallet {
+        .init()
+    }
 }
 
 extension UDWallet {

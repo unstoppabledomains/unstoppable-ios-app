@@ -12,8 +12,8 @@ extension FB_UD_MPC {
         func storeAuthTokens(_ tokens: AuthTokens, for deviceId: String) throws
         func retrieveAuthTokensFor(deviceId: String) throws -> AuthTokens
         
-        func storeMetadata(_ metadata: UDWalletMetadata) throws
-        func retrieveMetadataFor(deviceId: String) throws -> UDWalletMetadata
+        func storeAccountsDetails(_ accountsDetails: ConnectedWalletAccountsDetails) throws
+        func retrieveAccountsDetailsFor(deviceId: String) throws -> ConnectedWalletAccountsDetails
     }
 }
 

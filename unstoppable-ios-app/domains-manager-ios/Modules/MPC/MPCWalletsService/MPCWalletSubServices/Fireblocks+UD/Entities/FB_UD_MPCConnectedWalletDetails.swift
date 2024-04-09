@@ -21,23 +21,31 @@ extension FB_UD_MPC {
             self.assets = assets
         }
         
-        init(metadata: UDWalletMetadata, tokens: AuthTokens) {
-            self.deviceId = metadata.deviceId
+        init(accountDetails: ConnectedWalletAccountsDetails, tokens: AuthTokens) {
+            self.deviceId = accountDetails.deviceId
             self.tokens = tokens
-            self.accounts = metadata.accounts
-            self.assets = metadata.assets
+            self.accounts = accountDetails.accounts
+            self.assets = accountDetails.assets
         }
-
-        func createUDWalletMetadata() -> UDWalletMetadata {
-            UDWalletMetadata(deviceId: deviceId,
-                             accounts: accounts,
-                             assets: assets)
+        
+        func getETHWalletAddress() -> String? {
+            assets.first(where: { $0.blockchainAsset.symbol == BlockchainType.Ethereum.rawValue })?.address
         }
+        
+        func createWalletAccountsDetails() -> ConnectedWalletAccountsDetails {
+            ConnectedWalletAccountsDetails(deviceId: deviceId,
+                                           accounts: accounts,
+                                           assets: assets)
+        }
+    }
+    
+    struct ConnectedWalletAccountsDetails: Codable {
+        let deviceId: String
+        let accounts: [WalletAccount]
+        let assets: [WalletAccountAsset]
     }
     
     struct UDWalletMetadata: Codable {
         let deviceId: String
-        let accounts: [WalletAccount]
-        let assets: [WalletAccountAsset]
     }
 }

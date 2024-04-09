@@ -113,15 +113,17 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                      accounts: walletDetails.accounts,
                                                                      assets: walletDetails.assets)
                     try storeConnectedWalletDetails(mpcWallet)
-//                    continuation.yield(.finished(mpcWallet))
+                    let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
+                    continuation.yield(.finished(udWallet))
                     continuation.finish()
                 } catch {
                     mpcConnector.stopJoinWallet()
-                    let logsURL = mpcConnector.getLogsURLs()
-                    continuation.yield(.failed(logsURL))
-                    continuation.finish()
+                    /// Debug Fireblocks SDK issues
+//                    let logsURL = mpcConnector.getLogsURLs()
+//                    continuation.yield(.failed(logsURL))
+//                    continuation.finish()
                     
-                    //                    continuation.finish(throwing: error)
+                    continuation.finish(throwing: error)
                 }
             }
         }
@@ -153,14 +155,29 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     
     private func storeConnectedWalletDetails(_ walletDetails: FB_UD_MPC.ConnectedWalletDetails) throws {
         let tokens = walletDetails.tokens
-        let metadata = walletDetails.createUDWalletMetadata()
+        let accountsDetails = walletDetails.createWalletAccountsDetails()
         
         try walletsDataStorage.storeAuthTokens(tokens, for: walletDetails.deviceId)
-        try walletsDataStorage.storeMetadata(metadata)
+        try walletsDataStorage.storeAccountsDetails(accountsDetails)
+    }
+    
+    private func createUDWalletFrom(connectedWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {
+        guard let ethAddress = connectedWallet.getETHWalletAddress() else {
+            throw MPCConnectionServiceError.failedToGetEthAddress
+        }
+        
+        let metadataEntity = FB_UD_MPC.UDWalletMetadata(deviceId: connectedWallet.deviceId)
+        let metadata = try metadataEntity.jsonDataThrowing()
+        let udWallet = UDWallet.createMPC(aliasName: "",
+                                          address: ethAddress,
+                                          metadata: metadata)
+        
+        return udWallet
     }
     
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
+        case failedToGetEthAddress
         
         public var errorDescription: String? {
             return rawValue
