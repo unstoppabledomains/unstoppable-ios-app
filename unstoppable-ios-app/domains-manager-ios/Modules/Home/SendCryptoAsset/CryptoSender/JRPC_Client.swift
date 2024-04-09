@@ -14,6 +14,7 @@ struct JRPC_Client {
 
     enum Error: Swift.Error {
         case failedFetchGas
+        case lowAllowance
         case failedFetchGasLimit
     }
     
@@ -62,9 +63,12 @@ struct JRPC_Client {
         } catch {
             if let jrpcError = error as? NetworkService.JRPCError {
                 switch jrpcError {
+                case .genericError(let message):
+                    Debugger.printFailure("Failed to fetch gas Estimate, message: \(message)", critical: false)
+                    throw JRPC_Client.Error.failedFetchGas
                 case .gasRequiredExceedsAllowance:
                     Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                    throw WalletConnectRequestError.lowAllowance
+                    throw JRPC_Client.Error.lowAllowance
                 default: throw WalletConnectRequestError.failedFetchGas
                 }
             } else {
