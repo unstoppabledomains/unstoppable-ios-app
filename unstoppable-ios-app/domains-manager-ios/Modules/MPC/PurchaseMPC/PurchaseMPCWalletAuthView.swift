@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PurchaseMPCWalletAuthView: View, ViewAnalyticsLogger {
     
+    @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     var analyticsName: Analytics.ViewName { .unspecified }
     
     var body: some View {
