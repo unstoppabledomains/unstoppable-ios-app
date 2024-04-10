@@ -11,6 +11,6 @@ enum PurchaseMPCWallet { }
 
 extension PurchaseMPCWallet {
     enum FlowAction {
-        case scanQRSelected
+        case authWithProvider(LoginProvider)
     }
 }

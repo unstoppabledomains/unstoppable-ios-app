@@ -15,6 +15,7 @@ struct PurchaseMPCWalletAuthView: View, ViewAnalyticsLogger {
     var body: some View {
         ScrollView {
             titleView()
+                .padding(.bottom, 24)
             loginOptionsListView()
         }
         .padding()
@@ -31,18 +32,22 @@ private extension PurchaseMPCWalletAuthView {
 private extension PurchaseMPCWalletAuthView {
     @ViewBuilder
     func titleView() -> some View {
-        VStack {
-            Text("Title")
+        VStack(spacing: 16) {
+            Text("Select authorisation method")
                 .titleText()
-            Text("Subtitle")
+            Text("Very meaningful subtitle")
+                .subtitleText()
         }
+        .multilineTextAlignment(.center)
     }
+    
+    var availableLoginProviders: [LoginProvider] { [.email, .google, .twitter] }
     
     @ViewBuilder
     func loginOptionsListView() -> some View {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
-                ForEach(LoginProvider.allCases, id: \.self) { provider in
+                ForEach(availableLoginProviders, id: \.self) { provider in
                     listViewFor(provider: provider)
                 }
             }
@@ -56,7 +61,7 @@ private extension PurchaseMPCWalletAuthView {
         }, callback: {
             logAnalytic(event: .websiteLoginOptionSelected,
                         parameters: [.websiteLoginOption: provider.rawValue])
-            viewModel.authWithProvider(provider)
+            viewModel.handleAction(.authWithProvider(provider))
         })
         .padding(EdgeInsets(4))
     }

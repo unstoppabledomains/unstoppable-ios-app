@@ -17,73 +17,62 @@ final class PurchaseMPCWalletViewModel: ObservableObject, ViewErrorHolder {
     
     func handleAction(_ action: PurchaseMPCWallet.FlowAction) {
         Task {
-            do {
-                switch action {
-                    // Common path
-                case .scanQRSelected:
-                    navPath.append(.scanWalletAddress)
-                }
-            } catch {
-                isLoading = false
-                self.error = error
+            switch action {
+                // Common path
+            case .authWithProvider(let provider):
+                await self.authWithProvider(provider)
+                navPath.append(.scanWalletAddress)
             }
         }
     }
     
-    func authWithProvider(_ provider: LoginProvider) {
+}
+
+// MARK: - Private methods
+private extension PurchaseMPCWalletViewModel {
+    func authWithProvider(_ provider: LoginProvider) async {
         UDVibration.buttonTap.vibrate()
         switch provider {
         case .email:
             moveToEnterEmailScreen()
         case .google:
-            loginWithGoogle()
+            await loginWithGoogle()
         case .twitter:
-            loginWithTwitter()
+            await loginWithTwitter()
         case .apple:
             loginWithApple()
         }
     }
     
-    func loginWithEmail(_ email: String, password: String) {
-        runAuthOperation {
-            try await appContext.ecomPurchaseMPCWalletService.authoriseWithEmail(email, password: password)
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension PurchaseMPCWalletViewModel {
     func moveToEnterEmailScreen() {
         
     }
     
-    func runAuthOperation(_ block: @escaping (() async throws -> ()) ) {
-        Task {
-            await performAsyncErrorCatchingBlock(block)
-            // Move to next view
+    func loginWithEmail(_ email: String, password: String) async {
+        await runAuthOperation {
+            try await appContext.ecomPurchaseMPCWalletService.authoriseWithEmail(email, password: password)
         }
     }
     
-    func loginWithGoogle()  {
-        runAuthOperation {
+    func loginWithGoogle() async {
+        await runAuthOperation {
             try await appContext.ecomPurchaseMPCWalletService.authoriseWithGoogle()
         }
     }
     
-    func loginWithTwitter() {
-        runAuthOperation {
+    func loginWithTwitter() async {
+        await runAuthOperation {
             try await appContext.ecomPurchaseMPCWalletService.authoriseWithTwitter()
         }
     }
     
-    func loginWithApple() {
-        //        Task {
-        //            let request = ASAuthorizationAppleIDProvider().createRequest()
-        //            request.requestedScopes = [.email]
-        //            let controller = ASAuthorizationController(authorizationRequests: [request])
-        //            controller.delegate = self
-        //            controller.presentationContextProvider = self
-        //            controller.performRequests()
-        //        }
+    func loginWithApple() { }
+    
+    func runAuthOperation(_ block: @escaping (() async throws -> ())) async {
+        isLoading = true
+        await performAsyncErrorCatchingBlock(block)
+        isLoading = false
+        // Move to next view
     }
 }
+

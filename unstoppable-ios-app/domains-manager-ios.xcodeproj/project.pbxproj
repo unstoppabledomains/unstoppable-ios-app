@@ -1075,6 +1075,8 @@
 		C671CD202BC680F7005DA2FB /* PurchasedDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */; };
 		C671CD222BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671CD212BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift */; };
 		C671CD232BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671CD212BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift */; };
+		C671CD252BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671CD242BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift */; };
+		C671CD262BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671CD242BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift */; };
 		C671E38728FE85C800A2B3A0 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38628FE85C800A2B3A0 /* CarouselView.swift */; };
 		C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */; };
 		C671E39228FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */; };
@@ -1275,6 +1277,8 @@
 		C6952A512BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */; };
 		C6952A532BC64F8400F4B475 /* MPCWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A522BC64F8400F4B475 /* MPCWalletError.swift */; };
 		C6952A542BC64F8400F4B475 /* MPCWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A522BC64F8400F4B475 /* MPCWalletError.swift */; };
+		C6952A562BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
+		C6952A572BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
 		C6952A592BC65B2500F4B475 /* WalletType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A582BC65B2500F4B475 /* WalletType.swift */; };
 		C6952A5A2BC65B2500F4B475 /* WalletType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A582BC65B2500F4B475 /* WalletType.swift */; };
 		C6952A5D2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */; };
@@ -1285,8 +1289,6 @@
 		C6952A642BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */; };
 		C6952A662BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */; };
 		C6952A672BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */; };
-		C6952A562BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
-		C6952A572BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3476,6 +3478,7 @@
 		C671CD0D2BC674E1005DA2FB /* PurchaseDomainCartStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainCartStatus.swift; sourceTree = "<group>"; };
 		C671CD112BC67570005DA2FB /* EcomPurchaseInteractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EcomPurchaseInteractionService.swift; sourceTree = "<group>"; };
 		C671CD212BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EcomPurchaseMPCWalletServiceProtocol.swift; sourceTree = "<group>"; };
+		C671CD242BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletCheckoutView.swift; sourceTree = "<group>"; };
 		C671E38628FE85C800A2B3A0 /* CarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselView.swift; sourceTree = "<group>"; };
 		C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -3621,12 +3624,12 @@
 		C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDefaultDataStorage.swift; sourceTree = "<group>"; };
 		C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletMetadata.swift; sourceTree = "<group>"; };
 		C6952A522BC64F8400F4B475 /* MPCWalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletError.swift; sourceTree = "<group>"; };
+		C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeActivityEmptyView.swift; sourceTree = "<group>"; };
 		C6952A582BC65B2500F4B475 /* WalletType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletType.swift; sourceTree = "<group>"; };
 		C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletViewModel.swift; sourceTree = "<group>"; };
 		C6952A5F2BC664C600F4B475 /* PurchaseMPCWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWallet.swift; sourceTree = "<group>"; };
 		C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletNavigationDestination.swift; sourceTree = "<group>"; };
 		C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletRootView.swift; sourceTree = "<group>"; };
-		C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeActivityEmptyView.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -7194,6 +7197,7 @@
 				C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */,
 				C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */,
 				C671CD002BC667C8005DA2FB /* PurchaseMPCWalletAuthView.swift */,
+				C671CD242BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift */,
 				C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */,
 			);
 			path = PurchaseMPC;
@@ -10006,6 +10010,7 @@
 				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C671CD252BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift in Sources */,
 				C6D646DF2B1ED46200D724AC /* WalletConnectController.swift in Sources */,
 				C6F060C22ACAA30C00BA2E7E /* MessagingService+Websockets.swift in Sources */,
 				C688C17F2B845FE500BD233A /* ChatListUserRowView.swift in Sources */,
@@ -11225,6 +11230,7 @@
 				C6D6466F2B1ED11B00D724AC /* DomainProfileSectionsFactory.swift in Sources */,
 				C6D6475E2B1EDDB700D724AC /* TransactionInProgressViewController.swift in Sources */,
 				C6C8F8932B21829000A9834D /* SettingsCollectionViewCell.swift in Sources */,
+				C671CD262BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift in Sources */,
 				C6534AAA2BBFBA10008EEBB5 /* HomeExploreSeparatorView.swift in Sources */,
 				C6D646F72B1ED73300D724AC /* GenericBadgeView.swift in Sources */,
 				C6C8F8B82B2182CF00A9834D /* MintDomainsConfigurationViewPresenter.swift in Sources */,
