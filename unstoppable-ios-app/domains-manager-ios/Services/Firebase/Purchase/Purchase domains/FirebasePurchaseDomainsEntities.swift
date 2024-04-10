@@ -11,7 +11,7 @@ import Foundation
 extension FirebasePurchaseDomainsService {
     struct SearchDomainsResponse: Codable {
         @DecodeHashableIgnoringFailed
-        var exact: [FirebasePurchase.DomainProductItem]
+        var exact: [Ecom.DomainProductItem]
         let searchQuery: String
         let invalidCharacters: [String]
         let invalidReason: String?
@@ -19,7 +19,7 @@ extension FirebasePurchaseDomainsService {
     
     struct SuggestDomainsResponse: Codable {
         @DecodeHashableIgnoringFailed
-        var suggestions: [FirebasePurchase.DomainProductItem]
+        var suggestions: [Ecom.DomainProductItem]
     }
 }
 

@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum FirebasePurchase { }
+enum Ecom { }
 
 // MARK: - Cart entities
-extension FirebasePurchase {
+extension Ecom {
     struct UserCartResponse: Codable {
         @DecodeIgnoringFailed
         var cart: [UDProduct]
@@ -60,7 +60,7 @@ extension FirebasePurchase {
 }
 
 // MARK: - Product entities
-extension FirebasePurchase {
+extension Ecom {
     enum UDProductType: String {
         case domain = "DomainProduct"
         case domainParkOnlySubscription = "DomainParkOnlySubscriptionProduct"
@@ -247,7 +247,7 @@ extension FirebasePurchase {
 }
 
 // MARK: - Payment entities
-extension FirebasePurchase {
+extension Ecom {
     struct StripePaymentDetailsResponse: Codable {
         let clientSecret: String
         let orderId: Int
@@ -261,7 +261,7 @@ extension FirebasePurchase {
 }
 
 // MARK: - Other
-extension FirebasePurchase {
+extension Ecom {
     struct UDUserProfileResponse: Codable {
         let promoCredits: Int
         let referralCode: String
