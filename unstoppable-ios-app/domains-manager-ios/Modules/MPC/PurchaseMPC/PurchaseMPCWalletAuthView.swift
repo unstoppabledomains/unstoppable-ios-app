@@ -22,60 +22,8 @@ struct PurchaseMPCWalletAuthView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension PurchaseMPCWalletAuthView {
-    func didSelectProvider(_ provider: LoginProvider) {
-        UDVibration.buttonTap.vibrate()
-        switch provider {
-        case .email:
-            loginWithEmail()
-        case .google:
-            loginWithGoogle()
-        case .twitter:
-            loginWithTwitter()
-        case .apple:
-            loginWithApple()
-        }
-    }
-    
-    func loginWithEmail() {
-        
-    }
-    
-    func loginWithGoogle()  {
-//        Task {
-//            guard let window = SceneDelegate.shared?.window else { return }
-//            
-//            do {
-//                try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithGoogle(in: window)
-//                userDidAuthorize(provider: .google)
-//            } catch {
-//                authFailedWith(error: error)
-//            }
-//        }
-    }
-    
-    func loginWithTwitter() {
-//        Task {
-//            guard let view else { return }
-//            
-//            do {
-//                try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithTwitter(in: view)
-//                userDidAuthorize(provider: .twitter)
-//            } catch {
-//                authFailedWith(error: error)
-//            }
-//        }
-    }
-    
-    func loginWithApple() {
-//        Task {
-//            let request = ASAuthorizationAppleIDProvider().createRequest()
-//            request.requestedScopes = [.email]
-//            let controller = ASAuthorizationController(authorizationRequests: [request])
-//            controller.delegate = self
-//            controller.presentationContextProvider = self
-//            controller.performRequests()
-//        }
-    }
+   
+
 }
 
 // MARK: - Private methods
@@ -107,7 +55,7 @@ private extension PurchaseMPCWalletAuthView {
         }, callback: {
             logAnalytic(event: .websiteLoginOptionSelected,
                         parameters: [.websiteLoginOption: provider.rawValue])
-            didSelectProvider(provider)
+            viewModel.authWithProvider(provider)
         })
         .padding(EdgeInsets(4))
     }
