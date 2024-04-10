@@ -236,6 +236,7 @@ extension HomeTabRouter {
             await popToRootAndWait()
             guard let wallet = appContext.walletsDataService.selectedWallet else { return }
             
+            tabViewSelection = .wallets
             walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
         }
     }

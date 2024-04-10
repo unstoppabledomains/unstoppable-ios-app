@@ -17,11 +17,11 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
     
-    private var isLoadingMore = false
+    @Published private var txsResponse: WalletTransactionsResponse?
+    @Published private(set) var isLoadingMore = false
     private let router: HomeTabRouter
     private var selectedProfile: UserProfile
     private var cancellables: Set<AnyCancellable> = []
-    @Published private var txsResponse: WalletTransactionsResponse?
  
     private let userProfileService: UserProfileServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
