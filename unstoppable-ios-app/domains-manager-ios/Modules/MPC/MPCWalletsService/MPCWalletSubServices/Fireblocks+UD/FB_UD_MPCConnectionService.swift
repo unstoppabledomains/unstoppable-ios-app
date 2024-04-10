@@ -195,8 +195,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let fireblocksMetadataEntity = FB_UD_MPC.UDWalletMetadata(deviceId: connectedWallet.deviceId)
         let fireblocksMetadata = try fireblocksMetadataEntity.jsonDataThrowing()
         let mpcMetadata = MPCWalletMetadata(provider: provider, metadata: fireblocksMetadata)
-        let udWallet = UDWallet.createMPC(aliasName: ethAddress,
-                                          address: ethAddress,
+        let udWallet = UDWallet.createMPC(address: ethAddress,
                                           mpcMetadata: mpcMetadata)
         
         return udWallet

@@ -104,8 +104,7 @@ struct UDWallet: Codable, Hashable {
         nil
     }
     
-    static func createMPC(aliasName: String,
-                          address: String,
+    static func createMPC(address: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
         .init()
     }
