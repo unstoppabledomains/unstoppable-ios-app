@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PurchaseMPCWalletRootView: View {
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject var viewModel: PurchaseMPCWalletViewModel
+    @StateObject private var viewModel: PurchaseMPCWalletViewModel = PurchaseMPCWalletViewModel()
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -51,5 +51,5 @@ private extension PurchaseMPCWalletRootView {
 }
 
 #Preview {
-    PurchaseMPCWalletRootView(viewModel: PurchaseMPCWalletViewModel())
+    PurchaseMPCWalletRootView()
 }

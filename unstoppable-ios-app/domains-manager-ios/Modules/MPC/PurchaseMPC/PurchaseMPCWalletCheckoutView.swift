@@ -27,8 +27,6 @@ struct PurchaseMPCWalletCheckoutView: View {
             }
     }
     
-    
-    
 }
 
 // MARK: - Private methods
