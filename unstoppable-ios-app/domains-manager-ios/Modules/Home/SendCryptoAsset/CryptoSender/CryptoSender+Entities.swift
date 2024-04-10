@@ -43,6 +43,10 @@ struct EVMTokenAmount {
     }
 }
 
+protocol ERC20TokenAmount {
+    var decimals: UInt8 { get }
+}
+
 struct EstimatedGasPrices {
     let normal: EVMTokenAmount
     let fast: EVMTokenAmount
