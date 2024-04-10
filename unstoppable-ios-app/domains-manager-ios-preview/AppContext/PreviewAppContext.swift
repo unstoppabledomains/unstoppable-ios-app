@@ -63,6 +63,7 @@ final class AppContext: AppContextProtocol {
     var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol = MockFirebaseInteractionsService()
     
     var purchaseDomainsService: PurchaseDomainsServiceProtocol = MockFirebaseInteractionsService()
+    var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol = MockFirebaseInteractionsService()
     
     var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     

@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class FirebasePurchaseMPCWalletService: EcomPurchaseInteractionService {
+final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     
     @Published var cartStatus: PurchaseMPCWalletCartStatus
     var cartStatusPublisher: Published<PurchaseMPCWalletCartStatus>.Publisher { $cartStatus }
@@ -76,13 +76,27 @@ final class FirebasePurchaseMPCWalletService: EcomPurchaseInteractionService {
     }
 }
 
-// MARK: - PurchaseDomainsServiceProtocol
-extension FirebasePurchaseMPCWalletService {
+// MARK: - EcomPurchaseMPCWalletServiceProtocol
+extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
+    func authoriseWithEmail(_ email: String, password: String) async throws {
+        await prepareBeforeAuth()
+        try await firebaseAuthService.authorizeWith(email: email, password: password)
+        try await didAuthorise()
+    }
+    
     func authoriseWithGoogle() async throws {
         guard let window = await SceneDelegate.shared?.window else { throw PurchaseMPCWalletError.failedToAuthorise }
 
         await prepareBeforeAuth()
         try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: window)
+        try await didAuthorise()
+    }
+    
+    func authoriseWithTwitter() async throws {
+        guard let topVC = await appContext.coreAppCoordinator.topVC else { throw PurchaseMPCWalletError.failedToAuthorise }
+        
+        await prepareBeforeAuth()
+        try await firebaseAuthService.authorizeWithTwitterCustomToken(in: topVC)
         try await didAuthorise()
     }
     
@@ -98,32 +112,26 @@ extension FirebasePurchaseMPCWalletService {
         await logout()
     }
     
-    func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {
-        let userWallets = try await loadUserCryptoWallets()
-        return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
-    }
-    
     func refreshCart() async throws {
         try await refreshUserCart()
     }
     
-    func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
+    func purchaseMPCWallet() async throws {
         isAutoRefreshCartSuspended = true
-        let userWallet = try Ecom.UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
-        try await purchaseProductsInTheCart(to: userWallet,
+        try await purchaseProductsInTheCart(to: nil,
                                             totalAmountDue: udCart.calculations.totalAmountDue)
         isAutoRefreshCartSuspended = false
     }
 }
 
 // MARK: - Cart
-private extension FirebasePurchaseMPCWalletService {
+private extension EcomPurchaseMPCWalletService {
     func prepareBeforeAuth() async {
         await reset()
     }
     
     func didAuthorise() async throws {
-        try await addProductsToCart([], shouldRefreshCart: true)
+//        try await addProductsToCart([], shouldRefreshCart: true)
         isAutoRefreshCartSuspended = false
     }
     

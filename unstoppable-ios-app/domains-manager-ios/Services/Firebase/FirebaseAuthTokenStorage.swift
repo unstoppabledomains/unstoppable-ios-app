@@ -14,24 +14,17 @@ protocol FirebaseAuthRefreshTokenStorageProtocol {
     func clearAuthRefreshToken()
 }
 
-struct ParkedDomainsFirebaseAuthTokenStorage: PrivateKeyStorage, FirebaseAuthRefreshTokenStorageProtocol {
-    
+class FirebaseAuthTokenStorage: PrivateKeyStorage, FirebaseAuthRefreshTokenStorageProtocol {
     let valet: ValetProtocol
-    static let keychainName = "unstoppable-parked-domains-fb-token"
-    private let passwordKey = "com.unstoppable.parked.fb.token.key"
-    private let userDefaultsKey: String = "firebaseRefreshToken"
+    static let keychainName = "unstoppable-purchase-domains-fb-token"
+    var passwordKey: String { "" }
     
     init() {
         valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
                             accessibility: .whenUnlockedThisDeviceOnly)
-        
-        // Migrate from UserDefaults storage
-        if let cachedToken = UserDefaults.standard.value(forKey: userDefaultsKey) as? String {
-            setAuthRefreshToken(cachedToken)
-            UserDefaults.standard.setValue(nil, forKey: userDefaultsKey)
-        }
+        assert(passwordKey.isEmpty == false, "Password key should not be empty")
     }
-        
+    
     func getAuthRefreshToken() -> String? {
         retrieveValue(for: passwordKey, isCritical: false)
     }
@@ -45,26 +38,30 @@ struct ParkedDomainsFirebaseAuthTokenStorage: PrivateKeyStorage, FirebaseAuthRef
     }
 }
 
-struct PurchaseDomainsFirebaseAuthTokenStorage: PrivateKeyStorage, FirebaseAuthRefreshTokenStorageProtocol {
+final class ParkedDomainsFirebaseAuthTokenStorage: FirebaseAuthTokenStorage {
+        
+    override var passwordKey: String { "com.unstoppable.parked.fb.token.key" }
+    private let userDefaultsKey: String = "firebaseRefreshToken"
     
-    let valet: ValetProtocol
-    static let keychainName = "unstoppable-purchase-domains-fb-token"
-    private let passwordKey = "com.unstoppable.purchase.fb.token.key"
-    
-    init() {
-        valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
-                            accessibility: .whenUnlockedThisDeviceOnly)
+    override init() {
+        super.init()
+        
+        // Migrate from UserDefaults storage
+        if let cachedToken = UserDefaults.standard.value(forKey: userDefaultsKey) as? String {
+            setAuthRefreshToken(cachedToken)
+            UserDefaults.standard.setValue(nil, forKey: userDefaultsKey)
+        }
     }
+}
+
+final class PurchaseDomainsFirebaseAuthTokenStorage: FirebaseAuthTokenStorage {
     
-    func getAuthRefreshToken() -> String? {
-        retrieveValue(for: passwordKey, isCritical: false)
-    }
+    override var passwordKey: String { "com.unstoppable.purchase.fb.token.key" }
     
-    func setAuthRefreshToken(_ token: String) {
-        try? valet.setString(token, forKey: passwordKey)
-    }
+}
+
+final class PurchaseMPCWalletFirebaseAuthTokenStorage: FirebaseAuthTokenStorage {
     
-    func clearAuthRefreshToken() {
-        clear(forKey: passwordKey)
-    }
+    override var passwordKey: String { "com.unstoppable.purchase.mpc.fb.token.key" }
+    
 }

@@ -45,6 +45,7 @@ protocol AppContextProtocol {
     var domainProfilesService: DomainProfilesServiceProtocol { get }
     var walletTransactionsService: WalletTransactionsServiceProtocol { get }
     var mpcWalletsService: MPCWalletsServiceProtocol { get }
+    var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol { get }
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     
