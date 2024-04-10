@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum LoginProvider: String, Hashable, Codable {
+enum LoginProvider: String, Hashable, Codable, CaseIterable {
     case email, google, twitter, apple
     
     var title: String {

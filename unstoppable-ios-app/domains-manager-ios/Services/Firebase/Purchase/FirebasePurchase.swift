@@ -1,14 +1,16 @@
 //
-//  FirebasePurchaseEntities.swift
-//  UBTSharing
+//  UDUserCart.swift
+//  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 16.11.2023.
+//  Created by Oleg Kuplin on 10.04.2024.
 //
 
 import Foundation
 
+enum FirebasePurchase { }
+
 // MARK: - Cart entities
-extension FirebasePurchaseDomainsService {
+extension FirebasePurchase {
     struct UserCartResponse: Codable {
         @DecodeIgnoringFailed
         var cart: [UDProduct]
@@ -16,7 +18,7 @@ extension FirebasePurchaseDomainsService {
         @DecodeIgnoringFailed
         var removed: [DomainProductItem]
     }
-
+    
     struct UserCartCalculationsResponse: Codable {
         static let empty = UserCartCalculationsResponse(preTaxAmountDue: 0, totalOrderValue: 0,
                                                         totalAmountDue: 0, promoCreditsUsed: 0,
@@ -40,7 +42,7 @@ extension FirebasePurchaseDomainsService {
             let amount: Int
         }
     }
-
+    
     struct UDUserCart {
         static let empty: UDUserCart = .init(products: [],
                                              calculations: .empty,
@@ -57,24 +59,8 @@ extension FirebasePurchaseDomainsService {
     }
 }
 
-// MARK: - Search entities
-extension FirebasePurchaseDomainsService {
-    struct SearchDomainsResponse: Codable {
-        @DecodeHashableIgnoringFailed
-        var exact: [DomainProductItem]
-        let searchQuery: String
-        let invalidCharacters: [String]
-        let invalidReason: String?
-    }
-    
-    struct SuggestDomainsResponse: Codable {
-        @DecodeHashableIgnoringFailed
-        var suggestions: [DomainProductItem]
-    }
-}
-
 // MARK: - Product entities
-extension FirebasePurchaseDomainsService {
+extension FirebasePurchase {
     enum UDProductType: String {
         case domain = "DomainProduct"
         case domainParkOnlySubscription = "DomainParkOnlySubscriptionProduct"
@@ -208,17 +194,17 @@ extension FirebasePurchaseDomainsService {
         
         
         init(from decoder: any Decoder) throws {
-            let container: KeyedDecodingContainer<FirebasePurchaseDomainsService.DomainProductItem.CodingKeys> = try decoder.container(keyedBy: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.self)
-            self.reservedForUserId = try container.decodeIfPresent(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.reservedForUserId)
-            self.availability = try container.decode(Bool.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.availability)
-            self.domain = try container.decode(FirebasePurchaseDomainsService.DomainProductDetails.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.domain)
-            self.price = try container.decode(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.price)
-            self.productId = try container.decodeIfPresent(Int.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productId)
-            self.productType = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productType)
-            self.productCode = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.productCode)
-            self.status = try container.decode(String.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.status)
-            self.tags = try container.decode([String].self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.tags)
-            if let hiddenProducts = try? container.decode(DecodeHashableIgnoringFailed<FirebasePurchaseDomainsService.UDProduct>.self, forKey: FirebasePurchaseDomainsService.DomainProductItem.CodingKeys.hiddenProducts) {
+            let container: KeyedDecodingContainer<DomainProductItem.CodingKeys> = try decoder.container(keyedBy: DomainProductItem.CodingKeys.self)
+            self.reservedForUserId = try container.decodeIfPresent(String.self, forKey: DomainProductItem.CodingKeys.reservedForUserId)
+            self.availability = try container.decode(Bool.self, forKey: DomainProductItem.CodingKeys.availability)
+            self.domain = try container.decode(DomainProductDetails.self, forKey: DomainProductItem.CodingKeys.domain)
+            self.price = try container.decode(Int.self, forKey: DomainProductItem.CodingKeys.price)
+            self.productId = try container.decodeIfPresent(Int.self, forKey: DomainProductItem.CodingKeys.productId)
+            self.productType = try container.decode(String.self, forKey: DomainProductItem.CodingKeys.productType)
+            self.productCode = try container.decode(String.self, forKey: DomainProductItem.CodingKeys.productCode)
+            self.status = try container.decode(String.self, forKey: DomainProductItem.CodingKeys.status)
+            self.tags = try container.decode([String].self, forKey: DomainProductItem.CodingKeys.tags)
+            if let hiddenProducts = try? container.decode(DecodeHashableIgnoringFailed<UDProduct>.self, forKey: DomainProductItem.CodingKeys.hiddenProducts) {
                 self._hiddenProducts = hiddenProducts
             } else {
                 self._hiddenProducts = .init(value: [])
@@ -261,12 +247,12 @@ extension FirebasePurchaseDomainsService {
 }
 
 // MARK: - Payment entities
-extension FirebasePurchaseDomainsService {
+extension FirebasePurchase {
     struct StripePaymentDetailsResponse: Codable {
         let clientSecret: String
         let orderId: Int
     }
-
+    
     struct StripePaymentDetails: Codable {
         let amount: Int
         let clientSecret: String
@@ -275,7 +261,7 @@ extension FirebasePurchaseDomainsService {
 }
 
 // MARK: - Other
-extension FirebasePurchaseDomainsService {
+extension FirebasePurchase {
     struct UDUserProfileResponse: Codable {
         let promoCredits: Int
         let referralCode: String
@@ -293,4 +279,3 @@ extension FirebasePurchaseDomainsService {
         let address: String
     }
 }
-

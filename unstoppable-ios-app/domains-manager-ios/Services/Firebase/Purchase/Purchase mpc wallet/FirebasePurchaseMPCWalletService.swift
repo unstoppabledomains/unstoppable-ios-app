@@ -1,61 +1,114 @@
 //
-//  FirebasePurchaseDomainsService.swift
-//  UBTSharing
+//  FirebasePurchaseMPCWalletService.swift
+//  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 31.10.2023.
+//  Created by Oleg Kuplin on 10.04.2024.
 //
 
 import Foundation
 import Combine
 
-private extension BaseFirebaseInteractionService.URLSList {
-    static var USER_URL: String { baseAPIURL.appendingURLPathComponent("user") }
-    static var USER_PROFILE_URL: String { USER_URL.appendingURLPathComponent("profile") }
+enum PurchaseMPCWalletCartStatus {
+    case alreadyPurchasedMPCWallet
+    case failedToLoadCalculations(MainActorAsyncCallback)
+    case ready(cart: PurchaseMPCWalletCart)
     
-    static var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
-    static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponents("search", "internal") }
-    static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_URL.appendingURLPathComponents("search", "ai-suggestions") }
-    static func DOMAIN_ENS_STATUS_URL(domain: String) -> String {
-        DOMAIN_URL.appendingURLPathComponents(domain, "ens-status")
+    var promoCreditsAvailable: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.promoCreditsAvailable
+        default:
+            return 0
+        }
     }
-    
-    static var DOMAINS_URL: String { baseAPIURL.appendingURLPathComponent("domains") }
-    static func DOMAINS_PARKING_PRODUCT_URL(domain: String) -> String {
-        DOMAINS_URL.appendingURLPathComponents(domain, "parking-product")
+    var storeCreditsAvailable: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.storeCreditsAvailable
+        default:
+            return 0
+        }
     }
-    
-    static var CART_URL: String { baseAPIURL.appendingURLPathComponent("cart") }
-    static var CART_ADD_URL: String { CART_URL.appendingURLPathComponent("add") }
-    static var CART_REMOVE_URL: String { CART_URL.appendingURLPathComponent("remove") }
-    
-    static var USER_CART_URL: String { USER_URL.appendingURLPathComponent("cart") }
-    static var USER_CART_CALCULATIONS_URL: String { USER_CART_URL.appendingURLPathComponent("calculations") }
-    
-    static var PAYMENT_STRIPE_URL: String { baseAPIURL.appendingURLPathComponents("payment", "stripe") }
-    static var STORE_CHECKOUT_URL: String { baseAPIURL.appendingURLPathComponents("store", "checkout") }
-    static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
-
+    var otherDiscountsApplied: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.appliedDiscountDetails.others
+        default:
+            return 0
+        }
+    }
+    var discountsAppliedSum: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.appliedDiscountDetails.totalSum
+        default:
+            return 0
+        }
+    }
+    var taxes: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.taxes
+        default:
+            return 0
+        }
+    }
+    var totalPrice: Int {
+        switch self {
+        case .ready(let cart):
+            return cart.totalPrice
+        default:
+            return 0
+        }
+    }
 }
 
-final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
-    
-    @Published var cartStatus: PurchaseDomainCartStatus
-    var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
 
-    private var udCart: UDUserCart {
+struct PurchaseMPCWalletCart {
+    
+    static let empty = PurchaseMPCWalletCart(totalPrice: 0,
+                                             taxes: 0,
+                                             storeCreditsAvailable: 0,
+                                             promoCreditsAvailable: 0,
+                                             appliedDiscountDetails: .init(storeCredits: 0,
+                                                                           promoCredits: 0,
+                                                                           others: 0))
+    
+    var totalPrice: Int
+    var taxes: Int
+    let storeCreditsAvailable: Int
+    let promoCreditsAvailable: Int
+    var appliedDiscountDetails: AppliedDiscountDetails
+    
+    struct AppliedDiscountDetails {
+        let storeCredits: Int
+        let promoCredits: Int
+        var others: Int
+        
+        var totalSum: Int { storeCredits + promoCredits + others }
+    }
+}
+
+
+
+final class FirebasePurchaseMPCWalletService: BaseFirebaseInteractionService {
+    
+    @Published var cartStatus: PurchaseMPCWalletCartStatus
+    var cartStatusPublisher: Published<PurchaseMPCWalletCartStatus>.Publisher { $cartStatus }
+    
+    private var udCart: FirebasePurchase.UDUserCart {
         didSet {
             cartStatus = .ready(cart: createCartFromUDCart(udCart))
         }
     }
-
-    private let queue = DispatchQueue(label: "com.unstoppabledomains.firebase.purchase.service")
+    
+    private let queue = DispatchQueue(label: "com.unstoppabledomains.firebase.purchase.mpc.service")
     private var cancellables: Set<AnyCancellable> = []
     private var checkoutData: PurchaseDomainsCheckoutData
-    private var cachedPaymentDetails: StripePaymentDetails? = nil
+    private var cachedPaymentDetails: FirebasePurchase.StripePaymentDetails? = nil
     private var isAutoRefreshCartSuspended = false
-    private var domainsToPurchase: [DomainToPurchase] = []
     var isApplePaySupported: Bool { StripeService.isApplePaySupported }
-
+    
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
          preferencesService: PurchaseDomainsPreferencesStorage) {
@@ -72,9 +125,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
             .store(in: &cancellables)
     }
     private var shouldCheckForRequestError: Bool {
-        !isAutoRefreshCartSuspended && !domainsToPurchase.isEmpty
+        !isAutoRefreshCartSuspended
     }
- 
+    
     @discardableResult
     override func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         do {
@@ -89,7 +142,6 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
             throw error
         }
     }
-    
     
     override func makeFirebaseDecodableAPIDataRequest<T>(_ apiRequest: APIRequest,
                                                          using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
@@ -111,53 +163,33 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
 }
 
 // MARK: - PurchaseDomainsServiceProtocol
-extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
-    func searchForDomains(key: String) async throws -> [DomainToPurchase] {
-        let searchResult = try await self.searchForFBDomains(key: key)
-        let domains = transformDomainProductItemsToDomainsToPurchase(searchResult.exact)
-        return domains
-    }
-    
-    func aiSearchForDomains(hint: String) async throws -> [DomainToPurchase] {
-        let domainProducts = try await aiSearchForFBDomains(hint: hint)
-        let domains = transformDomainProductItemsToDomainsToPurchase(domainProducts)
-        return domains
-    }
-    
-    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
-        let domainProducts = try await aiSearchForFBDomains(hint: hint ?? "Anything you think is trending now")
-        return domainProducts.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
-    }
-    
+extension FirebasePurchaseMPCWalletService {
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
-        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ DomainProductItem.objectFromData($0) })
-        let products = domainItems.map { UDProduct.domain($0) }
+        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ FirebasePurchase.DomainProductItem.objectFromData($0) })
+        let products = domainItems.map { FirebasePurchase.UDProduct.domain($0) }
         try await addProductsToCart(products, shouldRefreshCart: true)
     }
     
     func removeDomainsFromCart(_ domains: [DomainToPurchase]) async throws {
-        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ DomainProductItem.objectFromData($0) })
-        let products = domainItems.map { UDProduct.domain($0) }
+        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ FirebasePurchase.DomainProductItem.objectFromData($0) })
+        let products = domainItems.map { FirebasePurchase.UDProduct.domain($0) }
         try await removeProductsFromCart(products, shouldRefreshCart: true)
     }
     
-    func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
+    func authoriseWithWallet(_ wallet: UDWallet) async throws {
         await reset()
         do {
             try await firebaseAuthService.authorizeWith(wallet: wallet)
         } catch {
-            cartStatus = .failedToAuthoriseWallet(wallet)
             throw error
         }
-        self.domainsToPurchase = domains
-        try await addDomainsToCart(domains)
+        try await addDomainsToCart([])
         isAutoRefreshCartSuspended = false
     }
     
     func reset() async {
         cartStatus = .ready(cart: .empty)
         cachedPaymentDetails = nil
-        self.domainsToPurchase = []
         await logout()
     }
     
@@ -172,45 +204,29 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
         isAutoRefreshCartSuspended = true
-        let userWallet = try UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
+        let userWallet = try FirebasePurchase.UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseDomainsInTheCart(to: userWallet)
         isAutoRefreshCartSuspended = false
     }
 }
 
 // MARK: - Private methods
-private extension FirebasePurchaseDomainsService {
-    func searchForFBDomains(key: String) async throws -> SearchDomainsResponse {
-        var searchResponse = try await makeSearchDomainsRequestWith(key: key)
-        searchResponse.exact = searchResponse.exact
-        return searchResponse
-    }
-    
-    func aiSearchForFBDomains(hint: String) async throws -> [DomainProductItem] {
-        let queryComponents = ["extension" : "All",
-                               "phrase" : hint]
-        let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
-        let request = try APIRequest(urlString: urlString,
-                                     method: .get)
-        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
-        return response.suggestions
-    }
-    
-    func addProductsToCart(_ products: [UDProduct],
+private extension FirebasePurchaseMPCWalletService {
+    func addProductsToCart(_ products: [FirebasePurchase.UDProduct],
                            shouldRefreshCart: Bool) async throws {
         try await makeCartOperationAPIRequestWith(urlString: URLSList.CART_ADD_URL,
                                                   products: products,
                                                   shouldRefreshCart: shouldRefreshCart)
     }
     
-    func removeProductsFromCart(_ products: [UDProduct],
+    func removeProductsFromCart(_ products: [FirebasePurchase.UDProduct],
                                 shouldRefreshCart: Bool) async throws {
         try await makeCartOperationAPIRequestWith(urlString: URLSList.CART_REMOVE_URL,
                                                   products: products,
                                                   shouldRefreshCart: shouldRefreshCart)
     }
     
-    func purchaseDomainsInTheCart(to wallet: UDUserAccountCryptWallet) async throws {
+    func purchaseDomainsInTheCart(to wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws {
         if udCart.calculations.totalAmountDue > 0 {
             try await purchaseDomainsInTheCartWithStripe(to: wallet)
         } else {
@@ -218,54 +234,34 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func purchaseDomainsInTheCartWithStripe(to wallet: UDUserAccountCryptWallet) async throws {
+    func purchaseDomainsInTheCartWithStripe(to wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws {
         let paymentDetails = try await prepareStripePaymentDetails(for: wallet)
         let paymentService = appContext.createStripeInstance(amount: paymentDetails.amount, using: paymentDetails.clientSecret)
         try await paymentService.payWithStripe()
         try? await refreshUserCart()
     }
     
-    func purchaseDomainsInTheCartWithCredits(to wallet: UDUserAccountCryptWallet) async throws {
+    func purchaseDomainsInTheCartWithCredits(to wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws {
         try await checkoutWithCredits(to: wallet)
     }
     
-    func makeSearchDomainsRequestWith(key: String) async throws -> SearchDomainsResponse {
-        let queryComponents = ["q" : key]
-        let urlString = URLSList.DOMAIN_SEARCH_URL.appendingURLQueryComponents(queryComponents)
-        let request = try APIRequest(urlString: urlString,
-                                     method: .get)
-        let response: SearchDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
-        return response
-    }
-    
-    func getENSDomainStatus(domainName: String) async throws -> ENSDomainProductStatusResponse {
-        let urlString = URLSList.DOMAIN_ENS_STATUS_URL(domain: domainName)
-        let request = try APIRequest(urlString: urlString,
-                                     method: .get)
-        let status: ENSDomainProductStatusResponse = try await makeFirebaseDecodableAPIDataRequest(request,
-                                                                                                   dateDecodingStrategy: .defaultDateDecodingStrategy())
-        return status
-    }
-    
-    func loadUserCryptoWallets() async throws -> [UDUserAccountCryptWallet] {
+    func loadUserCryptoWallets() async throws -> [FirebasePurchase.UDUserAccountCryptWallet] {
         let url = URLSList.CRYPTO_WALLETS_URL.appendingURLQueryComponents(["includeMinted" : String(true)])
         let request = try APIRequest(urlString: url, method: .get)
-        let response: UDUserAccountCryptWalletsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        let response: FirebasePurchase.UDUserAccountCryptWalletsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         
         return response.wallets
     }
     
-    func transformDomainProductItemsToDomainsToPurchase(_ productItems: [DomainProductItem]) -> [DomainToPurchase] {
-        productItems
-            .filter({ $0.availability })
-            .map { DomainToPurchase(domainProduct: $0) }
+    func transformDomainProductItemsToDomainsToPurchase(_ productItems: [FirebasePurchase.DomainProductItem]) -> [DomainToPurchase] {
+        []
     }
 }
 
 // MARK: - Cart
-private extension FirebasePurchaseDomainsService {
+private extension FirebasePurchaseMPCWalletService {
     struct CartOperationRequestBody: Codable {
-        let products: [UDProduct]
+        let products: [FirebasePurchase.UDProduct]
     }
     
     func refreshUserCartAsync() {
@@ -292,7 +288,7 @@ private extension FirebasePurchaseDomainsService {
         
         if !filterUnsupportedProductsFrom(products: cartResponse.cart).isEmpty || !filterUnsupportedProductsFrom(products: calculationsResponse.cartItems).isEmpty  {
             if shouldFailIfCartContainsUnsupportedProducts {
-                cartStatus = .hasUnpaidDomains
+//                cartStatus = .hasUnpaidDomains
                 appContext.analyticsService.log(event: .accountHasUnpaidDomains, withParameters: nil)
             } else {
                 try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
@@ -301,17 +297,16 @@ private extension FirebasePurchaseDomainsService {
             return
         }
         
-        self.udCart = UDUserCart(products: cartResponse.cart,
-                                 calculations: calculationsResponse,
-                                 discountDetails: .init(storeCredits: userProfileResponse.storeCredits,
-                                                        promoCredits: userProfileResponse.promoCredits))
+        self.udCart = .init(products: cartResponse.cart,
+                            calculations: calculationsResponse,
+                            discountDetails: .init(storeCredits: userProfileResponse.storeCredits,
+                                                   promoCredits: userProfileResponse.promoCredits))
         Debugger.printInfo("Did refresh cart")
     }
     
     func runRefreshTimer() {
         Task {
-            if !isAutoRefreshCartSuspended,
-               !domainsToPurchase.isEmpty {
+            if !isAutoRefreshCartSuspended {
                 refreshUserCartAsync()
             }
             await Task.sleep(seconds: 60)
@@ -319,15 +314,15 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func loadUserProfile() async throws -> UDUserProfileResponse {
+    func loadUserProfile() async throws -> FirebasePurchase.UDUserProfileResponse {
         let urlString = URLSList.USER_PROFILE_URL
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
-        let response: UDUserProfileResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        let response: FirebasePurchase.UDUserProfileResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         return response
     }
     
-    func loadUserCart() async throws -> UserCartResponse {
+    func loadUserCart() async throws -> FirebasePurchase.UserCartResponse {
         var queryComponents: [String : String] = [:]
         if !checkoutData.durationsMap.isEmpty {
             queryComponents["durationsMap"] = checkoutData.getDurationsMapString()
@@ -335,33 +330,23 @@ private extension FirebasePurchaseDomainsService {
         let urlString = URLSList.CART_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
-        let response: UserCartResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        let response: FirebasePurchase.UserCartResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         return response
     }
     
-    func createCartFromUDCart(_ udCart: UDUserCart) -> PurchaseDomainsCart {
-        let domainProducts = udCart.products.compactMap { product in
-            switch product {
-            case .domain(let domainProductItem):
-                return domainProductItem
-            case .parking, .ensAutoRenewal, .unknown:
-                return nil
-            }
-        }
-        let domains = domainProducts.map { DomainToPurchase(domainProduct: $0) }
+    func createCartFromUDCart(_ udCart: FirebasePurchase.UDUserCart) -> PurchaseMPCWalletCart {
         let otherDiscountsSum = udCart.calculations.discounts.reduce(0, { $0 + $1.amount })
-        return PurchaseDomainsCart(domains: domains,
-                                   totalPrice: udCart.calculations.totalAmountDue,
-                                   taxes: udCart.calculations.salesTax,
-                                   storeCreditsAvailable: udCart.discountDetails.storeCredits,
-                                   promoCreditsAvailable: udCart.discountDetails.promoCredits,
-                                   appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
-                                                          promoCredits: udCart.calculations.promoCreditsUsed,
-                                                          others: otherDiscountsSum))
+        return PurchaseMPCWalletCart(totalPrice: udCart.calculations.totalAmountDue,
+                                     taxes: udCart.calculations.salesTax,
+                                     storeCreditsAvailable: udCart.discountDetails.storeCredits,
+                                     promoCreditsAvailable: udCart.discountDetails.promoCredits,
+                                     appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
+                                                                   promoCredits: udCart.calculations.promoCreditsUsed,
+                                                                   others: otherDiscountsSum))
     }
     
     func makeCartOperationAPIRequestWith(urlString: String,
-                                         products: [UDProduct],
+                                         products: [FirebasePurchase.UDProduct],
                                          shouldRefreshCart: Bool) async throws {
         let requestEntity = CartOperationRequestBody(products: products)
         let request = try APIRequest(urlString: urlString,
@@ -373,7 +358,7 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func checkoutWithCredits(to wallet: UDUserAccountCryptWallet) async throws {
+    func checkoutWithCredits(to wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws {
         struct RequestBody: Codable {
             let cryptoWalletId: Int
             let applyStoreCredits: Bool
@@ -394,7 +379,7 @@ private extension FirebasePurchaseDomainsService {
         try await makeFirebaseAPIDataRequest(request)
     }
     
-    func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
+    func loadStripePaymentDetails(for wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws -> FirebasePurchase.StripePaymentDetailsResponse {
         struct RequestBody: Codable {
             let cryptoWalletId: Int
             let applyStoreCredits: Bool
@@ -406,23 +391,23 @@ private extension FirebasePurchaseDomainsService {
         let urlString = URLSList.PAYMENT_STRIPE_URL
         let body = RequestBody(cryptoWalletId: wallet.id,
                                applyStoreCredits: checkoutData.isStoreCreditsOn,
-                               applyPromoCredits: checkoutData.isPromoCreditsOn, 
-                               discountCode: checkoutData.discountCodeIfEntered, 
+                               applyPromoCredits: checkoutData.isPromoCreditsOn,
+                               discountCode: checkoutData.discountCodeIfEntered,
                                zipCode: checkoutData.zipCodeIfEntered)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)
-        let response: StripePaymentDetailsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        let response: FirebasePurchase.StripePaymentDetailsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         return response
     }
     
-    func prepareStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetails {
+    func prepareStripePaymentDetails(for wallet: FirebasePurchase.UDUserAccountCryptWallet) async throws -> FirebasePurchase.StripePaymentDetails {
         try await refreshUserCart()
         do {
             let detailsResponse = try await loadStripePaymentDetails(for: wallet)
-            let details = StripePaymentDetails(amount: udCart.calculations.totalAmountDue,
-                                               clientSecret: detailsResponse.clientSecret,
-                                               orderId: detailsResponse.orderId)
+            let details = FirebasePurchase.StripePaymentDetails(amount: udCart.calculations.totalAmountDue,
+                                                                clientSecret: detailsResponse.clientSecret,
+                                                                orderId: detailsResponse.orderId)
             cachedPaymentDetails = details
             return details
         } catch {
@@ -436,11 +421,11 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func loadCartParkingProducts(in cart: UDUserCart) async {
+    func loadCartParkingProducts(in cart: FirebasePurchase.UDUserCart) async {
         var cart = cart
         var products = cart.products
         
-        await withTaskGroup(of: UDProduct.self) { group in
+        await withTaskGroup(of: FirebasePurchase.UDProduct.self) { group in
             for product in products {
                 group.addTask {
                     switch product {
@@ -449,9 +434,6 @@ private extension FirebasePurchaseDomainsService {
                         
                         // Check for ENS registry fee
                         if domain.isENSDomain {
-                            if let ensStatus = try? await self.getENSDomainStatus(domainName: domain.domain.name) {
-                                domain.ensStatus = ensStatus
-                            }
                             if !domain.isENSRenewalAdded {
                                 availableProducts.append(.ensAutoRenewal(.createENSRenewableProductDetails(for: domain.domain)))
                             }
@@ -482,7 +464,7 @@ private extension FirebasePurchaseDomainsService {
         self.udCart = cart
     }
     
-    func removeCartUnsupportedProducts(in cart: [UDProduct]) async throws {
+    func removeCartUnsupportedProducts(in cart: [FirebasePurchase.UDProduct]) async throws {
         let productsToRemove = filterUnsupportedProductsFrom(products: cart)
         
         if !productsToRemove.isEmpty {
@@ -490,14 +472,12 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func filterUnsupportedProductsFrom(products: [UDProduct]) -> [UDProduct] {
-        products.flatMap { product -> [UDProduct] in
+    func filterUnsupportedProductsFrom(products: [FirebasePurchase.UDProduct]) -> [FirebasePurchase.UDProduct] {
+        products.flatMap { product -> [FirebasePurchase.UDProduct] in
             switch product {
             case .domain(let domain):
                 /// Remove all domains except what user has selected for purchase
-                if domainsToPurchase.first(where: { $0.name == domain.domain.name }) == nil {
-                    return [product]
-                }
+             
                 return domain.hiddenProducts
             default:
                 return [product]
@@ -505,14 +485,14 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func loadDomainParkingProductCart(for domain: DomainProductDetails) async throws -> UDProduct {
+    func loadDomainParkingProductCart(for domain: FirebasePurchase.DomainProductDetails) async throws -> FirebasePurchase.UDProduct {
         let urlString = URLSList.DOMAINS_PARKING_PRODUCT_URL(domain: domain.name)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
         return try await makeFirebaseDecodableAPIDataRequest(request)
     }
     
-    func loadUserCartCalculations() async throws -> UserCartCalculationsResponse {
+    func loadUserCartCalculations() async throws -> FirebasePurchase.UserCartCalculationsResponse {
         let queryComponents = ["applyPromoCredits" : String(checkoutData.isPromoCreditsOn),
                                "applyStoreCredits" : String(checkoutData.isStoreCreditsOn),
                                "discountCode" : checkoutData.discountCode.trimmedSpaces,
@@ -522,7 +502,7 @@ private extension FirebasePurchaseDomainsService {
         let urlString = URLSList.USER_CART_CALCULATIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
-        let response: UserCartCalculationsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        let response: FirebasePurchase.UserCartCalculationsResponse = try await makeFirebaseDecodableAPIDataRequest(request)
         return response
     }
     
@@ -530,16 +510,3 @@ private extension FirebasePurchaseDomainsService {
         case udAccountHasUnpaidVault
     }
 }
-
-// MARK: - Private methods
-private extension DomainToPurchase {
-    init(domainProduct: FirebasePurchaseDomainsService.DomainProductItem) {
-        self.name = domainProduct.domain.name
-        self.price = domainProduct.price
-        self.metadata = domainProduct.jsonData()
-        self.isAbleToPurchase = domainProduct.isAbleToPurchase
-    }
-}
-
-
-
