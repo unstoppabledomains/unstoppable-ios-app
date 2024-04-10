@@ -28,7 +28,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     }
     
     func setupMPCWalletWith(code: String,
-                              recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
@@ -42,6 +42,14 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                 }
             }
         }
+    }
+    
+    func signMessage(_ messageString: String,
+                     by wallet: MPCWalletMetadata) async throws -> String {
+        await Task.sleep(seconds: 0.5)
+        let subService = try getSubServiceFor(provider: wallet.provider)
+        
+        throw MPCWalletsServiceError.unsupportedOperation
     }
 }
 
@@ -58,6 +66,7 @@ private extension MPCWalletsService {
     
     enum MPCWalletsServiceError: String, LocalizedError {
         case failedToGetSubService
+        case unsupportedOperation
         
         public var errorDescription: String? {
             return rawValue
