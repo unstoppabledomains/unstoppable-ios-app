@@ -124,29 +124,6 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     }
 }
 
-// MARK: - EcomPurchaseMPCWalletServiceProtocol
-extension MockFirebaseInteractionsService: EcomPurchaseMPCWalletServiceProtocol {
-    func authoriseWithEmail(_ email: String, password: String) async throws {
-        
-    }
-    
-    func authoriseWithGoogle() async throws {
-        
-    }
-    
-    func authoriseWithTwitter() async throws {
-        
-    }
-    
-    func authoriseWithWallet(_ wallet: UDWallet) async throws {
-        
-    }
-    
-    func purchaseMPCWallet() async throws {
-        
-    }
-}
-
 // MARK: - FirebaseDomainsServiceProtocol
 extension MockFirebaseInteractionsService: FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain] {
