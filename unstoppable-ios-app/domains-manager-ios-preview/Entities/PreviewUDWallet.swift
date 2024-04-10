@@ -13,41 +13,6 @@ extension WalletWithInfo {
     
 }
 
-
-enum WalletState: String, Codable {
-    case verified // private key, seed phrase
-    case externalLinked // external wallet. Read only
-}
-
-enum WalletType: String, Codable {
-    case privateKeyEntered
-    case generatedLocally
-    case defaultGeneratedLocally
-    case mnemonicsEntered
-    case importedUnverified
-    case mpc
-    
-    func getICloudLabel() -> String? {
-        switch self {
-        case .generatedLocally, .defaultGeneratedLocally: return "GENERATED"
-        case .privateKeyEntered: return "IMPORTED_BY_PRIVATE_KEY"
-        case .mnemonicsEntered: return "IMPORTED_BY_MNEMONICS"
-        default:    Debugger.printFailure("Invalid attempt to backup wallet with the type: \(self.rawValue)", critical: true)
-            return nil
-        }
-    }
-    
-    init?(iCloudLabel: String) {
-        switch iCloudLabel {
-        case "GENERATED": self = .generatedLocally
-        case "IMPORTED_BY_PRIVATE_KEY": self = .privateKeyEntered
-        case "IMPORTED_BY_MNEMONICS": self = .mnemonicsEntered
-        default:    Debugger.printFailure("Found unknown type in iCloud: \(iCloudLabel)", critical: true)
-            return nil
-        }
-    }
-}
-
 struct UDWallet: Codable, Hashable {
     
     static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", 
