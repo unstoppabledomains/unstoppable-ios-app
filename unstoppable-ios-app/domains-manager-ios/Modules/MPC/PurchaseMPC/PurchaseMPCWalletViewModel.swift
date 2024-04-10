@@ -8,7 +8,7 @@
 import SwiftUI
 
 @MainActor
-final class PurchaseMPCWalletViewModel: ObservableObject, ViewErrorHolder {
+final class PurchaseMPCWalletViewModel: ObservableObject {
     
     @Published var navPath: [PurchaseMPCWallet.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
@@ -17,11 +17,16 @@ final class PurchaseMPCWalletViewModel: ObservableObject, ViewErrorHolder {
     
     func handleAction(_ action: PurchaseMPCWallet.FlowAction) {
         Task {
-            switch action {
-                // Common path
-            case .authWithProvider(let provider):
-                await self.authWithProvider(provider)
-                navPath.append(.scanWalletAddress)
+            do {
+                switch action {
+                    // Common path
+                case .authWithProvider(let provider):
+                    try await self.authWithProvider(provider)
+                    navPath.append(.checkout)
+                }
+            } catch {
+                self.error = error
+                self.isLoading = false
             }
         }
     }
@@ -30,49 +35,38 @@ final class PurchaseMPCWalletViewModel: ObservableObject, ViewErrorHolder {
 
 // MARK: - Private methods
 private extension PurchaseMPCWalletViewModel {
-    func authWithProvider(_ provider: LoginProvider) async {
+    func authWithProvider(_ provider: LoginProvider) async throws {
         UDVibration.buttonTap.vibrate()
+        isLoading = true
         switch provider {
         case .email:
             moveToEnterEmailScreen()
         case .google:
-            await loginWithGoogle()
+            try await loginWithGoogle()
         case .twitter:
-            await loginWithTwitter()
+            try await loginWithTwitter()
         case .apple:
             loginWithApple()
         }
+        isLoading = false
     }
     
     func moveToEnterEmailScreen() {
         
     }
     
-    func loginWithEmail(_ email: String, password: String) async {
-        await runAuthOperation {
-            try await appContext.ecomPurchaseMPCWalletService.authoriseWithEmail(email, password: password)
-        }
+    func loginWithEmail(_ email: String, password: String) async throws {
+        try await appContext.ecomPurchaseMPCWalletService.authoriseWithEmail(email, password: password)
     }
     
-    func loginWithGoogle() async {
-        await runAuthOperation {
-            try await appContext.ecomPurchaseMPCWalletService.authoriseWithGoogle()
-        }
+    func loginWithGoogle() async throws {
+        try await appContext.ecomPurchaseMPCWalletService.authoriseWithGoogle()
     }
     
-    func loginWithTwitter() async {
-        await runAuthOperation {
-            try await appContext.ecomPurchaseMPCWalletService.authoriseWithTwitter()
-        }
+    func loginWithTwitter() async throws {
+        try await appContext.ecomPurchaseMPCWalletService.authoriseWithTwitter()
     }
     
     func loginWithApple() { }
-    
-    func runAuthOperation(_ block: @escaping (() async throws -> ())) async {
-        isLoading = true
-        await performAsyncErrorCatchingBlock(block)
-        isLoading = false
-        // Move to next view
-    }
 }
 

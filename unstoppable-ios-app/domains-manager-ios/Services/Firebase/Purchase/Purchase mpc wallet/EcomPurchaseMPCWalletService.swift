@@ -66,6 +66,15 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
         }
     }
     
+    override func filterUnsupportedProductsFrom(products: [Ecom.UDProduct]) -> [Ecom.UDProduct] {
+        products.filter( {
+            if case .mpcWallet = $0 {
+                return true
+            }
+            return false
+        })
+    }
+    
     override func cartContainsUnsupportedProducts() {
         cartStatus = .alreadyPurchasedMPCWallet
 //        appContext.analyticsService.log(event: .accountHasUnpaidDomains, withParameters: nil)
@@ -131,7 +140,7 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func didAuthorise() async throws {
-//        try await addProductsToCart([], shouldRefreshCart: true)
+        try await addProductsToCart([.mpcWallet(.init())], shouldRefreshCart: true)
         isAutoRefreshCartSuspended = false
     }
     

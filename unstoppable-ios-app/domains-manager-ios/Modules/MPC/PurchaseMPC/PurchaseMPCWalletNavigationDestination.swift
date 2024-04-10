@@ -9,7 +9,7 @@ import SwiftUI
 
 extension PurchaseMPCWallet {
     enum NavigationDestination: Hashable {
-        case scanWalletAddress
+        case checkout
         
         var isWithCustomTitle: Bool { false }
     }
@@ -18,8 +18,8 @@ extension PurchaseMPCWallet {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .scanWalletAddress:
-                SendCryptoQRWalletAddressScannerView()
+            case .checkout:
+                PurchaseMPCWalletCheckoutView()
             }
         }
     }

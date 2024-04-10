@@ -65,13 +65,16 @@ extension Ecom {
         case domain = "DomainProduct"
         case domainParkOnlySubscription = "DomainParkOnlySubscriptionProduct"
         case ensDomainAutoRenewal = "EnsDomainAutoRenewalProduct"
+        case mpcWallet = "UnstoppableMpcWalletProduct"
     }
     
     enum UDProduct: Codable, Hashable, Identifiable {
         case domain(DomainProductItem)
         case parking(DomainProductParking)
         case ensAutoRenewal(DomainProductParking)
+        case mpcWallet(UDProductFB_MPCWallet)
         case unknown(UnknownUDProduct)
+        
         
         var id: String {
             switch self {
@@ -79,6 +82,8 @@ extension Ecom {
                 return domainProductItem.id
             case .parking(let domainProductParking), .ensAutoRenewal(let domainProductParking):
                 return domainProductParking.id
+            case .mpcWallet(let product):
+                return product.id
             case .unknown(let product):
                 return product.id
             }
@@ -90,6 +95,8 @@ extension Ecom {
                 return domainProductItem.fullPrice
             case .parking(let domainProductParking), .ensAutoRenewal(let domainProductParking):
                 return domainProductParking.price
+            case .mpcWallet(let product):
+                return product.price
             case .unknown(let product):
                 return product.price
             }
@@ -106,6 +113,8 @@ extension Ecom {
                 try container.encode(product)
             case .parking(let product), .ensAutoRenewal(let product):
                 try container.encode(product)
+            case .mpcWallet(let product):
+                try container.encode(product)
             case .unknown(let product):
                 try container.encode(product)
             }
@@ -118,14 +127,17 @@ extension Ecom {
             
             switch productType {
             case .domain:
-                let domainProduct = try DomainProductItem(from: decoder)
-                self = .domain(domainProduct)
+                let product = try DomainProductItem(from: decoder)
+                self = .domain(product)
             case .domainParkOnlySubscription:
-                let parkingProduct = try DomainProductParking(from: decoder)
-                self = .parking(parkingProduct)
+                let product = try DomainProductParking(from: decoder)
+                self = .parking(product)
             case .ensDomainAutoRenewal:
-                let parkingProduct = try DomainProductParking(from: decoder)
-                self = .ensAutoRenewal(parkingProduct)
+                let product = try DomainProductParking(from: decoder)
+                self = .ensAutoRenewal(product)
+            case .mpcWallet:
+                let product = try UDProductFB_MPCWallet(from: decoder)
+                self = .mpcWallet(product)
             case .none:
                 let product = try UnknownUDProduct(from: decoder)
                 self = .unknown(product)
@@ -243,6 +255,16 @@ extension Ecom {
             }
             return false
         }
+    }
+    
+    struct UDProductFB_MPCWallet: Codable, Hashable, Identifiable {
+        var id: String { String(productId ?? -1) }
+        
+        var productId: Int? = nil
+        var productType: String = UDProductType.mpcWallet.rawValue
+        var productCode: String = "PRO"
+        var price: Int = 0
+
     }
 }
 
