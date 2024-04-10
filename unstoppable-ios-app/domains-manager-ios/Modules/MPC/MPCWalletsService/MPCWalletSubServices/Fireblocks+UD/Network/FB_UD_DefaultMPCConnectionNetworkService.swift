@@ -41,7 +41,10 @@ extension FB_UD_MPC {
                 let response: BootstrapCodeSubmitResponse = try await makeDecodableAPIRequest(request)
                 return response
             } catch {
-                throw MPCWalletError.incorrectCode
+                if isNetworkError(error, withCode: 400) {
+                    throw MPCWalletError.incorrectCode
+                }
+                throw error
             }
         }
         
@@ -62,7 +65,10 @@ extension FB_UD_MPC {
             do {
                 try await makeAPIRequest(request)
             } catch {
-                throw MPCWalletError.incorrectPassword
+                if isNetworkError(error, withCode: 400) {
+                    throw MPCWalletError.incorrectPassword
+                }
+                throw error
             }
         }
         
@@ -208,6 +214,15 @@ extension FB_UD_MPC {
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
+        }
+        
+        private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
+            if let networkError = error as? NetworkLayerError,
+               case .badResponseOrStatusCode(let errorCode, _) = networkError,
+               errorCode == code {
+                return true
+            }
+            return false
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {
