@@ -1265,6 +1265,8 @@
 		C6952A542BC64F8400F4B475 /* MPCWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A522BC64F8400F4B475 /* MPCWalletError.swift */; };
 		C6952A592BC65B2500F4B475 /* WalletType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A582BC65B2500F4B475 /* WalletType.swift */; };
 		C6952A5A2BC65B2500F4B475 /* WalletType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A582BC65B2500F4B475 /* WalletType.swift */; };
+		C6952A562BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
+		C6952A572BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3592,6 +3594,7 @@
 		C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletMetadata.swift; sourceTree = "<group>"; };
 		C6952A522BC64F8400F4B475 /* MPCWalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletError.swift; sourceTree = "<group>"; };
 		C6952A582BC65B2500F4B475 /* WalletType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletType.swift; sourceTree = "<group>"; };
+		C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeActivityEmptyView.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -7726,6 +7729,7 @@
 				C6B761FB2BB403F700773943 /* HomeActivity.swift */,
 				C6B761D12BB3C19800773943 /* HomeActivityViewModel.swift */,
 				C6B761CB2BB3BEB700773943 /* HomeActivityView.swift */,
+				C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */,
 				C6B762012BB4057400773943 /* HomeActivityTransactionsSectionView.swift */,
 				C6B762042BB4067600773943 /* WalletTransactionDisplayInfoListItemView.swift */,
 				C6B761F82BB4011D00773943 /* HomeActivityNavigationDestination.swift */,
@@ -9797,6 +9801,7 @@
 				C63095D02B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift in Sources */,
 				C60CB4ED2B201791007FD3CF /* DomainProfilePendingChanges.swift in Sources */,
 				C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */,
+				C6952A562BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */,
 				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
@@ -10804,6 +10809,7 @@
 				C6C8F9602B21872000A9834D /* MintingDomainWithDisplayInfo.swift in Sources */,
 				C6C8F82D2B217D9600A9834D /* PreviewSessionV2.swift in Sources */,
 				C6D646252B1DC28800D724AC /* PreviewAppReviewService.swift in Sources */,
+				C6952A572BC6574200F4B475 /* HomeActivityEmptyView.swift in Sources */,
 				C61807FA2B19A80E0032E543 /* InitialsView.swift in Sources */,
 				C61808262B19AB320032E543 /* DomainTransferServiceProtocol.swift in Sources */,
 				C61807FE2B19A84F0032E543 /* QRCodeMonkeyServiceProvider.swift in Sources */,
