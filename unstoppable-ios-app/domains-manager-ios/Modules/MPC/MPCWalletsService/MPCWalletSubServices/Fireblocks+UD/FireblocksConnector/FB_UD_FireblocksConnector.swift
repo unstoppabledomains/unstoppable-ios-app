@@ -8,7 +8,7 @@
 import Foundation
 
 extension FB_UD_MPC {
-    protocol FireblocksConnectorProtocol {
+    protocol FireblocksConnectorProtocol: AnyObject {
         func requestJoinExistingWallet() async throws -> String
         func stopJoinWallet()
         func waitForKeyIsReady() async throws

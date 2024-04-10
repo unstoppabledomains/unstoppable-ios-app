@@ -18,18 +18,12 @@ extension FB_UD_MPC {
                 let email: String
             }
             
-            struct Response: Decodable {
-                let code: String
-            }
-            
             let body = Body(email: email)
             let request = try APIRequest(urlString: MPCNetwork.URLSList.getCodeOnEmailURL,
                                          body: body,
                                          method: .post)
             
-            let response: Response = try await makeDecodableAPIRequest(request)
-            
-            logMPC("Did receive MPC bootstrap code: \(response.code)")
+            try await makeAPIRequest(request)
         }
         
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse {
@@ -43,8 +37,12 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post)
             
-            let response: BootstrapCodeSubmitResponse = try await makeDecodableAPIRequest(request)
-            return response
+            do {
+                let response: BootstrapCodeSubmitResponse = try await makeDecodableAPIRequest(request)
+                return response
+            } catch {
+                throw MPCWalletError.incorrectCode
+            }
         }
         
         func authNewDeviceWith(requestId: String,
@@ -61,7 +59,11 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post,
                                          headers: headers)
-            try await makeAPIRequest(request)
+            do {
+                try await makeAPIRequest(request)
+            } catch {
+                throw MPCWalletError.incorrectPassword
+            }
         }
         
         func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {

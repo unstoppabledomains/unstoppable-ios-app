@@ -86,6 +86,11 @@ private extension MPCEnterPassphraseView {
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)
                 }
+                // TODO: - Show explicitly on the UI when design is ready
+            } catch MPCWalletError.incorrectCode {
+                self.error = MPCWalletError.incorrectCode
+            } catch MPCWalletError.incorrectPassword {
+                self.error = MPCWalletError.incorrectPassword
             } catch {
                 self.error = error
             }

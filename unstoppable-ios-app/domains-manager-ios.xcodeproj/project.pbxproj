@@ -1262,6 +1262,8 @@
 		C6952A4E2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */; };
 		C6952A502BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */; };
 		C6952A512BC531E000F4B475 /* MPCWalletMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */; };
+		C6952A532BC64F8400F4B475 /* MPCWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A522BC64F8400F4B475 /* MPCWalletError.swift */; };
+		C6952A542BC64F8400F4B475 /* MPCWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6952A522BC64F8400F4B475 /* MPCWalletError.swift */; };
 		C695C2682A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */; };
 		C6960C1B2B19939E00B79E28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1A2B19939E00B79E28 /* AppDelegate.swift */; };
 		C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C1C2B19939E00B79E28 /* SceneDelegate.swift */; };
@@ -3588,6 +3590,7 @@
 		C6952A4A2BC5295800F4B475 /* FB_UD_MPCWalletsDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDataStorage.swift; sourceTree = "<group>"; };
 		C6952A4D2BC529AE00F4B475 /* FB_UD_MPCWalletsDefaultDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletsDefaultDataStorage.swift; sourceTree = "<group>"; };
 		C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletMetadata.swift; sourceTree = "<group>"; };
+		C6952A522BC64F8400F4B475 /* MPCWalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletError.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushChatsSecretKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChatsSecretKeysStorage.swift; sourceTree = "<group>"; };
 		C6960C182B19939E00B79E28 /* unstoppable-preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "unstoppable-preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6960C1A2B19939E00B79E28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -7092,6 +7095,7 @@
 			children = (
 				C6952A282BC4E9F700F4B475 /* MPCWalletsServiceProtocol.swift */,
 				C6952A2B2BC4E9FD00F4B475 /* MPCWalletsService.swift */,
+				C6952A522BC64F8400F4B475 /* MPCWalletError.swift */,
 				C6952A222BC4E33000F4B475 /* MPCWalletProvider.swift */,
 				C6952A4F2BC531E000F4B475 /* MPCWalletMetadata.swift */,
 				C632BE4F2BA59D8400C95B2D /* SetupMPCWalletStep.swift */,
@@ -9885,6 +9889,7 @@
 				C617FDA12B58E75B00B93433 /* WalletEntity.swift in Sources */,
 				C630E4AC2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				306486832527253700388026 /* SceneDelegate.swift in Sources */,
+				C6952A532BC64F8400F4B475 /* MPCWalletError.swift in Sources */,
 				C617FD972B58BB7600B93433 /* WalletsDataService.swift in Sources */,
 				C6F9FBCF2A25C41900102F81 /* MessagingService.swift in Sources */,
 				C60DCEEB282D13F800F71C13 /* RenameWalletViewPresenter.swift in Sources */,
@@ -10958,6 +10963,7 @@
 				C61DB1162B95BCF200CDA243 /* DomainProfilesServiceProtocol.swift in Sources */,
 				C607A5CA2B327A600088ECF3 /* PreviewHappyEndViewController.swift in Sources */,
 				C650E28B2B9E97B1002C120A /* UDButtonStyle+Medium.swift in Sources */,
+				C6952A542BC64F8400F4B475 /* MPCWalletError.swift in Sources */,
 				C6C8F8D02B21833D00A9834D /* UDBTSearchView.swift in Sources */,
 				C6D6460C2B1DC07200D724AC /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C6952A352BC4FFC200F4B475 /* FB_UD_MPCAccount.swift in Sources */,

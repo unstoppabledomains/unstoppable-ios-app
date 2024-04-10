@@ -44,22 +44,23 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                               recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
-                continuation.yield(.submittingCode)
-                logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")
-                let submitCodeResponse = try await networkService.submitBootstrapCode(code)
-                logMPC("Did submit code \(code)")
-                let accessToken = submitCodeResponse.accessToken
-                let deviceId = submitCodeResponse.deviceId
-                
-                continuation.yield(.initialiseFireblocks)
-                
-                logMPC("Will create fireblocks connector")
-                let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
-                
-                mpcConnector.stopJoinWallet()
-                logMPC("Did create fireblocks connector")
-                logMPC("Will request to join existing wallet")
+                var mpcConnectorInProgress: FB_UD_MPC.FireblocksConnectorProtocol?
                 do {
+                    continuation.yield(.submittingCode)
+                    logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")
+                    let submitCodeResponse = try await networkService.submitBootstrapCode(code)
+                    logMPC("Did submit code \(code)")
+                    let accessToken = submitCodeResponse.accessToken
+                    let deviceId = submitCodeResponse.deviceId
+                    
+                    continuation.yield(.initialiseFireblocks)
+                    
+                    logMPC("Will create fireblocks connector")
+                    let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
+                    mpcConnectorInProgress = mpcConnector
+                    mpcConnector.stopJoinWallet()
+                    logMPC("Did create fireblocks connector")
+                    logMPC("Will request to join existing wallet")
                     continuation.yield(.requestingToJoinExistingWallet)
                     let requestId = try await mpcConnector.requestJoinExistingWallet()
                     logMPC("Will auth new device with request id: \(requestId)")
@@ -67,8 +68,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     // Initialize a transaction with the Wallets API
                     continuation.yield(.authorisingNewDevice)
                     try await networkService.authNewDeviceWith(requestId: requestId,
-                                                recoveryPhrase: recoveryPhrase,
-                                                accessToken: accessToken)
+                                                               recoveryPhrase: recoveryPhrase,
+                                                               accessToken: accessToken)
                     logMPC("Did auth new device with request id: \(requestId)")
                     logMPC("Will wait for key is ready")
                     continuation.yield(.waitingForKeysIsReady)
@@ -123,7 +124,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     continuation.yield(.finished(udWallet))
                     continuation.finish()
                 } catch {
-                    mpcConnector.stopJoinWallet()
+                    mpcConnectorInProgress?.stopJoinWallet()
                     logMPC("Did fail to create mpc wallet with error \(error.localizedDescription)")
                     /// Debug Fireblocks SDK issues
 //                    let logsURL = mpcConnector.getLogsURLs()
