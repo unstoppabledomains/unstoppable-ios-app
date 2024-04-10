@@ -44,7 +44,7 @@ final class FireblocksConnector {
 }
 
 // MARK: - Open methods
-extension FireblocksConnector: FB_UD_MPC.MPCConnector {
+extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
     func requestJoinExistingWallet() async throws -> String {
         let fireblocks = self.fireblocks
         let task = TaskWithDeadline(deadline: 30) {

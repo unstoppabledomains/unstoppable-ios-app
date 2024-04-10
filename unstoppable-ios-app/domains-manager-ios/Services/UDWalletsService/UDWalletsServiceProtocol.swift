@@ -27,6 +27,7 @@ protocol UDWalletsServiceProtocol {
     func importWalletWith(mnemonics: String) async throws -> UDWallet
     
     func addExternalWalletWith(address: String, walletRecord: WCWalletsProvider.WalletRecord) throws -> UDWallet
+    func addMPCWallet(_ wallet: UDWallet) throws
     func remove(wallet: UDWallet)
     func removeAllWallets()
     

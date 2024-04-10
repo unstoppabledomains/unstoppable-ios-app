@@ -8,7 +8,7 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct AuthTokens: Decodable {
+    struct AuthTokens: Codable {
         let accessToken: JWToken
         let refreshToken: JWToken
         let bootstrapToken: JWToken

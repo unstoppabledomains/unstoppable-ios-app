@@ -15,23 +15,15 @@ extension FB_UD_MPC {
         func sendBootstrapCodeTo(email: String) async throws {
             
             struct Body: Encodable {
-                let walletExternalId: String
+                let email: String
             }
             
-            struct Response: Decodable {
-                let code: String
-            }
-            
-            let header = buildAuthBearerHeader(token: NetworkService.stagingWalletAPIAdminKey)
-            let body = Body(walletExternalId: "wa-wt-96633a1c-2b70-47ca-a06f-01bef6b8f36b")
-            let request = try APIRequest(urlString: MPCNetwork.URLSList.tempGetCodeURL,
+            let body = Body(email: email)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.getCodeOnEmailURL,
                                          body: body,
-                                         method: .post,
-                                         headers: header)
+                                         method: .post)
             
-            let response: Response = try await makeDecodableAPIRequest(request)
-            
-            logMPC("Did receive MPC bootstrap code: \(response.code)")
+            try await makeAPIRequest(request)
         }
         
         func submitBootstrapCode(_ code: String) async throws -> BootstrapCodeSubmitResponse {
@@ -45,8 +37,15 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post)
             
-            let response: BootstrapCodeSubmitResponse = try await makeDecodableAPIRequest(request)
-            return response
+            do {
+                let response: BootstrapCodeSubmitResponse = try await makeDecodableAPIRequest(request)
+                return response
+            } catch {
+                if isNetworkError(error, withCode: 400) {
+                    throw MPCWalletError.incorrectCode
+                }
+                throw error
+            }
         }
         
         func authNewDeviceWith(requestId: String,
@@ -63,7 +62,14 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post,
                                          headers: headers)
-            try await makeAPIRequest(request)
+            do {
+                try await makeAPIRequest(request)
+            } catch {
+                if isNetworkError(error, withCode: 400) {
+                    throw MPCWalletError.incorrectPassword
+                }
+                throw error
+            }
         }
         
         func initTransactionWithNewKeyMaterials(accessToken: String) async throws -> SetupTokenResponse {
@@ -208,6 +214,15 @@ extension FB_UD_MPC {
                 logMPC("Did fail to make request \(apiRequest) with error: \(error.localizedDescription)")
                 throw error
             }
+        }
+        
+        private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
+            if let networkError = error as? NetworkLayerError,
+               case .badResponseOrStatusCode(let errorCode, _) = networkError,
+               errorCode == code {
+                return true
+            }
+            return false
         }
         
         private enum MPCNetworkServiceError: String, LocalizedError {

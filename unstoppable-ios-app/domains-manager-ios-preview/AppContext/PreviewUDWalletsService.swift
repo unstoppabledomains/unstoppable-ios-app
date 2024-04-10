@@ -51,6 +51,8 @@ final class UDWalletsService: UDWalletsServiceProtocol {
         UDWallet()
     }
     
+    func addMPCWallet(_ wallet: UDWallet) throws { }
+    
     func remove(wallet: UDWallet) {
         
     }

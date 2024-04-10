@@ -76,7 +76,7 @@ final class AppContext: AppContextProtocol {
     var walletsDataService: WalletsDataServiceProtocol = PreviewWalletsDataService()
     var domainProfilesService: DomainProfilesServiceProtocol
     var walletTransactionsService: WalletTransactionsServiceProtocol
-    var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService()
+    var mpcWalletsService: MPCWalletsServiceProtocol
 
     func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
@@ -91,6 +91,7 @@ final class AppContext: AppContextProtocol {
         
         walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
                                                               cache: InMemoryWalletTransactionsCache())
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService)
     }
 }
 

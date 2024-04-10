@@ -8,9 +8,9 @@
 import Foundation
 
 extension FB_UD_MPC {
-    struct DefaultMPCConnectorBuilder: MPCConnectorBuilder {
+    struct DefaultFireblocksConnectorBuilder: FireblocksConnectorBuilder {
         func buildBootstrapMPCConnector(deviceId: String,
-                               accessToken: String) throws -> any MPCConnector {
+                                        accessToken: String) throws -> any FireblocksConnectorProtocol {
             let rpcHandler = FireblocksBootstrapRPCMessageHandler(authToken: accessToken)
             
             let connector = try FireblocksConnector(deviceId: deviceId,
@@ -20,7 +20,7 @@ extension FB_UD_MPC {
         }
         
         func buildWalletMPCConnector(wallet: ConnectedWalletDetails,
-                                     authTokenProvider: WalletAuthTokenProvider) throws -> MPCConnector {
+                                     authTokenProvider: WalletAuthTokenProvider) throws -> FireblocksConnectorProtocol {
             let deviceId = wallet.deviceId
             let rpcHandler = FireblocksWalletRPCMessageHandler(wallet: wallet,
                                                                authTokenProvider: authTokenProvider)

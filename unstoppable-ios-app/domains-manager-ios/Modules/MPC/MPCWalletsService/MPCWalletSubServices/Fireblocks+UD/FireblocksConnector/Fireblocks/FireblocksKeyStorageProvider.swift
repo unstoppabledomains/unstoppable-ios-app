@@ -9,13 +9,8 @@ import Foundation
 import FireblocksSDK
 import Valet
 
-final class FireblocksKeyStorageProvider: PrivateKeyStorage {
-    let valet: ValetProtocol
-    static let keychainName = "unstoppable-fb-mpc-storage"
-    init() {
-        valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
-                            accessibility: .whenUnlockedThisDeviceOnly)
-    }
+final class FireblocksKeyStorageProvider {
+    private let storage: ValetProtocol = FB_UD_MPC.ValetStorage()
 }
 
 // MARK: - Open methods
@@ -25,7 +20,7 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
         var result: [String : Bool] = [:]
         for (key, data) in keys {
             do {
-                try valet.setObject(data, forKey: key)
+                try storage.setObject(data, forKey: key)
                 result[key] = true
             } catch {
                 result[key] = false
@@ -38,7 +33,7 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
     func remove(keyId: String) {
         logMPC("Keychain: Will Remove key with id \(keyId)")
         
-        try? valet.removeObject(forKey: keyId)
+        try? storage.removeObject(forKey: keyId)
     }
     
     func load(keyIds: Set<String>, callback: @escaping ([String : Data]) -> ()) {
@@ -47,7 +42,7 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
         var result: [String : Data] = [:]
         
         for key in keyIds {
-            if let data = try? valet.object(forKey: key) {
+            if let data = try? storage.object(forKey: key) {
                 result[key] = data
             } else {
                 logMPC("Keychain: Failed to find requested MPC Key")
@@ -62,7 +57,7 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
         
         var result: [String : Bool] = [:]
         for key in keyIds {
-            if (try? valet.object(forKey: key)) != nil {
+            if (try? storage.object(forKey: key)) != nil {
                 result[key] = true
             } else {
                 logMPC("Keychain: Not containing MPC Key")
@@ -71,4 +66,8 @@ extension FireblocksKeyStorageProvider: KeyStorageDelegate {
         
         callback(result)
     }
+}
+
+extension FireblocksKeyStorageProvider {
+    
 }

@@ -8,10 +8,10 @@
 import Foundation
 
 extension FB_UD_MPC {
-    protocol MPCConnectorBuilder {
+    protocol FireblocksConnectorBuilder {
         func buildBootstrapMPCConnector(deviceId: String,
-                                        accessToken: String) throws -> MPCConnector
+                                        accessToken: String) throws -> FireblocksConnectorProtocol
         func buildWalletMPCConnector(wallet: ConnectedWalletDetails,
-                                     authTokenProvider: WalletAuthTokenProvider) throws -> MPCConnector
+                                     authTokenProvider: WalletAuthTokenProvider) throws -> FireblocksConnectorProtocol
     }
 }
