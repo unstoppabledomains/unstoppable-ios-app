@@ -13,9 +13,7 @@ final class FirebasePurchaseMPCWalletService: EcomPurchaseInteractionService {
     @Published var cartStatus: PurchaseMPCWalletCartStatus
     var cartStatusPublisher: Published<PurchaseMPCWalletCartStatus>.Publisher { $cartStatus }
     
-    private let queue = DispatchQueue(label: "com.unstoppabledomains.firebase.purchase.mpc.service")
     private var cancellables: Set<AnyCancellable> = []
-    var isApplePaySupported: Bool { StripeService.isApplePaySupported }
     
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
@@ -80,29 +78,20 @@ final class FirebasePurchaseMPCWalletService: EcomPurchaseInteractionService {
 
 // MARK: - PurchaseDomainsServiceProtocol
 extension FirebasePurchaseMPCWalletService {
-    func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
-        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ Ecom.DomainProductItem.objectFromData($0) })
-        let products = domainItems.map { Ecom.UDProduct.domain($0) }
-        try await addProductsToCart(products, shouldRefreshCart: true)
-    }
-    
-    func removeDomainsFromCart(_ domains: [DomainToPurchase]) async throws {
-        let domainItems = domains.compactMap({ $0.metadata }).compactMap({ Ecom.DomainProductItem.objectFromData($0) })
-        let products = domainItems.map { Ecom.UDProduct.domain($0) }
-        try await removeProductsFromCart(products, shouldRefreshCart: true)
+    func authoriseWithGoogle() async throws {
+        guard let window = await SceneDelegate.shared?.window else { throw PurchaseMPCWalletError.failedToAuthorise }
+
+        await prepareBeforeAuth()
+        try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: window)
+        try await didAuthorise()
     }
     
     func authoriseWithWallet(_ wallet: UDWallet) async throws {
-        await reset()
-        do {
-            try await firebaseAuthService.authorizeWith(wallet: wallet)
-        } catch {
-            throw error
-        }
-        try await addDomainsToCart([])
-        isAutoRefreshCartSuspended = false
+        await prepareBeforeAuth()
+        try await firebaseAuthService.authorizeWith(wallet: wallet)
+        try await didAuthorise()
     }
-    
+   
     func reset() async {
         cartStatus = .ready(cart: .empty)
         cachedPaymentDetails = nil
@@ -129,6 +118,15 @@ extension FirebasePurchaseMPCWalletService {
 
 // MARK: - Cart
 private extension FirebasePurchaseMPCWalletService {
+    func prepareBeforeAuth() async {
+        await reset()
+    }
+    
+    func didAuthorise() async throws {
+        try await addProductsToCart([], shouldRefreshCart: true)
+        isAutoRefreshCartSuspended = false
+    }
+    
     func createCartFromUDCart(_ udCart: Ecom.UDUserCart) -> PurchaseMPCWalletCart {
         let otherDiscountsSum = udCart.calculations.discounts.reduce(0, { $0 + $1.amount })
         return PurchaseMPCWalletCart(totalPrice: udCart.calculations.totalAmountDue,
@@ -140,7 +138,8 @@ private extension FirebasePurchaseMPCWalletService {
                                                                    others: otherDiscountsSum))
     }
     
-    enum PurchaseDomainsError: String, LocalizedError {
+    enum PurchaseMPCWalletError: String, LocalizedError {
+        case failedToAuthorise
         case udAccountHasUnpaidVault
     }
 }

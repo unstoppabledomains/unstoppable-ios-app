@@ -13,10 +13,8 @@ final class FirebasePurchaseDomainsService: EcomPurchaseInteractionService {
     @Published var cartStatus: PurchaseDomainCartStatus
     var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
     
-    private let queue = DispatchQueue(label: "com.unstoppabledomains.firebase.purchase.service")
     private var cancellables: Set<AnyCancellable> = []
     private var domainsToPurchase: [DomainToPurchase] = []
-    var isApplePaySupported: Bool { StripeService.isApplePaySupported }
 
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
