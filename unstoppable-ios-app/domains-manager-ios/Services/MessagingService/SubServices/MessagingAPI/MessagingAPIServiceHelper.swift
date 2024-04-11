@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 struct MessagingAPIServiceHelper {
     static func getXMTPConversationFromChat(_ chat: MessagingChat,
-                                             client: XMTP.Client) throws -> XMTP.Conversation {
+                                             client: XMTPiOS.Client) throws -> XMTPiOS.Conversation {
         let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
         return metadata.encodedContainer.decode(with: client)
     }

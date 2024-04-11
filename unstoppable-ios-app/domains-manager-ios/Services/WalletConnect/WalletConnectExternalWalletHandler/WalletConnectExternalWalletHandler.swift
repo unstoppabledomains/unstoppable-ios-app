@@ -60,7 +60,7 @@ extension WalletConnectExternalWalletHandler {
         guard let chain = Blockchain(chainId: chainId) else {
             throw WalletConnectRequestError.failedToDetermineChainId
         }
-        let request = WalletConnectSign.Request(topic: session.topic, method: method.string, params: requestParams, chainId: chain)
+        let request = try WalletConnectSign.Request(topic: session.topic, method: method.string, params: requestParams, chainId: chain)
         try await Sign.instance.request(params: request)
         try await launchExternalWalletAndNotifyListeners(wallet)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<ResponseV2, Swift.Error>) in
