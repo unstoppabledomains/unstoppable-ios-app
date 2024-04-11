@@ -114,7 +114,7 @@ extension ChatViewModel {
         Task {
             if case .existingChat(let chat) = conversationState,
                case .private(let details) = chat.type {
-                _ = (try? await setUser(details.otherUser, in: chat, blocked: true))
+                _ = (try? await setUser(details.otherUser, in: chat, blocked: false))
             }
         }
     }
