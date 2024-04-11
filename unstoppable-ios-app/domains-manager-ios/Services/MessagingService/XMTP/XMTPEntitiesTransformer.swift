@@ -6,11 +6,11 @@
 //
 
 import UIKit
-import XMTP
+import XMTPiOS
 
 struct XMTPEntitiesTransformer {
     
-    static func convertXMTPClientToChatUser(_ client: XMTP.Client) -> MessagingChatUserProfile {
+    static func convertXMTPClientToChatUser(_ client: XMTPiOS.Client) -> MessagingChatUserProfile {
         let wallet = client.address
         let userId = client.address
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
@@ -28,7 +28,7 @@ struct XMTPEntitiesTransformer {
     }
     
     
-    static func convertXMTPChatToChat(_ xmtpChat: XMTP.Conversation,
+    static func convertXMTPChatToChat(_ xmtpChat: XMTPiOS.Conversation,
                                       userId: String,
                                       userWallet: String,
                                       isApproved: Bool) -> MessagingChat? {
@@ -63,23 +63,27 @@ struct XMTPEntitiesTransformer {
                                                    isApproved: isApproved,
                                                    lastMessageTime: lastMessageTime,
                                                    lastMessage: nil)
-        
-        let metadataModel = XMTPEnvironmentNamespace.ChatServiceMetadata(encodedContainer: xmtpChat.encodedContainer)
-        
-        // Bridging for PNs
-        AppGroupsBridgeService.shared.saveXMTPConversationData(conversationData: xmtpChat.encodedContainer.jsonData(),
-                                                               topic: xmtpChat.topic,
-                                                               userWallet: userWallet)
-        //
-        
-        let serviceMetadata = metadataModel.jsonData()
-        let chat = MessagingChat(userId: userId,
-                                 displayInfo: displayInfo,
-                                 serviceMetadata: serviceMetadata)
-        return chat
+        do {
+            let container = try xmtpChat.encodedContainer()
+            let metadataModel = XMTPEnvironmentNamespace.ChatServiceMetadata(encodedContainer: container)
+            
+            // Bridging for PNs
+            AppGroupsBridgeService.shared.saveXMTPConversationData(conversationData: container.jsonData(),
+                                                                   topic: xmtpChat.topic,
+                                                                   userWallet: userWallet)
+            //
+            
+            let serviceMetadata = metadataModel.jsonData()
+            let chat = MessagingChat(userId: userId,
+                                     displayInfo: displayInfo,
+                                     serviceMetadata: serviceMetadata)
+            return chat
+        } catch {
+            return nil
+        }
     }
     
-    static func convertXMTPMessageToChatMessage(_ xmtpMessage: XMTP.DecodedMessage,
+    static func convertXMTPMessageToChatMessage(_ xmtpMessage: XMTPiOS.DecodedMessage,
                                                 cachedMessage: MessagingChatMessage?,
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
@@ -131,7 +135,7 @@ struct XMTPEntitiesTransformer {
     }
     
     
-    private static func extractMessageType(from xmtpMessage: XMTP.DecodedMessage,
+    private static func extractMessageType(from xmtpMessage: XMTPiOS.DecodedMessage,
                                            messageId: String,
                                            userId: String,
                                            filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessageDisplayType {
@@ -143,13 +147,13 @@ struct XMTPEntitiesTransformer {
                     let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
                     return .text(textDisplayInfo)
                 case .attachment:
-                    let attachment: XMTP.Attachment = try xmtpMessage.content()
+                    let attachment: XMTPiOS.Attachment = try xmtpMessage.content()
                     return try await getMessageTypeFor(attachment: attachment,
                                                        messageId: messageId,
                                                        userId: userId,
                                                        filesService: filesService)
                 case .remoteStaticAttachment:
-                    let remoteAttachment: XMTP.RemoteAttachment = try xmtpMessage.content()
+                    let remoteAttachment: XMTPiOS.RemoteAttachment = try xmtpMessage.content()
                     let attachmentProperties = RemoteAttachmentProperties(remoteAttachment: remoteAttachment)
                     let serviceData = try attachmentProperties.jsonDataThrowing()
                     let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
@@ -171,11 +175,11 @@ struct XMTPEntitiesTransformer {
         }
     }
     
-    static func XMTPMessageTypeIDFrom(_ xmtpMessage: XMTP.DecodedMessage) -> String {
+    static func XMTPMessageTypeIDFrom(_ xmtpMessage: XMTPiOS.DecodedMessage) -> String {
         xmtpMessage.encodedContent.type.typeID
     }
     
-    static func XMTPMessageKnownTypeFrom(_ xmtpMessage: XMTP.DecodedMessage) -> XMTPEnvironmentNamespace.KnownType? {
+    static func XMTPMessageKnownTypeFrom(_ xmtpMessage: XMTPiOS.DecodedMessage) -> XMTPEnvironmentNamespace.KnownType? {
         XMTPEnvironmentNamespace.KnownType(rawValue: XMTPMessageTypeIDFrom(xmtpMessage))
     }
     
@@ -201,7 +205,7 @@ struct XMTPEntitiesTransformer {
         }
     }
 
-    static func convertXMTPMessageToWebSocketMessageEntity(_ xmtpMessage: XMTP.DecodedMessage,
+    static func convertXMTPMessageToWebSocketMessageEntity(_ xmtpMessage: XMTPiOS.DecodedMessage,
                                                            peerAddress: String,
                                                            userAddress: String) -> MessagingWebSocketMessageEntity {
         let id = xmtpMessage.id
@@ -253,7 +257,7 @@ struct XMTPEntitiesTransformer {
     static func loadRemoteContentFrom(data: Data,
                                       messageId: String,
                                       userId: String,
-                                      client: XMTP.Client,
+                                      client: XMTPiOS.Client,
                                       filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
         let remoteAttachmentProperties = try RemoteAttachmentProperties.objectFromDataThrowing(data)
         let remoteAttachment = try remoteAttachmentProperties.createRemoteAttachment()
@@ -273,7 +277,7 @@ struct XMTPEntitiesTransformer {
         let nonce: Data
         let scheme: String
         
-        init(remoteAttachment: XMTP.RemoteAttachment) {
+        init(remoteAttachment: XMTPiOS.RemoteAttachment) {
             self.url = remoteAttachment.url
             self.contentDigest = remoteAttachment.contentDigest
             self.secret = remoteAttachment.secret
@@ -282,8 +286,8 @@ struct XMTPEntitiesTransformer {
             self.scheme = remoteAttachment.scheme.rawValue
         }
         
-        func createRemoteAttachment() throws -> XMTP.RemoteAttachment {
-            try XMTP.RemoteAttachment(url: url,
+        func createRemoteAttachment() throws -> XMTPiOS.RemoteAttachment {
+            try XMTPiOS.RemoteAttachment(url: url,
                                       contentDigest: contentDigest,
                                       secret: secret,
                                       salt: salt,

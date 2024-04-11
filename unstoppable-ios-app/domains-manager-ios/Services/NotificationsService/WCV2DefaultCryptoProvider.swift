@@ -1,5 +1,5 @@
 //
-//  WCV2NotifyDefaultCryptoProvider.swift
+//  WCV2DefaultCryptoProvider.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 06.11.2023.
@@ -10,7 +10,7 @@ import CryptoSwift
 import Boilertalk_Web3
 import WalletConnectNotify
 
-struct WCV2NotifyDefaultCryptoProvider: CryptoProvider {
+struct WCV2DefaultCryptoProvider: CryptoProvider {
     
     public func recoverPubKey(signature: EthereumSignature, message: Data) throws -> Data {
         let publicKey = try EthereumPublicKey(

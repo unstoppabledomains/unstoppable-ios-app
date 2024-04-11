@@ -167,7 +167,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
 //        try? Sign.instance.cleanup()
 //        try? Pair.instance.cleanup()
 //        clientConnectionsV2.removeAll()
-        
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WalletConnectV2, "Connected sessions:\n\(settledSessions)")
@@ -260,6 +259,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     private func configure() {
+        Sign.configure(crypto: WCV2DefaultCryptoProvider())
         Networking.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
                              projectId: AppIdentificators.wc2ProjectId,
                              socketFactory: SocketFactory())
@@ -527,7 +527,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI {
-        guard let uri = WalletConnectURI(string: code) else { throw QRScannerViewPresenter.ScanningError.notSupportedQRCodeV2 }
+        let uri = try WalletConnectURI(uriString: code) 
         return uri
     }
   
@@ -536,7 +536,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Reject Session: \(proposalId)")
         Task {
             do {
-                try await Sign.instance.reject(proposalId: proposalId, reason: reason)
+                try await Sign.instance.rejectSession(proposalId: proposalId, reason: reason)
             } catch {
                 Debugger.printFailure("[DAPP] Reject Session error: \(error)")
             }
@@ -546,16 +546,21 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     // when user approves proposal
     func didApproveSession(_ proposal: SessionV2.Proposal, accountAddress: HexAddress) {
         var sessionNamespaces = [String: SessionNamespace]()
-        let spaces = proposal.requiredNamespaces.merging(proposal.optionalNamespaces ?? [:]) { (current, new) in ProposalNamespace(chains: (current.chains ?? Set() ).union(new.chains ?? Set()),
-                                                                                                                                   methods: current.methods.union(new.methods),
-                                                                                                                                   events: current.events.union(new.events)) }
+        let spaces = proposal.requiredNamespaces.merging(proposal.optionalNamespaces ?? [:]) { (current, new) in
+            let currentChains = Set(current.chains ?? [])
+            let newChains = Set(new.chains ?? [])
+            let mergedChains = currentChains.union(newChains)
+            return ProposalNamespace(chains: Array(mergedChains),
+                                     methods: current.methods.union(new.methods),
+                                     events: current.events.union(new.events))
+        }
         spaces.forEach {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
             guard let chains = proposalNamespace.chains else { return }
             
             let methods = proposalNamespace.methods
-            let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
+            let accounts = chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") }
             
             let sessionNamespace = SessionNamespace(chains: chains,
                                                     accounts: accounts,

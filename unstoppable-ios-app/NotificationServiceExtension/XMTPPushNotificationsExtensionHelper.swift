@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 struct XMTPPushNotificationsExtensionHelper {
     struct NotificationDisplayInfo {
@@ -32,13 +32,13 @@ struct XMTPPushNotificationsExtensionHelper {
             
             let conversationData = AppGroupsBridgeService.shared.getXMTPConversationDataFor(topic: topic,
                                                                                             userWallet: wallet)
-            let conversationContainer: XMTP.ConversationContainer = try decodeConversationData(from: conversationData)
+            let conversationContainer: XMTPiOS.ConversationContainer = try decodeConversationData(from: conversationData)
             let conversation = conversationContainer.decode(with: client)
             address = conversation.peerAddress
             
             guard AppGroupsBridgeService.shared.getXMTPBlockedUsersList().first(where: { $0.userId == data.toAddress && $0.blockedAddress == conversation.peerAddress }) == nil else { return nil } // Ignore notification from blocked user
             
-            let envelope = XMTP.Envelope.with { envelope in
+            let envelope = XMTPiOS.Envelope.with { envelope in
                 envelope.message = encryptedMessageData
                 envelope.contentTopic = topic
             }
@@ -82,7 +82,7 @@ private extension XMTPPushNotificationsExtensionHelper {
     }
     
     static func getClientFor(wallet: String,
-                             env: XMTPEnvironment) async throws -> XMTP.Client {
+                             env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
             return try await createClientUsing(keysData: keysData, env: env)
         }
@@ -90,9 +90,9 @@ private extension XMTPPushNotificationsExtensionHelper {
     }
     
     static func createClientUsing(keysData: Data,
-                                  env: XMTPEnvironment) async throws -> XMTP.Client {
+                                  env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         let keys = try PrivateKeyBundle(serializedData: keysData)
-        let client = try await XMTP.Client.from(bundle: keys,
+        let client = try await XMTPiOS.Client.from(bundle: keys,
                                                 options: .init(api: .init(env: env,
                                                                           appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
         return client
