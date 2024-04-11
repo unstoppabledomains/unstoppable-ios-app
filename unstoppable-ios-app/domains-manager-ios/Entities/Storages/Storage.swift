@@ -115,7 +115,7 @@ class Storage {
         var cacheMutable = _cache
         let ownedDomains = wallets.pickOwnedDomains(from: cacheMutable, in: namingService)
         guard ownedDomains.count != newDomainsArray.count else { return cacheMutable }
-        let gone = ownedDomains.enumerated().filter({ !newDomainsArray.contains(domain: $0.element) && $0.element.status != .claiming})
+        let gone = ownedDomains.enumerated().filter({ !newDomainsArray.contains(domain: $0.element) })
         cacheMutable.remove(domains: gone.map({$0.element}))
         return cacheMutable
     }
