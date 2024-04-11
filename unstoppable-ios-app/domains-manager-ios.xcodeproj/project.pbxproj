@@ -1011,6 +1011,7 @@
 		C670695628981C84001FD241 /* TextWarningButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C670695528981C84001FD241 /* TextWarningButton.swift */; };
 		C67097AC2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */; };
 		C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67097AB2BABD47E00BB8AB1 /* DebounceObject.swift */; };
+		C671CD2D2BC7758B005DA2FB /* StripePaymentSheet in Frameworks */ = {isa = PBXBuildFile; productRef = C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */; };
 		C671E38728FE85C800A2B3A0 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38628FE85C800A2B3A0 /* CarouselView.swift */; };
 		C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */; };
 		C671E39228FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */; };
@@ -3984,6 +3985,7 @@
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
 				C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */,
+				C671CD2D2BC7758B005DA2FB /* StripePaymentSheet in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
 				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
 				290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */,
@@ -8281,6 +8283,7 @@
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
 				C66811F42B47B1C600BDABB0 /* XMTP */,
 				C61B6C732BA0052C007408FD /* Push */,
+				C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -11799,7 +11802,7 @@
 			repositoryURL = "https://github.com/stripe/stripe-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 22.8.4;
+				version = 23.27.0;
 			};
 		};
 		30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */ = {
@@ -12004,6 +12007,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
 			productName = XMTP;
+		};
+		C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePaymentSheet;
 		};
 		C689C1722ADE484300AA0186 /* LaunchDarkly */ = {
 			isa = XCSwiftPackageProductDependency;
