@@ -86,15 +86,6 @@ private extension PurchaseMPCWalletCheckoutView {
             }
             isPurchasing = false
         }
-//        ecomPurchaseMPCWalletService.purchaseMPCWallet { [weak self] result in
-//            self?.isPurchasing = false
-//            switch result {
-//            case .success:
-//                viewModel.perform(action: .didPurchase)
-//            case .failure(let error):
-//                pullUpError = .purchaseError(error)
-//            }
-//        }
     }
 }
 
