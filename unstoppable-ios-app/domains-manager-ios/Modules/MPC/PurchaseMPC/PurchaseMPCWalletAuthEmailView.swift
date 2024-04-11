@@ -22,6 +22,7 @@ struct PurchaseMPCWalletAuthEmailView: View {
             Spacer()
         }
         .padding()
+        .background(Color.backgroundDefault)
     }
     
 }

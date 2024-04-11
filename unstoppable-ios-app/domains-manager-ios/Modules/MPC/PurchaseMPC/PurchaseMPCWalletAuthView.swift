@@ -19,6 +19,7 @@ struct PurchaseMPCWalletAuthView: View, ViewAnalyticsLogger {
             loginOptionsListView()
         }
         .padding()
+        .background(Color.backgroundDefault)
     }
 }
 

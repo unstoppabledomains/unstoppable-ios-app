@@ -9,13 +9,20 @@ import SwiftUI
 
 struct PurchaseMPCWalletCheckoutView: View {
     
+    @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
 
     var body: some View {
-        Text("Ji")
+        VStack {
+            Spacer()
+            totalView()
+            buyButton()
+            Spacer()
+        }
+            .padding()
             .background(Color.backgroundDefault)
             .animation(.default, value: UUID())
             .onReceive(ecomPurchaseMPCWalletService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
@@ -27,6 +34,32 @@ struct PurchaseMPCWalletCheckoutView: View {
             }
     }
     
+}
+
+// MARK: - Private methods
+private extension PurchaseMPCWalletCheckoutView {
+    @ViewBuilder
+    func totalView() -> some View {
+        if case .ready(let cart) = cartStatus {
+            HStack {
+                Text("Total due:")
+                Spacer()
+                Text(formatCartPrice(cart.totalPrice))
+            }
+        } else {
+            Text("Loading...")
+        }
+    }
+    
+    @ViewBuilder
+    func buyButton() -> some View {
+        UDButtonView(text: String.Constants.pay.localized(),
+                     style: .large(.applePay),
+                     isLoading: viewModel.isLoading,
+                     callback: {
+            viewModel.handleAction(.confirmPurchase)
+        })
+    }
 }
 
 // MARK: - Private methods
@@ -46,4 +79,5 @@ private extension PurchaseMPCWalletCheckoutView {
 
 #Preview {
     PurchaseMPCWalletCheckoutView()
+        .environmentObject(PurchaseMPCWalletViewModel())
 }

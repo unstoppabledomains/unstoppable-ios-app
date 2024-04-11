@@ -24,6 +24,8 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
                 case .loginWithEmail(let email, let password):
                     try await self.loginWithEmail(email, password: password)
                     didAuthorise()
+                case .confirmPurchase:
+                    return
                 }
             } catch {
                 self.error = error
