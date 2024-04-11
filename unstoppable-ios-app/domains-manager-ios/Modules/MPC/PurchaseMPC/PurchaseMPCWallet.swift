@@ -13,6 +13,6 @@ extension PurchaseMPCWallet {
     enum FlowAction {
         case authWithProvider(LoginProvider)
         case loginWithEmail(email: String, password: String)
-        case confirmPurchase
+        case didPurchase
     }
 }

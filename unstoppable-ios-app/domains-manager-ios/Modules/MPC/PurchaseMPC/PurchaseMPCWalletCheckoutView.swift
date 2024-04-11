@@ -14,6 +14,7 @@ struct PurchaseMPCWalletCheckoutView: View {
 
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
+    @State private var isPurchasing = false
 
     var body: some View {
         VStack {
@@ -55,10 +56,8 @@ private extension PurchaseMPCWalletCheckoutView {
     func buyButton() -> some View {
         UDButtonView(text: String.Constants.pay.localized(),
                      style: .large(.applePay),
-                     isLoading: viewModel.isLoading,
-                     callback: {
-            viewModel.handleAction(.confirmPurchase)
-        })
+                     isLoading: isPurchasing,
+                     callback: confirmPurchase)
     }
 }
 
@@ -74,6 +73,28 @@ private extension PurchaseMPCWalletCheckoutView {
         default:
             return
         }
+    }
+    
+    func confirmPurchase() {
+        Task {
+            isPurchasing = true
+            do {
+                try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
+                viewModel.handleAction(.didPurchase)
+            } catch {
+                
+            }
+            isPurchasing = false
+        }
+//        ecomPurchaseMPCWalletService.purchaseMPCWallet { [weak self] result in
+//            self?.isPurchasing = false
+//            switch result {
+//            case .success:
+//                viewModel.perform(action: .didPurchase)
+//            case .failure(let error):
+//                pullUpError = .purchaseError(error)
+//            }
+//        }
     }
 }
 
