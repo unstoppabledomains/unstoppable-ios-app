@@ -700,7 +700,7 @@
 "DOMAIN_PROFILE_ACCESS_INFO_TITLE" = "Who can view your data?";
 "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION" = "Control the data displayed on your public profile and what is only visible to you and allowed apps.";
 "PROFILE_SOCIALS_EMPTY_MESSAGE" = "Manage your social links on the Unstoppable Domains website.";
-"PROFILE_REFRESHING_BADGES_TITLE" = "Refreshing (~15m)";
+"PROFILE_REFRESHING_BADGES_TITLE" = "Refreshing";
 "PROFILE_BADGES_UP_TO_DATE" = "Badges are up to date";
 "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE" = "#%@ on leaderboard";
 "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE" = "%@ holders";
