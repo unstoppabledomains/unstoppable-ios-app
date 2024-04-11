@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 struct XMTPServiceHelper {
     static func getCurrentXMTPEnvironment() -> XMTPEnvironment {
@@ -15,19 +15,19 @@ struct XMTPServiceHelper {
     }
     
     static func getClientFor(user: MessagingChatUserProfile,
-                             env: XMTPEnvironment) async throws -> XMTP.Client {
+                             env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         let wallet = user.wallet
         return try await getClientFor(wallet: wallet, env: env)
     }
     
     static func getClientFor(domain: DomainItem,
-                             env: XMTPEnvironment) async throws -> XMTP.Client {
+                             env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         let wallet = try domain.getETHAddressThrowing()
         return try await getClientFor(wallet: wallet, env: env)
     }
     
     static func getClientFor(wallet: String,
-                             env: XMTPEnvironment) async throws -> XMTP.Client {
+                             env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
             return try await createClientUsing(keysData: keysData, env: env)
         }
@@ -35,9 +35,9 @@ struct XMTPServiceHelper {
     }
     
     static func createClientUsing(keysData: Data,
-                                  env: XMTPEnvironment) async throws -> XMTP.Client {
+                                  env: XMTPEnvironment) async throws -> XMTPiOS.Client {
         let keys = try PrivateKeyBundle(serializedData: keysData)
-        let client = try await XMTP.Client.from(bundle: keys,
+        let client = try await XMTPiOS.Client.from(bundle: keys,
                                                 options: .init(api: .init(env: env,
                                                                           appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
         client.register(codec: AttachmentCodec())

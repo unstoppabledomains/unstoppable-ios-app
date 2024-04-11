@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bufbuild/connect-swift",
       "state" : {
-        "revision" : "6f5afc57f44a3ed15b9a01381ce73f84d15e43db",
-        "version" : "0.3.0"
+        "revision" : "1701d3d1b2c4c63fcccfd7094f86a88672fa5acb",
+        "version" : "0.12.0"
       }
     },
     {
@@ -89,6 +89,15 @@
       "state" : {
         "revision" : "cf82f0687ee505b291f8e8f5fe978122892b74ab",
         "version" : "9.5.0"
+      }
+    },
+    {
+      "identity" : "libxmtp-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xmtp/libxmtp-swift",
+      "state" : {
+        "revision" : "fa57437cc1a84df566c91bbd5df1d0619d404e09",
+        "version" : "0.4.3-beta4"
       }
     },
     {
@@ -158,8 +167,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stripe/stripe-ios",
       "state" : {
-        "revision" : "e242f59ce90914e93c8308e0c3ceba7368575b77",
-        "version" : "22.8.4"
+        "revision" : "febc79a4c5e02afce39d68211268cbad7c304a8f",
+        "version" : "23.27.0"
       }
     },
     {
@@ -221,8 +230,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "702cd7c56d5d44eeba73fdf83918339b26dc855c",
-        "version" : "2.62.0"
+        "revision" : "fc63f0cf4e55a4597407a9fc95b16a2bc44b4982",
+        "version" : "2.64.0"
       }
     },
     {
@@ -239,8 +248,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "3bd9004b9d685ed6b629760fc84903e48efec806",
-        "version" : "1.29.0"
+        "revision" : "0904bf0feb5122b7e5c3f15db7df0eabe623dd87",
+        "version" : "1.30.0"
       }
     },
     {
@@ -248,8 +257,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-ssl.git",
       "state" : {
-        "revision" : "320bd978cceb8e88c125dcbb774943a92f6286e9",
-        "version" : "2.25.0"
+        "revision" : "7c381eb6083542b124a6c18fae742f55001dc2b5",
+        "version" : "2.26.0"
       }
     },
     {
@@ -280,6 +289,15 @@
       }
     },
     {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system.git",
+      "state" : {
+        "revision" : "025bcb1165deab2e20d4eaba79967ce73013f496",
+        "version" : "1.2.1"
+      }
+    },
+    {
       "identity" : "swiftimagereadwrite",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dagronf/SwiftImageReadWrite",
@@ -302,8 +320,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
-        "revision" : "232090b71756417c2ba44cda78ff57bc5ef54ca2",
-        "version" : "1.11.0"
+        "revision" : "c9ea7a1836e5a58636c3df528a21997187bd54ac",
+        "version" : "1.18.4"
       }
     },
     {
@@ -338,16 +356,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/xmtp/xmtp-ios",
       "state" : {
-        "revision" : "af277a00fb254a1916da8db12caf480655d4894d"
-      }
-    },
-    {
-      "identity" : "xmtp-rust-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/xmtp/xmtp-rust-swift",
-      "state" : {
-        "branch" : "main",
-        "revision" : "e08af6942841054ae02a6fe01d90d18e76d5f248"
+        "revision" : "0a625c91e56538280363c43900b91266554fa515"
       }
     }
   ],
