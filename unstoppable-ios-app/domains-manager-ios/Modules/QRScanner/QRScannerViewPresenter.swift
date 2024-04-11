@@ -194,7 +194,7 @@ private extension QRScannerViewPresenter {
             if let view = self.view {
                 await appContext.pullUpViewService.showWCInvalidQRCodePullUp(in: view)
             }
-            throw ScanningError.notSupportedQRCode
+            throw error
         }
     }
     
@@ -215,15 +215,5 @@ private extension QRScannerViewPresenter {
     
     func wait(for interval: TimeInterval) async throws {
         await Task.sleep(seconds: interval)
-    }
-}
-
-extension QRScannerViewPresenter {
-    enum ScanningError: String, LocalizedError {
-        case notSupportedQRCode
-        case notSupportedQRCodeV2
-        
-        public var errorDescription: String? { rawValue }
-
     }
 }
