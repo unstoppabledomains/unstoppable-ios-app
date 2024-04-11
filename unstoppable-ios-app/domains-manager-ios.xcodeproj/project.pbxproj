@@ -186,6 +186,8 @@
 		C609831A282B707B00546392 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098319282B707B00546392 /* UINavigationController.swift */; };
 		C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */; };
 		C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */; };
+		C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
+		C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
 		C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */; };
@@ -2841,6 +2843,7 @@
 		C6098319282B707B00546392 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewTransactionsAction.swift; sourceTree = "<group>"; };
 		C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewMessagingNewsChannel.swift; sourceTree = "<group>"; };
+		C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletAuthEmailView.swift; sourceTree = "<group>"; };
 		C60C298B2834E30000626851 /* GroupedCoinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCoinRecord.swift; sourceTree = "<group>"; };
 		C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableRoundedWalletBadgeImageView.swift; sourceTree = "<group>"; };
 		C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewLoginViewController.swift; sourceTree = "<group>"; };
@@ -7203,6 +7206,7 @@
 				C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */,
 				C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */,
 				C671CD002BC667C8005DA2FB /* PurchaseMPCWalletAuthView.swift */,
+				C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */,
 				C671CD242BC6D1D7005DA2FB /* PurchaseMPCWalletCheckoutView.swift */,
 				C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */,
 			);
@@ -10239,6 +10243,7 @@
 				C666894B28116073002062B4 /* BorderedTableView.swift in Sources */,
 				C6FECF46282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
 				C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
+				C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */,
 				C6EECE972833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1328913DF500655675 /* Env.swift in Sources */,
 				C664B6492914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */,
@@ -11079,6 +11084,7 @@
 				C6D647082B1ED7CA00D724AC /* MessagingNewsChannel.swift in Sources */,
 				C6D646AB2B1ED16900D724AC /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C618081A2B19AAEF0032E543 /* FirebaseDomainsServiceProtocol.swift in Sources */,
+				C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */,
 				C6203A5A2B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
 				C6952A612BC664C600F4B475 /* PurchaseMPCWallet.swift in Sources */,
 				C6D646D32B1ED2C800D724AC /* UDTextField.swift in Sources */,

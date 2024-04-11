@@ -19,10 +19,11 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
         Task {
             do {
                 switch action {
-                    // Common path
                 case .authWithProvider(let provider):
                     try await self.authWithProvider(provider)
-                    navPath.append(.checkout)
+                case .loginWithEmail(let email, let password):
+                    try await self.loginWithEmail(email, password: password)
+                    didAuthorise()
                 }
             } catch {
                 self.error = error
@@ -38,21 +39,29 @@ private extension PurchaseMPCWalletViewModel {
     func authWithProvider(_ provider: LoginProvider) async throws {
         UDVibration.buttonTap.vibrate()
         isLoading = true
+        defer { isLoading = false }
+        
         switch provider {
         case .email:
             moveToEnterEmailScreen()
+            return
         case .google:
             try await loginWithGoogle()
         case .twitter:
             try await loginWithTwitter()
         case .apple:
             loginWithApple()
+            return
         }
-        isLoading = false
+        didAuthorise()
     }
     
     func moveToEnterEmailScreen() {
-        
+        navPath.append(.signInWithEmail)
+    }
+    
+    func didAuthorise() {
+        navPath.append(.checkout)
     }
     
     func loginWithEmail(_ email: String, password: String) async throws {

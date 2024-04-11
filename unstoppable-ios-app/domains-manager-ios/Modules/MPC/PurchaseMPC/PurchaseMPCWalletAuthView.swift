@@ -53,6 +53,7 @@ private extension PurchaseMPCWalletAuthView {
             }
         }
     }
+    
     @ViewBuilder
     func listViewFor(provider: LoginProvider) -> some View {
         UDCollectionListRowButton(content: {
