@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 final class XMTPMessagingWebSocketsService {
     typealias ConversationStream = AsyncThrowingStream<Conversation, Error>

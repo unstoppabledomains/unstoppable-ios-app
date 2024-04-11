@@ -187,6 +187,8 @@
 		C609831A282B707B00546392 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098319282B707B00546392 /* UINavigationController.swift */; };
 		C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */; };
 		C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */; };
+		C60BC04B2BC7806F00A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04A2BC7806F00A79CDB /* XMTPiOS */; };
+		C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04C2BC7808400A79CDB /* XMTPiOS */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
 		C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */; };
@@ -970,8 +972,6 @@
 		C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804BE280D9EC7007E6390 /* EnterPasscodeViewController.swift */; };
 		C66804D9280D9EC8007E6390 /* SetupPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804BF280D9EC7007E6390 /* SetupPasscodeViewController.swift */; };
 		C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66804C0280D9EC7007E6390 /* VerifyPasscodeViewController.swift */; };
-		C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C66811F42B47B1C600BDABB0 /* XMTP */; };
-		C66811F72B47B1F000BDABB0 /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C66811F62B47B1F000BDABB0 /* XMTP */; };
 		C669B44F2B747539001D4788 /* SettingsNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669B44E2B747539001D4788 /* SettingsNavigationDestination.swift */; };
 		C669B4502B747539001D4788 /* SettingsNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669B44E2B747539001D4788 /* SettingsNavigationDestination.swift */; };
 		C669B4522B747607001D4788 /* SettingsLinkNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669B4512B747607001D4788 /* SettingsLinkNavigationDestination.swift */; };
@@ -3983,8 +3983,8 @@
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
+				C60BC04B2BC7806F00A79CDB /* XMTPiOS in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
-				C66811F52B47B1C600BDABB0 /* XMTP in Frameworks */,
 				C671CD2D2BC7758B005DA2FB /* StripePaymentSheet in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
 				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
@@ -4031,11 +4031,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C66811F72B47B1F000BDABB0 /* XMTP in Frameworks */,
 				C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */,
 				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
 				C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */,
+				C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8281,9 +8281,9 @@
 				C689C1722ADE484300AA0186 /* LaunchDarkly */,
 				C65244692AF8A7A400673CC0 /* WalletConnectNotify */,
 				C607A5CC2B3288900088ECF3 /* Amplitude */,
-				C66811F42B47B1C600BDABB0 /* XMTP */,
 				C61B6C732BA0052C007408FD /* Push */,
 				C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */,
+				C60BC04A2BC7806F00A79CDB /* XMTPiOS */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -8360,7 +8360,7 @@
 				C6E69FA2288AB821000A8346 /* SVGKit */,
 				C65DD4C52A7CABC700CAB10C /* Valet */,
 				C60CB2DF2A7CB62E00663989 /* web3swift */,
-				C66811F62B47B1F000BDABB0 /* XMTP */,
+				C60BC04C2BC7808400A79CDB /* XMTPiOS */,
 			);
 			productName = NotificationServiceExtension;
 			productReference = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */;
@@ -11865,8 +11865,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/xmtp/xmtp-ios";
 			requirement = {
-				kind = revision;
-				revision = af277a00fb254a1916da8db12caf480655d4894d;
+				branch = 0a625c91e56538280363c43900b91266554fa515;
+				kind = branch;
 			};
 		};
 		C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */ = {
@@ -11963,6 +11963,16 @@
 			package = C607A5CB2B3288800088ECF3 /* XCRemoteSwiftPackageReference "Amplitude-iOS" */;
 			productName = Amplitude;
 		};
+		C60BC04A2BC7806F00A79CDB /* XMTPiOS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
+			productName = XMTPiOS;
+		};
+		C60BC04C2BC7808400A79CDB /* XMTPiOS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
+			productName = XMTPiOS;
+		};
 		C60CB2DF2A7CB62E00663989 /* web3swift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */;
@@ -11997,16 +12007,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
-		};
-		C66811F42B47B1C600BDABB0 /* XMTP */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
-			productName = XMTP;
-		};
-		C66811F62B47B1F000BDABB0 /* XMTP */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */;
-			productName = XMTP;
 		};
 		C671CD2C2BC7758B005DA2FB /* StripePaymentSheet */ = {
 			isa = XCSwiftPackageProductDependency;
