@@ -66,28 +66,27 @@ extension WalletDisplayInfo {
           domainsCount: Int,
           udDomainsCount: Int,
           reverseResolutionDomain: DomainDisplayInfo? = nil) {
-        if wallet.walletState == .externalLinked {
+        
+        self.isBackedUp = wallet.hasBeenBackedUp == true
+        switch wallet.walletType {
+        case .generatedLocally, .defaultGeneratedLocally:
+            self.source = .locallyGenerated
+            self.isWithPrivateKey = false
+        case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
+            self.source = .imported
+            self.isWithPrivateKey = wallet.walletType == .privateKeyEntered
+            // TODO: - MPC
+        case .mpc:
+            self.source = .mpc
+            self.isWithPrivateKey = false
+        case .externalLinked:
             guard let externalWallet = wallet.getExternalWallet(),
                   let walletMake = externalWallet.make else { return nil }
-            
+
             self.source = .external(externalWallet.name, walletMake)
-            self.isBackedUp = false
             self.isWithPrivateKey = false
-        } else {
-            self.isBackedUp = wallet.hasBeenBackedUp == true
-            switch wallet.type {
-            case .generatedLocally, .defaultGeneratedLocally:
-                self.source = .locallyGenerated
-                self.isWithPrivateKey = false
-            case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
-                self.source = .imported
-                self.isWithPrivateKey = wallet.type == .privateKeyEntered
-                // TODO: - MPC
-            case .mpc:
-                self.source = .mpc
-                self.isWithPrivateKey = false
-            }
         }
+        
         self.name = wallet.aliasName
         self.address = wallet.address
         self.reverseResolutionDomain = reverseResolutionDomain

@@ -101,7 +101,7 @@ extension BaseAddWalletPresenter: AddWalletPresenterProtocol {
                     }
                     
                     appContext.analyticsService.log(event: .didAddWallet, 
-                                                    withParameters: [.walletType : wallet.type.rawValue])
+                                                    withParameters: [.walletType : wallet.walletType.rawValue])
                     view.setContinueButtonEnabled(true)
                     didCreateWallet(wallet: wallet)
                 } catch WalletError.ethWalletAlreadyExists {

@@ -86,9 +86,9 @@ final class UDWalletsStorage {
     
     private func set(newWallets: [UDWallet], ownedBy userId: Int) {
         func pickOneToRemain(from duplicates: [UDWallet]) -> UDWallet {
-            if let locallyGen = duplicates.first(where: {$0.type == .generatedLocally}) { return locallyGen }
-            if let importedWithSeed = duplicates.first(where: {$0.type == .mnemonicsEntered}) { return importedWithSeed }
-            if let importedWithPK = duplicates.first(where: {$0.type == .privateKeyEntered}) { return importedWithPK }
+            if let locallyGen = duplicates.first(where: {$0.walletType == .generatedLocally}) { return locallyGen }
+            if let importedWithSeed = duplicates.first(where: {$0.walletType == .mnemonicsEntered}) { return importedWithSeed }
+            if let importedWithPK = duplicates.first(where: {$0.walletType == .privateKeyEntered}) { return importedWithPK }
             return duplicates[0]
         }
         
@@ -182,7 +182,7 @@ extension UDWalletsStorage {
 
     private func removeReadOnlyUnverifiedWallets() {
         let wallets = appContext.udWalletsService.getUserWallets()
-        let readOnlyWallets = wallets.filter({ $0.type == .importedUnverified && !$0.isExternalConnectionActive })
+        let readOnlyWallets = wallets.filter({ $0.walletType == .importedUnverified })
         
         if !readOnlyWallets.isEmpty {
             readOnlyWallets.forEach { wallet in

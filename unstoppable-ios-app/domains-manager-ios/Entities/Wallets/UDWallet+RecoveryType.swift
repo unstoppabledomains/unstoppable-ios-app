@@ -9,7 +9,7 @@ import Foundation
 
 extension UDWallet {
     var recoveryType: RecoveryType? {
-        .init(walletType: type)
+        .init(walletType: walletType)
     }
     
     enum RecoveryType: Codable {
@@ -23,7 +23,7 @@ extension UDWallet {
             case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
                 self = .recoveryPhrase
                 // TODO: - MPC
-            case .importedUnverified, .mpc:
+            case .importedUnverified, .mpc, .externalLinked:
                 return nil
             }
         }

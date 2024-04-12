@@ -100,7 +100,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         } catch WalletError.ethWalletAlreadyExists(let address) {
             if let extWallet = UDWalletsStorage.instance.getWallet(by: address,
                                                                    namingService: .UNS),
-               extWallet.walletState == .externalLinked {
+               extWallet.walletType == .externalLinked {
                 // removing and disconnecting the ext wallet if an identical is being imported
                 disable(externalWallet: extWallet)
                 wallet = try await walletConstructorBlock()
@@ -234,7 +234,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                 
                 if let extWallet = UDWalletsStorage.instance.getWallet(by: udWallet.address,
                                                                        namingService: .UNS),
-                   extWallet.walletState == .externalLinked {
+                   extWallet.walletType == .externalLinked {
                     // removing and disconnecting the ext wallet if an identical is being imported
                     disable(externalWallet: extWallet)
                     udWallet = try walletWithSeed.saveSeedToKeychain()
@@ -382,7 +382,7 @@ private extension UDWalletsService {
     func createWalletWith(privateKey: String) async throws -> UDWallet {
         guard privateKey.isValidPrivateKey() else { throw WalletError.invalidPrivateKey }
         let wallet = try await UDWallet.create(aliasName: "Wallet",
-                                               type: .privateKeyEntered,
+                                               walletType: .privateKeyEntered,
                                                privateKeyEthereum: privateKey)
         
         return wallet
@@ -391,7 +391,7 @@ private extension UDWalletsService {
     func createWalletWith(mnemonics: String) async throws -> UDWallet {
         guard mnemonics.isValidSeedPhrase() else { throw WalletError.invalidPrivateKey }
         let wallet = try await UDWallet.create(aliasName: "Wallet",
-                                               type: .mnemonicsEntered,
+                                               walletType: .mnemonicsEntered,
                                                mnemonicsEthereum: mnemonics)
         
         return wallet

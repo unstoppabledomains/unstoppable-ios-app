@@ -20,10 +20,10 @@ struct BackedUpWallet {
         }
         self.name = udWallet.aliasName
         self.dateTime = Date()
-        self.type = udWallet.type
+        self.type = udWallet.walletType
         self.passwordHash = backUpPassword.value
         
-        if udWallet.type == .privateKeyEntered {
+        if udWallet.walletType == .privateKeyEntered {
             guard let pk = udWallet.getPrivateKey(),
                   let pkEncrypted = try? Encrypting.encrypt(message: pk, with: password) else { return nil }
             self.encryptedPrivateSeed = Seed.encryptedPrivateKey(pkEncrypted)
