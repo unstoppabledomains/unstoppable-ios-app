@@ -150,7 +150,7 @@ extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
         guard let address = address?.normalized else { return nil }
         
-        return first(where: { $0.address == address })
+        return first(where: { $0.address.normalized == address })
     }
     
     func combinedDomains() -> [DomainDisplayInfo] {
