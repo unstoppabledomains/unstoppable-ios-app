@@ -47,7 +47,7 @@ extension UDWallet {
             return data.hexString
         }
         
-        switch self.walletType {
+        switch self.type {
         case .externalLinked:
             if self.shouldParseMessage {
                 let message = messageString.convertedIntoReadableMessage
@@ -91,7 +91,7 @@ extension UDWallet {
          */
         
         
-        switch self.walletType {
+        switch self.type {
         case .externalLinked:
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
 
@@ -139,7 +139,7 @@ extension UDWallet {
     }
     
     func getSignTypedData(dataString: String) async throws -> String {
-        switch self.walletType {
+        switch self.type {
         case .externalLinked:
             let signature = try await signViaWalletConnectTypedData(dataString: dataString)
             return signature
@@ -211,7 +211,7 @@ extension UDWallet {
     func multipleWalletPersonalSigns(messages: [String]) async throws -> [String]{
         var sigs = [String]()
         
-        switch self.walletType {
+        switch self.type {
         case .externalLinked:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for message in messages {

@@ -18,7 +18,7 @@ final class MockUDWalletsService {
         
         if walletsToUse.isEmpty {
             var wallet = createUnverifiedUDWallet()
-            wallet.walletType = .generatedLocally
+            wallet.type = .generatedLocally
             wallet.hasBeenBackedUp = false
             self.wallets.append(wallet)
         } else {
@@ -32,7 +32,7 @@ final class MockUDWalletsService {
 //                    walletConnectClientService.addSession(for: wallet.address, name: walletToUse.name)
                 } else {
                     wallet = createUnverifiedUDWallet()
-                    wallet.walletType = type
+                    wallet.type = type
                     wallet.hasBeenBackedUp = walletToUse.hasBeenBackedUp
                 }
                 if let name = walletToUse.name {
@@ -186,7 +186,7 @@ private extension MockUDWalletsService {
     func createLocallyGeneratedBackedUpUDWallet() -> UDWallet {
         var wallet = createUnverifiedUDWallet()
         wallet.aliasName = "Wallet"
-        wallet.walletType = .generatedLocally
+        wallet.type = .generatedLocally
         wallet.hasBeenBackedUp = true
         
         return wallet
@@ -195,14 +195,14 @@ private extension MockUDWalletsService {
     func createLocallyGeneratedNotBackedUpUDWallet() -> UDWallet {
         var wallet = createUnverifiedUDWallet()
         wallet.aliasName = "Wallet"
-        wallet.walletType = .generatedLocally
+        wallet.type = .generatedLocally
         
         return wallet
     }
     
     func createImportedBackedUpUDWallet() -> UDWallet {
         var wallet = createUnverifiedUDWallet()
-        wallet.walletType = .privateKeyEntered
+        wallet.type = .privateKeyEntered
         wallet.hasBeenBackedUp = true
 
         return wallet
@@ -210,7 +210,7 @@ private extension MockUDWalletsService {
     
     func createImportedNotBackedUpUDWallet() -> UDWallet {
         var wallet = createUnverifiedUDWallet()
-        wallet.walletType = .privateKeyEntered
+        wallet.type = .privateKeyEntered
         
         return wallet
     }
@@ -218,7 +218,7 @@ private extension MockUDWalletsService {
     func createImportedNotBackedUpWithNameUDWallet() -> UDWallet {
         var wallet = createUnverifiedUDWallet()
         wallet.aliasName = "My precious"
-        wallet.walletType = .privateKeyEntered
+        wallet.type = .privateKeyEntered
         
         return wallet
     }

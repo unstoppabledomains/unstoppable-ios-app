@@ -9,7 +9,7 @@ import Foundation
 
 extension UDWallet {
     var recoveryType: RecoveryType? {
-        .init(walletType: walletType)
+        .init(walletType: type)
     }
     
     enum RecoveryType: Codable {

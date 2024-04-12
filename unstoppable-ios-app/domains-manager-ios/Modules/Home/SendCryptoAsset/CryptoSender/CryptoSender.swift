@@ -62,7 +62,7 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                        toAddress: toAddress,
                                                        chainId: chain.id)
         
-        switch wallet.walletType {
+        switch wallet.type {
         case .externalLinked:
             let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response

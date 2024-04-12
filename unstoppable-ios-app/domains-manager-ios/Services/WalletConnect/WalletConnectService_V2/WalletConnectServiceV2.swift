@@ -690,7 +690,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                       request: request,
                                                                       transaction: completedTx)
             
-            switch udWallet.walletType {
+            switch udWallet.type {
             case .externalLinked:
                 let sessionsWithExtWallet = findSessions(by: walletAddress)
                 let response = try await signTxViaWalletConnectV2(sessions: sessionsWithExtWallet,
@@ -749,7 +749,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                       chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
-            switch udWallet.walletType {
+            switch udWallet.type {
             case .externalLinked:
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
@@ -954,7 +954,7 @@ extension WalletConnectServiceV2 {
         let connectedApp = try detectApp(by: address, topic: request.topic)
         let wallet = try detectWallet(by: address)
         
-        switch wallet.udWallet.walletType {
+        switch wallet.udWallet.type {
         case .externalLinked: break
         case .mpc: print("handle with mpc") // TODO: mpc
         default:  // locally verified wallet

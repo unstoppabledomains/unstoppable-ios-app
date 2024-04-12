@@ -100,7 +100,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         } catch WalletError.ethWalletAlreadyExists(let address) {
             if let extWallet = UDWalletsStorage.instance.getWallet(by: address,
                                                                    namingService: .UNS),
-               extWallet.walletType == .externalLinked {
+               extWallet.type == .externalLinked {
                 // removing and disconnecting the ext wallet if an identical is being imported
                 disable(externalWallet: extWallet)
                 wallet = try await walletConstructorBlock()
@@ -234,7 +234,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                 
                 if let extWallet = UDWalletsStorage.instance.getWallet(by: udWallet.address,
                                                                        namingService: .UNS),
-                   extWallet.walletType == .externalLinked {
+                   extWallet.type == .externalLinked {
                     // removing and disconnecting the ext wallet if an identical is being imported
                     disable(externalWallet: extWallet)
                     udWallet = try walletWithSeed.saveSeedToKeychain()

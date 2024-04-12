@@ -68,13 +68,13 @@ extension WalletDisplayInfo {
           reverseResolutionDomain: DomainDisplayInfo? = nil) {
         
         self.isBackedUp = wallet.hasBeenBackedUp == true
-        switch wallet.walletType {
+        switch wallet.type {
         case .generatedLocally, .defaultGeneratedLocally:
             self.source = .locallyGenerated
             self.isWithPrivateKey = false
         case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
             self.source = .imported
-            self.isWithPrivateKey = wallet.walletType == .privateKeyEntered
+            self.isWithPrivateKey = wallet.type == .privateKeyEntered
             // TODO: - MPC
         case .mpc:
             self.source = .mpc

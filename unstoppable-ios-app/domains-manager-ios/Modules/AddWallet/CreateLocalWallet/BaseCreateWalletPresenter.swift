@@ -58,7 +58,7 @@ extension BaseCreateWalletPresenter {
                 let wallet = try await udWalletsService.createNewUDWallet()
                 view.setNavigationGestureEnabled(true)
                 appContext.analyticsService.log(event: .didAddWallet,
-                                                withParameters: [.walletType : wallet.walletType.rawValue])
+                                                withParameters: [.walletType : wallet.type.rawValue])
                 Vibration.success.vibrate()
                 walletCreated(wallet)
             } catch WalletError.walletsLimitExceeded(let limit) {

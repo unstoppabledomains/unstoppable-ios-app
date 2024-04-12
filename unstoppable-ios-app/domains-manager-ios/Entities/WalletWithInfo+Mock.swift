@@ -27,7 +27,7 @@ fileprivate extension UDWallet {
          type: WalletType,
          hasBeenBackedUp: Bool = false) {
         self.aliasName = aliasName
-        self.walletType = type
+        self.type = type
         self.hasBeenBackedUp = hasBeenBackedUp
     }
 }

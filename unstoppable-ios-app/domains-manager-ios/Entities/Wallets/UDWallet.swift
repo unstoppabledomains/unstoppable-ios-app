@@ -34,7 +34,7 @@ struct UDWallet: Codable, @unchecked Sendable {
     }
     
     var aliasName: String
-    var walletType: WalletType
+    var type: WalletType
     var ethWallet: UDWalletEthereum?
     var hasBeenBackedUp: Bool? = false
     
@@ -54,7 +54,7 @@ struct UDWallet: Codable, @unchecked Sendable {
                  ethWallet: UDWalletEthereum?,
                  hasBeenBackedUp: Bool = false) {
         self.aliasName = aliasName
-        self.walletType = walletType
+        self.type = walletType
         self.ethWallet = ethWallet
         self.hasBeenBackedUp = hasBeenBackedUp
     }
@@ -378,6 +378,6 @@ extension UDWallet: Hashable {
         hasher.combine(self.extractEthWallet()?.address)
         hasher.combine(self.aliasName)
         hasher.combine(self.hasBeenBackedUp)
-        hasher.combine(self.walletType)
+        hasher.combine(self.type)
     }
 }
