@@ -11,6 +11,7 @@ struct PurchaseMPCWalletCheckoutView: View {
     
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
+    @EnvironmentObject var tabRouter: HomeTabRouter
 
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
@@ -94,7 +95,9 @@ private extension PurchaseMPCWalletCheckoutView {
             isPurchasing = true
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
-                viewModel.handleAction(.didPurchase)
+//                viewModel.handleAction(.didPurchase)
+                // Just close the flow for now
+                tabRouter.purchasingMPCWallet = false
             } catch {
                 
             }
