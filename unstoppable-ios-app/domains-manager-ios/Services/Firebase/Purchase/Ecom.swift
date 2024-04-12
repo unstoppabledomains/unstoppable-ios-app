@@ -299,5 +299,6 @@ extension Ecom {
     struct UDUserAccountCryptWallet: Codable {
         let id: Int
         let address: String
+        let type: String
     }
 }

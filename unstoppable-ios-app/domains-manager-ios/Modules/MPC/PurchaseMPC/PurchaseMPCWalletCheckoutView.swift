@@ -41,14 +41,27 @@ struct PurchaseMPCWalletCheckoutView: View {
 private extension PurchaseMPCWalletCheckoutView {
     @ViewBuilder
     func totalView() -> some View {
-        if case .ready(let cart) = cartStatus {
+        switch cartStatus {
+        case .ready(let cart):
             HStack {
                 Text("Total due:")
                 Spacer()
                 Text(formatCartPrice(cart.totalPrice))
             }
-        } else {
-            Text("Loading...")
+        case .alreadyPurchasedMPCWallet:
+            Text("User already own mpc wallet")
+                .foregroundStyle(Color.foregroundSuccess)
+        case .failedToLoadCalculations:
+            Text("Failed to load cart details")
+        }
+    }
+    
+    var isBuyButtonEnabled: Bool {
+        switch cartStatus {
+        case .ready:
+            return true
+        default:
+            return false
         }
     }
     
@@ -58,6 +71,7 @@ private extension PurchaseMPCWalletCheckoutView {
                      style: .large(.applePay),
                      isLoading: isPurchasing,
                      callback: confirmPurchase)
+        .disabled(!isBuyButtonEnabled)
     }
 }
 

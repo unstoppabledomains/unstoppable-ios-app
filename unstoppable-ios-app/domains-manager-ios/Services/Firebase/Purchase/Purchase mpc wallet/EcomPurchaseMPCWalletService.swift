@@ -140,8 +140,22 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func didAuthorise() async throws {
-        try await addProductsToCart([.mpcWallet(.init())], shouldRefreshCart: true)
+        let isAlreadyPurchasedMPCWallet = try await isAlreadyPurchasedMPCWallet()
+        if isAlreadyPurchasedMPCWallet {
+            self.cartStatus = .alreadyPurchasedMPCWallet
+        } else {
+            try await addProductsToCart([.mpcWallet(.init())], shouldRefreshCart: true)
+        }
+        
         isAutoRefreshCartSuspended = false
+    }
+    
+    func isAlreadyPurchasedMPCWallet() async throws -> Bool {
+        let wallets = try await loadUserCryptoWallets()
+        if wallets.first(where: { $0.type == "EvmPlatformMpcWallet" }) != nil {
+            return true
+        }
+        return false
     }
     
     func createCartFromUDCart(_ udCart: Ecom.UDUserCart) -> PurchaseMPCWalletCart {
