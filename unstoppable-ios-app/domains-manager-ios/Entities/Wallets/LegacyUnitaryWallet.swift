@@ -57,7 +57,7 @@ extension LegacyUnitaryWallet {
                 throw WalletError.EthWalletPrivateKeyNotFound
             }
             return try await UDWallet.create(aliasName: self.aliasName,
-                                             type: self.type,
+                                             walletType: self.type,
                                              privateKeyEthereum: privateKeyEthereum)
         case .hd:
             guard let mnemonicsEthereum = self.getMnemonicsArray()?.mnemonicsString else {
@@ -65,7 +65,7 @@ extension LegacyUnitaryWallet {
                 throw WalletError.EthWalletPrivateKeyNotFound
             }
             return try await UDWallet.create(aliasName: self.aliasName,
-                                             type: self.type,
+                                             walletType: self.type,
                                              mnemonicsEthereum: mnemonicsEthereum)
         }
     }

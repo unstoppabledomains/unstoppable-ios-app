@@ -308,7 +308,7 @@ private extension WalletsListViewPresenter {
             var connectedWallets = [WalletEntity]()
             
             for wallet in wallets {
-                if wallet.udWallet.type == .externalLinked {
+                if wallet.udWallet.walletType == .externalLinked {
                     connectedWallets.append(wallet)
                 } else {
                     managedWallets.append(wallet)

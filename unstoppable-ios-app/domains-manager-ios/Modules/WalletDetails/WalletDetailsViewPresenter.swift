@@ -162,7 +162,7 @@ private extension WalletDetailsViewPresenter {
                 snapshot.appendSections([.backUpAndRecovery])
                 snapshot.appendItems([.listItem(.backUp(state: walletInfo.backupState,
                                                         isOnline: isNetworkReachable))])
-                if let recoveryType = UDWallet.RecoveryType(walletType: wallet.udWallet.type) {
+                if let recoveryType = UDWallet.RecoveryType(walletType: wallet.udWallet.walletType) {
                     snapshot.appendItems([.listItem(.recoveryPhrase(recoveryType: recoveryType))])
                 }
             }
@@ -238,7 +238,7 @@ private extension WalletDetailsViewPresenter {
     }
     
     func indicateWalletRemoved() {
-        if wallet.udWallet.type == .externalLinked {
+        if wallet.udWallet.walletType == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
         } else {
             appContext.toastMessageService.showToast(.walletRemoved(walletName: wallet.displayInfo.walletSourceName), isSticky: false)
