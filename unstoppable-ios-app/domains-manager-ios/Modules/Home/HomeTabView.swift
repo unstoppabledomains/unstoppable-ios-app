@@ -56,6 +56,9 @@ struct HomeTabView: View {
         .sheet(item: $router.sendCryptoInitialData, content: { initialData in
             SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: initialData))
         })
+        .sheet(isPresented: $router.purchasingMPCWallet, content: {
+            PurchaseMPCWalletRootView()
+        })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
                                            mode: presentationDetails.mode,

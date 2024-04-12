@@ -674,15 +674,6 @@ private extension PullUpErrorConfiguration {
                      analyticsName: .purchaseDomainsAuthWalletError)
     }
     
-    static func loadCalculationsError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
-        .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
-              subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
-              primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback,
-                                   analyticsName: .tryAgain),
-              analyticsName: .purchaseDomainsCalculationsError)
-    }
-    
     static func purchaseError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
         .init(title: String.Constants.purchaseWalletPurchaseErrorTitle.localized(),
               subtitle: String.Constants.purchaseWalletPurchaseErrorSubtitle.localized(),

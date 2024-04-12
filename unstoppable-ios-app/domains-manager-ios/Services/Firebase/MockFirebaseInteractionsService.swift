@@ -141,9 +141,9 @@ private extension MockFirebaseInteractionsService {
         firebaseUser = .init(email: "qq@qq.qq")
     }
     
-    func loadUserCryptoWallets() async throws -> [FirebasePurchaseDomainsService.UDUserAccountCryptWallet] {
+    func loadUserCryptoWallets() async throws -> [Ecom.UDUserAccountCryptWallet] {
         let wallets = appContext.udWalletsService.getUserWallets()
-        return wallets.map { FirebasePurchaseDomainsService.UDUserAccountCryptWallet(id: 1, address: $0.address) }
+        return wallets.map { Ecom.UDUserAccountCryptWallet(id: 1, address: $0.address, type: "") }
 //        [.init(id: 1605, address: "0xc4a748796805dfa42cafe0901ec182936584cc6e"),
 //         .init(id: 1606, address: "0x8ed92xjd2793yenx837g3847d3n4dx9h")]
     }

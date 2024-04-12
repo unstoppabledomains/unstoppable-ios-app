@@ -32,7 +32,8 @@ final class GeneralAppContext: AppContextProtocol {
     let walletNFTsService: WalletNFTsServiceProtocol
     let domainProfilesService: DomainProfilesServiceProtocol
     let walletTransactionsService: WalletTransactionsServiceProtocol
-
+    let ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol
+    
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
                                                                                                  loader: DefaultImageDataLoader(),
@@ -174,6 +175,13 @@ final class GeneralAppContext: AppContextProtocol {
         purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebasePurchaseDomainsAuthService,
                                                                 firebaseSigner: firebaseSigner,
                                                                 preferencesService: .shared)
+        
+        let firebasePurchaseMPCWalletRefreshTokenStorage = PurchaseMPCWalletFirebaseAuthTokenStorage()
+        let ecomPurchaseMPCWalletAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                   refreshTokenStorage: firebasePurchaseMPCWalletRefreshTokenStorage)
+        ecomPurchaseMPCWalletService = EcomPurchaseMPCWalletService(firebaseAuthService: ecomPurchaseMPCWalletAuthService,
+                                                                    firebaseSigner: firebaseSigner,
+                                                                    preferencesService: .shared)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()

@@ -145,8 +145,7 @@ private extension UDDomainsService {
             
             return DomainItem (name: $0,
                                ownerWallet: ownerAddress,
-                               blockchain: blockchain,
-                               status: .claiming)
+                               blockchain: blockchain)
         })
         return domains
     }

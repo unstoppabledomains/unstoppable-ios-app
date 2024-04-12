@@ -331,8 +331,7 @@ private extension WalletsDataService {
         mintingDomains.map({
             let domainName = $0.name
             let domain = DomainItem(name: domainName,
-                                    ownerWallet: $0.walletAddress,
-                                    transactionHashes: [$0.transactionHash ?? ""])
+                                    ownerWallet: $0.walletAddress)
             let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domainName })
             let order = SortDomainsManager.shared.orderFor(domainName: domainName)
             

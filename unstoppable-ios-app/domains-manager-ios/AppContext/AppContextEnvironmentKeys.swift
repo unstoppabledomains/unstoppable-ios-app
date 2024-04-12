@@ -92,5 +92,14 @@ extension EnvironmentValues {
     }
 }
 
+// MARK: - MPC Wallets service
+private struct EcomPurchaseMPCWalletServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.ecomPurchaseMPCWalletService
+}
 
-
+extension EnvironmentValues {
+    var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
+        get { self[EcomPurchaseMPCWalletServiceKey.self] }
+        set { self[EcomPurchaseMPCWalletServiceKey.self] = newValue }
+    }
+}

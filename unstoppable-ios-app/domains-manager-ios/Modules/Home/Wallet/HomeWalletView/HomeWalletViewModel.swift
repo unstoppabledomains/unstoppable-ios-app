@@ -125,6 +125,8 @@ extension HomeWalletView {
                 CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
+            case .buyMPC:
+                router.purchasingMPCWallet = true
             }
         }
         
