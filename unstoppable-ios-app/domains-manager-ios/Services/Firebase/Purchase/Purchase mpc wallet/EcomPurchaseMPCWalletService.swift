@@ -69,9 +69,9 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     override func filterUnsupportedProductsFrom(products: [Ecom.UDProduct]) -> [Ecom.UDProduct] {
         products.filter( {
             if case .mpcWallet = $0 {
-                return true
+                return false
             }
-            return false
+            return true
         })
     }
     
