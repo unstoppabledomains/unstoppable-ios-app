@@ -703,7 +703,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 return .response(sig)
                 
             case .mpc: print("sign with mpc")
-                    return .response(WCAnyCodable("signature")) // TODO: mpc
+                return .error(.internalError) // TODO: mpc
                 
             default:  // locally verified wallet
                 guard let privKeyString = udWallet.getPrivateKey() else {
@@ -755,7 +755,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 return response
                 
             case .mpc: print("sign with mpc")
-                return .error(.internalError)// TODO: mpc
+                return .error(.internalError) // TODO: mpc
                 
             default:  // locally verified wallet
                 let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
