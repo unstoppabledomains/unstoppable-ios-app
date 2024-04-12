@@ -38,14 +38,6 @@ struct UDWallet: Codable, @unchecked Sendable {
     var ethWallet: UDWalletEthereum?
     var hasBeenBackedUp: Bool? = false
     
-//    var walletState: ExternalWalletConnectionState {
-//        return self.isExternalConnectionActive ? .activeWCConnection : .noConnection
-//    }
-    
-//    var isMintingHost: Bool {
-//        return walletState == .verified || walletState == .externalLinked
-//    }
-    
     private var walletConnectionInfo: WalletConnectionInfo?
     private var mpcMetadata: MPCWalletMetadata?
     

@@ -79,18 +79,6 @@ extension UDWallet {
     }
     
     func getEthSignature(messageString: String) async throws -> String {
-        /*
-        switch self.type {
-        case .externalLinked: print("sign with external")
-
-            
-        case .mpc: print("sign with mpc") // TODO: mpc
-            
-        default:  // locally verified wallet
-        }
-         */
-        
-        
         switch self.type {
         case .externalLinked:
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
