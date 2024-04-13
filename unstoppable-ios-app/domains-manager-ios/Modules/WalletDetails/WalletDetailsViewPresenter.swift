@@ -238,7 +238,7 @@ private extension WalletDetailsViewPresenter {
     }
     
     func indicateWalletRemoved() {
-        if wallet.udWallet.walletState == .externalLinked {
+        if wallet.udWallet.type == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
         } else {
             appContext.toastMessageService.showToast(.walletRemoved(walletName: wallet.displayInfo.walletSourceName), isSticky: false)

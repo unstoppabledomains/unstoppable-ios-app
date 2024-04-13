@@ -62,14 +62,20 @@ struct NativeCryptoSender: CryptoSenderProtocol {
                                                        toAddress: toAddress,
                                                        chainId: chain.id)
         
-        guard wallet.walletState != .externalLinked else {
+        switch wallet.type {
+        case .externalLinked:
             let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response
+            
+        case .mpc: print("sign with mpc")
+                return "" // TODO: mpc
+            
+        default:  // locally verified wallet
+            let hash = try await JRPC_Client.instance.sendTx(transaction: tx,
+                                                             udWallet: self.wallet,
+                                                             chainIdInt: chain.id)
+            return hash
         }
-        
-        
-        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
-        return hash
     }
         
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,

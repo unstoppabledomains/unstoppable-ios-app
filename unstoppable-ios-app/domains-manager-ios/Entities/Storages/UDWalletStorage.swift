@@ -182,7 +182,7 @@ extension UDWalletsStorage {
 
     private func removeReadOnlyUnverifiedWallets() {
         let wallets = appContext.udWalletsService.getUserWallets()
-        let readOnlyWallets = wallets.filter({ $0.type == .importedUnverified && !$0.isExternalConnectionActive })
+        let readOnlyWallets = wallets.filter({ $0.type == .importedUnverified })
         
         if !readOnlyWallets.isEmpty {
             readOnlyWallets.forEach { wallet in

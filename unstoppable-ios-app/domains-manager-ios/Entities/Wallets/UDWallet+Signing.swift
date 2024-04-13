@@ -47,8 +47,8 @@ extension UDWallet {
             return data.hexString
         }
         
-        
-        guard self.walletState == .verified else {
+        switch self.type {
+        case .externalLinked:
             if self.shouldParseMessage {
                 let message = messageString.convertedIntoReadableMessage
                 return try await signViaWalletConnectPersonalSign(message: message)
@@ -63,25 +63,35 @@ extension UDWallet {
             }
             
             return try await signViaWalletConnectPersonalSign(message: messageString)
+            
+        case .mpc: print("sign with mpc") 
+                    return "" // TODO: mpc
+            
+        default:
+            let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
+            
+            guard let signature = self.signPersonal(messageString: messageToSend) else {
+                throw UDWallet.Error.failedToSignMessage
+            }
+            return signature
+
         }
-        
-        let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
-        
-        guard let signature = self.signPersonal(messageString: messageToSend) else {
-            throw UDWallet.Error.failedToSignMessage
-        }
-        return signature
     }
     
     func getEthSignature(messageString: String) async throws -> String {
-        guard self.walletState == .verified else {
+        switch self.type {
+        case .externalLinked:
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
+
+        case .mpc: print("sign with mpc") 
+                return "" // TODO: mpc
+            
+        default: // locally verified wallet
+            guard let signature = self.signPersonalSignWithHexConversion(messageString: messageString) else {
+                throw UDWallet.Error.failedToSignMessage
+            }
+            return signature
         }
-        
-        guard let signature = self.signPersonalSignWithHexConversion(messageString: messageString) else {
-            throw UDWallet.Error.failedToSignMessage
-        }
-        return signature
     }
     
     
@@ -117,20 +127,26 @@ extension UDWallet {
     }
     
     func getSignTypedData(dataString: String) async throws -> String {
-        guard self.walletState == .verified else {
+        switch self.type {
+        case .externalLinked:
             let signature = try await signViaWalletConnectTypedData(dataString: dataString)
             return signature
-        }        
-        let data = dataString.data(using: .utf8)!
-        let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)
-        let signHash = typedData.signHash
-        
-        let privKey = self.getPrivateKey()! // safe
-        guard let sig = try UDWallet.signMessageHash(messageHash: signHash, with: privKey) else {
-            throw UDWallet.Error.failedToSignMessage
-        }
+            
+        case .mpc: print("sign with mpc")
+                return ""// TODO: mpc
+            
+        default:  // locally verified wallet
+            let data = dataString.data(using: .utf8)!
+            let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)
+            let signHash = typedData.signHash
+            
+            let privKey = self.getPrivateKey()! // safe
+            guard let sig = try UDWallet.signMessageHash(messageHash: signHash, with: privKey) else {
+                throw UDWallet.Error.failedToSignMessage
+            }
 
-        return "0x" + sig.dataToHexString()
+            return "0x" + sig.dataToHexString()
+        }
     }
     
     func getWC2Session() throws -> [WCConnectedAppsStorageV2.SessionProxy] {
@@ -183,14 +199,17 @@ extension UDWallet {
     func multipleWalletPersonalSigns(messages: [String]) async throws -> [String]{
         var sigs = [String]()
         
-        switch self.walletState {
+        switch self.type {
         case .externalLinked:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for message in messages {
                 let result = try await self.getPersonalSignature(messageString: message)
                 sigs.append(result)
             }
-        case .verified:
+        
+        case .mpc: print("sign with mpc") // TODO: mpc
+        
+        default:  // locally verified wallet
             await withTaskGroup(of: Optional<String>.self) { group in
                 for message in messages {
                     group.addTask {

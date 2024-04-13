@@ -695,7 +695,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                       request: request,
                                                                       transaction: completedTx)
             
-            guard udWallet.walletState != .externalLinked else {
+            switch udWallet.type {
+            case .externalLinked:
                 let sessionsWithExtWallet = findSessions(by: walletAddress)
                 let response = try await signTxViaWalletConnectV2(sessions: sessionsWithExtWallet,
                                                                   chainId: chainIdInt,
@@ -705,22 +706,26 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 let sig = WCAnyCodable(sigString)
                 Debugger.printInfo(topic: .WalletConnectV2, "Successfully signed TX via external wallet: \(udWallet.address)")
                 return .response(sig)
+                
+            case .mpc: print("sign with mpc")
+                return .error(.internalError) // TODO: mpc
+                
+            default:  // locally verified wallet
+                guard let privKeyString = udWallet.getPrivateKey() else {
+                    Debugger.printFailure("No private key in \(udWallet)", critical: true)
+                    throw WalletConnectRequestError.failedToGetPrivateKey
+                }
+                
+                let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
+                
+                let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
+                
+                let signedTx = try completedTx.sign(with: privateKey, chainId: chainId)
+                let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
+                let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
+                
+                return .response(WCAnyCodable(signature))
             }
-            
-            guard let privKeyString = udWallet.getPrivateKey() else {
-                Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                throw WalletConnectRequestError.failedToGetPrivateKey
-            }
-            
-            let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
-            
-            let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
-            
-            let signedTx = try completedTx.sign(with: privateKey, chainId: chainId)
-            let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
-            let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
-            
-            return .response(WCAnyCodable(signature))
         }
         
         guard let transactionsToSign = try? request.params.getTransactions() else {
@@ -749,24 +754,28 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                       chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
-            
-            guard udWallet.walletState != .externalLinked else {
+            switch udWallet.type {
+            case .externalLinked:
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
+                
+            case .mpc: print("sign with mpc")
+                return .error(.internalError) // TODO: mpc
+                
+            default:  // locally verified wallet
+                let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
+                                                                 udWallet: udWallet,
+                                                                 chainIdInt: chainIdInt)
+                let hashCodable = WCAnyCodable(hash)
+                Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
+                return .response(hashCodable)
             }
-            
-            let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
-                                        udWallet: udWallet,
-                                        chainIdInt: chainIdInt)
-            let hashCodable = WCAnyCodable(hash)
-            Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
-            return .response(hashCodable)
         }
         
         guard let transactionToSend = try request.params.get([EthereumTransaction].self).first else {
             throw WalletConnectRequestError.failedBuildParams
         }
-       
+        
         let response = try await handleSingleSendTx(tx: transactionToSend)
         return response
     }
@@ -950,7 +959,10 @@ extension WalletConnectServiceV2 {
         let connectedApp = try detectApp(by: address, topic: request.topic)
         let wallet = try detectWallet(by: address)
         
-        if wallet.udWallet.walletState != .externalLinked {
+        switch wallet.udWallet.type {
+        case .externalLinked: break
+        case .mpc: print("handle with mpc") // TODO: mpc
+        default:  // locally verified wallet
             guard let uiHandler = self.uiHandler else { //
                 Debugger.printFailure("UI Handler is not set", critical: true)
                 throw WalletConnectRequestError.uiHandlerNotSet

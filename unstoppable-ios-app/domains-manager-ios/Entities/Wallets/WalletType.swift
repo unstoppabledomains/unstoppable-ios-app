@@ -16,6 +16,7 @@ enum WalletType: String, Codable {
     case importedUnverified
     // TODO: - MPC
     case mpc
+    case externalLinked
     
     func getICloudLabel() -> String? {
         switch self {
@@ -41,7 +42,7 @@ enum WalletType: String, Codable {
 }
 
 
-enum WalletState: String, Codable {
-    case verified // private key, seed phrase
-    case externalLinked // external wallet. Read only
+enum ExternalWalletConnectionState: String, Codable {
+    case noConnection
+    case activeWCConnection
 }

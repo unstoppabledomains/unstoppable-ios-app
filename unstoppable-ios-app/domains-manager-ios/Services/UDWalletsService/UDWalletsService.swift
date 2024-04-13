@@ -99,18 +99,21 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             wallet = try await walletConstructorBlock()
         } catch WalletError.ethWalletAlreadyExists(let address) {
             if let extWallet = UDWalletsStorage.instance.getWallet(by: address,
-                                                                   namingService: .UNS),
-               extWallet.walletState == .externalLinked {
-                // removing and disconnecting the ext wallet if an identical is being imported
-                disable(externalWallet: extWallet)
-                wallet = try await walletConstructorBlock()
+                                                                   namingService: .UNS){
+                switch extWallet.type {
+                case .externalLinked:                 // removing and disconnecting the ext wallet if an identical is being imported
+                    disable(externalWallet: extWallet)
+                    wallet = try await walletConstructorBlock()
+                case .mpc: print("handle mpc")
+                    throw WalletError.ethWalletAlreadyExists(address) // TODO:
+                default: // the wallet is not external, don't remove it and throw
+                    throw WalletError.ethWalletAlreadyExists(address)
+                }
             } else {
-                // the wallet is not external, don't remove it and throw
                 throw WalletError.ethWalletAlreadyExists(address)
             }
         }
         try saveImportedWallet(&wallet, privateSeed: privateSeed)
-
         return wallet
     }
     
@@ -234,7 +237,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                 
                 if let extWallet = UDWalletsStorage.instance.getWallet(by: udWallet.address,
                                                                        namingService: .UNS),
-                   extWallet.walletState == .externalLinked {
+                   extWallet.type == .externalLinked {
                     // removing and disconnecting the ext wallet if an identical is being imported
                     disable(externalWallet: extWallet)
                     udWallet = try walletWithSeed.saveSeedToKeychain()
@@ -382,7 +385,7 @@ private extension UDWalletsService {
     func createWalletWith(privateKey: String) async throws -> UDWallet {
         guard privateKey.isValidPrivateKey() else { throw WalletError.invalidPrivateKey }
         let wallet = try await UDWallet.create(aliasName: "Wallet",
-                                               type: .privateKeyEntered,
+                                               walletType: .privateKeyEntered,
                                                privateKeyEthereum: privateKey)
         
         return wallet
@@ -391,7 +394,7 @@ private extension UDWalletsService {
     func createWalletWith(mnemonics: String) async throws -> UDWallet {
         guard mnemonics.isValidSeedPhrase() else { throw WalletError.invalidPrivateKey }
         let wallet = try await UDWallet.create(aliasName: "Wallet",
-                                               type: .mnemonicsEntered,
+                                               walletType: .mnemonicsEntered,
                                                mnemonicsEthereum: mnemonics)
         
         return wallet
