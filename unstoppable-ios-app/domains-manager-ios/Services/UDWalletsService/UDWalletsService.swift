@@ -99,18 +99,21 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             wallet = try await walletConstructorBlock()
         } catch WalletError.ethWalletAlreadyExists(let address) {
             if let extWallet = UDWalletsStorage.instance.getWallet(by: address,
-                                                                   namingService: .UNS),
-               extWallet.type == .externalLinked {
-                // removing and disconnecting the ext wallet if an identical is being imported
-                disable(externalWallet: extWallet)
-                wallet = try await walletConstructorBlock()
+                                                                   namingService: .UNS){
+                switch extWallet.type {
+                case .externalLinked:                 // removing and disconnecting the ext wallet if an identical is being imported
+                    disable(externalWallet: extWallet)
+                    wallet = try await walletConstructorBlock()
+                case .mpc: print("handle mpc")
+                    throw WalletError.ethWalletAlreadyExists(address) // TODO:
+                default: // the wallet is not external, don't remove it and throw
+                    throw WalletError.ethWalletAlreadyExists(address)
+                }
             } else {
-                // the wallet is not external, don't remove it and throw
                 throw WalletError.ethWalletAlreadyExists(address)
             }
         }
         try saveImportedWallet(&wallet, privateSeed: privateSeed)
-
         return wallet
     }
     

@@ -367,7 +367,7 @@ extension UDWallet: Equatable {
 
 extension UDWallet: Hashable {
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self.extractEthWallet()?.address)
+        hasher.combine(self.address)
         hasher.combine(self.aliasName)
         hasher.combine(self.hasBeenBackedUp)
         hasher.combine(self.type)
