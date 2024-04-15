@@ -22,15 +22,15 @@ class UnsConfigManagerTests: XCTestCase {
         let ethereumMainnet = try! UnsConfigManager.getBlockchainType(from: 1)
         XCTAssert(ethereumMainnet == .Ethereum, "1 is Ethereum mainnet")
         
-        let ethereumTestnet = try! UnsConfigManager.getBlockchainType(from: 5)
-        XCTAssert(ethereumTestnet == .Ethereum, "5 is Ethereum testnet")
+        let ethereumTestnet = try! UnsConfigManager.getBlockchainType(from: 11155111)
+        XCTAssert(ethereumTestnet == .Ethereum, "11155111 is Ethereum Sepolia testnet")
     }
     
     func test_getBlockchainType_Polygon() throws {
         let polygonMainnet = try! UnsConfigManager.getBlockchainType(from: 137)
         XCTAssert(polygonMainnet == .Matic, "137 is Polygon mainnet")
         
-        let polygonTestnet = try! UnsConfigManager.getBlockchainType(from: 80001)
-        XCTAssert(polygonTestnet == .Matic, "80001 is Polygon testnet")
+        let polygonTestnet = try! UnsConfigManager.getBlockchainType(from: 80002)
+        XCTAssert(polygonTestnet == .Matic, "80002 is Polygon Amoy testnet")
     }
 }
