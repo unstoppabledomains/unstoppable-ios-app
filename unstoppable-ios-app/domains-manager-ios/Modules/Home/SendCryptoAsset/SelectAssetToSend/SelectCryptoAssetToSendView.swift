@@ -177,10 +177,10 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func chatToNotifyButtonPressed() {
-        pullUp = .default(.showUserDidNotSetRecordToDomainToSendCryptoPullUp(domainName: receiver.domainName ?? "",
-                                                                             chatCallback: {
-            
-        }))
+        tabRouter.startMessagingWith(walletAddress: receiver.walletAddress,
+                                     domainName: receiver.domainName,
+                                     by: viewModel.sourceWallet)
+       
     }
     
     @ViewBuilder
@@ -228,8 +228,8 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func showNotAddedCurrenciesPullUp() {
-        
-//        pullUp
+        pullUp = .default(.showUserDidNotSetRecordToDomainToSendCryptoPullUp(domainName: receiver.domainName ?? "",
+                                                                             chatCallback: chatToNotifyButtonPressed))
     }
     
     var filteredDomains: [DomainDisplayInfo] {
