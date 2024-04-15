@@ -58,20 +58,11 @@ extension SendCryptoAsset {
         let walletAddress: String
         let domainName: DomainName?
         private(set) var pfpURL: URL?
-        var records: [String: String] = [:]
+        private var records: [String: String] = [:]
         
-        func addressFor(chainType: BlockchainType) -> String {
-            switch chainType {
-            case .Ethereum:
-                if let ethRecord = records["crypto.ETH.address"] {
-                    return ethRecord
-                }
-            case .Matic:
-                if let maticRecord = records["crypto.MATIC.version.MATIC.address"] {
-                    return maticRecord
-                }
-            }
-            return walletAddress
+        func addressFor(chainType: BlockchainType) -> String? {
+            let recordsIdentifier = chainType.domainRecordIdentifier()
+            return records[recordsIdentifier]
         }
         
         init(wallet: WalletEntity) async throws {
@@ -127,17 +118,14 @@ extension SendCryptoAsset {
     struct SelectTokenAmountToSendData: Hashable {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
+        let receiverAddress: HexAddress
     }
     
     struct SendTokenAssetData: Hashable {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
         let amount: TokenAssetAmountInput
-        
-        var receiverAddress: HexAddress {
-            let blockchainType = token.blockchainType ?? .Matic
-            return receiver.addressFor(chainType: blockchainType)
-        }
+        let receiverAddress: HexAddress
         
         func getTokenAmountValueToSend() -> Double {
             amount.valueOf(type: .tokenAmount, for: token)

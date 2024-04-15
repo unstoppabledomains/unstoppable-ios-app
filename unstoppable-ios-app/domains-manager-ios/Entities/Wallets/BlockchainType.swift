@@ -59,3 +59,15 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         case invalidBlockchainAbbreviation
     }
 }
+
+// MARK: - Open methods
+extension BlockchainType {
+    func domainRecordIdentifier() -> String {
+        switch self {
+        case .Ethereum:
+            return "crypto.ETH.address"
+        case .Matic:
+            return "crypto.MATIC.version.MATIC.address"
+        }
+    }
+}

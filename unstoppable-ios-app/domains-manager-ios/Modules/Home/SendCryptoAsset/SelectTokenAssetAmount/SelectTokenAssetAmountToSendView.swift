@@ -19,7 +19,7 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     @State private var interpreter = NumberPadInputInterpreter()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
-                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .toWallet: data.receiverAddress,
                                                                          .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
@@ -266,7 +266,8 @@ private extension SelectTokenAssetAmountToSendView {
                                            parameters: [.value: String(getCurrentInput().valueOf(type: .tokenAmount, for: token))])
             viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
                                                                  token: token,
-                                                                 amount: getCurrentInput())))
+                                                                 amount: getCurrentInput(), 
+                                                                 receiverAddress: data.receiverAddress)))
         }
                      .disabled(interpreter.getInterpretedNumber() <= 0 || !hasSufficientFunds)
     }
@@ -284,7 +285,8 @@ private extension SelectTokenAssetAmountToSendView {
 #Preview {
     NavigationStack {
         SelectTokenAssetAmountToSendView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
-                                                      token: MockEntitiesFabric.Tokens.mockUIToken()))
+                                                     token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                                     receiverAddress: "0x1234567890"))
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

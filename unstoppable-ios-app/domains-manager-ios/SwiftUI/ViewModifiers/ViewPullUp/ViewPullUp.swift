@@ -242,7 +242,7 @@ private extension ViewPullUp {
         case .primaryDanger(let content):
             buttonWithContent(content, style: .large(.raisedDanger), configuration: configuration)
         case .secondary(let content):
-            buttonWithContent(content, style: .large(.raisedTertiary), configuration: configuration)
+            buttonWithContent(content, style: .large(.ghostPrimary), configuration: configuration)
         case .secondaryDanger(let content):
             buttonWithContent(content, style: .large(.ghostDanger), configuration: configuration)
         case .textTertiary(let content):

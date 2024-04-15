@@ -411,6 +411,7 @@ extension Analytics {
         case useMax
         case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
         case transactionSpeedSelection, selectTransactionSpeed
+        case noRecordsAdded
     }
 }
 
@@ -465,6 +466,7 @@ extension Analytics {
         case createYourProfile
         case homeWalletBuyOptions
         case transferDomainConfirmation, sendMaxCryptoInfo
+        case noRecordsSetToSendCrypto
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
