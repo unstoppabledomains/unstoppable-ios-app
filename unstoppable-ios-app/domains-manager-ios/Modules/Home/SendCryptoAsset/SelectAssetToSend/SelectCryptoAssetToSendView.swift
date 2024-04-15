@@ -42,6 +42,7 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
         })
         .trackAppearanceAnalytics(analyticsLogger: self)
         .addNavigationTopSafeAreaOffset()
+        .viewPullUp($pullUp)
         .listRowSpacing(0)
         .listStyle(.plain)
         .animation(.default, value: UUID())
@@ -152,7 +153,7 @@ private extension SelectCryptoAssetToSendView {
     @ViewBuilder
     func noTokensToSendSectionView() -> some View {
         VStack(spacing: 16) {
-            Image(systemName: "info.square.fill")
+            Image.squareInfo
                 .resizable()
                 .squareFrame(32)
                 .foregroundStyle(Color.foregroundMuted)
@@ -176,7 +177,10 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func chatToNotifyButtonPressed() {
-        
+        pullUp = .default(.showUserDidNotSetRecordToDomainToSendCryptoPullUp(domainName: receiver.domainName ?? "",
+                                                                             chatCallback: {
+            
+        }))
     }
     
     @ViewBuilder
