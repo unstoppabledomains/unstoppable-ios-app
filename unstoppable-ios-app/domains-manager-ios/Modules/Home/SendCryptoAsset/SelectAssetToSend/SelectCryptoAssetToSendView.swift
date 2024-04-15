@@ -35,6 +35,7 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(horizontal: 16))
         }
+        .sectionSpacing(0)
         .onChange(of: selectedType, perform: { newValue in
             logButtonPressedAnalyticEvents(button: .assetTypeSwitcher, 
                                            parameters: [.assetType : newValue.rawValue])
@@ -51,7 +52,7 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension SelectCryptoAssetToSendView {
     func onAppear() {
-        tokens = viewModel.sourceWallet.balance
+        let tokens = viewModel.sourceWallet.balance
             .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
             .flatMap({ $0 })
             .filter { viewModel.canSendToken($0) }
@@ -61,8 +62,8 @@ private extension SelectCryptoAssetToSendView {
         })
             .map { createTokenToSendFrom(token: $0) }
         
-        notAddedTokens = tokens.filter { $0.address == nil }
-        tokens = tokens.filter { $0.address != nil }
+        self.notAddedTokens = tokens.filter { $0.address == nil }
+        self.tokens = tokens.filter { $0.address != nil }
         
         allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain && $0.isAbleToTransfer }
         setDomainsData()
@@ -121,7 +122,8 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func tokensListView() -> some View {
-        if tokens.isEmpty {
+        if tokens.isEmpty,
+           notAddedTokens.isEmpty {
             SelectCryptoAssetToSendEmptyView(assetType: .tokens,
                                              actionCallback: {
                 tabRouter.runBuyCryptoFlowTo(wallet: viewModel.sourceWallet)
@@ -136,12 +138,12 @@ private extension SelectCryptoAssetToSendView {
             }
             
             if !notAddedTokens.isEmpty {
-                Section {
-                    ForEach(tokens) { token in
-                        selectableTokenRow(token)
-                    }
-                } header: {
-                    notAddedTokensSectionHeader()
+                if !tokens.isEmpty {
+                    HomeExploreSeparatorView()
+                }
+                notAddedTokensSectionHeader()
+                ForEach(notAddedTokens) { token in
+                    selectableTokenRow(token)
                 }
             }
         }
@@ -150,6 +152,7 @@ private extension SelectCryptoAssetToSendView {
     @ViewBuilder
     func notAddedTokensSectionHeader() -> some View {
         Button {
+            UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: .noRecordsAdded)
             showNotAddedCurrenciesPullUp()
         } label: {
