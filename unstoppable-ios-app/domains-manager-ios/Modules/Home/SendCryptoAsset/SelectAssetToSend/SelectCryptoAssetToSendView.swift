@@ -130,7 +130,7 @@ private extension SelectCryptoAssetToSendView {
             })
         } else {
             if tokens.isEmpty {
-                Text("No tokens to send")
+                noTokensToSendSectionView()
             } else {
                 ForEach(tokens) { token in
                     selectableTokenRow(token)
@@ -140,13 +140,43 @@ private extension SelectCryptoAssetToSendView {
             if !notAddedTokens.isEmpty {
                 if !tokens.isEmpty {
                     HomeExploreSeparatorView()
+                    notAddedTokensSectionHeader()
                 }
-                notAddedTokensSectionHeader()
                 ForEach(notAddedTokens) { token in
                     selectableTokenRow(token)
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func noTokensToSendSectionView() -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: "info.square.fill")
+                .resizable()
+                .squareFrame(32)
+                .foregroundStyle(Color.foregroundMuted)
+            VStack(spacing: 8) {
+                Text(String.Constants.noRecordsToSendAnyCryptoTitle.localized(receiver.domainName ?? ""))
+                    .font(.currentFont(size: 20, weight: .bold))
+                Text(String.Constants.noRecordsToSendCryptoMessage.localized())
+                    .font(.currentFont(size: 14, weight: .regular))
+            }
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Color.foregroundSecondary)
+            
+            UDButtonView(text: String.Constants.chatToNotify.localized(),
+                         icon: .messagesIcon,
+                         style: .medium(.raisedPrimary)) {
+                chatToNotifyButtonPressed()
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+    }
+    
+    func chatToNotifyButtonPressed() {
+        
     }
     
     @ViewBuilder
