@@ -116,8 +116,10 @@ private extension SelectCryptoAssetToSendView {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: .cryptoToken,
                                            parameters: [.token : token.id])
+            let address = receiver.addressFor(chainType: token.blockchainType!)!
             viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
-                                                                  token: token)))
+                                                                  token: token,
+                                                                  receiverAddress: address)))
         } label: {
             SelectCryptoAssetToSendTokenView(token: token)
                 .padding(.init(vertical: 10))

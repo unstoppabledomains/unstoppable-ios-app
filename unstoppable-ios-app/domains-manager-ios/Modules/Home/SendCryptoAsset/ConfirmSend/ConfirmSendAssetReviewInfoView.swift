@@ -442,6 +442,7 @@ extension ConfirmSendAssetReviewInfoView {
 #Preview {
     ConfirmSendAssetReviewInfoView(asset: .token(.init(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
                                                                    token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                                                   amount: .usdAmount(3998234.3)))),
+                                                                   amount: .usdAmount(3998234.3), 
+                                                                   receiverAddress: "0x1234567890"))),
                                    sourceWallet: MockEntitiesFabric.Wallet.mockEntities()[0])
 }
