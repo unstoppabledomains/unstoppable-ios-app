@@ -44,9 +44,9 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
     func supportedChainId(isTestNet: Bool) -> Int {
         switch self {
         case .Ethereum:
-            return isTestNet ? 5 : 1 // Goerly or Mainnet
+            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
         case .Matic:
-            return isTestNet ? 80001 : 137 // Mumbai or Polygon
+            return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
         }
     }
     
@@ -57,5 +57,17 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
     
     enum InitError: Error {
         case invalidBlockchainAbbreviation
+    }
+}
+
+// MARK: - Open methods
+extension BlockchainType {
+    func domainRecordIdentifier() -> String {
+        switch self {
+        case .Ethereum:
+            return "crypto.ETH.address"
+        case .Matic:
+            return "crypto.MATIC.version.MATIC.address"
+        }
     }
 }

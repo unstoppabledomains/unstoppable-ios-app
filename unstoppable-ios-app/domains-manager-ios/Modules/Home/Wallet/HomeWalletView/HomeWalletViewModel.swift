@@ -244,8 +244,8 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func ensureRRDomainRecordsMatchOwnerWallet() {
         Task {
             let walletAddress = selectedWallet.address
-            guard lastVerifiedRecordsWalletAddress != selectedWallet.address,
-                  let rrDomain = selectedWallet.rrDomain else {
+            guard lastVerifiedRecordsWalletAddress != selectedWallet.address else { return }
+            guard let rrDomain = selectedWallet.rrDomain else {
                 chainsNotMatch = []
                 return
             }

@@ -119,7 +119,7 @@ struct UnsConfigManager {
             case .mainnet:
                 return .ethMainnet
             case .testnet:
-                return .ethGoerli
+                return .ethSepolia
             }
         }
         
@@ -128,7 +128,7 @@ struct UnsConfigManager {
             case .mainnet:
                 return .polygonMainnet
             case .testnet:
-                return .polygonMumbai
+                return .polygonAmoy
             }
         }
         

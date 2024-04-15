@@ -24,7 +24,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
                                                                          .value: String(dataModel.amount.valueOf(type: .tokenAmount,
                                                                                                           for: token)),
-                                                                         .toWallet: dataModel.receiver.walletAddress,
+                                                                         .toWallet: dataModel.data.receiverAddress,
                                                                          .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
@@ -149,6 +149,7 @@ private extension ConfirmSendTokenView {
     @ViewBuilder
     func receiverInfoView() -> some View {
         ConfirmSendAssetReceiverInfoView(receiver: receiver,
+                                         receiverAddress: dataModel.data.receiverAddress,
                                          chainType: token.blockchainType ?? .Matic)
     }
     
@@ -261,7 +262,8 @@ private extension ConfirmSendTokenView {
         NavigationStack {
             ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
                                              token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                             amount: .usdAmount(3998234.3)))
+                                             amount: .usdAmount(3998234.3), 
+                                             receiverAddress: "0x1234567890"))
             .navigationBarTitleDisplayMode(.inline)
         }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())

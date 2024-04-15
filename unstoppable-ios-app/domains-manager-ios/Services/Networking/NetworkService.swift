@@ -437,9 +437,7 @@ extension NetworkService {
         switch chainId {
         case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
         case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!
-        case BlockchainNetwork.ethGoerli.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
         case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
-        case BlockchainNetwork.polygonMumbai.rawValue: return try await getStatusGasPrices(env: .testnet)["MATIC"]!
         default: throw JRPCError.unknownChain
         }
     }

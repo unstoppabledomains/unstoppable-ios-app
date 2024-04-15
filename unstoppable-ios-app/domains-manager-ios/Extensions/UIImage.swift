@@ -167,6 +167,7 @@ extension UIImage {
     static let tildaIcon = UIImage(named: "tildaIcon")!
     static let walletExternalIcon = UIImage(named: "walletExternalIcon")!
     static let infoBubble = UIImage(named: "infoBubble")!
+    static let squareInfo = UIImage(named: "squareInfo")!
     static let vaultSafeIcon = UIImage(named: "vaultSafeIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
