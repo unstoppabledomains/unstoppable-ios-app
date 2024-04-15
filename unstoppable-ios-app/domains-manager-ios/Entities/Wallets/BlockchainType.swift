@@ -44,9 +44,9 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
     func supportedChainId(isTestNet: Bool) -> Int {
         switch self {
         case .Ethereum:
-            return isTestNet ? 5 : 1 // Goerly or Mainnet
+            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
         case .Matic:
-            return isTestNet ? 80001 : 137 // Mumbai or Polygon
+            return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
         }
     }
     
