@@ -1078,3 +1078,7 @@ More tabs are coming in the next updates.";
 "SEND_ASSET_NO_TOKENS_SUBTITLE" = "Currently, the app supports only Ethereum and Polygon tokens for sending.";
 "TOTAL_ESTIMATE" = "Total Estimate";
 "NO_TRANSACTIONS_YET" = "No transactions yet";
+"NO_RECORDS_TO_SEND_CRYPTO_SECTION_HEADER" = "%@ hasn’t added these cryptocurrencies";
+"NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE" = "%@ hasn’t added addresses for these cryptocurrencies";
+"NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
+"NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";

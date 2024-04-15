@@ -14,12 +14,14 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
     
     @State private var searchDomainsKey = ""
     @State private var selectedType: SendCryptoAsset.AssetType = .tokens
-    @State private var tokens: [BalanceTokenUIDescription] = []
-    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [], 
+    @State private var tokens: [BalanceTokenToSend] = []
+    @State private var notAddedTokens: [BalanceTokenToSend] = []
+    @State private var domainsData: HomeWalletView.DomainsSectionData = .init(domainsGroups: [],
                                                                               subdomains: [],
                                                                               isSearching: false)
     @State private var allDomains: [DomainDisplayInfo] = []
-    
+    @State private var pullUp: ViewPullUpConfigurationType?
+
     let receiver: SendCryptoAsset.AssetReceiver
     var analyticsName: Analytics.ViewName { .sendCryptoAssetSelection }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.toWallet: receiver.walletAddress,
@@ -57,10 +59,31 @@ private extension SelectCryptoAssetToSendView {
             .sorted(by: { lhs, rhs in
             lhs.balanceUsd > rhs.balanceUsd
         })
+            .map { createTokenToSendFrom(token: $0) }
+        
+        notAddedTokens = tokens.filter { $0.address == nil }
+        tokens = tokens.filter { $0.address != nil }
         
         allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain && $0.isAbleToTransfer }
         setDomainsData()
         setupTitle()
+    }
+    
+    func createTokenToSendFrom(token: BalanceTokenUIDescription) -> BalanceTokenToSend {
+        if receiver.domainName != nil,
+           let chainType = token.blockchainType {
+            let address = receiver.addressFor(chainType: chainType)
+            return BalanceTokenToSend(token: token, address: address)
+        }
+        
+        return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+    }
+    
+    struct BalanceTokenToSend: Identifiable {
+        var id: String { token.id }
+        
+        let token: BalanceTokenUIDescription
+        let address: String?
     }
     
     func setupTitle() {
@@ -104,27 +127,72 @@ private extension SelectCryptoAssetToSendView {
                 tabRouter.runBuyCryptoFlowTo(wallet: viewModel.sourceWallet)
             })
         } else {
-            ForEach(tokens) { token in
-                selectableTokenRow(token)
+            if tokens.isEmpty {
+                Text("No tokens to send")
+            } else {
+                ForEach(tokens) { token in
+                    selectableTokenRow(token)
+                }
+            }
+            
+            if !notAddedTokens.isEmpty {
+                Section {
+                    ForEach(tokens) { token in
+                        selectableTokenRow(token)
+                    }
+                } header: {
+                    notAddedTokensSectionHeader()
+                }
             }
         }
     }
     
     @ViewBuilder
-    func selectableTokenRow(_ token: BalanceTokenUIDescription) -> some View {
+    func notAddedTokensSectionHeader() -> some View {
+        Button {
+            logButtonPressedAnalyticEvents(button: .noRecordsAdded)
+            showNotAddedCurrenciesPullUp()
+        } label: {
+            HStack {
+                Text(String.Constants.noRecordsToSendCryptoSectionHeader.localized(receiver.domainName ?? ""))
+                    .foregroundStyle(Color.foregroundSecondary)
+                Image(systemName: "questionmark.circle.fill")
+                    .resizable()
+                    .squareFrame(20)
+                    .foregroundStyle(Color.foregroundMuted)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func selectableTokenRow(_ token: BalanceTokenToSend) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: .cryptoToken,
                                            parameters: [.token : token.id])
-            let address = receiver.addressFor(chainType: token.blockchainType!)!
-            viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
-                                                                  token: token,
-                                                                  receiverAddress: address)))
+            didSelectBalanceTokenToSend(token)
         } label: {
-            SelectCryptoAssetToSendTokenView(token: token)
+            SelectCryptoAssetToSendTokenView(token: token.token)
                 .padding(.init(vertical: 10))
+                .opacity(token.address != nil ? 1.0 : 0.5)
         }
         .buttonStyle(.plain)
+    }
+    
+    func didSelectBalanceTokenToSend(_ token: BalanceTokenToSend) {
+        if let address = token.address {
+            viewModel.handleAction(.userTokenToSendSelected(.init(receiver: receiver,
+                                                                  token: token.token,
+                                                                  receiverAddress: address)))
+        } else {
+            showNotAddedCurrenciesPullUp()
+        }
+    }
+    
+    func showNotAddedCurrenciesPullUp() {
+        
+//        pullUp
     }
     
     var filteredDomains: [DomainDisplayInfo] {

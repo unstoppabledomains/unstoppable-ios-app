@@ -411,6 +411,7 @@ extension Analytics {
         case useMax
         case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
         case transactionSpeedSelection, selectTransactionSpeed
+        case noRecordsAdded
     }
 }
 
