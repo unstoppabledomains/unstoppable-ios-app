@@ -226,12 +226,12 @@ extension ViewPullUpDefaultConfiguration {
                                 fontSize: CGFloat,
                                 fontWeight: UIFont.Weight,
                                 contentWidth: CGFloat) -> CGFloat {
-        let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
         switch labelType {
         case .text(let text):
+            let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
             return text.height(withConstrainedWidth: contentWidth, font: font)
         case .highlightedText(let description):
-            return description.text.height(withConstrainedWidth: contentWidth, font: font)
+            return heightForLabel(.text(description.text), fontSize: fontSize, fontWeight: fontWeight, contentWidth: contentWidth)
         }
     }
     

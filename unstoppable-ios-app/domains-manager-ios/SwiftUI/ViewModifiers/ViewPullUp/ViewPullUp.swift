@@ -183,8 +183,7 @@ private extension ViewPullUp {
             AttributedText(attributesList: .init(text: description.text,
                                                  font: .currentFont(withSize: fontSize, weight: fontWeight),
                                                  textColor: textColor,
-                                                 alignment: getCurrentContentAlignment(configuration: configuration),
-                                                 lineHeight: lineHeight),
+                                                 alignment: getCurrentContentAlignment(configuration: configuration)),
                            width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2),
                            updatedAttributesList: description.highlightedText.map { AttributedText.AttributesList(text: $0.highlightedText,
                                                                                                                   textColor: $0.highlightedColor) })
