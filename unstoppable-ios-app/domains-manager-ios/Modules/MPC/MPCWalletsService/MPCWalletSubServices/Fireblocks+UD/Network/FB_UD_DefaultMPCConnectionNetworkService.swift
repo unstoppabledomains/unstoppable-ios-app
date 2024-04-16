@@ -150,6 +150,20 @@ extension FB_UD_MPC {
             return response
         }
         
+        func refreshBootstrapToken(_ bootstrapToken: String) async throws -> RefreshBootstrapTokenResponse {
+            struct Body: Encodable {
+                var bootstrapToken: String
+            }
+            
+            let body = Body(bootstrapToken: bootstrapToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensBootstrapURL,
+                                         body: body,
+                                         method: .post)
+            
+            let response: RefreshBootstrapTokenResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
         func getAccounts(accessToken: String) async throws -> WalletAccountsResponse {
             let headers = buildAuthBearerHeader(token: accessToken)
             let request = try APIRequest(urlString: MPCNetwork.URLSList.accountsURL,

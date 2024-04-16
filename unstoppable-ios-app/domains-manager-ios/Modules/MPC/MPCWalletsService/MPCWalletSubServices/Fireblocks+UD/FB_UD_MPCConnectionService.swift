@@ -155,7 +155,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     }
     
     private func getWalletAccountDetailsForWalletWith(deviceId: String,
-                                               authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
+                                                      authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
         let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
         let accessToken = authTokens.accessToken.jwt
         
@@ -201,6 +201,12 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return udWallet
     }
     
+    private func getConnectedWalletDetailsFor(deviceId: String) throws -> FB_UD_MPC.ConnectedWalletDetails {
+        let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+        let accountDetails = try walletsDataStorage.retrieveAccountsDetailsFor(deviceId: deviceId)
+        return .init(accountDetails: accountDetails, tokens: tokens)
+    }
+    
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         case failedToGetEthAddress
@@ -228,7 +234,8 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         
         let bootstrapToken = tokens.bootstrapToken
         if !bootstrapToken.isExpired {
-            return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken, deviceId: deviceId)
+            return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken,
+                                                           currentDeviceId: deviceId)
         }
         
         // All tokens has expired. Need to go through the bootstrap process from the beginning.
@@ -243,8 +250,23 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     }
     
     func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
-                                       deviceId: String) async throws -> String {
+                                       currentDeviceId: String) async throws -> String {
+        let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
         
-        throw MPCConnectionServiceError.tokensExpired
+        let accessToken = refreshBootstrapTokenResponse.accessToken
+        let deviceId = refreshBootstrapTokenResponse.deviceId
+        let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
+        mpcConnector.stopJoinWallet()
+        
+        try await mpcConnector.waitForKeyIsReady()
+        let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+        let txId = transactionDetails.transactionId
+        try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
+        try await mpcConnector.signTransactionWith(txId: txId)
+        let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+        
+        try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
+        try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
+        return authTokens.accessToken.jwt
     }
 }

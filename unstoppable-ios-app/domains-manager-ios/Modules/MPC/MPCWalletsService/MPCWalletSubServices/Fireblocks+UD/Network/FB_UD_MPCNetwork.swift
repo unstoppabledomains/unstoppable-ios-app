@@ -28,6 +28,7 @@ extension FB_UD_MPC {
             static var tokensConfirmURL: String { tokensURL.appendingURLPathComponents("confirm") }
             static var tokensVerifyURL: String { tokensURL.appendingURLPathComponents("verify") }
             static var tokensRefreshURL: String { tokensURL.appendingURLPathComponents("refresh") }
+            static var tokensBootstrapURL: String { tokensURL.appendingURLPathComponents("bootstrap") }
             
             static var supportedBlockchainsURL: String { v1URL.appendingURLPathComponents("blockchain-assets") }
             

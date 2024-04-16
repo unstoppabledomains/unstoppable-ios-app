@@ -20,6 +20,7 @@ extension FB_UD_MPC {
         func verifyAccessToken(_ accessToken: String) async throws
         
         func refreshToken(_ refreshToken: String) async throws -> AuthTokens
+        func refreshBootstrapToken(_ bootstrapToken: String) async throws -> RefreshBootstrapTokenResponse
         
         func getAccounts(accessToken: String) async throws -> WalletAccountsResponse
         func getAccountAssets(accountId: String,

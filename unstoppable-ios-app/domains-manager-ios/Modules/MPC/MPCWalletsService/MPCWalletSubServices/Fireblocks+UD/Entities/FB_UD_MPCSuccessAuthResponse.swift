@@ -27,12 +27,24 @@ extension FB_UD_MPC {
         
         init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let accessToken = try container.decode(String.self, forKey: .accessToken)
-            self.accessToken = try JWToken(accessToken)
-            let refreshToken = try container.decode(String.self, forKey: .refreshToken)
-            self.refreshToken = try JWToken(refreshToken)
-            let bootstrapToken = try container.decode(String.self, forKey: .bootstrapToken)
-            self.bootstrapToken = try JWToken(bootstrapToken)
+            if let accessToken = try? container.decode(JWToken.self, forKey: .accessToken) {
+                self.accessToken = accessToken
+            } else {
+                let accessToken = try container.decode(String.self, forKey: .accessToken)
+                self.accessToken = try JWToken(accessToken)
+            }
+            if let refreshToken = try? container.decode(JWToken.self, forKey: .refreshToken) {
+                self.refreshToken = refreshToken
+            } else {
+                let refreshToken = try container.decode(String.self, forKey: .refreshToken)
+                self.refreshToken = try JWToken(refreshToken)
+            }
+            if let bootstrapToken = try? container.decode(JWToken.self, forKey: .bootstrapToken) {
+                self.bootstrapToken = bootstrapToken
+            } else {
+                let bootstrapToken = try container.decode(String.self, forKey: .bootstrapToken)
+                self.bootstrapToken = try JWToken(bootstrapToken)
+            }
         }
         
         func encode(to encoder: any Encoder) throws {
