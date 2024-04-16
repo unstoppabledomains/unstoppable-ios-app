@@ -245,6 +245,6 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
                                        deviceId: String) async throws -> String {
         
-        
+        throw MPCConnectionServiceError.tokensExpired
     }
 }

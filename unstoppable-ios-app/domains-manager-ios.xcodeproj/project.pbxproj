@@ -186,10 +186,10 @@
 		C609831A282B707B00546392 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098319282B707B00546392 /* UINavigationController.swift */; };
 		C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */; };
 		C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */; };
-		C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
-		C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
 		C60BC04B2BC7806F00A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04A2BC7806F00A79CDB /* XMTPiOS */; };
 		C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04C2BC7808400A79CDB /* XMTPiOS */; };
+		C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
+		C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
 		C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */; };
