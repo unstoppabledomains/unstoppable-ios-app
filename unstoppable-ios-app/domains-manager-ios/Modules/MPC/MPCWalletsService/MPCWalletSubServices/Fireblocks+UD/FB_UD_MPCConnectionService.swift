@@ -41,7 +41,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     }
 
     func setupMPCWalletWith(code: String,
-                              recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 var mpcConnectorInProgress: FB_UD_MPC.FireblocksConnectorProtocol?
@@ -222,12 +222,29 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         }
         
         let refreshToken = tokens.refreshToken
-        guard !refreshToken.isExpired else {
-            throw MPCConnectionServiceError.tokensExpired
+        if !refreshToken.isExpired {
+            return try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
         }
         
+        let bootstrapToken = tokens.bootstrapToken
+        if !bootstrapToken.isExpired {
+            return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken, deviceId: deviceId)
+        }
+        
+        // All tokens has expired. Need to go through the bootstrap process from the beginning.
+        throw MPCConnectionServiceError.tokensExpired
+    }
+    
+    func refreshAndStoreToken(refreshToken: JWToken,
+                              deviceId: String) async throws -> String {
         let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
         try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
         return refreshedTokens.accessToken.jwt
+    }
+    
+    func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
+                                       deviceId: String) async throws -> String {
+        
+        
     }
 }
