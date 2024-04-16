@@ -35,7 +35,6 @@ extension FB_UD_MPC {
 
 // MARK: - MPCWalletProviderSubServiceProtocol
 extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
-    /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
         try await networkService.sendBootstrapCodeTo(email: email)
     }
