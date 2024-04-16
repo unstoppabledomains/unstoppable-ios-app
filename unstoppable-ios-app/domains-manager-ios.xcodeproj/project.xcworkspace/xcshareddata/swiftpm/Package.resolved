@@ -92,21 +92,21 @@
       }
     },
     {
-      "identity" : "ncw-ios-sdk",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/fireblocks/ncw-ios-sdk.git",
-      "state" : {
-        "revision" : "8993a97f6af6e1e789f0296cae409622905daf2c",
-        "version" : "2.3.7-beta-5"
-      }
-    },
-    {
       "identity" : "libxmtp-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/xmtp/libxmtp-swift",
       "state" : {
         "revision" : "fa57437cc1a84df566c91bbd5df1d0619d404e09",
         "version" : "0.4.3-beta4"
+      }
+    },
+    {
+      "identity" : "ncw-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fireblocks/ncw-ios-sdk.git",
+      "state" : {
+        "revision" : "9a93b4097badc28fcb8da8b9a491140a87baf34a",
+        "version" : "2.4.0"
       }
     },
     {
