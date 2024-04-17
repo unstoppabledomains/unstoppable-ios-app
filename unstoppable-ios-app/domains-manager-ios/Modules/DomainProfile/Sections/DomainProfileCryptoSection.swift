@@ -469,6 +469,7 @@ private extension DomainProfileCryptoSection {
             guard let i = editingGroupedRecords.firstIndex(where: { $0.primaryRecord.coin == record.primaryRecord.coin }) else { return }
             
             editingGroupedRecords[i].bufferAddress = address
+            editingGroupedRecords[i].resolveBufferAddress()
         case .beginEditing:
             logEditingActionAnalytics(event: .didStartEditingCoinAddress, record: record)
             handleEditAction(for: record)
