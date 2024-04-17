@@ -359,12 +359,6 @@ struct BadgeDetailedInfo: Codable, Hashable {
     }
 }
 
-struct RefreshBadgesResponse: Codable {
-    let ok: Bool
-    let refresh: Bool
-    let next: Date
-}
-
 struct GeneratedMessage: Decodable {
     let message: String
     let headers: SignatureComponentHeaders

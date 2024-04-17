@@ -226,12 +226,12 @@ extension ViewPullUpDefaultConfiguration {
                                 fontSize: CGFloat,
                                 fontWeight: UIFont.Weight,
                                 contentWidth: CGFloat) -> CGFloat {
-        let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
         switch labelType {
         case .text(let text):
+            let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
             return text.height(withConstrainedWidth: contentWidth, font: font)
         case .highlightedText(let description):
-            return description.text.height(withConstrainedWidth: contentWidth, font: font)
+            return heightForLabel(.text(description.text), fontSize: fontSize, fontWeight: fontWeight, contentWidth: contentWidth)
         }
     }
     
@@ -423,6 +423,24 @@ extension ViewPullUpDefaultConfiguration {
               cancelButton: .continueButton,
               analyticName: .sendMaxCryptoInfo)
     }
+    
+    static func showUserDidNotSetRecordToDomainToSendCryptoPullUp(domainName: String,
+                                                                  chatCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .squareInfo,
+                                 size: .large),
+                     title: .text(String.Constants.noRecordsToSendCryptoPullUpTitle.localized(domainName)),
+                     subtitle: .label(.text(String.Constants.noRecordsToSendCryptoMessage.localized())),
+                     actionButton: .main(content: .init(title: String.Constants.chatToNotify.localized(),
+                                                        analyticsName: .messaging,
+                                                        action: chatCallback)),
+                     cancelButton: .secondary(content: .init(title: String.Constants.gotIt.localized(),
+                                                             analyticsName: .gotIt,
+                                                             action: nil)),
+                     dismissAble: true,
+                     analyticName: .noRecordsSetToSendCrypto,
+                     dismissCallback: nil)
+    }
+    
 }
 
 // MARK: - Open methods

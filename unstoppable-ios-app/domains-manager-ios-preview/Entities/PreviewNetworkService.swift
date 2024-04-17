@@ -173,9 +173,10 @@ extension NetworkService {
                                                              walletBalance: MockEntitiesFabric.DomainProfile.createPublicProfileWalletBalances())
     }
     
-    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
-        .init(ok: true, refresh: true, next: Date())
+    public func refreshDomainBadges(for domain: DomainItem) async throws {
+        
     }
+    
     public func fetchBadgesInfo(for domain: DomainItem) async throws -> BadgesInfo {
         try await fetchBadgesInfo(for: domain.name)
     }

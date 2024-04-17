@@ -242,14 +242,14 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     func ensureRRDomainRecordsMatchOwnerWallet() {
         Task {
             let walletAddress = selectedWallet.address
-            guard lastVerifiedRecordsWalletAddress != selectedWallet.address,
-                  let rrDomain = selectedWallet.rrDomain else {
+            guard lastVerifiedRecordsWalletAddress != selectedWallet.address else { return }
+            guard let rrDomain = selectedWallet.rrDomain else {
+                lastVerifiedRecordsWalletAddress = selectedWallet.address
                 chainsNotMatch = []
                 return
             }
             
             do {
-                
                 let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: rrDomain.name)
                 let records = profile.records
                 let coinRecords = await appContext.coinRecordsService.getCurrencies()

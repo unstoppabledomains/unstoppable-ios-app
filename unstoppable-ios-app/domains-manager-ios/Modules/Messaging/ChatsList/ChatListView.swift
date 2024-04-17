@@ -300,11 +300,12 @@ private extension ChatListView {
     
     @ViewBuilder
     func chatsListContentView() -> some View {
-        if viewModel.chatsListToShow.isEmpty {
+        if viewModel.chatsListToShow.isEmpty,
+           viewModel.chatsRequests.isEmpty {
             chatsListEmptyView()
         } else {
             chatsListSectionContentViewFor(chats: viewModel.chatsListToShow,
-                                    requests: viewModel.chatsRequests)
+                                           requests: viewModel.chatsRequests)
         }
     }
     

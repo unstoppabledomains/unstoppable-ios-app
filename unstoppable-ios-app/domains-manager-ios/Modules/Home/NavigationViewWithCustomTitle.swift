@@ -28,6 +28,7 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
                 AnyView(customTitle())
                     .offset(y: currentTitleOffset + navigationState.yOffset)
                     .frame(maxWidth: 240)
+                    .id(navigationState.customViewID)
             }
         })
         .onAppear(perform: {

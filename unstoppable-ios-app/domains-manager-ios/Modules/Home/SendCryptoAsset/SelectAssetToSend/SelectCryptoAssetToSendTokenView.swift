@@ -16,6 +16,7 @@ struct SelectCryptoAssetToSendTokenView: View {
             BalanceTokenIconsView(token: token)
             tokenInfoView()
         }
+        .contentShape(Rectangle())
     }
 }
 

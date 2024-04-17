@@ -260,7 +260,7 @@ private extension PushRESTAPIService {
     }
     
     func getCurrentChainId() -> Int {
-        let network: BlockchainNetwork = User.instance.getSettings().isTestnetUsed ? .ethGoerli : .ethMainnet
+        let network: BlockchainNetwork = User.instance.getSettings().isTestnetUsed ? .ethSepolia : .ethMainnet
         return network.rawValue
     }
 }

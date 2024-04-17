@@ -29,7 +29,7 @@ extension Double {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = maxNumberAfterComa
-        formatter.minimumFractionDigits = 0
+        formatter.minimumFractionDigits = 2
         formatter.roundingMode = .halfEven
         
         return formatter.string(from: self as NSNumber) ?? "0.0"
