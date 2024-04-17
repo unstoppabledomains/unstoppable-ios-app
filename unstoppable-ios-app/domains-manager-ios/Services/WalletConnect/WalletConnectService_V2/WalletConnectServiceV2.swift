@@ -944,7 +944,9 @@ extension WalletConnectServiceV2 {
                                                     chainId: Int,
                                                     request: WalletConnectSign.Request,
                                                     transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
-        guard let cost = SignPaymentTransactionUIConfiguration.TxDisplayDetails(tx: transaction) else { throw WalletConnectRequestError.failedToBuildCompleteTransaction }
+        guard let cost = SignPaymentTransactionUIConfiguration.TxDisplayDetails(tx: transaction) else {
+            throw WalletConnectRequestError.failedToBuildCompleteTransaction
+        }
         return try await getClientAfterConfirmation_generic(address: address, request: request) {
             WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: $0,
                                                                                    walletAddress: address,
