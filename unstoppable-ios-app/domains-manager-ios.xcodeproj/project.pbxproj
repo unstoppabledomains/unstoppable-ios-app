@@ -186,10 +186,10 @@
 		C609831A282B707B00546392 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098319282B707B00546392 /* UINavigationController.swift */; };
 		C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6098321282B8BA300546392 /* WalletViewTransactionsAction.swift */; };
 		C60A31642B464F6000C806A5 /* PreviewMessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60A31632B464F6000C806A5 /* PreviewMessagingNewsChannel.swift */; };
-		C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
-		C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
 		C60BC04B2BC7806F00A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04A2BC7806F00A79CDB /* XMTPiOS */; };
 		C60BC04D2BC7808400A79CDB /* XMTPiOS in Frameworks */ = {isa = PBXBuildFile; productRef = C60BC04C2BC7808400A79CDB /* XMTPiOS */; };
+		C60BC04F2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
+		C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */; };
 		C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C29902834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift */; };
 		C60C59B22B47F97900A2522C /* PreviewLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C59B12B47F97900A2522C /* PreviewLoginViewController.swift */; };
@@ -1128,6 +1128,8 @@
 		C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
+		C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
+		C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C679B5ED2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */; };
 		C679B5F12918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */; };
 		C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5F52918F38100F543A7 /* DefaultCodable.swift */; };
@@ -3520,6 +3522,7 @@
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCRefreshBootstrapTokenResponse.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
 		C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileWeb3WebsiteLoadingCell.xib; sourceTree = "<group>"; };
 		C679B5F52918F38100F543A7 /* DefaultCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCodable.swift; sourceTree = "<group>"; };
@@ -6095,6 +6098,7 @@
 				C6952A3F2BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift */,
 				C632BE582BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift */,
 				C632BE552BA59E8400C95B2D /* FB_UD_MPCSetupTokenResponse.swift */,
+				C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */,
 				C632BE522BA59DFB00C95B2D /* FB_UD_MPCBootstrapCodeSubmitResponse.swift */,
 				C650F8BC2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift */,
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
@@ -9450,6 +9454,7 @@
 				296BB61F2A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6F4332F2BB15641000C5E46 /* DomainsTLDGroup.swift in Sources */,
 				C6526DED29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
+				C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */,
 				C6D6E4ED2817CA5C008C66BB /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
 				C673BA242A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */,
 				C6D6E4E82817C561008C66BB /* OnboardingBackupWalletPresenter.swift in Sources */,
@@ -10934,6 +10939,7 @@
 				C618084E2B19B9FD0032E543 /* PreviewFirebasePurchaseDomainsService.swift in Sources */,
 				C6B65F952B5665F0006D1812 /* HomeTabView.swift in Sources */,
 				C62900EF2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift in Sources */,
+				C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */,
 				C6D647212B1ED91F00D724AC /* PullUpViewService.swift in Sources */,
 				C6C8F8A12B2182AE00A9834D /* WalletDetailsViewController.swift in Sources */,
 				C6D8FF1F2B82EB740094A21E /* TextMessageRowView.swift in Sources */,
@@ -12309,7 +12315,7 @@
 			repositoryURL = "https://github.com/fireblocks/ncw-ios-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = "2.3.7-beta-5";
+				version = 2.4.0;
 			};
 		};
 		C66811F02B47B0F500BDABB0 /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {

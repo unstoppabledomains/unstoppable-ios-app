@@ -35,13 +35,12 @@ extension FB_UD_MPC {
 
 // MARK: - MPCWalletProviderSubServiceProtocol
 extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
-    /// Currently it will use admin route to generate code and log intro console.
     func sendBootstrapCodeTo(email: String) async throws {
         try await networkService.sendBootstrapCodeTo(email: email)
     }
 
     func setupMPCWalletWith(code: String,
-                              recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 var mpcConnectorInProgress: FB_UD_MPC.FireblocksConnectorProtocol?
@@ -155,7 +154,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     }
     
     private func getWalletAccountDetailsForWalletWith(deviceId: String,
-                                               authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
+                                                      authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
         let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
         let accessToken = authTokens.accessToken.jwt
         
@@ -201,6 +200,12 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return udWallet
     }
     
+    private func getConnectedWalletDetailsFor(deviceId: String) throws -> FB_UD_MPC.ConnectedWalletDetails {
+        let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+        let accountDetails = try walletsDataStorage.retrieveAccountsDetailsFor(deviceId: deviceId)
+        return .init(accountDetails: accountDetails, tokens: tokens)
+    }
+    
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         case failedToGetEthAddress
@@ -222,12 +227,45 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         }
         
         let refreshToken = tokens.refreshToken
-        guard !refreshToken.isExpired else {
-            throw MPCConnectionServiceError.tokensExpired
+        if !refreshToken.isExpired {
+            return try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
         }
         
+        let bootstrapToken = tokens.bootstrapToken
+        if !bootstrapToken.isExpired {
+            return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken,
+                                                           currentDeviceId: deviceId)
+        }
+        
+        // All tokens has expired. Need to go through the bootstrap process from the beginning.
+        throw MPCConnectionServiceError.tokensExpired
+    }
+    
+    func refreshAndStoreToken(refreshToken: JWToken,
+                              deviceId: String) async throws -> String {
         let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
         try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
         return refreshedTokens.accessToken.jwt
+    }
+    
+    func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
+                                       currentDeviceId: String) async throws -> String {
+        let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
+        
+        let accessToken = refreshBootstrapTokenResponse.accessToken
+        let deviceId = refreshBootstrapTokenResponse.deviceId
+        let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
+        mpcConnector.stopJoinWallet()
+        
+        try await mpcConnector.waitForKeyIsReady()
+        let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+        let txId = transactionDetails.transactionId
+        try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
+        try await mpcConnector.signTransactionWith(txId: txId)
+        let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+        
+        try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
+        try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
+        return authTokens.accessToken.jwt
     }
 }
