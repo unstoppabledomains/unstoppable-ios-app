@@ -961,7 +961,7 @@
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
-"HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Polygon and Base tokens, more coming in the future updates!";
+"HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Polygon and Base tokens";
 "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
 "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
 "NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";
