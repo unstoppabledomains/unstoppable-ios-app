@@ -632,12 +632,22 @@ extension Endpoint {
         )
     }
     
-    static func refreshDomainBadges(for domain: DomainItem) -> Endpoint {
+    static func refreshDomainBadges(for domain: DomainItem,
+                                    expires: UInt64,
+                                    signature: String) throws -> Endpoint {
+        let address = try domain.getETHAddressThrowing()
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
         return Endpoint(
             host: NetworkConfig.migratedEndpoint,
-            path: "/api/domains/\(domain.name)/sync_badges",
+            path: "/profile/user/\(address)/badges",
             queryItems: [],
-            body: ""
+            body: "[]",
+            headers: headers
         )
     }
     

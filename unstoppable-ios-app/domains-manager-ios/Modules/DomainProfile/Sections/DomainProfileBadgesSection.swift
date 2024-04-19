@@ -21,7 +21,6 @@ final class DomainProfileBadgesSection {
     private let sectionAnalyticName: String = "badges"
     private var isRefreshingBadges = false
     private var isBadgesUpToDate = false
-    private var refreshBadgesTimer: AnyCancellable?
 
     init(sectionData: SectionData,
          state: DomainProfileViewController.State,
@@ -29,7 +28,7 @@ final class DomainProfileBadgesSection {
         self.badgesData = sectionData
         self.controller = controller
         self.state = state
-        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh?.next)
+        setBadgesUpToDateFor(nextRefreshDate: nil)
     }
     
     static func numberOfBadgesInTheRow() -> Int {
@@ -191,17 +190,13 @@ private extension DomainProfileBadgesSection {
     
     func refreshDomainBadges() {
         Task {
-            stopRefreshBadgesTimer()
             guard let controller else { return }
             let domain = controller.generalData.domain.toDomainItem()
             updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
-                let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)
-                setBadgesUpToDateFor(nextRefreshDate: refreshInfo.next)
-                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: refreshInfo.refresh)
-                if refreshInfo.refresh {
-                    startRefreshBadgesTimer()
-                }
+                try await NetworkService().refreshDomainBadges(for: domain)
+                setBadgesUpToDateFor(nextRefreshDate: nil)
+                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: false)
             } catch {
                 appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
                 updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: false)
@@ -215,22 +210,6 @@ private extension DomainProfileBadgesSection {
             sectionId = .init()
             controller?.sectionDidUpdate(animated: false)
         }
-    }
-    
-    @MainActor
-    func startRefreshBadgesTimer() {
-        refreshBadgesTimer = Timer
-            .publish(every: Constants.refreshDomainBadgesInterval, on: .main, in: .default)
-            .autoconnect()
-            .sink { [weak self] _ in
-                self?.refreshDomainBadges()
-            }
-    }
-    
-    @MainActor
-    func stopRefreshBadgesTimer() {
-        refreshBadgesTimer?.cancel()
-        refreshBadgesTimer = nil
     }
     
     func setBadgesUpToDateFor(nextRefreshDate: Date?) {

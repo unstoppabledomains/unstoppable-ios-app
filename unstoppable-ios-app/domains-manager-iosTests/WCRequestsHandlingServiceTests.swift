@@ -235,7 +235,7 @@ private extension WCRequestsHandlingServiceTests {
     }
     
     func callWC2Handler(requestType: WalletConnectRequestType) {
-        mockWCServiceV2.pSessionRequestPublisher.send((Request(topic: "topic",
+        try! mockWCServiceV2.pSessionRequestPublisher.send((Request(topic: "topic",
                                                               method: requestType.rawValue,
                                                               params: WCAnyCodable(""),
                                                               chainId: Blockchain("eip155:1")!),

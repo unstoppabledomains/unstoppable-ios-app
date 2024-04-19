@@ -1177,6 +1177,12 @@ extension String {
         static let sendAssetNoTokensTitle = "SEND_ASSET_NO_TOKENS_TITLE"
         static let sendAssetNoTokensSubtitle = "SEND_ASSET_NO_TOKENS_SUBTITLE"
         static let totalEstimate = "TOTAL_ESTIMATE"
+        static let noTransactionsYet = "NO_TRANSACTIONS_YET"
+        static let chatToNotify = "CHAT_TO_NOTIFY"
+        static let noRecordsToSendCryptoSectionHeader = "NO_RECORDS_TO_SEND_CRYPTO_SECTION_HEADER"
+        static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
+        static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
+        static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
     }
     
     enum BlockChainIcons: String {

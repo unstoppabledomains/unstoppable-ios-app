@@ -167,7 +167,7 @@ fileprivate extension NotificationsService {
         environment = .production
         #endif
         Notify.configure(environment: environment,
-                         crypto: WCV2NotifyDefaultCryptoProvider())
+                         crypto: WCV2DefaultCryptoProvider())
         #if DEBUG
         Notify.instance.setLogging(level: .debug)
         #endif

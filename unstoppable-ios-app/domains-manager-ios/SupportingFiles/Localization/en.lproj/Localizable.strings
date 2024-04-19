@@ -700,7 +700,7 @@
 "DOMAIN_PROFILE_ACCESS_INFO_TITLE" = "Who can view your data?";
 "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION" = "Control the data displayed on your public profile and what is only visible to you and allowed apps.";
 "PROFILE_SOCIALS_EMPTY_MESSAGE" = "Manage your social links on the Unstoppable Domains website.";
-"PROFILE_REFRESHING_BADGES_TITLE" = "Refreshing (~15m)";
+"PROFILE_REFRESHING_BADGES_TITLE" = "Refreshing";
 "PROFILE_BADGES_UP_TO_DATE" = "Badges are up to date";
 "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE" = "#%@ on leaderboard";
 "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE" = "%@ holders";
@@ -961,7 +961,7 @@
 
 // Home
 "HOME_WALLET_TOKENS_COME_TITLE" = "No more tokens here yet";
-"HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Polygon and Base tokens, more coming in the future updates!";
+"HOME_WALLET_TOKENS_COME_SUBTITLE" = "We currently support Ethereum, Solana, Polygon and Base tokens";
 "HOME_WALLET_COLLECTIBLES_EMPTY_TITLE" = "No collectibles in your wallet";
 "HOME_WALLET_COLLECTIBLES_EMPTY_SUBTITLE" = "To receive collectibles and see them here, just copy your wallet address below.";
 "NFT_DETAILS_ABOUT_COLLECTION_HEADER" = "About %@";
@@ -1077,3 +1077,9 @@ More tabs are coming in the next updates.";
 "SEND_ASSET_NO_TOKENS_TITLE" = "No tokens available to send\nin your wallet";
 "SEND_ASSET_NO_TOKENS_SUBTITLE" = "Currently, the app supports only Ethereum and Polygon tokens for sending.";
 "TOTAL_ESTIMATE" = "Total Estimate";
+"NO_TRANSACTIONS_YET" = "No transactions yet";
+"CHAT_TO_NOTIFY" = "Chat to notify";
+"NO_RECORDS_TO_SEND_CRYPTO_SECTION_HEADER" = "%@ hasn’t added these cryptocurrencies";
+"NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE" = "%@ hasn’t added addresses for these cryptocurrencies";
+"NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
+"NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";

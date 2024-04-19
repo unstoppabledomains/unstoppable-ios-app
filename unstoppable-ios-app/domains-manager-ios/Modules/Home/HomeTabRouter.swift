@@ -236,6 +236,7 @@ extension HomeTabRouter {
             await popToRootAndWait()
             guard let wallet = appContext.walletsDataService.selectedWallet else { return }
             
+            tabViewSelection = .wallets
             walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
         }
     }
@@ -304,6 +305,38 @@ extension HomeTabRouter {
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()
     }
+    
+    func startMessagingWith(walletAddress: HexAddress,
+                            domainName: DomainName?,
+                            by wallet: WalletEntity) {
+        Task {
+            var messagingProfile: MessagingChatUserProfileDisplayInfo
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
+                messagingProfile = profile
+            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
+                messagingProfile = profile
+            } else {
+                await jumpToChatsList(profile: nil)
+                return
+            }
+            
+            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
+               let chat = chatsList.first(where: { chat in
+                   switch chat.type {
+                   case .private(let details):
+                       return details.otherUser.wallet.lowercased() == walletAddress
+                   case .group, .community:
+                       return false
+                   }
+               }) {
+                await showChat(chat.id, profile: messagingProfile)
+            } else {
+                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: walletAddress.ethChecksumAddress(),
+                                                                            domainName: domainName)
+                await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
+            }
+        }
+    }
 }
 
 // MARK: - Pull up related
@@ -353,33 +386,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     }
     
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by wallet: WalletEntity) {
-        Task {
-            var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
-                messagingProfile = profile
-            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
-                messagingProfile = profile
-            } else {
-                await jumpToChatsList(profile: nil)
-                return
-            }
-            
-            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
-               let chat = chatsList.first(where: { chat in
-                   switch chat.type {
-                   case .private(let details):
-                       return details.otherUser.wallet.lowercased() == profile.walletAddress
-                   case .group, .community:
-                       return false
-                   }
-               }) {
-                await showChat(chat.id, profile: messagingProfile)
-            } else {
-                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
-                                                                            domainName: profile.name)
-                await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
-            }
-        }
+        startMessagingWith(walletAddress: profile.walletAddress, domainName: profile.name, by: wallet)
     }
     
     func publicProfileDidSelectOpenLeaderboard() {

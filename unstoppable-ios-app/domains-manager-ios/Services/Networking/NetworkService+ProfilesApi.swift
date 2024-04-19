@@ -55,16 +55,15 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
         return info
     }
     
-    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
-        guard let url = Endpoint.refreshDomainBadges(for: domain).url else {
-            throw NetworkLayerError.creatingURLFailed
-        }
-        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
-        guard let response = RefreshBadgesResponse.objectFromData(data,
-                                                                  dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
-            throw NetworkLayerError.failedParseProfileData
-        }
-        return response
+    public func refreshDomainBadges(for domain: DomainItem) async throws {
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        let endpoint = try Endpoint.refreshDomainBadges(for: domain,
+                                                        expires: expires,
+                                                        signature: signature)
+        
+        try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .post)
     }
     
     public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {

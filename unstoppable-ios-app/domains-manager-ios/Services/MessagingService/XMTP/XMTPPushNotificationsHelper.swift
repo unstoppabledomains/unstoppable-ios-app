@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 import web3
 
 struct XMTPPushNotificationsHelper {
