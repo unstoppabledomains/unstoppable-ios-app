@@ -46,7 +46,6 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     
     func signMessage(_ messageString: String,
                      by wallet: MPCWalletMetadata) async throws -> String {
-        await Task.sleep(seconds: 0.5)
         let subService = try getSubServiceFor(provider: wallet.provider)
         
         throw MPCWalletsServiceError.unsupportedOperation

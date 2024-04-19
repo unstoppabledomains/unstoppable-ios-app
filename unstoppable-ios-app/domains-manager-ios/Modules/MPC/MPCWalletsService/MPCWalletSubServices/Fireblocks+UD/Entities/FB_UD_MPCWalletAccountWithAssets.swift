@@ -13,11 +13,24 @@ extension FB_UD_MPC {
         let id: String
         let assets: [WalletAccountAsset]
         
+        func getAssetWith(chain: BlockchainType) throws -> WalletAccountAsset {
+            guard let asset = assets.first(where: { $0.blockchainAsset.symbol == chain.rawValue }) else { throw WalletAccountWithAssets.assetNotFound }
+            return asset
+        }
+        
         init(account: WalletAccount,
              assets: [WalletAccountAsset]) {
             self.type = account.type
             self.id = account.id
             self.assets = assets
+        }
+        
+        enum WalletAccountWithAssets: String, LocalizedError {
+            case assetNotFound
+            
+            public var errorDescription: String? {
+                return rawValue
+            }
         }
     }
 }

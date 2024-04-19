@@ -28,5 +28,11 @@ extension FB_UD_MPC {
                               includeBalances: Bool) async throws -> WalletAccountAssetsResponse
         
         func getSupportedBlockchainAssets(accessToken: String) async throws -> SupportedBlockchainAssetsResponse 
+        
+        func startMessageSigning(accessToken: String,
+                                 accountId: String,
+                                 assetId: String,
+                                 message: String,
+                                 encoding: SignMessageEncoding) async throws -> OperationDetails
     }
 }

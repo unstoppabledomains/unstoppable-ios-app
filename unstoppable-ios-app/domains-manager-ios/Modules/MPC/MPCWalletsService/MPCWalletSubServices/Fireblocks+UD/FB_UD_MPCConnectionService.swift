@@ -136,6 +136,21 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
+    func signMessage(_ messageString: String,
+                     chain: BlockchainType,
+                     by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let account = connectedWalletDetails.firstAccount
+        let asset = try account.getAssetWith(chain: chain)
+        let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let requestOperation = try await networkService.startMessageSigning(accessToken: token,
+                                                                            accountId: account.id,
+                                                                            assetId: asset.id,
+                                                                            message: messageString,
+                                                                            encoding: messageString.isHexNumber ? .hex : .utf8)
+        
+    }
+    
     private func prepareAndSaveMPCWallet(_ mpcWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {
         do {
             try storeConnectedWalletDetails(mpcWallet)
@@ -209,10 +224,24 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return .init(accountDetails: accountDetails, tokens: tokens)
     }
     
+    private func getConnectedWalletDetailsFor(walletMetadata: MPCWalletMetadata) throws -> FB_UD_MPC.ConnectedWalletDetails {
+        let deviceId = try getDeviceIdFrom(walletMetadata: walletMetadata)
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(deviceId: deviceId)
+        return connectedWalletDetails
+    }
+    
+    private func getDeviceIdFrom(walletMetadata: MPCWalletMetadata) throws -> String {
+        guard let metadata = walletMetadata.metadata else { throw MPCConnectionServiceError.invalidWalletMetadata }
+        let walletMetadata = try FB_UD_MPC.UDWalletMetadata.objectFromDataThrowing(metadata)
+        let deviceId = walletMetadata.deviceId
+        return deviceId
+    }
+    
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         case failedToGetEthAddress
         case noAccountsForWallet
+        case invalidWalletMetadata
         
         public var errorDescription: String? {
             return rawValue
