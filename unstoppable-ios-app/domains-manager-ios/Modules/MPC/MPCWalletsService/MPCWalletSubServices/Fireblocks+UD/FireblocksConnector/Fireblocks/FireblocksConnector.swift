@@ -24,6 +24,11 @@ final class FireblocksConnector {
         self.messageHandler = messageHandler
         
         do {
+            if let instance = try? Fireblocks.getInstance(deviceId: deviceId) {
+                self.fireblocks = instance
+                return
+            }
+            
             let storageProvider = FireblocksKeyStorageProvider()
             // TODO: Check User.instance.getSettings().isTestnetUsed to select env
             let env = FireblocksEnvironment.sandbox
