@@ -20,6 +20,7 @@ extension FB_UD_MPC {
         private let networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
+        private let actionsQueuer = ActionsQueuer()
 
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
@@ -140,6 +141,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                      chain: BlockchainType,
                      by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let deviceId = connectedWalletDetails.deviceId
+        await waitForActionReadyToStart(deviceId: deviceId)
+        defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
@@ -246,6 +250,14 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return deviceId
     }
     
+    private func waitForActionReadyToStart(deviceId: String) async {
+        let isReady = await actionsQueuer.setActiveIfReady(deviceId: deviceId)
+        if !isReady {
+            await Task.sleep(seconds: 1)
+            await waitForActionReadyToStart(deviceId: deviceId)
+        }
+    }
+    
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         case failedToGetEthAddress
@@ -309,5 +321,29 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
         try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
         return authTokens.accessToken.jwt
+    }
+}
+
+// MARK: - Queuing
+extension FB_UD_MPC.MPCConnectionService {
+    actor ActionsQueuer {
+        private var ongoingDeviceIds: Set<String> = []
+        
+        func isActive(deviceId: String) -> Bool {
+            ongoingDeviceIds.contains(deviceId)
+        }
+        
+        func setActiveIfReady(deviceId: String) -> Bool {
+            if !isActive(deviceId: deviceId) {
+                ongoingDeviceIds.insert(deviceId)
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        func removeActive(deviceId: String) {
+            ongoingDeviceIds.remove(deviceId)
+        }
     }
 }
