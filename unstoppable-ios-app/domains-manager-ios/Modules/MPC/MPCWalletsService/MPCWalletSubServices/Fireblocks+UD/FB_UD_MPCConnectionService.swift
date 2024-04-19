@@ -148,7 +148,16 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                             assetId: asset.id,
                                                                             message: messageString,
                                                                             encoding: messageString.isHexNumber ? .hex : .utf8)
+        let operationId = requestOperation.id
+        let txId = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
+                                                                            operationId: operationId)
         
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
+        try await mpcConnector.signTransactionWith(txId: txId)
+        let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
+                                                                                         operationId: operationId)
+        return signature
     }
     
     private func prepareAndSaveMPCWallet(_ mpcWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {

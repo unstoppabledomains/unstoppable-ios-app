@@ -14,9 +14,19 @@ extension FB_UD_MPC {
 }
 
 extension FB_UD_MPC {
-    struct OperationDetails: Codable {
+    struct OperationDetails: Codable, TransactionOperation {
         let id: String
         let status: String
         let type: String
+        var transaction: Transaction?
+        var result: Result?
+        
+        struct Transaction: Codable {
+            let externalVendorTransactionId: String?
+        }
+        
+        struct Result: Codable {
+            let signature: String?
+        }
     }
 }

@@ -225,6 +225,55 @@ extension FB_UD_MPC {
             return response.operation
         }
         
+        func waitForOperationReadyAndGetTxId(accessToken: String,
+                                             operationId: String) async throws -> String {
+            let operation = try await waitForOperationStatus(accessToken: accessToken,
+                                                             operationId: operationId,
+                                                             status: .signatureRequired)
+            guard let transactionId = operation.transaction?.externalVendorTransactionId else {
+                throw MPCNetworkServiceError.missingVendorIdInSignTransactionOperation
+            }
+            return transactionId
+        }
+        
+        func waitForOperationSignedAndGetTxSignature(accessToken: String,
+                                                     operationId: String) async throws -> String {
+            let operation = try await waitForOperationStatus(accessToken: accessToken,
+                                                             operationId: operationId,
+                                                             status: .completed)
+            guard let signature = operation.result?.signature else {
+                throw MPCNetworkServiceError.missingSignatureInSignTransactionOperation
+            }
+            return signature
+        }
+        
+        private func waitForOperationStatus(accessToken: String,
+                                            operationId: String,
+                                            status: TransactionOperationStatus) async throws -> OperationDetails {
+            for i in 0..<50 {
+                let operation = try await getOperationWith(accessToken: accessToken,
+                                                           operationId: operationId)
+                if operation.status == status.rawValue {
+                    return operation
+                } else {
+                    await Task.sleep(seconds: 0.5)
+                }
+            }
+            
+            throw MPCNetworkServiceError.waitForKeyMaterialsTransactionTimeout
+        }
+        
+        private func getOperationWith(accessToken: String,
+                                      operationId: String) async throws -> OperationDetails {
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let request = try APIRequest(urlString: MPCNetwork.URLSList.operationURL(operationId: operationId),
+                                         method: .get,
+                                         headers: headers)
+            let response: OperationDetails = try await makeDecodableAPIRequest(request)
+            
+            return response
+        }
+        
         // MARK: - Private methods
         private func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
             do {
@@ -265,6 +314,8 @@ extension FB_UD_MPC {
         
         private enum MPCNetworkServiceError: String, LocalizedError {
             case waitForKeyMaterialsTransactionTimeout
+            case missingVendorIdInSignTransactionOperation
+            case missingSignatureInSignTransactionOperation
             
             public var errorDescription: String? {
                 return rawValue
