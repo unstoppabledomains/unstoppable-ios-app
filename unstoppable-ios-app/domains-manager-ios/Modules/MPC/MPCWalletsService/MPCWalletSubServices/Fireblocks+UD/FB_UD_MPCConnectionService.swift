@@ -12,7 +12,7 @@ func logMPC(_ message: String) {
 }
 
 struct MPCMessage {
-    enum MPCMessageType {
+    enum MPCMessageType: String {
         case utf8, hex
     }
     let incomingString: String
@@ -157,11 +157,13 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let mpcMessage = messageString.convertToMPCMessage
+        let encoding = convertMPCMessageTypeToFBUDEncoding(mpcMessage.type)
         let requestOperation = try await networkService.startMessageSigning(accessToken: token,
                                                                             accountId: account.id,
                                                                             assetId: asset.id,
-                                                                            message: messageString,
-                                                                            encoding: messageString.hasHexPrefix ? .hex : .utf8)
+                                                                            message: mpcMessage.outcomingString,
+                                                                            encoding: encoding)
         let operationId = requestOperation.id
         logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
         let txId = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
@@ -176,6 +178,15 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                                          operationId: operationId)
         logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
         return signature
+    }
+    
+    private func convertMPCMessageTypeToFBUDEncoding(_ type: MPCMessage.MPCMessageType) -> FB_UD_MPC.SignMessageEncoding {
+        switch type {
+        case .hex:
+            return .hex
+        case .utf8:
+            return .utf8
+        }
     }
     
     private func prepareAndSaveMPCWallet(_ mpcWallet: FB_UD_MPC.ConnectedWalletDetails) throws -> UDWallet {
