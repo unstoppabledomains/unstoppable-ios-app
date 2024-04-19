@@ -144,6 +144,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let deviceId = connectedWalletDetails.deviceId
         await waitForActionReadyToStart(deviceId: deviceId)
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
+        let start = Date()
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
@@ -151,16 +152,20 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                             accountId: account.id,
                                                                             assetId: asset.id,
                                                                             message: messageString,
-                                                                            encoding: messageString.isHexNumber ? .hex : .utf8)
+                                                                            encoding: messageString.hasHexPrefix ? .hex : .utf8)
         let operationId = requestOperation.id
+        logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
         let txId = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
                                                                             operationId: operationId)
         
+        logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
         let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
                                                                         authTokenProvider: self)
         try await mpcConnector.signTransactionWith(txId: txId)
+        logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
         let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
                                                                                          operationId: operationId)
+        logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
         return signature
     }
     
