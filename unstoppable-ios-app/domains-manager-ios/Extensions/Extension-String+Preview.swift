@@ -1257,6 +1257,15 @@ extension String {
         }
     }
     
+    var convertToMPCMessage: MPCMessage {
+        let cleanMessage = self.droppedHexPrefix
+        if cleanMessage.isHexNumber {
+            return MPCMessage(incomingString: self, outcomingString: Self.hexPrefix + cleanMessage, type: .hex)
+        } else {
+            return MPCMessage(incomingString: self, outcomingString: self, type: .utf8)
+        }
+    }
+        
     var asURL: URL? {
         URL(string: self)
     }

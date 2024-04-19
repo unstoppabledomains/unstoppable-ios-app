@@ -11,6 +11,15 @@ func logMPC(_ message: String) {
     print("MPC: - \(message)")
 }
 
+struct MPCMessage {
+    enum MPCMessageType {
+        case utf8, hex
+    }
+    let incomingString: String
+    let outcomingString: String
+    let type: MPCMessageType
+}
+
 extension FB_UD_MPC {
     final class MPCConnectionService {
         
