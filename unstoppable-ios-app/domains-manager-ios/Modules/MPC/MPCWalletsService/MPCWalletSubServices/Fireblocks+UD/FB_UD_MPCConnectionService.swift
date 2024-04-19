@@ -114,8 +114,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     logMPC("Did get wallet account details")
                     let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
                                                                      tokens: authTokens,
-                                                                     accounts: walletDetails.accounts,
-                                                                     assets: walletDetails.assets)
+                                                                     firstAccount: walletDetails.firstAccount,
+                                                                     accounts: walletDetails.accounts)
                     logMPC("Will create UD Wallet")
                     let udWallet = try prepareAndSaveMPCWallet(mpcWallet)
                     logMPC("Did create UD Wallet")
@@ -149,8 +149,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     }
     
     private struct WalletDetails {
-        let accounts: [FB_UD_MPC.WalletAccount]
-        let assets: [FB_UD_MPC.WalletAccountAsset]
+        let firstAccount: FB_UD_MPC.WalletAccountWithAssets
+        let accounts: [FB_UD_MPC.WalletAccountWithAssets]
     }
     
     private func getWalletAccountDetailsForWalletWith(deviceId: String,
@@ -160,16 +160,19 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         
         let accountsResponse = try await networkService.getAccounts(accessToken: accessToken)
         let accounts = accountsResponse.items
-        var assets: [FB_UD_MPC.WalletAccountAsset] = []
+        var accountsWithAssets: [FB_UD_MPC.WalletAccountWithAssets] = []
         for account in accounts {
             let assetsResponse = try await networkService.getAccountAssets(accountId: account.id,
-                                                             accessToken: accessToken,
-                                                             includeBalances: false)
-            assets.append(contentsOf: assetsResponse.items)
+                                                                           accessToken: accessToken,
+                                                                           includeBalances: false)
+            let accountWithAssets = FB_UD_MPC.WalletAccountWithAssets(account: account,
+                                                                      assets: assetsResponse.items)
+            accountsWithAssets.append(accountWithAssets)
         }
+        guard let firstAccount = accountsWithAssets.first else { throw MPCConnectionServiceError.noAccountsForWallet }
         
-        
-        return WalletDetails(accounts: accounts, assets: assets)
+        return WalletDetails(firstAccount: firstAccount,
+                             accounts: accountsWithAssets)
     }
     
     private func storeConnectedWalletDetails(_ walletDetails: FB_UD_MPC.ConnectedWalletDetails) throws {
@@ -209,6 +212,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     enum MPCConnectionServiceError: String, LocalizedError {
         case tokensExpired
         case failedToGetEthAddress
+        case noAccountsForWallet
         
         public var errorDescription: String? {
             return rawValue

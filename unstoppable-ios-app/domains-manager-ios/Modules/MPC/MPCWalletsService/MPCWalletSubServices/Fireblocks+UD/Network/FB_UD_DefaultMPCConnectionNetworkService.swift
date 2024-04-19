@@ -201,6 +201,30 @@ extension FB_UD_MPC {
             return response
         }
         
+        func startMessageSigning(accessToken: String,
+                                 accountId: String,
+                                 assetId: String,
+                                 message: String,
+                                 encoding: SignMessageEncoding) async throws -> OperationDetails {
+            struct RequestBody: Codable {
+                let message: String
+                let encoding: SignMessageEncoding
+            }
+            struct Response: Codable {
+                let operation: OperationDetails
+            }
+            
+            let body = RequestBody(message: message, encoding: encoding)
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.assetSignaturesURL(accountId: accountId, assetId: assetId)
+            let request = try APIRequest(urlString: url,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            let response: Response = try await makeDecodableAPIRequest(request)
+            return response.operation
+        }
+        
         // MARK: - Private methods
         private func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
             do {

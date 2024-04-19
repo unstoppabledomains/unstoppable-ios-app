@@ -11,38 +11,41 @@ extension FB_UD_MPC {
     struct ConnectedWalletDetails {
         let deviceId: String
         let tokens: AuthTokens
-        let accounts: [WalletAccount]
-        let assets: [WalletAccountAsset]
+        let firstAccount: WalletAccountWithAssets
+        let accounts: [WalletAccountWithAssets]
         
-        init(deviceId: String, tokens: AuthTokens, accounts: [WalletAccount], assets: [WalletAccountAsset]) {
+        init(deviceId: String, 
+             tokens: AuthTokens,
+             firstAccount: WalletAccountWithAssets,
+             accounts: [WalletAccountWithAssets]) {
             self.deviceId = deviceId
             self.tokens = tokens
+            self.firstAccount = firstAccount
             self.accounts = accounts
-            self.assets = assets
         }
         
         init(accountDetails: ConnectedWalletAccountsDetails, tokens: AuthTokens) {
             self.deviceId = accountDetails.deviceId
             self.tokens = tokens
+            self.firstAccount = accountDetails.firstAccount
             self.accounts = accountDetails.accounts
-            self.assets = accountDetails.assets
         }
         
         func getETHWalletAddress() -> String? {
-            assets.first(where: { $0.blockchainAsset.symbol == BlockchainType.Ethereum.rawValue })?.address
+            firstAccount.assets.first(where: { $0.blockchainAsset.symbol == BlockchainType.Ethereum.rawValue })?.address
         }
         
         func createWalletAccountsDetails() -> ConnectedWalletAccountsDetails {
             ConnectedWalletAccountsDetails(deviceId: deviceId,
-                                           accounts: accounts,
-                                           assets: assets)
+                                           firstAccount: firstAccount,
+                                           accounts: accounts)
         }
     }
     
     struct ConnectedWalletAccountsDetails: Codable {
         let deviceId: String
-        let accounts: [WalletAccount]
-        let assets: [WalletAccountAsset]
+        let firstAccount: WalletAccountWithAssets
+        let accounts: [WalletAccountWithAssets]
     }
     
     struct UDWalletMetadata: Codable {
