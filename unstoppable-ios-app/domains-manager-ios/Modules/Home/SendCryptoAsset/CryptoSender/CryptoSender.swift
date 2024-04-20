@@ -167,7 +167,7 @@ extension EVMCryptoSender {
                                                        chainId: chain.id)
         
         guard wallet.walletState != .externalLinked else {
-            let response = try await wallet.signViaWalletConnectTransaction(tx: tx, chainId: chain.id)
+            let response = try await wallet.sendViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response
         }
         
