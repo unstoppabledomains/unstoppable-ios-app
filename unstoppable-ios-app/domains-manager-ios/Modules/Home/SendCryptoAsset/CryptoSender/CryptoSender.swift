@@ -79,7 +79,7 @@ struct NativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
                                               gas: try EthereumQuantity(defaultSendTxGasPrice),
                                               from: sender,
                                               to: receiver,
-                                              value: try EthereumQuantity(crypto.amount.wei)
+                                              value: try EthereumQuantity(crypto.amount.getOnChainCountable())
                                               )
         
         if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
@@ -123,7 +123,7 @@ struct NonNativeCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
                                               address: contractAddress)
 
         guard let transactionCreated = erc20Contract
-            .transfer(to: receiver, value: crypto.amount.wei)
+            .transfer(to: receiver, value: crypto.amount.getOnChainCountable())
             .createTransaction(nonce: nonce,
                                from: sender,
                                value: 0, // zero native tokens transferred

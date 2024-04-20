@@ -110,10 +110,10 @@ struct CryptoSendingSpec {
     }
     
     let token: CryptoSender.SupportedToken
-    let amount: EVMCoinAmount
+    let amount: OnChainCountable
     let speed: TxSpeed
     
-    init(token: CryptoSender.SupportedToken, amount: EVMCoinAmount, speed: TxSpeed = .normal) {
+    init(token: CryptoSender.SupportedToken, amount: OnChainCountable, speed: TxSpeed = .normal) {
         self.token = token
         self.amount = amount
         self.speed = speed
