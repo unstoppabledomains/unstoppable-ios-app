@@ -34,7 +34,7 @@ struct CryptoSender: CryptoSenderProtocol {
         throw CryptoSender.Error.sendingNotSupported
     }
     
-    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMTokenAmount {
+    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
         let cryptoSender: CryptoSenderProtocol = NativeCryptoSender(wallet: wallet)
         if cryptoSender.canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) {
             return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto, on: chain, toAddress: toAddress)
@@ -178,7 +178,7 @@ extension EVMCryptoSender {
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
-                           toAddress: HexAddress) async throws -> EVMTokenAmount {
+                           toAddress: HexAddress) async throws -> EVMCoinAmount {
         
         guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
             throw CryptoSender.Error.sendingNotSupported
@@ -192,10 +192,10 @@ extension EVMCryptoSender {
         guard let gasPriceWei = transaction.gasPrice?.quantity else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
-        let gasPrice = EVMTokenAmount(wei: gasPriceWei)
+        let gasPrice = EVMCoinAmount(wei: gasPriceWei)
         
         let gas = transaction.gas?.quantity ?? defaultSendTxGasPrice
-        let gasFee = EVMTokenAmount(gwei: gasPrice.gwei * Double(gas))
+        let gasFee = EVMCoinAmount(gwei: gasPrice.gwei * Double(gas))
         return  gasFee
     }
 
@@ -203,7 +203,7 @@ extension EVMCryptoSender {
         try await fetchGasPrices(chainId: chain.id)
     }
 
-    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMTokenAmount {
+    func fetchGasPrice(chainId: Int, for speed: CryptoSendingSpec.TxSpeed) async throws -> EVMCoinAmount {
         let prices: EstimatedGasPrices = try await fetchGasPrices(chainId: chainId)
         return prices.getPriceForSpeed(speed)
     }

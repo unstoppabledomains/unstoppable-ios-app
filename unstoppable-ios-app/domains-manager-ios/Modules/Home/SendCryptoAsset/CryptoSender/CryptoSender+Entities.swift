@@ -10,7 +10,7 @@ import Foundation
 // Unified container for the token amount.
 // Init with units, gwei's or wei's
 // Read in units, gwei's or wei's
-struct EVMTokenAmount {
+struct EVMCoinAmount: OnChainCountable {
     static let Billion = 1_000_000_000.0
     private let gweiTotal: Double
     
@@ -41,18 +41,44 @@ struct EVMTokenAmount {
     var wei: UDBigUInt { // can only be integer and may be very big
         UDBigUInt(gweiTotal * Self.Billion)
     }
+    
+    func getOnChainCountable() -> UDBigUInt {
+        self.wei
+    }
 }
 
 protocol ERC20TokenAmount {
     var decimals: UInt8 { get }
 }
 
-struct EstimatedGasPrices {
-    let normal: EVMTokenAmount
-    let fast: EVMTokenAmount
-    let urgent: EVMTokenAmount
+struct USDT: ERC20TokenAmount, OnChainCountable {
+    var elementaryUnits: UDBigUInt
     
-    func getPriceForSpeed(_ txSpeed: CryptoSendingSpec.TxSpeed) -> EVMTokenAmount {
+    init(units: Double) {
+        self.elementaryUnits = UDBigUInt(units * pow(10, Double(decimals)))
+    }
+    
+    func getOnChainCountable() -> UDBigUInt {
+        elementaryUnits
+    }
+    
+    let decimals: UInt8 = 6
+    
+    var units: Double {
+        Double(elementaryUnits) / pow(10, Double(decimals))
+    }
+}
+
+protocol OnChainCountable {
+    func getOnChainCountable() -> UDBigUInt
+}
+
+struct EstimatedGasPrices {
+    let normal: EVMCoinAmount
+    let fast: EVMCoinAmount
+    let urgent: EVMCoinAmount
+    
+    func getPriceForSpeed(_ txSpeed: CryptoSendingSpec.TxSpeed) -> EVMCoinAmount {
         switch txSpeed {
         case .normal:
             return normal
@@ -84,10 +110,10 @@ struct CryptoSendingSpec {
     }
     
     let token: CryptoSender.SupportedToken
-    let amount: EVMTokenAmount
+    let amount: EVMCoinAmount
     let speed: TxSpeed
     
-    init(token: CryptoSender.SupportedToken, amount: EVMTokenAmount, speed: TxSpeed = .normal) {
+    init(token: CryptoSender.SupportedToken, amount: EVMCoinAmount, speed: TxSpeed = .normal) {
         self.token = token
         self.amount = amount
         self.speed = speed

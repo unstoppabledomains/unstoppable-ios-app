@@ -417,9 +417,9 @@ extension NetworkService {
         }
         assert(priceDict.count == Self.InfuraSpeedCase.allCases.count) // always true after forEach
         
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.low]!),
-                                  fast: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
-                                  urgent: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.high]!))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.low]!),
+                                  fast: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
+                                  urgent: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.high]!))
     }
     
     func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
@@ -430,9 +430,9 @@ extension NetworkService {
               let urgent = prices["fastest"] else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: normal),
-                                          fast: EVMTokenAmount(gwei: fast),
-                                          urgent: EVMTokenAmount(gwei: urgent))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: normal),
+                                          fast: EVMCoinAmount(gwei: fast),
+                                          urgent: EVMCoinAmount(gwei: urgent))
     }
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {

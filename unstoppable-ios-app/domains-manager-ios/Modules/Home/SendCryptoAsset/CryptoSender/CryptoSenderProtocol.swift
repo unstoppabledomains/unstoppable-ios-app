@@ -36,7 +36,7 @@ protocol CryptoSenderProtocol {
     /// - Returns: Amount of crypto that must be deducted from maxCrypto as the gas fee in the future tx, in token units
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
                            on chain: ChainSpec,
-                           toAddress: HexAddress) async throws -> EVMTokenAmount
+                           toAddress: HexAddress) async throws -> EVMCoinAmount
     
     func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices
 }

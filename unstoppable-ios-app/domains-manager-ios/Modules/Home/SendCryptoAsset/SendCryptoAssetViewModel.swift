@@ -143,7 +143,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
                                          tokenAmount: Double,
                                          txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
         let token = try getSupportedTokenFor(balanceToken: token)
-        let amount = EVMTokenAmount(units: tokenAmount)
+        let amount = EVMCoinAmount(units: tokenAmount)
         let speed = getSpecTransactionSpeedFor(txSpeed: txSpeed)
         
         return CryptoSendingSpec(token: token,
