@@ -153,10 +153,12 @@ private extension MPCActivateWalletView {
                         Text(mpcStateTitle)
                             .font(.currentFont(size: 28, weight: .bold))
                             .foregroundStyle(Color.foregroundDefault)
+                            .minimumScaleFactor(0.6)
                         Text("MPC Wallet")
                             .font(.currentFont(size: 16))
                             .foregroundStyle(Color.foregroundDefault)
                     }
+                    .lineLimit(1)
                     Spacer()
                 }
             }

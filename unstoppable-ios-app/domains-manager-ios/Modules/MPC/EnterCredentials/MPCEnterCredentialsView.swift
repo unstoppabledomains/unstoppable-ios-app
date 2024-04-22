@@ -19,7 +19,7 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     @State private var error: Error?
     
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: isIPSE ? 16 : 32) {
             headerView()
             VStack(alignment: .leading, spacing: 16) {
                 emailInputView()
@@ -121,7 +121,7 @@ private extension MPCEnterCredentialsView {
             do {
                 // Send email action
                 let email = emailInput
-                try await mpcWalletsService.sendBootstrapCodeTo(email: emailInput)
+                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
                 let password = passwordInput
                 let credentials = MPCActivateCredentials(email: email, password: password)
                 codeVerifiedCallback(credentials)
