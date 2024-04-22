@@ -18,6 +18,8 @@ enum SetupMPCWalletStep {
     case signingTransaction
     case confirmingTransaction
     case verifyingAccessToken
+    case getWalletAccountDetails
+    case storeWallet
     case finished(UDWallet)
     case failed(URL?)
     
@@ -43,6 +45,10 @@ enum SetupMPCWalletStep {
             "Confirming transaction"
         case .verifyingAccessToken:
             "Verifying access token"
+        case .getWalletAccountDetails:
+            "Get account details"
+        case .storeWallet:
+            "Store wallet"
         case .finished:
             "Finished"
         case .failed:
@@ -73,10 +79,14 @@ enum SetupMPCWalletStep {
             9
         case .verifyingAccessToken:
             10
-        case .finished:
+        case .getWalletAccountDetails:
             11
-        case .failed:
+        case .storeWallet:
             12
+        case .finished:
+            13
+        case .failed:
+            14
         }
     }
     

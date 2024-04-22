@@ -17,7 +17,6 @@ struct MPCActivateWalletView: View {
     
     @State private var activationState: ActivationState = .readyToActivate
     @State private var isLoading = false
-    @State private var error: Error?
     @State private var mpcState: String = ""
     @State private var mpcCreateProgress: CGFloat = 0.0
     
@@ -36,14 +35,13 @@ struct MPCActivateWalletView: View {
             VStack {
                 Spacer()
                 actionButtonView()
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.bottom, safeAreaInset.bottom)
             }
         }
         .ignoresSafeArea()
         .animation(.default, value: UUID())
-        .displayError($error)
         .onAppear(perform: onAppear)
-          
     }
 }
 
@@ -74,14 +72,11 @@ private extension MPCActivateWalletView {
                 }
                 
             } catch MPCWalletError.incorrectCode {
-                self.error = MPCWalletError.incorrectCode
-                activationState = .failed
+                activationState = .failed(.incorrectPasscode)
             } catch MPCWalletError.incorrectPassword {
-                self.error = MPCWalletError.incorrectPassword
-                activationState = .failed
+                activationState = .failed(.incorrectPassword)
             } catch {
-                self.error = error
-                activationState = .failed
+                activationState = .failed(.unknown)
             }
             isLoading = false
         }
@@ -93,7 +88,7 @@ private extension MPCActivateWalletView {
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
-            mpcWalletCreatedCallback(mpcWallet)
+            activationState = .activated(mpcWallet)
         case .failed(let url):
             if let url {
                 shareItems([url], completion: nil)
@@ -144,18 +139,6 @@ private extension MPCActivateWalletView {
         .frame(height: 200)
         .background(stateBackgroundView())
         .clipShape(RoundedRectangle(cornerRadius: 12))
-//        .shadow(color: stateBorderColor(),
-//                radius: 1,
-//                x: 0,
-//                y: 0)
-//        .overlay {
-//            RoundedRectangle(cornerRadius: 12)
-//                .stroke(Color.backgroundDefault, lineWidth: 1)
-//        }
-//        .overlay {
-//            RoundedRectangle(cornerRadius: 12)
-//                .stroke(Color.backgroundDefault, lineWidth: 1)
-//        }
         .overlay(
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
@@ -210,14 +193,32 @@ private extension MPCActivateWalletView {
         case .readyToActivate, .activating:
             EmptyView()
         case .activated, .failed:
-            UDButtonView(text: String.Constants.getStarted.localized(),
+            UDButtonView(text: actionButtonTitle,
                          style: .large(.raisedPrimary),
                          callback: actionButtonPressed)
         }
     }
     
+    var actionButtonTitle: String {
+        switch activationState {
+        case .activated:
+            String.Constants.getStarted.localized()
+        case .readyToActivate, .activating:
+            ""
+        case .failed(let error):
+            error.actionTitle
+        }
+    }
+    
     func actionButtonPressed() {
-        
+        switch activationState {
+        case .activated(let mpcWallet):
+            mpcWalletCreatedCallback(mpcWallet)
+        case .readyToActivate, .activating:
+            Debugger.printFailure("Inconsistent state. Button should not be visible", critical: true)
+        case .failed(let error):
+            return
+        }
     }
 }
 
@@ -226,8 +227,25 @@ private extension MPCActivateWalletView {
     enum ActivationState {
         case readyToActivate
         case activating
-        case failed
-        case activated
+        case failed(ActivationError)
+        case activated(UDWallet)
+    }
+    
+    enum ActivationError {
+        case incorrectPassword
+        case incorrectPasscode
+        case unknown
+        
+        var actionTitle: String {
+            switch self {
+            case .incorrectPasscode:
+                "Re-enter passcode"
+            case .incorrectPassword:
+                "Re-enter password"
+            case .unknown:
+                "Sorry mate"
+            }
+        }
     }
 }
 
