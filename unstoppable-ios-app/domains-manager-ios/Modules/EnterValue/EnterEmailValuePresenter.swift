@@ -49,7 +49,7 @@ final class EnterEmailValuePresenter: EnterValueViewPresenter, UserDataValidator
         }
         
         let errorMessage = String.Constants.enterValidEmailAddress.localized()
-        let emailValidationResult = isEmailValid(email)
+        let emailValidationResult = getEmailValidationResult(email)
         
         switch emailValidationResult {
         case .success:

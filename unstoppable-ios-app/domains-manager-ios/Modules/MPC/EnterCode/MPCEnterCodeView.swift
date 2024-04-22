@@ -1,5 +1,5 @@
 //
-//  MPCEnterCodeView.swift
+//  MPCEnterPassphraseView.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 14.03.2024.
@@ -11,29 +11,35 @@ struct MPCEnterCodeView: View {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    let codeVerifiedCallback: (String)->()
+    let code: String
+    let mpcWalletCreatedCallback: (UDWallet)->()
     @State private var input: String = ""
-    @State private var inputType: InputType = .code
     @State private var isLoading = false
     @State private var error: Error?
-    
+    @State private var mpcState: String = ""
+    @State private var mpcCreateProgress: CGFloat = 0.0
+
     var body: some View {
-        VStack(spacing: 32) {
-            headerView()
-            VStack(alignment: .leading, spacing: 8) {
+        ZStack {
+            VStack(spacing: 32) {
+                headerView()
                 inputView()
-                inputActionButtonView()
+                actionButtonView()
+                Spacer()
             }
-            actionButtonView()
-            Spacer()
+            .padding()
+            .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
+            if isLoading {
+                Color.black.opacity(0.3)
+                mpcStateView()
+            }
         }
-        .padding()
-        .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
+        .ignoresSafeArea()
         .animation(.default, value: UUID())
         .displayError($error)
     }
-    
 }
+
 
 // MARK: - Private methods
 private extension MPCEnterCodeView {
@@ -53,125 +59,102 @@ private extension MPCEnterCodeView {
     @ViewBuilder
     func inputView() -> some View {
         UDTextFieldView(text: $input,
-                        placeholder: inputPlaceholder,
+                        placeholder: "Password",
                         focusBehaviour: .activateOnAppear,
                         autocapitalization: .never,
-                        autocorrectionDisabled: true)
-    }
-    
-    var inputPlaceholder: String {
-        switch inputType {
-        case .code:
-            "Enter setup code"
-        case .email:
-            "Enter email"
-        }
-    }
-    
-    @ViewBuilder
-    func inputActionButtonView() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            toggleInputType()
-        } label: {
-            HStack {
-                Text(inputActionCodeMessage)
-                    .foregroundStyle(Color.foregroundSecondary)
-                Text(inputActionMessage)
-                    .foregroundStyle(Color.foregroundAccent)
-            }
-            .font(.currentFont(size: 16))
-        }
-        .buttonStyle(.plain)
-    }
-    
-    var inputActionCodeMessage: String {
-        switch inputType {
-        case .code:
-            "Don't have a code yet?"
-        case .email:
-            "Already have a code?"
-        }
-    }
-    
-    var inputActionMessage: String {
-        switch inputType {
-        case .code:
-            "Send to email"
-        case .email:
-            "Enter code"
-        }
-    }
-    
-    func toggleInputType() {
-        input = ""
-        switch inputType {
-        case .code:
-            self.inputType = .email
-        case .email:
-            self.inputType = .code
-        }
+                        autocorrectionDisabled: true,
+                        isSecureInput: true)
     }
     
     @ViewBuilder
     func actionButtonView() -> some View {
-        UDButtonView(text: actionButtonTitle, 
+        UDButtonView(text: "Access wallet",
                      style: .large(.raisedPrimary),
                      isLoading: isLoading,
                      callback: actionButtonPressed)
         .disabled(input.isEmpty)
     }
     
-    var actionButtonTitle: String {
-        switch inputType {
-        case .code:
-            "Submit setup code"
-        case .email:
-            "Send code"
-        }
-    }
-    
     func actionButtonPressed() {
-        switch inputType {
-        case .code:
-            confirmCode()
-        case .email:
-            sendEmail()
-        }
-    }
-    
-    func confirmCode() {
-        let code = input.trimmedSpaces.uppercased()
-        codeVerifiedCallback(code)
-    }
-    
-    func sendEmail() {
-        Task {
+        Task { @MainActor in
+            KeyboardService.shared.hideKeyboard()
+            
             isLoading = true
             do {
-                // Send email action
-                try await mpcWalletsService.sendBootstrapCodeTo(email: input)
-                toggleInputType()
+                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code, recoveryPhrase: input)
+                
+                for try await step in mpcWalletStepsStream {
+                    updateForSetupMPCWalletStep(step)
+                }
+                // TODO: - Show explicitly on the UI when design is ready
+            } catch MPCWalletError.incorrectCode {
+                self.error = MPCWalletError.incorrectCode
+            } catch MPCWalletError.incorrectPassword {
+                self.error = MPCWalletError.incorrectPassword
             } catch {
                 self.error = error
             }
             isLoading = false
         }
     }
-}
-
-// MARK: - Private methods
-private extension MPCEnterCodeView {
-    enum InputType {
-        case code, email
+    
+    @MainActor
+    func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
+        mpcState = step.title
+        mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
+        switch step {
+        case .finished(let mpcWallet):
+            mpcWalletCreatedCallback(mpcWallet)
+        case .failed(let url):
+            if let url {
+                shareItems([url], completion: nil)
+            }
+        default:
+            return
+        }
+    }
+    
+    @ViewBuilder
+    func mpcStateView() -> some View {
+        VStack(spacing: 20) {
+            CircularProgressView(progress: mpcCreateProgress)
+                .squareFrame(60)
+            Text(mpcState)
+                .bold()
+                .multilineTextAlignment(.center)
+        }
+        .foregroundStyle(Color.foregroundDefault)
+        .frame(width: 300, height: 150)
+        .background(Color.backgroundDefault)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding()
     }
 }
-
-@available(iOS 17.0, *)
 #Preview {
-    let view = MPCEnterCodeView(codeVerifiedCallback: { _ in })
-    let vc = UIHostingController(rootView: view)
-    let nav = CNavigationController(rootViewController: vc)
+    MPCEnterCodeView(code: "",
+                           mpcWalletCreatedCallback: { _ in })
+}
+
+
+struct CircularProgressView: View {
+    let progress: CGFloat
+    var lineWidth: CGFloat = 10
     
-    return nav
+    var body: some View {
+        ZStack {
+            // Background for the progress bar
+            Circle()
+                .stroke(lineWidth: lineWidth)
+                .opacity(0.1)
+                .foregroundStyle(Color.foregroundAccent)
+            
+            // Foreground or the actual progress bar
+            Circle()
+                .trim(from: 0.0, to: min(progress, 1.0))
+                .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+                .foregroundStyle(Color.foregroundAccent)
+                .rotationEffect(Angle(degrees: 270.0))
+                .animation(.linear, value: progress)
+        }
+    }
 }

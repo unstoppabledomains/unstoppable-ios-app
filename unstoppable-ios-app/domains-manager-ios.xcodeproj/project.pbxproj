@@ -852,10 +852,10 @@
 		C653304E2BC3941000A705AE /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = C653304D2BC3941000A705AE /* JWToken.swift */; };
 		C653304F2BC3941000A705AE /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = C653304D2BC3941000A705AE /* JWToken.swift */; };
 		C65330522BC3AD9700A705AE /* FB_UD_MPCNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */; };
-		C6534A6E2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */; };
-		C6534A6F2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */; };
-		C6534A702BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */; };
-		C6534A712BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */; };
+		C6534A6E2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift */; };
+		C6534A6F2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6B2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift */; };
+		C6534A702BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6C2BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift */; };
+		C6534A712BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A6C2BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift */; };
 		C6534A8D2BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A722BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift */; };
 		C6534A8E2BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A722BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift */; };
 		C6534A8F2BBFBA10008EEBB5 /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6534A732BBFBA10008EEBB5 /* HomeExploreFollowerRelationshipTypePickerView.swift */; };
@@ -1586,10 +1586,10 @@
 		C6BF6BDC2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */; };
 		C6BF6BDD2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */; };
 		C6BF6BDE2B8F3602006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */; };
-		C6BF801D2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */; };
-		C6BF801E2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */; };
-		C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */; };
-		C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */; };
+		C6BF801D2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */; };
+		C6BF801E2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */; };
+		C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift */; };
+		C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift */; };
 		C6BF802B2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */; };
 		C6BF802C2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */; };
 		C6BF80312BA2E01F00CC4CB3 /* FireblocksConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */; };
@@ -3322,8 +3322,8 @@
 		C652727F2A165A3D001A084C /* MessagingChatSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatSender.swift; sourceTree = "<group>"; };
 		C653304D2BC3941000A705AE /* JWToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWToken.swift; sourceTree = "<group>"; };
 		C65330512BC3AD9700A705AE /* FB_UD_MPCNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCNetwork.swift; sourceTree = "<group>"; };
-		C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseView.swift; sourceTree = "<group>"; };
-		C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterPassphraseViewController.swift; sourceTree = "<group>"; };
+		C6534A6B2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeView.swift; sourceTree = "<group>"; };
+		C6534A6C2BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeViewController.swift; sourceTree = "<group>"; };
 		C6534A722BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerCellView.swift; sourceTree = "<group>"; };
 		C6534A732BBFBA10008EEBB5 /* HomeExploreFollowerRelationshipTypePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowerRelationshipTypePickerView.swift; sourceTree = "<group>"; };
 		C6534A742BBFBA10008EEBB5 /* HomeExploreFollowersSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeExploreFollowersSectionView.swift; sourceTree = "<group>"; };
@@ -3835,8 +3835,8 @@
 		C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPendingEventsOnAppearViewModifier.swift; sourceTree = "<group>"; };
 		C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassViewAnalyticsDetailsViewModifier.swift; sourceTree = "<group>"; };
 		C6BF6BDB2B8F11CC006CC2BD /* TaskWithDeadline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskWithDeadline.swift; sourceTree = "<group>"; };
-		C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeView.swift; sourceTree = "<group>"; };
-		C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeOnboardingViewController.swift; sourceTree = "<group>"; };
+		C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCredentialsView.swift; sourceTree = "<group>"; };
+		C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCredentialsOnboardingViewController.swift; sourceTree = "<group>"; };
 		C6BF802A2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCConnectionService.swift; sourceTree = "<group>"; };
 		C6BF80302BA2E01F00CC4CB3 /* FireblocksConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksConnector.swift; sourceTree = "<group>"; };
 		C6BF80322BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksBootstrapRPCMessageHandler.swift; sourceTree = "<group>"; };
@@ -6119,13 +6119,13 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		C6534A6D2BBFB9EF008EEBB5 /* EnterPassphrase */ = {
+		C6534A6D2BBFB9EF008EEBB5 /* EnterCode */ = {
 			isa = PBXGroup;
 			children = (
-				C6534A6B2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift */,
-				C6534A6C2BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift */,
+				C6534A6C2BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift */,
+				C6534A6B2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift */,
 			);
-			path = EnterPassphrase;
+			path = EnterCode;
 			sourceTree = "<group>";
 		};
 		C6534A752BBFBA10008EEBB5 /* Followers */ = {
@@ -7848,20 +7848,20 @@
 			isa = PBXGroup;
 			children = (
 				C6952A5B2BC6648900F4B475 /* PurchaseMPC */,
-				C6534A6D2BBFB9EF008EEBB5 /* EnterPassphrase */,
-				C6BF80222BA2BB2300CC4CB3 /* EnterCode */,
+				C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */,
+				C6534A6D2BBFB9EF008EEBB5 /* EnterCode */,
 				C6952A322BC4EE2D00F4B475 /* MPCWalletsService */,
 			);
 			path = MPC;
 			sourceTree = "<group>";
 		};
-		C6BF80222BA2BB2300CC4CB3 /* EnterCode */ = {
+		C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */ = {
 			isa = PBXGroup;
 			children = (
-				C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift */,
-				C6BF801C2BA2B55300CC4CB3 /* MPCEnterCodeView.swift */,
+				C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift */,
+				C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */,
 			);
-			path = EnterCode;
+			path = EnterCredentials;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -9216,7 +9216,7 @@
 				306486CD25273C4400388026 /* User.swift in Sources */,
 				C62396A92A28D7D200363F60 /* PushChannel.swift in Sources */,
 				C69F99562A9F167F004B1958 /* DomainProfileSocialAccount.swift in Sources */,
-				C6534A6E2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */,
+				C6534A6E2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift in Sources */,
 				C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C6C995C6289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
@@ -9434,7 +9434,7 @@
 				C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */,
 				C6C8F85E2B21800E00A9834D /* ValetProtocol.swift in Sources */,
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
-				C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */,
+				C6BF80202BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift in Sources */,
 				C63095E92B0DA66400205054 /* GoogleIDTokenUtilities.swift in Sources */,
 				C6FFBADB2B833A8300CB442D /* ChatCreateMessagingProfileView.swift in Sources */,
 				C60982352823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
@@ -9626,7 +9626,7 @@
 				C6098310282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
 				C6B761CF2BB3C11800773943 /* HomeTab.swift in Sources */,
 				C6109E3728E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
-				C6534A702BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift in Sources */,
+				C6534A702BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift in Sources */,
 				C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */,
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
 				C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
@@ -9757,7 +9757,7 @@
 				30784C8927F455100034FA4A /* UDTextView.swift in Sources */,
 				C6D6E4F22817CC97008C66BB /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C623969F2A288AE300363F60 /* MessagingChat.swift in Sources */,
-				C6BF801D2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */,
+				C6BF801D2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift in Sources */,
 				C6F9FBD42A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift in Sources */,
 				C63095F02B0DA66400205054 /* UDGoogleSigner.swift in Sources */,
 				C671E3EE2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
@@ -10495,7 +10495,7 @@
 				C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
 				C6D6462C2B1DC2BC00D724AC /* ResizableRoundedImageView.swift in Sources */,
 				C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */,
-				C6BF801E2BA2B55300CC4CB3 /* MPCEnterCodeView.swift in Sources */,
+				C6BF801E2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift in Sources */,
 				C6D646742B1ED11B00D724AC /* DomainProfileUpdateDataRequestType.swift in Sources */,
 				C6D647592B1EDC2E00D724AC /* TertiaryButton.swift in Sources */,
 				C6C8F92E2B2183C700A9834D /* DomainsCollectionSearchEmptyCell.swift in Sources */,
@@ -10804,7 +10804,7 @@
 				C6C8F8D32B21833D00A9834D /* UBTDomainCardView.swift in Sources */,
 				C6D6470A2B1ED7CA00D724AC /* MessageDateFormatter.swift in Sources */,
 				C62900E32BAAB392008B35A2 /* SendCryptoAsset.swift in Sources */,
-				C6534A6F2BBFB9EF008EEBB5 /* MPCEnterPassphraseView.swift in Sources */,
+				C6534A6F2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift in Sources */,
 				C671CD272BC6D3C1005DA2FB /* PurchaseMPCWalletCartStatus.swift in Sources */,
 				C6D6465E2B1ED10D00D724AC /* DomainProfileNoSocialsCell.swift in Sources */,
 				C6C8F8562B217EAE00A9834D /* NetworkReachabilityServiceProtocol.swift in Sources */,
@@ -10933,7 +10933,7 @@
 				C61808262B19AB320032E543 /* DomainTransferServiceProtocol.swift in Sources */,
 				C61807FE2B19A84F0032E543 /* QRCodeMonkeyServiceProvider.swift in Sources */,
 				C6B65F5D2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
-				C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCodeOnboardingViewController.swift in Sources */,
+				C6BF80212BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift in Sources */,
 				C6C8F98D2B21897A00A9834D /* NonEmptyArray.swift in Sources */,
 				C6952A642BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift in Sources */,
 				C61808512B19BA670032E543 /* MockFirebaseInteractionsService.swift in Sources */,
@@ -11430,7 +11430,7 @@
 				C684A0292B85A8E500B751A5 /* MessageReactionSelectionView.swift in Sources */,
 				C6170EBF2B79DA9A008E9C93 /* DomainSearchResultProfileRowView.swift in Sources */,
 				C6C8F8102B217CC000A9834D /* ConnectNewExternalWalletPresenter.swift in Sources */,
-				C6534A712BBFB9EF008EEBB5 /* MPCEnterPassphraseViewController.swift in Sources */,
+				C6534A712BBFB9EF008EEBB5 /* MPCEnterCodeViewController.swift in Sources */,
 				C6D645F32B1DBED500D724AC /* FABButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

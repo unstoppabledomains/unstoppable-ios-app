@@ -72,7 +72,7 @@ extension RestoreWalletViewController: UITableViewDataSource {
                      iconTintColor: .foregroundDefault,
                      iconStyle: restoreOption.iconStyle,
                      text: restoreOption.title,
-                     secondaryText: restoreOption.subtitle)
+                     secondaryText: nil)
         cell.setSecondaryTextStyle(restoreOption.subtitleStyle)
         
         return cell
@@ -113,7 +113,7 @@ extension RestoreWalletViewController: UITableViewDelegate {
         case .websiteAccount:
             onboardingFlowManager.moveToStep(.loginWithWebsite)
         case .mpc:
-            onboardingFlowManager.moveToStep(.mpcCode)
+            onboardingFlowManager.moveToStep(.mpcCredentials)
         }
     }
 }

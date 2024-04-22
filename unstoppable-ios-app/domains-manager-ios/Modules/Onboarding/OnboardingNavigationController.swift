@@ -420,14 +420,14 @@ private extension OnboardingNavigationController {
             vc.presenter = presenter
             return vc
             
-        case .mpcCode:
-            let vc = MPCEnterCodeOnboardingViewController()
+        case .mpcCredentials:
+            let vc = MPCEnterCredentialsOnboardingViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
             return vc
-        case .mpcPassphrase:
-            let vc = MPCEnterPassphraseViewController()
+        case .mpcCode:
+            let vc = MPCEnterCodeViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -490,8 +490,8 @@ extension OnboardingNavigationController {
         case noParkedDomains = 21
         case parkedDomainsFound = 22
         
-        case mpcCode = 23
-        case mpcPassphrase = 24
+        case mpcCredentials = 23
+        case mpcCode = 24
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {
