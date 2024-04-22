@@ -20,7 +20,7 @@ protocol EVMCryptoSender: CryptoSenderProtocol {
     func createSendTransaction(crypto: CryptoSendingSpec,
                                fromAddress: HexAddress,
                                toAddress: HexAddress,
-                               chainId: Int) async throws -> EthereumTransaction
+                               chain: ChainSpec) async throws -> EthereumTransaction
 }
 
 extension EVMCryptoSender {
@@ -35,13 +35,12 @@ extension EVMCryptoSender {
         let tx = try await createSendTransaction(crypto: crypto,
                                                        fromAddress: self.wallet.address,
                                                        toAddress: toAddress,
-                                                       chainId: chain.id)
+                                                       chain: chain)
         
         guard wallet.walletState != .externalLinked else {
             let response = try await wallet.sendViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response
         }
-        
         
         let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
         return hash
@@ -58,7 +57,7 @@ extension EVMCryptoSender {
         let transaction = try await createSendTransaction(crypto: maxCrypto,
                                                                 fromAddress: self.wallet.address,
                                                                 toAddress: toAddress,
-                                                                chainId: chain.id)
+                                                                chain: chain)
         
         guard let gasPriceWei = transaction.gasPrice?.quantity else {
             throw CryptoSender.Error.failedFetchGasPrice
@@ -98,10 +97,10 @@ struct NativeCoinCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     internal func createSendTransaction(crypto: CryptoSendingSpec,
                                              fromAddress: HexAddress,
                                              toAddress: HexAddress,
-                                             chainId: Int) async throws -> EthereumTransaction {
+                                             chain: ChainSpec) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
-                                                                                chainId: chainId)
-        let speedBasedGasPrice = try await fetchGasPrice(chainId: chainId, for: crypto.speed)
+                                                                                chainId: chain.id)
+        let speedBasedGasPrice = try await fetchGasPrice(chainId: chain.id, for: crypto.speed)
         
         let sender = EthereumAddress(hexString: fromAddress)
         let receiver = EthereumAddress(hexString: toAddress)
@@ -114,7 +113,7 @@ struct NativeCoinCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
                                               value: try EthereumQuantity(crypto.amount.getOnChainCountable())
                                               )
         
-        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
+        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chain.id) {
             transaction.gas = gasEstimate
         }
         return transaction
@@ -127,25 +126,25 @@ struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     let wallet: UDWallet
     
     func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
-        // only native tokens supported
         return (token == CryptoSender.SupportedToken.usdt && chainType == .Ethereum) // TODO:
     }
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,
                                               fromAddress: HexAddress,
                                               toAddress: HexAddress,
-                                              chainId: Int) async throws -> EthereumTransaction {
+                                              chain: ChainSpec) async throws -> EthereumTransaction {
         let nonce: EthereumQuantity = try await JRPC_Client.instance.fetchNonce(address: fromAddress,
-                                                                                chainId: chainId)
-        let speedBasedGasPrice = try await fetchGasPrice(chainId: chainId, for: crypto.speed)
+                                                                                chainId: chain.id)
+        let speedBasedGasPrice = try await fetchGasPrice(chainId: chain.id, for: crypto.speed)
         
         guard let sender = try? EthereumAddress(hex: fromAddress, eip55: false),
               let receiver = try? EthereumAddress(hex: toAddress, eip55: false) else {
             throw CryptoSender.Error.invalidAddresses
         }
         // Load ERC20 contract
-        let web3 = try JRPC_Client.instance.getWeb3(chainIdInt: chainId)
-        let usdtContractAddress = "0xdac17f958d2ee523a2206206994597c13d831ec7" // USDT contract address
+        let web3 = try JRPC_Client.instance.getWeb3(chainIdInt: chain.id)
+        let usdtContractAddress = try crypto.token.getContractAddress(for: chain)
+        
         guard let contractAddress = try? EthereumAddress(hex: usdtContractAddress, eip55: false) else {
             throw CryptoSender.Error.invalidAddresses
         }
@@ -164,7 +163,7 @@ struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
         }
         
         var transaction = transactionCreated
-        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chainId) {
+        if let gasEstimate = try? await JRPC_Client.instance.fetchGasLimit(transaction: transaction, chainId: chain.id) {
             transaction.gas = gasEstimate
         }
         return transaction

@@ -123,6 +123,7 @@ struct CryptoSendingSpec {
 extension CryptoSender {
     enum Error: Swift.Error {
         case sendingNotSupported
+        case tokenNotSupportedOnChain
         case failedFetchGasPrice
         case failedCreateSendTransaction
         case insufficientFunds
@@ -133,5 +134,26 @@ extension CryptoSender {
         case eth = "ETH"
         case matic = "MATIC"
         case usdt = "USDT"
+        
+        static let array: [CryptoSender.SupportedToken :
+                            [BlockchainType : (mainnet: String,
+                                               testnet: String?)]] =
+        [
+            .usdt: [.Ethereum: (mainnet: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                                testnet: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0")],
+            
+            .usdt: [.Matic: (mainnet: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+                                 testnet: nil)] // fake contracts only
+        ]
+        
+        func getContractAddress(for chain: ChainSpec) throws -> HexAddress {
+            guard let addresses = Self.array[self]?[chain.blockchainType] else {
+                throw CryptoSender.Error.tokenNotSupportedOnChain
+            }
+            guard let contract =  chain.env == .mainnet ? addresses.mainnet : addresses.testnet else {
+                throw CryptoSender.Error.tokenNotSupportedOnChain
+            }
+            return  contract
+        }
     }
 }
