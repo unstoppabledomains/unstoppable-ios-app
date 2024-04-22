@@ -47,11 +47,11 @@ struct EVMCoinAmount: OnChainCountable {
     }
 }
 
-protocol ERC20TokenAmount {
+protocol DecimalPointFloatable {
     var decimals: UInt8 { get }
 }
 
-struct ERC20Token: ERC20TokenAmount, OnChainCountable {
+struct ERC20Token: DecimalPointFloatable, OnChainCountable {
     var elementaryUnits: UDBigUInt
     var decimals: UInt8
     
@@ -63,7 +63,6 @@ struct ERC20Token: ERC20TokenAmount, OnChainCountable {
     func getOnChainCountable() -> UDBigUInt {
         elementaryUnits
     }
-    
     
     var units: Double {
         Double(elementaryUnits) / pow(10, Double(decimals))
