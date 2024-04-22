@@ -9,15 +9,9 @@ import SwiftUI
 
 struct MPCEnterCodeView: View {
         
-    @Environment(\.mpcWalletsService) private var mpcWalletsService
-
     let email: String
     let enterCodeCallback: (String)->()
     @State private var input: String = ""
-    @State private var isRefreshingCode = false
-    @State private var resendCodeCounter: Int?
-    @State private var error: Error?
-    private let resendCodeTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
@@ -32,15 +26,6 @@ struct MPCEnterCodeView: View {
         }
         .ignoresSafeArea()
         .animation(.default, value: UUID())
-        .onReceive(resendCodeTimer) { _ in
-            if let resendCodeCounter {
-                if resendCodeCounter <= 0 {
-                    self.resendCodeCounter = nil
-                } else {
-                    self.resendCodeCounter = resendCodeCounter - 1
-                }
-            }
-        }
     }
 }
 
@@ -69,7 +54,7 @@ private extension MPCEnterCodeView {
                         rightViewType: .paste,
                         rightViewMode: .always,
                         focusBehaviour: .activateOnAppear,
-//                        autocapitalization: .characters,
+                        autocapitalization: .characters,
                         autocorrectionDisabled: true)
     }
     
@@ -95,33 +80,7 @@ private extension MPCEnterCodeView {
     
     @ViewBuilder
     func haventReceiveCodeButtonView() -> some View {
-        UDButtonView(text: resendCodeTitle,
-                     style: .large(.ghostPrimary),
-                     isLoading: isRefreshingCode,
-                     callback: haventReceivedCodeButtonPressed)
-        .disabled(resendCodeCounter != nil)
-    }
-    
-    var resendCodeTitle: String {
-        var title = String.Constants.resendCode.localized()
-        if let resendCodeCounter {
-            let counterValue = resendCodeCounter > 9 ? "\(resendCodeCounter)" : "0\(resendCodeCounter)"
-            title += " (0:\(counterValue))"
-        }
-        return title
-    }
-    
-    func haventReceivedCodeButtonPressed() {
-        Task {
-            isRefreshingCode = true
-            do {
-                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
-            } catch {
-                self.error = error
-            }
-            resendCodeCounter = 30
-            isRefreshingCode = false
-        }
+        MPCResendCodeButton(email: email)
     }
 }
 #Preview {

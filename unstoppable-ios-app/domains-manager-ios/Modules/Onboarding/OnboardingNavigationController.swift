@@ -96,6 +96,8 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             } else {
                 moveToStep(.protectWallet)
             }
+        case .changeEmailFromMPCWallet:
+            popTo(RestoreWalletViewController.self)
         }
     }
     
@@ -522,6 +524,7 @@ extension OnboardingNavigationController {
     enum Action {
         case didGenerateLocalWallet(UDWallet)
         case didImportWallet(UDWallet)
+        case changeEmailFromMPCWallet
     }
     
 }

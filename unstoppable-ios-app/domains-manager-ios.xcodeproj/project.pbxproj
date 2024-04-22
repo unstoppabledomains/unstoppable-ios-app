@@ -1241,6 +1241,10 @@
 		C68F156B2BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */; };
 		C68F156D2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */; };
 		C68F156E2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */; };
+		C68F15702BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156F2BD69E7E0049BFA2 /* MPCResendCodeButton.swift */; };
+		C68F15712BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156F2BD69E7E0049BFA2 /* MPCResendCodeButton.swift */; };
+		C68F15732BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15722BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift */; };
+		C68F15742BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15722BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */; };
@@ -3615,6 +3619,8 @@
 		C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletView.swift; sourceTree = "<group>"; };
 		C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingActivateWalletViewController.swift; sourceTree = "<group>"; };
 		C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletEnterView.swift; sourceTree = "<group>"; };
+		C68F156F2BD69E7E0049BFA2 /* MPCResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCResendCodeButton.swift; sourceTree = "<group>"; };
+		C68F15722BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletEnterDataType.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionViewPresenter.swift; sourceTree = "<group>"; };
@@ -6136,6 +6142,7 @@
 			children = (
 				C6534A6C2BBFB9EF008EEBB5 /* MPCOnboardingEnterCodeViewController.swift */,
 				C6534A6B2BBFB9EF008EEBB5 /* MPCEnterCodeView.swift */,
+				C68F156F2BD69E7E0049BFA2 /* MPCResendCodeButton.swift */,
 			);
 			path = EnterCode;
 			sourceTree = "<group>";
@@ -7074,6 +7081,7 @@
 				C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */,
 				C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */,
 				C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */,
+				C68F15722BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift */,
 			);
 			path = Activating;
 			sourceTree = "<group>";
@@ -9907,6 +9915,7 @@
 				C6C995BE289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E728225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
+				C68F15732BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */,
 				C6F6AF6E28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6568EF92B204E4C0022B598 /* UIImageBridgeView.swift in Sources */,
 				C6203A592B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
@@ -10260,6 +10269,7 @@
 				C6C99592289D313D00367362 /* CNavigationHelper.swift in Sources */,
 				C6EECEA22833A67900978ED5 /* DomainRecordsServiceProtocol.swift in Sources */,
 				C669C399291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
+				C68F15702BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */,
 				C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */,
 				30BA2B302529020E0097817E /* Extensions.swift in Sources */,
 				C669C36C2912197C00837F21 /* EnterValueViewController.swift in Sources */,
@@ -10963,6 +10973,7 @@
 				C61807FA2B19A80E0032E543 /* InitialsView.swift in Sources */,
 				C61808262B19AB320032E543 /* DomainTransferServiceProtocol.swift in Sources */,
 				C61807FE2B19A84F0032E543 /* QRCodeMonkeyServiceProvider.swift in Sources */,
+				C68F15712BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */,
 				C6B65F5D2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
 				C6BF80212BA2BB1D00CC4CB3 /* MPCOnboardingEnterCredentialsViewController.swift in Sources */,
 				C6C8F98D2B21897A00A9834D /* NonEmptyArray.swift in Sources */,
@@ -11180,6 +11191,7 @@
 				C6D6476D2B1EE02500D724AC /* Base64DataTransformer.swift in Sources */,
 				C6D646272B1DC2A700D724AC /* PullUpView.swift in Sources */,
 				C617FDAB2B590B6700B93433 /* NavigationViewWithCustomTitle.swift in Sources */,
+				C68F15742BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */,
 				C6D646D82B1ED2E700D724AC /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6D646E52B1ED4E500D724AC /* EnterEmailValuePresenter.swift in Sources */,
 				C6D645AC2B1DBB5700D724AC /* CollectionReusableRoundedBackground.swift in Sources */,

@@ -14,7 +14,8 @@ struct MPCActivateWalletView: View {
     @State var credentials: MPCActivateCredentials
     @State var code: String
     let mpcWalletCreatedCallback: (UDWallet)->()
-    
+    let changeEmailCallback: ()->()
+
     @State private var activationState: ActivationState = .readyToActivate
     @State private var isLoading = false
     @State private var mpcStateTitle: String = ""
@@ -54,7 +55,7 @@ struct MPCActivateWalletView: View {
                     self.credentials.password = value
                 }
                 activateMPCWallet()
-            })
+            }, changeEmailCallback: changeEmailCallback)
                 .presentationDetents([.medium])
         }
     }
@@ -112,15 +113,16 @@ private extension MPCActivateWalletView {
     
     @MainActor
     func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
-        mpcStateTitle = step.title
+        mpcStateTitle = "Authorizing..." // step.title
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
             activationState = .activated(mpcWallet)
         case .failed(let url):
-            if let url {
-                shareItems([url], completion: nil)
-            }
+            return
+//            if let url {
+//                shareItems([url], completion: nil) // For development
+//            }
         default:
             return
         }
@@ -141,26 +143,22 @@ private extension MPCActivateWalletView {
     @ViewBuilder
     func mpcStateView() -> some View {
         ZStack {
-            Image.confirmSendTokenGrid
+            Image.mpcWalletGrid
                 .resizable()
+            HStack(spacing: 100) {
+                mpcStateBlurLine()
+                mpcStateBlurLine()
+            }
             VStack(alignment: .leading) {
-                stateProgressView()
-                    .squareFrame(56)
+                HStack(alignment: .top) {
+                    stateProgressView()
+                        .squareFrame(56)
+                    Spacer()
+                    numberBadgeView()
+                }
                 Spacer()
                 
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(mpcStateTitle)
-                            .font(.currentFont(size: 28, weight: .bold))
-                            .foregroundStyle(Color.foregroundDefault)
-                            .minimumScaleFactor(0.6)
-                        Text("MPC Wallet")
-                            .font(.currentFont(size: 16))
-                            .foregroundStyle(Color.foregroundDefault)
-                    }
-                    .lineLimit(1)
-                    Spacer()
-                }
+                mpcStateLabelsView()
             }
             .padding(16)
         }
@@ -181,6 +179,102 @@ private extension MPCActivateWalletView {
     }
     
     @ViewBuilder
+    func mpcStateBlurLine() -> some View {
+        Rectangle()
+            .foregroundColor(.clear)
+            .frame(width: 15)
+            .background(Color.foregroundMuted)
+            .blur(radius: 32)
+            .rotationEffect(.degrees(45))
+    }
+    
+    @ViewBuilder
+    func mpcStateLabelsView() -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(mpcStateTitle)
+                    .font(.currentFont(size: 28, weight: .bold))
+                    .foregroundStyle(Color.foregroundDefault)
+                    .minimumScaleFactor(0.6)
+                Text("MPC Wallet")
+                    .font(.currentFont(size: 16))
+                    .foregroundStyle(Color.foregroundDefault)
+            }
+            .lineLimit(1)
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder
+    func numberBadgeView() -> some View {
+        HStack(alignment: .center, spacing: 4) {
+            badgeVerticalDotsView()
+            Text("#00001")
+                .monospaced()
+                .foregroundColor(Color.foregroundDefault)
+            badgeVerticalDotsView()
+        }
+        .padding(4)
+        .frame(height: 24, alignment: .center)
+        .background(badgeBackgroundColor)
+        .cornerRadius(4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .inset(by: -0.5)
+                .stroke(badgeBorderColor, lineWidth: 1)
+        )
+    }
+    
+    @ViewBuilder
+    var badgeBackgroundColor: some View {
+        switch activationState {
+        case .readyToActivate, .activating, .failed:
+                Color.backgroundMuted
+                .background(.regularMaterial)
+        case .activated:
+                Color.white.opacity(0.44)
+        }
+    }
+    
+    var badgeBorderColor: Color {
+        switch activationState {
+        case .readyToActivate, .activating, .failed:
+                .backgroundDefault
+        case .activated:
+                .black.opacity(0.16)
+        }
+    }
+    
+    @ViewBuilder
+    func badgeDotView() -> some View {
+        Circle()
+            .squareFrame(2)
+            .foregroundStyle(badgeDotBackgroundColor)
+            .padding(.vertical, 4)
+    }
+    
+    var badgeDotBackgroundColor: Color {
+        switch activationState {
+        case .readyToActivate, .activating, .failed:
+            .foregroundMuted
+        case .activated:
+            .white.opacity(0.32)
+        }
+    }
+    
+    @ViewBuilder
+    func badgeVerticalDotsView() -> some View {
+        VStack(alignment: .center) {
+            badgeDotView()
+            Spacer()
+            badgeDotView()
+        }
+        .padding(.horizontal, 0)
+        .padding(.vertical, 4)
+        .frame(height: 24, alignment: .center)
+    }
+    
+    @ViewBuilder
     func stateProgressView() -> some View {
         switch activationState {
         case .readyToActivate, .activating:
@@ -188,7 +282,7 @@ private extension MPCActivateWalletView {
         case .activated:
             Image.checkCircle
                 .resizable()
-                .foregroundStyle(stateBorderColor())
+                .foregroundStyle(.white)
         case .failed:
             Image.crossWhite
                 .resizable()
@@ -284,7 +378,7 @@ private extension MPCActivateWalletView {
             case .incorrectPassword:
                 "Wrong password"
             case .unknown:
-                "Something went wrong"
+                String.Constants.somethingWentWrong.localized()
             }
         }
         
@@ -295,7 +389,7 @@ private extension MPCActivateWalletView {
             case .incorrectPassword:
                 "Re-enter password"
             case .unknown:
-                "Retry"
+                String.Constants.tryAgain.localized()
             }
         }
     }
@@ -305,7 +399,8 @@ private extension MPCActivateWalletView {
     MPCActivateWalletView(credentials: .init(email: "",
                                              password: ""),
                           code: "",
-                          mpcWalletCreatedCallback: { _ in })
+                          mpcWalletCreatedCallback: { _ in },
+                          changeEmailCallback: { })
 }
 
 struct CircularProgressView: View {

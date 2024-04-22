@@ -58,6 +58,7 @@ private extension MPCEnterCredentialsView {
                             placeholder: "name@mail.com",
                             hint: String.Constants.emailAssociatedWithWallet.localized(),
                             focusBehaviour: .activateOnAppear,
+                            keyboardType: .emailAddress,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
                             isErrorState: shouldShowEmailError,

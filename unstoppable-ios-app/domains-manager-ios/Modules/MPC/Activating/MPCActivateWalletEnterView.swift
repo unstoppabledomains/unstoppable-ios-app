@@ -14,6 +14,7 @@ struct MPCActivateWalletEnterView: View {
     let dataType: MPCActivateWalletEnterDataType
     let email: String
     let confirmationCallback: (String)->()
+    let changeEmailCallback: ()->()
     @State private var input = ""
     
     var body: some View {
@@ -21,6 +22,9 @@ struct MPCActivateWalletEnterView: View {
             DismissIndicatorView()
             headerView()
             inputView()
+            if case .passcode = dataType {
+                MPCResendCodeButton(email: email)
+            }
             actionButtonView()
             Spacer()
         }
@@ -36,9 +40,7 @@ private extension MPCActivateWalletEnterView {
             Text(title)
                 .font(.currentFont(size: 22, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text(email)
-                .font(.currentFont(size: 16))
-                .foregroundStyle(Color.foregroundSecondary)
+            subtitleView()
         }
         .multilineTextAlignment(.center)
     }
@@ -46,7 +48,51 @@ private extension MPCActivateWalletEnterView {
     var title: String {
         switch dataType {
         case .passcode:
-            "You’ve entered wrong passcode for MPC Wallet"
+            "You’ve entered wrong verification code"
+        case .password:
+            "You’ve entered wrong password for MPC Wallet"
+        }
+    }
+    
+    @ViewBuilder
+    func subtitleView() -> some View {
+        switch dataType {
+        case .passcode:
+            subtitleTextView(String.Constants.pleaseTryAgain.localized())
+        case .password:
+            passwordSubtitleView()
+        }
+    }
+    
+    @ViewBuilder
+    func subtitleTextView(_ text: String) -> some View {
+        Text(text)
+            .font(.currentFont(size: 16))
+            .foregroundStyle(Color.foregroundSecondary)
+    }
+    
+    @ViewBuilder
+    func passwordSubtitleView() -> some View {
+        HStack {
+            subtitleTextView(email)
+            subtitleTextView("·")
+            Button {
+                UDVibration.buttonTap.vibrate()
+                dismiss()
+                changeEmailCallback()
+            } label: {
+                Text("Change")
+                    .foregroundStyle(Color.foregroundAccent)
+                    .font(.currentFont(size: 16, weight: .medium))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    var subtitle: String {
+        switch dataType {
+        case .passcode:
+            "You’ve entered wrong verification code"
         case .password:
             "You’ve entered wrong password for MPC Wallet"
         }
@@ -59,6 +105,8 @@ private extension MPCActivateWalletEnterView {
             UDTextFieldView(text: $input,
                             placeholder: "",
                             hint: String.Constants.verificationCode.localized(),
+                            rightViewType: .paste,
+                            rightViewMode: .always,
                             focusBehaviour: .activateOnAppear,
                             autocapitalization: .characters,
                             autocorrectionDisabled: true)
@@ -87,14 +135,8 @@ private extension MPCActivateWalletEnterView {
 }
 
 #Preview {
-    MPCActivateWalletEnterView(dataType: .passcode,
+    MPCActivateWalletEnterView(dataType: .password,
                                email: "qq@qq.qq",
-                               confirmationCallback: { _ in })
-}
-
-enum MPCActivateWalletEnterDataType: String, Hashable, Identifiable {
-    var id: String { rawValue }
-    
-    case passcode
-    case password
+                               confirmationCallback: { _ in },
+                               changeEmailCallback: { })
 }
