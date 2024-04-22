@@ -1233,6 +1233,8 @@
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
 		C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */; };
+		C68F15632BD641470049BFA2 /* MPCImportCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15622BD641470049BFA2 /* MPCImportCredentials.swift */; };
+		C68F15642BD641470049BFA2 /* MPCImportCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15622BD641470049BFA2 /* MPCImportCredentials.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */; };
@@ -3603,6 +3605,7 @@
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksProxyWalletRPCMessageHandler.swift; sourceTree = "<group>"; };
+		C68F15622BD641470049BFA2 /* MPCImportCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCImportCredentials.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionViewPresenter.swift; sourceTree = "<group>"; };
@@ -7860,6 +7863,7 @@
 			children = (
 				C6BF801F2BA2BB1D00CC4CB3 /* MPCEnterCredentialsOnboardingViewController.swift */,
 				C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */,
+				C68F15622BD641470049BFA2 /* MPCImportCredentials.swift */,
 			);
 			path = EnterCredentials;
 			sourceTree = "<group>";
@@ -9264,6 +9268,7 @@
 				C6D646202B1DC25900D724AC /* NamingService.swift in Sources */,
 				299713D728F693F600743003 /* EIP712TypedData.swift in Sources */,
 				C671E3D929027BB500A2B3A0 /* DomainProfileGeneralInfoSection.swift in Sources */,
+				C68F15632BD641470049BFA2 /* MPCImportCredentials.swift in Sources */,
 				299713BE28F6927500743003 /* ABIType.swift in Sources */,
 				C624D7B4281BCFC600F55530 /* IconBorderedContainerView.swift in Sources */,
 				C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
@@ -10890,6 +10895,7 @@
 				C6C8F9452B2184CD00A9834D /* MainWindow.swift in Sources */,
 				C6B65FA22B57912F006D1812 /* HomeWalletsDomainsSectionView.swift in Sources */,
 				C6D646C32B1ED22400D724AC /* NetworkService+ProfilesEntities.swift in Sources */,
+				C68F15642BD641470049BFA2 /* MPCImportCredentials.swift in Sources */,
 				C6C8F9202B2183B700A9834D /* DigitalKeyboardViewController.swift in Sources */,
 				C6952A2D2BC4E9FD00F4B475 /* MPCWalletsService.swift in Sources */,
 				C6952A202BC4DD8500F4B475 /* FB_UD_MPC.swift in Sources */,

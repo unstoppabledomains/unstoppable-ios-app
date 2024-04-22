@@ -142,7 +142,9 @@ extension OnboardingNavigationController: OnboardingFlowManager {
     func moveToStep(_ step: OnboardingNavigationController.OnboardingStep) {
         guard let vc = createOnboardingStep(step) else { return }
         
-        UserDefaults.onboardingNavigationInfo?.steps.append(step)
+        if step.isStorable {
+            UserDefaults.onboardingNavigationInfo?.steps.append(step)
+        }
         self.pushViewController(vc, animated: true)
     }
     
@@ -492,6 +494,15 @@ extension OnboardingNavigationController {
         
         case mpcCredentials = 23
         case mpcCode = 24
+        
+        var isStorable: Bool {
+            switch self {
+            case .mpcCode:
+                return false
+            default:
+                return true
+            }
+        }
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {

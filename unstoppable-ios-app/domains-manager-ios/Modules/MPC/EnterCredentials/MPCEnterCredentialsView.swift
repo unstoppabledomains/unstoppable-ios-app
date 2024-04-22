@@ -11,7 +11,7 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    let codeVerifiedCallback: (String)->()
+    let codeVerifiedCallback: (MPCImportCredentials)->()
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
@@ -92,9 +92,11 @@ private extension MPCEnterCredentialsView {
             isLoading = true
             do {
                 // Send email action
+                let email = emailInput
                 try await mpcWalletsService.sendBootstrapCodeTo(email: emailInput)
-                let code = passwordInput.trimmedSpaces.uppercased()
-                codeVerifiedCallback(code)
+                let password = passwordInput
+                let credentials = MPCImportCredentials(email: email, password: password)
+                codeVerifiedCallback(credentials)
             } catch {
                 self.error = error
             }

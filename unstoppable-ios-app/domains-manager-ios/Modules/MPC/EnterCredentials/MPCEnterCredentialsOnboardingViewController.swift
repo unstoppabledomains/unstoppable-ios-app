@@ -25,8 +25,8 @@ final class MPCEnterCredentialsOnboardingViewController: BaseViewController, Vie
 
 // MARK: - Private methods
 private extension MPCEnterCredentialsOnboardingViewController {
-    func didEnterValidCode(_ code: String) {
-        onboardingFlowManager?.modifyOnboardingData { $0.mpcCode = code }
+    func didEnterCrendentials(_ credentials: MPCImportCredentials) {
+        OnboardingData.mpcCredentials = credentials
         onboardingFlowManager?.moveToStep(.mpcCode)
     }
 }
@@ -44,7 +44,7 @@ private extension MPCEnterCredentialsOnboardingViewController {
     func addChildView() {
         let mpcView = MPCEnterCredentialsView { [weak self] code in
             DispatchQueue.main.async {
-                self?.didEnterValidCode(code)
+                self?.didEnterCrendentials(code)
             }
         }
         let vc = UIHostingController(rootView: mpcView)
