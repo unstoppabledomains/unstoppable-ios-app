@@ -28,7 +28,7 @@ extension EVMCryptoSender {
     func sendCrypto(crypto: CryptoSendingSpec,
                     chain: ChainSpec,
                     toAddress: HexAddress) async throws -> String {
-        guard canSendCrypto(token: crypto.token, chainType: chain.blockchainType) else {
+        guard canSendCrypto(token: crypto.token, chain: chain) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         
@@ -50,7 +50,7 @@ extension EVMCryptoSender {
                            on chain: ChainSpec,
                            toAddress: HexAddress) async throws -> EVMCoinAmount {
         
-        guard canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) else {
+        guard canSendCrypto(token: maxCrypto.token, chain: chain) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         
@@ -88,10 +88,10 @@ struct NativeCoinCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     let defaultSendTxGasPrice: BigUInt = 21_000
     let wallet: UDWallet
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
         // only native tokens supported
-        return (token == CryptoSender.SupportedToken.eth && chainType == .Ethereum) ||
-        (token == CryptoSender.SupportedToken.matic && chainType == .Matic)
+        return (token == CryptoSender.SupportedToken.eth && chain.blockchainType == .Ethereum) ||
+        (token == CryptoSender.SupportedToken.matic && chain.blockchainType == .Matic)
     }
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,
@@ -125,8 +125,8 @@ struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     
     let wallet: UDWallet
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
-        return (token == CryptoSender.SupportedToken.usdt && chainType == .Ethereum) // TODO:
+    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
+        return (try? token.getContractAddress(for: chain)) != nil
     }
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,

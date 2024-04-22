@@ -140,7 +140,7 @@ extension CryptoSender {
                                                testnet: String?)]] =
         [
             .usdt: [.Ethereum: (mainnet: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-                                testnet: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0")],
+                                testnet: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0")], // sepolia
             
             .usdt: [.Matic: (mainnet: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
                                  testnet: nil)] // fake contracts only

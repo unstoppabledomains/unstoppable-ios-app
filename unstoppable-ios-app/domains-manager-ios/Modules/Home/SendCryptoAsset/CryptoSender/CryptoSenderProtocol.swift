@@ -15,7 +15,7 @@ protocol CryptoSenderProtocol {
     ///   - token: tokan name
     ///   - chain: chain
     /// - Returns: true if the sending is supported
-    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool
+    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool
     
     /// Create TX, send it to the chain and store it to the storage as 'pending'.
     /// Method fails if sending TX failed. Otherwise it returns TX hash

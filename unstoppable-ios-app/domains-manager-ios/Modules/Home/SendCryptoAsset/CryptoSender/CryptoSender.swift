@@ -10,19 +10,19 @@ import Foundation
 struct CryptoSender: CryptoSenderProtocol {
     let wallet: UDWallet
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
         // only native tokens supported for Ethereum and Polygon
-        return NativeCoinCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType) || TokenCryptoSender(wallet: wallet).canSendCrypto(token: token, chainType: chainType)
+        return NativeCoinCryptoSender(wallet: wallet).canSendCrypto(token: token, chain: chain) || TokenCryptoSender(wallet: wallet).canSendCrypto(token: token, chain: chain)
     }
 
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
         let cryptoSender: CryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
-        if cryptoSender.canSendCrypto(token: crypto.token, chainType: chain.blockchainType) {
+        if cryptoSender.canSendCrypto(token: crypto.token, chain: chain) {
             return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
         }
         
         let cryptoSender2: CryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
-        if cryptoSender2.canSendCrypto(token: crypto.token, chainType: chain.blockchainType) {
+        if cryptoSender2.canSendCrypto(token: crypto.token, chain: chain) {
             return try await cryptoSender2.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
         }
         throw CryptoSender.Error.sendingNotSupported
@@ -30,12 +30,12 @@ struct CryptoSender: CryptoSenderProtocol {
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
         let cryptoSender: CryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
-        if cryptoSender.canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) {
+        if cryptoSender.canSendCrypto(token: maxCrypto.token, chain: chain) {
             return try await cryptoSender.computeGasFeeFrom(maxCrypto: maxCrypto, on: chain, toAddress: toAddress)
         }
         
         let cryptoSender2: CryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
-        if cryptoSender2.canSendCrypto(token: maxCrypto.token, chainType: chain.blockchainType) {
+        if cryptoSender2.canSendCrypto(token: maxCrypto.token, chain: chain) {
             return try await cryptoSender2.computeGasFeeFrom(maxCrypto: maxCrypto, on: chain, toAddress: toAddress)
         }
         throw CryptoSender.Error.sendingNotSupported
