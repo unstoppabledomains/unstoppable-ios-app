@@ -1239,6 +1239,8 @@
 		C68F15682BD645CE0049BFA2 /* MPCActivateWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */; };
 		C68F156A2BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */; };
 		C68F156B2BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */; };
+		C68F156D2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */; };
+		C68F156E2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */; };
@@ -3612,6 +3614,7 @@
 		C68F15622BD641470049BFA2 /* MPCActivateCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateCredentials.swift; sourceTree = "<group>"; };
 		C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletView.swift; sourceTree = "<group>"; };
 		C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingActivateWalletViewController.swift; sourceTree = "<group>"; };
+		C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletEnterView.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionViewPresenter.swift; sourceTree = "<group>"; };
@@ -7070,6 +7073,7 @@
 			children = (
 				C68F15692BD645DD0049BFA2 /* MPCOnboardingActivateWalletViewController.swift */,
 				C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */,
+				C68F156C2BD659740049BFA2 /* MPCActivateWalletEnterView.swift */,
 			);
 			path = Activating;
 			sourceTree = "<group>";
@@ -9276,6 +9280,7 @@
 				C6FAED862B8C684700CC1844 /* MessageMentionString.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
+				C68F156D2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */,
 				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6D6E4FC2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
@@ -11273,6 +11278,7 @@
 				C6D645C62B1DBD3900D724AC /* CNavigationBarContentView.swift in Sources */,
 				C6D647572B1EDC1600D724AC /* UISearchBar.swift in Sources */,
 				C6C8F8C12B2182E400A9834D /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
+				C68F156E2BD659740049BFA2 /* MPCActivateWalletEnterView.swift in Sources */,
 				C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */,
 				C61808722B19BC150032E543 /* Color.swift in Sources */,
 				C61808162B19AAB70032E543 /* FirebaseAuthenticationServiceProtocol.swift in Sources */,

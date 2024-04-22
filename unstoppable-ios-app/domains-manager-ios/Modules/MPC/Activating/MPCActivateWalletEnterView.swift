@@ -1,0 +1,98 @@
+//
+//  MPCActivateWalletEnterView.swift
+//  domains-manager-ios
+//
+//  Created by Oleg Kuplin on 22.04.2024.
+//
+
+import SwiftUI
+
+struct MPCActivateWalletEnterView: View {
+    
+    let dataType: MPCActivateWalletEnterDataType
+    @State private var input = ""
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            headerView()
+            inputView()
+            actionButtonView()
+        }
+        .padding()
+    }
+}
+
+// MARK: - Private methods
+private extension MPCActivateWalletEnterView {
+    @ViewBuilder
+    func headerView() -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.currentFont(size: 22, weight: .bold))
+                .foregroundStyle(Color.foregroundDefault)
+            Text(subtitle)
+                .font(.currentFont(size: 16))
+                .foregroundStyle(Color.foregroundSecondary)
+        }
+        .multilineTextAlignment(.center)
+    }
+    
+    var title: String {
+        switch dataType {
+        case .passcode:
+            "You’ve entered wrong passcode for MPC Wallet"
+        case .password:
+            "You’ve entered wrong password for MPC Wallet"
+        }
+    }
+    
+    var subtitle: String {
+        switch dataType {
+        case .passcode:
+            "qq@qq.qq"
+        case .password:
+            "qq@qq.qq"
+        }
+    }
+    
+    @ViewBuilder
+    func inputView() -> some View {
+        switch dataType {
+        case .passcode:
+            UDTextFieldView(text: $input,
+                            placeholder: "",
+                            hint: String.Constants.verificationCode.localized(),
+                            focusBehaviour: .activateOnAppear,
+                            autocapitalization: .characters,
+                            autocorrectionDisabled: true)
+        case .password:
+            UDTextFieldView(text: $input,
+                            placeholder: "",
+                            hint: String.Constants.password.localized(),
+                            focusBehaviour: .activateOnAppear,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true,
+                            isSecureInput: true)
+        }
+    }
+    
+    @ViewBuilder
+    func actionButtonView() -> some View {
+        UDButtonView(text: String.Constants.confirm.localized(),
+                     style: .large(.raisedPrimary),
+                     callback: actionButtonPressed)
+    }
+    
+    func actionButtonPressed() {
+        
+    }
+}
+
+#Preview {
+    MPCActivateWalletEnterView(dataType: .passcode)
+}
+
+enum MPCActivateWalletEnterDataType {
+    case passcode
+    case password
+}
