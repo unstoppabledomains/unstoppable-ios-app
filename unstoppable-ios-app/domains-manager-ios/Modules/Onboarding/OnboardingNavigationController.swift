@@ -423,13 +423,19 @@ private extension OnboardingNavigationController {
             return vc
             
         case .mpcCredentials:
-            let vc = MPCEnterCredentialsOnboardingViewController()
+            let vc = MPCOnboardingEnterCredentialsViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
             return vc
         case .mpcCode:
-            let vc = MPCEnterCodeViewController()
+            let vc = MPCOnboardingEnterCodeViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcActivate:
+            let vc = MPCOnboardingActivateWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -494,6 +500,7 @@ extension OnboardingNavigationController {
         
         case mpcCredentials = 23
         case mpcCode = 24
+        case mpcActivate = 25
         
         var isStorable: Bool {
             switch self {

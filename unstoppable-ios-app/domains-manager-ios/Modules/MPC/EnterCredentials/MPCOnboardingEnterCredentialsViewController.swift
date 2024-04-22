@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-final class MPCEnterCredentialsOnboardingViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingEnterCredentialsViewController: BaseViewController, ViewWithDashesProgress {
         
 
     override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 1 / 2 }
+    var progress: Double? { 1 / 4 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +24,15 @@ final class MPCEnterCredentialsOnboardingViewController: BaseViewController, Vie
 }
 
 // MARK: - Private methods
-private extension MPCEnterCredentialsOnboardingViewController {
-    func didEnterCrendentials(_ credentials: MPCImportCredentials) {
+private extension MPCOnboardingEnterCredentialsViewController {
+    func didEnterCrendentials(_ credentials: MPCActivateCredentials) {
         OnboardingData.mpcCredentials = credentials
         onboardingFlowManager?.moveToStep(.mpcCode)
     }
 }
 
 // MARK: - Setup methods
-private extension MPCEnterCredentialsOnboardingViewController {
+private extension MPCOnboardingEnterCredentialsViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -53,13 +53,13 @@ private extension MPCEnterCredentialsOnboardingViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCEnterCredentialsOnboardingViewController: OnboardingNavigationHandler {
+extension MPCOnboardingEnterCredentialsViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
     var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCredentials }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCEnterCredentialsOnboardingViewController: OnboardingDataHandling {
+extension MPCOnboardingEnterCredentialsViewController: OnboardingDataHandling {
     func willNavigateBack() {
         onboardingFlowManager?.onboardingData.mpcCode = nil
     }

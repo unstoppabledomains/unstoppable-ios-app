@@ -8,153 +8,85 @@
 import SwiftUI
 
 struct MPCEnterCodeView: View {
-    
-    @Environment(\.mpcWalletsService) private var mpcWalletsService
-    
-    let code: String
-    let mpcWalletCreatedCallback: (UDWallet)->()
+        
+    let email: String
+    let enterCodeCallback: (String)->()
     @State private var input: String = ""
-    @State private var isLoading = false
-    @State private var error: Error?
-    @State private var mpcState: String = ""
-    @State private var mpcCreateProgress: CGFloat = 0.0
 
     var body: some View {
         ZStack {
             VStack(spacing: 32) {
                 headerView()
                 inputView()
-                actionButtonView()
+                actionButtonsView()
                 Spacer()
             }
             .padding()
             .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
-            if isLoading {
-                Color.black.opacity(0.3)
-                mpcStateView()
-            }
         }
         .ignoresSafeArea()
         .animation(.default, value: UUID())
-        .displayError($error)
     }
 }
 
 
 // MARK: - Private methods
-private extension MPCEnterCodeView {
+private extension MPCEnterCodeView {    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Unstoppable Guard")
+            Text(String.Constants.enterMPCWalletVerificationCodeTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text("The recovery phrase you created for Unstoppable Guard is required to access your crypto wallet on this device. In addition, you'll be required to verify a 2FA code to complete setup.")
+            Text(String.Constants.enterMPCWalletVerificationCodeSubtitle.localized(email))
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
-                .multilineTextAlignment(.center)
         }
+        .multilineTextAlignment(.center)
     }
     
     @ViewBuilder
     func inputView() -> some View {
         UDTextFieldView(text: $input,
-                        placeholder: "Password",
+                        placeholder: "",
+                        hint: String.Constants.verificationCode.localized(),
                         focusBehaviour: .activateOnAppear,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true,
-                        isSecureInput: true)
+                        autocapitalization: .characters,
+                        autocorrectionDisabled: true)
     }
     
     @ViewBuilder
-    func actionButtonView() -> some View {
-        UDButtonView(text: "Access wallet",
+    func actionButtonsView() -> some View {
+        VStack {
+            confirmButtonView()
+        }
+    }
+    
+    @ViewBuilder
+    func confirmButtonView() -> some View {
+        UDButtonView(text: String.Constants.confirm.localized(),
                      style: .large(.raisedPrimary),
-                     isLoading: isLoading,
                      callback: actionButtonPressed)
         .disabled(input.isEmpty)
     }
     
     func actionButtonPressed() {
-        Task { @MainActor in
-            KeyboardService.shared.hideKeyboard()
-            
-            isLoading = true
-            do {
-                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code, recoveryPhrase: input)
-                
-                for try await step in mpcWalletStepsStream {
-                    updateForSetupMPCWalletStep(step)
-                }
-                // TODO: - Show explicitly on the UI when design is ready
-            } catch MPCWalletError.incorrectCode {
-                self.error = MPCWalletError.incorrectCode
-            } catch MPCWalletError.incorrectPassword {
-                self.error = MPCWalletError.incorrectPassword
-            } catch {
-                self.error = error
-            }
-            isLoading = false
-        }
-    }
-    
-    @MainActor
-    func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
-        mpcState = step.title
-        mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
-        switch step {
-        case .finished(let mpcWallet):
-            mpcWalletCreatedCallback(mpcWallet)
-        case .failed(let url):
-            if let url {
-                shareItems([url], completion: nil)
-            }
-        default:
-            return
-        }
+        enterCodeCallback(input)
     }
     
     @ViewBuilder
-    func mpcStateView() -> some View {
-        VStack(spacing: 20) {
-            CircularProgressView(progress: mpcCreateProgress)
-                .squareFrame(60)
-            Text(mpcState)
-                .bold()
-                .multilineTextAlignment(.center)
-        }
-        .foregroundStyle(Color.foregroundDefault)
-        .frame(width: 300, height: 150)
-        .background(Color.backgroundDefault)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .padding()
+    func haventReceiveCodeButtonView() -> some View {
+        UDButtonView(text: String.Constants.haventReceivedTheCode.localized(),
+                     style: .large(.ghostPrimary),
+                     callback: haventReceivedCodeButtonPressed)
+    }
+    
+    func haventReceivedCodeButtonPressed() {
+        
     }
 }
 #Preview {
-    MPCEnterCodeView(code: "",
-                           mpcWalletCreatedCallback: { _ in })
+    MPCEnterCodeView(email: "",
+                     enterCodeCallback: { _ in })
 }
 
-
-struct CircularProgressView: View {
-    let progress: CGFloat
-    var lineWidth: CGFloat = 10
-    
-    var body: some View {
-        ZStack {
-            // Background for the progress bar
-            Circle()
-                .stroke(lineWidth: lineWidth)
-                .opacity(0.1)
-                .foregroundStyle(Color.foregroundAccent)
-            
-            // Foreground or the actual progress bar
-            Circle()
-                .trim(from: 0.0, to: min(progress, 1.0))
-                .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                .foregroundStyle(Color.foregroundAccent)
-                .rotationEffect(Angle(degrees: 270.0))
-                .animation(.linear, value: progress)
-        }
-    }
-}
