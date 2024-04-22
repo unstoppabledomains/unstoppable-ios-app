@@ -40,10 +40,10 @@ private extension MPCEnterCredentialsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Import MPC Wallet")
+            Text(String.Constants.importMPCWalletTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text("Use the credentials that you have set up during the сreation of your MPC Wallet.")
+            Text(String.Constants.importMPCWalletSubtitle.localized())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .multilineTextAlignment(.center)
@@ -54,7 +54,7 @@ private extension MPCEnterCredentialsView {
     func emailInputView() -> some View {
         UDTextFieldView(text: $emailInput,
                         placeholder: "name@mail.com",
-                        hint: "Email associated with a wallet",
+                        hint: String.Constants.emailAssociatedWithWallet.localized(),
                         focusBehaviour: .activateOnAppear,
                         autocapitalization: .never,
                         autocorrectionDisabled: true)
@@ -63,7 +63,7 @@ private extension MPCEnterCredentialsView {
     @ViewBuilder
     func passwordInputView() -> some View {
         UDTextFieldView(text: $passwordInput,
-                        placeholder: "Password",
+                        placeholder: String.Constants.password.localized(),
                         focusBehaviour: .default,
                         autocapitalization: .never,
                         autocorrectionDisabled: true,
