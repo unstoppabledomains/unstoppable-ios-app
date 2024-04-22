@@ -17,7 +17,7 @@ struct MPCActivateWalletView: View {
     
     @State private var activationState: ActivationState = .readyToActivate
     @State private var isLoading = false
-    @State private var mpcState: String = ""
+    @State private var mpcStateTitle: String = ""
     @State private var mpcCreateProgress: CGFloat = 0.0
     
     var body: some View {
@@ -72,19 +72,24 @@ private extension MPCActivateWalletView {
                 }
                 
             } catch MPCWalletError.incorrectCode {
-                activationState = .failed(.incorrectPasscode)
+                didFailWithError(.incorrectPasscode)
             } catch MPCWalletError.incorrectPassword {
-                activationState = .failed(.incorrectPassword)
+                didFailWithError(.incorrectPassword)
             } catch {
-                activationState = .failed(.unknown)
+                didFailWithError(.unknown)
             }
             isLoading = false
         }
     }
     
+    func didFailWithError(_ error: ActivationError) {
+        mpcStateTitle = error.title
+        activationState = .failed(error)
+    }
+    
     @MainActor
     func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
-        mpcState = step.title
+        mpcStateTitle = step.title
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
@@ -122,7 +127,7 @@ private extension MPCActivateWalletView {
                 
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(mpcState)
+                        Text(mpcStateTitle)
                             .font(.currentFont(size: 28, weight: .bold))
                             .foregroundStyle(Color.foregroundDefault)
                         Text("MPC Wallet")
@@ -217,7 +222,18 @@ private extension MPCActivateWalletView {
         case .readyToActivate, .activating:
             Debugger.printFailure("Inconsistent state. Button should not be visible", critical: true)
         case .failed(let error):
+            handleActionFor(error: error)
+        }
+    }
+    
+    func handleActionFor(error: ActivationError) {
+        switch error {
+        case .incorrectPasscode:
             return
+        case .incorrectPassword:
+            return
+        case .unknown:
+            activateMPCWallet()
         }
     }
 }
@@ -236,6 +252,17 @@ private extension MPCActivateWalletView {
         case incorrectPasscode
         case unknown
         
+        var title: String {
+            switch self {
+            case .incorrectPasscode:
+                "Wrong passcode"
+            case .incorrectPassword:
+                "Wrong password"
+            case .unknown:
+                "Something went wrong"
+            }
+        }
+        
         var actionTitle: String {
             switch self {
             case .incorrectPasscode:
@@ -243,7 +270,7 @@ private extension MPCActivateWalletView {
             case .incorrectPassword:
                 "Re-enter password"
             case .unknown:
-                "Sorry mate"
+                "Retry"
             }
         }
     }
