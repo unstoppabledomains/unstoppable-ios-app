@@ -9,5 +9,5 @@ import Foundation
 
 struct MPCActivateCredentials {
     let email: String
-    let password: String
+    var password: String
 }

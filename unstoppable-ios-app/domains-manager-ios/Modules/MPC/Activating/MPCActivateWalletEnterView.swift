@@ -9,14 +9,19 @@ import SwiftUI
 
 struct MPCActivateWalletEnterView: View {
     
+    @Environment(\.dismiss) private var dismiss
+    
     let dataType: MPCActivateWalletEnterDataType
+    let confirmationCallback: (String)->()
     @State private var input = ""
     
     var body: some View {
         VStack(spacing: 24) {
+            DismissIndicatorView()
             headerView()
             inputView()
             actionButtonView()
+            Spacer()
         }
         .padding()
     }
@@ -84,15 +89,19 @@ private extension MPCActivateWalletEnterView {
     }
     
     func actionButtonPressed() {
-        
+        dismiss()
+        confirmationCallback(input)
     }
 }
 
 #Preview {
-    MPCActivateWalletEnterView(dataType: .passcode)
+    MPCActivateWalletEnterView(dataType: .passcode,
+                               confirmationCallback: { _ in })
 }
 
-enum MPCActivateWalletEnterDataType {
+enum MPCActivateWalletEnterDataType: String, Hashable, Identifiable {
+    var id: String { rawValue }
+    
     case passcode
     case password
 }

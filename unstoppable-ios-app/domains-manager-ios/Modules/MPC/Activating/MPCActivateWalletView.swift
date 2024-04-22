@@ -19,6 +19,7 @@ struct MPCActivateWalletView: View {
     @State private var isLoading = false
     @State private var mpcStateTitle: String = ""
     @State private var mpcCreateProgress: CGFloat = 0.0
+    @State private var enterDataType: MPCActivateWalletEnterDataType?
     
     var body: some View {
         ZStack {
@@ -42,6 +43,19 @@ struct MPCActivateWalletView: View {
         .ignoresSafeArea()
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
+        .sheet(item: $enterDataType) { dataType in
+            MPCActivateWalletEnterView(dataType: dataType,
+                                       confirmationCallback: { value in
+                switch dataType {
+                case .passcode:
+                    self.code = value
+                case .password:
+                    self.credentials.password = value
+                }
+                activateMPCWallet()
+            })
+                .presentationDetents([.medium])
+        }
     }
 }
 
@@ -85,6 +99,12 @@ private extension MPCActivateWalletView {
     func didFailWithError(_ error: ActivationError) {
         mpcStateTitle = error.title
         activationState = .failed(error)
+        switch error {
+        case .incorrectPasscode:
+            enterDataType = .passcode
+        case .incorrectPassword:
+            enterDataType = .password
+        }
     }
     
     @MainActor
@@ -229,9 +249,9 @@ private extension MPCActivateWalletView {
     func handleActionFor(error: ActivationError) {
         switch error {
         case .incorrectPasscode:
-            return
+            enterDataType = .passcode
         case .incorrectPassword:
-            return
+            enterDataType = .password
         case .unknown:
             activateMPCWallet()
         }

@@ -504,7 +504,7 @@ extension OnboardingNavigationController {
         
         var isStorable: Bool {
             switch self {
-            case .mpcCode:
+            case .mpcCode, .mpcActivate:
                 return false
             default:
                 return true
