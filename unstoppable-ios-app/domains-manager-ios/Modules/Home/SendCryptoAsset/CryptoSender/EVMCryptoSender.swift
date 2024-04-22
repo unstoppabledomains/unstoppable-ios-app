@@ -141,11 +141,11 @@ struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
               let receiver = try? EthereumAddress(hex: toAddress, eip55: false) else {
             throw CryptoSender.Error.invalidAddresses
         }
-        // Load ERC20 contract
+
         let web3 = try JRPC_Client.instance.getWeb3(chainIdInt: chain.id)
-        let usdtContractAddress = try crypto.token.getContractAddress(for: chain)
+        let tokenContractAddress = try crypto.token.getContractAddress(for: chain)
         
-        guard let contractAddress = try? EthereumAddress(hex: usdtContractAddress, eip55: false) else {
+        guard let contractAddress = try? EthereumAddress(hex: tokenContractAddress, eip55: false) else {
             throw CryptoSender.Error.invalidAddresses
         }
         
@@ -157,7 +157,7 @@ struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
             .createTransaction(nonce: nonce,
                                from: sender,
                                value: 0, // zero native tokens transferred
-                               gas: 100000, // TODO:
+                               gas: try EthereumQuantity(defaultSendTxGasPrice),
                                gasPrice:  try EthereumQuantity(speedBasedGasPrice.wei)) else {
             throw CryptoSender.Error.failedCreateSendTransaction
         }
