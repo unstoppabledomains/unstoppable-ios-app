@@ -104,6 +104,8 @@ private extension MPCActivateWalletView {
             enterDataType = .passcode
         case .incorrectPassword:
             enterDataType = .password
+        case .unknown:
+            return
         }
     }
     
