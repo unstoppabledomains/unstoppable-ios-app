@@ -142,7 +142,7 @@ private extension RestoreWalletViewController {
             self.restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
         }
         
-        self.restoreOptions.append([.recoveryPhrase, .mpc, .externalWallet, .websiteAccount])
+        self.restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
@@ -160,7 +160,7 @@ private extension RestoreWalletViewController {
     func setupUI() {
         let rowsHeight = TableViewSelectionCell.Height * CGFloat(restoreOptions.flatMap({ $0 }).count)
         let sectionsSpacing = CGFloat(restoreOptions.count - 1) * 16
-        selectionTableViewHeightConstraint.constant = rowsHeight 
+        selectionTableViewHeightConstraint.constant = rowsHeight
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
         alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)

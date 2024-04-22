@@ -266,8 +266,8 @@
 "PRIVACY_POLICY" = "Privacy policy";
 
 // Connect wallet
-"CONNECT_WALLET_TITLE" = "Import your domains";
-"CONNECT_WALLET_SUBTITLE" = "Choose a way to import your domains.";
+"CONNECT_WALLET_TITLE" = "Add existing wallet";
+"CONNECT_WALLET_SUBTITLE" = "Choose a way to import your wallet into Unstoppable App.";
 "CONNECT_WALLET_ICLOUD" = "iCloud";
 "CONNECT_WALLET_ICLOUD_HINT" = "You have %@ backed up";
 "CONNECT_WALLET_RECOVERY" = "Recovery phrase or private key";
