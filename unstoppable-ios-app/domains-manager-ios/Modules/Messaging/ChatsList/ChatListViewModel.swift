@@ -32,6 +32,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     private var cancellables: Set<AnyCancellable> = []
     @Published private(set) var selectedProfile: UserProfile
     @Published private(set) var isLoading = false
+    @Published private(set) var isCreatingProfile = false
     @Published private(set) var chatState: ChatListView.ViewState = .loading
     @Published private(set) var searchData = SearchData()
     @Published private(set) var chatsListToShow: [MessagingChatDisplayInfo] = []
@@ -721,6 +722,7 @@ private extension ChatListViewModel {
     
     func createProfileFor(in wallet: WalletEntity) {
         Task {
+            isCreatingProfile = true
             do {
                 let profile = try await messagingService.createUserMessagingProfile(for: wallet)
                 let isCommunitiesEnabled = await messagingService.isCommunitiesEnabled(for: profile)
@@ -730,6 +732,7 @@ private extension ChatListViewModel {
             } catch {
                 self.error = error
             }
+            isCreatingProfile = false
         }
     }
     
