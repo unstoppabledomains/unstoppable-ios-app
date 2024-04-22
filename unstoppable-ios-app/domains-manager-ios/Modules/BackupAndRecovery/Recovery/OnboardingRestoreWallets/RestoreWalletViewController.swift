@@ -15,7 +15,7 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
     @IBOutlet private weak var selectionTableViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var alreadyHaveDomainsButton: SecondaryButton!
     
-    private var restoreOptions = [RestoreType]()
+    private var restoreOptions = [[RestoreType]]()
     var onboardingFlowManager: OnboardingFlowManager!
     var progress: Double? { 0.25 }
     override var analyticsName: Analytics.ViewName { .onboardingRestoreWallet }
@@ -56,13 +56,17 @@ extension RestoreWalletViewController: OnboardingDataHandling { }
 
 // MARK: - UITableViewDataSource
 extension RestoreWalletViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         restoreOptions.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        restoreOptions[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueCellOfType(TableViewSelectionCell.self)        
-        let restoreOption = restoreOptions[indexPath.row]
+        let restoreOption = restoreOptions[indexPath.section][indexPath.row]
         
         cell.setWith(icon: restoreOption.icon,
                      iconTintColor: .foregroundDefault,
@@ -88,7 +92,7 @@ extension RestoreWalletViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         UDVibration.buttonTap.vibrate()
         tableView.deselectRow(at: indexPath, animated: false)
-        let restoreOption = restoreOptions[indexPath.row]
+        let restoreOption = restoreOptions[indexPath.section][indexPath.row]
         
         logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)
         
@@ -135,10 +139,10 @@ private extension RestoreWalletViewController {
         let backedUpWallets = appContext.udWalletsService.fetchCloudWalletClusters().reduce([BackedUpWallet](), { $0 + $1.wallets })
         
         if !backedUpWallets.isEmpty {
-            self.restoreOptions.append(.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets)))
+            self.restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
         }
         
-        self.restoreOptions.append(contentsOf: [.recoveryPhrase, .mpc, .externalWallet, .websiteAccount])
+        self.restoreOptions.append([.recoveryPhrase, .mpc, .externalWallet, .websiteAccount])
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
@@ -154,7 +158,9 @@ private extension RestoreWalletViewController {
     }
     
     func setupUI() {
-        selectionTableViewHeightConstraint.constant = TableViewSelectionCell.Height * CGFloat(restoreOptions.count)
+        let rowsHeight = TableViewSelectionCell.Height * CGFloat(restoreOptions.flatMap({ $0 }).count)
+        let sectionsSpacing = CGFloat(restoreOptions.count - 1) * 16
+        selectionTableViewHeightConstraint.constant = rowsHeight 
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
         alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)
@@ -175,9 +181,9 @@ extension RestoreWalletViewController {
         var icon: UIImage {
             switch self {
             case .iCloud:
-                return #imageLiteral(resourceName: "backupICloud")
+                return .backupICloud
             case .recoveryPhrase:
-                return #imageLiteral(resourceName: "backupManual")
+                return .pageText
             case .watchWallet:
                 return #imageLiteral(resourceName: "watchWalletIcon")
             case .externalWallet:
@@ -185,7 +191,7 @@ extension RestoreWalletViewController {
             case .websiteAccount:
                 return .domainsProfileIcon
             case .mpc:
-                return UIImage(systemName: "flame.fill")!
+                return .shieldKeyhole
             }
         }
         
