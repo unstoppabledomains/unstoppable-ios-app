@@ -15,20 +15,22 @@ typealias FireblocksConnectorJoinWalletHandler = FireblocksJoinWalletHandler
 final class FireblocksConnector {
     
     private let deviceId: String
-    private let messageHandler: FireblocksConnectorMessageHandler
     private var fireblocks: Fireblocks!
     
     init(deviceId: String,
          messageHandler: FireblocksConnectorMessageHandler) throws {
         self.deviceId = deviceId
-        self.messageHandler = messageHandler
+        let proxyHandler = FireblocksProxyWalletRPCMessageHandler.createOrUpdateInstanceFor(deviceId: deviceId,
+                                                                                            withHandler: messageHandler)
         
         do {
+            
             if let instance = try? Fireblocks.getInstance(deviceId: deviceId) {
                 self.fireblocks = instance
                 return
             }
             
+        
             let storageProvider = FireblocksKeyStorageProvider()
             // TODO: MPC - Check User.instance.getSettings().isTestnetUsed to select env
             let env = FireblocksEnvironment.sandbox
@@ -37,7 +39,7 @@ final class FireblocksConnector {
                                                       eventHandlerDelegate: self,
                                                       logLevel: logLevel)
             let fireblocks = try Fireblocks.initialize(deviceId: deviceId,
-                                                       messageHandlerDelegate: messageHandler,
+                                                       messageHandlerDelegate: proxyHandler,
                                                        keyStorageDelegate: storageProvider,
                                                        fireblocksOptions: fireblocksOptions)
             self.fireblocks = fireblocks

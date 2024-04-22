@@ -1232,6 +1232,7 @@
 		C68BAC932B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
+		C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */; };
@@ -3601,6 +3602,7 @@
 		C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewScrollHandler.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
+		C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksProxyWalletRPCMessageHandler.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionViewPresenter.swift; sourceTree = "<group>"; };
@@ -5943,6 +5945,7 @@
 				C650F8C72BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift */,
 				C6BF80322BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift */,
 				C6952A422BC50D1D00F4B475 /* FireblocksWalletRPCMessageHandler.swift */,
+				C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */,
 			);
 			path = FireblocksRPCMessageHandler;
 			sourceTree = "<group>";
@@ -9143,6 +9146,7 @@
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C62AC1FF2BABF0D0003FB69E /* ConfirmSendAssetSenderReceiverConnectView.swift in Sources */,
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
+				C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
