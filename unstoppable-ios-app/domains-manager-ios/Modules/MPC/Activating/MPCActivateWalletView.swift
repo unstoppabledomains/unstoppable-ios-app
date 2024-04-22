@@ -45,6 +45,7 @@ struct MPCActivateWalletView: View {
         .onAppear(perform: onAppear)
         .sheet(item: $enterDataType) { dataType in
             MPCActivateWalletEnterView(dataType: dataType,
+                                       email: credentials.email,
                                        confirmationCallback: { value in
                 switch dataType {
                 case .passcode:

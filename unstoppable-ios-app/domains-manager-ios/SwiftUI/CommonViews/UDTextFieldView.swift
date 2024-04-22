@@ -23,6 +23,7 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
     var autocapitalization: TextInputAutocapitalization = .sentences
     var autocorrectionDisabled: Bool = false
     var isSecureInput: Bool = false
+    var isErrorState: Bool = false
     var height: CGFloat = 56
     var focusedStateChangedCallback: ((Bool)->())? = nil
     @State private var state: TextFieldState = .rest
@@ -61,10 +62,18 @@ private extension UDTextFieldView {
     @ViewBuilder
     func getTextFieldBackground() -> some View {
         RoundedRectangle(cornerRadius: 12)
-            .fill(state.backgroundColor)
+            .fill(backgroundColor)
             .overlay {
                 currentTextFieldOverlay
             }
+    }
+    
+    var backgroundColor: Color {
+        if isErrorState {
+            .backgroundDanger
+        } else {
+            state.backgroundColor
+        }
     }
     
     var inspiringGradientColors: [Color] {

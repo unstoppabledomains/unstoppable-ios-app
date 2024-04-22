@@ -105,6 +105,7 @@ extension Image {
     static let clock = Image("clock")
     static let clockFilled = Image("clockFilled")
     static let brushSparkle = Image("brushSparkle")
+    static let alertCircle = Image("alertCircle")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

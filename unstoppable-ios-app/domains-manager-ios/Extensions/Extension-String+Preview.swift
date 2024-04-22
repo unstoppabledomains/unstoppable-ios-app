@@ -1192,6 +1192,7 @@ extension String {
         static let enterMPCWalletVerificationCodeSubtitle = "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE"
         static let verificationCode = "VERIFICATION_CODE"
         static let haventReceivedTheCode = "HAVENT_RECEIVED_THE_CODE"
+        static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
     }
     
     enum BlockChainIcons: String {

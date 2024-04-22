@@ -15,6 +15,7 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
+    @State private var isEmailFocused = true
     @State private var error: Error?
     
     var body: some View {
@@ -52,12 +53,39 @@ private extension MPCEnterCredentialsView {
     
     @ViewBuilder
     func emailInputView() -> some View {
-        UDTextFieldView(text: $emailInput,
-                        placeholder: "name@mail.com",
-                        hint: String.Constants.emailAssociatedWithWallet.localized(),
-                        focusBehaviour: .activateOnAppear,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true)
+        VStack(spacing: 8) {
+            UDTextFieldView(text: $emailInput,
+                            placeholder: "name@mail.com",
+                            hint: String.Constants.emailAssociatedWithWallet.localized(),
+                            focusBehaviour: .activateOnAppear,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true,
+                            isErrorState: shouldShowEmailError,
+                            focusedStateChangedCallback: { isFocused in
+                isEmailFocused = isFocused
+            })
+            if shouldShowEmailError {
+                incorrectEmailIndicatorView()
+            }
+        }
+    }
+    
+    var shouldShowEmailError: Bool {
+        !isEmailFocused && !isValidEmailEntered
+    }
+    
+    @ViewBuilder
+    func incorrectEmailIndicatorView() -> some View {
+        HStack(spacing: 8) {
+            Image.alertCircle
+                .resizable()
+                .squareFrame(16)
+            Text(String.Constants.incorrectEmailFormat.localized())
+                .font(.currentFont(size: 12, weight: .medium))
+            Spacer()
+        }
+        .foregroundStyle(Color.foregroundDanger)
+        .padding(.leading, 16)
     }
     
     @ViewBuilder

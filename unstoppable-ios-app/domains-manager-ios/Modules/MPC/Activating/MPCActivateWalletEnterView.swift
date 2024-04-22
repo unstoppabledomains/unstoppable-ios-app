@@ -12,6 +12,7 @@ struct MPCActivateWalletEnterView: View {
     @Environment(\.dismiss) private var dismiss
     
     let dataType: MPCActivateWalletEnterDataType
+    let email: String
     let confirmationCallback: (String)->()
     @State private var input = ""
     
@@ -35,7 +36,7 @@ private extension MPCActivateWalletEnterView {
             Text(title)
                 .font(.currentFont(size: 22, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text(subtitle)
+            Text(email)
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
         }
@@ -48,15 +49,6 @@ private extension MPCActivateWalletEnterView {
             "You’ve entered wrong passcode for MPC Wallet"
         case .password:
             "You’ve entered wrong password for MPC Wallet"
-        }
-    }
-    
-    var subtitle: String {
-        switch dataType {
-        case .passcode:
-            "qq@qq.qq"
-        case .password:
-            "qq@qq.qq"
         }
     }
     
@@ -96,6 +88,7 @@ private extension MPCActivateWalletEnterView {
 
 #Preview {
     MPCActivateWalletEnterView(dataType: .passcode,
+                               email: "qq@qq.qq",
                                confirmationCallback: { _ in })
 }
 

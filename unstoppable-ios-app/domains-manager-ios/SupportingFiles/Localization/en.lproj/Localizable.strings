@@ -1092,3 +1092,4 @@ More tabs are coming in the next updates.";
 "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE" = "Code sent to: %@";
 "VERIFICATION_CODE" = "Verification code";
 "HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";
+"INCORRECT_EMAIL_FORMAT" = "Incorrect email format";
