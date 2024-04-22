@@ -51,10 +51,12 @@ protocol ERC20TokenAmount {
     var decimals: UInt8 { get }
 }
 
-struct USDT: ERC20TokenAmount, OnChainCountable {
+struct ERC20Token: ERC20TokenAmount, OnChainCountable {
     var elementaryUnits: UDBigUInt
+    var decimals: UInt8
     
-    init(units: Double) {
+    init(units: Double, decimals: UInt8) {
+        self.decimals = decimals
         self.elementaryUnits = UDBigUInt(units * pow(10, Double(decimals)))
     }
     
@@ -62,7 +64,6 @@ struct USDT: ERC20TokenAmount, OnChainCountable {
         elementaryUnits
     }
     
-    let decimals: UInt8 = 6
     
     var units: Double {
         Double(elementaryUnits) / pow(10, Double(decimals))
@@ -113,9 +114,14 @@ struct CryptoSendingSpec {
     let amount: OnChainCountable
     let speed: TxSpeed
     
-    init(token: CryptoSender.SupportedToken, amount: OnChainCountable, speed: TxSpeed = .normal) {
+    init(token: CryptoSender.SupportedToken, units: Double, speed: TxSpeed = .normal) throws {
+        
+        switch token {
+        case .eth, .matic: self.amount = EVMCoinAmount(units: units)
+        default: self.amount = ERC20Token(units: units, decimals: try token.getContractDecimals(for: .Ethereum))
+        }
+        
         self.token = token
-        self.amount = amount
         self.speed = speed
     }
 }
@@ -124,6 +130,7 @@ extension CryptoSender {
     enum Error: Swift.Error {
         case sendingNotSupported
         case tokenNotSupportedOnChain
+        case decimalsNotIdentified
         case failedFetchGasPrice
         case failedCreateSendTransaction
         case insufficientFunds
@@ -184,6 +191,13 @@ extension CryptoSender {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
             }
             return  contract
+        }
+        
+        func getContractDecimals(for chainType: BlockchainType) throws -> UInt8 {
+            guard let decimals = Self.array[self]?[chainType]?.decimals else {
+                throw CryptoSender.Error.decimalsNotIdentified
+            }
+            return decimals
         }
     }
 }
