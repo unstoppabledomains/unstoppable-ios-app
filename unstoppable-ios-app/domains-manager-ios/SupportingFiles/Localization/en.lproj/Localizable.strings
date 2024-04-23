@@ -271,7 +271,7 @@
 "CONNECT_WALLET_TITLE" = "Add existing wallet";
 "CONNECT_WALLET_SUBTITLE" = "Choose a way to import your wallet into Unstoppable App.";
 "CONNECT_WALLET_ICLOUD" = "iCloud";
-"CONNECT_WALLET_ICLOUD_HINT" = "You have %@ backed up";
+"CONNECT_WALLET_ICLOUD_HINT" = "You have wallets backed up";
 "CONNECT_WALLET_RECOVERY" = "Recovery phrase or private key";
 "CONNECT_WALLET_RECOVERY_HINT" = "Ethereum & Zilliqa";
 "CONNECT_WALLET_WATCH" = "Watch wallet ";

@@ -108,6 +108,7 @@ extension Image {
     static let alertCircle = Image("alertCircle")
     static let mpcWalletGrid = Image("mpcWalletGrid")
     static let mpcWalletGridAccent = Image("mpcWalletGridAccent")
+    static let addWalletIcon = Image("addWalletIcon")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
