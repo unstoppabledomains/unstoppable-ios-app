@@ -1183,6 +1183,12 @@ extension String {
         static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
+        
+        // Send crypto first time
+        static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
+        static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
+        static let reviewTxAgain = "REVIEW_TX_AGAIN"
+        static let confirmAndSend = "CONFIRM_AND_SEND"
     }
     
     enum BlockChainIcons: String {

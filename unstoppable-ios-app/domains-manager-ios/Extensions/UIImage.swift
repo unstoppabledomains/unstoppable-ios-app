@@ -169,6 +169,7 @@ extension UIImage {
     static let infoBubble = UIImage(named: "infoBubble")!
     static let squareInfo = UIImage(named: "squareInfo")!
     static let vaultSafeIcon = UIImage(named: "vaultSafeIcon")!
+    static let paperPlaneTopRightSend = UIImage(named: "paperPlaneTopRightSend")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

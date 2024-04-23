@@ -406,7 +406,7 @@ extension Analytics {
         case exploreUserWalletsSectionHeader
         case exploreNoProfile, exploreNoFollowers, exploreNoFollowing
         
-        case sendCrypto
+        case sendCrypto, reviewTxAgain
         case cameraTorch
         case assetTypeSwitcher
         case cryptoToken
@@ -469,6 +469,7 @@ extension Analytics {
         case homeWalletBuyOptions
         case transferDomainConfirmation, sendMaxCryptoInfo
         case noRecordsSetToSendCrypto
+        case sendCryptoForTheFirstTimeConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

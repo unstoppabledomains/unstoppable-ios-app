@@ -30,7 +30,6 @@ class BaseHappyEndViewPresenter {
     func actionButtonPressed() { }
     func agreementSwitchValueChanged(isOn: Bool) {
         isAgreementAccepted = isOn
-        view?.setActionButtonEnabled(isAgreementAccepted)
     }
 }
 
