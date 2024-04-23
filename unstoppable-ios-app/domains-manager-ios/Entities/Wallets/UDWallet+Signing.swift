@@ -191,7 +191,7 @@ extension UDWallet {
         return try appContext.walletConnectServiceV2.handle(response: response)
     }
     
-    func signViaWalletConnectTransaction(tx: EthereumTransaction, chainId: Int) async throws -> String {
+    func sendViaWalletConnectTransaction(tx: EthereumTransaction, chainId: Int) async throws -> String {
         let wc2Sessions = try getWC2Session()
         let response =  try await appContext.walletConnectServiceV2.sendSignTx(sessions: wc2Sessions,
                                                                               chainId: chainId,
