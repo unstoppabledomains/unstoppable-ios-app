@@ -13,6 +13,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     
     @ObservedObject private var dataModel: ConfirmSendTokenDataModel
     @State private var error: Error?
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var isLoading = false
     @State private var stateId = UUID()
     @State private var lastRefreshGasFeeTime = Date()
@@ -51,6 +52,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
         .displayError($error)
+        .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
     }
     
@@ -112,10 +114,16 @@ private extension ConfirmSendTokenView {
         stateId = UUID()
     }
     
+    func confirmButtonPressed() {
+        if UserDefaults.isSendingCryptoForTheFirstTime {
+            pullUp = .default(.showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: confirmSending))
+        } else {
+            confirmSending()
+        }
+    }
+    
     func confirmSending() {
-        logButtonPressedAnalyticEvents(button: .confirm,
-                                       parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
-
+        UserDefaults.isSendingCryptoForTheFirstTime = false
         Task {
             guard let view = appContext.coreAppCoordinator.topVC else { return }
             try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
@@ -190,7 +198,9 @@ private extension ConfirmSendTokenView {
                          icon: confirmIcon,
                          style: .large(.raisedPrimary),
                          isLoading: isLoading) {
-                confirmSending()
+                logButtonPressedAnalyticEvents(button: .confirm,
+                                               parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
+                confirmButtonPressed()
             }
                          .disabled(!hasSufficientFunds)
         }
@@ -249,6 +259,9 @@ private extension ConfirmSendTokenView {
     }
     
     var confirmIcon: Image? {
+        if UserDefaults.isSendingCryptoForTheFirstTime {
+            return nil
+        }
         if User.instance.getSettings().touchIdActivated,
            let icon = appContext.authentificationService.biometricIcon {
             return Image(uiImage: icon)
