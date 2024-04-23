@@ -1195,6 +1195,7 @@ extension String {
         static let verificationCode = "VERIFICATION_CODE"
         static let haventReceivedTheCode = "HAVENT_RECEIVED_THE_CODE"
         static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
+        static let selfCustody = "SELF_CUSTODY"
     }
     
     enum BlockChainIcons: String {

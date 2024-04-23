@@ -98,11 +98,11 @@ private extension RestoreWalletViewController {
         
         restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
         
-        let mpcView = RestoreWalletView(options: restoreOptions) { [weak self] restoreOption in
+        let selectionView = RestoreWalletView(options: restoreOptions) { [weak self] restoreOption in
             self?.logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)
             self?.didSelectRestoreOption(restoreOption)
         }
-        let vc = UIHostingController(rootView: mpcView)
+        let vc = UIHostingController(rootView: selectionView)
         addChildViewController(vc, andEmbedToView: view)
     }
     

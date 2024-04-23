@@ -50,25 +50,12 @@ extension OnboardingAddWalletViewController: OnboardingDataHandling { }
 
 // MARK: - Actions
 private extension OnboardingAddWalletViewController {
-    func didSelectRestoreOption(_ restoreOption: RestoreWalletType) {
+    func didSelectRestoreOption(_ restoreOption: OnboardingAddWalletType) {
         switch restoreOption {
-        case .iCloud:
-            guard iCloudWalletStorage.isICloudAvailable() else {
-                showICloudDisabledAlert()
-                return
-            }
-            
-            onboardingFlowManager.moveToStep(.enterBackup)
-        case .recoveryPhrase:
-            onboardingFlowManager.moveToStep(.addManageWallet)
-        case .watchWallet:
-            onboardingFlowManager.moveToStep(.addWatchWallet)
-        case .externalWallet:
-            onboardingFlowManager.moveToStep(.connectExternalWallet)
-        case .websiteAccount:
-            onboardingFlowManager.moveToStep(.loginWithWebsite)
-        case .mpc:
-            onboardingFlowManager.moveToStep(.mpcCredentials)
+        case .mpcWallet:
+            return
+        case .selfCustody:
+            onboardingFlowManager.moveToStep(.createWallet)
         }
     }
 }
@@ -84,20 +71,13 @@ private extension OnboardingAddWalletViewController {
     }
     
     func addChildView() {
-        var restoreOptions = [[RestoreWalletType]]()
-        let backedUpWallets = appContext.udWalletsService.fetchCloudWalletClusters().reduce([BackedUpWallet](), { $0 + $1.wallets })
-        
-        if !backedUpWallets.isEmpty {
-            restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
-        }
-        
-        restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
-        
-        let mpcView = RestoreWalletView(options: restoreOptions) { [weak self] restoreOption in
+        let restoreOptions: [[OnboardingAddWalletType]] = [[.mpcWallet], [.selfCustody]]
+       
+        let selectionView = OnboardingAddWalletView(options: restoreOptions) { [weak self] restoreOption in
             self?.logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)
             self?.didSelectRestoreOption(restoreOption)
         }
-        let vc = UIHostingController(rootView: mpcView)
+        let vc = UIHostingController(rootView: selectionView)
         addChildViewController(vc, andEmbedToView: view)
     }
     

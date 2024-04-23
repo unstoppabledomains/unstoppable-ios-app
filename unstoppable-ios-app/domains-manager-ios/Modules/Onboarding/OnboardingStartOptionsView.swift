@@ -7,14 +7,22 @@
 
 import SwiftUI
 
-typealias OnboardingStartOption = RestoreWalletType
-struct OnboardingStartOptionsView: View {
+protocol OnboardingStartOption: Hashable {
+    var icon: UIImage { get }
+    var title: String { get }
+    var subtitle: String? { get }
+    var subtitleType: UDListItemView.SubtitleStyle { get }
+    var imageStyle: UDListItemView.ImageStyle { get }
+    var analyticsName: Analytics.Button { get }
+}
+
+struct OnboardingStartOptionsView<O: OnboardingStartOption>: View {
     
     let title: String
     let subtitle: String
     let icon: Image
-    let options: [[OnboardingStartOption]]
-    let selectionCallback: (OnboardingStartOption)->()
+    let options: [[O]]
+    let selectionCallback: (O)->()
     
     var body: some View {
         ScrollView {
@@ -59,7 +67,7 @@ private extension OnboardingStartOptionsView {
     }
     
     @ViewBuilder
-    func sectionWithOptions(_ options: [OnboardingStartOption]) -> some View {
+    func sectionWithOptions(_ options: [O]) -> some View {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
                 ForEach(options, id: \.self) { option in
@@ -70,7 +78,7 @@ private extension OnboardingStartOptionsView {
     }
     
     @ViewBuilder
-    func listViewFor(option: OnboardingStartOption) -> some View {
+    func listViewFor(option: O) -> some View {
         UDCollectionListRowButton(content: {
             UDListItemView(title: option.title,
                            subtitle: option.subtitle,
@@ -91,6 +99,6 @@ private extension OnboardingStartOptionsView {
     OnboardingStartOptionsView(title: "",
                                subtitle: "",
                                icon: .addWalletIcon,
-                               options: [[.iCloud(value: "")], [.mpc, .recoveryPhrase]],
+                               options: [[RestoreWalletType.iCloud(value: "")], [.mpc, .recoveryPhrase]],
                                selectionCallback: { _ in })
 }

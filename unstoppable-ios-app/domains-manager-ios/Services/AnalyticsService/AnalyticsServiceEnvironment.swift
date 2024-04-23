@@ -339,6 +339,7 @@ extension Analytics {
         case websiteAccount
         case resetRecords
         case mpc
+        case selfCustody
         
         // Referral
         case inviteFriendInfo, copyLink

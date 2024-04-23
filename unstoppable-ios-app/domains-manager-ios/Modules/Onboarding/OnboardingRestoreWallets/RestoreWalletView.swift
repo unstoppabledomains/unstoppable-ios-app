@@ -9,8 +9,8 @@ import SwiftUI
 
 struct RestoreWalletView: View {
     
-    let options: [[OnboardingStartOption]]
-    let selectionCallback: (OnboardingStartOption)->()
+    let options: [[RestoreWalletType]]
+    let selectionCallback: (RestoreWalletType)->()
 
     var body: some View {
         OnboardingStartOptionsView(title: String.Constants.connectWalletTitle.localized(),

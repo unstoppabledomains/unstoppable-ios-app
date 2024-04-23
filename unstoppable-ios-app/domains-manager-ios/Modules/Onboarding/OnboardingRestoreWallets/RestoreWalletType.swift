@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum RestoreWalletType: Hashable {
+enum RestoreWalletType: Hashable, OnboardingStartOption {
     case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet, websiteAccount, mpc
     
     var icon: UIImage {
@@ -50,16 +50,15 @@ enum RestoreWalletType: Hashable {
         case .iCloud(let value):
             return String.Constants.connectWalletICloudHint.localized()
         case .recoveryPhrase:
-            return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
+            return nil
         case .watchWallet:
-            return String.Constants.connectWalletWatchHint.localized()
+            return nil
         case .externalWallet:
-            return String.Constants.connectWalletExternalHint.localized()
+            return nil
         case .websiteAccount:
-            return String.Constants.protectedByUD.localized()
+            return nil
         case .mpc:
-            return "Advanced MPC technoloiges"
-            
+            return nil
         }
     }
     
@@ -72,23 +71,6 @@ enum RestoreWalletType: Hashable {
         }
     }
     
-    var subtitleStyle: TableViewSelectionCell.SecondaryTextStyle {
-        switch self {
-        case .iCloud:
-            return .blue
-        case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount, .mpc:
-            return .grey
-        }
-    }
-    
-    var iconStyle: TableViewSelectionCell.IconStyle {
-        switch self {
-        case .iCloud:
-            return .accent
-        case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount, .mpc:
-            return .grey
-        }
-    }
     var imageStyle: UDListItemView.ImageStyle {
         switch self {
         case .iCloud:
@@ -96,7 +78,6 @@ enum RestoreWalletType: Hashable {
         case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount, .mpc:
             return .centred()
         }
-        
     }
     
     var analyticsName: Analytics.Button {

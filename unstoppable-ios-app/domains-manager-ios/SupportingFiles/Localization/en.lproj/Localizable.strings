@@ -191,7 +191,7 @@
 // Creating wallet
 "CREATING_WALLET" = "Creating wallet";
 "CREATE_NEW_VAULT_TITLE" = "Create new wallet";
-"CREATE_NEW_VAULT_SUBTITLE" = "A wallet is a cryptocurrency address for your Web3 identity.\nUse your wallet to track your crypto assets including NFTs, manage domains and connect to Web3 apps.";
+"CREATE_NEW_VAULT_SUBTITLE" = "Wallet used to store your domains, crypto and collectibles.";
 
 // Protect screen
 "USE_FACE_ID" = "Use Face ID";
@@ -1095,3 +1095,4 @@ More tabs are coming in the next updates.";
 "VERIFICATION_CODE" = "Verification code";
 "HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";
 "INCORRECT_EMAIL_FORMAT" = "Incorrect email format";
+"SELF_CUSTODY" = "Self Custody";
