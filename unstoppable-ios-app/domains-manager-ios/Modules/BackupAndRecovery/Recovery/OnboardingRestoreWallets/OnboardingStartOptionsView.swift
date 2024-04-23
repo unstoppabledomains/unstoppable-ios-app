@@ -10,7 +10,11 @@ import SwiftUI
 typealias OnboardingStartOption = RestoreWalletType
 struct OnboardingStartOptionsView: View {
     
+    let title: String
+    let subtitle: String
+    let icon: Image
     let options: [[OnboardingStartOption]]
+    let selectionCallback: (OnboardingStartOption)->()
     
     var body: some View {
         ScrollView {
@@ -21,6 +25,7 @@ struct OnboardingStartOptionsView: View {
             }
             .padding()
         }
+        .scrollDisabled(true)
     }
 }
 
@@ -29,14 +34,14 @@ private extension OnboardingStartOptionsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 20) {
-            Image.addWalletIcon
+            icon
                 .resizable()
                 .foregroundStyle(Color.foregroundMuted)
                 .squareFrame(56)
             VStack(spacing: 16) {
-                Text("Add existing wallet")
+                Text(title)
                     .titleText()
-                Text("Choose a way to import your wallet into Unstoppable App.")
+                Text(subtitle)
                     .subtitleText()
             }
             .multilineTextAlignment(.center)
@@ -76,14 +81,16 @@ private extension OnboardingStartOptionsView {
             .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
-//            presentationMode.wrappedValue.dismiss()
-//            userProfilesService.setActiveProfile(profile)
-//            logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
+            selectionCallback(option)
         })
         .padding(EdgeInsets(4))
     }
 }
 
 #Preview {
-    OnboardingStartOptionsView(options: [[.iCloud(value: "")], [.mpc, .recoveryPhrase]])
+    OnboardingStartOptionsView(title: "",
+                               subtitle: "",
+                               icon: .addWalletIcon,
+                               options: [[.iCloud(value: "")], [.mpc, .recoveryPhrase]],
+                               selectionCallback: { _ in })
 }

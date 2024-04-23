@@ -176,7 +176,6 @@
 		C60982BF282A775000546392 /* EnterBackupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982BE282A775000546392 /* EnterBackupViewController.xib */; };
 		C60982C4282A77D300546392 /* ConfirmWordsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982C3282A77D300546392 /* ConfirmWordsViewController.xib */; };
 		C60982C9282A78CA00546392 /* RecoveryPhraseViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982C8282A78CA00546392 /* RecoveryPhraseViewController.xib */; };
-		C60982CF282A79E200546392 /* RestoreWalletViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982CE282A79E200546392 /* RestoreWalletViewController.xib */; };
 		C60982D4282A7A8E00546392 /* AddWalletViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982D3282A7A8E00546392 /* AddWalletViewController.xib */; };
 		C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982DD282A7B6B00546392 /* WalletConnectedViewController.xib */; };
 		C60982E8282A7CE000546392 /* ConfirmWordListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982E3282A7CE000546392 /* ConfirmWordListCell.xib */; };
@@ -1684,7 +1683,6 @@
 		C6C8F83C2B217E9600A9834D /* ConfirmWordListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982E3282A7CE000546392 /* ConfirmWordListCell.xib */; };
 		C6C8F83D2B217E9600A9834D /* OnboardingBackupWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4E72817C561008C66BB /* OnboardingBackupWalletPresenter.swift */; };
 		C6C8F83E2B217E9600A9834D /* RecoveryPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BFA4E327E24A4600644CD5 /* RecoveryPhraseViewController.swift */; };
-		C6C8F83F2B217E9600A9834D /* RestoreWalletViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982CE282A79E200546392 /* RestoreWalletViewController.xib */; };
 		C6C8F8402B217E9600A9834D /* EnterBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEB227EA091000E8C37D /* EnterBackupViewController.swift */; };
 		C6C8F8412B217E9600A9834D /* ConfirmWordConfirmationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F1F2800303D00A517D5 /* ConfirmWordConfirmationCell.swift */; };
 		C6C8F8422B217E9600A9834D /* CreatePasswordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C60982B9282A768700546392 /* CreatePasswordViewController.xib */; };
@@ -2865,7 +2863,6 @@
 		C60982BE282A775000546392 /* EnterBackupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EnterBackupViewController.xib; sourceTree = "<group>"; };
 		C60982C3282A77D300546392 /* ConfirmWordsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfirmWordsViewController.xib; sourceTree = "<group>"; };
 		C60982C8282A78CA00546392 /* RecoveryPhraseViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecoveryPhraseViewController.xib; sourceTree = "<group>"; };
-		C60982CE282A79E200546392 /* RestoreWalletViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RestoreWalletViewController.xib; sourceTree = "<group>"; };
 		C60982D3282A7A8E00546392 /* AddWalletViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddWalletViewController.xib; sourceTree = "<group>"; };
 		C60982DD282A7B6B00546392 /* WalletConnectedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WalletConnectedViewController.xib; sourceTree = "<group>"; };
 		C60982E3282A7CE000546392 /* ConfirmWordListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfirmWordListCell.xib; sourceTree = "<group>"; };
@@ -4839,7 +4836,6 @@
 				C630C72B2BD7798200AC1662 /* RestoreWalletView.swift */,
 				C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */,
 				C630C72E2BD779A500AC1662 /* RestoreWalletType.swift */,
-				C60982CE282A79E200546392 /* RestoreWalletViewController.xib */,
 			);
 			path = OnboardingRestoreWallets;
 			sourceTree = "<group>";
@@ -8907,7 +8903,6 @@
 				C645131B28096CB600413C51 /* Localizable.stringsdict in Resources */,
 				C689539E2834D08F0046CBA3 /* AddCurrencyCell.xib in Resources */,
 				C60982C4282A77D300546392 /* ConfirmWordsViewController.xib in Resources */,
-				C60982CF282A79E200546392 /* RestoreWalletViewController.xib in Resources */,
 				C6E04186295057FE0080F8E3 /* DomainsListViewController.xib in Resources */,
 				C615E0D628891BC10082490B /* DomainsCollectionSearchEmptyCell.xib in Resources */,
 				C679B615291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
@@ -9123,7 +9118,6 @@
 				C6D6473E2B1ED9EF00D724AC /* BaseSignTransactionView.xib in Resources */,
 				C6C8F8A72B2182AE00A9834D /* WalletDetailsTopInfoCell.xib in Resources */,
 				C6D6469B2B1ED14E00D724AC /* ManageMultiChainDomainAddressCell.xib in Resources */,
-				C6C8F83F2B217E9600A9834D /* RestoreWalletViewController.xib in Resources */,
 				C6C8F8A22B2182AE00A9834D /* WalletDetailsViewController.xib in Resources */,
 				C6D647362B1ED9EF00D724AC /* PaymentTransactionGasOnlyCostView.xib in Resources */,
 				C6C8F89C2B2182A200A9834D /* WalletsListCell.xib in Resources */,

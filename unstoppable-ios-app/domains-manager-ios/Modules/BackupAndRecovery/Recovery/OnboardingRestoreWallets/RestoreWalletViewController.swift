@@ -6,22 +6,16 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgress {
-
-    @IBOutlet private weak var titleLabel: UDTitleLabel!
-    @IBOutlet private weak var subtitleLabel: UDSubtitleLabel!
-    @IBOutlet private weak var selectionTableView: BorderedTableView!
-    @IBOutlet private weak var selectionTableViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var alreadyHaveDomainsButton: SecondaryButton!
     
-    private var restoreOptions = [[RestoreWalletType]]()
     var onboardingFlowManager: OnboardingFlowManager!
     var progress: Double? { 0.25 }
     override var analyticsName: Analytics.ViewName { .onboardingRestoreWallet }
 
     static func instantiate() -> RestoreWalletViewController {
-        RestoreWalletViewController.nibInstance()
+        RestoreWalletViewController()
     }
     
     override func viewDidLoad() {
@@ -54,48 +48,14 @@ extension RestoreWalletViewController: OnboardingNavigationHandler {
 // MARK: - OnboardingDataHandling
 extension RestoreWalletViewController: OnboardingDataHandling { }
 
-// MARK: - UITableViewDataSource
-extension RestoreWalletViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        restoreOptions.count
+// MARK: - Actions
+private extension RestoreWalletViewController {
+    @IBAction func dontHaveDomainButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .dontAlreadyHaveDomain)
+        onboardingFlowManager?.moveToStep(.createWallet)
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        restoreOptions[section].count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueCellOfType(TableViewSelectionCell.self)        
-        let restoreOption = restoreOptions[indexPath.section][indexPath.row]
-        
-        cell.setWith(icon: restoreOption.icon,
-                     iconTintColor: .foregroundDefault,
-                     iconStyle: restoreOption.iconStyle,
-                     text: restoreOption.title,
-                     secondaryText: nil)
-        cell.setSecondaryTextStyle(restoreOption.subtitleStyle)
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        TableViewSelectionCell.Height
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        TableViewSelectionCell.Height
-    }
-}
-
-// MARK: - UITableViewDelegate
-extension RestoreWalletViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        UDVibration.buttonTap.vibrate()
-        tableView.deselectRow(at: indexPath, animated: false)
-        let restoreOption = restoreOptions[indexPath.section][indexPath.row]
-        
-        logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)
-        
+    func didSelectRestoreOption(_ restoreOption: RestoreWalletType) {
         switch restoreOption {
         case .iCloud:
             guard iCloudWalletStorage.isICloudAvailable() else {
@@ -118,53 +78,36 @@ extension RestoreWalletViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - Actions
-private extension RestoreWalletViewController {
-    @IBAction func dontHaveDomainButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .dontAlreadyHaveDomain)
-        onboardingFlowManager?.moveToStep(.createWallet)
-    }
-}
-
 // MARK: - Setup methods
 private extension RestoreWalletViewController {
     func setup() {
-        setupRestoreTypes()
-        setupTableView()
-        setupUI()
         setupDashesProgressView()
+        addChildView()
+        DispatchQueue.main.async {
+            self.setDashesProgress(self.progress)
+        }
     }
     
-    func setupRestoreTypes() {
+    func addChildView() {
+        var restoreOptions = [[RestoreWalletType]]()
         let backedUpWallets = appContext.udWalletsService.fetchCloudWalletClusters().reduce([BackedUpWallet](), { $0 + $1.wallets })
         
         if !backedUpWallets.isEmpty {
-            self.restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
+            restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
         }
         
-        self.restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
+        restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
+        
+        let mpcView = RestoreWalletView(options: restoreOptions) { [weak self] restoreOption in
+            self?.logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)
+            self?.didSelectRestoreOption(restoreOption)
+        }
+        let vc = UIHostingController(rootView: mpcView)
+        addChildViewController(vc, andEmbedToView: view)
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
         String.Constants.pluralWallets.localized(backedUpWallets.count)
-    }
-    
-    func setupTableView() {
-        selectionTableView.registerCellNibOfType(TableViewSelectionCell.self)
-        selectionTableView.dataSource = self
-        selectionTableView.delegate = self
-        selectionTableView.separatorStyle = .none
-        selectionTableView.clipsToBounds = true
-    }
-    
-    func setupUI() {
-        let rowsHeight = TableViewSelectionCell.Height * CGFloat(restoreOptions.flatMap({ $0 }).count)
-        let sectionsSpacing = CGFloat(restoreOptions.count - 1) * 16
-        selectionTableViewHeightConstraint.constant = rowsHeight
-        titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
-        subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
-        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)
-        alreadyHaveDomainsButton.accessibilityIdentifier = "Restore wallet create new button"
     }
     
     func setupDashesProgressView() {
