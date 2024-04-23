@@ -35,7 +35,7 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Cqb-Qe-4Vj">
-                                <rect key="frame" x="16" y="699" width="358" height="33"/>
+                                <rect key="frame" x="16" y="691" width="358" height="33"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Agreement" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kO4-gW-kLR">
                                         <rect key="frame" x="0.0" y="0.0" width="358" height="33"/>
@@ -86,7 +86,7 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="4Nx-Hs-8Tp" secondAttribute="bottom" constant="14" id="Ryk-bX-bUN"/>
                             <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="16" id="UAx-iF-4S1"/>
                             <constraint firstItem="Cqb-Qe-4Vj" firstAttribute="leading" secondItem="4Nx-Hs-8Tp" secondAttribute="leading" id="Usq-jm-vph"/>
-                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="top" secondItem="Cqb-Qe-4Vj" secondAttribute="bottom" constant="16" id="VuB-1Z-Fgg"/>
+                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="top" secondItem="Cqb-Qe-4Vj" secondAttribute="bottom" constant="24" id="VuB-1Z-Fgg"/>
                             <constraint firstItem="e5l-zi-B00" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="XAH-Ds-Ifd"/>
                             <constraint firstItem="G4f-ZS-o71" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="gdp-kc-vbv"/>
                             <constraint firstItem="G4f-ZS-o71" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="mjr-71-0NN"/>
