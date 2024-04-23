@@ -164,6 +164,7 @@ private extension ChatListView {
             UDButtonView(text: String.Constants.enable.localized(),
                          icon: bioImage,
                          style: .large(.raisedPrimary),
+                         isLoading: viewModel.isCreatingProfile,
                          callback: {
                 logButtonPressedAnalyticEvents(button: .createMessagingProfile)
                 viewModel.createProfilePressed()

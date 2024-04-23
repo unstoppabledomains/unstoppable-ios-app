@@ -1130,6 +1130,10 @@
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
+		C67684A62BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */; };
+		C67684A72BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */; };
+		C67684A92BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */; };
+		C67684AA2BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */; };
 		C679B5ED2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */; };
 		C679B5F12918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */; };
 		C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5F52918F38100F543A7 /* DefaultCodable.swift */; };
@@ -1228,6 +1232,7 @@
 		C68BAC932B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
+		C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */; };
 		C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */; };
 		C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */; };
 		C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */; };
@@ -3523,6 +3528,8 @@
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCRefreshBootstrapTokenResponse.swift; sourceTree = "<group>"; };
+		C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletAccountWithAssets.swift; sourceTree = "<group>"; };
+		C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCSignMessageEncoding.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
 		C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileWeb3WebsiteLoadingCell.xib; sourceTree = "<group>"; };
 		C679B5F52918F38100F543A7 /* DefaultCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCodable.swift; sourceTree = "<group>"; };
@@ -3595,6 +3602,7 @@
 		C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewScrollHandler.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
+		C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksProxyWalletRPCMessageHandler.swift; sourceTree = "<group>"; };
 		C691CF6B28BE4DA80077C59F /* HelveticaNeue-Custom.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeue-Custom.ttf"; sourceTree = "<group>"; };
 		C691CFA728C06F120077C59F /* ReverseResolutionIllustrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseResolutionIllustrationView.swift; sourceTree = "<group>"; };
 		C691CFC128C070450077C59F /* SetupReverseResolutionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionViewPresenter.swift; sourceTree = "<group>"; };
@@ -5937,6 +5945,7 @@
 				C650F8C72BA41C3300BDA099 /* FireblocksRPCMessageHandler.swift */,
 				C6BF80322BA2E80300CC4CB3 /* FireblocksBootstrapRPCMessageHandler.swift */,
 				C6952A422BC50D1D00F4B475 /* FireblocksWalletRPCMessageHandler.swift */,
+				C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */,
 			);
 			path = FireblocksRPCMessageHandler;
 			sourceTree = "<group>";
@@ -6102,8 +6111,10 @@
 				C632BE522BA59DFB00C95B2D /* FB_UD_MPCBootstrapCodeSubmitResponse.swift */,
 				C650F8BC2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift */,
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
+				C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */,
 				C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */,
 				C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */,
+				C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -9135,6 +9146,7 @@
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C62AC1FF2BABF0D0003FB69E /* ConfirmSendAssetSenderReceiverConnectView.swift in Sources */,
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
+				C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
@@ -9514,6 +9526,7 @@
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6DDF2502B147F1A006D1F0B /* UDButtonStyle.swift in Sources */,
 				C6534A9B2BBFBA10008EEBB5 /* HomeExploreDomainRowView.swift in Sources */,
+				C67684A92BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AE2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
@@ -9525,6 +9538,7 @@
 				C6C8F9552B2185A900A9834D /* MintingError.swift in Sources */,
 				C650F8BD2BA4182900BDA099 /* FB_UD_MPCConnectedWalletDetails.swift in Sources */,
 				C6B65F6C2B550E72006D1812 /* NFTModelChain.swift in Sources */,
+				C67684A62BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */,
 				C609826C2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C671CD222BC682E6005DA2FB /* EcomPurchaseMPCWalletServiceProtocol.swift in Sources */,
 				C6AF12402A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift in Sources */,
@@ -10969,6 +10983,7 @@
 				C6534A8E2BBFBA10008EEBB5 /* HomeExploreFollowerCellView.swift in Sources */,
 				C6C8F8B32B2182CF00A9834D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C671CD192BC68083005DA2FB /* PurchaseDomainsCheckoutData.swift in Sources */,
+				C67684A72BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */,
 				C6A359362BB6BB2100B1209A /* TxHash.swift in Sources */,
 				C61808052B19A9C20032E543 /* Toast.swift in Sources */,
 				C6C8F8452B217E9600A9834D /* BackupWalletViewController.swift in Sources */,
@@ -11130,6 +11145,7 @@
 				C6D646FD2B1ED7B900D724AC /* MessagingChatDisplayInfo.swift in Sources */,
 				C6D646A32B1ED15A00D724AC /* PublicProfileFollowersView.swift in Sources */,
 				C61807EF2B19A70F0032E543 /* PreviewPaymentConfirmationDelegate.swift in Sources */,
+				C67684AA2BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */,
 				C6D6476D2B1EE02500D724AC /* Base64DataTransformer.swift in Sources */,
 				C6D646272B1DC2A700D724AC /* PullUpView.swift in Sources */,
 				C617FDAB2B590B6700B93433 /* NavigationViewWithCustomTitle.swift in Sources */,

@@ -92,7 +92,7 @@ struct NetworkService {
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
         let data = try await makeAPIRequest(apiRequest)
-        
+        logMPC("Raw Response: \(try? JSONSerialization.jsonObject(with: data))")
         if let object = T.objectFromData(data,
                                          using: keyDecodingStrategy,
                                          dateDecodingStrategy: dateDecodingStrategy) {

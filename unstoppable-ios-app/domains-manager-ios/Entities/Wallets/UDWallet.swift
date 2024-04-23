@@ -27,6 +27,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         case noWalletOwner = "No Owner Wallet Specified"
         case failedToFindWallet = "Failed to Find a Wallet"
         case failedSignature
+        case failedToFindMPCMetadata
     }
     
     struct WalletConnectionInfo: Codable {
@@ -39,7 +40,7 @@ struct UDWallet: Codable, @unchecked Sendable {
     var hasBeenBackedUp: Bool? = false
     
     private var walletConnectionInfo: WalletConnectionInfo?
-    private var mpcMetadata: MPCWalletMetadata?
+    private(set) var mpcMetadata: MPCWalletMetadata?
     
     private init(aliasName: String,
                  walletType: WalletType,

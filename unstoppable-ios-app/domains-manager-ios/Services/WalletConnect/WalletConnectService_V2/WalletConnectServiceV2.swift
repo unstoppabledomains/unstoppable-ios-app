@@ -963,7 +963,6 @@ extension WalletConnectServiceV2 {
         
         switch wallet.udWallet.type {
         case .externalLinked: break
-        case .mpc: print("handle with mpc") // TODO: mpc
         default:  // locally verified wallet
             guard let uiHandler = self.uiHandler else { //
                 Debugger.printFailure("UI Handler is not set", critical: true)

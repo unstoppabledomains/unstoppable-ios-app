@@ -42,10 +42,6 @@ struct UDWallet: Codable, Hashable {
             return nil
         }
     }
-    var walletState: WalletState {
-        return self.isExternalConnectionActive ? .externalLinked : .verified
-    }
-    
     
     var mockingExternalWalletType: ExternalWalletMake?
     var isExternalConnectionActive: Bool {

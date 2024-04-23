@@ -36,6 +36,20 @@ extension FB_UD_MPC {
             static func accountAssetsURL(accountId: String) -> String {
                 accountsURL.appendingURLPathComponents(accountId, "assets")
             }
+            static func assetURL(accountId: String, assetId: String) -> String {
+                accountAssetsURL(accountId: accountId).appendingURLPathComponents(assetId)
+            }
+            static func assetSignaturesURL(accountId: String, assetId: String) -> String {
+                assetURL(accountId: accountId, assetId: assetId).appendingURLPathComponents("signatures")
+            }
+            static func assetTransactionsURL(accountId: String, assetId: String) -> String {
+                assetURL(accountId: accountId, assetId: assetId).appendingURLPathComponents("transactions")
+            }
+            
+            static var operationsURL: String { v1URL.appendingURLPathComponents("operations") }
+            static func operationURL(operationId: String) -> String {
+                operationsURL.appendingURLPathComponents(operationId)
+            }
         }
     }
 }

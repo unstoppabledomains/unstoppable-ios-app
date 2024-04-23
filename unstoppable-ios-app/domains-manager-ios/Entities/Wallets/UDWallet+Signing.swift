@@ -64,9 +64,12 @@ extension UDWallet {
             
             return try await signViaWalletConnectPersonalSign(message: messageString)
             
-        case .mpc: print("sign with mpc") 
-                    return "" // TODO: mpc
-            
+        case .mpc:
+            guard let mpcWalletMetadata = self.mpcMetadata else {
+                throw UDWallet.Error.failedToFindMPCMetadata
+            }
+            return try await appContext.mpcWalletsService.signMessage(messageString,
+                                                                      by: mpcWalletMetadata)
         default:
             let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
             
@@ -200,15 +203,15 @@ extension UDWallet {
         var sigs = [String]()
         
         switch self.type {
-        case .externalLinked:
-            // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
+        case .externalLinked, .mpc:
+            /// Because:
+            ///     For external wallet it will be required to sign message in external wallet for each request
+            ///     For MPC wallet it is limited to performing one operation at a time
+            /// They can't be fired simultaneously
             for message in messages {
                 let result = try await self.getPersonalSignature(messageString: message)
                 sigs.append(result)
             }
-        
-        case .mpc: print("sign with mpc") // TODO: mpc
-        
         default:  // locally verified wallet
             await withTaskGroup(of: Optional<String>.self) { group in
                 for message in messages {
