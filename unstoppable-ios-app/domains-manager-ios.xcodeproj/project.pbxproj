@@ -10827,6 +10827,7 @@
 				C630E4AD2B7F4B8D008F3269 /* FlippedUpsideDownModifier.swift in Sources */,
 				C6534AA22BBFBA10008EEBB5 /* HomeExploreDomainSearchTypePickerView.swift in Sources */,
 				C6D646E22B1ED49D00D724AC /* TableViewSelectionCell.swift in Sources */,
+				C6FBCAA32B91C6AC00BA39DF /* HomeExploreRecentProfilesSectionView.swift in Sources */,
 				C6C8F8262B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
 				C6534AC62BBFBAF5008EEBB5 /* UserProfilesService.swift in Sources */,
 				C671CD1F2BC680E2005DA2FB /* Ecom.swift in Sources */,
