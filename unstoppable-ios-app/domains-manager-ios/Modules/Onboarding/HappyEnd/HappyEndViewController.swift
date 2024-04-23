@@ -115,11 +115,14 @@ private extension HappyEndViewController {
         agreementTextView.isUserInteractionEnabled = true
         agreementTextView.textAlignment = .center
         agreementTextView.setAttributedTextWith(text: String.Constants.agreeToTUAndPP.localized(),
-                                                font: .currentFont(withSize: 14, weight: .medium),
-                                                textColor: .foregroundSecondary)
+                                                font: .currentFont(withSize: 13, weight: .regular),
+                                                textColor: .foregroundSecondary,
+                                                lineHeight: 20)
         agreementTextView.updateAttributesOf(text: termsOfUseText,
+                                             withFont: .currentFont(withSize: 13, weight: .medium),
                                              textColor: .foregroundDefault)
         agreementTextView.updateAttributesOf(text: privacyPolicyText,
+                                             withFont: .currentFont(withSize: 13, weight: .medium),
                                              textColor: .foregroundDefault)
     }
 }
