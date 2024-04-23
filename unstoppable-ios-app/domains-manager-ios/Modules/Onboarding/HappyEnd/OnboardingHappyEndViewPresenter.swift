@@ -12,7 +12,6 @@ final class OnboardingHappyEndViewPresenter: BaseHappyEndViewPresenter {
     override var analyticsName: Analytics.ViewName { .onboardingHappyEnd }
     
     override func viewDidLoad() {
-        view?.setActionButtonEnabled(false)
         view?.setAgreement(visible: true)
         view?.setConfiguration(.onboarding)
     }

@@ -14,7 +14,6 @@ final class PurchaseDomainsHappyEndViewPresenter: BaseHappyEndViewPresenter {
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
     override func viewDidLoad() {
-        view?.setActionButtonEnabled(true)
         view?.setAgreement(visible: false)
         view?.setConfiguration(.domainsPurchased)
     }
