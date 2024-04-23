@@ -145,6 +145,9 @@ private extension MPCActivateWalletView {
         ZStack {
             Image.mpcWalletGrid
                 .resizable()
+            Image.mpcWalletGridAccent
+                .resizable()
+                .foregroundStyle(stateBorderColor())
             HStack(spacing: 100) {
                 mpcStateBlurLine()
                 mpcStateBlurLine()
