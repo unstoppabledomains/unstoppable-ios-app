@@ -32,7 +32,7 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     }
     
     func didPressCreateNewWalletButton() {
-       
+        onboardingFlowManager?.moveToStep(.createNewSelection)
     }
     
     func didPressAddExistingWalletButton() {

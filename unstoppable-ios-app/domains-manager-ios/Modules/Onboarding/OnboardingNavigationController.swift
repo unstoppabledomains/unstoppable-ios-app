@@ -442,6 +442,12 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
+        case .createNewSelection:
+            let vc = OnboardingAddWalletViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         }
     }
  
@@ -503,6 +509,7 @@ extension OnboardingNavigationController {
         case mpcCredentials = 23
         case mpcCode = 24
         case mpcActivate = 25
+        case createNewSelection = 26
         
         var isStorable: Bool {
             switch self {

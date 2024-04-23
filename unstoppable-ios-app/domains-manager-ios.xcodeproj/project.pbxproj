@@ -660,6 +660,8 @@
 		C630C7302BD779A500AC1662 /* RestoreWalletType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630C72E2BD779A500AC1662 /* RestoreWalletType.swift */; };
 		C630C7322BD779E800AC1662 /* OnboardingStartOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */; };
 		C630C7332BD779E800AC1662 /* OnboardingStartOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */; };
+		C630C7362BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630C7352BD781E900AC1662 /* OnboardingAddWalletViewController.swift */; };
+		C630C7372BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630C7352BD781E900AC1662 /* OnboardingAddWalletViewController.swift */; };
 		C630E4A32B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */; };
 		C630E4A42B7F48D4008F3269 /* AlwaysPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */; };
 		C630E4A62B7F4918008F3269 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630E4A52B7F4918008F3269 /* ChatView.swift */; };
@@ -3191,6 +3193,7 @@
 		C630C72B2BD7798200AC1662 /* RestoreWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletView.swift; sourceTree = "<group>"; };
 		C630C72E2BD779A500AC1662 /* RestoreWalletType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletType.swift; sourceTree = "<group>"; };
 		C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStartOptionsView.swift; sourceTree = "<group>"; };
+		C630C7352BD781E900AC1662 /* OnboardingAddWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAddWalletViewController.swift; sourceTree = "<group>"; };
 		C630E4A22B7F48D4008F3269 /* AlwaysPopoverModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysPopoverModifier.swift; sourceTree = "<group>"; };
 		C630E4A52B7F4918008F3269 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		C630E4A82B7F4959008F3269 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
@@ -4536,6 +4539,9 @@
 				304C66CE2807F1E800E1ACFE /* OnboardingData.swift */,
 				C681092528042AF0002D780E /* OnboardingNavigationController.swift */,
 				C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */,
+				C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */,
+				C630C7342BD781D200AC1662 /* OnboardingAddWallet */,
+				C60982CD282A79C600546392 /* OnboardingRestoreWallets */,
 				C681092A28042B06002D780E /* Tutorial */,
 				C681092E28042B66002D780E /* HappyEnd */,
 				C60982A9282A729D00546392 /* Views */,
@@ -4834,7 +4840,6 @@
 			children = (
 				3018AEAD27E9D50A00E8C37D /* RestoreWalletViewController.swift */,
 				C630C72B2BD7798200AC1662 /* RestoreWalletView.swift */,
-				C630C7312BD779E800AC1662 /* OnboardingStartOptionsView.swift */,
 				C630C72E2BD779A500AC1662 /* RestoreWalletType.swift */,
 			);
 			path = OnboardingRestoreWallets;
@@ -5649,6 +5654,14 @@
 				C63095F82B0DAAA900205054 /* MockStripeService.swift */,
 			);
 			path = Stripe;
+			sourceTree = "<group>";
+		};
+		C630C7342BD781D200AC1662 /* OnboardingAddWallet */ = {
+			isa = PBXGroup;
+			children = (
+				C630C7352BD781E900AC1662 /* OnboardingAddWalletViewController.swift */,
+			);
+			path = OnboardingAddWallet;
 			sourceTree = "<group>";
 		};
 		C635193328D03F1600FC6AF8 /* SetupReverseResolution */ = {
@@ -6922,7 +6935,6 @@
 		C681092D28042B57002D780E /* Recovery */ = {
 			isa = PBXGroup;
 			children = (
-				C60982CD282A79C600546392 /* OnboardingRestoreWallets */,
 				C609824F2823FB9100546392 /* WalletRecoveryPhrase */,
 				C609825A2823FF4200546392 /* ConfirmRecoveryWords */,
 			);
@@ -9678,6 +9690,7 @@
 				C6952A602BC664C600F4B475 /* PurchaseMPCWallet.swift in Sources */,
 				C6098292282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
 				C66A26EA28B4C22F005470B9 /* BaseOperation.swift in Sources */,
+				C630C7362BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */,
 				C6D6E5162817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32C26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
 				C6098310282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
@@ -11317,6 +11330,7 @@
 				C617FDA82B58E7BB00B93433 /* WalletsDataServiceProtocol.swift in Sources */,
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,
 				C6D647A62B1F189B00D724AC /* PurchaseSearchDomainsViewController.swift in Sources */,
+				C630C7372BD781E900AC1662 /* OnboardingAddWalletViewController.swift in Sources */,
 				C6D645C62B1DBD3900D724AC /* CNavigationBarContentView.swift in Sources */,
 				C6D647572B1EDC1600D724AC /* UISearchBar.swift in Sources */,
 				C6C8F8C12B2182E400A9834D /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
