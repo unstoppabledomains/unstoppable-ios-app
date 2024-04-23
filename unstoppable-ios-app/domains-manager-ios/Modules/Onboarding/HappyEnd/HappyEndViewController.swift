@@ -11,7 +11,6 @@ import UIKit
 protocol HappyEndViewControllerProtocol: BaseViewControllerProtocol {
     func setAgreement(visible: Bool)
     func setConfiguration(_ configuration: HappyEndViewController.Configuration)
-    func setActionButtonEnabled(_ enabled: Bool)
 }
 
 final class HappyEndViewController: BaseViewController {
@@ -67,10 +66,6 @@ extension HappyEndViewController: HappyEndViewControllerProtocol {
         subtitleLabel.setSubtitle(configuration.subtitle)
         getStartedButton.setTitle(configuration.actionButtonTitle, image: nil)
     }
-    
-    func setActionButtonEnabled(_ enabled: Bool) {
-        getStartedButton.isEnabled = enabled
-    }
 }
 
 // MARK: - Actions
@@ -110,7 +105,6 @@ private extension HappyEndViewController {
 // MARK: - Setup methods
 private extension HappyEndViewController {
     func setup() {
-        getStartedButton.isEnabled = false
         localizeContent()
         agreementTextView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapAgreementTextView)))
         
