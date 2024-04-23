@@ -322,6 +322,7 @@ extension NetworkService {
         case failedGetStatus
         case failedParseStatusPrices
         case failedParseInfuraPrices
+        case failedEncodeTxParameters
         case unknownChain
         
         init(message: String) {
@@ -364,10 +365,13 @@ extension NetworkService {
     
     func getGasEstimation(tx: EthereumTransaction,
                           chainId: Int) async throws -> String {
+        guard let params = tx.parameters else {
+            throw JRPCError.failedEncodeTxParameters
+        }
         
-        try await getJRPCRequest(chainId: chainId,
+        return try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_estimateGas",
-                                                    paramsBuilder: { "[\(tx.parameters), \"latest\"]"} ))
+                                                    paramsBuilder: { "[\(params), \"latest\"]"} ))
     }
     
     func getGasPrice(chainId: Int) async throws -> String {
@@ -415,9 +419,9 @@ extension NetworkService {
         }
         assert(priceDict.count == Self.InfuraSpeedCase.allCases.count) // always true after forEach
         
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.low]!),
-                                  fast: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
-                                  urgent: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.high]!))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.low]!),
+                                  fast: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
+                                  urgent: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.high]!))
     }
     
     func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
@@ -428,9 +432,9 @@ extension NetworkService {
               let urgent = prices["fastest"] else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: normal),
-                                          fast: EVMTokenAmount(gwei: fast),
-                                          urgent: EVMTokenAmount(gwei: urgent))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: normal),
+                                          fast: EVMCoinAmount(gwei: fast),
+                                          urgent: EVMCoinAmount(gwei: urgent))
     }
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
@@ -497,7 +501,7 @@ extension NetworkService {
 }
 
 extension EthereumTransaction {
-    var parameters: String {
+    var parameters: String? {
         var object: [String: String] = [:]
         if let from = self.from {
             object["from"] = from.hex()
@@ -513,8 +517,10 @@ extension EthereumTransaction {
         }
         object["data"] = data.hex()
         
-        let data = (try? JSONEncoder().encode(object)) ?? Data()
-        return String(data: data, encoding: .utf8) ?? ""
+        guard let data = try? JSONEncoder().encode(object) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
     }
 }
 
