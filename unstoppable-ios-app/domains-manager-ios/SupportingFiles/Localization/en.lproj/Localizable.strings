@@ -181,6 +181,8 @@
 "ALREADY_MINTED_DOMAIN" = "Import minted domains";
 "MINT_YOUR_DOMAIN" = "Mint your domains";
 "BUY_DOMAIN" = "Buy domain";
+"CREATE_NEW" = "Create new";
+"ADD_EXISTING" = "Add existing";
 
 "TUTORIAL_SCREEN_1_NAME" = "Manage NFTs and domains";
 "TUTORIAL_SCREEN_2_NAME" = "Track your crypto assets";

@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 protocol TutorialViewPresenterProtocol: BasePresenterProtocol {
     func didPressCreateNewWalletButton()
+    func didPressAddExistingWalletButton()
     func didPressBuyDomain()
 }
 
@@ -31,6 +32,10 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     }
     
     func didPressCreateNewWalletButton() {
+       
+    }
+    
+    func didPressAddExistingWalletButton() {
         onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
         onboardingFlowManager?.moveToStep(.restoreWallet)
     }

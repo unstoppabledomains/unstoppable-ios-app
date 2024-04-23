@@ -239,6 +239,8 @@ extension String {
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
         static let buyDomain = "BUY_DOMAIN"
+        static let createNew = "CREATE_NEW"
+        static let addExisting = "ADD_EXISTING"
         
         static let tutorialScreen1Name = "TUTORIAL_SCREEN_1_NAME"
         static let tutorialScreen2Name = "TUTORIAL_SCREEN_2_NAME"
