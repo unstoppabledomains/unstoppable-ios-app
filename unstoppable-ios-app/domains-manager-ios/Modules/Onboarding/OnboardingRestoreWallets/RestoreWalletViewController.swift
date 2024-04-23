@@ -11,7 +11,7 @@ import SwiftUI
 final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgress {
     
     var onboardingFlowManager: OnboardingFlowManager!
-    var progress: Double? { 0.25 }
+    var progress: Double? { nil }
     override var analyticsName: Analytics.ViewName { .onboardingRestoreWallet }
 
     static func instantiate() -> RestoreWalletViewController {
@@ -31,11 +31,17 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
             }
             await MainActor.run {
                 prevTitleView?.isHidden = true
-                setDashesProgress(0.25)
+                setDashesProgress(progress)
             }
             await Task.sleep(seconds: 0.5)
             prevTitleView?.isHidden = false
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        setDashesProgress(nil)
     }
 }
 
@@ -112,6 +118,6 @@ private extension RestoreWalletViewController {
     
     func setupDashesProgressView() {
         addProgressDashesView()
-        self.dashesProgressView.setProgress(0.25)
+        setDashesProgress(progress)
     }
 }
