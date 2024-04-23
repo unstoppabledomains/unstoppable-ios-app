@@ -440,7 +440,28 @@ extension ViewPullUpDefaultConfiguration {
                      analyticName: .noRecordsSetToSendCrypto,
                      dismissCallback: nil)
     }
-    
+ 
+    static func showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        var icon: UIImage?
+        if User.instance.getSettings().touchIdActivated,
+           let image = appContext.authentificationService.biometricIcon {
+            icon = image
+        }
+        return .init(icon: .init(icon: .paperPlaneTopRightSend,
+                                 size: .small),
+                     title: .text(String.Constants.sendCryptoFirstTimePullUpTitle.localized()),
+                     subtitle: .label(.text(String.Constants.sendCryptoFirstTimePullUpSubtitle.localized())),
+                     actionButton: .secondary(content: .init(title: String.Constants.reviewTxAgain.localized(),
+                                                             analyticsName: .reviewTxAgain,
+                                                             action: nil)),
+                     cancelButton: .main(content: .init(title: String.Constants.confirmAndSend.localized(),
+                                                        icon: icon,
+                                                        analyticsName: .confirm,
+                                                        action: confirmCallback)),
+                     dismissAble: true,
+                     analyticName: .sendCryptoForTheFirstTimeConfirmation,
+                     dismissCallback: nil)
+    }
 }
 
 // MARK: - Open methods

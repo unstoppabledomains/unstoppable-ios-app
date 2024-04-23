@@ -1083,3 +1083,9 @@ More tabs are coming in the next updates.";
 "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE" = "%@ hasn’t added addresses for these cryptocurrencies";
 "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
 "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";
+
+// Send crypto first time
+"SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
+"SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE" = "Ensure accuracy of the recipient address as transactions are irreversible. Once sent, transactions cannot be reversed. You agree to bear all risks associated with the transaction.";
+"REVIEW_TX_AGAIN" = "Review Transaction Again";
+"CONFIRM_AND_SEND" = "Confirm & Send";
