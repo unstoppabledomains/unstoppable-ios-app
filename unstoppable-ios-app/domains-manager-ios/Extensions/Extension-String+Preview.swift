@@ -1196,6 +1196,12 @@ extension String {
         static let haventReceivedTheCode = "HAVENT_RECEIVED_THE_CODE"
         static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
         static let selfCustody = "SELF_CUSTODY"
+        
+        // Send crypto first time
+        static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
+        static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
+        static let reviewTxAgain = "REVIEW_TX_AGAIN"
+        static let confirmAndSend = "CONFIRM_AND_SEND"
     }
     
     enum BlockChainIcons: String {

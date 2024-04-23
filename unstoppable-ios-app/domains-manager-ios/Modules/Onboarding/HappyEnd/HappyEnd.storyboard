@@ -23,7 +23,7 @@
                                     <constraint firstAttribute="width" secondItem="G4f-ZS-o71" secondAttribute="height" id="BLv-98-IgM"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Nx-Hs-8Tp" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Nx-Hs-8Tp" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
                                 <rect key="frame" x="16" y="748" width="358" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="5hI-BB-7aK"/>
