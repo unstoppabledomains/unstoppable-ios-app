@@ -61,7 +61,11 @@ extension WalletTransactionDisplayInfo {
         self.gas = serializedTransaction.gas
         self.link = URL(string: serializedTransaction.link)
         self.imageUrl = URL(string: serializedTransaction.imageUrl ?? "")
-        self.symbol = serializedTransaction.symbol
+        if serializedTransaction.type == "erc20" {
+            self.symbol = serializedTransaction.method
+        } else {
+            self.symbol = serializedTransaction.symbol
+        }
         self.nftName = serializedTransaction.method
         
         if serializedTransaction.from.address == userWallet {

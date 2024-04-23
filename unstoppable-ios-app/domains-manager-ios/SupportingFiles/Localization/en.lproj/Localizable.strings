@@ -259,11 +259,11 @@
 
 // All done screen
 "YOU_ARE_ALL_DONE_TITLE" = "You're all done!";
-"YOU_ARE_ALL_DONE_SUBTITLE" = "Manage your Web3 domains on the go";
+"YOU_ARE_ALL_DONE_SUBTITLE" = "Manage your NFT domains on the go.";
 "GET_STARTED" = "Get started";
-"AGREE_TO_TU_AND_PP" = "I agree to the Terms of use and Privacy policy";
-"TERMS_OF_USE" = "Terms of use";
-"PRIVACY_POLICY" = "Privacy policy";
+"AGREE_TO_TU_AND_PP" = "By using Unstoppable App, you agree to accept our\nTerms of Use and Privacy Policy.";
+"TERMS_OF_USE" = "Terms of Use";
+"PRIVACY_POLICY" = "Privacy Policy";
 
 // Connect wallet
 "CONNECT_WALLET_TITLE" = "Import your domains";
