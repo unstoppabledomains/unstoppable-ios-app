@@ -13,7 +13,7 @@ struct CryptoSender: CryptoSenderProtocol {
   
     let wallet: UDWallet
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chainType: BlockchainType) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
         true
     }
     
@@ -21,7 +21,7 @@ struct CryptoSender: CryptoSenderProtocol {
         ""
     }
     
-    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMTokenAmount {
+    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
         .init(wei: 12300)
     }
     
