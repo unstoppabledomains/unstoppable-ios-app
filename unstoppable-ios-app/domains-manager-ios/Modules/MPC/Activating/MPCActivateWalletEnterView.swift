@@ -18,7 +18,7 @@ struct MPCActivateWalletEnterView: View {
     @State private var input = ""
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: isIPSE ? 16 : 24) {
             DismissIndicatorView()
             headerView()
             inputView()
@@ -39,6 +39,7 @@ private extension MPCActivateWalletEnterView {
         VStack(spacing: 8) {
             Text(title)
                 .font(.currentFont(size: 22, weight: .bold))
+                .minimumScaleFactor(0.5)
                 .foregroundStyle(Color.foregroundDefault)
             subtitleView()
         }
