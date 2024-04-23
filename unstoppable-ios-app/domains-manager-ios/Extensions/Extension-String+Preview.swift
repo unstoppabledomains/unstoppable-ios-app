@@ -239,6 +239,8 @@ extension String {
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
         static let buyDomain = "BUY_DOMAIN"
+        static let createNew = "CREATE_NEW"
+        static let addExisting = "ADD_EXISTING"
         
         static let tutorialScreen1Name = "TUTORIAL_SCREEN_1_NAME"
         static let tutorialScreen2Name = "TUTORIAL_SCREEN_2_NAME"
@@ -1183,6 +1185,17 @@ extension String {
         static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
+        
+        // Import MPC
+        static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"
+        static let importMPCWalletSubtitle = "IMPORT_MPC_WALLET_SUBTITLE"
+        static let emailAssociatedWithWallet = "EMAIL_ASSOCIATED_WITH_WALLET"
+        static let enterMPCWalletVerificationCodeTitle = "ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE"
+        static let enterMPCWalletVerificationCodeSubtitle = "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE"
+        static let verificationCode = "VERIFICATION_CODE"
+        static let haventReceivedTheCode = "HAVENT_RECEIVED_THE_CODE"
+        static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
+        static let selfCustody = "SELF_CUSTODY"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,7 +14,7 @@
             <objects>
                 <navigationController storyboardIdentifier="OnboardingNavigationController" id="yUr-tv-i5E" customClass="OnboardingNavigationController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="fim-L4-guO">
-                        <rect key="frame" x="0.0" y="48" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="50"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                 </navigationController>
@@ -37,22 +37,28 @@
             <objects>
                 <viewController storyboardIdentifier="TutorialScreen" id="JG4-4n-V80" customClass="TutorialStepViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Lrq-3y-ORo">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="lPn-DT-faQ">
-                                <rect key="frame" x="16" y="108" width="382" height="558"/>
+                                <rect key="frame" x="16" y="80" width="288" height="377.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Claim and manage your domains" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YZ0-cj-2qd" customClass="UDTitleLabel">
-                                        <rect key="frame" x="67.5" y="0.0" width="247.5" height="67"/>
+                                        <rect key="frame" x="20.5" y="0.0" width="247.5" height="67"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tutorialIllustration1" translatesAutoresizingMaskIntoConstraints="NO" id="0Ni-3s-4Fc">
-                                        <rect key="frame" x="0.0" y="83" width="382" height="475"/>
+                                        <rect key="frame" x="0.0" y="83" width="288" height="294.5"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="0Ni-3s-4Fc" secondAttribute="height" multiplier="361/449" id="aIP-En-No2"/>
+                                            <constraint firstAttribute="width" secondItem="0Ni-3s-4Fc" secondAttribute="height" multiplier="361/369" id="aIP-En-No2" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                                        <real key="value" value="-6"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </constraint>
                                         </constraints>
                                     </imageView>
                                 </subviews>
@@ -82,21 +88,21 @@
             <objects>
                 <viewController storyboardIdentifier="ExistingUsersTutorialViewController" id="iX2-L0-PvU" customClass="ExistingUsersTutorialViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oNP-Zw-Tuc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="0Qd-TS-lcj">
-                                <rect key="frame" x="16" y="375.5" width="382" height="145"/>
+                                <rect key="frame" x="16" y="211.5" width="288" height="145"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udLogo" translatesAutoresizingMaskIntoConstraints="NO" id="tA6-QD-Yov">
-                                        <rect key="frame" x="159" y="0.0" width="64" height="64"/>
+                                        <rect key="frame" x="112" y="0.0" width="64" height="64"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="64" id="Ttu-pm-8k7"/>
                                             <constraint firstAttribute="width" secondItem="tA6-QD-Yov" secondAttribute="height" multiplier="1:1" id="y6w-aJ-GLZ"/>
                                         </constraints>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="DGq-Wz-qqn">
-                                        <rect key="frame" x="120" y="88" width="142.5" height="57"/>
+                                        <rect key="frame" x="73" y="88" width="142.5" height="57"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Protect your wallet" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YYc-bD-N7X" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="142.5" height="20.5"/>
@@ -115,7 +121,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vUb-VG-uTO" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                <rect key="frame" x="16" y="800" width="382" height="48"/>
+                                <rect key="frame" x="16" y="506" width="288" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="BPF-6Z-UsH"/>
                                 </constraints>
@@ -149,7 +155,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="tutorialIllustration1" width="722" height="898"/>
+        <image name="tutorialIllustration1" width="722" height="738"/>
         <image name="udLogo" width="64" height="64"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

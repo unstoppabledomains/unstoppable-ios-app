@@ -96,6 +96,8 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             } else {
                 moveToStep(.protectWallet)
             }
+        case .changeEmailFromMPCWallet:
+            popTo(RestoreWalletViewController.self)
         }
     }
     
@@ -142,7 +144,9 @@ extension OnboardingNavigationController: OnboardingFlowManager {
     func moveToStep(_ step: OnboardingNavigationController.OnboardingStep) {
         guard let vc = createOnboardingStep(step) else { return }
         
-        UserDefaults.onboardingNavigationInfo?.steps.append(step)
+        if step.isStorable {
+            UserDefaults.onboardingNavigationInfo?.steps.append(step)
+        }
         self.pushViewController(vc, animated: true)
     }
     
@@ -420,14 +424,26 @@ private extension OnboardingNavigationController {
             vc.presenter = presenter
             return vc
             
-        case .mpcCode:
-            let vc = MPCEnterCodeOnboardingViewController()
+        case .mpcCredentials:
+            let vc = MPCOnboardingEnterCredentialsViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
             return vc
-        case .mpcPassphrase:
-            let vc = MPCEnterPassphraseViewController()
+        case .mpcCode:
+            let vc = MPCOnboardingEnterCodeViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcActivate:
+            let vc = MPCOnboardingActivateWalletViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .createNewSelection:
+            let vc = OnboardingAddWalletViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -490,8 +506,19 @@ extension OnboardingNavigationController {
         case noParkedDomains = 21
         case parkedDomainsFound = 22
         
-        case mpcCode = 23
-        case mpcPassphrase = 24
+        case mpcCredentials = 23
+        case mpcCode = 24
+        case mpcActivate = 25
+        case createNewSelection = 26
+        
+        var isStorable: Bool {
+            switch self {
+            case .mpcCode, .mpcActivate:
+                return false
+            default:
+                return true
+            }
+        }
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {
@@ -504,6 +531,7 @@ extension OnboardingNavigationController {
     enum Action {
         case didGenerateLocalWallet(UDWallet)
         case didImportWallet(UDWallet)
+        case changeEmailFromMPCWallet
     }
     
 }

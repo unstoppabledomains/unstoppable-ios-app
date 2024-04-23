@@ -171,7 +171,7 @@ extension Analytics {
     enum ViewName: String {
         case unspecified
         case onboardingTutorial, onboardingTutorialStep, onboardingExistingUserTutorial
-        case onboardingRestoreWallet
+        case onboardingRestoreWallet, onboardingAddWallet
         case selectBackupWalletOptionsForNewWallet, onboardingSelectBackupWalletOptions
         case onboardingEnterBackupPassword, enterBackupPasswordToBackupNewWallet, enterBackupPasswordToBackupWallet, enterBackupPasswordToRestoreWallets
         case createBackupPasswordToBackupWallet, createBackupPasswordForNewWallet, onboardingCreateBackupPassword
@@ -339,6 +339,7 @@ extension Analytics {
         case websiteAccount
         case resetRecords
         case mpc
+        case selfCustody
         
         // Referral
         case inviteFriendInfo, copyLink

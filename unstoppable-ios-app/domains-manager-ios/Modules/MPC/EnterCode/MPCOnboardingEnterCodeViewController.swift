@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-final class MPCEnterPassphraseViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingEnterCodeViewController: BaseViewController, ViewWithDashesProgress {
     
     override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 1 / 2 }
+    var progress: Double? { 3 / 4 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,16 +23,15 @@ final class MPCEnterPassphraseViewController: BaseViewController, ViewWithDashes
 }
 
 // MARK: - Private methods
-private extension MPCEnterPassphraseViewController {
-    func didCreateMPCWallet(_ wallet: UDWallet) {
-        Task {
-            try? await onboardingFlowManager?.handle(action: .didImportWallet(wallet))
-        }
+private extension MPCOnboardingEnterCodeViewController {
+    func didEnterCode(_ code: String) {
+        onboardingFlowManager?.modifyOnboardingData(modifyingBlock: { $0.mpcCode = code })
+        onboardingFlowManager?.moveToStep(.mpcActivate)
     }
 }
 
 // MARK: - Setup methods
-private extension MPCEnterPassphraseViewController {
+private extension MPCOnboardingEnterCodeViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -42,14 +41,14 @@ private extension MPCEnterPassphraseViewController {
     }
     
     func addChildView() {
-        guard let code = onboardingFlowManager?.onboardingData.mpcCode else {
+        guard let email = OnboardingData.mpcCredentials?.email else {
             cNavigationController?.popViewController(animated: true)
-            Debugger.printFailure("No MPC Code passed", critical: true)
+            Debugger.printFailure("No Email passed", critical: true)
             return
         }
-        let mpcView = MPCEnterPassphraseView(code: code) { [weak self] wallet in
+        let mpcView = MPCEnterCodeView(email: email) { [weak self] code in
             DispatchQueue.main.async {
-                self?.didCreateMPCWallet(wallet)
+                self?.didEnterCode(code)
             }
         }
         let vc = UIHostingController(rootView: mpcView)
@@ -58,13 +57,13 @@ private extension MPCEnterPassphraseViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCEnterPassphraseViewController: OnboardingNavigationHandler {
+extension MPCOnboardingEnterCodeViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPassphrase }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCode }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCEnterPassphraseViewController: OnboardingDataHandling {
+extension MPCOnboardingEnterCodeViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
 

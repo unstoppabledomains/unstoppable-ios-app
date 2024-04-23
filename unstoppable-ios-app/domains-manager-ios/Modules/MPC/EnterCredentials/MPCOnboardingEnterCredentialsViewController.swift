@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-final class MPCEnterCodeOnboardingViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingEnterCredentialsViewController: BaseViewController, ViewWithDashesProgress {
         
 
     override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 1 / 2 }
+    var progress: Double? { 1 / 4 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +24,15 @@ final class MPCEnterCodeOnboardingViewController: BaseViewController, ViewWithDa
 }
 
 // MARK: - Private methods
-private extension MPCEnterCodeOnboardingViewController {
-    func didEnterValidCode(_ code: String) {
-        onboardingFlowManager?.modifyOnboardingData { $0.mpcCode = code }
-        onboardingFlowManager?.moveToStep(.mpcPassphrase)
+private extension MPCOnboardingEnterCredentialsViewController {
+    func didEnterCrendentials(_ credentials: MPCActivateCredentials) {
+        OnboardingData.mpcCredentials = credentials
+        onboardingFlowManager?.moveToStep(.mpcCode)
     }
 }
 
 // MARK: - Setup methods
-private extension MPCEnterCodeOnboardingViewController {
+private extension MPCOnboardingEnterCredentialsViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -42,9 +42,9 @@ private extension MPCEnterCodeOnboardingViewController {
     }
     
     func addChildView() {
-        let mpcView = MPCEnterCodeView { [weak self] code in
+        let mpcView = MPCEnterCredentialsView { [weak self] code in
             DispatchQueue.main.async {
-                self?.didEnterValidCode(code)
+                self?.didEnterCrendentials(code)
             }
         }
         let vc = UIHostingController(rootView: mpcView)
@@ -53,13 +53,13 @@ private extension MPCEnterCodeOnboardingViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCEnterCodeOnboardingViewController: OnboardingNavigationHandler {
+extension MPCOnboardingEnterCredentialsViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCode }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcCredentials }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCEnterCodeOnboardingViewController: OnboardingDataHandling {
+extension MPCOnboardingEnterCredentialsViewController: OnboardingDataHandling {
     func willNavigateBack() {
         onboardingFlowManager?.onboardingData.mpcCode = nil
     }

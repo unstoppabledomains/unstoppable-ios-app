@@ -98,6 +98,9 @@ private extension UDListItemView {
         case .default:
             subtitleText()
                 .foregroundStyle(Color.foregroundSecondary)
+        case .accent:
+            subtitleText(fontWeight: .medium)
+                .foregroundStyle(Color.foregroundAccent)
         case .warning:
             HStack(spacing: 8) {
                 Image.warningIcon
@@ -110,10 +113,10 @@ private extension UDListItemView {
     }
     
     @ViewBuilder
-    func subtitleText() -> some View {
+    func subtitleText(fontWeight: UIFont.Weight = .regular) -> some View {
         if let subtitle {
             Text(subtitle)
-                .font(.currentFont(size: 14))
+                .font(.currentFont(size: 14, weight: fontWeight))
                 .frame(height: 20)
         }
     }
@@ -160,6 +163,7 @@ extension UDListItemView {
     enum SubtitleStyle {
         case `default`
         case warning
+        case accent
     }
     
     enum RightViewStyle {

@@ -119,6 +119,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     try await networkService.verifyAccessToken(authTokens.accessToken.jwt)
                     logMPC("Did verify final response \(authTokens) success")
                     
+                    continuation.yield(.getWalletAccountDetails)
                     let walletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                        authTokens: authTokens)
                     logMPC("Did get wallet account details")
@@ -126,6 +127,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                      tokens: authTokens,
                                                                      firstAccount: walletDetails.firstAccount,
                                                                      accounts: walletDetails.accounts)
+                    continuation.yield(.storeWallet)
                     logMPC("Will create UD Wallet")
                     let udWallet = try prepareAndSaveMPCWallet(mpcWallet)
                     logMPC("Did create UD Wallet")
