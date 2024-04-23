@@ -22,7 +22,7 @@ extension FB_UD_MPC {
     }
     
     enum TransactionOperationStatus: String {
-        case queues = "QUEUED"
+        case queued = "QUEUED"
         case pendingSignature = "PENDING_SIGNATURE"
         case signatureRequired = "SIGNATURE_REQUIRED"
         case completed = "COMPLETED"
