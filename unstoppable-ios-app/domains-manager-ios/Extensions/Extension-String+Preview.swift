@@ -12,7 +12,7 @@ extension String {
         case mainLanding, gasFeesExplanation, mailConfigureArticle, termsOfUse, privacyPolicy, buyDomain, setupICloudDriveInstruction, editProfile, mintDomainGuide, upgradeToPolygon, learn
         case udLogoPng
         case etherScanAddress(_ address: String), polygonScanAddress(_ address: String)
-        case polygonScanTransaction(_ transaction: String)
+        case etherScanTransaction(_ transaction: String), polygonScanTransaction(_ transaction: String)
         case deprecatedCoinTLDPage
         case domainProfilePage(domainName: String)
         case ensDomainProfilePage(domainName: String)
@@ -57,6 +57,8 @@ extension String {
                 return "https://unstoppabledomains.com/"
             case .mintDomainGuide:
                 return "https://cdn.unstoppabledomains.com/bucket/mobile-app/what_is_minting.mp4"
+            case .etherScanTransaction(let transaction):
+                return NetworkConfig.baseEthereumNetworkScanUrl + "/tx/\(transaction)"
             case .polygonScanTransaction(let transaction):
                 return NetworkConfig.basePolygonNetworkScanUrl + "/tx/\(transaction)"
             case .learn:
