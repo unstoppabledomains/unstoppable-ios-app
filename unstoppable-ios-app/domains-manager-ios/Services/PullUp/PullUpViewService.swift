@@ -41,7 +41,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             var actions = actions
             var actionButton: PullUpSelectionViewConfiguration.ButtonType?
             if actions.contains(.create) {
-                actions.remove(.create)
+                actions.removeAll(where: { $0 == .create })
                 actionButton = .raisedTertiary(content: .init(title: "Create new",
                                                               icon: nil,
                                                               analyticsName: .createVault,

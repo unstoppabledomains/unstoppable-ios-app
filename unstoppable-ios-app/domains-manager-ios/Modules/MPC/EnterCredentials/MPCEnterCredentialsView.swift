@@ -11,7 +11,8 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    let codeVerifiedCallback: (MPCActivateCredentials)->()
+    var withTopPadding: Bool = true
+    let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
@@ -29,7 +30,7 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
             Spacer()
         }
         .padding()
-        .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
+        .padding(.top, withTopPadding ? 70 : 0)
         .animation(.default, value: UUID())
         .displayError($error)
     }
@@ -125,7 +126,7 @@ private extension MPCEnterCredentialsView {
                 try await mpcWalletsService.sendBootstrapCodeTo(email: email)
                 let password = passwordInput
                 let credentials = MPCActivateCredentials(email: email, password: password)
-                codeVerifiedCallback(credentials)
+                credentialsCallback(credentials)
             } catch {
                 self.error = error
             }
@@ -136,7 +137,7 @@ private extension MPCEnterCredentialsView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let view = MPCEnterCredentialsView(codeVerifiedCallback: { _ in })
+    let view = MPCEnterCredentialsView(credentialsCallback: { _ in })
     let vc = UIHostingController(rootView: view)
     let nav = CNavigationController(rootViewController: vc)
     
