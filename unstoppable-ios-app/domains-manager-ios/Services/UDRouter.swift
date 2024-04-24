@@ -546,51 +546,6 @@ class UDRouter: DomainProfileSignatureValidator {
         return vc
     }
     
-//    func showChatsListScreen(in nav: CNavigationController,
-//                             presentOptions: ChatsList.PresentOptions) {
-//        let vc = buildChatsListModule(presentOptions: presentOptions)
-//        
-//        nav.pushViewController(vc, animated: true)
-//    }
-    
-//    func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> ChatsListViewController {
-//        let vc = ChatsListViewController.nibInstance()
-//        let walletsService = appContext.walletsDataService
-//        let presenter = ChatsListViewPresenter(view: vc,
-//                                               presentOptions: presentOptions, 
-//                                               selectedWallet: walletsService.selectedWallet,
-//                                               messagingService: appContext.messagingService)
-//        vc.presenter = presenter
-//        return vc
-//    }
-//    
-//    func showChatRequestsScreen(dataType: ChatsRequestsListViewPresenter.DataType,
-//                                profile: MessagingChatUserProfileDisplayInfo,
-//                                in nav: CNavigationController) {
-//        let vc = buildChatRequestsModuleWith(dataType: dataType,
-//                                             profile: profile)
-//        
-//        nav.pushViewController(vc, animated: true)
-//    }
-    
-//    func showChatScreen(profile: MessagingChatUserProfileDisplayInfo,
-//                        conversationState: MessagingChatConversationState,
-//                        in nav: CNavigationController) {
-//        let vc = buildChatModule(profile: profile,
-//                                 conversationState: conversationState)
-//        
-//        nav.pushViewController(vc, animated: true)
-//    }
-//    
-//    func showChannelScreen(profile: MessagingChatUserProfileDisplayInfo,
-//                           channel: MessagingNewsChannel,
-//                           in nav: CNavigationController) {
-//        let vc = buildChannelModule(profile: profile,
-//                                    channel: channel)
-//        
-//        nav.pushViewController(vc, animated: true)
-//    }
-    
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  by wallet: WalletEntity?,
                                  preRequestedAction: PreRequestedProfileAction? = nil,
@@ -615,6 +570,12 @@ class UDRouter: DomainProfileSignatureValidator {
     func showHotFeatureSuggestionDetails(suggestion: HotFeatureSuggestion,
                                          in viewController: UIViewController) {
         let view = HotFeatureSuggestionDetailsView(suggestion: suggestion)
+        let vc = UIHostingController(rootView: view)
+        viewController.present(vc, animated: true)
+    }
+    
+    func showActivateMPCWalletScreen(in viewController: UIViewController) {
+        let view = ActivateMPCWalletRootView()
         let vc = UIHostingController(rootView: view)
         viewController.present(vc, animated: true)
     }

@@ -12,8 +12,8 @@ struct MPCEnterCredentialsInAppView: View {
     @EnvironmentObject var viewModel: ActivateMPCWalletViewModel
 
     var body: some View {
-        MPCEnterCredentialsView(withTopPadding: false,
-                                credentialsCallback: didEnterCredentials)
+        MPCEnterCredentialsView(credentialsCallback: didEnterCredentials)
+            .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
 

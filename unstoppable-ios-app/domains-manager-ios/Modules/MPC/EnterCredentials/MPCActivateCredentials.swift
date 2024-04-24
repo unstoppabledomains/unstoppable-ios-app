@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MPCActivateCredentials {
+struct MPCActivateCredentials: Hashable {
     let email: String
     var password: String
 }

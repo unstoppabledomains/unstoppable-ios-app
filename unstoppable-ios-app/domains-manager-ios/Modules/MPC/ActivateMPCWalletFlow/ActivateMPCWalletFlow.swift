@@ -14,6 +14,9 @@ extension ActivateMPCWalletFlow {
         case didEnterCredentials(MPCActivateCredentials)
         case didEnterCode(String)
         case didActivate
+        case didRequestToChangeEmail
     }
+    
+    static let viewsTopOffset: CGFloat = 20
 }
 

@@ -9,8 +9,8 @@ import SwiftUI
 
 extension ActivateMPCWalletFlow {
     enum NavigationDestination: Hashable {
-        case signInWithEmail
-        case checkout
+        case enterCode(email: String)
+        case activate(credentials: MPCActivateCredentials, code: String)
         
         var isWithCustomTitle: Bool { false }
     }
@@ -19,10 +19,11 @@ extension ActivateMPCWalletFlow {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .signInWithEmail:
-                PurchaseMPCWalletAuthEmailView()
-            case .checkout:
-                PurchaseMPCWalletCheckoutView()
+            case .enterCode(let email):
+                MPCEnterCodeInAppView(email: email)
+            case .activate(let credentials, let code):
+                MPCActivateWalletInAppView(credentials: credentials,
+                                           code: code)
             }
         }
     }

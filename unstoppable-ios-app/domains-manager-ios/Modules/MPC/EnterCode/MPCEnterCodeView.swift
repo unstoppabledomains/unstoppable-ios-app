@@ -22,9 +22,7 @@ struct MPCEnterCodeView: View {
                 Spacer()
             }
             .padding()
-            .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
         }
-        .ignoresSafeArea()
         .animation(.default, value: UUID())
     }
 }

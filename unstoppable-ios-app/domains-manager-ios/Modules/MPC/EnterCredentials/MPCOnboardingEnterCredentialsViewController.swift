@@ -47,6 +47,8 @@ private extension MPCOnboardingEnterCredentialsViewController {
                 self?.didEnterCredentials(credentials)
             }
         }
+            .padding(.top, 70)
+
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
     }

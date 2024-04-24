@@ -14,17 +14,24 @@ final class ActivateMPCWalletViewModel: ObservableObject {
     @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?
+    private var credentials: MPCActivateCredentials?
     
     func handleAction(_ action: ActivateMPCWalletFlow.FlowAction) {
         Task {
             do {
                 switch action {
                 case .didEnterCredentials(let credentials):
-                    return
+                    self.credentials = credentials
+                    navPath.append(.enterCode(email: credentials.email))
                 case .didEnterCode(let code):
-                    return
+                    guard let credentials else { return }
+                    
+                    navPath.append(.activate(credentials: credentials, code: code))
                 case .didActivate:
                     return
+                case .didRequestToChangeEmail:
+                    self.credentials = nil
+                    navPath.removeAll()
                 }
             } catch {
                 self.error = error

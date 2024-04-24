@@ -209,10 +209,16 @@ private extension WalletsListViewPresenter {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
-                    return
+                    activateMPCWallet()
                 }
             }
         }
+    }
+    
+    func activateMPCWallet() {
+        guard let view else { return }
+        
+        UDRouter().showActivateMPCWalletScreen(in: view)
     }
     
     func createNewWallet() {

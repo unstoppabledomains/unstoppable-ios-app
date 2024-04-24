@@ -11,7 +11,6 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    var withTopPadding: Bool = true
     let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
@@ -30,7 +29,6 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
             Spacer()
         }
         .padding()
-        .padding(.top, withTopPadding ? 70 : 0)
         .animation(.default, value: UUID())
         .displayError($error)
     }
