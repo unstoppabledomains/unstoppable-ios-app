@@ -21,6 +21,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     var parentSymbol: String?
     var logoURL: URL?
     var parentLogoURL: URL?
+    var parentMarketUSD: Double?
     private(set) var isSkeleton: Bool = false
     
     static let iconSize: InitialsView.InitialsSize = .default
@@ -63,7 +64,11 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.marketPctChange24Hr = marketPctChange24Hr
     }
     
-    init(chain: String, walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
+    init(chain: String,
+         walletToken: WalletTokenPortfolio.Token,
+         parentSymbol: String,
+         parentMarketUSD: Double?,
+         parentLogoURL: URL?) {
         self.chain = chain
         self.symbol = walletToken.symbol
         self.gasCurrency = walletToken.gasCurrency
@@ -73,6 +78,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
         self.parentSymbol = parentSymbol
+        self.parentMarketUSD = parentMarketUSD
         self.parentLogoURL = parentLogoURL
         self.logoURL = URL(string: walletToken.logoUrl ?? "")
     }
@@ -80,11 +86,13 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     static func extractFrom(walletBalance: WalletTokenPortfolio) -> [BalanceTokenUIDescription] {
         let tokenDescription = BalanceTokenUIDescription(walletBalance: walletBalance)
         let parentSymbol = walletBalance.symbol
+        let parentMarketUSD = walletBalance.value.marketUsdAmt
         let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
         let chainSymbol = walletBalance.symbol
         let subTokenDescriptions = walletBalance.tokens?.map({ BalanceTokenUIDescription(chain: chainSymbol,
                                                                                          walletToken: $0,
                                                                                          parentSymbol: parentSymbol,
+                                                                                         parentMarketUSD: parentMarketUSD,
                                                                                          parentLogoURL: parentLogoURL) })
             .filter({ $0.balanceUsd >= 1 }) ?? []
         

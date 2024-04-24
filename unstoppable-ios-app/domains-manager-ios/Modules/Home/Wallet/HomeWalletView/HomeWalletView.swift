@@ -103,7 +103,6 @@ private extension HomeWalletView {
                                         id: id)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             updateNavTitleVisibility()
-            
         }
     }
     
