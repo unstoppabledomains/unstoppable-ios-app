@@ -28,7 +28,7 @@ final class ActivateMPCWalletViewModel: ObservableObject {
                     
                     navPath.append(.activate(credentials: credentials, code: code))
                 case .didActivate:
-                    return
+                    navigationState?.dismiss = true
                 case .didRequestToChangeEmail:
                     self.credentials = nil
                     navPath.removeAll()
