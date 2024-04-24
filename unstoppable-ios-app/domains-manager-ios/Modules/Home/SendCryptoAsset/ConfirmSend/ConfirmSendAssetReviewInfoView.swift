@@ -188,7 +188,7 @@ private extension ConfirmSendAssetReviewInfoView {
     func getBlockchainType() -> BlockchainType {
         switch asset {
         case .token(let dataModel):
-            BlockchainType(rawValue: dataModel.token.symbol) ?? .Matic
+            dataModel.token.blockchainType ?? .Matic
         case .domain(let domain):
             domain.blockchain ?? .Matic
         }
