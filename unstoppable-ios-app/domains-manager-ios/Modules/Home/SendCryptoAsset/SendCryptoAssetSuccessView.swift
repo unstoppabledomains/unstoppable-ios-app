@@ -141,7 +141,19 @@ private extension SendCryptoAssetSuccessView {
     }
     
     func viewTransaction(txHash: String) {
-        openLink(.polygonScanTransaction(txHash))
+        let link: String.Links
+        switch asset {
+        case .domain:
+            link = .polygonScanTransaction(txHash)
+        case .token(let token, _, _):
+            switch token.blockchainType {
+            case .Ethereum:
+                link = .etherScanTransaction(txHash)
+            case .Matic, .none:
+                link = .polygonScanTransaction(txHash)
+            }
+        }
+        openLink(link)
     }
     
     @ViewBuilder
