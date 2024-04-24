@@ -17,6 +17,6 @@ extension ActivateMPCWalletFlow {
         case didRequestToChangeEmail
     }
     
-    static let viewsTopOffset: CGFloat = 20
+    static let viewsTopOffset: CGFloat = 30
 }
 
