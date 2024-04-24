@@ -13,8 +13,15 @@ extension ActivateMPCWalletFlow {
     enum FlowAction {
         case didEnterCredentials(MPCActivateCredentials)
         case didEnterCode(String)
-        case didActivate
+        case didActivate(UDWallet)
         case didRequestToChangeEmail
+    }
+    
+    typealias FlowResultCallback = (ActivateMPCWalletFlow.FlowResult)->()
+    
+    enum FlowResult {
+        case activated(UDWallet)
+        case restart
     }
     
     static let viewsTopOffset: CGFloat = 30

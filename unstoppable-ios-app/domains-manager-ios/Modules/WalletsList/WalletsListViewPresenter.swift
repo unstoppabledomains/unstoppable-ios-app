@@ -218,7 +218,21 @@ private extension WalletsListViewPresenter {
     func activateMPCWallet() {
         guard let view else { return }
         
-        UDRouter().showActivateMPCWalletScreen(in: view)
+        UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
+    }
+    
+    func handleMPCActivationResult(_ result: ActivateMPCWalletFlow.FlowResult) {
+        switch result {
+        case .activated(let wallet):
+            addWalletAfterAdded(wallet)
+        case .restart:
+            Task {
+                guard let view else { return }
+                
+                await view.presentedViewController?.dismiss(animated: true)
+                activateMPCWallet()
+            }
+        }
     }
     
     func createNewWallet() {
@@ -244,17 +258,20 @@ private extension WalletsListViewPresenter {
         case .cancelled, .failedToAdd:
             return
         case .created(let wallet), .createdAndBackedUp(let wallet):
-            var walletName = String.Constants.wallet.localized()
-            if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
-                walletName = displayInfo.walletSourceName
-            }
-            appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-            if case .createdAndBackedUp(let wallet) = result,
-               let wallet = wallets.findWithAddress(wallet.address) {
-                showDetailsOf(wallet: wallet)
-            }
-            AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+            addWalletAfterAdded(wallet)
         }
+    }
+    
+    func addWalletAfterAdded(_ wallet: UDWallet) {
+        var walletName = String.Constants.wallet.localized()
+        if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
+            walletName = displayInfo.walletSourceName
+        }
+        appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+        if let wallet = wallets.findWithAddress(wallet.address) {
+            showDetailsOf(wallet: wallet)
+        }
+        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
     }
     
     func checkIfCanAddWalletAndPerform(action: InitialAction, isImportOnly: Bool) {

@@ -10,7 +10,7 @@ import SwiftUI
 struct ActivateMPCWalletRootView: View {
     
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject private var viewModel = ActivateMPCWalletViewModel()
+    @StateObject private var viewModel: ActivateMPCWalletViewModel
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
@@ -39,6 +39,9 @@ struct ActivateMPCWalletRootView: View {
         .allowsHitTesting(!viewModel.isLoading)
     }
     
+    init(activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
+        self._viewModel = StateObject(wrappedValue: ActivateMPCWalletViewModel(activationResultCallback: activationResultCallback))
+    }
 }
 
 // MARK: - Private methods
@@ -52,5 +55,5 @@ private extension ActivateMPCWalletRootView {
 }
 
 #Preview {
-    ActivateMPCWalletRootView()
+    ActivateMPCWalletRootView(activationResultCallback: { _ in })
 }

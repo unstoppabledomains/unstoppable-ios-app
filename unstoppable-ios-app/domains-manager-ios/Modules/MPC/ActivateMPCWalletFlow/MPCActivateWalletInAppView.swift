@@ -26,7 +26,7 @@ struct MPCActivateWalletInAppView: View {
 // MARK: - Private methods
 private extension MPCActivateWalletInAppView {
     func didCreateMPCWallet(_ wallet: UDWallet) {
-        viewModel.handleAction(.didActivate)
+        viewModel.handleAction(.didActivate(wallet))
     }
     
     func didRequestToChangeEmail() {

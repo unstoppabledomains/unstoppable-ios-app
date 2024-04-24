@@ -10,11 +10,16 @@ import SwiftUI
 @MainActor
 final class ActivateMPCWalletViewModel: ObservableObject {
     
+    let activationResultCallback: ActivateMPCWalletFlow.FlowResultCallback
     @Published var navPath: [ActivateMPCWalletFlow.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?
     private var credentials: MPCActivateCredentials?
+    
+    init(activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
+        self.activationResultCallback = activationResultCallback
+    }
     
     func handleAction(_ action: ActivateMPCWalletFlow.FlowAction) {
         Task {
@@ -27,11 +32,11 @@ final class ActivateMPCWalletViewModel: ObservableObject {
                     guard let credentials else { return }
                     
                     navPath.append(.activate(credentials: credentials, code: code))
-                case .didActivate:
+                case .didActivate(let wallet):
                     navigationState?.dismiss = true
+                    activationResultCallback(.activated(wallet))
                 case .didRequestToChangeEmail:
-                    self.credentials = nil
-                    navPath.removeAll()
+                    activationResultCallback(.restart)
                 }
             } catch {
                 self.error = error
