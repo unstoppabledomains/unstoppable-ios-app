@@ -15,7 +15,7 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     private var token: BalanceTokenUIDescription { data.token }
 
     @State private var pullUp: ViewPullUpConfigurationType?
-    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
+    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .tokenAmount
     @State private var interpreter = NumberPadInputInterpreter()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
@@ -31,9 +31,7 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
             VStack(spacing: isIPSE ? 8 : 32) {
                 VStack(spacing: 16) {
                     tokenInfoView()
-                    UDNumberPadView(inputCallback: { inputType in
-                        interpreter.addInput(inputType)
-                    })
+                    UDNumberPadView(inputCallback: addInput)
                 }
                 confirmButton()
             }
@@ -67,7 +65,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdInputString: String {
-        formatCartPrice(interpreter.getInterpretedNumber())
+        BalanceStringFormatter.tokensBalanceUSDString(interpreter.getInterpretedNumber())
     }
     
     @ViewBuilder
@@ -139,6 +137,8 @@ private extension SelectTokenAssetAmountToSendView {
             self.inputType = .tokenAmount
         case .tokenAmount:
             self.inputType = .usdAmount
+            let roundedNumber = interpreter.getInterpretedNumber().rounded(toDecimalPlaces: 2)
+            interpreter.setInput(roundedNumber)
         }
     }
     
@@ -278,6 +278,32 @@ private extension SelectTokenAssetAmountToSendView {
             .usdAmount(interpreter.getInterpretedNumber())
         case .tokenAmount:
             .tokenAmount(interpreter.getInterpretedNumber())
+        }
+    }
+    
+    func addInput(_ input: UDNumberButtonView.InputType) {
+        switch input {
+        case .erase:
+            Void()
+        default:
+            guard isAbleToAddInput() else { return }
+        }
+        
+        interpreter.addInput(input)
+    }
+    
+    func isAbleToAddInput() -> Bool {
+        switch inputType {
+        case .usdAmount:
+            // Limit USD input to two numbers after coma
+            let components = self.interpreter.getInput().components(separatedBy: ".")
+            if components.count == 2 {
+                let afterDot = components[1]
+                return afterDot.count < 2
+            }
+            return true
+        case .tokenAmount:
+            return true
         }
     }
 }
