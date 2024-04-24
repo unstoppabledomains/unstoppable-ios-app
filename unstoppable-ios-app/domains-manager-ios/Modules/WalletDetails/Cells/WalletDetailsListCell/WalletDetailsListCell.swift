@@ -79,7 +79,7 @@ extension WalletDetailsListCell {
         case .recoveryPhrase, .rename, .domains, .removeWallet:
             return
         case .importWallet:
-            set(subtitle: String.Constants.connectWalletRecovery.localized())
+            set(subtitle: String.Constants.recoveryPhraseOrPrivateKey.localized())
         }
     }
 }

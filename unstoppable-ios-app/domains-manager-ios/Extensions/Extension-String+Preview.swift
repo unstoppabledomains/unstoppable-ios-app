@@ -1202,6 +1202,8 @@ extension String {
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
+        static let recoveryPhraseOrPrivateKey = "RECOVERY_PHRASE_OR_PRIVATE_KEY"
+        static let externalWallet = "EXTERNAL_WALLET"
     }
     
     enum BlockChainIcons: String {

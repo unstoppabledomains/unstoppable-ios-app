@@ -38,7 +38,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                       presentationOptions: PullUpNamespace.AddWalletPullUpPresentationOptions,
                                       actions: [WalletDetailsAddWalletAction]) async throws -> WalletDetailsAddWalletAction {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
+            var actions = actions
+            var actionButton: PullUpSelectionViewConfiguration.ButtonType?
+            if actions.contains(.create) {
+                actions.remove(.create)
+                actionButton = .raisedTertiary(content: .init(title: "Create new",
+                                                              icon: nil,
+                                                              analyticsName: .createVault,
+                                                              action: {
+                    continuation(.success(.create))
+                }))
+            }
             var selectionViewHeight: CGFloat = 72 + (CGFloat(actions.count) * PullUpCollectionViewCell.Height)
+            if actionButton != nil {
+                selectionViewHeight += 72
+            }
             
             var titleConfiguration: PullUpSelectionViewConfiguration.LabelType? = nil
             if let title = presentationOptions.title {
@@ -52,10 +66,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                 selectionViewHeight += 64
             }
             
-            
             let selectionView = PullUpSelectionView(configuration: .init(title: titleConfiguration,
                                                                          contentAlignment: .center,
-                                                                         subtitle: subtitleConfiguration),
+                                                                         subtitle: subtitleConfiguration,
+                                                                         actionButton: actionButton),
                                                     items: actions,
                                                     itemSelectedCallback: { action in
                 continuation(.success(action))

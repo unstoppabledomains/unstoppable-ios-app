@@ -15,7 +15,7 @@ enum PullUpNamespace {
         var title: String? {
             switch self {
             case .default:
-                return nil
+                return String.Constants.connectWalletTitle.localized()
             case .claimWithoutWallets:
                 return String.Constants.noWalletsToClaimAlertTitle.localized()
             case .addToPurchase:
