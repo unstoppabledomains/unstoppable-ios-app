@@ -25,6 +25,7 @@ extension FB_UD_MPC {
         case queued = "QUEUED"
         case pendingSignature = "PENDING_SIGNATURE"
         case signatureRequired = "SIGNATURE_REQUIRED"
+        case processing = "PROCESSING"
         case completed = "COMPLETED"
         case unknown = "UNKNOWN"
     }

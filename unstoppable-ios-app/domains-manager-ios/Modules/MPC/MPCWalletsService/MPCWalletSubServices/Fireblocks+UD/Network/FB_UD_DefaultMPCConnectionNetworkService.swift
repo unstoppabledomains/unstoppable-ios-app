@@ -114,16 +114,34 @@ extension FB_UD_MPC {
                 var includeRefreshToken: Bool = true
                 var includeBootstrapToken: Bool = true
             }
+            struct ProcessingBadResponse: Decodable {
+                let code: String
+            }
             
-            let body = Body()
-            let headers = buildAuthBearerHeader(token: accessToken)
-            let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensConfirmURL,
-                                         body: body,
-                                         method: .post,
-                                         headers: headers)
-            
-            let response: AuthTokens = try await makeDecodableAPIRequest(request)
-            return response
+            do {
+                let body = Body()
+                let headers = buildAuthBearerHeader(token: accessToken)
+                let request = try APIRequest(urlString: MPCNetwork.URLSList.tokensConfirmURL,
+                                             body: body,
+                                             method: .post,
+                                             headers: headers)
+                
+                let response: AuthTokens = try await makeDecodableAPIRequest(request)
+                return response
+            } catch NetworkLayerError.badResponseOrStatusCode(let code, let message, let data) {
+                if let processingResponse = ProcessingBadResponse.objectFromData(data),
+                   processingResponse.code == TransactionOperationStatus.processing.rawValue {
+                    logMPC("Will wait for processing tx and try to confirm again")
+                    await Task.sleep(seconds: 0.5)
+                    return try await confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+                } else {
+                    throw NetworkLayerError.badResponseOrStatusCode(code: code,
+                                                                    message: message,
+                                                                    data: data)
+                }
+            } catch {
+                throw error
+            }
         }
         
         func verifyAccessToken(_ accessToken: String) async throws {
@@ -305,7 +323,7 @@ extension FB_UD_MPC {
         
         private func isNetworkError(_ error: Error, withCode code: Int) -> Bool {
             if let networkError = error as? NetworkLayerError,
-               case .badResponseOrStatusCode(let errorCode, _) = networkError,
+               case .badResponseOrStatusCode(let errorCode, _, _) = networkError,
                errorCode == code {
                 return true
             }

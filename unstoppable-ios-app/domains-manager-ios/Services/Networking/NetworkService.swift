@@ -171,7 +171,7 @@ struct NetworkService {
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             guard let response = response as? HTTPURLResponse else {
-                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")
+                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response", data: data)
             }
             
             if response.statusCode < 300 {
@@ -183,7 +183,7 @@ struct NetworkService {
                     throw NetworkLayerError.backendThrottle
                 }
                 let message = extractErrorMessage(from: data)
-                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")
+                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)", data: data)
             }
         } catch {
             let error = error as NSError
@@ -479,7 +479,7 @@ extension NetworkService {
                                                             method: .get)
             let response = try JSONDecoder().decode(GlobalRR.self, from: data)
             return response
-        } catch NetworkLayerError.badResponseOrStatusCode(let code, _) where code == 404 { // 404 means no RR domain or ENS domain
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
             return nil
         } catch {
             throw error
@@ -539,7 +539,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     }
     
     case creatingURLFailed
-    case badResponseOrStatusCode(code: Int, message: String?)
+    case badResponseOrStatusCode(code: Int, message: String?, data: Data)
     case parsingTxsError
     case responseFailedToParse
     case parsingDomainsError
@@ -579,7 +579,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     var rawValue: String {
         switch self {
         case .creatingURLFailed: return "creatingURLFailed"
-        case .badResponseOrStatusCode(let code, let message): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
+        case .badResponseOrStatusCode(let code, let message, _): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
         case .parsingTxsError: return "parsingTxsError"
         case .responseFailedToParse: return "responseFailedToParse"
         case .parsingDomainsError: return "Failed to get domains from server"
