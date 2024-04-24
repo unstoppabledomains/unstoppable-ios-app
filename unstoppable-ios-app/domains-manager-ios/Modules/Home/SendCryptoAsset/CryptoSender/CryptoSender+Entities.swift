@@ -151,33 +151,29 @@ extension CryptoSender {
         [
                 .usdt: [.Ethereum: (mainnet: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
                                 testnet: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0", // sepolia
-                                decimals: 6)],
-            
-                .usdt: [.Matic: (mainnet: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-                                 testnet: nil, // amoy
-                                 decimals: 6)],
+                                decimals: 6),
+                    .Matic: (mainnet: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+                             testnet: nil, // amoy
+                             decimals: 6)],
             
                 .bnb: [.Ethereum: (mainnet: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
                                    testnet: nil, // sepolia
-                                   decimals: 18)],
-            
-                .bnb: [.Matic: (mainnet: "0x3BA4c387f786bFEE076A58914F5Bd38d668B42c3",
+                                   decimals: 18),
+                       .Matic: (mainnet: "0x3BA4c387f786bFEE076A58914F5Bd38d668B42c3",
                                 testnet: nil, // amoy
                                 decimals: 18)],
             
                 .usdc: [.Ethereum: (mainnet: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                                     testnet: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238", // sepolia
-                                    decimals: 6)],
-            
-                .usdc: [.Matic: (mainnet: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+                                    decimals: 6),
+                        .Matic: (mainnet: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
                                  testnet: nil, // amoy
                                  decimals: 6)],
             
                 .weth: [.Ethereum: (mainnet: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
                                     testnet: "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9", // sepolia
-                                    decimals: 18)],
-            
-                .weth: [.Matic: (mainnet: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+                                    decimals: 18),
+                        .Matic: (mainnet: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
                                  testnet: nil, // amoy
                                  decimals: 18)],
         ]
