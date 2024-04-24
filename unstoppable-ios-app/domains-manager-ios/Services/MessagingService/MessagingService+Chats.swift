@@ -53,6 +53,8 @@ extension MessagingService {
                                                     timeout: 3)
                 }
                 dataRefreshManager.stopUpdatingChats(for: profile.displayInfo)
+            } catch MessagingAPIServiceHelper.MessagingHelperError.noDomainForWallet {
+                // Ignore. Expected for wallets without domains.
             } catch {
                 Debugger.printFailure("Failed to refresh chats list for \(profile.wallet) with error: \(error.localizedDescription)")
             }
