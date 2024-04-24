@@ -25,10 +25,6 @@ final class MPCOnboardingActivateWalletViewController: BaseViewController, ViewW
 
 // MARK: - Private methods
 private extension MPCOnboardingActivateWalletViewController {
-    func didCreateMPCWallet(_ wallet: UDWallet) {
-        handleAction(.didImportWallet(wallet))
-    }
-    
     func handleAction(_ action: OnboardingNavigationController.Action) {
         Task {
             try? await onboardingFlowManager?.handle(action: action)
@@ -56,11 +52,13 @@ private extension MPCOnboardingActivateWalletViewController {
         let mpcView = MPCActivateWalletView(credentials: credentials,
                                             code: code, mpcWalletCreatedCallback: { [weak self] wallet in
             DispatchQueue.main.async {
-                self?.didCreateMPCWallet(wallet)
+                self?.handleAction(.didImportWallet(wallet))
             }
         }, changeEmailCallback: { [weak self] in
             self?.handleAction(.changeEmailFromMPCWallet)
         })
+            .padding(.top, 70)
+
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
     }

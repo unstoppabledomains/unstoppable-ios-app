@@ -29,10 +29,9 @@ struct MPCActivateWalletView: View {
                 Spacer()
             }
             .padding()
-            .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
-            
+
             mpcStateView()
-                .padding(.top, 70)
+                .padding(.top, 30)
             
             VStack {
                 Spacer()
@@ -41,7 +40,6 @@ struct MPCActivateWalletView: View {
                     .padding(.bottom, safeAreaInset.bottom)
             }
         }
-        .ignoresSafeArea()
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
         .sheet(item: $enterDataType) { dataType in
@@ -136,6 +134,8 @@ private extension MPCActivateWalletView {
             Text(String.Constants.enterMPCWalletVerificationCodeTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
+                .lineLimit(2)
+                .minimumScaleFactor(0.6)
         }
         .multilineTextAlignment(.center)
     }

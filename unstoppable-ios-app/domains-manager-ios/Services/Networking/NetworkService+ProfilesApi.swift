@@ -304,7 +304,7 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     @discardableResult
     private func checkIfBadSignatureErrorAndRevokeSignature(_ error: Error, for domain: DomainItem) -> Bool {
         if let detectedError = error as? NetworkLayerError,
-           case let .badResponseOrStatusCode(code, _) = detectedError,
+           case let .badResponseOrStatusCode(code, _, _) = detectedError,
            code == 403 {
             appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
             return true

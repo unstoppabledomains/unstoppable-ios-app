@@ -32,9 +32,12 @@ final class FireblocksConnector {
             
         
             let storageProvider = FireblocksKeyStorageProvider()
-            // TODO: MPC - Check User.instance.getSettings().isTestnetUsed to select env
-            let env = FireblocksEnvironment.sandbox
+            let env = FireblocksEnvironment.production
+            #if DEBUG
+            let logLevel: FireblocksSDK.LogLevel = .none
+            #else
             let logLevel: FireblocksSDK.LogLevel = .debug
+            #endif
             let fireblocksOptions = FireblocksOptions(env: env,
                                                       eventHandlerDelegate: self,
                                                       logLevel: logLevel)

@@ -116,7 +116,7 @@ private extension WalletsListViewPresenter {
         Task {
             let actions: [WalletDetailsAddWalletAction]
             if isImportOnly {
-                actions = [.recoveryOrKey, .connect, .mpc]
+                actions = [.mpc, .recoveryOrKey, .connect]
             } else {
                 actions = WalletDetailsAddWalletAction.allCases
             }
@@ -209,8 +209,28 @@ private extension WalletsListViewPresenter {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
-                    return
+                    activateMPCWallet()
                 }
+            }
+        }
+    }
+    
+    func activateMPCWallet() {
+        guard let view else { return }
+        
+        UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
+    }
+    
+    func handleMPCActivationResult(_ result: ActivateMPCWalletFlow.FlowResult) {
+        switch result {
+        case .activated(let wallet):
+            addWalletAfterAdded(wallet)
+        case .restart:
+            Task {
+                guard let view else { return }
+                
+                await view.presentedViewController?.dismiss(animated: true)
+                activateMPCWallet()
             }
         }
     }
@@ -238,17 +258,20 @@ private extension WalletsListViewPresenter {
         case .cancelled, .failedToAdd:
             return
         case .created(let wallet), .createdAndBackedUp(let wallet):
-            var walletName = String.Constants.wallet.localized()
-            if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
-                walletName = displayInfo.walletSourceName
-            }
-            appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-            if case .createdAndBackedUp(let wallet) = result,
-               let wallet = wallets.findWithAddress(wallet.address) {
-                showDetailsOf(wallet: wallet)
-            }
-            AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+            addWalletAfterAdded(wallet)
         }
+    }
+    
+    func addWalletAfterAdded(_ wallet: UDWallet) {
+        var walletName = String.Constants.wallet.localized()
+        if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
+            walletName = displayInfo.walletSourceName
+        }
+        appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+        if let wallet = wallets.findWithAddress(wallet.address) {
+            showDetailsOf(wallet: wallet)
+        }
+        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
     }
     
     func checkIfCanAddWalletAndPerform(action: InitialAction, isImportOnly: Bool) {

@@ -10,18 +10,18 @@ import UIKit
 
 enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCellItem {
     
-    case create, recoveryOrKey, connect, mpc
+    case mpc, recoveryOrKey, connect, create
     
     var title: String {
         switch self {
         case .create:
-            return String.Constants.createVault.localized()
+            return String.Constants.createNewVaultTitle.localized()
         case .recoveryOrKey:
             return String.Constants.connectWalletRecovery.localized()
         case .connect:
             return String.Constants.connectWalletExternal.localized()
         case .mpc:
-            return "Unstoppable guard"
+            return "Import MPC Wallet"
         }
     }
     
@@ -32,9 +32,9 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
         case .recoveryOrKey:
             return nil
         case .connect:
-            return String.Constants.connectWalletExternalHint.localized()
+            return nil
         case .mpc:
-            return "Advanced MPC technoloiges"
+            return nil
         }
     }
     
@@ -43,30 +43,24 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
         case .create:
             return .plusIconSmall
         case .recoveryOrKey:
-            return .recoveryPhraseIcon
+            return .pageText
         case .connect:
             return .externalWalletIndicator
         case .mpc:
-            return UIImage(systemName: "flame.fill")!
+            return .shieldKeyhole
         }
     }
     
     var tintColor: UIColor {
         switch self {
-        case .create:
-            return .foregroundOnEmphasis
-        case .recoveryOrKey, .connect:
+        case .recoveryOrKey, .connect, .create, .mpc:
             return .foregroundDefault
-        case .mpc:
-            return .brandOrange
         }
     }
 
     var backgroundColor: UIColor {
         switch self {
-        case .create:
-            return .backgroundAccentEmphasis
-        case .recoveryOrKey, .connect, .mpc:
+        case .recoveryOrKey, .connect, .mpc, .create:
             return .backgroundMuted2
         }
     }
