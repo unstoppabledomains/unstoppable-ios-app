@@ -15,7 +15,7 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     private var token: BalanceTokenUIDescription { data.token }
 
     @State private var pullUp: ViewPullUpConfigurationType?
-    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
+    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .tokenAmount
     @State private var interpreter = NumberPadInputInterpreter()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
