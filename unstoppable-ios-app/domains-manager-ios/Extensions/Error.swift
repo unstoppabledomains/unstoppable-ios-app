@@ -9,7 +9,7 @@ import Foundation
 
 extension Error {
     
-    func displayTitleAndMessage() -> (title: String, message: String) {
+    var titleAndMessage: (title: String, message: String) {
         var message: String
         let title: String
         
