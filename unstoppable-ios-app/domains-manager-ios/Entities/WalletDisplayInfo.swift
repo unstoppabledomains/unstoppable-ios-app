@@ -151,6 +151,15 @@ extension WalletDisplayInfo {
                 return .shieldKeyhole
             }
         }
+        
+        var canBeBackedUp: Bool {
+            switch self {
+            case .locallyGenerated, .imported:
+                true
+            case .external, .mpc:
+                false
+            }
+        }
     }
 }
 
