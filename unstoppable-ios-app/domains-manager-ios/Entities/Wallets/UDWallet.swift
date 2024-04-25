@@ -256,6 +256,12 @@ struct UDWallet: Codable, @unchecked Sendable {
     func extractEthWallet() -> UDWalletEthereum? {
         return ethWallet
     }
+    
+    func extractMPCMetadata() throws -> MPCWalletMetadata {
+        guard let mpcMetadata else { throw UDWallet.Error.failedToFindMPCMetadata }
+
+        return mpcMetadata
+    }
 }
 
 extension UDWallet {

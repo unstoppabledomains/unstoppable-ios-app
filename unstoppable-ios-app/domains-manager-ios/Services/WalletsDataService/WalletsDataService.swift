@@ -515,7 +515,14 @@ private extension WalletsDataService {
     }
     
     func loadEssentialBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
-         try await loadBalanceFor(walletAddress: wallet.address)
+        switch wallet.udWallet.type {
+        case .mpc:
+            let mpcMetadata = try wallet.udWallet.extractMPCMetadata()
+            return try await appContext.mpcWalletsService.getBalancesFor(wallet: wallet.address,
+                                                                         walletMetadata: mpcMetadata)
+        default:
+            return try await loadBalanceFor(walletAddress: wallet.address)
+        }
     }
     
     func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {

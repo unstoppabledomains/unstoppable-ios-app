@@ -65,9 +65,7 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
             
         case .mpc:
-            guard let mpcWalletMetadata = self.mpcMetadata else {
-                throw UDWallet.Error.failedToFindMPCMetadata
-            }
+            let mpcWalletMetadata = try extractMPCMetadata()
             return try await appContext.mpcWalletsService.signMessage(messageString,
                                                                       by: mpcWalletMetadata)
         default:

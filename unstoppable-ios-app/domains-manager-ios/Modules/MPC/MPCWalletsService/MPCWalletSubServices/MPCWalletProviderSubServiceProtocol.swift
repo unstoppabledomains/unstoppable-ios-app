@@ -16,4 +16,5 @@ protocol MPCWalletProviderSubServiceProtocol {
     func signMessage(_ messageString: String,
                      chain: BlockchainType,
                      by walletMetadata: MPCWalletMetadata) async throws -> String
+    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
 }
