@@ -263,7 +263,7 @@ private extension ConfirmSendAssetReviewInfoView {
     
     func getFromWalletInfoSection() -> SectionType {
         .infoValue(.init(title: String.Constants.from.localized(),
-                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.listIcon,
+                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.displayIcon,
                          value: sourceWallet.domainOrDisplayName))
     }
     
