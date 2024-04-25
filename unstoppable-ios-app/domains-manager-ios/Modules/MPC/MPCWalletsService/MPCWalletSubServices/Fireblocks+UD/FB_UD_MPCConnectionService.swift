@@ -185,8 +185,24 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let account = connectedWalletDetails.firstAccount
+        let assets = account.assets.compactMap({ $0 })
+        let addresses = Set(assets.map { $0.address })
         
-        return try await networkService.fetchCryptoPortfolioForMPC(wallet: wallet, accessToken: token)
+        var balances = [WalletTokenPortfolio]()
+        try await withThrowingTaskGroup(of: [WalletTokenPortfolio].self) { group in
+            for address in addresses {
+                group.addTask {
+                    (try? await self.networkService.fetchCryptoPortfolioForMPC(wallet: address, accessToken: token)) ?? []
+                }
+            }
+            
+            for try await balance in group {
+                balances.append(contentsOf: balance)
+            }
+        }
+        
+        return balances
     }
     
     private func convertMPCMessageTypeToFBUDEncoding(_ type: MPCMessage.MPCMessageType) -> FB_UD_MPC.SignMessageEncoding {
