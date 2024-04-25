@@ -43,7 +43,7 @@ extension BaseViewControllerProtocol {
             return
         }
         
-        let (title, message) = error.displayTitleAndMessage()
+        let (title, message) = error.titleAndMessage
      
         let alert = UIAlertController(title: title,
                                       message: message,
