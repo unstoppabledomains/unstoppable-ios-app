@@ -126,7 +126,6 @@ extension WalletDisplayInfo {
 extension WalletDisplayInfo {
     enum Source: Hashable, Codable {
         case locallyGenerated, imported, external(_ name: String, _ walletMake: ExternalWalletMake)
-        // TODO: - MPC
         case mpc
         
         var displayIcon: UIImage {
@@ -135,9 +134,8 @@ extension WalletDisplayInfo {
                 return .udWalletListIcon
             case .external(_, let walletMake):
                 return walletMake.icon
-                // TODO: - MPC
             case .imported, .mpc:
-                return .walletIcon
+                return .shieldKeyhole
             }
         }
         
@@ -147,9 +145,10 @@ extension WalletDisplayInfo {
                 return .vaultSafeIcon
             case .external(_, let walletMake):
                 return walletMake.icon
-                // TODO: - MPC
-            case .imported, .mpc:
+            case .imported:
                 return .walletExternalIcon
+            case .mpc:
+                return .shieldKeyhole
             }
         }
     }

@@ -109,11 +109,12 @@ private extension UserProfileSelectionRowView {
     
     func imageStyleForProfile(_ profile: UserProfile) -> UDListItemView.ImageStyle {
         switch profile {
-        case .wallet:
+        case .wallet(let wallet):
             if domainAvatarImage != nil {
                 return .full
             }
-            return .centred()
+            return .centred(foreground:wallet.udWallet.type == .mpc ? .foregroundOnEmphasis : .foregroundDefault,
+                            background: wallet.udWallet.type == .mpc ? .backgroundAccentEmphasis : .backgroundMuted)
         case .webAccount:
             return .centred()
         }
