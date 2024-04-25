@@ -1107,6 +1107,9 @@ More tabs are coming in the next updates.";
 "RE_ENTER_PASSCODE" = "Re-enter passcode";
 "NEW_WALLET" = "New Wallet";
 "EXISTING_WALLET" = "Existing Wallet";
+"IMPORT_MPC_WALLET_IN_PROGRESS_TITLE" = "Importing your\nMPC Wallet...";
+"IMPORT_MPC_WALLET_FINISHED_TITLE" = "All set, start using your MPC Wallet";
+"IMPORT_MPC_WALLET_FAILED_TITLE" = "Importing your\nMPC Wallet";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

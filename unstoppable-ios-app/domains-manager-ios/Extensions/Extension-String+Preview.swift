@@ -1210,6 +1210,9 @@ extension String {
         static let reEnterPasscode = "RE_ENTER_PASSCODE"
         static let newWallet = "NEW_WALLET"
         static let existingWallet = "EXISTING_WALLET"
+        static let importMPCWalletInProgressTitle = "IMPORT_MPC_WALLET_IN_PROGRESS_TITLE"
+        static let importMPCWalletFinishedTitle = "IMPORT_MPC_WALLET_FINISHED_TITLE"
+        static let importMPCWalletFailedTitle = "IMPORT_MPC_WALLET_FAILED_TITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
