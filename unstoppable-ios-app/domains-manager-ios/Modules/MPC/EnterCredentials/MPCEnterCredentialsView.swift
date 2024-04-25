@@ -46,6 +46,7 @@ private extension MPCEnterCredentialsView {
             Text(String.Constants.importMPCWalletSubtitle.localized())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
+                .minimumScaleFactor(0.6)
                 .multilineTextAlignment(.center)
         }
     }

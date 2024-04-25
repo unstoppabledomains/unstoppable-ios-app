@@ -1208,6 +1208,8 @@ extension String {
         static let wrongPasscode = "WRONG_PASSCODE"
         static let reEnterPassword = "RE_ENTER_PASSWORD"
         static let reEnterPasscode = "RE_ENTER_PASSCODE"
+        static let newWallet = "NEW_WALLET"
+        static let existingWallet = "EXISTING_WALLET"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

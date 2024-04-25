@@ -21,7 +21,7 @@ enum RestoreWalletType: Hashable, OnboardingStartOption {
         case .externalWallet:
             return #imageLiteral(resourceName: "externalWalletIcon")
         case .websiteAccount:
-            return .domainsProfileIcon
+            return .vaultSafeIcon
         case .mpc:
             return .shieldKeyhole
         }
@@ -40,14 +40,13 @@ enum RestoreWalletType: Hashable, OnboardingStartOption {
         case .websiteAccount:
             return String.Constants.viewVaultedDomains.localized()
         case .mpc:
-            return "Unstoppable guard"
-            
+            return String.Constants.importMPCWalletTitle.localized()
         }
     }
     
     var subtitle: String? {
         switch self {
-        case .iCloud(let value):
+        case .iCloud:
             return String.Constants.connectWalletICloudHint.localized()
         case .recoveryPhrase:
             return nil
