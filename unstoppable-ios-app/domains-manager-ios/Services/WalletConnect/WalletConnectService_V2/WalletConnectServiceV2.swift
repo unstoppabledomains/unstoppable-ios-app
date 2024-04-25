@@ -1108,6 +1108,7 @@ extension WalletConnectServiceV2 {
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
+                Blockchain("eip155:137")!,
             ],
             methods: [
                 "eth_sendTransaction",
@@ -1123,7 +1124,9 @@ extension WalletConnectServiceV2 {
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
-                Blockchain("eip155:137")!
+                Blockchain("eip155:137")!,
+                Blockchain("eip155:80002")!,
+                Blockchain("eip155:11155111")!,
             ],
             methods: [
                 "eth_sendTransaction",
