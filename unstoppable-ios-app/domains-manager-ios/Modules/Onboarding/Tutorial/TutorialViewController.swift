@@ -184,12 +184,13 @@ private extension TutorialViewController {
     func setupActionButtons() {
         let isIPSE = deviceSize.isIPSE
 
-        let addExistingWalletButtonViewContainer = createAndAddUDButton(title: String.Constants.addExisting.localized(),
+        let addExistingButtonTitle = isIPSE ? String.Constants.existingWallet : String.Constants.connectWalletTitle
+        let addExistingWalletButtonViewContainer = createAndAddUDButton(title: addExistingButtonTitle.localized(),
                                                                         style: .large(.raisedPrimary)) { [weak self] in
             self?.didPressAddExistingWalletButton()
         }
         
-        let createNewButtonTitle = isIPSE ? String.Constants.createNew : String.Constants.createNewWallet
+        let createNewButtonTitle = isIPSE ? String.Constants.newWallet : String.Constants.createNewWallet
         let createNewWalletButtonViewContainer = createAndAddUDButton(title: createNewButtonTitle.localized(),
                                                                       style: .large(.raisedTertiary)) { [weak self] in
             self?.didPressCreateNewWalletButton()

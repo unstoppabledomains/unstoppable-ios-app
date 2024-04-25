@@ -75,7 +75,6 @@ extension WalletDisplayInfo {
         case .privateKeyEntered, .mnemonicsEntered, .importedUnverified:
             self.source = .imported
             self.isWithPrivateKey = wallet.type == .privateKeyEntered
-            // TODO: - MPC
         case .mpc:
             self.source = .mpc
             self.isWithPrivateKey = false
@@ -126,30 +125,25 @@ extension WalletDisplayInfo {
 extension WalletDisplayInfo {
     enum Source: Hashable, Codable {
         case locallyGenerated, imported, external(_ name: String, _ walletMake: ExternalWalletMake)
-        // TODO: - MPC
         case mpc
         
         var displayIcon: UIImage {
             switch self {
-            case .locallyGenerated:
-                return .udWalletListIcon
             case .external(_, let walletMake):
                 return walletMake.icon
-                // TODO: - MPC
-            case .imported, .mpc:
-                return .walletIcon
+            case .imported, .locallyGenerated:
+                return .walletExternalIcon
+            case .mpc:
+                return .shieldKeyhole
             }
         }
         
-        var listIcon: UIImage {
+        var canBeBackedUp: Bool {
             switch self {
-            case .locallyGenerated:
-                return .vaultSafeIcon
-            case .external(_, let walletMake):
-                return walletMake.icon
-                // TODO: - MPC
-            case .imported, .mpc:
-                return .walletExternalIcon
+            case .locallyGenerated, .imported:
+                true
+            case .external, .mpc:
+                false
             }
         }
     }

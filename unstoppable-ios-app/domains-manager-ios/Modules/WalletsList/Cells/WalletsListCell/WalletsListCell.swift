@@ -81,9 +81,15 @@ private extension WalletsListCell {
         iconContainerView.image = walletInfo.source.displayIcon
         iconContainerView.tintColor = .foregroundDefault
         iconContainerView.setSize(.init(containerSize: 40, imageSize: 20))
-        if walletInfo.source == .imported {
+        switch walletInfo.source {
+        case .imported, .locallyGenerated:
             iconContainerView.setStyle(.imageCentered)
-        } else {
+        case .mpc:
+            iconContainerView.setStyle(.imageCentered)
+            iconContainerView.backgroundColor = .backgroundAccentEmphasis
+            iconContainerView.tintColor = .foregroundOnEmphasis
+            statusImageView.isHidden = true
+        case .external:
             iconContainerView.setStyle(.largeImage)
         }
     }

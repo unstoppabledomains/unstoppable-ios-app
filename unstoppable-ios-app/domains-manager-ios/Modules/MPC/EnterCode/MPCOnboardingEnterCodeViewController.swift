@@ -51,7 +51,7 @@ private extension MPCOnboardingEnterCodeViewController {
                 self?.didEnterCode(code)
             }
         }
-            .padding(.top, 70)
+            .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)
     }

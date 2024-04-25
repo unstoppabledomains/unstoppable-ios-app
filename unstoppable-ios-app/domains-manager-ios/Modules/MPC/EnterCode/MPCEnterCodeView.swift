@@ -14,15 +14,16 @@ struct MPCEnterCodeView: View {
     @State private var input: String = ""
 
     var body: some View {
-        ZStack {
+        ScrollView {
             VStack(spacing: isIPSE ? 16 : 32) {
                 headerView()
                 inputView()
                 actionButtonsView()
                 Spacer()
             }
-            .padding()
         }
+        .scrollDisabled(true)
+        .padding()
         .animation(.default, value: UUID())
     }
 }
@@ -82,7 +83,14 @@ private extension MPCEnterCodeView {
     }
 }
 #Preview {
-    MPCEnterCodeView(email: "",
-                     enterCodeCallback: { _ in })
+    NavigationStack {
+        MPCEnterCodeView(email: "",
+                         enterCodeCallback: { _ in })
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Text("Back")
+            }
+        }
+    }
 }
 

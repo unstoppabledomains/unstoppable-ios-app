@@ -57,7 +57,7 @@ private extension MPCOnboardingActivateWalletViewController {
         }, changeEmailCallback: { [weak self] in
             self?.handleAction(.changeEmailFromMPCWallet)
         })
-            .padding(.top, 70)
+            .padding(.top, 40)
 
         let vc = UIHostingController(rootView: mpcView)
         addChildViewController(vc, andEmbedToView: view)

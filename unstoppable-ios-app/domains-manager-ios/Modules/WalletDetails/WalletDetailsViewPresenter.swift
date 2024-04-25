@@ -126,6 +126,8 @@ private extension WalletDetailsViewPresenter {
             Task { await MainActor.run { view?.cNavigationController?.popViewController(animated: true) } }
         }
     }
+    
+    
     func showWalletDetails() {
         Task {
             var snapshot = WalletDetailsSnapshot()
@@ -139,15 +141,6 @@ private extension WalletDetailsViewPresenter {
             let isUpdatingRecords = wallet.domains.first(where: { $0.isUpdatingRecords }) == nil
             let isRRSetupInProgress = wallet.rrDomain?.state == .updatingReverseResolution
             
-            let isExternalWallet: Bool
-            switch walletInfo.source {
-                // TODO: - MPC
-            case .locallyGenerated, .imported, .mpc:
-                isExternalWallet = false
-            case .external:
-                isExternalWallet = true
-            }
-            
             // Top info
             snapshot.appendSections([.topInfo])
             snapshot.appendItems([.topInfo(.init(walletInfo: walletInfo,
@@ -158,7 +151,7 @@ private extension WalletDetailsViewPresenter {
             let isNetworkReachable = networkReachabilityService?.isReachable == true
             
             // Backup and recovery phrase
-            if !isExternalWallet {
+            if walletInfo.source.canBeBackedUp {
                 snapshot.appendSections([.backUpAndRecovery])
                 snapshot.appendItems([.listItem(.backUp(state: walletInfo.backupState,
                                                         isOnline: isNetworkReachable))])
@@ -197,7 +190,7 @@ private extension WalletDetailsViewPresenter {
             
             // Remove wallet
             snapshot.appendSections([.removeWallet])
-            if isExternalWallet {
+            if case .external = walletInfo.source {
                 snapshot.appendItems([.listItem(.importWallet)])
             }
             snapshot.appendItems([.listItem(.removeWallet(isConnected: walletInfo.isConnected,
