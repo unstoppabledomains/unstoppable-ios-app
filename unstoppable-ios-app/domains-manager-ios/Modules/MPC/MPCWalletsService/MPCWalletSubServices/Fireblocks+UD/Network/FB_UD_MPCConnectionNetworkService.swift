@@ -38,5 +38,7 @@ extension FB_UD_MPC {
                                              operationId: String) async throws -> String
         func waitForOperationSignedAndGetTxSignature(accessToken: String,
                                                      operationId: String) async throws -> String
+        
+        func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio]
     }
 }

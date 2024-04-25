@@ -16,3 +16,9 @@ extension NetworkBearerAuthorisationHeaderBuilder {
         ["Authorization" : "Bearer \(token)"]
     }
 }
+
+struct NetworkBearerAuthorisationHeaderBuilderImpl: NetworkBearerAuthorisationHeaderBuilder {
+    static let instance = NetworkBearerAuthorisationHeaderBuilderImpl()
+    
+    private init() { }
+}

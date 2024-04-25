@@ -45,12 +45,18 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     }
     
     func signMessage(_ messageString: String,
-                     by wallet: MPCWalletMetadata) async throws -> String {
-        let subService = try getSubServiceFor(provider: wallet.provider)
+                     by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.signMessage(messageString,
                                                 chain: .Ethereum,
-                                                by: wallet)
+                                                by: walletMetadata)
+    }
+    
+    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+
+        return try await subService.getBalancesFor(wallet: wallet, walletMetadata: walletMetadata)
     }
 }
 

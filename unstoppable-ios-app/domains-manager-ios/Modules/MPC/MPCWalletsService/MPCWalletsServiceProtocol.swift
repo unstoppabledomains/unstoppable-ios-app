@@ -11,5 +11,6 @@ protocol MPCWalletsServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
                             recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
-    func signMessage(_ messageString: String, by wallet: MPCWalletMetadata) async throws -> String
+    func signMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String
+    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
 }

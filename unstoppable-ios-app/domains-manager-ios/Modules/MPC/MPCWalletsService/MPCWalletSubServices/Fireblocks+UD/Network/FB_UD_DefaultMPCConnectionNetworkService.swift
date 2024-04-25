@@ -265,6 +265,10 @@ extension FB_UD_MPC {
             return signature
         }
         
+        func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
+            try await networkService.fetchCryptoPortfolioForMPC(wallet: wallet, accessToken: accessToken)
+        }
+        
         private func waitForOperationStatus(accessToken: String,
                                             operationId: String,
                                             status: TransactionOperationStatus) async throws -> OperationDetails {
