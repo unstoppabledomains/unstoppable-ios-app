@@ -91,7 +91,7 @@ extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
     
     private func waitForKeyIsReadyInternal(attempt: Int = 0) async throws {
         logMPC("Will check for key is ready attempt: \(attempt + 1)")
-        if isKeyInitialized(algorithm: .MPC_ECDSA_SECP256K1) {
+        if isKeyInitialized(algorithm: .MPC_ECDSA_SECP256K1) && isKeyInitialized(algorithm: .MPC_EDDSA_ED25519) {
             logMPC("Key is ready")
             return
         } else {
