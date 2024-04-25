@@ -95,7 +95,7 @@ extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
             logMPC("Key is ready")
             return
         } else {
-            if attempt >= 50 {
+            if attempt >= 80 {
                 logMPC("Key is not ready. Abort due to timeout")
                 throw FireblocksConnectorError.waitForKeysTimeout
             }

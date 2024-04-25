@@ -129,10 +129,21 @@ private extension MPCActivateWalletView {
 }
 
 private extension MPCActivateWalletView {
+    var title: String {
+        switch activationState {
+        case .readyToActivate, .activating:
+            String.Constants.importMPCWalletInProgressTitle.localized()
+        case .failed:
+            String.Constants.importMPCWalletFailedTitle.localized()
+        case .activated:
+            String.Constants.importMPCWalletFinishedTitle.localized()
+        }
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.enterMPCWalletVerificationCodeTitle.localized())
+            Text(title)
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .lineLimit(2)
