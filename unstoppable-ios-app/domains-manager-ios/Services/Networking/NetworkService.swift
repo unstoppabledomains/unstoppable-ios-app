@@ -319,6 +319,7 @@ extension NetworkService {
         case genericError(String)
         case failedGetStatus
         case failedParseStatusPrices
+        case failedFetchInfuraGasPrices
         case failedParseInfuraPrices
         case failedEncodeTxParameters
         case unknownChain
@@ -403,7 +404,12 @@ extension NetworkService {
     
     func fetchInfuraGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
         let url = URL(string: "https://gas.api.infura.io/networks/\(chainId)/suggestedGasFees")!
-        let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: Self.infuraBasicAuthHeader)
+        let data: Data
+        do {
+            data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: Self.infuraBasicAuthHeader)
+        } catch {
+            throw JRPCError.failedFetchInfuraGasPrices
+        }
         let jsonInf = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
         
         var priceDict: [InfuraSpeedCase: Double] = [:]
