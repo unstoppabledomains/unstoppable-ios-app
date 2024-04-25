@@ -15,9 +15,9 @@ enum MPCWalletActivationError {
     var title: String {
         switch self {
         case .incorrectPasscode:
-            "Wrong passcode"
+            String.Constants.wrongPasscode.localized()
         case .incorrectPassword:
-            "Wrong password"
+            String.Constants.wrongPassword.localized()
         case .unknown:
             String.Constants.somethingWentWrong.localized()
         }
@@ -26,9 +26,9 @@ enum MPCWalletActivationError {
     var actionTitle: String {
         switch self {
         case .incorrectPasscode:
-            "Re-enter passcode"
+            String.Constants.reEnterPasscode.localized()
         case .incorrectPassword:
-            "Re-enter password"
+            String.Constants.reEnterPassword.localized()
         case .unknown:
             String.Constants.tryAgain.localized()
         }

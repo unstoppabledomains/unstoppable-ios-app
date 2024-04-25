@@ -189,7 +189,8 @@ private extension TutorialViewController {
             self?.didPressAddExistingWalletButton()
         }
         
-        let createNewWalletButtonViewContainer = createAndAddUDButton(title: String.Constants.createNew.localized(),
+        let createNewButtonTitle = isIPSE ? String.Constants.createNew : String.Constants.createNewWallet
+        let createNewWalletButtonViewContainer = createAndAddUDButton(title: createNewButtonTitle.localized(),
                                                                       style: .large(.raisedTertiary)) { [weak self] in
             self?.didPressCreateNewWalletButton()
         }

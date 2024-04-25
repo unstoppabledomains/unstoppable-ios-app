@@ -1088,7 +1088,7 @@ More tabs are coming in the next updates.";
 
 // Import MPC
 "IMPORT_MPC_WALLET_TITLE" = "Import MPC Wallet";
-"IMPORT_MPC_WALLET_SUBTITLE" = "Use the credentials that you have set up during the сreation of your MPC Wallet.";
+"IMPORT_MPC_WALLET_SUBTITLE" = "UEnter the credentials you added when you created your MPC wallet";
 "EMAIL_ASSOCIATED_WITH_WALLET" = "Email associated with a wallet";
 "ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code\nsent to your email";
 "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE" = "Code sent to: %@";
@@ -1096,11 +1096,18 @@ More tabs are coming in the next updates.";
 "HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";
 "INCORRECT_EMAIL_FORMAT" = "Incorrect email format";
 "SELF_CUSTODY" = "Self Custody";
+"RECOVERY_PHRASE_OR_PRIVATE_KEY" = "Recovery phrase or private key";
+"EXTERNAL_WALLET" = "External wallet";
+"CREATE_NEW_WALLET" = "Create New Wallet";
+"MPC_AUTHORIZING" = "Authorizing...";
+"MPC_READY_TO_USE" = "Ready to use!";
+"WRONG_PASSWORD" = "Wrong password";
+"WRONG_PASSCODE" = "Wrong passcode";
+"RE_ENTER_PASSWORD" = "Re-enter password";
+"RE_ENTER_PASSCODE" = "Re-enter passcode";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE" = "Ensure accuracy of the recipient address as transactions are irreversible. Once sent, transactions cannot be reversed. You agree to bear all risks associated with the transaction.";
 "REVIEW_TX_AGAIN" = "Review Transaction Again";
 "CONFIRM_AND_SEND" = "Confirm & Send";
-"RECOVERY_PHRASE_OR_PRIVATE_KEY" = "Recovery phrase or private key";
-"EXTERNAL_WALLET" = "External wallet";

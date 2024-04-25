@@ -111,10 +111,11 @@ private extension MPCActivateWalletView {
     
     @MainActor
     func updateForSetupMPCWalletStep(_ step: SetupMPCWalletStep) {
-        mpcStateTitle = "Authorizing..." // step.title
+        mpcStateTitle = String.Constants.mpcAuthorizing.localized()
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
+            mpcStateTitle = String.Constants.mpcReadyToUse.localized()
             activationState = .activated(mpcWallet)
         case .failed(let url):
             return
