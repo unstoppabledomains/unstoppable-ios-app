@@ -17,6 +17,7 @@ final class WalletsDataService {
     private let transactionsService: DomainTransactionsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletNFTsService: WalletNFTsServiceProtocol
+    private let mpcWalletsService: MPCWalletsServiceProtocol
     private let networkService: WalletsDataNetworkServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
     private var refreshDomainsTimer: AnyCancellable?
@@ -31,12 +32,14 @@ final class WalletsDataService {
          transactionsService: DomainTransactionsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          walletNFTsService: WalletNFTsServiceProtocol,
+         mpcWalletsService: MPCWalletsServiceProtocol,
          networkService: WalletsDataNetworkServiceProtocol) {
         self.domainsService = domainsService
         self.walletsService = walletsService
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
+        self.mpcWalletsService = mpcWalletsService
         self.networkService = networkService
         walletsService.addListener(self)
         wallets = storage.getCachedWallets()
@@ -518,8 +521,8 @@ private extension WalletsDataService {
         switch wallet.udWallet.type {
         case .mpc:
             let mpcMetadata = try wallet.udWallet.extractMPCMetadata()
-            return try await appContext.mpcWalletsService.getBalancesFor(wallet: wallet.address,
-                                                                         walletMetadata: mpcMetadata)
+            return try await mpcWalletsService.getBalancesFor(wallet: wallet.address,
+                                                              walletMetadata: mpcMetadata)
         default:
             return try await loadBalanceFor(walletAddress: wallet.address)
         }
