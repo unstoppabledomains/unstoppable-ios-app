@@ -9,7 +9,7 @@ import Foundation
 
 extension Error {
     
-    func displayTitleAndMessage() -> (title: String, message: String) {
+    var titleAndMessage: (title: String, message: String) {
         var message: String
         let title: String
         
@@ -20,7 +20,11 @@ extension Error {
                   case .notConnectedToInternet = networkError {
             title = String.Constants.connectionLost.localized()
             message = String.Constants.pleaseCheckInternetConnection.localized()
-        } else {
+        } else if let jrpcError = self as? NetworkService.JRPCError,
+                  case .failedFetchInfuraGasPrices = jrpcError {
+            title = String.Constants.gasFeeFailed.localized()
+            message = String.Constants.pleaseTryAgain.localized()
+        } else{
             title = String.Constants.somethingWentWrong.localized()
             message = String.Constants.pleaseTryAgain.localized()
         }
@@ -31,5 +35,4 @@ extension Error {
         
         return (title, message)
     }
-    
 }

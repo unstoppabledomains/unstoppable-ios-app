@@ -22,7 +22,7 @@ struct DisplayError<T: Error>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .alert(isPresented: isShowingError) {
-                let (title, message) = error?.displayTitleAndMessage() ?? (String.Constants.error.localized(), String.Constants.somethingWentWrong.localized())
+                let (title, message) = error?.titleAndMessage ?? (String.Constants.error.localized(), String.Constants.somethingWentWrong.localized())
                 
                 return Alert(title: Text(title),
                              message: Text(message),
