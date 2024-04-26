@@ -168,18 +168,23 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                             encoding: encoding)
         let operationId = requestOperation.id
         logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
-        let txId = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
-                                                                            operationId: operationId)
-        
-        logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
-        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
-                                                                        authTokenProvider: self)
-        try await mpcConnector.signTransactionWith(txId: txId)
-        logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
-        let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
-                                                                                         operationId: operationId)
-        logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
-        return signature
+        let operationStatus = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
+                                                                                       operationId: operationId)
+        switch operationStatus {
+        case .txReady(let txId):
+            logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
+            let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                            authTokenProvider: self)
+            try await mpcConnector.signTransactionWith(txId: txId)
+            logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
+            let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
+                                                                                             operationId: operationId)
+            logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
+            return signature
+        case .signed(let signature):
+            logMPC("It took \(Date().timeIntervalSince(start)) to sign message")
+            return signature
+        }
     }
     
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {

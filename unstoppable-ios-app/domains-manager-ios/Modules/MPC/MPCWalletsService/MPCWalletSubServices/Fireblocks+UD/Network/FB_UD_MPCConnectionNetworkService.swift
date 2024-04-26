@@ -35,7 +35,7 @@ extension FB_UD_MPC {
                                  message: String,
                                  encoding: SignMessageEncoding) async throws -> OperationDetails
         func waitForOperationReadyAndGetTxId(accessToken: String,
-                                             operationId: String) async throws -> String
+                                             operationId: String) async throws -> OperationReadyResponse
         func waitForOperationSignedAndGetTxSignature(accessToken: String,
                                                      operationId: String) async throws -> String
         
