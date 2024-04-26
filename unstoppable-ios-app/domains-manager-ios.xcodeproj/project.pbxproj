@@ -40,6 +40,9 @@
 		29BECD182979BE4000662FC1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD172979BE4000662FC1 /* Date.swift */; };
 		29BECD1D2979BE8800662FC1 /* SecureHashStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */; };
 		29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */; };
+		29D9FC2D2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D9FC2C2BDC2CA0002350F9 /* MPCCryptoSender.swift */; };
+		29D9FC2E2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D9FC2C2BDC2CA0002350F9 /* MPCCryptoSender.swift */; };
+		29D9FC2F2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D9FC2C2BDC2CA0002350F9 /* MPCCryptoSender.swift */; };
 		29DE3B1328913DF500655675 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DE3B1228913DF500655675 /* Env.swift */; };
 		29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */; };
 		29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB622290A94E700A0BD08 /* ProfilesTests.swift */; };
@@ -2727,6 +2730,7 @@
 		29BECD172979BE4000662FC1 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureHashStorage.swift; sourceTree = "<group>"; };
 		29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletWithPrivateSeed.swift; sourceTree = "<group>"; };
+		29D9FC2C2BDC2CA0002350F9 /* MPCCryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCCryptoSender.swift; sourceTree = "<group>"; };
 		29DE3B1228913DF500655675 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+ProfilesApi.swift"; sourceTree = "<group>"; };
 		29EDB622290A94E700A0BD08 /* ProfilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesTests.swift; sourceTree = "<group>"; };
@@ -7748,6 +7752,7 @@
 				29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */,
 				29018C8C2BACB7BC0004545D /* JRPC_Client.swift */,
 				291AD2442BD5265E006B8096 /* EVMCryptoSender.swift */,
+				29D9FC2C2BDC2CA0002350F9 /* MPCCryptoSender.swift */,
 			);
 			path = CryptoSender;
 			sourceTree = "<group>";
@@ -9815,6 +9820,7 @@
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
+				29D9FC2D2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */,
 				C6BF6BDC2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,
@@ -10493,6 +10499,7 @@
 				C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
 				C617CFA62B9EDA1300663516 /* TestableWalletConnectServiceV2.swift in Sources */,
+				29D9FC2E2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */,
 				C6B2E2122B970E0900CEA1F9 /* DomainProfileSocialRelationshipDetailsTests.swift in Sources */,
 				C617CFA42B9ED9F200663516 /* TestableDomainTransactionsService.swift in Sources */,
 				C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */,
@@ -11365,6 +11372,7 @@
 				C6952A302BC4EBB800F4B475 /* MPCWalletProviderSubServiceProtocol.swift in Sources */,
 				C6D646752B1ED11B00D724AC /* DomainProfileSectionType.swift in Sources */,
 				C6D647112B1ED7D000D724AC /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */,
+				29D9FC2F2BDC2CA0002350F9 /* MPCCryptoSender.swift in Sources */,
 				C6C8F87B2B21827700A9834D /* LoginViewController.swift in Sources */,
 				C6D647AA2B1F18B500D724AC /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
 				C6C8F84B2B217E9600A9834D /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
