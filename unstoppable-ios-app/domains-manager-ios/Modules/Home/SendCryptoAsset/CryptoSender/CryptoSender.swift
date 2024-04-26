@@ -13,10 +13,6 @@ struct CryptoSender: CryptoSenderProtocol {
     func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
         switch wallet.type {
         case .mpc :
-            guard case .mpc(let symbol) = token else {
-                Debugger.printFailure("MPC wallet attempted to send a non-mpc token: \(token)")
-                return false
-            }
             return MPCCryptoSender(wallet: wallet).canSendCrypto(token: token, chain: chain)
         default:
             return NativeCoinCryptoSender(wallet: wallet)
@@ -29,10 +25,6 @@ struct CryptoSender: CryptoSenderProtocol {
     func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
         switch wallet.type {
         case .mpc:
-            guard case .mpc(let symbol) = crypto.token else {
-                Debugger.printFailure("MPC wallet attempted to send a non-mpc token: \(crypto.token)")
-                throw CryptoSender.Error.invalidNonMPCTokenSpecification
-            }
             let mpcCryptoSender: CryptoSenderProtocol = MPCCryptoSender(wallet: wallet)
             guard mpcCryptoSender.canSendCrypto(token: crypto.token, chain: chain) else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
@@ -57,10 +49,6 @@ struct CryptoSender: CryptoSenderProtocol {
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
         switch wallet.type {
         case .mpc:
-            guard case .mpc(let symbol) = maxCrypto.token else {
-                Debugger.printFailure("MPC wallet attempted to compute a non-mpc token: \(maxCrypto.token)")
-                throw CryptoSender.Error.invalidNonMPCTokenSpecification
-            }
             let mpcCryptoSender: CryptoSenderProtocol = MPCCryptoSender(wallet: wallet)
             guard mpcCryptoSender.canSendCrypto(token: maxCrypto.token, chain: chain) else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
