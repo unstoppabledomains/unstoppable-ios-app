@@ -96,6 +96,15 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
 
 // MARK: - Open methods
 extension ChatListViewModel {
+    var isChannelsSupported: Bool {
+        switch selectedProfile {
+        case .wallet(let wallet):
+            return wallet.udWallet.type != .mpc
+        case .webAccount:
+            return false
+        }
+    }
+    
     func didSelectUserToChat(_ user: MessagingChatUserDisplayInfo) {
         if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == user.wallet.normalized }) {
             openChatWith(conversationState: .existingChat(existingChat))
@@ -203,6 +212,7 @@ extension ChatListViewModel {
                                                                                                 mode: searchMode,
                                                                                                 page: 1,
                                                                                                 limit: fetchLimit,
+                                                                                                isChannelsSupported: isChannelsSupported,
                                                                                                 for: profile)
                 searchData.searchUsers = searchUsers
                 searchData.searchChannels = searchChannels

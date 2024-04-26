@@ -48,6 +48,13 @@ extension ChatsList {
         }
         
         var analyticButton: Analytics.Button { .messagingDataType }
+        
+        static func getTypesWhen(isChannelsSupported: Bool) -> [DataType] {
+            if isChannelsSupported {
+                return DataType.allCases
+            }
+            return [.chats, .communities]
+        }
     }
     
     struct DataTypeUIConfiguration: Hashable {
@@ -89,6 +96,7 @@ extension ChatsList {
                     mode: ChatsList.SearchMode,
                     page: Int,
                     limit: Int,
+                    isChannelsSupported: Bool = true,
                     for profile: MessagingChatUserProfileDisplayInfo) async throws -> SearchResult {
             // Cancel previous search task if it exists
             currentTask?.cancel()
@@ -106,6 +114,7 @@ extension ChatsList {
                     async let searchChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
                         try await self.searchForChannels(with: searchKey, mode: mode,
                                                          page: page, limit: limit,
+                                                         isChannelsSupported: isChannelsSupported,
                                                          for: profile)
                     }, defaultValue: [])
                     async let domainNamesTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
@@ -144,11 +153,15 @@ extension ChatsList {
                                        mode: ChatsList.SearchMode,
                                        page: Int,
                                        limit: Int,
+                                       isChannelsSupported: Bool,
                                        for profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
             switch mode {
             case .default, .channelsOnly:
-                return try await appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
-                                                                                   searchKey: searchKey, for: profile)
+                if isChannelsSupported {
+                    return try await appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
+                                                                                       searchKey: searchKey, for: profile)
+                }
+                return []
             case .chatsOnly:
                 return []
             }
