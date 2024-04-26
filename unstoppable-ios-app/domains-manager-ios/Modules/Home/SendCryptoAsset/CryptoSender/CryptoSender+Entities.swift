@@ -134,6 +134,7 @@ extension CryptoSender {
         case failedCreateSendTransaction
         case insufficientFunds
         case invalidAddresses
+        case invalidNonMPCTokenSpecification
     }
     
     enum SupportedToken: Hashable, CaseIterable {
