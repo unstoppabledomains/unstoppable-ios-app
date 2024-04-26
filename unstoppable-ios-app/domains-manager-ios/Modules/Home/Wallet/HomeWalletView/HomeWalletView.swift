@@ -74,8 +74,10 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 ToolbarItem(placement: .topBarTrailing) {
                     moreActionsNavButton()
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    qrNavButtonView()
+                if viewModel.isWCSupported {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        qrNavButtonView()
+                    }
                 }
             })
             .refreshable {
