@@ -167,7 +167,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     private func getSupportedTokenFor(balanceToken: BalanceTokenUIDescription) throws -> CryptoSender.SupportedToken {
-        guard let token = CryptoSender.SupportedToken(rawValue: balanceToken.symbol.uppercased()) else {
+        guard let token = CryptoSender.SupportedToken.getSupportedToken(by: balanceToken.symbol) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         return token

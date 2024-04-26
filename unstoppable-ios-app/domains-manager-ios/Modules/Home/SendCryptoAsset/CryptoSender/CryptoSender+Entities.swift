@@ -136,13 +136,39 @@ extension CryptoSender {
         case invalidAddresses
     }
     
-    enum SupportedToken: String {
-        case eth = "ETH"
-        case matic = "MATIC"
-        case usdt = "USDT"
-        case usdc = "USDC"
-        case bnb = "BNB"
-        case weth = "WETH"
+    enum SupportedToken: Hashable, CaseIterable {
+        static var allCases: [CryptoSender.SupportedToken] = [.eth, .matic, .usdt, .usdc, .bnb, .weth]  // mpc is a special case, not included
+        
+        case eth
+        case matic
+        case usdt
+        case usdc
+        case bnb
+        case weth
+        case mpc(symbol: String)
+
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .mpc: hasher.combine("***MPC DYNAMIC SYMBOL:\(self.name)")
+            default: hasher.combine("***HARD-CODED WITH SMART CONTRACT ADDRESS:\(self.name)")
+            }
+        }
+
+        var name: String {
+            switch self {
+            case .eth: "ETH"
+            case .matic: "MATIC"
+            case .usdt: "USDT"
+            case .usdc: "USDC"
+            case .bnb: "BNB"
+            case .weth: "WETH"
+            case .mpc(let symbol): symbol
+            }
+        }
+        
+        static func getSupportedToken(by symbol: String) -> SupportedToken? {
+            Self.allCases.first { $0.name == symbol.uppercased() }
+        }
         
         static let array: [CryptoSender.SupportedToken :
                             [BlockchainType : (mainnet: String,
