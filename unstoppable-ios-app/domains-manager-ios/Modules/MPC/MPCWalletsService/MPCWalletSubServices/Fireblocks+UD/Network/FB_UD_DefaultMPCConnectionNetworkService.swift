@@ -244,21 +244,28 @@ extension FB_UD_MPC {
         }
         
         func waitForOperationReadyAndGetTxId(accessToken: String,
-                                             operationId: String) async throws -> String {
-            let operation = try await waitForOperationStatus(accessToken: accessToken,
-                                                             operationId: operationId,
-                                                             status: .signatureRequired)
-            guard let transactionId = operation.transaction?.externalVendorTransactionId else {
-                throw MPCNetworkServiceError.missingVendorIdInSignTransactionOperation
+                                             operationId: String) async throws -> OperationReadyResponse {
+            let operation = try await waitForOperationStatuses(accessToken: accessToken,
+                                                               operationId: operationId,
+                                                               statuses: [.signatureRequired, .completed])
+            if operation.status == TransactionOperationStatus.signatureRequired.rawValue {
+                guard let transactionId = operation.transaction?.externalVendorTransactionId else {
+                    throw MPCNetworkServiceError.missingVendorIdInSignTransactionOperation
+                }
+                return .txReady(txId: transactionId)
+            } else {
+                guard let signature = operation.result?.signature else {
+                    throw MPCNetworkServiceError.missingSignatureInSignTransactionOperation
+                }
+                return .signed(signature: signature)
             }
-            return transactionId
         }
         
         func waitForOperationSignedAndGetTxSignature(accessToken: String,
                                                      operationId: String) async throws -> String {
-            let operation = try await waitForOperationStatus(accessToken: accessToken,
-                                                             operationId: operationId,
-                                                             status: .completed)
+            let operation = try await waitForOperationStatuses(accessToken: accessToken,
+                                                               operationId: operationId,
+                                                               statuses: [.completed])
             guard let signature = operation.result?.signature else {
                 throw MPCNetworkServiceError.missingSignatureInSignTransactionOperation
             }
@@ -269,20 +276,21 @@ extension FB_UD_MPC {
             try await networkService.fetchCryptoPortfolioForMPC(wallet: wallet, accessToken: accessToken)
         }
         
-        private func waitForOperationStatus(accessToken: String,
+        private func waitForOperationStatuses(accessToken: String,
                                             operationId: String,
-                                            status: TransactionOperationStatus) async throws -> OperationDetails {
+                                            statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
+            let statuses = statuses.map { $0.rawValue }
             for i in 0..<50 {
                 let operation = try await getOperationWith(accessToken: accessToken,
                                                            operationId: operationId)
-                if operation.status == status.rawValue {
+                if statuses.contains(operation.status) {
                     return operation
                 } else {
                     await Task.sleep(seconds: 0.5)
                 }
             }
             
-            throw MPCNetworkServiceError.waitForKeyMaterialsTransactionTimeout
+            throw MPCNetworkServiceError.waitForKeyOperationStatusTimeout
         }
         
         private func getOperationWith(accessToken: String,
@@ -336,6 +344,7 @@ extension FB_UD_MPC {
         
         private enum MPCNetworkServiceError: String, LocalizedError {
             case waitForKeyMaterialsTransactionTimeout
+            case waitForKeyOperationStatusTimeout
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
             

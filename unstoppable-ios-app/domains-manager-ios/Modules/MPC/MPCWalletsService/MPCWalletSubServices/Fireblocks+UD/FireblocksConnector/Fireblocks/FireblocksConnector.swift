@@ -57,7 +57,7 @@ final class FireblocksConnector {
 extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
     func requestJoinExistingWallet() async throws -> String {
         let fireblocks = self.fireblocks
-        let task = TaskWithDeadline(deadline: 30) {
+        let task = TaskWithDeadline(deadline: 60) {
             try await withSafeCheckedThrowingContinuation { completion in
                 Task {
                     do {

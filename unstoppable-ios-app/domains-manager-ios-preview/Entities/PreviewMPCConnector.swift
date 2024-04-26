@@ -40,6 +40,11 @@ extension FB_UD_MPC {
     }
     
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+      
+        func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
+            MockEntitiesFabric.Wallet.mockEntities()[0].balance
+        }
+        
         func refreshBootstrapToken(_ bootstrapToken: String) async throws -> FB_UD_MPC.RefreshBootstrapTokenResponse {
             await Task.sleep(seconds: 0.5)
             return .init(accessToken: "", deviceId: "")
@@ -50,9 +55,9 @@ extension FB_UD_MPC {
             return .init(id: "", status: "", type: "")
         }
         
-        func waitForOperationReadyAndGetTxId(accessToken: String, operationId: String) async throws -> String {
+        func waitForOperationReadyAndGetTxId(accessToken: String, operationId: String) async throws -> FB_UD_MPC.OperationReadyResponse {
             await Task.sleep(seconds: 0.5)
-            return ""
+            return .txReady(txId: "")
         }
         
         func waitForOperationSignedAndGetTxSignature(accessToken: String, operationId: String) async throws -> String {

@@ -32,6 +32,7 @@ extension HomeWalletView {
         private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
+        var isWCSupported: Bool { selectedWallet.udWallet.type != .mpc }
         
         init(selectedWallet: WalletEntity,
              router: HomeTabRouter) {

@@ -33,7 +33,8 @@ final class GeneralAppContext: AppContextProtocol {
     let domainProfilesService: DomainProfilesServiceProtocol
     let walletTransactionsService: WalletTransactionsServiceProtocol
     let ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol
-    
+    let mpcWalletsService: MPCWalletsServiceProtocol
+
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
                                                                                                  loader: DefaultImageDataLoader(),
@@ -57,7 +58,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
     private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
-    private(set) lazy var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService(udWalletsService: udWalletsService)
     
     init() {
         authentificationService = AuthentificationService()
@@ -67,6 +67,7 @@ final class GeneralAppContext: AppContextProtocol {
         walletNFTsService = WalletNFTsService()
         walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
                                                               cache: InMemoryWalletTransactionsCache())
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService)
         
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
@@ -84,6 +85,7 @@ final class GeneralAppContext: AppContextProtocol {
                                                 transactionsService: domainTransactionsService,
                                                 walletConnectServiceV2: walletConnectServiceV2,
                                                 walletNFTsService: walletNFTsService, 
+                                                mpcWalletsService: mpcWalletsService,
                                                 networkService: NetworkService())
         
         domainProfilesService = DomainProfilesService(storage: DomainProfileDisplayInfoCoreDataStorage(),

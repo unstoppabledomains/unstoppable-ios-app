@@ -15,7 +15,7 @@ struct ChatListDataTypeSelectorView: View {
     
     var body: some View {
         UDSegmentedControlView(selection: $viewModel.selectedDataType,
-                               items: ChatsList.DataType.allCases) { dataType in
+                               items: ChatsList.DataType.getTypesWhen(isChannelsSupported: viewModel.isChannelsSupported)) { dataType in
             ZStack(alignment: .topTrailing) {
                 Text(dataType.title)
                     .font(.currentFont(size: 14, weight: .semibold))
