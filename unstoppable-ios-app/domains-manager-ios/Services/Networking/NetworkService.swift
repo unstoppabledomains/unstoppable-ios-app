@@ -404,6 +404,19 @@ extension NetworkService {
         try await fetchInfuraGasPrices(chainId: chain.id)
     }
     
+    func fetchGasPricesDoubleAttempt(chainId: Int) async throws -> EstimatedGasPrices {
+        // here routes to Status or Infura source
+        
+        let prices: EstimatedGasPrices
+        do {
+            prices = try await fetchInfuraGasPrices(chainId: chainId)
+        } catch {
+            try await Task.sleep(nanoseconds: 500_000_000)
+            return try await fetchInfuraGasPrices(chainId: chainId)
+        }
+        return prices
+    }
+    
     func fetchInfuraGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
         let url = URL(string: "https://gas.api.infura.io/networks/\(chainId)/suggestedGasFees")!
         let data: Data
