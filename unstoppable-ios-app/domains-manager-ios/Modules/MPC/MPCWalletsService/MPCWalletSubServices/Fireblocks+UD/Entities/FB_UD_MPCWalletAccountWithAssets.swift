@@ -13,9 +13,19 @@ extension FB_UD_MPC {
         let id: String
         let assets: [WalletAccountAsset]
         
-        func getAssetWith(chain: BlockchainType) throws -> WalletAccountAsset {
-            guard let asset = assets.first(where: { $0.blockchainAsset.symbol == chain.rawValue }) else { throw WalletAccountWithAssets.assetNotFound }
+        func getAssetToSignWith(chain: BlockchainType) throws -> WalletAccountAsset {
+            try getAssetWith(symbol: chain.rawValue, chain: mpcNameFor(chain: chain))
+        }
+        
+        func getAssetWith(symbol: String, chain: String) throws -> WalletAccountAsset {
+            guard let asset = assets.findWith(symbol: symbol, chain: chain) else { throw WalletAccountWithAssets.assetNotFound }
             return asset
+        }
+        
+        func canSendCryptoTo(symbol: String,
+                             chain: String) -> Bool {
+            let asset = try? getAssetWith(symbol: symbol, chain: chain)
+            return asset != nil
         }
         
         init(account: WalletAccount,
@@ -30,6 +40,15 @@ extension FB_UD_MPC {
             
             public var errorDescription: String? {
                 return rawValue
+            }
+        }
+        
+        private func mpcNameFor(chain: BlockchainType) -> String {
+            switch chain {
+            case .Ethereum:
+                "ETHEREUM"
+            case .Matic:
+                "POLYGON"
             }
         }
     }

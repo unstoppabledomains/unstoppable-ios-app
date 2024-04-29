@@ -157,7 +157,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
         let start = Date()
         let account = connectedWalletDetails.firstAccount
-        let asset = try account.getAssetWith(chain: chain)
+        let asset = try account.getAssetToSignWith(chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let mpcMessage = messageString.convertToMPCMessage
         let encoding = convertMPCMessageTypeToFBUDEncoding(mpcMessage.type)
@@ -187,8 +187,22 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
+    func canSendCrypto(symbol: String,
+                       chain: String,
+                       by walletMetadata: MPCWalletMetadata) -> Bool {
+        do {
+            let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+            let account = connectedWalletDetails.firstAccount
+            return account.canSendCryptoTo(symbol: symbol,
+                                           chain: chain)
+        } catch {
+            return false
+        }
+    }
+    
     func transferAssets(_ amount: Double,
-                        chain: BlockchainType,
+                        symbol: String,
+                        chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
@@ -197,7 +211,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
         let start = Date()
         let account = connectedWalletDetails.firstAccount
-        let asset = try account.getAssetWith(chain: chain)
+        let asset = try account.getAssetWith(symbol: symbol, chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let requestOperation = try await networkService.startAssetTransfer(accessToken: token,
                                                                            accountId: account.id,
