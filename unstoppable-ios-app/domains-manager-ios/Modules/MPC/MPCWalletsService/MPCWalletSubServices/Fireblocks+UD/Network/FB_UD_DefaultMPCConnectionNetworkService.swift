@@ -246,10 +246,10 @@ extension FB_UD_MPC {
                                 amount: Double) async throws -> OperationDetails {
             struct RequestBody: Codable {
                 let destinationAddress: String
-                let amount: Double
+                let amount: String
             }
             
-            let body = RequestBody(destinationAddress: destinationAddress, amount: amount)
+            let body = RequestBody(destinationAddress: destinationAddress, amount: String(amount))
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetTransfersURL(accountId: accountId, assetId: assetId)
             let request = try APIRequest(urlString: url,
