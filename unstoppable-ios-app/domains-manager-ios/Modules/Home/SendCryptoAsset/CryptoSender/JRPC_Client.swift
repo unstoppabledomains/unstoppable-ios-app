@@ -116,7 +116,7 @@ struct JRPC_Client {
                         }
                         continuation.resume(with: .success(result))
                     }.catch { error in
-                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription), \(error.displayTitleAndMessage())")
+                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription), \(error.titleAndMessage)")
                         continuation.resume(with: .failure(WalletConnectRequestError.failedSendTx))
                         return
                     }
