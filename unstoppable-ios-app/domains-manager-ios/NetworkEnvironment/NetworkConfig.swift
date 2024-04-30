@@ -100,7 +100,7 @@ struct NetworkConfig {
     static var basePolygonNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return okLinkBaseURL + "/mumbai"
+            return okLinkBaseURL + "/amoy"
         }
         return okLinkBaseURL + "/polygon"
     }
@@ -108,7 +108,7 @@ struct NetworkConfig {
     static var baseEthereumNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return okLinkBaseURL + "/goerli-test"
+            return okLinkBaseURL + "/sepolia-test"
         }
         return okLinkBaseURL + "/eth"
     }
