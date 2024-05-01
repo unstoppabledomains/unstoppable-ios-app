@@ -263,17 +263,6 @@ extension NetworkService {
 
 extension NetworkService {
     static let postRequestLimit = 500
-    
-    public func fetchUnsDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
-        let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
-        guard !ownerUnsAddresses.isEmpty else { return [] }
-        return try await fetchDomains(for: ownerUnsAddresses)
-    }
-    
-    private func fetchDomains(for ownerAddresses: [HexAddress]) async throws -> [DomainItem] {
-        try await fetchAllPagesWithLimit(for: ownerAddresses, limit: Self.postRequestLimit)
-    }
-    
     func fetchAllPagesWithLimit<T: PaginatedFetchable>(for originItems: [T.O], limit: Int) async throws -> [T] {
         guard !originItems.isEmpty else { return [] }
         
@@ -367,33 +356,6 @@ enum FetchRequestBuilderError: String, LocalizedError {
     
     public var errorDescription: String? {
         return rawValue
-    }
-}
-
-extension DomainItem: PaginatedFetchable {
-    typealias O = HexAddress
-    typealias J = NetworkService.DomainResponseArray
-    typealias D = NetworkService.DomainResponse
-    
-    static func convert(_ json: Self.J) -> [Self] {
-        json.domains.compactMap({Self.init(jsonResponse: $0)})
-    }
-    
-    static func createRequestForPaginated(for originItems: [HexAddress],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest {
-        guard let endpoint = Endpoint.domainsByOwnerAddressesPost(owners: originItems,
-                                                                  page: page,
-                                                                  perPage: perPage) else {
-            throw FetchRequestBuilderError.domains
-        }
-        return APIRequest(url: endpoint.url!, body: endpoint.body, method: .post)
-    }
- 
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] {
-        try await NetworkService.gen_paginatedBlockingFetchDataGen(for: originItems, page: page, perPage: perPage)
     }
 }
 

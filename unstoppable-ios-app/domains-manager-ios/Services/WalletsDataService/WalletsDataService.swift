@@ -223,7 +223,7 @@ private extension WalletsDataService {
     func refreshWalletDomains(_ wallet: WalletEntity, shouldRefreshPFP: Bool) async {
         await stopRefreshDomainsTimer()
         do {
-            async let domainsTask = domainsService.updateDomainsList(for: [wallet.udWallet])
+            async let domainsTask = domainsService.updateDomainsList(for: wallet.udWallet)
             async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
             let (domains, reverseResolutionDomainName) = try await (domainsTask, reverseResolutionTask)
             let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomainsFor(walletAddress: wallet.address).map({ $0.name })

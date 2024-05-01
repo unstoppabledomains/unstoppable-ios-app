@@ -535,27 +535,7 @@ extension Int: APIRepresentable {
 
 // Resolution API
 
-extension Endpoint {    
-    struct OwnerArrayRequest: Encodable {
-        let owner: [String]
-    }
-    
-    static func domainsByOwnerAddressesPost(owners: [HexAddress], page: Int, perPage: Int) -> Endpoint? {
-        var paramQueryItems: [URLQueryItem] = []
-        paramQueryItems.append( URLQueryItem(name: "page", value: "\(page)") )
-        paramQueryItems.append( URLQueryItem(name: "perPage", value: "\(perPage)") )
-        
-        let req = OwnerArrayRequest(owner: owners)
-        guard let json = try? JSONEncoder().encode(req) else { return nil }
-        guard let body = String(data: json, encoding: .utf8) else {
-            Debugger.printWarning("Failed to stringify data")
-            return nil
-        }
-        return composeResolutionEndpoint(paramQueryItems: paramQueryItems,
-                                         requestType: .domains,
-                                         body: body)
-    }
-    
+extension Endpoint {
     struct DomainArray: Encodable {
         let domain: [String]
         let status: TxStatusGroup?

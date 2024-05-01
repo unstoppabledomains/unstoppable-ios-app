@@ -48,11 +48,8 @@ extension NetworkService {
             try await signUpDomainInPAv3(domain: domain)
         }
     }
-}
-
-// MARK: - Private methods
-private extension NetworkService {
-    func getDomainSignUpStatus(domain: DomainItem) async throws -> DomainSignUpStatusResponse {
+    
+    private func getDomainSignUpStatus(domain: DomainItem) async throws -> DomainSignUpStatusResponse {
         let url = ProfileDomainURLSList.checkWalletSignUpStatusURL(domain: domain.name)
         let response: DomainSignUpStatusResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
                                                                                                     method: .get,
@@ -60,7 +57,7 @@ private extension NetworkService {
         return response
     }
     
-    struct DomainSignUpStatusResponse: Codable {
+    private struct DomainSignUpStatusResponse: Codable {
         let address: String
         let type: String?
         let message: String?
@@ -69,11 +66,82 @@ private extension NetworkService {
             type != nil
         }
     }
+}
+
+// MARK: - Fetch domain & info
+extension NetworkService {
+    func fetchDomainsIn(wallet: HexAddress) async throws -> [DomainItem] {
+        let take = 100
+        var hasMore = true
+        var cursor: String?
+        var domains: [DomainItem] = []
+        
+        while hasMore {
+            let response = try await fetchDomainsIn(wallet: wallet, 
+                                                    take: take,
+                                                    cursor: cursor)
+            let domainsInResponse = response.data.map { DomainItem(name: $0.domain,
+                                                                   ownerWallet: wallet,
+                                                                   blockchain: .Matic) } // TODO: - Get blockchain from the response
+            domains.append(contentsOf: domainsInResponse)
+            cursor = response.cursor
+            hasMore = response.hasMore
+        }
+        
+        return domains
+    }
     
+    private func fetchDomainsIn(wallet: HexAddress,
+                                take: Int,
+                                cursor: String?) async throws -> DomainsResponse {
+        var queryParameters: [String : String] = ["take" : String(take)]
+        if let cursor {
+            queryParameters[cursor] = cursor
+        }
+        let url = ProfileDomainURLSList
+            .walletDomainsURL(wallet: wallet)
+            .appendingURLQueryComponents(queryParameters)
+        let request = try APIRequest(urlString: url, method: .get)
+        let response: DomainsResponse = try await makeDecodableAPIRequest(request)
+        return response
+    }
+    
+    private struct DomainsResponse: Decodable {
+        
+        let data: [Domain]
+        let meta: Meta
+        
+        var hasMore: Bool { meta.pagination.hasMore }
+        var cursor: String? { meta.pagination.cursor }
+        
+        struct Domain: Codable {
+            let domain: String
+        }
+        
+        struct Meta: Decodable {
+            let totalCount: Int
+            let pagination: Pagination
+            
+            private enum CodingKeys: String, CodingKey {
+                case totalCount = "total_count"
+                case pagination
+            }
+            
+            struct Pagination: Codable {
+                let cursor: String?
+                let hasMore: Bool
+                let take: Int
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension NetworkService {
     func makeProfilesAuthorizedDecodableRequest<T: Decodable>(url: String,
-                                                                      method: HttpRequestMethod,
-                                                                      body: Encodable? = nil,
-                                                                      domain: DomainItem) async throws -> T {
+                                                              method: HttpRequestMethod,
+                                                              body: Encodable? = nil,
+                                                              domain: DomainItem) async throws -> T {
         let apiRequest = try await prepareProfileAuthorizedAPIRequestWith(url: url, method: method, body: body, domain: domain)
         let response: T = try await makeDecodableAPIRequest(apiRequest)
         return response
@@ -81,18 +149,18 @@ private extension NetworkService {
     
     @discardableResult
     func makeProfilesAuthorizedRequest(url: String,
-                                               method: HttpRequestMethod,
-                                               body: Encodable? = nil,
-                                               domain: DomainItem) async throws -> Data {
+                                       method: HttpRequestMethod,
+                                       body: Encodable? = nil,
+                                       domain: DomainItem) async throws -> Data {
         let apiRequest = try await prepareProfileAuthorizedAPIRequestWith(url: url, method: method, body: body, domain: domain)
         let data = try await makeAPIRequest(apiRequest)
         return data
     }
     
     func prepareProfileAuthorizedAPIRequestWith(url: String,
-                                                        method: HttpRequestMethod,
-                                                        body: Encodable? = nil,
-                                                        domain: DomainItem) async throws -> APIRequest {
+                                                method: HttpRequestMethod,
+                                                body: Encodable? = nil,
+                                                domain: DomainItem) async throws -> APIRequest {
         let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let domain = persistedSignature.domainName
         let expires = persistedSignature.expires
@@ -119,6 +187,10 @@ private extension NetworkService {
         
         static func checkWalletSignUpStatusURL(domain: DomainName) -> String {
             userAPIURL.appendingURLPathComponents(domain, "wallet")
+        }
+        
+        static func walletDomainsURL(wallet: HexAddress) -> String {
+            userAPIURL.appendingURLPathComponents(wallet, "domains")
         }
     }
     
