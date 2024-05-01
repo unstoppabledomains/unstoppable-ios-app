@@ -15,11 +15,12 @@ final class SendCryptoAssetViewModel: ObservableObject {
     @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
     @Published var isLoading = false
     @Published var error: Error?
-    private let cryptoSender: CryptoSenderProtocol
+    private let cryptoSender: UniversalCryptoSenderProtocol
     
     init(initialData: SendCryptoAsset.InitialData) {
         self.sourceWallet = initialData.sourceWallet
-        self.cryptoSender = CryptoSender.init(wallet: initialData.sourceWallet.udWallet)
+        self.cryptoSender = CryptoSender.init(wallet: initialData.sourceWallet.udWallet,
+                                              mpcWalletsService: appContext.mpcWalletsService)
     }
     
     func handleAction(_ action: SendCryptoAsset.FlowAction) {
@@ -77,100 +78,73 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     func canSendToken(_ token: BalanceTokenUIDescription) -> Bool {
-        guard let supportedToken = try? getSupportedTokenFor(balanceToken: token),
-              let chainType = token.blockchainType else { return false }
-        
-        let env: UnsConfigManager.BlockchainEnvironment = User.instance.getSettings().isTestnetUsed ? .testnet : .mainnet
-        return cryptoSender.canSendCrypto(token: supportedToken,
-                                          chain: ChainSpec(blockchainType: chainType,
-                                                           env: env))
+        let chainDesc = createChainDescFor(token: token)
+        return cryptoSender.canSendCrypto(chainDesc: chainDesc)
+    }
+    
+    private func createChainDescFor(token: BalanceTokenUIDescription) -> CryptoSenderChainDescription {
+        CryptoSenderChainDescription(symbol: token.symbol,
+                              chain: token.chain,
+                              env: getCurrentEnvironment())
     }
     
     func sendCryptoTokenWith(sendData: SendCryptoAsset.SendTokenAssetData,
                              txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> String {
-        let crypto: CryptoSendingSpec
-        
+        let amount: Double
         if sendData.isSendingAllTokens() {
-            crypto = try await getMaxTokenAmountToSendConsideringGasFee(sendData: sendData, txSpeed: txSpeed)
+            amount = try await getMaxTokenAmountToSendConsideringGasFee(sendData: sendData, txSpeed: txSpeed)
         } else {
-            crypto = try getCryptoSendingSpecFor(sendData: sendData, txSpeed: txSpeed)
+            amount = sendData.getTokenAmountValueToSend()
         }
-        
-        let chain = try getChainSpecFor(balanceToken: sendData.token)
-        let toAddress = sendData.receiverAddress
-        
-        return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
+        let dataToSend = getCryptoDataToSendFor(sendData: sendData,
+                                                txSpeed: txSpeed,
+                                                amount: amount)
+
+        return try await cryptoSender.sendCrypto(dataToSend: dataToSend)
     }
     
     private func getMaxTokenAmountToSendConsideringGasFee(sendData: SendCryptoAsset.SendTokenAssetData,
-                                                          txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> CryptoSendingSpec {
+                                                          txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> Double {
         let gasPrice = try await computeGasFeeFor(sendData: sendData, txSpeed: txSpeed)
         let tokenAmountToSend = sendData.getTokenAmountValueToSend() - gasPrice
         guard tokenAmountToSend > 0 else {
             throw CryptoSender.Error.insufficientFunds
         }
         
-        let token = sendData.token
-        
-        return try getCryptoSendingSpecFor(token: token,
-                                           tokenAmount: tokenAmountToSend,
-                                           txSpeed: txSpeed)
+        return tokenAmountToSend
     }
     
     func computeGasFeeFor(sendData: SendCryptoAsset.SendTokenAssetData,
                           txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> Double {
-        let crypto = try getCryptoSendingSpecFor(sendData: sendData, txSpeed: txSpeed)
-        let chain = try getChainSpecFor(balanceToken: sendData.token)
-        let toAddress = sendData.receiverAddress
+        let dataToSend = getCryptoDataToSendFor(sendData: sendData, txSpeed: txSpeed)
         
-        return try await cryptoSender.computeGasFeeFrom(maxCrypto: crypto, on: chain, toAddress: toAddress).units
+        return try await cryptoSender.computeGasFeeFor(dataToSend: dataToSend).units
     }
     
     func getGasPrices(sendData: SendCryptoAsset.SendTokenAssetData) async throws -> EstimatedGasPrices {
-        let chain = try getChainSpecFor(balanceToken: sendData.token)
-        
-        return try await cryptoSender.fetchGasPrices(on: chain)
+        let chainDesc = createChainDescFor(token: sendData.token)
+
+        return try await cryptoSender.fetchGasPrices(chainDesc: chainDesc)
     }
     
-    private func getCryptoSendingSpecFor(sendData: SendCryptoAsset.SendTokenAssetData,
-                                         txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
-        let token = sendData.token
-        let tokenAmount = sendData.getTokenAmountValueToSend()
-        
-        return try getCryptoSendingSpecFor(token: token,
-                                           tokenAmount: tokenAmount,
-                                           txSpeed: txSpeed)
-    }
-    
-    private func getCryptoSendingSpecFor(token: BalanceTokenUIDescription,
-                                         tokenAmount: Double,
-                                         txSpeed: SendCryptoAsset.TransactionSpeed) throws -> CryptoSendingSpec {
-        let token = try getSupportedTokenFor(balanceToken: token)
+    private func getCryptoDataToSendFor(sendData: SendCryptoAsset.SendTokenAssetData,
+                                        txSpeed: SendCryptoAsset.TransactionSpeed,
+                                        amount: Double? = nil) -> CryptoSenderDataToSend {
         let speed = getSpecTransactionSpeedFor(txSpeed: txSpeed)
-        return try CryptoSendingSpec(token: token,
-                                 units: tokenAmount,
-                                 speed: speed)
-    }
-    
-    private func getChainSpecFor(balanceToken: BalanceTokenUIDescription) throws -> ChainSpec {
-        guard let blockchainType = balanceToken.blockchainType else {
-            throw CryptoSender.Error.sendingNotSupported
-        }
-        let env = getCurrentEnvironment()
+        let amount = amount ?? sendData.getTokenAmountValueToSend()
+        let token = sendData.token
+        let chainDesc = createChainDescFor(token: token)
+        let toAddress = sendData.receiverAddress
+        let dataToSend = CryptoSenderDataToSend(chainDesc: chainDesc,
+                                                amount: amount,
+                                                txSpeed: speed,
+                                                toAddress: toAddress)
         
-        return ChainSpec(blockchainType: blockchainType,
-                         env: env)
+        return dataToSend
     }
     
     private func getCurrentEnvironment() -> UnsConfigManager.BlockchainEnvironment {
         User.instance.getSettings().isTestnetUsed ? .testnet : .mainnet
-    }
-    
-    private func getSupportedTokenFor(balanceToken: BalanceTokenUIDescription) throws -> CryptoSender.SupportedToken {
-        guard let token = CryptoSender.SupportedToken(rawValue: balanceToken.symbol.uppercased()) else {
-            throw CryptoSender.Error.sendingNotSupported
-        }
-        return token
     }
     
     private func getSpecTransactionSpeedFor(txSpeed: SendCryptoAsset.TransactionSpeed) -> CryptoSendingSpec.TxSpeed {

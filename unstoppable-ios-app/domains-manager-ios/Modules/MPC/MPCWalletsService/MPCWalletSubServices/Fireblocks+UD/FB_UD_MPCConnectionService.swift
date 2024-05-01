@@ -187,9 +187,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
-    func canSendCrypto(symbol: String,
-                       chain: String,
-                       by walletMetadata: MPCWalletMetadata) -> Bool {
+    func canTransferAssets(symbol: String,
+                           chain: String,
+                           by walletMetadata: MPCWalletMetadata) -> Bool {
         do {
             let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
             let account = connectedWalletDetails.firstAccount
