@@ -50,6 +50,12 @@ extension FB_UD_MPC {
                 return "ETHEREUM"
             case "MATIC":
                 return "POLYGON"
+            case "SOL":
+                return "SOLANA"
+            case "BTC":
+                return "BITCOIN"
+            case "BASE":
+                return "BASE"
             default:
                 throw WalletAccountWithAssets.assetNotFound
             }
