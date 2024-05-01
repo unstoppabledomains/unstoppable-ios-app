@@ -9,12 +9,12 @@ import Foundation
 
 // MARK: - PAv3 Interaction through Profiles API
 extension NetworkService {
-    func verifyDomainSignUpStatus(domain: DomainItem) async throws -> Bool {
+    func verifyDomainPAv3SignUpStatus(domain: DomainItem) async throws -> Bool {
         let status = try await getDomainSignUpStatus(domain: domain)
         return status.isSignedUp
     }
     
-    func signUpDomain(domain: DomainItem) async throws {
+    func signUpDomainInPAv3(domain: DomainItem) async throws {
         struct RequestBody: Encodable {
             let address: String
             let message: String
@@ -40,6 +40,13 @@ extension NetworkService {
                                message: message,
                                signature: signature)
         try await makeProfilesAuthorizedRequest(url: url, method: .post, body: body, domain: domain)
+    }
+    
+    func ensureDomainSignedUpInPAv3(domain: DomainItem) async throws {
+        let isSignedUp = try await verifyDomainPAv3SignUpStatus(domain: domain)
+        if !isSignedUp {
+            try await signUpDomainInPAv3(domain: domain)
+        }
     }
 }
 
