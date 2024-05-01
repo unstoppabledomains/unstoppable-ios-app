@@ -2646,6 +2646,7 @@
 		C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
 		C6FAED8A2B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */; };
 		C6FAFDE628119E0400734E0F /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAFDE528119E0400734E0F /* TextButton.swift */; };
+		C6FDBF9E2BE1FC4300532AAD /* NetworkService+PAv3.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FDBF9D2BE1FC4300532AAD /* NetworkService+PAv3.swift */; };
 		C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */; };
 		C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */; };
 		C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */; };
@@ -4204,6 +4205,7 @@
 		C6FAED852B8C684700CC1844 /* MessageMentionString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMentionString.swift; sourceTree = "<group>"; };
 		C6FAED882B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageReplyTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
+		C6FDBF9D2BE1FC4300532AAD /* NetworkService+PAv3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+PAv3.swift"; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
 		C6FE49DA285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		C6FECF40282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackupDisplayInfo.swift; sourceTree = "<group>"; };
@@ -7725,6 +7727,7 @@
 				C6C8F8542B217EAE00A9834D /* NetworkReachabilityServiceProtocol.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
+				C6FDBF9D2BE1FC4300532AAD /* NetworkService+PAv3.swift */,
 				C6D646C12B1ED22400D724AC /* NetworkService+ProfilesEntities.swift */,
 				C60EE80E2ACD203000D699C7 /* NetworkService+MessagingApi.swift */,
 			);
@@ -10437,6 +10440,7 @@
 				C63392FF2B736E5900941C9D /* WalletPortfolioRecordsStorage.swift in Sources */,
 				C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
 				C650E2902B9E97D8002C120A /* UDButtonStyle+VerySmall.swift in Sources */,
+				C6FDBF9E2BE1FC4300532AAD /* NetworkService+PAv3.swift in Sources */,
 				C6F4333C2BB25B1C000C5E46 /* ConfirmSendAssetReceiverInfoView.swift in Sources */,
 				C6D647942B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C6C8F8252B217CDD00A9834D /* UDWallet+RecoveryType.swift in Sources */,
