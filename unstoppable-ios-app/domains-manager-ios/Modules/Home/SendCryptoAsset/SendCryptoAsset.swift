@@ -60,6 +60,26 @@ extension SendCryptoAsset {
         private(set) var pfpURL: URL?
         private var records: [String: String] = [:]
         
+        func addressFor(symbol: String) -> String? {
+            if let blockchainType = BlockchainType(rawValue: symbol) {
+                return addressFor(chainType: blockchainType)
+            } else if let recordsIdentifier = domainRecordIdentifierFor(symbol: symbol) {
+                return records[recordsIdentifier]
+            }
+            return nil
+        }
+        
+        private func domainRecordIdentifierFor(symbol: String) -> String? {
+            switch symbol {
+            case "SOL":
+                return "crypto.SOL.address"
+            case "BTC":
+                return "crypto.BTC.address"
+            default:
+                return nil
+            }
+        }
+        
         func addressFor(chainType: BlockchainType) -> String? {
             let recordsIdentifier = chainType.domainRecordIdentifier()
             return records[recordsIdentifier]
