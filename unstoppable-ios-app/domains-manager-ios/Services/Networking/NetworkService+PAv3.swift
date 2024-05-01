@@ -136,6 +136,30 @@ extension NetworkService {
     }
 }
 
+// MARK: - Fetch domain & info
+extension NetworkService {
+    func fetchTxsFor(domain: DomainItem) async throws {
+        guard getPersistedProfileSignature(for: domain) != nil else { return }
+        
+        let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
+        
+        
+    }
+    
+
+    private struct DomainOperationsResponse {
+        let items: [Operation]
+        let next: String?
+        
+        struct Operation: Codable {
+            let id: String
+            let type: String
+            let status: String
+            let domain: String
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension NetworkService {
     func makeProfilesAuthorizedDecodableRequest<T: Decodable>(url: String,
@@ -191,6 +215,10 @@ private extension NetworkService {
         
         static func walletDomainsURL(wallet: HexAddress) -> String {
             userAPIURL.appendingURLPathComponents(wallet, "domains")
+        }
+        
+        static func domainRecordsManageURL(domain: DomainName) -> String {
+            userAPIURL.appendingURLPathComponents(domain, "records", "manage")
         }
     }
     
