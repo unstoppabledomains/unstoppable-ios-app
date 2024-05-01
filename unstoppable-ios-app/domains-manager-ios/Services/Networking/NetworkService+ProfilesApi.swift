@@ -403,7 +403,7 @@ extension NetworkService {
 extension NetworkService: WalletsDataNetworkServiceProtocol {
     func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
         let profile = try await fetchPublicProfile(for: domainName,
-                                     fields: [.records])
+                                                   fields: [.records])
         let records = profile.records
         return records ?? [:]
     }
@@ -471,3 +471,53 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
     }
 }
 
+// MARK: - PAv3 Interaction through Profiles API
+extension NetworkService {
+    enum ProfileDomainURLSList {
+        static var baseURL: String { NetworkConfig.migratedBaseUrl }
+        
+        static var profileAPIURL: String { baseURL.appendingURLPathComponents("profile") }
+        static var userAPIURL: String { profileAPIURL.appendingURLPathComponents("user") }
+        
+        static func checkWalletSignUpStatusURL(domain: DomainName) -> String {
+            userAPIURL.appendingURLPathComponents(domain, "wallet")
+        }
+    }
+    
+    func verifyDomainSignUpStatus(domain: DomainItem) async throws -> Bool {
+        struct Response: Codable {
+            let address: String
+            let type: String?
+            let message: String?
+            
+            var isSignedUp: Bool {
+                type != nil
+            }
+        }
+        
+        let url = ProfileDomainURLSList.checkWalletSignUpStatusURL(domain: domain.name)
+        let response: Response = try await makeProfilesAuthorizedRequest(url: url,
+                                                                         method: .get,
+                                                                         domain: domain)
+        return response.isSignedUp
+    }
+    
+    private func makeProfilesAuthorizedRequest<T: Decodable>(url: String,
+                                                             method: HttpRequestMethod,
+                                                             body: Encodable? = nil,
+                                                             domain: DomainItem) async throws -> T {
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
+        let domain = persistedSignature.domainName
+        let expires = persistedSignature.expires
+        let signature = persistedSignature.sign
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        let apiRequest = try APIRequest(urlString: url, body: body, method: method, headers: headers)
+        let response: T = try await makeDecodableAPIRequest(apiRequest)
+        return response
+    }
+}
