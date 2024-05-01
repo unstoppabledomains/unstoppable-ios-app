@@ -49,7 +49,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.signMessage(messageString,
-                                                chain: .Matic,
+                                                chain: .Ethereum,
                                                 by: walletMetadata)
     }
     
