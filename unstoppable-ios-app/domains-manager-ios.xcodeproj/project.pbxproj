@@ -274,6 +274,8 @@
 		C6109E9D28E6AA910027D5D8 /* MockContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E9C28E6AA910027D5D8 /* MockContext.swift */; };
 		C6109EA228E6B1CC0027D5D8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA128E6B1CC0027D5D8 /* Toast.swift */; };
 		C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */; };
+		C610BA1B2BE234A600179919 /* MPCCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */; };
+		C610BA1D2BE2358700179919 /* UDCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C610BA1C2BE2358700179919 /* UDCryptoSender.swift */; };
 		C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
 		C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */; };
 		C61236F0292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */; };
@@ -2968,6 +2970,8 @@
 		C6109E9C28E6AA910027D5D8 /* MockContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContext.swift; sourceTree = "<group>"; };
 		C6109EA128E6B1CC0027D5D8 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTheme.swift; sourceTree = "<group>"; };
+		C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCCryptoSender.swift; sourceTree = "<group>"; };
+		C610BA1C2BE2358700179919 /* UDCryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCryptoSender.swift; sourceTree = "<group>"; };
 		C61236E6292C88D1002BA97B /* ImagesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesStorage.swift; sourceTree = "<group>"; };
 		C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationImageLoadingService.swift; sourceTree = "<group>"; };
 		C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsDomainsPFPBridgeService.swift; sourceTree = "<group>"; };
@@ -7746,6 +7750,8 @@
 				29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */,
 				C6B45DAF2BBA97B600B44C33 /* CryptoSender+Entities.swift */,
 				29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */,
+				C610BA1C2BE2358700179919 /* UDCryptoSender.swift */,
+				C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */,
 				29018C8C2BACB7BC0004545D /* JRPC_Client.swift */,
 				291AD2442BD5265E006B8096 /* EVMCryptoSender.swift */,
 			);
@@ -9716,6 +9722,7 @@
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C68A5ACF2BD8DADE003702A2 /* MPCActivateWalletInAppView.swift in Sources */,
 				C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
+				C610BA1D2BE2358700179919 /* UDCryptoSender.swift in Sources */,
 				C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C6B2E20C2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */,
@@ -9815,6 +9822,7 @@
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
+				C610BA1B2BE234A600179919 /* MPCCryptoSender.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */,
 				C6BF6BDC2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,

@@ -15,12 +15,11 @@ final class SendCryptoAssetViewModel: ObservableObject {
     @Published var navPath: [SendCryptoAsset.NavigationDestination] = []
     @Published var isLoading = false
     @Published var error: Error?
-    private let cryptoSender: UniversalCryptoSenderProtocol
+    private let cryptoSender: UniversalCryptoSenderProtocol?
     
     init(initialData: SendCryptoAsset.InitialData) {
         self.sourceWallet = initialData.sourceWallet
-        self.cryptoSender = CryptoSender.init(wallet: initialData.sourceWallet.udWallet,
-                                              mpcWalletsService: appContext.mpcWalletsService)
+        self.cryptoSender = try? CryptoSender.init(wallet: initialData.sourceWallet.udWallet)
     }
     
     func handleAction(_ action: SendCryptoAsset.FlowAction) {
@@ -79,7 +78,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func canSendToken(_ token: BalanceTokenUIDescription) -> Bool {
         let chainDesc = createChainDescFor(token: token)
-        return cryptoSender.canSendCrypto(chainDesc: chainDesc)
+        return cryptoSender?.canSendCrypto(chainDesc: chainDesc) == true
     }
     
     private func createChainDescFor(token: BalanceTokenUIDescription) -> CryptoSenderChainDescription {
@@ -90,6 +89,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func sendCryptoTokenWith(sendData: SendCryptoAsset.SendTokenAssetData,
                              txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> String {
+        let cryptoSender = try getCryptoSender()
         let amount: Double
         if sendData.isSendingAllTokens() {
             amount = try await getMaxTokenAmountToSendConsideringGasFee(sendData: sendData, txSpeed: txSpeed)
@@ -99,7 +99,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
         let dataToSend = getCryptoDataToSendFor(sendData: sendData,
                                                 txSpeed: txSpeed,
                                                 amount: amount)
-
+        
         return try await cryptoSender.sendCrypto(dataToSend: dataToSend)
     }
     
@@ -116,12 +116,14 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     func computeGasFeeFor(sendData: SendCryptoAsset.SendTokenAssetData,
                           txSpeed: SendCryptoAsset.TransactionSpeed) async throws -> Double {
+        let cryptoSender = try getCryptoSender()
         let dataToSend = getCryptoDataToSendFor(sendData: sendData, txSpeed: txSpeed)
         
         return try await cryptoSender.computeGasFeeFor(dataToSend: dataToSend).units
     }
     
     func getGasPrices(sendData: SendCryptoAsset.SendTokenAssetData) async throws -> EstimatedGasPrices {
+        let cryptoSender = try getCryptoSender()
         let chainDesc = createChainDescFor(token: sendData.token)
 
         return try await cryptoSender.fetchGasPrices(chainDesc: chainDesc)
@@ -155,6 +157,20 @@ final class SendCryptoAssetViewModel: ObservableObject {
             return .fast
         case .urgent:
             return .urgent
+        }
+    }
+    
+    private func getCryptoSender() throws -> UniversalCryptoSenderProtocol {
+        guard let cryptoSender else { throw SendCryptoAssetViewModelError.failedToCreateCryptoSender }
+        
+        return cryptoSender
+    }
+    
+    enum SendCryptoAssetViewModelError: String, LocalizedError {
+        case failedToCreateCryptoSender
+        
+        public var errorDescription: String? {
+            return rawValue
         }
     }
     
