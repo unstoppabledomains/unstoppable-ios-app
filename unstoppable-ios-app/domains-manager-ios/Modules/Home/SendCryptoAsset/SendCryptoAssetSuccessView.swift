@@ -166,6 +166,7 @@ private extension SendCryptoAssetSuccessView {
     func doneAction() {
         logButtonPressedAnalyticEvents(button: .done)
         tabRouter.sendCryptoInitialData = nil
+        transactionTracker.stopTracking()
     }
 }
 
