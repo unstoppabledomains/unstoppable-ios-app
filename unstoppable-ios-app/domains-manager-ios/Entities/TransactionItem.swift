@@ -59,16 +59,6 @@ struct TransactionItem: Codable {
         self.type = type
     }
     
-    init (jsonResponse: NetworkService.TxResponse) {
-        let isPending = TxStatusGroup(rawValue: jsonResponse.statusGroup) == .pending
-        self.init(id: jsonResponse.id,
-                  transactionHash: jsonResponse.hash,
-                  domainName: jsonResponse.domain.name,
-                  isPending:  isPending,
-                  type: jsonResponse.type,
-                  operation: jsonResponse.operation)
-    }
-    
     private func parseNameId(_ tx: TransactionItem) -> (String?, HexAddress?) {
         var name: String?
         var tokenId: HexAddress?

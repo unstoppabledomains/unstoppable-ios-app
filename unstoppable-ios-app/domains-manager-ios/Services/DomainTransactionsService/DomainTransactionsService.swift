@@ -9,7 +9,6 @@ import Foundation
 
 final class DomainTransactionsService {
     private let storage: Storage = Storage.instance
-    private lazy var txsFetcherFactory: TxsFetcherFactoryProtocol = DefaultTxsFetcherFactory()
 }
 
 // MARK: - DomainTransactionsServiceProtocol
@@ -43,15 +42,5 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
                                         timeout: 2)
         storage.replaceTxs_Blocking(transactions)
         return transactions
-    }
-}
-
-protocol TxsFetcherFactoryProtocol {
-    func createFetcher() -> TxsFetcher
-}
-
-struct DefaultTxsFetcherFactory: TxsFetcherFactoryProtocol {
-    func createFetcher() -> TxsFetcher {
-        return NetworkService()
     }
 }
