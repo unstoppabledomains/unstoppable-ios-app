@@ -153,11 +153,16 @@ extension NetworkService {
         }
 
         let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
-        let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
-                                                                                                  method: .get,
-                                                                                                  domain: domain)
-        let txs = response.items.map { $0.createTxItem() }
-        return txs
+        do {
+            // TODO: - Request BE change to not throw error if there's no operations
+            let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
+                                                                                                      method: .get,
+                                                                                                      domain: domain)
+            let txs = response.items.map { $0.createTxItem() }
+            return txs
+        } catch {
+            return []
+        }
     }
 
     private struct DomainOperationsResponse: Decodable {
