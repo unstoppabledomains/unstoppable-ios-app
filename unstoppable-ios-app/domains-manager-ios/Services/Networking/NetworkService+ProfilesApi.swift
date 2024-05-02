@@ -403,7 +403,7 @@ extension NetworkService {
 extension NetworkService: WalletsDataNetworkServiceProtocol {
     func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
         let profile = try await fetchPublicProfile(for: domainName,
-                                     fields: [.records])
+                                                   fields: [.records])
         let records = profile.records
         return records ?? [:]
     }
@@ -470,4 +470,3 @@ extension NetworkService: WalletTransactionsNetworkServiceProtocol {
         return response
     }
 }
-
