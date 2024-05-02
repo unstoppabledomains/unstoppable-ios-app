@@ -193,6 +193,8 @@ extension NetworkService {
                 switch status {
                 case "DOMAIN_UPDATE":
                     return .recordUpdate
+                case "REVERSE_RESOLUTION":
+                    return .setReverseResolution
                 default:
                     return nil
                 }
