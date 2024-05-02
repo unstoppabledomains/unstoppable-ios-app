@@ -8,7 +8,6 @@
 import Foundation
 
 struct UDCryptoSender: UniversalCryptoSenderProtocol {
-    
     let wallet: UDWallet
     
     func canSendCrypto(chainDesc: CryptoSenderChainDescription) -> Bool {
