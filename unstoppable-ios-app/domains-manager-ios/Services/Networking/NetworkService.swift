@@ -468,7 +468,7 @@ extension NetworkService {
     }
     
     func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
-        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/reverse/\(address)")!
+        let url = URL(string: "\(NetworkConfig.baseAPIUrl)/resolve/reverse/\(address)")!
         let data = try await NetworkService().fetchData(for: url,
                                                         method: .get,
                                                         extraHeaders: NetworkService.authHeader)

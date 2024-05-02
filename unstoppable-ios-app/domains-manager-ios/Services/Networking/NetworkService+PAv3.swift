@@ -370,7 +370,7 @@ private extension NetworkService {
 // MARK: - Private methods
 private extension NetworkService {
     enum ProfileDomainURLSList {
-        static var baseURL: String { NetworkConfig.migratedBaseUrl }
+        static var baseURL: String { NetworkConfig.baseAPIUrl }
         
         static var profileAPIURL: String { baseURL.appendingURLPathComponents("profile") }
         static var userAPIURL: String { profileAPIURL.appendingURLPathComponents("user") }

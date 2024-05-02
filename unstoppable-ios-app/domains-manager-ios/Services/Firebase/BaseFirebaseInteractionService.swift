@@ -11,7 +11,7 @@ class BaseFirebaseInteractionService {
     
     enum URLSList {
         static var baseURL: String {
-            NetworkConfig.migratedBaseUrl
+            NetworkConfig.baseAPIUrl
         }
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
         

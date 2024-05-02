@@ -46,7 +46,7 @@ extension String {
             case .privacyPolicy:
                 return "https://unstoppabledomains.com/privacy-policy"
             case .buyDomain:
-                return NetworkConfig.migratedBaseUrl + "/search/?mobileapp=true"
+                return NetworkConfig.baseAPIUrl + "/search/?mobileapp=true"
             case .setupICloudDriveInstruction:
                 return "https://support.apple.com/en-us/HT204025"
             case .etherScanAddress(let address):
@@ -93,7 +93,7 @@ extension String {
             case .referralTutorial:
                 return "https://unstoppabledomains.com/refer-a-friend"
             case .referralLink(let code):
-                return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
+                return "\(NetworkConfig.baseAPIUrl)/?ref=\(code)"
             case .communitiesInfo:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             case .setupApplePayInstruction:

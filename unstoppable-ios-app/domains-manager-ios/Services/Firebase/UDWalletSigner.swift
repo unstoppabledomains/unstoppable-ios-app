@@ -9,7 +9,7 @@ import Foundation
 
 final class UDWalletSigner {
     
-    private var baseURL: String { NetworkConfig.migratedBaseUrl }
+    private var baseURL: String { NetworkConfig.baseAPIUrl }
     private var walletLoginURL: String { baseURL.appendingURLPathComponents("api", "user", "wallet-login") }
 
 }

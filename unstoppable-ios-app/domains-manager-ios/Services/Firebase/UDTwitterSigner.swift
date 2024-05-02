@@ -10,7 +10,7 @@ import WebKit
 
 final class UDTwitterSigner: NSObject {
         
-    private var baseURL: String { NetworkConfig.migratedBaseUrl }
+    private var baseURL: String { NetworkConfig.baseAPIUrl }
     
 }
 

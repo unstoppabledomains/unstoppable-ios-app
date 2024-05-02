@@ -201,7 +201,7 @@ class APIRequestBuilder {
         guard let action = self.type else { fatalError("no action specified") }
         
         let path = UDApiType.getPath(for: action).rawValue
-        var url = "\(NetworkConfig.migratedBaseUrl)\(path)"
+        var url = "\(NetworkConfig.baseAPIUrl)\(path)"
         
         
         if let email = self.email {
@@ -398,7 +398,7 @@ extension Endpoint {
             SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
         ]
         return Endpoint(
-            host: NetworkConfig.migratedEndpoint,
+            host: NetworkConfig.baseAPIHost,
             path: "/profile/user/\(address)/badges",
             queryItems: [],
             body: "[]",
