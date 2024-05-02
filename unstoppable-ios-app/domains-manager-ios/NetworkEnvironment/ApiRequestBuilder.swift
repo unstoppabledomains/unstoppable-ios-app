@@ -8,8 +8,6 @@
 import Foundation
 enum UDApiType: String {
     case resellers = "/api/v1/resellers/mobile-app-v1"
-    case resellersV2 = "/api/v2/resellers/mobile_app_v1"
-    case resolution = "/api/v1/resolution"
     case webhook = "/api/webhook"
 
     var pathRoot: String { self.rawValue }
@@ -17,9 +15,6 @@ enum UDApiType: String {
     static func getPath(for type: RequestType) -> Self {
         if type == .wcPushUnsubscribe || type == .wcPushSubscribe {
             return .webhook
-        }
-        if type == .actions || type == .actionsSign {
-            return .resellersV2
         }
         return .resellers
     }
@@ -64,19 +59,12 @@ enum RequestType: String {
     case authenticate = "/authenticate"
     case fetchAllUnclaimedDomains = "/domains/unclaimed"
     case claim = "/domains/claim"
-    case messagesToSign = "/txs/messagesToSign"
-    case meta = "/txs/meta"
-    case domains = "/domains"
     case version = "/version"
     
     // Push notifications
     case apnsTokens = "/push/deviceTokens"
     case wcPushSubscribe = "/wallet-connect/subscribe"
     case wcPushUnsubscribe = "/wallet-connect/unsubscribe"
-   
-    // Actions API
-    case actionsSign = "/actions/"
-    case actions = "/actions"
 }
 
 struct RequestToClaim: Encodable {
@@ -292,52 +280,6 @@ extension Encodable {
 }
 
 extension APIRequestBuilder {
-    struct MetaAction: Encodable {
-        let id: UInt64
-        let type: String
-        let signature: String
-    }
-    
-    struct MetaActionsContainer: Encodable {
-        let elements: [MetaAction]
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.unkeyedContainer()
-            elements.forEach({try! container.encode($0)})
-        }
-    }
-    
-    func actionSign(for id: UInt64,
-                     response: NetworkService.ActionsResponse,
-                     signatures: [String]) throws -> APIRequestBuilder {
-        self.type = .actionsSign
-        self.actionId = id
-        
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = .withoutEscapingSlashes
-        
-        var signaturesMutable = signatures
-        var txs = [MetaAction]()
-        for tx in response.txs {
-            if tx.type == "Meta" {
-                guard let sign = signaturesMutable.first else {
-                    throw NetworkLayerError.noMessageError
-                }
-                signaturesMutable = Array(signaturesMutable.dropFirst())
-                let tx = MetaAction(id: tx.id, type: tx.type, signature: sign)
-                txs.append(tx)
-            } else {
-                Debugger.printFailure("Found not handled type of TX: \(tx.type)", critical: true)
-            }
-        }
-        
-        let container = MetaActionsContainer(elements: txs)
-        let containerJsonData = try! jsonEncoder.encode(container)
-        self.body = String(data: containerJsonData, encoding: .utf8)!
-        self.method = .post
-        return self
-    }
-    
     enum GasCompensationPolicy: String, Encodable {
         case alwaysCompensate = "AlwaysCompensate"
         case compensateFree = "CompensateFree"
@@ -400,65 +342,6 @@ extension APIRequestBuilder {
         case transfer = "Transfer"
     }
     
-    func actionPostReverseResolution(for domain: DomainItem,
-                    remove: Bool) throws -> APIRequestBuilder {
-        self.type = .actions
-        
-        let jsonData = try JSONEncoder().encode(ActionRequest(domain: domain.name,
-                                                              gasCompensationPolicy: .alwaysCompensate,
-                                                              action: .setReverseResolution,
-                                                              parameters: Params.reverseResolution(remove)))
-        
-        guard let body = String(data: jsonData, encoding: .utf8) else {
-            Debugger.printFailure("Cannot stringify encoded JSON", critical: true)
-            throw APIRequestError.failedStringifyJson
-        }
-        
-        self.body = body
-        self.method = .post
-        return self
-    }
-    
-    func actionPostUpdateRecords(for domain: DomainItem, records: [RecordToUpdate]) throws -> APIRequestBuilder {
-        self.type = .actions
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
-        let jsonData = try encoder.encode(ActionRequest(domain: domain.name,
-                                                              gasCompensationPolicy: .alwaysCompensate,
-                                                              action: .updateRecords,
-                                                              parameters: Params.updateRecords(records)))
-        
-        guard let body = String(data: jsonData, encoding: .utf8) else {
-            Debugger.printFailure("Cannot stringify encoded JSON", critical: true)
-            throw APIRequestError.failedStringifyJson
-        }
-        
-        self.body = body
-        self.method = .post
-        return self
-    }
-    
-    func actionPostTransferDomain(_ domain: DomainItem,
-                                  to receiverAddress: HexAddress,
-                                  configuration: TransferDomainConfiguration) throws -> APIRequestBuilder {
-        self.type = .actions
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
-        let jsonData = try encoder.encode(ActionRequest(domain: domain.name,
-                                                        gasCompensationPolicy: .alwaysCompensate,
-                                                        action: .transfer,
-                                                        parameters: Params.transfer(receiverAddress: receiverAddress,
-                                                                                    configuration: configuration)))
-        
-        guard let body = String(data: jsonData, encoding: .utf8) else {
-            Debugger.printFailure("Cannot stringify encoded JSON", critical: true)
-            throw APIRequestError.failedStringifyJson
-        }
-        
-        self.body = body
-        self.method = .post
-        return self
-    }
 }
 
 protocol APIRepresentable {
@@ -468,22 +351,6 @@ protocol APIRepresentable {
 extension Int: APIRepresentable {
     var apiRepresentation: String {
         "\(self)"
-    }
-}
-
-
-// Resolution API
-
-extension Endpoint {
-    static private func composeResolutionEndpoint(paramQueryItems: [URLQueryItem],
-                                                  apiType: UDApiType = .resolution,
-                                                  requestType: RequestType,
-                                                  body: String) -> Endpoint {
-        return Endpoint(
-            path: "\(apiType.pathRoot)\(requestType.rawValue)",
-            queryItems: paramQueryItems,
-            body: body
-        )
     }
 }
 

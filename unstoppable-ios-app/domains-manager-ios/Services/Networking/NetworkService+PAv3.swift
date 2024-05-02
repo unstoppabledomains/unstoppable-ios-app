@@ -101,7 +101,9 @@ extension NetworkService {
         let url = ProfileDomainURLSList
             .walletDomainsURL(wallet: wallet)
             .appendingURLQueryComponents(queryParameters)
-        let request = try APIRequest(urlString: url, method: .get)
+        let request = try APIRequest(urlString: url, 
+                                     method: .get,
+                                     headers: NetworkConfig.disableFastlyCacheHeader)
         let response: DomainsResponse = try await makeDecodableAPIRequest(request)
         return response
     }
@@ -268,6 +270,10 @@ extension NetworkService {
         let body = ConfirmDomainUpdateRequestBody(operationId: operation.operationId,
                                                   dependencyId: dependencyId,
                                                   signature: signature)
+        try await makeProfilesAuthorizedRequest(url: url,
+                                                method: .post,
+                                                body: body,
+                                                domain: domain)
     }
     
     private struct ManageDomainOperationDetails: Decodable {

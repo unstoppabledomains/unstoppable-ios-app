@@ -491,19 +491,6 @@ extension NetworkService {
             throw error
         }
     }
-    
-    private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
-        coins.first(where: {$0.expandedTicker == expandedTicker})?.regexPattern
-    }
-    
-    static func getRequestForActionSign(id: UInt64,
-                                        response: NetworkService.ActionsResponse,
-                                        signatures: [String]) throws -> APIRequest {
-        let request = try APIRequestBuilder()
-            .actionSign(for: id, response: response, signatures: signatures)
-            .build()
-        return request
-    }
 }
 
 extension EthereumTransaction {
