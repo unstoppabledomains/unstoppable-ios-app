@@ -152,6 +152,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                      chain: BlockchainType,
                      by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
         let deviceId = connectedWalletDetails.deviceId
         await waitForActionReadyToStart(deviceId: deviceId)
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
@@ -173,8 +175,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         switch operationStatus {
         case .txReady(let txId):
             logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
-            let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
-                                                                            authTokenProvider: self)
             try await mpcConnector.signTransactionWith(txId: txId)
             logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
             let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
@@ -206,6 +206,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
         let deviceId = connectedWalletDetails.deviceId
         await waitForActionReadyToStart(deviceId: deviceId)
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
@@ -225,8 +227,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         switch operationStatus {
         case .txReady(let txId):
             logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
-            let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
-                                                                            authTokenProvider: self)
             try await mpcConnector.signTransactionWith(txId: txId)
             logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
             try await networkService.waitForOperationCompleted(accessToken: token,
