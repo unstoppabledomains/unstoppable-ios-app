@@ -63,8 +63,7 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
         let chain = try nativeChainSpecFor(chainDesc: chainDesc)
-        let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
-        return try await cryptoSender.fetchGasPrices(on: chain)
+        return try await NetworkService().fetchInfuraGasPrices(chainId: chain.id)
     }
     
     private func getSupportedTokenFor(symbol: String) throws -> CryptoSender.SupportedToken {
