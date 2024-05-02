@@ -18,6 +18,22 @@ struct CryptoSenderChainDescription {
     let symbol: String
     let chain: String
     let env: UnsConfigManager.BlockchainEnvironment
+    
+    func getToken() throws -> CryptoSender.SupportedToken {
+        guard let token = CryptoSender.SupportedToken(rawValue: self.symbol.uppercased()) else {
+            throw CryptoSender.Error.sendingNotSupported
+        }
+        return token
+    }
+    
+    func getChain() throws -> ChainSpec {
+        guard let chainType = BlockchainType(rawValue: self.chain) else {
+            throw CryptoSender.Error.sendingNotSupported
+        }
+        let chain = ChainSpec(blockchainType: chainType, env: self.env)
+        return chain
+    }
+
 }
 
 struct CryptoSenderDataToSend {
@@ -25,6 +41,14 @@ struct CryptoSenderDataToSend {
     let amount: Double
     let txSpeed: CryptoSendingSpec.TxSpeed
     let toAddress: HexAddress
+    
+    func getToken() throws -> CryptoSender.SupportedToken {
+        try self.chainDesc.getToken()
+    }
+    
+    func getChain() throws -> ChainSpec {
+        try self.chainDesc.getChain()
+    }
 }
 
 struct CryptoSender: UniversalCryptoSenderProtocol {

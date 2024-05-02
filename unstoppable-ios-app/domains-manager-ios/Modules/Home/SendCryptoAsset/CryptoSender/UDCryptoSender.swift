@@ -11,23 +11,17 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
     let wallet: UDWallet
     
     func canSendCrypto(chainDesc: CryptoSenderChainDescription) -> Bool {
-        guard let supportedToken = try? getSupportedTokenFor(symbol: chainDesc.symbol),
-              let chain = try? nativeChainSpecFor(chainDesc: chainDesc) else { return false }
+        guard let supportedToken = try? chainDesc.getToken(),
+              let chain = try? chainDesc.getChain() else { return false }
         
         return NativeCoinCryptoSender(wallet: wallet).canSendCrypto(token: supportedToken, chain: chain) || TokenCryptoSender(wallet: wallet).canSendCrypto(token: supportedToken, chain: chain)
     }
     
-    private func nativeChainSpecFor(chainDesc: CryptoSenderChainDescription) throws -> ChainSpec {
-        guard let chainType = BlockchainType(rawValue: chainDesc.chain) else {throw CryptoSender.Error.sendingNotSupported }
-        let chain = ChainSpec(blockchainType: chainType,
-                              env: chainDesc.env)
-        return chain
-    }
     
     func sendCrypto(dataToSend: CryptoSenderDataToSend) async throws -> String {
         let toAddress = dataToSend.toAddress
-        guard let token = try? getSupportedTokenFor(symbol: dataToSend.chainDesc.symbol),
-              let chain = try? nativeChainSpecFor(chainDesc: dataToSend.chainDesc) else { throw CryptoSender.Error.sendingNotSupported }
+        let token = try dataToSend.getToken()
+        let chain = try dataToSend.getChain()
         let crypto = try CryptoSendingSpec(token: token, units: dataToSend.amount, speed: dataToSend.txSpeed)
         
         let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
@@ -44,9 +38,8 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
     
     func computeGasFeeFor(dataToSend: CryptoSenderDataToSend) async throws -> EVMCoinAmount {
         let toAddress = dataToSend.toAddress
-        
-        guard let token = try? getSupportedTokenFor(symbol: dataToSend.chainDesc.symbol),
-              let chain = try? nativeChainSpecFor(chainDesc: dataToSend.chainDesc) else { throw CryptoSender.Error.sendingNotSupported }
+        let token = try dataToSend.getToken()
+        let chain = try dataToSend.getChain()
         let crypto = try CryptoSendingSpec(token: token, units: dataToSend.amount, speed: dataToSend.txSpeed)
         
         let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
@@ -62,14 +55,7 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
     }
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
-        let chain = try nativeChainSpecFor(chainDesc: chainDesc)
+        let chain = try chainDesc.getChain()
         return try await NetworkService().fetchInfuraGasPrices(chainId: chain.id)
-    }
-    
-    private func getSupportedTokenFor(symbol: String) throws -> CryptoSender.SupportedToken {
-        guard let token = CryptoSender.SupportedToken(rawValue: symbol.uppercased()) else {
-            throw CryptoSender.Error.sendingNotSupported
-        }
-        return token
     }
 }
