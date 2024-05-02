@@ -48,7 +48,7 @@ private extension SendCryptoAssetSuccessView {
     func onAppear() {
         switch asset {
         case .domain(let domain):
-            transactionTracker.trackTransactionOf(type: .domainTransfer(domain.name))
+            transactionTracker.trackTransactionOf(type: .domainTransfer(domain.toDomainItem()))
         case .token(_, _, let txHash):
             transactionTracker.trackTransactionOf(type: .txHash(txHash))
         }

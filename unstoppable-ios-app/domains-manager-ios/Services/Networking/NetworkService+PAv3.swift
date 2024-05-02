@@ -82,7 +82,7 @@ extension NetworkService {
                                                     cursor: cursor)
             let domainsInResponse = response.data.map { DomainItem(name: $0.domain,
                                                                    ownerWallet: wallet,
-                                                                   blockchain: .Matic) } // TODO: - Get blockchain from the response
+                                                                   blockchain: $0.blockchainType()) }
             domains.append(contentsOf: domainsInResponse)
             cursor = response.cursor
             hasMore = response.hasMore
@@ -116,6 +116,11 @@ extension NetworkService {
         
         struct Domain: Codable {
             let domain: String
+            let chain: String? // TODO: - Request this field from Profiles API
+            
+            func blockchainType() -> BlockchainType {
+                BlockchainType(rawValue: chain ?? "") ?? .Matic
+            }
         }
         
         struct Meta: Decodable {
@@ -138,24 +143,47 @@ extension NetworkService {
 
 // MARK: - Fetch domain & info
 extension NetworkService {
-    func fetchTxsFor(domain: DomainItem) async throws {
-        guard getPersistedProfileSignature(for: domain) != nil else { return }
+    func fetchTxsIfFor(domain: DomainItem) async throws -> [TransactionItem] {
+        guard getPersistedProfileSignature(for: domain) != nil else { return [] }
         
         let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
-        
-        
+        let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
+                                                                                                  method: .get,
+                                                                                                  domain: domain)
+        let txs = response.items.map { $0.createTxItem() }
+        return txs
     }
-    
 
-    private struct DomainOperationsResponse {
+    private struct DomainOperationsResponse: Decodable {
         let items: [Operation]
         let next: String?
         
-        struct Operation: Codable {
+        struct Operation: Decodable {
             let id: String
             let type: String
-            let status: String
+            let status: String // DOMAIN_UPDATE
             let domain: String
+            
+            func createTxItem() -> TransactionItem {
+                TransactionItem(id: nil,
+                                transactionHash: id,
+                                domainName: domain,
+                                isPending: true,
+                                type: nil,
+                                operation: getTxOperation(),
+                                gasPrice: nil,
+                                nonce: nil,
+                                domainId: nil)
+            }
+            
+            private func getTxOperation() -> TxOperation? {
+                switch status {
+                case "DOMAIN_UPDATE":
+                    return .recordUpdate
+                default:
+                    return nil
+                }
+            }
         }
     }
 }

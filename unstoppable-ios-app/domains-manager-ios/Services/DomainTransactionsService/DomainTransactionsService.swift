@@ -32,13 +32,7 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
         storage.replaceTxs_Blocking(transactions)
         return transactions
     }
-    
-    func pendingTxsExistFor (domain: DomainItem) async throws -> Bool {
-        let transactions = try await updatePendingTransactionsListFor(domains: [domain.name])
-        return transactions.containPending(domain)
-    }
 }
-
 
 protocol TxsFetcherFactoryProtocol {
     func createFetcher() -> TxsFetcher

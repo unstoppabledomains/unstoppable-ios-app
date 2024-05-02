@@ -20,10 +20,6 @@ final class DomainTransactionsService: DomainTransactionsServiceProtocol {
         []
     }
     
-    func pendingTxsExistFor(domain: DomainItem) async throws -> Bool {
-        false
-    }
-    
     
 }
 
