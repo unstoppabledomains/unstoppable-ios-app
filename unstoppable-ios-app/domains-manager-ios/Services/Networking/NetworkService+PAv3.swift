@@ -141,7 +141,7 @@ extension NetworkService {
     }
 }
 
-// MARK: - Fetch domain & info
+// MARK: - Fetch txs
 extension NetworkService {
     func fetchPendingTxsFor(domain: DomainItem) async throws -> [TransactionItem] {
         let wallet = try domain.findOwnerWallet()
@@ -189,6 +189,127 @@ extension NetworkService {
                 default:
                     return nil
                 }
+            }
+        }
+    }
+}
+
+// MARK: - Open methods
+extension NetworkService {
+    enum DomainManageType {
+        case updateRecords([RecordToUpdate])
+        case transfer(transferToAddress: String, configuration: TransferDomainConfiguration)
+        case setAsRR
+    
+        private struct UpdateRecordsRequestBody: Codable {
+            let address: String
+            let records: [String : String]
+        }
+        private struct TransferDomainRequestBody: Codable {
+            let address: String
+            let transferToAddress: String
+            let clearRecords: Bool
+        }
+        private struct SetAsRRRequestBody: Codable {
+            let address: String
+            let primaryDomain: Bool
+        }
+        
+        func getRequestBody(ownerWallet: String) -> any Encodable {
+            switch self {
+            case .updateRecords(let records):
+                var recordsDict: [String : String] = [:]
+                for record in records {
+                    recordsDict[record.resolveKey()] = record.resolveValue()
+                }
+                return UpdateRecordsRequestBody(address: ownerWallet, 
+                                                records: recordsDict)
+            case .transfer(let transferToAddress, let configuration):
+                return TransferDomainRequestBody(address: ownerWallet,
+                                          transferToAddress: transferToAddress,
+                                          clearRecords: configuration.resetRecords)
+            case .setAsRR:
+                return SetAsRRRequestBody(address: ownerWallet, primaryDomain: true)
+            }
+        }
+    }
+    
+    
+    func manageDomain(domain: DomainItem, type: DomainManageType) async throws {
+        let ownerWallet = try domain.getETHAddressThrowing()
+        let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
+        let body = type.getRequestBody(ownerWallet: ownerWallet)
+        let operation: ManageDomainOperationDetails = try await makeProfilesAuthorizedDecodableRequest(url: url,
+                                                                                                       method: .post,
+                                                                                                       body: body,
+                                                                                                       domain: domain)
+        let messageToSign = try operation.getMessageToSign()
+        let signature = try await domain.personalSign(message: messageToSign)
+        try await confirmDomainUpdate(domain: domain,
+                                      operation: operation,
+                                      signature: signature)
+    }
+    
+    private func confirmDomainUpdate(domain: DomainItem,
+                                     operation: ManageDomainOperationDetails,
+                                     signature: String) async throws {
+        struct ConfirmDomainUpdateRequestBody: Encodable {
+            let operationId: String
+            let dependencyId: String
+            let signature: String
+        }
+        let dependencyId = try operation.getDependencyId()
+        let url = ProfileDomainURLSList.domainRecordsConfirmURL(domain: domain.name)
+        let body = ConfirmDomainUpdateRequestBody(operationId: operation.operationId,
+                                                  dependencyId: dependencyId,
+                                                  signature: signature)
+    }
+    
+    private struct ManageDomainOperationDetails: Decodable {
+        let operation: Operation
+        
+        struct Operation: Codable {
+            let id: String
+            let status: String
+            let domain: String
+            let dependencies: [DependencyOperation]
+            
+            struct DependencyOperation: Codable {
+                let type: String
+                let id: String
+                let status: String
+                let transaction: Transaction
+                
+                struct Transaction: Codable {
+                    let messageToSign: String
+                }
+            }
+        }
+        
+        var operationId: String { operation.id }
+        func getMessageToSign() throws -> String {
+            let dependency = try getDependency()
+            
+            return dependency.transaction.messageToSign
+        }
+        
+        func getDependencyId() throws -> String {
+            let dependency = try getDependency()
+        
+            return dependency.id
+        }
+        
+        private func getDependency() throws -> Operation.DependencyOperation {
+            guard let dependencies = operation.dependencies.first else { throw ManageDomainOperationDetailsError.noDependency }
+            
+            return dependencies
+        }
+        
+        enum ManageDomainOperationDetailsError: String, LocalizedError {
+            case noDependency
+            
+            public var errorDescription: String? {
+                return rawValue
             }
         }
     }
@@ -251,8 +372,16 @@ private extension NetworkService {
             userAPIURL.appendingURLPathComponents(wallet, "domains")
         }
         
+        static func domainRecordsURL(domain: DomainName) -> String {
+            userAPIURL.appendingURLPathComponents(domain, "records")
+        }
+        
         static func domainRecordsManageURL(domain: DomainName) -> String {
-            userAPIURL.appendingURLPathComponents(domain, "records", "manage")
+            domainRecordsURL(domain: domain).appendingURLPathComponents("manage")
+        }
+        
+        static func domainRecordsConfirmURL(domain: DomainName) -> String {
+            domainRecordsURL(domain: domain).appendingURLPathComponents("confirm")
         }
     }
     
