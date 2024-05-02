@@ -50,8 +50,8 @@ private extension TransactionStatusTracker {
         Task {
             do {
                 switch trackingTransaction {
-                case .domainTransfer(let domainName):
-                    try await refreshTransactionStatusForDomain(domainName)
+                case .domainTransfer(let domain):
+                    try await refreshTransactionStatusForDomain(domain)
                 case .txHash(let txHash):
                     self.txHash = txHash
                     stopRefreshTimer()
@@ -65,7 +65,7 @@ private extension TransactionStatusTracker {
     }
     
     @MainActor
-    func refreshTransactionStatusForDomain(_ domain: DomainName) async throws {
+    func refreshTransactionStatusForDomain(_ domain: DomainItem) async throws {
         let transactions = try await appContext.domainTransactionsService.updatePendingTransactionsListFor(domains: [domain])
         
         if let transaction = transactions
@@ -81,7 +81,7 @@ private extension TransactionStatusTracker {
 // MARK: - Open methods
 extension TransactionStatusTracker {
     enum TransactionType {
-        case domainTransfer(DomainName)
+        case domainTransfer(DomainItem)
         case txHash(TxHash)
     }
 }

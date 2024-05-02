@@ -7,24 +7,6 @@
 
 import Foundation
 
-protocol TxsFetcher {
-    func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem]
-}
-
-extension NetworkService: TxsFetcher {
-    private var transactionsRequestLimit: Int { 25 }
-    
-    public func fetchAllPendingTxs(for domains: [String]) async throws -> [TransactionItem] {
-        do {
-            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: transactionsRequestLimit)
-            return txs
-        } catch {
-            Debugger.printFailure("Failed to fetch TXS, error: \(error)", critical: false)
-            throw error
-        }
-    }
-}
-
 extension NetworkService {
     static var isBackendSimulated: Bool { false }
     
@@ -72,52 +54,6 @@ extension NetworkService {
         _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
     }
     
-    // Response
-    struct TxResponseArray: Codable {
-        @IgnoreFailureArrayElement
-        var txs: [TxResponse]
-    }
-    
-    struct TxResponse: Codable {
-        let id: UInt64
-        let type: TxType
-        let operation: TxOperation
-        let statusGroup: String
-        let hash: String?
-        let domain: TxDomainResponse
-//        let cryptoWallet: TxCryptoWalletResponse
-        
-    }
-    
-    struct TxDomainResponse: Codable {
-        let id: Int
-        let name: String
-        let ownerAddress: String?
-    }
-    
-    struct WalletArrayResponse: Codable {
-        let wallets: [TxCryptoWalletResponse]
-    }
-    
-    struct TxCryptoWalletResponse: Codable {
-        let id: Int
-        let blockchain: String
-        let publicKey: String?
-        let address: String
-        let verified: Bool
-        let humanAddress: String
-        
-        func getNamingService() -> NamingService? {
-            guard let blockchain = try? BlockchainType.getType(abbreviation: self.blockchain) else {
-                return nil
-            }
-            
-            switch blockchain {
-            case .Ethereum, .Matic: return .UNS
-            }
-        }
-    }
-    
     struct DomainsInfo {
         let domainNames: [String]
         let txCosts: [TxCost]?
@@ -158,10 +94,6 @@ extension NetworkService {
         let status: Int?
     }
     
-    struct TxCostContainer: Codable {
-        let txCost: TxCost
-    }
-    
     struct TxCost: Codable {
         let quantity: Int
         let stripeIntent: String
@@ -173,28 +105,10 @@ extension NetworkService {
         let price: Int
     }
     
-    struct TxData: Codable {
-        let message: String?
-        let bytes: Buffer?
-        let nonce: UInt?
-        let blockchain: String
-    }
-    
     struct DomainData: Codable {
         let name: String
         let blockchain: String
         let node: String
-    }
-    
-    struct CombinedMessagesToSignResponse: Codable {
-        let txs: [TxData]
-        let domain: DomainData
-        let txCost: TxCost?
-    }
-    
-    struct Buffer: Codable {
-        let type: String
-        let data: [UInt8]
     }
     
     struct TxPayload {
@@ -258,234 +172,6 @@ extension NetworkService {
         let _ = try await fetchData(for: request.url,
                                     body: request.body,
                                     extraHeaders: request.headers)
-    }
-}
-
-extension NetworkService {
-    static let postRequestLimit = 500
-    
-    public func fetchUnsDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
-        let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
-        guard !ownerUnsAddresses.isEmpty else { return [] }
-        return try await fetchDomains(for: ownerUnsAddresses)
-    }
-    
-    private func fetchDomains(for ownerAddresses: [HexAddress]) async throws -> [DomainItem] {
-        try await fetchAllPagesWithLimit(for: ownerAddresses, limit: Self.postRequestLimit)
-    }
-    
-    func fetchAllPagesWithLimit<T: PaginatedFetchable>(for originItems: [T.O], limit: Int) async throws -> [T] {
-        guard !originItems.isEmpty else { return [] }
-        
-        let loader = PaginatedFetchableBatchLoader<T>(maxOperations: Constants.maximumConcurrentNetworkRequestsLimit)
-        let response = try await withSafeCheckedThrowingContinuation({ completion in
-            loader.fetchAllPagesWithLimit(for: originItems, limit: limit, resultBlock: { result in
-                switch result {
-                case .success(let result):
-                    completion(.success(result))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            })
-        })
-        
-        return response
-    }
-    
-    func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O]) async throws -> [T] {
-        let perPage = 50
-        let result: [T] = try await fetchAllPages(for: originItems, startingWith: 1, perPage: perPage, result: [])
-        return result
-    }
-    
-    func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O], startingWith page: Int, perPage: Int, result: [T]) async throws -> [T] {
-        let itemsBatch: [T] = try await fetchPage(for: originItems, page: page, perPage: perPage)
-        var result = result
-        result.append(contentsOf: itemsBatch)
-        
-        if itemsBatch.count < perPage {
-            return result
-        } else {
-            let nextPage = page + 1
-            return try await fetchAllPages(for: originItems, startingWith: nextPage, perPage: perPage, result: result)
-        }
-    }
-    
-    func fetchPage<T: PaginatedFetchable>(for originItems: [T.O], page: Int, perPage: Int) async throws -> [T] {
-        let itemsBatch = try await T.fetchPaginatedData_Blocking(for: originItems,
-                                                                 page: page,
-                                                                 perPage: perPage)
-        
-        return itemsBatch
-    }
-        
-    static func gen_paginatedBlockingFetchDataGen<T: PaginatedFetchable>(for originItems: [T.O],
-                                                                         page: Int,
-                                                                         perPage: Int) async throws -> [T] {
-        guard originItems.count > 0 else { return [] }
-        
-        let request: APIRequest = try T.createRequestForPaginated(for: originItems, page: page, perPage: perPage)
-        let data = try await NetworkService().fetchData(for: request.url,
-                                                        body: request.body,
-                                                        method: request.method,
-                                                        extraHeaders: request.headers)
-        
-        if let json = try? JSONDecoder().decode(T.J.self, from: data) {
-            return T.convert(json)
-        } else {
-            throw NetworkLayerError.parsingDomainsError
-        }
-    }
-}
-
-protocol PaginatedFetchable {
-    associatedtype O
-    associatedtype J: Decodable
-    associatedtype D
-    
-    init(jsonResponse: D)
-    static func convert(_ json: Self.J) -> [Self]
-    
-    static func createRequestForPaginated(for originItems: [O],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self]
-    
-}
-
-extension PaginatedFetchable {
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] { [] }
-}
-
-enum FetchRequestBuilderError: String, LocalizedError {
-    case domains
-    case txs
-    
-    public var errorDescription: String? {
-        return rawValue
-    }
-}
-
-extension DomainItem: PaginatedFetchable {
-    typealias O = HexAddress
-    typealias J = NetworkService.DomainResponseArray
-    typealias D = NetworkService.DomainResponse
-    
-    static func convert(_ json: Self.J) -> [Self] {
-        json.domains.compactMap({Self.init(jsonResponse: $0)})
-    }
-    
-    static func createRequestForPaginated(for originItems: [HexAddress],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest {
-        guard let endpoint = Endpoint.domainsByOwnerAddressesPost(owners: originItems,
-                                                                  page: page,
-                                                                  perPage: perPage) else {
-            throw FetchRequestBuilderError.domains
-        }
-        return APIRequest(url: endpoint.url!, body: endpoint.body, method: .post)
-    }
- 
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] {
-        try await NetworkService.gen_paginatedBlockingFetchDataGen(for: originItems, page: page, perPage: perPage)
-    }
-}
-
-extension TransactionItem: PaginatedFetchable {
-    typealias O = String
-    typealias J = NetworkService.TxResponseArray
-    typealias D = NetworkService.TxResponse
-    
-    static func convert(_ json: Self.J) -> [Self] {
-        json.txs.compactMap({Self.init(jsonResponse: $0)})
-    }
-    
-    static func createRequestForPaginated(for originItems: [O],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest {
-        guard let endpoint = Endpoint.transactionsByDomainsPost(domains: originItems,
-                                                                status: .pending,
-                                                                page: page,
-                                                                perPage: perPage) else {
-            throw FetchRequestBuilderError.txs
-        }
-        return APIRequest(url: endpoint.url!, body: endpoint.body, method: .post)
-    }
-    
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] {
-        try await NetworkService.gen_paginatedBlockingFetchDataGen(for: originItems, page: page, perPage: perPage)
-    }
-}
-
-private final class PaginatedFetchableBatchLoader<T: PaginatedFetchable> {
-    typealias ResultBlock = (Swift.Result<[T], Error>)->()
-    
-    private let operationQueue = OperationQueue()
-    private let serialQueue = DispatchQueue(label: "batch.loader.serial.queue")
-    private var resultItems: [T] = []
-    private var batchCounter = 0
-    private var resultBlock: ResultBlock?
-    
-    init(maxOperations: Int) {
-        operationQueue.maxConcurrentOperationCount = maxOperations
-    }
-    
-    func fetchAllPagesWithLimit(for originItems: [T.O], limit: Int, resultBlock: @escaping ResultBlock) {
-        guard !originItems.isEmpty else {
-            resultBlock(.success([]))
-            return
-        }
-        self.resultBlock = resultBlock
-        var items = originItems
-        
-        while items.count > 0 {
-            batchCounter += 1
-            let batch = items.prefix(limit)
-            items = Array(items.dropFirst(batch.count))
-            
-            let operation: LoadPaginatedFetchableOperation<T> = LoadPaginatedFetchableOperation(batch: Array(batch)) { [weak self] result in
-                switch result {
-                case .success(let loadedItems):
-                    self?.addLoadedItems(loadedItems)
-                case .failure(let error):
-                    self?.handle(error: error)
-                }
-            }
-            
-            operationQueue.addOperation(operation)
-        }
-    }
-    
-    private func addLoadedItems(_ loadedItems: [T]) {
-        serialQueue.sync {
-            resultItems.append(contentsOf: loadedItems)
-            batchCounter -= 1
-            if batchCounter == 0 {
-                resultBlock?(.success(resultItems))
-                resultBlock = nil
-            }
-        }
-    }
-    
-    private func handle(error: Error) {
-        serialQueue.sync {
-            if let loadingError = error as? LoadPaginatedFetchableOperation<T>.LoadError,
-               loadingError == LoadPaginatedFetchableOperation.LoadError.cancelled {
-                return
-            } else {
-                resultBlock?(.failure(error))
-                resultBlock = nil
-                operationQueue.cancelAllOperations()
-            }
-        }
     }
 }
 

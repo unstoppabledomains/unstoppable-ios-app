@@ -9,7 +9,6 @@ import Foundation
 
 final class DomainTransactionsService {
     private let storage: Storage = Storage.instance
-    private lazy var txsFetcherFactory: TxsFetcherFactoryProtocol = DefaultTxsFetcherFactory()
 }
 
 // MARK: - DomainTransactionsServiceProtocol
@@ -22,30 +21,26 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
         storage.injectTxsUpdate_Blocking(transactions)
     }
     
-    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [DomainItem]) async throws -> [TransactionItem] {
         let start = Date()
-        let transactions = try await txsFetcherFactory.createFetcher().fetchAllPendingTxs(for: domains)
+        var transactions: [TransactionItem] = []
+        
+        try await withThrowingTaskGroup(of: [TransactionItem].self) { group in
+            for domain in domains {
+                group.addTask {
+                    try await NetworkService().fetchPendingTxsFor(domain: domain)
+                }
+            }
+            
+            for try await txs in group {
+                transactions.append(contentsOf: txs)
+            }
+        }
         Debugger.printTimeSensitiveInfo(topic: .Network,
                                         "to load \(transactions.count) transactions for \(domains.count) domains",
                                         startDate: start,
                                         timeout: 2)
         storage.replaceTxs_Blocking(transactions)
         return transactions
-    }
-    
-    func pendingTxsExistFor (domain: DomainItem) async throws -> Bool {
-        let transactions = try await updatePendingTransactionsListFor(domains: [domain.name])
-        return transactions.containPending(domain)
-    }
-}
-
-
-protocol TxsFetcherFactoryProtocol {
-    func createFetcher() -> TxsFetcher
-}
-
-struct DefaultTxsFetcherFactory: TxsFetcherFactoryProtocol {
-    func createFetcher() -> TxsFetcher {
-        return NetworkService()
     }
 }

@@ -60,20 +60,10 @@ struct APIRequest {
     }
 }
 
-enum MetaTxMethod: String {
-    case resolveTo
-    case reconfigure
-    case setMany
-    case transferFrom
-    case resolveZilTo
-}
-
 enum RequestType: String {
     case authenticate = "/authenticate"
     case fetchAllUnclaimedDomains = "/domains/unclaimed"
     case claim = "/domains/claim"
-    case fetchSiteWallets = "/wallets"
-    case transactions = "/txs"
     case messagesToSign = "/txs/messagesToSign"
     case meta = "/txs/meta"
     case domains = "/domains"
@@ -179,13 +169,6 @@ class APIRequestBuilder {
         return self
     }
     
-    func fetchSiteWallets() throws -> APIRequestBuilder {
-        guard email != nil,
-              code != nil else { throw APIRequestError.parametersNotSpecified }
-        self.type = .fetchSiteWallets
-        return self
-    }
-    
     func apnsTokens(info: PushNotificationsInfo) throws -> APIRequestBuilder {
         guard let body = info.jsonString() else { throw APIRequestError.parametersNotSpecified }
         self.body = body
@@ -222,37 +205,6 @@ class APIRequestBuilder {
         return self
     }
     
-    struct SetManyParams: Codable {
-        let keys: [String]
-        let values: [String]
-    }
-    
-    struct SetManyParamsZil: Codable {
-        let keys: [String]
-        let values: [String]
-        let publicKey: String
-    }
-    
-    struct MethodAndParamsGenericParams<T: Codable>: Codable {
-        let method: String
-        let params: T
-    }
-    
-    struct MessagesToSignRequestGeneric<T: Codable>: Codable {
-        let domain: String
-        let transactions : [T]
-    }
-    
-    struct MessagesToSignRequestSetManyBody: Codable {
-        let domain: String
-        let transactions : [MethodAndParamsGenericParams<String>]
-    }
-    
-    struct MethodAndParamsGenericParamsZil<T: Codable>: Codable {
-        let method: String
-        let params: T
-    }
-        
     func build() -> APIRequest {
         if let endpoint = self.endpoint {
             return APIRequest(url: endpoint.url!, headers: self.secureHeader, body: self.body ?? "")
@@ -320,25 +272,12 @@ class APIRequestBuilder {
         return toClaim.stringify()
     }
     
-    struct MessageToSignRequest<T:Encodable>: Encodable {
-        let method: String
-        let domain: String
-        let params: T
-    }
-    
     private func buildURL<T:APIRepresentable>(for array: [T], parameterName: String) -> String {
         let tail = array.reduce("") { res, element in
             let and = res == "" ? "" : "&"
             return res + and + "txs[\(parameterName)][]=\(element.apiRepresentation)"
         }
         return "?\(tail)"
-    }
-    
-    func transactions(_ txIds: [Int]) throws -> APIRequestBuilder {
-        guard txIds.count > 0 else { throw APIRequestError.parametersNotSpecified }
-        self.type = .transactions
-        self.ids = txIds
-        return self
     }
 }
 
@@ -535,58 +474,7 @@ extension Int: APIRepresentable {
 
 // Resolution API
 
-extension Endpoint {    
-    struct OwnerArrayRequest: Encodable {
-        let owner: [String]
-    }
-    
-    static func domainsByOwnerAddressesPost(owners: [HexAddress], page: Int, perPage: Int) -> Endpoint? {
-        var paramQueryItems: [URLQueryItem] = []
-        paramQueryItems.append( URLQueryItem(name: "page", value: "\(page)") )
-        paramQueryItems.append( URLQueryItem(name: "perPage", value: "\(perPage)") )
-        
-        let req = OwnerArrayRequest(owner: owners)
-        guard let json = try? JSONEncoder().encode(req) else { return nil }
-        guard let body = String(data: json, encoding: .utf8) else {
-            Debugger.printWarning("Failed to stringify data")
-            return nil
-        }
-        return composeResolutionEndpoint(paramQueryItems: paramQueryItems,
-                                         requestType: .domains,
-                                         body: body)
-    }
-    
-    struct DomainArray: Encodable {
-        let domain: [String]
-        let status: TxStatusGroup?
-    }
-    
-    
-    struct TxsArrayRequest: Encodable {
-        let txs: DomainArray
-    }
-    
-    static func transactionsByDomainsPost(domains: [String], 
-                                          status: TxStatusGroup?,
-                                          page: Int,
-                                          perPage: Int) -> Endpoint? {
-        var paramQueryItems: [URLQueryItem] = []
-        paramQueryItems.append( URLQueryItem(name: "page", value: "\(page)") )
-        paramQueryItems.append( URLQueryItem(name: "perPage", value: "\(perPage)") )
-        
-        let req = TxsArrayRequest(txs: DomainArray(domain: domains.map({ $0 }),
-                                                   status: status))
-        guard let json = try? JSONEncoder().encode(req) else { return nil }
-        guard let body = String(data: json, encoding: .utf8) else {
-            Debugger.printWarning("Failed to stringify data")
-            return nil
-        }
-        return composeResolutionEndpoint(paramQueryItems: paramQueryItems,
-                                         apiType: .resellers,
-                                         requestType: .transactions,
-                                         body: body)
-    }
-    
+extension Endpoint {
     static private func composeResolutionEndpoint(paramQueryItems: [URLQueryItem],
                                                   apiType: UDApiType = .resolution,
                                                   requestType: RequestType,

@@ -9,7 +9,7 @@ import Foundation
 
 protocol UDDomainsServiceProtocol {
     func getCachedDomainsFor(wallets: [UDWallet]) -> [DomainItem]
-    func updateDomainsList(for userWallets:  [UDWallet]) async throws -> [DomainItem]
+    func updateDomainsList(for wallet: UDWallet) async throws -> [DomainItem]
     func getCachedDomainsPFPInfo() -> [DomainPFPInfo]
     func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo]
     func updateDomainsPFPInfo(for domainNames: [DomainName]) async -> [DomainPFPInfo]
@@ -23,7 +23,6 @@ protocol UDDomainsServiceProtocol {
                      securityCode: String) async throws 
     
     func findDomains(by domainNames: [String]) -> [DomainItem]
-    func getAllDomains() -> [DomainItem]
     
     // Resolution
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress?

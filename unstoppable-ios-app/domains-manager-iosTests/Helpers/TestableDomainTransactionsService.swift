@@ -17,12 +17,8 @@ final class TestableDomainTransactionsService: DomainTransactionsServiceProtocol
         
     }
     
-    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [DomainItem]) async throws -> [TransactionItem] {
         []
-    }
-    
-    func pendingTxsExistFor(domain: DomainItem) async throws -> Bool {
-        false
     }
     
     

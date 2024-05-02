@@ -1053,7 +1053,6 @@
 		C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3A32912AD4200837F21 /* DomainProfileBadgeCell.swift */; };
 		C669C3A92912AD4200837F21 /* DomainProfileBadgeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C3A42912AD4200837F21 /* DomainProfileBadgeCell.xib */; };
 		C66A26E228B3CEAE005470B9 /* AnalyticsServiceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */; };
-		C66A26E628B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A26E428B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift */; };
 		C66A26EA28B4C22F005470B9 /* BaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A26E528B4C22F005470B9 /* BaseOperation.swift */; };
 		C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66A9DC728BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift */; };
 		C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCCF22844863E009B9525 /* UDGradientCoverView.swift */; };
@@ -3523,7 +3522,6 @@
 		C669C39D291280C900837F21 /* DomainProfileBadgesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgesSection.swift; sourceTree = "<group>"; };
 		C669C3A32912AD4200837F21 /* DomainProfileBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgeCell.swift; sourceTree = "<group>"; };
 		C669C3A42912AD4200837F21 /* DomainProfileBadgeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileBadgeCell.xib; sourceTree = "<group>"; };
-		C66A26E428B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadPaginatedFetchableOperation.swift; sourceTree = "<group>"; };
 		C66A26E528B4C22F005470B9 /* BaseOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
 		C66A9DC728BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationControllerChildNavigationHandler.swift; sourceTree = "<group>"; };
 		C66FCCF22844863E009B9525 /* UDGradientCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGradientCoverView.swift; sourceTree = "<group>"; };
@@ -6625,7 +6623,6 @@
 		C66A26E328B4C22F005470B9 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				C66A26E428B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift */,
 				C66A26E528B4C22F005470B9 /* BaseOperation.swift */,
 			);
 			path = Operations;
@@ -9794,7 +9791,6 @@
 				C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */,
 				C6B65F622B55015F006D1812 /* HomeWalletHeaderRowView.swift in Sources */,
 				C64BCB712A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift in Sources */,
-				C66A26E628B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */,
 				C6124CDC2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
 				C69F99262A9F1264004B1958 /* SideInsets.swift in Sources */,
 				C6F433422BB25DDD000C5E46 /* ConfirmSendAssetSendingInfoView.swift in Sources */,

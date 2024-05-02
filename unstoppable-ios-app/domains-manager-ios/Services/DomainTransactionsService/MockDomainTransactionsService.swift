@@ -16,16 +16,12 @@ final class MockDomainTransactionsService {
 
 // MARK: - DomainTransactionsServiceProtocol
 extension MockDomainTransactionsService: DomainTransactionsServiceProtocol {
-    func pendingTxsExistFor(domain: DomainItem) async throws -> Bool {
-        return !mintingTransactions.filterPending(extraCondition: {domain.name == $0.domainName}).isEmpty
-    }
-    
     func getCachedTransactionsFor(domainNames: [String]) -> [TransactionItem] { [] }
     func cacheTransactions(_ transactions: [TransactionItem]) { }
-    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [DomainItem]) async throws -> [TransactionItem] {
         domains.map({
             TransactionItem(transactionHash: UUID().uuidString,
-                            domainName: $0,
+                            domainName: $0.name,
                             isPending: true,
                             operation: .mintDomain)
         })

@@ -25,10 +25,6 @@ final class MockUDDomainsService {
 // MARK: - UDDomainsServiceProtocol
 extension MockUDDomainsService: UDDomainsServiceProtocol {
 
-    func getAllDomains() -> [DomainItem] {
-        domains
-    }
-    
     func findDomains(by domainNames: [String]) -> [DomainItem] {
         []
     }
@@ -41,17 +37,15 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
         return domains
     }
     
-    func updateDomainsList(for userWallets:  [UDWallet]) async throws -> [DomainItem] {
+    func updateDomainsList(for wallet: UDWallet) async throws -> [DomainItem] {
         workingQueue.sync {
             if domains.isEmpty {
-                for (i, wallet) in userWallets.enumerated() {
                     for _ in 0..<TestsEnvironment.numberOfDomainsToUse {
-                        if let domain = addDomain(suffix: "_\(i)",
+                        if let domain = addDomain(suffix: "_",
                                                   wallet: wallet.address) {
                             walletToDomains[wallet.address, default: []].append(domain)
                         }
                     }
-                }
             }
             return domains
         }

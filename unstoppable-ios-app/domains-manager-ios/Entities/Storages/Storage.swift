@@ -70,9 +70,7 @@ class Storage {
     func findDomains(by domainNames: [String]) -> [DomainItem] {
         getStoredDomains().filter { domainNames.contains($0.name) }
     }
-    
-    func getAllDomains() -> [DomainItem] { getStoredDomains() }
-    
+        
     func getCachedDomainsArray_Blocking(for wallets: [UDWallet])-> [DomainItem] {
         wallets.pickOwnedDomains(from: getStoredDomains())
     }

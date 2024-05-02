@@ -112,9 +112,12 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
         }
     }
     
+    public func getPersistedProfileSignature(for domain: DomainItem) -> PersistedTimedSignature? {
+        try? appContext.persistedProfileSignaturesStorage.getUserDomainProfileSignature(for: domain.name)
+    }
+    
     public func getOrCreateAndStorePersistedProfileSignature(for domain: DomainItem) async throws -> PersistedTimedSignature {
-        if let storedSignature = try? appContext.persistedProfileSignaturesStorage
-            .getUserDomainProfileSignature(for: domain.name) {
+        if let storedSignature = getPersistedProfileSignature(for: domain) {
             return storedSignature
         } else {
             let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)

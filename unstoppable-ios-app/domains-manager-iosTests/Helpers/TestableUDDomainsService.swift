@@ -16,7 +16,7 @@ final class TestableUDDomainsService: UDDomainsServiceProtocol {
         []
     }
     
-    func updateDomainsList(for userWallets: [UDWallet]) async throws -> [DomainItem] {
+    func updateDomainsList(for wallet: UDWallet) async throws -> [DomainItem] {
         domainsToReturn
     }
     
@@ -45,10 +45,6 @@ final class TestableUDDomainsService: UDDomainsServiceProtocol {
     }
     
     func findDomains(by domainNames: [String]) -> [DomainItem] {
-        []
-    }
-    
-    func getAllDomains() -> [DomainItem] {
         []
     }
     

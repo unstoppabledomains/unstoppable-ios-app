@@ -10,6 +10,5 @@ import Foundation
 protocol DomainTransactionsServiceProtocol {
     func getCachedTransactionsFor(domainNames: [String]) -> [TransactionItem]
     func cacheTransactions(_ transactions: [TransactionItem])
-    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem]
-    func pendingTxsExistFor (domain: DomainItem) async throws -> Bool
+    func updatePendingTransactionsListFor(domains: [DomainItem]) async throws -> [TransactionItem]
 }

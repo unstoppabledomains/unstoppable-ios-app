@@ -25,24 +25,20 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         storage.findDomains(by: domainNames)
     }
     
-    func getAllDomains() -> [DomainItem] { storage.getAllDomains() }
-  
-    func updateDomainsList(for wallets:  [UDWallet]) async throws -> [DomainItem] {
-        guard !wallets.isEmpty else { return [] }
+    func updateDomainsList(for wallet: UDWallet) async throws -> [DomainItem] {
+        async let fetchDomainsTask = NetworkService().fetchDomainsIn(wallet: wallet.address)
         
-        async let fetchUNSDomainsTask = NetworkService().fetchUnsDomains(for: wallets)
-
         let start = Date()
-        let unsDomainArray = try await fetchUNSDomainsTask
+        let domainArray = try await fetchDomainsTask
         Debugger.printTimeSensitiveInfo(topic: .Domain,
-                                        "to load \((unsDomainArray).count) domains for \(wallets.count) wallets",
+                                        "to load \((domainArray).count) domains for \(wallet.address)",
                                         startDate: start,
                                         timeout: 2)
-
-        try await storage.updateDomainsToCache_Blocking(unsDomainArray,
+        
+        try await storage.updateDomainsToCache_Blocking(domainArray,
                                                         of: .UNS,
-                                                        for: wallets)
-        let domains = getCachedDomainsFor(wallets: wallets)
+                                                        for: [wallet])
+        let domains = getCachedDomainsFor(wallets: [wallet])
         
         return domains
     }
