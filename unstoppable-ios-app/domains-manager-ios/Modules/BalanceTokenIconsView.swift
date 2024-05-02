@@ -23,7 +23,7 @@ struct BalanceTokenIconsView: View {
                 .skeletonable()
                 .clipShape(Circle())
             
-            if token.parentSymbol != nil {
+            if token.parent != nil {
                 Image(uiImage: parentIcon ?? .init())
                     .resizable()
                     .squareFrame(20)

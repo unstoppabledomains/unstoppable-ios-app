@@ -223,7 +223,8 @@ private extension ConfirmSendTokenView {
     func totalValue(gasFee: Double) -> Double {
         let sendData = dataModel.data
         var amountToSpend = sendData.amount.valueOf(type: .tokenAmount, for: token)
-        if !sendData.isSendingAllTokens() {
+        if !sendData.isSendingAllTokens(),
+           !token.isERC20Token {
             amountToSpend += gasFee
         }
         return amountToSpend
