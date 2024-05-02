@@ -179,7 +179,7 @@ extension CryptoSender {
         ]
         
         static func getSupportedToken(by symbol: String) -> Self? {
-            CryptoSender.SupportedToken(rawValue: self.symbol.uppercased())
+            CryptoSender.SupportedToken(rawValue: symbol.uppercased())
         }
         
         func getContractAddress(for chain: ChainSpec) throws -> HexAddress {
