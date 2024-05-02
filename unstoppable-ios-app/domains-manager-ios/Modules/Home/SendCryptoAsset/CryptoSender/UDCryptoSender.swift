@@ -31,12 +31,12 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
               let chain = try? nativeChainSpecFor(chainDesc: dataToSend.chainDesc) else { throw CryptoSender.Error.sendingNotSupported }
         let crypto = try CryptoSendingSpec(token: token, units: dataToSend.amount, speed: dataToSend.txSpeed)
         
-        let cryptoSender: CryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
+        let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
         if cryptoSender.canSendCrypto(token: token, chain: chain) {
             return try await cryptoSender.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
         }
         
-        let cryptoSender2: CryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
+        let cryptoSender2: ConcreteCryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
         if cryptoSender2.canSendCrypto(token: token, chain: chain) {
             return try await cryptoSender2.sendCrypto(crypto: crypto, chain: chain, toAddress: toAddress)
         }
@@ -50,12 +50,12 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
               let chain = try? nativeChainSpecFor(chainDesc: dataToSend.chainDesc) else { throw CryptoSender.Error.sendingNotSupported }
         let crypto = try CryptoSendingSpec(token: token, units: dataToSend.amount, speed: dataToSend.txSpeed)
         
-        let cryptoSender: CryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
+        let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
         if cryptoSender.canSendCrypto(token: token, chain: chain) {
             return try await cryptoSender.computeGasFeeFrom(maxCrypto: crypto, on: chain, toAddress: toAddress)
         }
         
-        let cryptoSender2: CryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
+        let cryptoSender2: ConcreteCryptoSenderProtocol = TokenCryptoSender(wallet: wallet)
         if cryptoSender2.canSendCrypto(token: token, chain: chain) {
             return try await cryptoSender2.computeGasFeeFrom(maxCrypto: crypto, on: chain, toAddress: toAddress)
         }
@@ -64,7 +64,7 @@ struct UDCryptoSender: UniversalCryptoSenderProtocol {
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
         let chain = try nativeChainSpecFor(chainDesc: chainDesc)
-        let cryptoSender: CryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
+        let cryptoSender: ConcreteCryptoSenderProtocol = NativeCoinCryptoSender(wallet: wallet)
         return try await cryptoSender.fetchGasPrices(on: chain)
     }
     
