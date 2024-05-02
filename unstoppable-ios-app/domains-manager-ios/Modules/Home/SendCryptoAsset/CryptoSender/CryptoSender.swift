@@ -20,7 +20,7 @@ struct CryptoSenderChainDescription {
     let env: UnsConfigManager.BlockchainEnvironment
     
     func getToken() throws -> CryptoSender.SupportedToken {
-        guard let token = CryptoSender.SupportedToken(rawValue: self.symbol.uppercased()) else {
+        guard let token = CryptoSender.SupportedToken.getSupportedToken(by: self.symbol) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         return token
