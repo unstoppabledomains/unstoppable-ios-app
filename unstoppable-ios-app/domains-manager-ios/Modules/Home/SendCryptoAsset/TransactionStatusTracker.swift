@@ -66,7 +66,7 @@ private extension TransactionStatusTracker {
     
     @MainActor
     func refreshTransactionStatusForDomain(_ domain: DomainItem) async throws {
-        let transactions = try await appContext.domainTransactionsService.updatePendingTransactionsListFor(domains: [domain.name])
+        let transactions = try await appContext.domainTransactionsService.updatePendingTransactionsListFor(domains: [domain])
         
         if let transaction = transactions
             .filterPending(extraCondition: { $0.operation == .transferDomain })

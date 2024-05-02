@@ -44,7 +44,7 @@ final class ReverseResolutionTransactionInProgressViewPresenter: BaseTransaction
     
     override func refreshMintingTransactions() {
         Task {
-            let transactions = try await transactionsService.updatePendingTransactionsListFor(domains: [domain.name])
+            let transactions = try await transactionsService.updatePendingTransactionsListFor(domains: [domain])
 
             if let domainReverseResolutionTransaction = transactions
                                                             .filterPending(extraCondition: { $0.operation == .setReverseResolution})

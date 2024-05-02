@@ -143,9 +143,15 @@ extension NetworkService {
 
 // MARK: - Fetch domain & info
 extension NetworkService {
-    func fetchTxsIfFor(domain: DomainItem) async throws -> [TransactionItem] {
-        guard getPersistedProfileSignature(for: domain) != nil else { return [] }
-        
+    func fetchPendingTxsFor(domain: DomainItem) async throws -> [TransactionItem] {
+        let wallet = try domain.findOwnerWallet()
+        switch wallet.type {
+        case .externalLinked:
+            guard getPersistedProfileSignature(for: domain) != nil else { return [] }
+        default:
+            Void()
+        }
+
         let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
         let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
                                                                                                   method: .get,

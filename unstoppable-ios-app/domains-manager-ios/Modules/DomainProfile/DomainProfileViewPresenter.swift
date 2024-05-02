@@ -1262,7 +1262,7 @@ private extension DomainProfileViewPresenter {
             dataHolder.set(profile: profile)
             dataHolder.set(recordsData: recordsData)
         case .transactions:
-            let transactions = try await domainTransactionsService.updatePendingTransactionsListFor(domains: [domain.name])
+            let transactions = try await domainTransactionsService.updatePendingTransactionsListFor(domains: [domain])
             dataHolder.set(transactions: transactions)
         }
     }

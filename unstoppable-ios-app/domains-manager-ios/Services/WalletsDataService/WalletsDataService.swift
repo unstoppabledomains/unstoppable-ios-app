@@ -226,7 +226,7 @@ private extension WalletsDataService {
             async let domainsTask = domainsService.updateDomainsList(for: wallet.udWallet)
             async let reverseResolutionTask = fetchRRDomainNameFor(wallet: wallet)
             let (domains, reverseResolutionDomainName) = try await (domainsTask, reverseResolutionTask)
-            let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomainsFor(walletAddress: wallet.address).map({ $0.name })
+            let mintingDomainsNames = getMintingDomainNamesIn(wallet: wallet)
             let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains, for: wallet.address)
             
             if domains.isEmpty,
@@ -238,7 +238,7 @@ private extension WalletsDataService {
                 return
             }
             
-            async let transactionsTask = transactionsService.updatePendingTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
+            async let transactionsTask = transactionsService.updatePendingTransactionsListFor(domains: domains)
             async let domainsPFPInfoTask = loadDomainsPFPIfNotTooLarge(domains)
             let (transactions, domainsPFPInfo) = try await (transactionsTask, domainsPFPInfoTask)
             
@@ -253,6 +253,10 @@ private extension WalletsDataService {
             }
         } catch { }
         startRefreshDomainsTimerIfNeeded()
+    }
+    
+    func getMintingDomainNamesIn(wallet: WalletEntity) -> [DomainName] {
+        MintingDomainsStorage.retrieveMintingDomainsFor(walletAddress: wallet.address).map({ $0.name })
     }
     
     func buildWalletDomainsDisplayInfoData(wallet: WalletEntity,
@@ -305,7 +309,8 @@ private extension WalletsDataService {
         
         // Set minting domains
         let mintingTransactions = pendingTransactions.filterPending(extraCondition: { $0.isMintingTransaction() })
-        let mintingDomainsNames = mintingTransactions.compactMap({ $0.domainName })
+        let mintedDomainsNames = domains.map { $0.name }
+        let mintingDomainsNames = getMintingDomainNamesIn(wallet: wallet).filter { !mintedDomainsNames.contains($0) }
         var mintingDomainsWithDisplayInfoItems = [DomainWithDisplayInfo]()
         
         if !mintingDomainsNames.isEmpty {

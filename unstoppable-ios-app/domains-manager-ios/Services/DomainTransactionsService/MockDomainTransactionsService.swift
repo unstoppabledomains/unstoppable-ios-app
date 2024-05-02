@@ -18,10 +18,10 @@ final class MockDomainTransactionsService {
 extension MockDomainTransactionsService: DomainTransactionsServiceProtocol {
     func getCachedTransactionsFor(domainNames: [String]) -> [TransactionItem] { [] }
     func cacheTransactions(_ transactions: [TransactionItem]) { }
-    func updatePendingTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
+    func updatePendingTransactionsListFor(domains: [DomainItem]) async throws -> [TransactionItem] {
         domains.map({
             TransactionItem(transactionHash: UUID().uuidString,
-                            domainName: $0,
+                            domainName: $0.name,
                             isPending: true,
                             operation: .mintDomain)
         })
