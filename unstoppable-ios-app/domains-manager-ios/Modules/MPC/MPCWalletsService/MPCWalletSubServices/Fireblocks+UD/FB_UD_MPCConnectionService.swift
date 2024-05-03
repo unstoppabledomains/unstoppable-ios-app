@@ -204,7 +204,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                         symbol: String,
                         chain: String,
                         destinationAddress: String,
-                        by walletMetadata: MPCWalletMetadata) async throws {
+                        by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
                                                                         authTokenProvider: self)
@@ -229,12 +229,13 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
             try await mpcConnector.signTransactionWith(txId: txId)
             logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
-            try await networkService.waitForOperationCompleted(accessToken: token,
-                                                               operationId: operationId)
+            let txHash = try await networkService.waitForTxCompletedAndGetHash(accessToken: token,
+                                                                               operationId: operationId)
             logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
+            return txHash
         case .signed(let signature):
             logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
-            return
+            throw MPCConnectionServiceError.incorrectOperationState
         }
     }
     
@@ -385,6 +386,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case failedToGetEthAddress
         case noAccountsForWallet
         case invalidWalletMetadata
+        case incorrectOperationState
         
         public var errorDescription: String? {
             return rawValue
