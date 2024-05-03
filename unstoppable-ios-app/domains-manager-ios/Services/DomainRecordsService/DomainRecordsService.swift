@@ -9,24 +9,9 @@ import Foundation
 
 // MARK: - DomainRecordsServiceProtocol
 final class DomainRecordsService: DomainRecordsServiceProtocol {
-    
     func saveRecords(records: [RecordToUpdate],
                      in domain: DomainItem,
                      paymentConfirmationHandler: PaymentConfirmationHandler) async throws {
-        let request = try getRequestForActionUpdateRecords(domain, records: records)
-        try await NetworkService().makeActionsAPIRequest(request,
-                                                         forDomain: domain,
-                                                         paymentConfirmationHandler: paymentConfirmationHandler)
-    }
-}
-
-// MARK: - Save records
-private extension DomainRecordsService {
-    func getRequestForActionUpdateRecords(_ domain: DomainItem,
-                                          records: [RecordToUpdate]) throws -> APIRequest {
-        let request = try APIRequestBuilder()
-            .actionPostUpdateRecords(for: domain, records: records)
-            .build()
-        return request
+        try await NetworkService().manageDomain(domain: domain, type: .updateRecords(records))
     }
 }

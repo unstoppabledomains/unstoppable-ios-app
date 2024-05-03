@@ -153,7 +153,7 @@ extension WalletsDataService: UDWalletsServiceListener {
                 /// ATM put delay to fix issue when wallet's state is not external immediately after this notification trigerred
                 await Task.sleep(seconds: 0.2)
                 udWalletsUpdated()
-            case .reverseResolutionDomainChanged(let domainName, _):
+            case .reverseResolutionDomainChanged(let domainName):
                 if let wallet = wallets.first(where: { $0.isOwningDomain(domainName) }),
                    var domain = wallet.domains.first(where: { $0.name == domainName }) {
                     domain.setState(.updatingReverseResolution)

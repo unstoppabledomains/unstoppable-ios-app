@@ -13,19 +13,6 @@ struct NetworkConfig {
         case testnet
     }
     
-    static var migratedEndpoint: String {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        if isTestnetUsed {
-            return "api.ud-staging.com"
-        } else {
-            return "api.unstoppabledomains.com"
-        }
-    }
-    
-    static var migratedBaseUrl: String {
-        "https://\(Self.migratedEndpoint)"
-    }
-    
     static var websiteHost: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
@@ -56,10 +43,6 @@ struct NetworkConfig {
             return "https://ud-staging.com/badge/leaderboard"
         }
         return "https://unstoppabledomains.com/badge/leaderboard"
-    }
-    
-    static var baseResolveUrl: String {
-        baseAPIUrl + "/resolve"
     }
     
     static var baseAPIHost: String {

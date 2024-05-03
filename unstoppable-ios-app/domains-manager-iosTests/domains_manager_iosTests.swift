@@ -24,7 +24,7 @@ class APIRequestTests: XCTestCase {
         let domains = [ DomainItem(name: "toclaim.crypto", ownerWallet: "0xabcdef012345")]
         
         // request security code
-        let urlAuthenticate = "\(NetworkConfig.migratedBaseUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/authenticate"
+        let urlAuthenticate = "\(NetworkConfig.baseAPIUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/authenticate"
         let apiRequestAuthenticate = try! APIRequestBuilder().users(email: email)
             .operation(.mintDomains)
             .authenticate()
@@ -32,13 +32,13 @@ class APIRequestTests: XCTestCase {
         XCTAssertEqual(urlAuthenticate, apiRequestAuthenticate.url.absoluteString)
         
         // request the list of unclaimed domains
-        let urlUnclaimed = "\(NetworkConfig.migratedBaseUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/secure/domains/unclaimed"
+        let urlUnclaimed = "\(NetworkConfig.baseAPIUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/secure/domains/unclaimed"
         let apiRequestUnclaimedDomains = try! APIRequestBuilder().users(email: email).secure(code: code).fetchAllUnMintedDomains().build()
         XCTAssertEqual(urlUnclaimed, apiRequestUnclaimedDomains.url.absoluteString)
         XCTAssertEqual("Bearer \(code)", apiRequestUnclaimedDomains.headers["Authorization"] )
         
         // request to claim domains
-        let urlClaim = "\(NetworkConfig.migratedBaseUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/secure/domains/claim"
+        let urlClaim = "\(NetworkConfig.baseAPIUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/secure/domains/claim"
         let apiRequestClaimDomains = try! APIRequestBuilder().users(email: email).secure(code: code).mint(domains, stripeIntent: nil).build()
         XCTAssertEqual(urlClaim, apiRequestClaimDomains.url.absoluteString)
         XCTAssertEqual("Bearer \(code)", apiRequestClaimDomains.headers["Authorization"] )
@@ -94,44 +94,6 @@ class APIRequestTests: XCTestCase {
         let params: UnsTransferToParamsData
     }
      
-    
-    func test_actionSign () {
-        let actionId: UInt64 = 30303030, txId1: UInt64 = 5551, txId2: UInt64 = 8886
-        let txType = "Meta"
-        
-        let actionDomInfo = NetworkService.ActionsDomainInfo(id: 7333, name: "domain.crypto", ownerAddress: "0x666333888222111000", blockchain: "ETH")
-        
-        let actionTxInfo1 = NetworkService.ActionsTxInfo(id: txId1, type: txType, blockchain: "ETH", messageToSign: "0x111116666633333")
-        let actionTxInfo2 = NetworkService.ActionsTxInfo(id: txId2, type: txType, blockchain: "ETH", messageToSign: "0x888882222200000")
-        
-        let actionPayInfo = NetworkService.ActionsPaymentInfo(id: "191919", clientSecret: "secret_", totalAmount: 345)
-        
-        let response = NetworkService.ActionsResponse(id: 1555,
-                                                      domain: actionDomInfo,
-                                                      txs: [actionTxInfo1, actionTxInfo2],
-                                                      paymentInfo: actionPayInfo)
-        
-        let signatures = ["5555500000000111111", "5555553333344444444"]
-        
-        let request = try! APIRequestBuilder()
-            .actionSign(for: actionId,
-                        response: response,
-                        signatures: signatures)
-            .build()
-        
-        guard let bodyData = request.body.trimmedSpaces.data(using: .utf8),
-              let json = try! JSONSerialization.jsonObject(with: bodyData) as? [[String: Any]],
-              let first = json.first(where: { Int(exactly: $0["id"] as! Int)! == txId1}),
-              let second = json.first(where: { Int(exactly: $0["id"] as! Int)! == txId2}) else {
-            XCTFail("Fail to parse request.body")
-            return
-        }
-        
-        XCTAssertEqual(first["signature"] as! String, signatures[0])
-        XCTAssertEqual(first["type"] as! String, txType)
-        XCTAssertEqual(second["signature"] as! String, signatures[1])
-        XCTAssertEqual(second["type"] as! String, txType)
-    }
     
     func test_buildBody_DeepLinks() {
         struct OperationBody: Codable {

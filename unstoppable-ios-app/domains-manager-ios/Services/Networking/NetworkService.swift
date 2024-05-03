@@ -448,7 +448,7 @@ extension NetworkService {
     }
     
     func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
-        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/reverse/\(address)")!
+        let url = URL(string: "\(NetworkConfig.baseAPIUrl)/resolve/reverse/\(address)")!
         let data = try await NetworkService().fetchData(for: url,
                                                         method: .get,
                                                         extraHeaders: NetworkService.authHeader)
@@ -470,19 +470,6 @@ extension NetworkService {
         } catch {
             throw error
         }
-    }
-    
-    private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
-        coins.first(where: {$0.expandedTicker == expandedTicker})?.regexPattern
-    }
-    
-    static func getRequestForActionSign(id: UInt64,
-                                        response: NetworkService.ActionsResponse,
-                                        signatures: [String]) throws -> APIRequest {
-        let request = try APIRequestBuilder()
-            .actionSign(for: id, response: response, signatures: signatures)
-            .build()
-        return request
     }
 }
 

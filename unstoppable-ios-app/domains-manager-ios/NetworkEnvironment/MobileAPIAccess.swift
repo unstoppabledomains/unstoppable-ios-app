@@ -156,11 +156,11 @@ extension NetworkService {
         }
         throw NetworkLayerError.parsingDomainsError
     }
-
+    
     public func mint(domains: [DomainItem],
-                      with email: String,
-                      code: String,
-                      stripeIntent: String?) async throws {
+                     with email: String,
+                     code: String,
+                     stripeIntent: String?) async throws {
         guard let request = try? APIRequestBuilder().users(email: email)
             .secure(code: code)
             .mint(domains, stripeIntent: stripeIntent)
@@ -176,87 +176,9 @@ extension NetworkService {
 }
 
 extension NetworkService {
-    struct ActionsDomainInfo: Decodable {
-        let id: UInt
-        let name: String
-        let ownerAddress: HexAddress
-        let blockchain: String
-    }
-    
-    struct ActionsTxInfo: Decodable {
-        let id: UInt64
-        let type: String
-        let blockchain: String
-        let messageToSign: String?
-    }
-    
     struct ActionsPaymentInfo: Decodable {
         let id: String
         let clientSecret: String
         let totalAmount: UInt
-    }
-    
-    struct ActionsResponse: Decodable {
-        let id: UInt64
-        let domain: ActionsDomainInfo
-        let txs: [ActionsTxInfo]
-        let paymentInfo: ActionsPaymentInfo?
-    }
-    
-    public func getActions(request: APIRequest) async throws -> NetworkService.ActionsResponse {
-        do {
-            let data = try await fetchData(for: request.url,
-                                           body: request.body,
-                                           method: request.method,
-                                           extraHeaders: request.headers)
-            let response = try JSONDecoder().decode(ActionsResponse.self, from: data)
-            return response
-        } catch {
-            throw error
-        }
-    }
-    
-    public func postMetaActions(_ apiRequest: APIRequest) async throws {
-        let data = try await fetchData(for: apiRequest.url,
-                                       body: apiRequest.body,
-                                       method: apiRequest.method,
-                                       extraHeaders: apiRequest.headers)
-        if let responseString = String(data: data, encoding: .utf8),
-           responseString.lowercased() == "ok" {
-            return
-        } else {
-#warning("get the list of possible errors from the endpoint")
-            throw NetworkLayerError.parsingTxsError
-        }
-    }
-    
-    @discardableResult
-    func makeActionsAPIRequest(_ request: APIRequest,
-                               forDomain domain: DomainItem,
-                               paymentConfirmationHandler: PaymentConfirmationHandler) async throws -> [ActionsTxInfo] {
-        let actionsResponse = try await NetworkService().getActions(request: request)
-        let blockchain = try BlockchainType.getType(abbreviation: actionsResponse.domain.blockchain)
-        
-        let payloadReturned: NetworkService.TxPayload
-        if let paymentInfo = actionsResponse.paymentInfo {
-            payloadReturned = try DomainItem.createTxPayload(blockchain: blockchain,
-                                                             paymentInfo: paymentInfo,
-                                                             txs: actionsResponse.txs)
-            try await paymentConfirmationHandler.payIfNeededToUpdate(domain: domain,
-                                                                     using: paymentInfo)
-        } else {
-            let messages = actionsResponse.txs.compactMap { $0.messageToSign }
-            guard messages.count == actionsResponse.txs.count else { throw NetworkLayerError.noMessageError }
-            payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
-        }
-        
-        let signatures: [String] = try await UDWallet.createSignaturesByPersonalSign(messages: payloadReturned.messages, domain: domain)
-        
-        let requestSign = try NetworkService.getRequestForActionSign(id: actionsResponse.id,
-                                                                     response: actionsResponse,
-                                                                     signatures: signatures)
-        try await NetworkService().postMetaActions(requestSign)
-        
-        return actionsResponse.txs
     }
 }

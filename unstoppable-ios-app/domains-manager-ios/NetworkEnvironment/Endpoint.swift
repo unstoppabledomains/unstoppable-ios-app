@@ -8,7 +8,7 @@
 import Foundation
 
 struct Endpoint {    
-    var host: String = NetworkConfig.migratedEndpoint
+    var host: String = NetworkConfig.baseAPIHost
     let path: String
     let queryItems: [URLQueryItem]
     let body: String

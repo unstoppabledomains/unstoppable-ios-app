@@ -2523,7 +2523,6 @@
 		C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */; };
 		C6DF986D290F83020098733A /* PrivateKeyStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */; };
 		C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */; };
-		C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */; };
 		C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */; };
 		C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */; };
 		C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */; };
@@ -4085,7 +4084,6 @@
 		C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingCardView.xib; sourceTree = "<group>"; };
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
 		C6D9E29828535E3E002CDAC2 /* ShareDomainImagePullUpView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareDomainImagePullUpView.xib; sourceTree = "<group>"; };
-		C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsDecodingTests.swift; sourceTree = "<group>"; };
 		C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListVGrid.swift; sourceTree = "<group>"; };
 		C6DA0B742B7C5F68009920B5 /* SectionSpacingModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionSpacingModifier.swift; sourceTree = "<group>"; };
 		C6DA0B772B7C9DBA009920B5 /* MessageReactionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageReactionDescription.swift; sourceTree = "<group>"; };
@@ -4458,7 +4456,6 @@
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
-				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
 				C6B6B8722B91A4F900565ED2 /* TaskWithDeadlineTests.swift */,
 				300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */,
 				C67B6D542AE79E3B00F74B0B /* ImageLoadingServiceTests.swift */,
@@ -10498,7 +10495,6 @@
 				C617CFA22B9ED9D100663516 /* TestableUDWalletsService.swift in Sources */,
 				C6B761E52BB3DF7F00773943 /* WalletTransactionsServiceTests.swift in Sources */,
 				C6D011D22B99A78E0008BF40 /* TestableGenericError.swift in Sources */,
-				C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */,
 				C617CF9E2B9ED96200663516 /* WalletsDataServiceTests.swift in Sources */,
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,

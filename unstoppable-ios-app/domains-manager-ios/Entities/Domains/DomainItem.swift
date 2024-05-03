@@ -94,23 +94,6 @@ extension DomainItem {
     }
 }
 
-extension DomainItem {
-    static func createTxPayload(blockchain: BlockchainType,
-                                paymentInfo: NetworkService.ActionsPaymentInfo,
-                                txs: [NetworkService.ActionsTxInfo]) throws -> NetworkService.TxPayload {
-        let txCost = NetworkService.TxCost(quantity: 1,
-                                           stripeIntent: paymentInfo.id,
-                                           stripeSecret: paymentInfo.clientSecret,
-                                           gasPrice: 0, gasLimit: 0, usdToEth: 0, fee: 0,
-                                           price: Int(paymentInfo.totalAmount))
-        
-        let messages = txs.compactMap { $0.messageToSign }
-        guard messages.count == txs.count else { throw NetworkLayerError.noMessageError }
-        return NetworkService.TxPayload(messages: messages,
-                                        txCost: txCost)
-    }
-}
-
 struct CryptoTxPayload {
     let resolverAddress: HexAddress?
     var txCosts: [NetworkService.TxCost] = []
