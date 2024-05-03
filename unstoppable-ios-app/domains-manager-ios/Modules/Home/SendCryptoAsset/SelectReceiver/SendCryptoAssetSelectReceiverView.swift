@@ -119,7 +119,10 @@ private extension SendCryptoAssetSelectReceiverView {
         if inputText.isEmpty {
             return userWallets
         } else {
-            return userWallets.filter { $0.nameOfCurrentRepresentingDomain?.contains(inputText.lowercased()) == true }
+            return userWallets.filter {
+                $0.nameOfCurrentRepresentingDomain?.contains(inputText.lowercased()) == true ||
+                $0.address == inputText.lowercased()
+            }
         }
     }
     
@@ -198,7 +201,8 @@ private extension SendCryptoAssetSelectReceiverView {
     func getCurrentGlobalSearchResult() -> GlobalSearchResult? {
         if !globalProfiles.isEmpty {
             return .profiles(globalProfiles)
-        } else if inputText.isValidAddress() {
+        } else if inputText.isValidAddress(),
+                  userWallets.findWithAddress(inputText) == nil {
             return .fullAddress(inputText)
         }
         return nil

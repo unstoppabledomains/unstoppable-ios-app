@@ -534,10 +534,15 @@ private extension WalletsDataService {
     }
     
     func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {
-        guard let profileDomainName = wallet.profileDomainName else { return [] }
-
-        let balances = await loadAdditionalBalancesFor(domainName: profileDomainName)
-        return balances
+        switch wallet.udWallet.type {
+        case .mpc:
+            return [] // Taken from native MPC addresses
+        default:
+            guard let profileDomainName = wallet.profileDomainName else { return [] }
+            
+            let balances = await loadAdditionalBalancesFor(domainName: profileDomainName)
+            return balances
+        }
     }
     
     func loadAdditionalBalancesFor(addresses: Set<String>,

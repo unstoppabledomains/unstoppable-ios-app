@@ -16,6 +16,7 @@ final class WalletsDataServiceTests: BaseTestClass {
     private var domainTransactionService = TestableDomainTransactionsService()
     private var walletConnectService = TestableWalletConnectServiceV2()
     private var walletNFTsService = TestableWalletNFTsService()
+    private var mpcWalletsService = TestableMPCWalletsService()
     private var walletsDataService: WalletsDataService!
     
     override func setUp() async throws {
@@ -25,11 +26,13 @@ final class WalletsDataServiceTests: BaseTestClass {
         domainTransactionService = TestableDomainTransactionsService()
         walletConnectService = TestableWalletConnectServiceV2()
         walletNFTsService = TestableWalletNFTsService()
+        mpcWalletsService = TestableMPCWalletsService()
         walletsDataService = WalletsDataService(domainsService: udDomainsService,
                                                 walletsService: udWalletsService,
                                                 transactionsService: domainTransactionService,
                                                 walletConnectServiceV2: walletConnectService,
                                                 walletNFTsService: walletNFTsService,
+                                                mpcWalletsService: mpcWalletsService,
                                                 networkService: networkService)
     }
     
