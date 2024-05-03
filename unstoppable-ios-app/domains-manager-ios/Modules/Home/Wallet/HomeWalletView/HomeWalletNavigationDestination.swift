@@ -57,8 +57,7 @@ struct HomeWalletLinkNavigationDestination {
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
         case .settings:
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
+            SettingsView()
                 .navigationDestination(for: SettingsNavigationDestination.self) { destination in
                     SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
                         .ignoresSafeArea()
@@ -67,18 +66,22 @@ struct HomeWalletLinkNavigationDestination {
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                 .navigationBarTitleDisplayMode(.inline)
+                .ignoresSafeArea()
         case .minting(let mode, let mintedDomains, let domainsMintedCallback, let mintingNavProvider):
             MintDomainsNavigationControllerWrapper(mode: mode,
                                                    mintedDomains: mintedDomains,
                                                    domainsMintedCallback: domainsMintedCallback,
                                                    mintingNavProvider: mintingNavProvider)
             .toolbar(.hidden, for: .navigationBar)
+            .ignoresSafeArea()
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
         case .walletsList(let initialAction):
             WalletsListViewControllerWrapper(initialAction: initialAction)
                 .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
         }
     }
     

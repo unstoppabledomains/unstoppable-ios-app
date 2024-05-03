@@ -35,7 +35,7 @@ private extension SettingsView {
     func contentView() -> some View {
         ScrollView {
             PublicProfileSeparatorView(verticalPadding: 0)
-                .padding(.vertical, 20)
+                .padding(.bottom, 20)
             profilesListView()
             PublicProfileSeparatorView(verticalPadding: 0)
                 .padding(.vertical, 20)
