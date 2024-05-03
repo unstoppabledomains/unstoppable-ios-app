@@ -49,7 +49,6 @@ extension WalletDetailsTopInfoCell {
         case .external:
             externalWalletIndicator.isHidden = false
             copyAddressButton.setTitle(walletInfo.address.walletAddressTruncated, image: .copyToClipboardIcon)
-            // TODO: - MPC
         case .imported, .locallyGenerated, .mpc:
             externalWalletIndicator.isHidden = true
             

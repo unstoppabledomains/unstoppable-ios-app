@@ -45,6 +45,8 @@ extension FB_UD_MPC {
                                                      operationId: String) async throws -> String
         func waitForOperationCompleted(accessToken: String,
                                        operationId: String) async throws
+        func waitForTxCompletedAndGetHash(accessToken: String,
+                                          operationId: String) async throws -> String
         
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio]
     }

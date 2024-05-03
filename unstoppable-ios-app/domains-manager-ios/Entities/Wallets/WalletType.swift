@@ -14,7 +14,6 @@ enum WalletType: String, Codable {
     case defaultGeneratedLocally
     case mnemonicsEntered
     case importedUnverified
-    // TODO: - MPC
     case mpc
     case externalLinked
     
@@ -23,7 +22,6 @@ enum WalletType: String, Codable {
         case .generatedLocally, .defaultGeneratedLocally: return "GENERATED"
         case .privateKeyEntered: return "IMPORTED_BY_PRIVATE_KEY"
         case .mnemonicsEntered: return "IMPORTED_BY_MNEMONICS"
-            // TODO: - MPC
         default:    Debugger.printFailure("Invalid attempt to backup wallet with the type: \(self.rawValue)", critical: true)
             return nil
         }
@@ -34,7 +32,6 @@ enum WalletType: String, Codable {
         case "GENERATED": self = .generatedLocally
         case "IMPORTED_BY_PRIVATE_KEY": self = .privateKeyEntered
         case "IMPORTED_BY_MNEMONICS": self = .mnemonicsEntered
-            // TODO: - MPC
         default:    Debugger.printFailure("Found unknown type in iCloud: \(iCloudLabel)", critical: true)
             return nil
         }

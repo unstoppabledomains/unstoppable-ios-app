@@ -297,6 +297,17 @@ extension FB_UD_MPC {
             return signature
         }
         
+        func waitForTxCompletedAndGetHash(accessToken: String,
+                                          operationId: String) async throws -> String {
+            let operation = try await waitForOperationStatuses(accessToken: accessToken,
+                                                               operationId: operationId,
+                                                               statuses: [.processing, .completed])
+            guard let signature = operation.transaction?.id else {
+                throw MPCNetworkServiceError.missingTxIdInTransactionOperation
+            }
+            return signature
+        }
+        
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
             try await networkService.fetchCryptoPortfolioForMPC(wallet: wallet, accessToken: accessToken)
         }
@@ -310,8 +321,8 @@ extension FB_UD_MPC {
         
         @discardableResult
         private func waitForOperationStatuses(accessToken: String,
-                                            operationId: String,
-                                            statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
+                                              operationId: String,
+                                              statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
             let statuses = statuses.map { $0.rawValue }
             for _ in 0..<120 {
                 let operation = try await getOperationWith(accessToken: accessToken,
@@ -380,6 +391,7 @@ extension FB_UD_MPC {
             case waitForKeyOperationStatusTimeout
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
+            case missingTxIdInTransactionOperation
             
             public var errorDescription: String? {
                 return rawValue
