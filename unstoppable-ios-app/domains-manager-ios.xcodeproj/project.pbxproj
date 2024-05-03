@@ -756,6 +756,8 @@
 		C63AD0AD2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */; };
 		C63AD0AE2B95823800BF8C83 /* BalanceTokenUIDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */; };
 		C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */; };
+		C63DBCC82BE492B8008F3D2C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCC72BE492B8008F3D2C /* SettingsView.swift */; };
+		C63DBCC92BE492B8008F3D2C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCC72BE492B8008F3D2C /* SettingsView.swift */; };
 		C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
 		C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
 		C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
@@ -3288,6 +3290,7 @@
 		C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileTokensSectionView.swift; sourceTree = "<group>"; };
 		C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenUIDescription.swift; sourceTree = "<group>"; };
 		C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64DataTransformer.swift; sourceTree = "<group>"; };
+		C63DBCC72BE492B8008F3D2C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
 		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C63DD36029C89FEC002D45B2 /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
@@ -5449,6 +5452,7 @@
 		C624D78E281BCA0100F55530 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				C63DBCC62BE492AA008F3D2C /* SettingsView */,
 				C669B44E2B747539001D4788 /* SettingsNavigationDestination.swift */,
 				C669B4512B747607001D4788 /* SettingsLinkNavigationDestination.swift */,
 				C624D799281BCA3100F55530 /* SettingsPresenter.swift */,
@@ -5864,6 +5868,14 @@
 				C6124CD52923510A005E6537 /* Changes */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		C63DBCC62BE492AA008F3D2C /* SettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				C63DBCC72BE492B8008F3D2C /* SettingsView.swift */,
+			);
+			path = SettingsView;
 			sourceTree = "<group>";
 		};
 		C63DD35D29C89FCB002D45B2 /* LoginViewController */ = {
@@ -9467,6 +9479,7 @@
 				C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */,
 				C6A89C4F2B315B8D008AB043 /* HotFeatureSuggestionsService.swift in Sources */,
+				C63DBCC82BE492B8008F3D2C /* SettingsView.swift in Sources */,
 				C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C6B65F772B550FC2006D1812 /* WalletNFTsService.swift in Sources */,
 				C6F433482BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */,
@@ -10862,6 +10875,7 @@
 				C6C8F88A2B21829000A9834D /* SettingsViewController.swift in Sources */,
 				C6D6477D2B1EE0F200D724AC /* RaisedWhiteButton.swift in Sources */,
 				C67213E02BAA96170075B9C7 /* SendCryptoAssetNavigationDestination.swift in Sources */,
+				C63DBCC92BE492B8008F3D2C /* SettingsView.swift in Sources */,
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
 				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
