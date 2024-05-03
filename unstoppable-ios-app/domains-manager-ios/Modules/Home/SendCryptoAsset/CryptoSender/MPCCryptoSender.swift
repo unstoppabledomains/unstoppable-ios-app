@@ -28,12 +28,11 @@ struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     
     func sendCrypto(dataToSend: CryptoSenderDataToSend) async throws -> String {
         let toAddress = dataToSend.toAddress
-        try await mpcWalletsService.transferAssets(dataToSend.amount,
-                                                   symbol: dataToSend.chainDesc.symbol,
-                                                   chain: dataToSend.chainDesc.chain,
-                                                   destinationAddress: toAddress,
-                                                   by: mpcMetadata)
-        return "" // TODO: - Get tx id
+        return try await mpcWalletsService.transferAssets(dataToSend.amount,
+                                                          symbol: dataToSend.chainDesc.symbol,
+                                                          chain: dataToSend.chainDesc.chain,
+                                                          destinationAddress: toAddress,
+                                                          by: mpcMetadata)
     }
     
     func computeGasFeeFor(dataToSend: CryptoSenderDataToSend) async throws -> EVMCoinAmount {

@@ -25,7 +25,6 @@ extension DomainProfileSignatureValidator {
             }
             
             return false
-            // TODO: - MPC
         case .imported, .locallyGenerated, .mpc:
             return true
         }

@@ -24,7 +24,6 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
             switch source {
             case .locallyGenerated:
                 return .locallyGeneratedNotBackedUp
-                // TODO: - MPC
             case .imported, .external, .mpc:
                 return .importedNotBackedUp
             }
@@ -34,7 +33,6 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
     var isNameSet: Bool { name != address }
     var isConnected: Bool {
         switch source {
-            // TODO: - MPC
         case .locallyGenerated, .imported, .mpc:
             return false
         case .external:
@@ -47,7 +45,6 @@ struct WalletDisplayInfo: Hashable, Equatable, Codable {
             return name
         } else {
             switch source {
-                // TODO: - MPC
             case .locallyGenerated, .imported, .mpc:
                 return address.walletAddressTruncated
             case .external(let name, _):

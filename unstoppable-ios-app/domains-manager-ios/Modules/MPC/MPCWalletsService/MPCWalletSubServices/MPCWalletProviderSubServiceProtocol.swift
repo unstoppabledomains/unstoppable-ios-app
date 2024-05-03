@@ -25,5 +25,5 @@ protocol MPCWalletProviderSubServiceProtocol {
                         symbol: String,
                         chain: String,
                         destinationAddress: String,
-                        by walletMetadata: MPCWalletMetadata) async throws
+                        by walletMetadata: MPCWalletMetadata) async throws -> String
 }

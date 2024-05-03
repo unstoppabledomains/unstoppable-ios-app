@@ -71,14 +71,14 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                         symbol: String,
                         chain: String,
                         destinationAddress: String,
-                        by walletMetadata: MPCWalletMetadata) async throws {
+                        by walletMetadata: MPCWalletMetadata) async throws -> String {
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
-        try await subService.transferAssets(amount,
-                                            symbol: symbol,
-                                            chain: chain,
-                                            destinationAddress: destinationAddress,
-                                            by: walletMetadata)
+        return try await subService.transferAssets(amount,
+                                                   symbol: symbol,
+                                                   chain: chain,
+                                                   destinationAddress: destinationAddress,
+                                                   by: walletMetadata)
     }
 }
 
