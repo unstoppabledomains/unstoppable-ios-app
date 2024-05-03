@@ -26,7 +26,7 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .navigationBarTitleDisplayMode(.large)
             .viewPullUp($pullUp)
             .toolbar {
-                
+                ToolbarItem(placement: .topBarTrailing, content: topBarButton)
             }
             .navigationDestination(for: SettingsNavigationDestination.self) { destination in
                 SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
@@ -63,6 +63,70 @@ private extension SettingsView {
                 .foregroundStyle(Color.foregroundDefault)
             Spacer()
         }
+    }
+    
+    var webUser: FirebaseUser? {
+        for profile in profiles {
+            if case .webAccount(let firebaseUser) = profile {
+                return firebaseUser
+            }
+        }
+        return nil
+    }
+    
+    @ViewBuilder
+    func topBarButton() -> some View {
+        if let webUser {
+            webUserActionButton(webUser)
+        } else {
+            loginButton()
+        }
+    }
+    
+    @ViewBuilder
+    func webUserActionButton(_ webUser: FirebaseUser) -> some View {
+        Menu {
+            Button(role: .destructive) {
+                askToLogOut()
+            } label: {
+                Label(String.Constants.logOut.localized(), systemImage: "rectangle.portrait.and.arrow.right")
+            }
+        } label: {
+            topActinTextView(text: webUser.displayName)
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: .logOut)
+        }
+    }
+    
+    func askToLogOut() {
+        Task { @MainActor in 
+            guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+            
+            do {
+                try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: topVC)
+                await topVC.dismissPullUpMenu()
+                try await appContext.authentificationService.verifyWith(uiHandler: topVC, purpose: .confirm)
+                appContext.firebaseParkedDomainsAuthenticationService.logOut()
+                appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func loginButton() -> some View {
+        Button {
+            
+        } label: {
+            topActinTextView(text: String.Constants.login.localized())
+        }
+    }
+    
+    @ViewBuilder
+    func topActinTextView(text: String) -> some View {
+        Text(text)
+            .font(.currentFont(size: 16, weight: .medium))
+            .foregroundStyle(Color.foregroundAccent)
     }
 }
 
