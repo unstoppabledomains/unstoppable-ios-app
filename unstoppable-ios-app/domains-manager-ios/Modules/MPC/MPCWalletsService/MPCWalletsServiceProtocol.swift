@@ -13,6 +13,11 @@ protocol MPCWalletsServiceProtocol {
                             recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
+
+    
+    func canTransferAssets(symbol: String,
+                           chain: String,
+                           by walletMetadata: MPCWalletMetadata) -> Bool
     func transferAssets(_ amount: Double,
                         symbol: String,
                         chain: String,

@@ -30,7 +30,7 @@
 		299713CD28F6931E00743003 /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713CC28F6931E00743003 /* Function.swift */; };
 		299713D228F6933F00743003 /* ABIEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713D128F6933F00743003 /* ABIEncoder.swift */; };
 		299713D728F693F600743003 /* EIP712TypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713D628F693F600743003 /* EIP712TypedData.swift */; };
-		29AA6AA42BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
+		29AA6AA42BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */; };
 		29AA6AA82BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
 		29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */; };
 		29AEA050292F941F003BB5B4 /* PersistedSignaturesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04F292F941F003BB5B4 /* PersistedSignaturesStorage.swift */; };
@@ -274,6 +274,8 @@
 		C6109E9D28E6AA910027D5D8 /* MockContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E9C28E6AA910027D5D8 /* MockContext.swift */; };
 		C6109EA228E6B1CC0027D5D8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA128E6B1CC0027D5D8 /* Toast.swift */; };
 		C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */; };
+		C610BA1B2BE234A600179919 /* MPCCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */; };
+		C610BA1D2BE2358700179919 /* UDCryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C610BA1C2BE2358700179919 /* UDCryptoSender.swift */; };
 		C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
 		C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */; };
 		C61236F0292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */; };
@@ -783,6 +785,7 @@
 		C645131B28096CB600413C51 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C645132028096CB600413C51 /* Localizable.stringsdict */; };
 		C64513232809912F00413C51 /* PullUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513222809912F00413C51 /* PullUpViewController.swift */; };
 		C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */; };
+		C64545EB2BE3783C0011D508 /* TestableMPCWalletsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */; };
 		C6456F0627FF291D00A517D5 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0527FF291D00A517D5 /* GradientView.swift */; };
 		C6456F0B27FF299800A517D5 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0A27FF299800A517D5 /* UIView.swift */; };
 		C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */; };
@@ -1439,7 +1442,7 @@
 		C6A359282BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */; };
 		C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
 		C6A3592B2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
-		C6A3592F2BB68D9B00B1209A /* CryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */; };
+		C6A3592F2BB68D9B00B1209A /* ConcreteCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */; };
 		C6A359322BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
 		C6A359332BB699FC00B1209A /* ConfirmSendTokenDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */; };
 		C6A359352BB6BB2100B1209A /* TxHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359342BB6BB2000B1209A /* TxHash.swift */; };
@@ -2717,7 +2720,7 @@
 		299713CC28F6931E00743003 /* Function.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Function.swift; sourceTree = "<group>"; };
 		299713D128F6933F00743003 /* ABIEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIEncoder.swift; sourceTree = "<group>"; };
 		299713D628F693F600743003 /* EIP712TypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712TypedData.swift; sourceTree = "<group>"; };
-		29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoSenderProtocol.swift; sourceTree = "<group>"; };
+		29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteCryptoSenderProtocol.swift; sourceTree = "<group>"; };
 		29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoSender.swift; sourceTree = "<group>"; };
 		29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurePersistedStorage.swift; sourceTree = "<group>"; };
 		29AEA04F292F941F003BB5B4 /* PersistedSignaturesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedSignaturesStorage.swift; sourceTree = "<group>"; };
@@ -2968,6 +2971,8 @@
 		C6109E9C28E6AA910027D5D8 /* MockContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContext.swift; sourceTree = "<group>"; };
 		C6109EA128E6B1CC0027D5D8 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTheme.swift; sourceTree = "<group>"; };
+		C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCCryptoSender.swift; sourceTree = "<group>"; };
+		C610BA1C2BE2358700179919 /* UDCryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCryptoSender.swift; sourceTree = "<group>"; };
 		C61236E6292C88D1002BA97B /* ImagesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesStorage.swift; sourceTree = "<group>"; };
 		C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationImageLoadingService.swift; sourceTree = "<group>"; };
 		C61236EF292CADF7002BA97B /* AppGroupsDomainsPFPBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsDomainsPFPBridgeService.swift; sourceTree = "<group>"; };
@@ -3310,6 +3315,7 @@
 		C645131F28096CB600413C51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		C64513222809912F00413C51 /* PullUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewController.swift; sourceTree = "<group>"; };
 		C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileViewDelegate.swift; sourceTree = "<group>"; };
+		C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableMPCWalletsService.swift; sourceTree = "<group>"; };
 		C6456F0527FF291D00A517D5 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		C6456F0A27FF299800A517D5 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
@@ -7743,9 +7749,11 @@
 		C6B45DAE2BBA978900B44C33 /* CryptoSender */ = {
 			isa = PBXGroup;
 			children = (
-				29AA6AA32BAAE9F500D24FB5 /* CryptoSenderProtocol.swift */,
+				29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */,
 				C6B45DAF2BBA97B600B44C33 /* CryptoSender+Entities.swift */,
 				29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */,
+				C610BA1C2BE2358700179919 /* UDCryptoSender.swift */,
+				C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */,
 				29018C8C2BACB7BC0004545D /* JRPC_Client.swift */,
 				291AD2442BD5265E006B8096 /* EVMCryptoSender.swift */,
 			);
@@ -8123,6 +8131,7 @@
 				C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */,
 				C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */,
 				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
+				C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */,
 				C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */,
 				C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */,
 				C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */,
@@ -9504,7 +9513,7 @@
 				C6C995B6289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
 				C671E3AC28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C63A77A828F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
-				29AA6AA42BAAE9F500D24FB5 /* CryptoSenderProtocol.swift in Sources */,
+				29AA6AA42BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift in Sources */,
 				C664B6592914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
 				C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */,
 				C632BE592BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift in Sources */,
@@ -9716,6 +9725,7 @@
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C68A5ACF2BD8DADE003702A2 /* MPCActivateWalletInAppView.swift in Sources */,
 				C607A5D42B32A02A0088ECF3 /* CloseButtonView.swift in Sources */,
+				C610BA1D2BE2358700179919 /* UDCryptoSender.swift in Sources */,
 				C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C6B2E20C2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */,
@@ -9814,6 +9824,7 @@
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
+				C610BA1B2BE234A600179919 /* MPCCryptoSender.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				C6FAED892B8C717100CC1844 /* MessagingChatMessageReplyTypeDisplayInfo.swift in Sources */,
 				C6BF6BDC2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,
@@ -10502,6 +10513,7 @@
 				C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */,
 				C6B2E2142B9714B100CEA1F9 /* DomainProfilesServiceTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
+				C64545EB2BE3783C0011D508 /* TestableMPCWalletsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10863,7 +10875,7 @@
 				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
 				C6E8562A2BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
-				C6A3592F2BB68D9B00B1209A /* CryptoSenderProtocol.swift in Sources */,
+				C6A3592F2BB68D9B00B1209A /* ConcreteCryptoSenderProtocol.swift in Sources */,
 				C6E28F3E2B33486700026E6C /* PreviewDomainProfileActionCover.swift in Sources */,
 				C6C8F9782B2188FA00A9834D /* QRScannerViewController.swift in Sources */,
 				C617D0B42B9C390800607555 /* PublicProfileTitleView.swift in Sources */,

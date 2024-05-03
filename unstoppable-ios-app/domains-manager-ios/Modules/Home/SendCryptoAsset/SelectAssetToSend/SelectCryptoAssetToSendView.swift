@@ -72,9 +72,8 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func createTokenToSendFrom(token: BalanceTokenUIDescription) -> BalanceTokenToSend {
-        if receiver.domainName != nil,
-           let chainType = token.blockchainType {
-            let address = receiver.addressFor(chainType: chainType)
+        if receiver.domainName != nil {
+            let address = receiver.addressFor(symbol: token.symbol)
             return BalanceTokenToSend(token: token, address: address)
         }
         

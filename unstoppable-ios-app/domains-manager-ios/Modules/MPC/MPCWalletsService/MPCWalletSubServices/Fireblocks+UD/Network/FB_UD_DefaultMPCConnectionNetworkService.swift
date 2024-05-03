@@ -313,7 +313,7 @@ extension FB_UD_MPC {
                                             operationId: String,
                                             statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
             let statuses = statuses.map { $0.rawValue }
-            for _ in 0..<50 {
+            for _ in 0..<120 {
                 let operation = try await getOperationWith(accessToken: accessToken,
                                                            operationId: operationId)
                 if statuses.contains(operation.status) {

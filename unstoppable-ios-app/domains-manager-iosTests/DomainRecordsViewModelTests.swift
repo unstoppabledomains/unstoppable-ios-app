@@ -301,4 +301,31 @@ class SignatureTests: XCTestCase {
 //        XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
 //    }
     
+    
+    func testMPCMesessageConversionHexNo0x() {
+        let incoming = "8f6b7886409e1d2f3c24e2efc731a115"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.outcomingString, "8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.utf8)
+    }
+    
+    func testMPCMesessageConversionHexWith0x() {
+        let incoming = "0x8f6b7886409e1d2f3c24e2efc731a115"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "0x8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.outcomingString, "0x8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.hex)
+    }
+    
+    func testMPCMesessageConversionNoHexNo0x() {
+        let incoming = "abyrvalg"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "abyrvalg")
+        XCTAssertEqual(result.outcomingString, "abyrvalg")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.utf8)
+    }
 }
