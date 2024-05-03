@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MessageUI
 
 struct SettingsView: View, ViewAnalyticsLogger {
     
@@ -24,6 +25,10 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 
+            }
+            .navigationDestination(for: SettingsNavigationDestination.self) { destination in
+                SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
+                    .ignoresSafeArea()
             }
     }
     
@@ -108,6 +113,7 @@ private extension SettingsView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: moreItem.analyticsName)
+            didSelect(moreItem: moreItem)
         })
         .padding(EdgeInsets(4))
     }
@@ -125,6 +131,15 @@ private extension SettingsView {
         Task { await appContext.userDataService.getLatestAppVersion() }
         appContext.walletsDataService.didChangeEnvironment()
         appContext.notificationsService.updateTokenSubscriptions()
+    }
+    
+    func didSelect(moreItem: MoreSectionItems) {
+        switch moreItem {
+        case .security:
+            return
+        case .testnet:
+            return
+        }
     }
 }
 
@@ -157,8 +172,37 @@ private extension SettingsView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: otherItem.analyticsName)
+            didSelect(otherItem: otherItem)
         })
         .padding(EdgeInsets(4))
+    }
+    
+    func didSelect(otherItem: SettingsItems) {
+        Task { @MainActor in
+            switch otherItem {
+            case .rateUs:
+                AppReviewService.shared.requestToWriteReviewInAppStore()
+            case .learn:
+                openLink(.learn)
+            case .twitter:
+                openUDTwitter()
+            case .support:
+                openFeedbackMailForm()
+            case .legal:
+                return
+//                showLegalOptions()
+            }
+        }
+    }
+    
+    @MainActor
+    func openFeedbackMailForm() {
+        let mail = MFMailComposeViewController()
+        
+        mail.setToRecipients([Constants.UnstoppableSupportMail])
+        mail.setSubject("Unstoppable Domains App Feedback - iOS (\(UserDefaults.buildVersion))")
+        
+        appContext.coreAppCoordinator.topVC?.present(mail, animated: true)
     }
 }
 

@@ -58,10 +58,6 @@ struct HomeWalletLinkNavigationDestination {
         switch navigationDestination {
         case .settings:
             SettingsView()
-                .navigationDestination(for: SettingsNavigationDestination.self) { destination in
-                    SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
-                }
         case .qrScanner(let selectedWallet):
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
