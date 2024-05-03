@@ -34,21 +34,28 @@ private extension SettingsView {
     @ViewBuilder
     func contentView() -> some View {
         ScrollView {
-            //        profilesListView()
+            PublicProfileSeparatorView(verticalPadding: 0)
+                .padding(.vertical, 20)
+            profilesListView()
+            PublicProfileSeparatorView(verticalPadding: 0)
+                .padding(.vertical, 20)
             moreSection()
             othersSection()
+                .padding(.top, 12)
             footerView()
+                .padding(.top, 20)
         }
         .padding()
     }
     
     @ViewBuilder
     func sectionHeader(title: String) -> some View {
-        Text(title)
-            .font(.currentFont(size: 20, weight: .bold))
-            .foregroundStyle(Color.foregroundDefault)
-            .frame(maxWidth: .infinity)
-            .multilineTextAlignment(.leading)
+        HStack {
+            Text(title)
+                .font(.currentFont(size: 20, weight: .bold))
+                .foregroundStyle(Color.foregroundDefault)
+            Spacer()
+        }
     }
 }
 
@@ -56,30 +63,7 @@ private extension SettingsView {
 private extension SettingsView {
     @ViewBuilder
     func profilesListView() -> some View {
-        if !profiles.isEmpty {
-            UDCollectionSectionBackgroundView {
-                VStack(alignment: .center, spacing: 0) {
-                    ForEach(profiles, id: \.id) { profile in
-                        listViewFor(profile: profile)
-                    }
-                }
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func listViewFor(profile: UserProfile) -> some View {
-        UDCollectionListRowButton(content: {
-//            UserProfileSelectionRowView(profile: profile,
-//                                        isSelected: profile.id == selectedProfile?.id)
-//            .udListItemInCollectionButtonPadding()
-        }, callback: {
-//            UDVibration.buttonTap.vibrate()
-//            presentationMode.wrappedValue.dismiss()
-//            userProfilesService.setActiveProfile(profile)
-//            logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
-        })
-        .padding(EdgeInsets(4))
+        SettingsProfilesView(profiles: profiles)
     }
 }
 
@@ -87,7 +71,7 @@ private extension SettingsView {
 private extension SettingsView {
     @ViewBuilder
     func moreSection() -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(spacing: 16) {
             sectionHeader(title: String.Constants.more.localized())
             moreItemsList()
         }
@@ -117,7 +101,7 @@ private extension SettingsView {
         UDCollectionListRowButton(content: {
             UDListItemView(title: moreItem.title,
                            value: moreItem.value,
-                           imageType: .uiImage(moreItem.icon),
+                           imageType: .image(moreItem.icon),
                            imageStyle: .centred(foreground: .white, background: moreItem.backgroundColor, bordered: true),
                            rightViewStyle: moreItem.rightViewStyle)
                         .udListItemInCollectionButtonPadding()
@@ -142,7 +126,6 @@ private extension SettingsView {
         appContext.walletsDataService.didChangeEnvironment()
         appContext.notificationsService.updateTokenSubscriptions()
     }
-    
 }
 
 // MARK: - Other
@@ -150,7 +133,6 @@ private extension SettingsView {
     @ViewBuilder
     func othersSection() -> some View {
         otherItemsList()
-        .padding(.top, 16)
     }
     
     @ViewBuilder
@@ -169,7 +151,7 @@ private extension SettingsView {
         UDCollectionListRowButton(content: {
             UDListItemView(title: otherItem.title,
                            titleColor: .foregroundAccent,
-                           imageType: .uiImage(otherItem.icon),
+                           imageType: .image(otherItem.icon),
                            imageStyle: .centred(offset: .init(8), foreground: .foregroundAccent, background: .clear, bordered: false))
             .padding(.init(horizontal: 12, vertical: 4))
         }, callback: {
@@ -185,7 +167,7 @@ private extension SettingsView {
     @ViewBuilder
     func footerView() -> some View {
         VStack(spacing: 0) {
-            Text("You are Unstoppable!")
+            Text(String.Constants.youAreUnstoppable.localized())
                 .foregroundStyle(Color.foregroundDefault)
                 .frame(height: 20)
             Text(UserDefaults.buildVersion)
@@ -193,7 +175,6 @@ private extension SettingsView {
                 .frame(height: 20)
         }
         .font(.currentFont(size: 14, weight: .medium))
-        .padding(.top, 24)
     }
 }
 
@@ -220,12 +201,12 @@ private extension SettingsView {
             }
         }
         
-        var icon: UIImage {
+        var icon: Image {
             switch self {
             case .security:
-                return UIImage(named: "settingsIconLock")!
+                return .settingsIconLock
             case .testnet:
-                return UIImage(named: "settingsIconTestnet")!
+                return .settingsIconTestnet
             }
         }
         
@@ -288,18 +269,18 @@ private extension SettingsView {
             }
         }
         
-        var icon: UIImage {
+        var icon: Image {
             switch self {
             case .rateUs:
                 return .iconStar24
             case .learn:
-                return UIImage(named: "settingsIconLearn")!
+                return .settingsIconLearn
             case .twitter:
-                return UIImage(named: "settingsIconTwitter")!
+                return .settingsIconTwitter
             case .support:
-                return UIImage(named: "settingsIconFeedback")!
+                return .settingsIconFeedback
             case .legal:
-                return UIImage(named: "settingsIconLegal")!
+                return .settingsIconLegal
             }
         }
         
@@ -317,7 +298,6 @@ private extension SettingsView {
                 return .settingsLegal
             }
         }
-
     }
 }
 

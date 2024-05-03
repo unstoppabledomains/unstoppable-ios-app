@@ -347,6 +347,7 @@
 "SETTINGS_APPEARANCE_THEME_LIGHT" = "Light";
 "SETTINGS_APPEARANCE_THEME_DARK" = "Dark";
 "SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
+"YOU_ARE_UNSTOPPABLE" = "You are Unstoppable!";
 
 // Wallets list
 "MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";
