@@ -13,6 +13,7 @@ struct SettingsView: View, ViewAnalyticsLogger {
     @Environment(\.userProfilesService) var userProfilesService
     
     @State private var profiles: [UserProfile] = []
+    @State private var pullUp: ViewPullUpConfigurationType?
     var analyticsName: Analytics.ViewName { .settings }
 
     var body: some View {
@@ -23,6 +24,7 @@ struct SettingsView: View, ViewAnalyticsLogger {
             })
             .navigationTitle(String.Constants.settings.localized())
             .navigationBarTitleDisplayMode(.large)
+            .viewPullUp($pullUp)
             .toolbar {
                 
             }
@@ -189,9 +191,18 @@ private extension SettingsView {
             case .support:
                 openFeedbackMailForm()
             case .legal:
-                return
-//                showLegalOptions()
+                pullUp = .default(.legalSelectionPullUp(selectionCallback: didSelectLegalType))
             }
+        }
+    }
+    
+    @MainActor
+    func didSelectLegalType(_ legalType: LegalType) {
+        switch legalType {
+        case .termsOfUse:
+            openLink(.termsOfUse)
+        case .privacyPolicy:
+            openLink(.privacyPolicy)
         }
     }
     

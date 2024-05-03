@@ -5462,8 +5462,6 @@
 			isa = PBXGroup;
 			children = (
 				C63DBCC62BE492AA008F3D2C /* SettingsView */,
-				C669B44E2B747539001D4788 /* SettingsNavigationDestination.swift */,
-				C669B4512B747607001D4788 /* SettingsLinkNavigationDestination.swift */,
 				C624D799281BCA3100F55530 /* SettingsPresenter.swift */,
 				C624D78F281BCA1F00F55530 /* SettingsViewController.swift */,
 				C624D790281BCA1F00F55530 /* SettingsViewController.xib */,
@@ -5882,6 +5880,8 @@
 		C63DBCC62BE492AA008F3D2C /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
+				C669B44E2B747539001D4788 /* SettingsNavigationDestination.swift */,
+				C669B4512B747607001D4788 /* SettingsLinkNavigationDestination.swift */,
 				C63DBCC72BE492B8008F3D2C /* SettingsView.swift */,
 				C6D20FCA2BE4A9DC003617B7 /* SettingsProfilesView.swift */,
 				C6D20FC72BE4A9A6003617B7 /* SettingsProfileTileView.swift */,
