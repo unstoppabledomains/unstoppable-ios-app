@@ -1253,6 +1253,8 @@
 		C68BAC932B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
+		C68E91C62BE517ED00576358 /* EcommAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68E91C52BE517ED00576358 /* EcommAuthenticator.swift */; };
+		C68E91C72BE517ED00576358 /* EcommAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68E91C52BE517ED00576358 /* EcommAuthenticator.swift */; };
 		C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */; };
 		C68F15632BD641470049BFA2 /* MPCActivateCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15622BD641470049BFA2 /* MPCActivateCredentials.swift */; };
 		C68F15642BD641470049BFA2 /* MPCActivateCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68F15622BD641470049BFA2 /* MPCActivateCredentials.swift */; };
@@ -3667,6 +3669,7 @@
 		C68BAC912B919D8E00001CA0 /* ChatViewScrollHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewScrollHandler.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
+		C68E91C52BE517ED00576358 /* EcommAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EcommAuthenticator.swift; sourceTree = "<group>"; };
 		C68F15602BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireblocksProxyWalletRPCMessageHandler.swift; sourceTree = "<group>"; };
 		C68F15622BD641470049BFA2 /* MPCActivateCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateCredentials.swift; sourceTree = "<group>"; };
 		C68F15662BD645CE0049BFA2 /* MPCActivateWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletView.swift; sourceTree = "<group>"; };
@@ -5892,6 +5895,7 @@
 		C63DD35D29C89FCB002D45B2 /* LoginViewController */ = {
 			isa = PBXGroup;
 			children = (
+				C68E91C52BE517ED00576358 /* EcommAuthenticator.swift */,
 				C6A474C629D149560073415F /* LoginFlowNavigationController.swift */,
 				C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */,
 				C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */,
@@ -9542,6 +9546,7 @@
 				30CB2D2225C2E98C00203052 /* ApiRequestBuilder.swift in Sources */,
 				C650E2962B9E9878002C120A /* UDButtonStyle+ViewModifier.swift in Sources */,
 				C630E4B92B7F5BAC008F3269 /* Padding.swift in Sources */,
+				C68E91C62BE517ED00576358 /* EcommAuthenticator.swift in Sources */,
 				C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */,
 				C64513072808089400413C51 /* UserDefaults.swift in Sources */,
 				C6C9959A289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
@@ -10799,6 +10804,7 @@
 				C6D6473C2B1ED9EF00D724AC /* PaymentTransactionCostView.swift in Sources */,
 				C6D6461D2B1DC1F900D724AC /* PreviewStripePaymentHelper.swift in Sources */,
 				C6C8F81B2B217CC000A9834D /* BaseCreateWalletPresenter.swift in Sources */,
+				C68E91C72BE517ED00576358 /* EcommAuthenticator.swift in Sources */,
 				C631DFA22B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */,
 				C61807F32B19A7960032E543 /* PreviewWalletConnectServiceV2.swift in Sources */,
 				C6D6467F2B1ED12900D724AC /* DomainProfileSectionChangeUIDescription.swift in Sources */,

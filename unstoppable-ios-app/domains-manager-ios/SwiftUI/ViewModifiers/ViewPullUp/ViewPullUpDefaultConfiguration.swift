@@ -465,6 +465,25 @@ extension ViewPullUpDefaultConfiguration {
                      analyticName: .sendCryptoForTheFirstTimeConfirmation,
                      dismissCallback: nil)
     }
+    
+    static func loginOptionsSelectionPullUp(selectionCallback: @escaping (LoginProvider)->()) -> ViewPullUpDefaultConfiguration {
+        var selectedItem: LoginProvider?
+        
+        return .init(title: .text(String.Constants.loginWithWebTitle.localized()),
+                     subtitle: .label(.text(String.Constants.loginWithWebSubtitle.localized())),
+                     items: LoginProvider.allCases,
+                     itemSelectedCallback: { item in
+            selectedItem = item as? LoginProvider
+        },
+                     dismissAble: true,
+                     analyticName: .settingsLoginSelection,
+                     dismissCallback: {
+            if let selectedItem {
+                selectionCallback(selectedItem)
+            }
+        })
+    }
+    
 }
 
 // MARK: - Open methods

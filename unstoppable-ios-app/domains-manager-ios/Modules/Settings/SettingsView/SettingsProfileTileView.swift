@@ -10,7 +10,8 @@ import SwiftUI
 struct SettingsProfileTileView: View {
 
     @Environment(\.imageLoadingService) var imageLoadingService
-    
+    @Environment(\.firebaseParkedDomainsService) var firebaseParkedDomainsService
+
     let profile: UserProfile
     
     @State private var rrIcon: UIImage?
@@ -107,9 +108,18 @@ private extension SettingsProfileTileView {
         }
     }
     
+    var badgeValue: String {
+        switch profile {
+        case .wallet(let wallet):
+            return String(wallet.domains.count)
+        case .webAccount:
+            return String(firebaseParkedDomainsService.getCachedDomains().count)
+        }
+    }
+    
     @ViewBuilder
     func domainsTag() -> some View {
-        Text("1")
+        Text(badgeValue)
             .foregroundStyle(Color.foregroundSecondary)
             .font(.currentFont(size: 14, weight: .semibold))
             .frame(height: 24)

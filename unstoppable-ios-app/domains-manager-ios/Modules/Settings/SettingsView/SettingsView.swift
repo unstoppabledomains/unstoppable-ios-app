@@ -11,9 +11,12 @@ import MessageUI
 struct SettingsView: View, ViewAnalyticsLogger {
     
     @Environment(\.userProfilesService) var userProfilesService
+    @EnvironmentObject private var tabRouter: HomeTabRouter
     
     @State private var profiles: [UserProfile] = []
     @State private var pullUp: ViewPullUpConfigurationType?
+    @State private var error: Error?
+    private let ecommAuthenticator = EcommAuthenticator()
     var analyticsName: Analytics.ViewName { .settings }
 
     var body: some View {
@@ -22,6 +25,7 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .onReceive(userProfilesService.profilesPublisher.receive(on: DispatchQueue.main), perform: { profiles in
                 self.profiles = profiles
             })
+            .displayError($error)
             .navigationTitle(String.Constants.settings.localized())
             .navigationBarTitleDisplayMode(.large)
             .viewPullUp($pullUp)
@@ -100,7 +104,7 @@ private extension SettingsView {
     }
     
     func askToLogOut() {
-        Task { @MainActor in 
+        Task { @MainActor in
             guard let topVC = appContext.coreAppCoordinator.topVC else { return }
             
             do {
@@ -116,7 +120,8 @@ private extension SettingsView {
     @ViewBuilder
     func loginButton() -> some View {
         Button {
-            
+            UDVibration.buttonTap.vibrate()
+            pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
         } label: {
             topActinTextView(text: String.Constants.login.localized())
         }
@@ -127,6 +132,38 @@ private extension SettingsView {
         Text(text)
             .font(.currentFont(size: 16, weight: .medium))
             .foregroundStyle(Color.foregroundAccent)
+    }
+    
+    @MainActor
+    func didSelectToAuthWith(provider: LoginProvider) {
+        switch provider {
+        case .email:
+            tabRouter.walletViewNavPath.append(HomeWalletNavigationDestination.login(mode: .email, callback: handleLoginResult))
+        case .google:
+            ecommAuthenticator.loginWithGoogle(resultCallback: didAuthorise)
+        case .twitter:
+            ecommAuthenticator.loginWithTwitter(resultCallback: didAuthorise)
+        case .apple:
+            ecommAuthenticator.loginWithApple(resultCallback: didAuthorise)
+        }
+    }
+    
+    func didAuthorise(_ result: EcommAuthenticator.AuthResult) {
+        switch result {
+        case .authorised(let provider):
+            tabRouter.walletViewNavPath.append(HomeWalletNavigationDestination.login(mode: .authorized(provider), callback: handleLoginResult))
+        case .failed(let error):
+            self.error = error
+        }
+    }
+    
+    func handleLoginResult(_ login: LoginFlowNavigationController.LogInResult) {
+        switch login {
+        case .cancel, .failedToLoadParkedDomains:
+            return
+        case .loggedIn:
+            tabRouter.walletViewNavPath.removeAll()
+        }
     }
 }
 
