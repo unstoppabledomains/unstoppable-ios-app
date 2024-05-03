@@ -758,6 +758,8 @@
 		C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */; };
 		C63DBCC82BE492B8008F3D2C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCC72BE492B8008F3D2C /* SettingsView.swift */; };
 		C63DBCC92BE492B8008F3D2C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCC72BE492B8008F3D2C /* SettingsView.swift */; };
+		C63DBCCB2BE49376008F3D2C /* NetworkService+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCCA2BE49376008F3D2C /* NetworkService+Common.swift */; };
+		C63DBCCC2BE49376008F3D2C /* NetworkService+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DBCCA2BE49376008F3D2C /* NetworkService+Common.swift */; };
 		C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
 		C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
 		C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
@@ -3291,6 +3293,7 @@
 		C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenUIDescription.swift; sourceTree = "<group>"; };
 		C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64DataTransformer.swift; sourceTree = "<group>"; };
 		C63DBCC72BE492B8008F3D2C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C63DBCCA2BE49376008F3D2C /* NetworkService+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Common.swift"; sourceTree = "<group>"; };
 		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
 		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C63DD36029C89FEC002D45B2 /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
@@ -7738,6 +7741,7 @@
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
 				C6C8F8542B217EAE00A9834D /* NetworkReachabilityServiceProtocol.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
+				C63DBCCA2BE49376008F3D2C /* NetworkService+Common.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
 				C6D646C12B1ED22400D724AC /* NetworkService+ProfilesEntities.swift */,
 				C60EE80E2ACD203000D699C7 /* NetworkService+MessagingApi.swift */,
@@ -9746,6 +9750,7 @@
 				C62900DF2BAAB1A8008B35A2 /* UDTabsPickerView.swift in Sources */,
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
+				C63DBCCB2BE49376008F3D2C /* NetworkService+Common.swift in Sources */,
 				C63F1CFF28AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */,
 				C635195628D048D700FC6AF8 /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				309BD85F265679EA00CB0C49 /* PaymentConfiguration.swift in Sources */,
@@ -11130,6 +11135,7 @@
 				C6D645DA2B1DBD4D00D724AC /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C6C8F8DC2B21836400A9834D /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D646E42B1ED4D000D724AC /* WalletAddressFieldCollectionCell.swift in Sources */,
+				C63DBCCC2BE49376008F3D2C /* NetworkService+Common.swift in Sources */,
 				C6C8F9242B2183B700A9834D /* SetupPasscodeViewController.swift in Sources */,
 				C6B2E20A2B96DF6E00CEA1F9 /* PreviewPublicDomainProfileDisplayInfoStorageService.swift in Sources */,
 				C6D646832B1ED12D00D724AC /* DomainProfileSocialsSection.swift in Sources */,
