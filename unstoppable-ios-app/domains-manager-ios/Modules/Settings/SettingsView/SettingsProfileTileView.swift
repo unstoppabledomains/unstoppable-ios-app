@@ -68,8 +68,7 @@ private extension SettingsProfileTileView {
                 }
             .overlay {
                 Capsule()
-//                    .stroke(Color.borderMuted, lineWidth: 1)
-                    .stroke(Color.red, lineWidth: 1)
+                    .stroke(Color.borderMuted, lineWidth: 1)
             }
             Spacer()
         }
