@@ -314,27 +314,7 @@ extension NetworkService {
         let name: String
         let paramsBuilder: ()->String
     }
-    
-    enum JRPCError: Error {
-        case failedBuildUrl
-        case gasRequiredExceedsAllowance
-        case genericError(String)
-        case failedGetStatus
-        case failedParseStatusPrices
-        case failedFetchInfuraGasPrices
-        case failedParseInfuraPrices
-        case failedEncodeTxParameters
-        case unknownChain
-        
-        init(message: String) {
-            if message.lowercased().starts(with: "gas required exceeds allowance") {
-                self = .gasRequiredExceedsAllowance
-            } else {
-                self = .genericError(message)
-            }
-        }
-    }
-    
+   
     func getJRPCRequest(chainId: Int,
                         requestInfo: JRPCRequestInfo) async throws -> String {
         
