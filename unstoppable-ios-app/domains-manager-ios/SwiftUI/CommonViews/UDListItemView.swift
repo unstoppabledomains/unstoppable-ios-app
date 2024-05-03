@@ -133,10 +133,7 @@ private extension UDListItemView {
     @ViewBuilder
     func rightView() -> some View {
         if let rightViewStyle  {
-            rightViewStyle.image
-                .resizable()
-                .squareFrame(20)
-                .foregroundStyle(rightViewStyle.foregroundColor)
+            rightViewStyle.view()
         }
     }
 }
@@ -168,6 +165,7 @@ extension UDListItemView {
     
     enum RightViewStyle {
         case chevron, checkmark, checkmarkEmpty, errorCircle
+        case toggle(isOn: Bool, callback: (Bool)->())
         
         var image: Image {
             switch self {
@@ -178,6 +176,8 @@ extension UDListItemView {
             case .checkmarkEmpty:
                 return .checkCircleEmpty
             case .errorCircle:
+                return .infoIcon
+            case .toggle:
                 return .infoIcon
             }
         }
@@ -192,8 +192,42 @@ extension UDListItemView {
                 return .borderEmphasis
             case .errorCircle:
                 return .foregroundDanger
+            case .toggle:
+                return .foregroundDanger
             }
         }
+        
+        @ViewBuilder
+        func view() -> some View {
+            switch self {
+            case .toggle(let isOn, let callback):
+                ListToggleView(isOn: isOn,
+                               callback: callback)
+            default:
+                image
+                    .resizable()
+                    .squareFrame(20)
+                    .foregroundStyle(foregroundColor)
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension UDListItemView {
+    struct ListToggleView: View {
+        
+    @State var isOn: Bool
+    let callback: (Bool)->()
+        
+        var body: some View {
+            Toggle("", isOn: $isOn)
+                .tint(.backgroundAccentEmphasis)
+                .onChange(of: isOn) { newValue in
+                    callback(newValue)
+                }
+        }
+        
     }
 }
 
