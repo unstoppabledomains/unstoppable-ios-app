@@ -118,10 +118,16 @@ extension NetworkService {
         
         struct Domain: Codable {
             let domain: String
-            let chain: String? // TODO: - Request this field from Profiles API
+            let meta: Meta
             
             func blockchainType() -> BlockchainType {
-                BlockchainType(rawValue: chain ?? "") ?? .Matic
+                BlockchainType(rawValue: meta.blockchain) ?? .Matic
+            }
+            
+            struct Meta: Codable {
+                let reverse: Bool
+                let blockchain: String
+                let type: String
             }
         }
         
@@ -155,16 +161,11 @@ extension NetworkService {
         }
 
         let url = ProfileDomainURLSList.domainRecordsManageURL(domain: domain.name)
-        do {
-            // TODO: - Request BE change to not throw error if there's no operations
-            let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
-                                                                                                      method: .get,
-                                                                                                      domain: domain)
-            let txs = response.items.map { $0.createTxItem() }
-            return txs
-        } catch {
-            return []
-        }
+        let response: DomainOperationsResponse = try await makeProfilesAuthorizedDecodableRequest(url: url,
+                                                                                                  method: .get,
+                                                                                                  domain: domain)
+        let txs = response.items.map { $0.createTxItem() }
+        return txs
     }
 
     private struct DomainOperationsResponse: Decodable {
