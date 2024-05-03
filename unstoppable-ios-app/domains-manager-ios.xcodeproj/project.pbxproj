@@ -785,6 +785,7 @@
 		C645131B28096CB600413C51 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C645132028096CB600413C51 /* Localizable.stringsdict */; };
 		C64513232809912F00413C51 /* PullUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513222809912F00413C51 /* PullUpViewController.swift */; };
 		C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */; };
+		C64545EB2BE3783C0011D508 /* TestableMPCWalletsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */; };
 		C6456F0627FF291D00A517D5 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0527FF291D00A517D5 /* GradientView.swift */; };
 		C6456F0B27FF299800A517D5 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0A27FF299800A517D5 /* UIView.swift */; };
 		C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */; };
@@ -3314,6 +3315,7 @@
 		C645131F28096CB600413C51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		C64513222809912F00413C51 /* PullUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewController.swift; sourceTree = "<group>"; };
 		C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileViewDelegate.swift; sourceTree = "<group>"; };
+		C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableMPCWalletsService.swift; sourceTree = "<group>"; };
 		C6456F0527FF291D00A517D5 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		C6456F0A27FF299800A517D5 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
@@ -8129,6 +8131,7 @@
 				C6D011CD2B99A3C90008BF40 /* TestableUserProfilesService.swift */,
 				C617CFA52B9EDA1300663516 /* TestableWalletConnectServiceV2.swift */,
 				C617CFA72B9EDA2F00663516 /* TestableWalletNFTsService.swift */,
+				C64545EA2BE3783C0011D508 /* TestableMPCWalletsService.swift */,
 				C632C9442BA95D5900B0072B /* TestableFirebaseParkedDomainsAuthenticationService.swift */,
 				C632C9462BA95D7400B0072B /* TestableFirebaseParkedDomainsService.swift */,
 				C632C9482BA95D8A00B0072B /* TestableWalletsDataService.swift */,
@@ -10510,6 +10513,7 @@
 				C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */,
 				C6B2E2142B9714B100CEA1F9 /* DomainProfilesServiceTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
+				C64545EB2BE3783C0011D508 /* TestableMPCWalletsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

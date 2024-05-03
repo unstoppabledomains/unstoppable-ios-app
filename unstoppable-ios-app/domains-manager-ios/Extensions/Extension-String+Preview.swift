@@ -1295,12 +1295,10 @@ extension String {
     }
     
     var convertToMPCMessage: MPCMessage {
-        let cleanMessage = self.droppedHexPrefix
-        if cleanMessage.isHexNumber {
-            return MPCMessage(incomingString: self, outcomingString: Self.hexPrefix + cleanMessage, type: .hex)
-        } else {
+        guard self.hasHexPrefix else {
             return MPCMessage(incomingString: self, outcomingString: self, type: .utf8)
         }
+        return MPCMessage(incomingString: self, outcomingString: self, type: .hex)
     }
         
     var asURL: URL? {
