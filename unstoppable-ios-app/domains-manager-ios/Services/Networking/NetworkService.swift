@@ -320,6 +320,7 @@ extension NetworkService {
         case failedGetStatus
         case failedParseStatusPrices
         case failedFetchInfuraGasPrices
+        case failedFetchNonce
         case failedParseInfuraPrices
         case failedEncodeTxParameters
         case unknownChain
