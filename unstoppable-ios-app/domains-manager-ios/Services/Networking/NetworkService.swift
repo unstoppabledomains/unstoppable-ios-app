@@ -334,6 +334,17 @@ extension NetworkService {
         }
     }
     
+    func doubleAttempt<T>(fetchingAction: (() async throws -> T) ) async throws -> T {
+        let fetched: T
+        do {
+            fetched = try await fetchingAction()
+        } catch {
+            try await Task.sleep(nanoseconds: 500_000_000)
+            fetched = try await fetchingAction()
+        }
+        return fetched
+    }
+    
     func getJRPCRequest(chainId: Int,
                         requestInfo: JRPCRequestInfo) async throws -> String {
         

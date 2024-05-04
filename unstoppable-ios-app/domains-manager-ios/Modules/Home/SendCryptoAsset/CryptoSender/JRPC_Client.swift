@@ -19,22 +19,16 @@ struct JRPC_Client {
     }
     
     func fetchNonce(address: HexAddress, chainId: Int) async throws -> EthereumQuantity {
-        let nonceString: String
-        do {
-            nonceString = try await NetworkService().getTransactionCount(address: address,
-                                                                         chainId: chainId)
-        } catch {
-            try await Task.sleep(nanoseconds: 500_000_000)
-            nonceString = try await NetworkService().getTransactionCount(address: address,
-                                                                         chainId: chainId)
+        let nonceString = try await NetworkService().doubleAttempt {
+            try await NetworkService().getTransactionCount(address: address,
+                                                           chainId: chainId)
         }
-                
         guard let nonceBig = BigUInt(nonceString.droppedHexPrefix, radix: 16) else {
             throw WalletConnectRequestError.failedFetchNonce
         }
         return EthereumQuantity(quantity: nonceBig)
     }
-    
+        
     func fetchGasPrice(chainId: Int) async throws -> EthereumQuantity {
         guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
             Debugger.printFailure("Failed to fetch gasPrice", critical: false)
