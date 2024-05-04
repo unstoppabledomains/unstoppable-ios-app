@@ -357,10 +357,15 @@ extension NetworkService {
     
     func getTransactionCount(address: HexAddress,
                              chainId: Int) async throws -> String {
-        
-        try await getJRPCRequest(chainId: chainId,
-                       requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
-                                                    paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        let countString: String
+        do {
+            countString = try await getJRPCRequest(chainId: chainId,
+                                     requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
+                                                                  paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        } catch {
+            throw JRPCError.failedFetchNonce
+        }
+        return countString
     }
     
     func getGasEstimation(tx: EthereumTransaction,
