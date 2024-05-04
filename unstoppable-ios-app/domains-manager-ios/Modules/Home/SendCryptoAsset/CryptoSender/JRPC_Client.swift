@@ -35,16 +35,6 @@ struct JRPC_Client {
         return EthereumQuantity(quantity: nonceBig)
     }
     
-    func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
-        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
-                                                                     chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
-            return nil
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
-        return nonceString
-    }
-    
     func fetchGasPrice(chainId: Int) async throws -> EthereumQuantity {
         guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
             Debugger.printFailure("Failed to fetch gasPrice", critical: false)
