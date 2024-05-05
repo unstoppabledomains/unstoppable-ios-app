@@ -24,7 +24,7 @@ struct JRPC_Client {
                                                            chainId: chainId)
         }
         guard let nonceBig = BigUInt(nonceString.droppedHexPrefix, radix: 16) else {
-            throw WalletConnectRequestError.failedFetchNonce
+            throw NetworkService.JRPCError.failedFetchNonce
         }
         return EthereumQuantity(quantity: nonceBig)
     }
