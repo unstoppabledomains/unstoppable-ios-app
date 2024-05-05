@@ -323,6 +323,9 @@ extension NetworkService {
         case failedFetchNonce
         case failedParseInfuraPrices
         case failedEncodeTxParameters
+        case failedFetchGas
+        case lowAllowance
+        case failedFetchGasLimit
         case unknownChain
         
         init(message: String) {

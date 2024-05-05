@@ -12,12 +12,6 @@ struct JRPC_Client {
     static let instance = JRPC_Client()
     private init() { }
 
-    enum Error: Swift.Error {
-        case failedFetchGas
-        case lowAllowance
-        case failedFetchGasLimit
-    }
-    
     func fetchNonce(address: HexAddress, chainId: Int) async throws -> EthereumQuantity {
         let nonceString = try await NetworkService().doubleAttempt {
             try await NetworkService().getTransactionCount(address: address,
@@ -32,13 +26,13 @@ struct JRPC_Client {
     func fetchGasPrice(chainId: Int) async throws -> EthereumQuantity {
         guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
             Debugger.printFailure("Failed to fetch gasPrice", critical: false)
-            throw Self.Error.failedFetchGas
+            throw NetworkService.JRPCError.failedFetchGas
         }
         Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
         let gasPriceBigUInt = BigUInt(gasPrice.droppedHexPrefix, radix: 16)
         
         guard let gasPriceBigUInt else {
-            throw Self.Error.failedFetchGas
+            throw NetworkService.JRPCError.failedFetchGas
         }
         return EthereumQuantity(quantity: gasPriceBigUInt)
     }
@@ -49,7 +43,7 @@ struct JRPC_Client {
                                                                              chainId: chainId)
             guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
                 Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
-                throw Self.Error.failedFetchGasLimit
+                throw NetworkService.JRPCError.failedFetchGasLimit
             }
             Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
             return EthereumQuantity(quantity: result)
@@ -58,10 +52,10 @@ struct JRPC_Client {
                 switch jrpcError {
                 case .genericError(let message):
                     Debugger.printFailure("Failed to fetch gas Estimate, message: \(message)", critical: false)
-                    throw JRPC_Client.Error.failedFetchGas
+                    throw NetworkService.JRPCError.failedFetchGas
                 case .gasRequiredExceedsAllowance:
                     Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                    throw JRPC_Client.Error.lowAllowance
+                    throw NetworkService.JRPCError.lowAllowance
                 default: throw WalletConnectRequestError.failedFetchGas
                 }
             } else {
