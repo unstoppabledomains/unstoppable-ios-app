@@ -320,8 +320,12 @@ extension NetworkService {
         case failedGetStatus
         case failedParseStatusPrices
         case failedFetchInfuraGasPrices
+        case failedFetchNonce
         case failedParseInfuraPrices
         case failedEncodeTxParameters
+        case failedFetchGas
+        case lowAllowance
+        case failedFetchGasLimit
         case unknownChain
         
         init(message: String) {
@@ -331,6 +335,17 @@ extension NetworkService {
                 self = .genericError(message)
             }
         }
+    }
+    
+    func doubleAttempt<T>(fetchingAction: (() async throws -> T) ) async throws -> T {
+        let fetched: T
+        do {
+            fetched = try await fetchingAction()
+        } catch {
+            try await Task.sleep(nanoseconds: 500_000_000)
+            fetched = try await fetchingAction()
+        }
+        return fetched
     }
     
     func getJRPCRequest(chainId: Int,
@@ -356,10 +371,15 @@ extension NetworkService {
     
     func getTransactionCount(address: HexAddress,
                              chainId: Int) async throws -> String {
-        
-        try await getJRPCRequest(chainId: chainId,
-                       requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
-                                                    paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        let countString: String
+        do {
+            countString = try await getJRPCRequest(chainId: chainId,
+                                     requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
+                                                                  paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        } catch {
+            throw JRPCError.failedFetchNonce
+        }
+        return countString
     }
     
     func getGasEstimation(tx: EthereumTransaction,

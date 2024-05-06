@@ -402,6 +402,7 @@ extension String {
         static let transactionFailed = "TRANSACTION_FAILED"
         static let connectionLost = "CONNECTION_LOST"
         static let gasFeeFailed = "GAS_FEE_FETCH_FAILED"
+        static let nonceFailed = "NONCE_FETCH_FAILED"
         static let pleaseCheckInternetConnection = "PLEASE_CHECK_INTERNET_CONNECTION"
         static let failedToPickImageFromPhotoLibraryErrorMessage = "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE"
         static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"
