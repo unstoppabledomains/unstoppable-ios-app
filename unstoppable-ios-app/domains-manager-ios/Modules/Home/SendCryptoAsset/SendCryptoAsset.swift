@@ -63,10 +63,20 @@ extension SendCryptoAsset {
         func addressFor(token: BalanceTokenUIDescription,
                         in currencies: [CoinRecord]) -> String? {
             let coinRecords = currencies.filter { $0.ticker == token.symbol }
+            let chain = fixCoinRecordChainIdentifier(token.chain)
             guard let tokenRecord = coinRecords.first(where: { $0.version == nil || $0.version == token.chain }) else { return nil }
             
             let recordsIdentifier = tokenRecord.expandedTicker
             return self.records[recordsIdentifier]
+        }
+        
+        private func fixCoinRecordChainIdentifier(_ chain: String) -> String {
+            switch chain {
+            case "ETH":
+                return "ERC20"
+            default:
+                return chain
+            }
         }
         
         func addressFor(symbol: String) -> String? {
