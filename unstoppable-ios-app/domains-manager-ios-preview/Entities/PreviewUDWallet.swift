@@ -82,6 +82,16 @@ struct UDWallet: Codable, Hashable {
         hasher.combine(self.hasBeenBackedUp)
         hasher.combine(self.type)
     }
+    func extractMPCMetadata() throws -> MPCWalletMetadata {
+        guard let mpcMetadata else { throw UDWallet.Error.failedToFindMPCMetadata }
+        
+        return mpcMetadata
+    }
+    
+    enum Error: String, Swift.Error, RawValueLocalizable {
+        case failedSignature
+        case failedToFindMPCMetadata
+    }
 }
 
 extension UDWallet {

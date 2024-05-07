@@ -781,6 +781,8 @@
 		C64312A22B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */; };
 		C64312A32B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
 		C64312A42B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */; };
+		C6450CD22BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */; };
+		C6450CD32BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */; };
 		C64513072808089400413C51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513062808089400413C51 /* UserDefaults.swift */; };
 		C645130C280808ED00413C51 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645130B280808ED00413C51 /* Codable.swift */; };
 		C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */; };
@@ -3316,6 +3318,7 @@
 		C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryImageSaver.swift; sourceTree = "<group>"; };
 		C643129F2B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedAppsEmptyCell.swift; sourceTree = "<group>"; };
 		C64312A02B68BB2900BCA2A4 /* ConnectedAppsEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConnectedAppsEmptyCell.xib; sourceTree = "<group>"; };
+		C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareWalletAssetInfoView.swift; sourceTree = "<group>"; };
 		C64513062808089400413C51 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		C645130B280808ED00413C51 /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUsersTutorialViewController.swift; sourceTree = "<group>"; };
@@ -8501,6 +8504,7 @@
 			isa = PBXGroup;
 			children = (
 				C6E0DC5C2B71E2410069E100 /* ShareWalletInfoView.swift */,
+				C6450CD12BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift */,
 			);
 			path = ShareWalletInfoView;
 			sourceTree = "<group>";
@@ -9523,6 +9527,7 @@
 				C692C31B282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
 				C6DDF24D2B147F1A006D1F0B /* UDCollectionSectionBackgroundView.swift in Sources */,
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
+				C6450CD22BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */,
 				C6F9FBD92A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */,
 				C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
 				C67097AC2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
@@ -11519,6 +11524,7 @@
 				C6C8F9732B2188FA00A9834D /* QRScannerSightView.swift in Sources */,
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
 				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
+				C6450CD32BEA0C3E0010F0B8 /* ShareWalletAssetInfoView.swift in Sources */,
 				C6D645CB2B1DBD3C00D724AC /* CNavigationControllerChildTransitioning.swift in Sources */,
 				C61808092B19A9EE0032E543 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6C8F8942B21829000A9834D /* AppearanceSettingsViewController.swift in Sources */,

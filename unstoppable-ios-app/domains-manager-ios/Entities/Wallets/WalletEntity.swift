@@ -169,7 +169,7 @@ extension WalletEntity {
     
     private func getDefaultAssetType() -> AssetsType {
         let blockchain = BlockchainType.Ethereum
-        return .singleChain(BalanceTokenUIDescription(address: address,
+        return .singleChain(BalanceTokenUIDescription(address: ethFullAddress,
                                                       chain: blockchain.rawValue,
                                                       symbol: blockchain.rawValue,
                                                       name: blockchain.fullName,
