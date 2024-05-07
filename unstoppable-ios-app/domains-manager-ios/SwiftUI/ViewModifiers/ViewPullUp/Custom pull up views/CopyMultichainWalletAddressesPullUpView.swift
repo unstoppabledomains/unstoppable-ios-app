@@ -23,6 +23,20 @@ struct CopyMultichainWalletAddressesPullUpView: View {
         .padding(.horizontal, 16)
         .background(Color.backgroundDefault)
     }
+    
+    @MainActor
+    static func calculateHeightFor(tokens: [BalanceTokenUIDescription],
+                                   selectionType: SelectionType) -> CGFloat {
+        var subtitle: ViewPullUpDefaultConfiguration.Subtitle?
+        if let sub = selectionType.subtitle {
+            subtitle = .label(.text(sub))
+        }
+        let height = ViewPullUpDefaultConfiguration(title: .text(selectionType.title),
+                                                    subtitle: subtitle,
+                                                    analyticName: .addWalletSelection).calculateHeight()
+        let listItemsHeight = CGFloat(tokens.count) * 64
+        return height + listItemsHeight
+    }
 }
 
 // MARK: - Private methods
