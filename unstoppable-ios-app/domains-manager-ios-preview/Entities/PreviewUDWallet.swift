@@ -68,7 +68,9 @@ struct UDWallet: Codable, Hashable {
     
     static func createMPC(address: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
-        .init()
+        .init(address: address,
+              type: .mpc,
+              mpcMetadata: mpcMetadata)
     }
     
     static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {

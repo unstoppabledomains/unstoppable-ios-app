@@ -49,5 +49,5 @@ private extension ShareWalletInfoView {
 }
 
 #Preview {
-    ShareWalletInfoView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
+    ShareWalletInfoView(wallet: MockEntitiesFabric.Wallet.mockMPC())
 }
