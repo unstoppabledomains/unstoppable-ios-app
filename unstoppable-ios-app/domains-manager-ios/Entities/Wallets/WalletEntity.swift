@@ -146,6 +146,40 @@ extension WalletEntity {
     }
 }
 
+
+extension WalletEntity {
+    enum AssetsType {
+        case singleChain(BalanceTokenUIDescription)
+        case multiChain([BalanceTokenUIDescription])
+    }
+    
+    func getAssetsType() -> AssetsType {
+        if case .mpc = udWallet.type {
+            do {
+                let mpcMetadata = try udWallet.extractMPCMetadata()
+                let tokens = try appContext.mpcWalletsService.getTokens(for: mpcMetadata)
+                return .multiChain(tokens)
+            } catch {
+                return getDefaultAssetType()
+            }
+        }
+        
+        return getDefaultAssetType()
+    }
+    
+    private func getDefaultAssetType() -> AssetsType {
+        let blockchain = BlockchainType.Ethereum
+        return .singleChain(BalanceTokenUIDescription(address: address,
+                                                      chain: blockchain.rawValue,
+                                                      symbol: blockchain.rawValue,
+                                                      name: blockchain.fullName,
+                                                      balance: 0,
+                                                      balanceUsd: 0,
+                                                      marketUsd: nil,
+                                                      marketPctChange24Hr: nil))
+    }
+}
+
 extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
         guard let address = address?.normalized else { return nil }

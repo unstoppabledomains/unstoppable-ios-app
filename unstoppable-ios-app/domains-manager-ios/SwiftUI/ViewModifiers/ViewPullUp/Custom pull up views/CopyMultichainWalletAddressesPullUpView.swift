@@ -35,7 +35,7 @@ struct CopyMultichainWalletAddressesPullUpView: View {
                                                     subtitle: subtitle,
                                                     analyticName: .addWalletSelection).calculateHeight()
         let listItemsHeight = CGFloat(tokens.count) * 64
-        return height + listItemsHeight
+        return height + listItemsHeight + 64
     }
 }
 
