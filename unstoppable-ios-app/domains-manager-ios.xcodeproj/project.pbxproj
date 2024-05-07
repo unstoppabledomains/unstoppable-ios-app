@@ -1502,6 +1502,8 @@
 		C6B2E2172B9715BC00CEA1F9 /* DomainProfileNetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E2152B9715BC00CEA1F9 /* DomainProfileNetworkServiceProtocol.swift */; };
 		C6B2E8872BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E8862BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift */; };
 		C6B2E8882BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E8862BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift */; };
+		C6B2E88E2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E88D2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift */; };
+		C6B2E88F2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2E88D2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift */; };
 		C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
 		C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
 		C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */; };
@@ -3831,6 +3833,7 @@
 		C6B2E2132B9714B100CEA1F9 /* DomainProfilesServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfilesServiceTests.swift; sourceTree = "<group>"; };
 		C6B2E2152B9715BC00CEA1F9 /* DomainProfileNetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileNetworkServiceProtocol.swift; sourceTree = "<group>"; };
 		C6B2E8862BE9DB3300CF4BCA /* CopyMultichainWalletAddressesPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyMultichainWalletAddressesPullUpView.swift; sourceTree = "<group>"; };
+		C6B2E88D2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalCryptoSenderProtocol.swift; sourceTree = "<group>"; };
 		C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarItemsTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarBackButtonTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRESTAPIService.swift; sourceTree = "<group>"; };
@@ -7768,6 +7771,7 @@
 				29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */,
 				C6B45DAF2BBA97B600B44C33 /* CryptoSender+Entities.swift */,
 				29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */,
+				C6B2E88D2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift */,
 				C610BA1C2BE2358700179919 /* UDCryptoSender.swift */,
 				C610BA1A2BE234A600179919 /* MPCCryptoSender.swift */,
 				29018C8C2BACB7BC0004545D /* JRPC_Client.swift */,
@@ -9802,6 +9806,7 @@
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C6DF462C2AA196C100D124E7 /* ViewErrorHolder.swift in Sources */,
 				C6EA6D6328B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
+				C6B2E88E2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift in Sources */,
 				C60E9B872821193400CD7593 /* WalletsListViewPresenter.swift in Sources */,
 				C6DF46252AA18D4000D124E7 /* Error.swift in Sources */,
 				29AEA05529367785003BB5B4 /* UDWallet+Signing.swift in Sources */,
@@ -11250,6 +11255,7 @@
 				C621A4462BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,
 				C6D6468F2B1ED13C00D724AC /* AddCurrencyCell.swift in Sources */,
 				C618084A2B19B9930032E543 /* PreviewDomainRecordsService.swift in Sources */,
+				C6B2E88F2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift in Sources */,
 				C6D645B92B1DBC5000D724AC /* UIAction.swift in Sources */,
 				C618085F2B19BBFE0032E543 /* FlowLayoutView.swift in Sources */,
 				C67DE1462B984031002374CE /* RecentGlobalSearchProfilesStorageProtocol.swift in Sources */,
