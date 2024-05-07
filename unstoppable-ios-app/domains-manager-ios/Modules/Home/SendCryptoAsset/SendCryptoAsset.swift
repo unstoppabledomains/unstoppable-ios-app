@@ -60,6 +60,15 @@ extension SendCryptoAsset {
         private(set) var pfpURL: URL?
         private var records: [String: String] = [:]
         
+        func addressFor(token: BalanceTokenUIDescription,
+                        in currencies: [CoinRecord]) -> String? {
+            let coinRecords = currencies.filter { $0.ticker == token.symbol }
+            guard let tokenRecord = coinRecords.first(where: { $0.version == nil || $0.version == token.chain }) else { return nil }
+            
+            let recordsIdentifier = tokenRecord.expandedTicker
+            return self.records[recordsIdentifier]
+        }
+        
         func addressFor(symbol: String) -> String? {
             if let blockchainType = BlockchainType(rawValue: symbol) {
                 return addressFor(chainType: blockchainType)

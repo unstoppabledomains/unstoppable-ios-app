@@ -53,27 +53,32 @@ struct SelectCryptoAssetToSendView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension SelectCryptoAssetToSendView {
     func onAppear() {
-        let tokens = viewModel.sourceWallet.balance
-            .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
-            .flatMap({ $0 })
-            .filter { viewModel.canSendToken($0) }
-            .filter { $0.balanceUsd > 0 }
-            .sorted(by: { lhs, rhs in
-            lhs.balanceUsd > rhs.balanceUsd
-        })
-            .map { createTokenToSendFrom(token: $0) }
-        
-        self.notAddedTokens = tokens.filter { $0.address == nil }
-        self.tokens = tokens.filter { $0.address != nil }
+        Task {
+            let currencies = await appContext.coinRecordsService.getCurrencies()
+            
+            let tokens = viewModel.sourceWallet.balance
+                .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
+                .flatMap({ $0 })
+                .filter { viewModel.canSendToken($0) }
+                .filter { $0.balanceUsd > 0 }
+                .sorted(by: { lhs, rhs in
+                    lhs.balanceUsd > rhs.balanceUsd
+                })
+                .map { createTokenToSendFrom(token: $0, in: currencies) }
+            
+            self.notAddedTokens = tokens.filter { $0.address == nil }
+            self.tokens = tokens.filter { $0.address != nil }
+        }
         
         allDomains = viewModel.sourceWallet.domains.filter { $0.isUDDomain && $0.isAbleToTransfer }
         setDomainsData()
         setupTitle()
     }
     
-    func createTokenToSendFrom(token: BalanceTokenUIDescription) -> BalanceTokenToSend {
+    func createTokenToSendFrom(token: BalanceTokenUIDescription,
+                               in currencies: [CoinRecord]) -> BalanceTokenToSend {
         if receiver.domainName != nil {
-            let address = receiver.addressFor(symbol: token.symbol)
+            let address = receiver.addressFor(token: token, in: currencies)
             return BalanceTokenToSend(token: token, address: address)
         }
         
