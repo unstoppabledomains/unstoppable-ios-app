@@ -32,7 +32,8 @@ extension FB_UD_MPC {
             let symbol = blockchainAsset.symbol
             let chain = WalletAccountAsset.symbolFor(mpcID: blockchainAsset.blockchain.id)
            
-            return BalanceTokenUIDescription(chain: chain ?? symbol,
+            return BalanceTokenUIDescription(address: address,
+                                             chain: chain ?? symbol,
                                              symbol: symbol,
                                              name: blockchainAsset.name,
                                              balance: 0,

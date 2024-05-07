@@ -227,7 +227,8 @@ extension MockEntitiesFabric {
         }
         
         static func mockEthToken() -> BalanceTokenUIDescription {
-            BalanceTokenUIDescription(chain: "ETH",
+            BalanceTokenUIDescription(address:  "0x000",
+                                      chain: "ETH",
                                       symbol: "ETH",
                                       name: "Ethereum",
                                       balance: 1,
@@ -236,7 +237,8 @@ extension MockEntitiesFabric {
         }
         
         static func mockMaticToken() -> BalanceTokenUIDescription {
-            BalanceTokenUIDescription(chain: "MATIC",
+            BalanceTokenUIDescription(address:  "0x000",
+                                      chain: "MATIC",
                                       symbol: "MATIC",
                                       name: "Polygon",
                                       balance: 1,
