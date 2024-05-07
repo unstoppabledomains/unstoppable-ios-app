@@ -39,12 +39,12 @@ private extension ShareWalletInfoView {
         case .singleChain(let token):
                 .singleChain(token)
         case .multiChain(let tokens):
-                .multiChain(tokens: tokens, callback: didSelectMultiChainToken)
+                .multiChain(tokens: tokens, callback: didSelectMultiChainAsset)
         }
     }
     
-    func didSelectMultiChainToken(_ token: BalanceTokenUIDescription) {
-        navigationPath.append(ShareWalletAssetInfoView.AssetsType.singleChain(token))
+    func didSelectMultiChainAsset(_ token: BalanceTokenUIDescription) {
+        navigationPath.append(ShareWalletAssetInfoView.AssetsType.multiChainAsset(token))
     }
 }
 

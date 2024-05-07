@@ -230,7 +230,9 @@ extension UDListItemView {
                     ForEach(actions, id: \.id) { action in
                         Button {
                             UDVibration.buttonTap.vibrate()
-                            action.callback()
+                            Task {
+                                await action.callback()
+                            }
                         } label: {
                             Label(action.title, systemImage: action.iconName)
                         }
@@ -265,7 +267,7 @@ extension UDListItemView {
             let id = UUID()
             let title: String
             let iconName: String
-            let callback: EmptyCallback
+            let callback: MainActorCallback
         }
     }
 }

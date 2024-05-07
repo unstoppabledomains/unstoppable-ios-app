@@ -102,18 +102,29 @@ extension CopyMultichainWalletAddressesPullUpView {
             switch selectionType {
             case .copyOnly:
                 return .generic(.button(.init(icon: selectionType.icon,
-                                              callback: {
-                    CopyWalletAddressPullUpHandler.copyToClipboard(address: token.address,
-                                                                   ticker: token.symbol)
-                })))
+                                              callback: copyAction)))
             case .shareOnly:
                 return .generic(.button(.init(icon: selectionType.icon,
-                                              callback: {
-                    shareItems([token.address], completion: nil)
-                })))
+                                              callback: shareAction)))
+            case .allOptions(let qrCodeCallback):
+                return .generic(.menu(primary: .init(icon: .copyToClipboardIcon, callback: { }),
+                                      actions: [.init(title: String.Constants.copyWalletAddress.localized(), iconName: "doc.on.doc",
+                                                      callback: copyAction),
+                                                .init(title: String.Constants.shareAddress.localized(), iconName: "square.and.arrow.up",
+                                                      callback: shareAction),
+                                                .init(title: String.Constants.qrCode.localized(), iconName: "qrcode",
+                                                      callback: qrCodeCallback)]))
             }
         }
         
+        func copyAction() {
+            CopyWalletAddressPullUpHandler.copyToClipboard(address: token.address,
+                                                           ticker: token.symbol)
+        }
+        @MainActor
+        func shareAction() {
+            shareItems([token.address], completion: nil)
+        }
         private func onAppear() {
             loadTokenIcon()
         }
@@ -130,10 +141,11 @@ extension CopyMultichainWalletAddressesPullUpView {
     enum SelectionType {
         case copyOnly
         case shareOnly
+        case allOptions(qrCodeCallback: MainActorCallback)
         
         var icon: Image {
             switch self {
-            case .copyOnly:
+            case .copyOnly, .allOptions:
                 return .copyToClipboardIcon
             case .shareOnly:
                 return .shareIcon
@@ -142,7 +154,7 @@ extension CopyMultichainWalletAddressesPullUpView {
         
         var title: String {
             switch self {
-            case .copyOnly:
+            case .copyOnly, .allOptions:
                 "MPC Wallet has addresses across multiple blockchains"
             case .shareOnly:
                 "Choose address to share"
@@ -151,7 +163,7 @@ extension CopyMultichainWalletAddressesPullUpView {
         
         var subtitle: String? {
             switch self {
-            case .copyOnly:
+            case .copyOnly, .allOptions:
                 nil
             case .shareOnly:
                 "MPC Wallet has addresses across multiple blockchains"

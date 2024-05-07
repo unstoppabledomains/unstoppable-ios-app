@@ -24,7 +24,6 @@ struct ShareWalletAssetInfoView: View, ViewAnalyticsLogger {
     
     var body: some View {
         VStack(spacing: 0) {
-            DismissIndicatorView(color: .white.opacity(0.16))
             contentViewsForWalletAssetType()
         }
         .onAppear(perform: onAppear)
@@ -38,7 +37,7 @@ struct ShareWalletAssetInfoView: View, ViewAnalyticsLogger {
             showingHint = true
         }
         .toolbar {
-            if case .singleChain(let token) = asset {
+            if let token = getTokenToShare() {
                 ToolbarItem(placement: .bottomBar) {
                     if rrDomain == nil {
                         shareButtonView(token: token)
@@ -67,7 +66,7 @@ private extension ShareWalletAssetInfoView {
                 domainAvatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: nil)
             }
         }
-        if case .singleChain(let token) = asset {
+        if let token = getTokenToShare() {
             Task.detached(priority: .high) {
                 if let url = URL(string: token.address),
                    let image = await appContext.imageLoadingService.loadImage(from: .qrCode(url: url,
@@ -78,6 +77,15 @@ private extension ShareWalletAssetInfoView {
             }
         }
     }
+    
+    func getTokenToShare() -> BalanceTokenUIDescription? {
+        switch asset {
+        case .singleChain(let token), .multiChainAsset(let token):
+            return token
+        case .multiChain:
+            return nil
+        }
+    }
 }
 
 // MARK: - Views
@@ -86,13 +94,75 @@ private extension ShareWalletAssetInfoView {
     func contentViewsForWalletAssetType() -> some View {
         switch asset {
         case .singleChain(let token):
+            dismissIndicator()
             contentViewForSingleChainWallet(token: token)
-        case .multiChain(let array, let callback):
-            EmptyView()
-//            contentViewForSingleChainWallet(token: array[0])
+        case .multiChain(let tokens, let callback):
+            contentViewForMultiChainWallet(tokens: tokens, callback: callback)
+        case .multiChainAsset(let token):
+            contentViewForMultiChainAssetWallet(token: token)
+        }
+    }
+ 
+    @ViewBuilder
+    func dismissIndicator() -> some View {
+        DismissIndicatorView(color: .white.opacity(0.16))
+    }
+    
+    @ViewBuilder
+    func shareButtonView(token: BalanceTokenUIDescription) -> some View {
+        UDButtonView(text: String.Constants.shareAddress.localized(),
+                     icon: rrDomain != nil ? nil : .shareFlatIcon,
+                     style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .share)
+            shareItems([token.address]) { success in
+                logAnalytic(event: .shareResult,
+                            parameters: [.success: String(success)])
+            }
         }
     }
     
+    @ViewBuilder
+    func copyAddressLargeButtonView(token: BalanceTokenUIDescription) -> some View {
+        UDButtonView(text: String.Constants.copyAddress.localized(),
+                     style: .large(.raisedTertiaryWhite)) {
+            logButtonPressedAnalyticEvents(button: .copyToClipboard)
+            UDVibration.buttonTap.vibrate()
+            CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
+        }
+    }
+    
+    @ViewBuilder
+    func copyDomainNameButtonWithTipView(domain: DomainDisplayInfo) -> some View {
+        if #available(iOS 17.0, *) {
+            copyDomainNameButtonView(domain: domain)
+                .popoverTip(UseDomainNameTip())
+        } else {
+            copyDomainNameButtonView(domain: domain)
+        }
+    }
+    
+    @ViewBuilder
+    func copyDomainNameButtonView(domain: DomainDisplayInfo) -> some View {
+        UDIconButtonView(icon: .squareBehindSquareIcon,
+                         style: .circle(size: .small,
+                                        style: .raisedTertiaryWhite),
+                         callback: {
+            logButtonPressedAnalyticEvents(button: .copyToClipboard)
+            UDVibration.buttonTap.vibrate()
+            UIPasteboard.general.string = domain.name
+            appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
+            showingHint.toggle()
+        })
+    }
+    
+    struct UseDomainNameTip: Tip {
+        let id: String = "tip"
+        let title: Text = Text("Use your domain name instead of long wallet address in the supported apps")
+    }
+}
+
+// MARK: - Single chain
+private extension ShareWalletAssetInfoView {
     @ViewBuilder
     func contentViewForSingleChainWallet(token: BalanceTokenUIDescription) -> some View {
         qrImageView()
@@ -171,57 +241,50 @@ private extension ShareWalletAssetInfoView {
             .padding(EdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0))
             .frame(maxWidth: .infinity, alignment: .top)
     }
+}
+
+// MARK: - Multi chain
+private extension ShareWalletAssetInfoView {
+    @ViewBuilder
+    func contentViewForMultiChainWallet(tokens: [BalanceTokenUIDescription],
+                                        callback: @escaping @MainActor (BalanceTokenUIDescription)->()) -> some View {
+        ScrollView {
+            tokensListSection(tokens: tokens,
+                              callback: callback)
+        }
+    }
     
     @ViewBuilder
-    func shareButtonView(token: BalanceTokenUIDescription) -> some View {
-        UDButtonView(text: String.Constants.shareAddress.localized(),
-                     icon: rrDomain != nil ? nil : .shareFlatIcon,
-                     style: .large(.raisedPrimary)) {
-            logButtonPressedAnalyticEvents(button: .share)
-            shareItems([token.address]) { success in
-                logAnalytic(event: .shareResult,
-                            parameters: [.success: String(success)])
+    func tokensListSection(tokens: [BalanceTokenUIDescription],
+                           callback: @escaping @MainActor (BalanceTokenUIDescription)->()) -> some View {
+        UDCollectionSectionBackgroundView {
+            VStack(alignment: .center, spacing: 0) {
+                ForEach(tokens, id: \.id) { token in
+                    listViewFor(token: token, qrCodeCallback: {
+                        callback(token)
+                    })
+                }
             }
         }
     }
     
     @ViewBuilder
-    func copyAddressLargeButtonView(token: BalanceTokenUIDescription) -> some View {
-        UDButtonView(text: String.Constants.copyAddress.localized(),
-                     style: .large(.raisedTertiaryWhite)) {
-            logButtonPressedAnalyticEvents(button: .copyToClipboard)
-            UDVibration.buttonTap.vibrate()
-            CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
-        }
+    func listViewFor(token: BalanceTokenUIDescription,
+                     qrCodeCallback: @escaping MainActorCallback) -> some View {
+        CopyMultichainWalletAddressesPullUpView.TokenSelectionRowView(token: token,
+                                                                      selectionType: .allOptions(qrCodeCallback: qrCodeCallback))
+        .udListItemInCollectionButtonPadding()
+        .padding(EdgeInsets(4))
     }
-    
+}
+
+// MARK: - Multi chain token
+private extension ShareWalletAssetInfoView {
     @ViewBuilder
-    func copyDomainNameButtonWithTipView(domain: DomainDisplayInfo) -> some View {
-        if #available(iOS 17.0, *) {
-            copyDomainNameButtonView(domain: domain)
-                .popoverTip(UseDomainNameTip())
-        } else {
-            copyDomainNameButtonView(domain: domain)
-        }
-    }
-    
-    @ViewBuilder
-    func copyDomainNameButtonView(domain: DomainDisplayInfo) -> some View {
-        UDIconButtonView(icon: .squareBehindSquareIcon,
-                         style: .circle(size: .small,
-                                        style: .raisedTertiaryWhite),
-                         callback: {
-            logButtonPressedAnalyticEvents(button: .copyToClipboard)
-            UDVibration.buttonTap.vibrate()
-            UIPasteboard.general.string = domain.name
-            appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
-            showingHint.toggle()
-        })
-    }
-    
-    struct UseDomainNameTip: Tip {
-        let id: String = "tip"
-        let title: Text = Text("Use your domain name instead of long wallet address in the supported apps")
+    func contentViewForMultiChainAssetWallet(token: BalanceTokenUIDescription) -> some View {
+        qrImageView()
+        walletDetailsView(token: token)
+        Spacer()
     }
 }
 
@@ -231,13 +294,16 @@ extension ShareWalletAssetInfoView {
         
         case singleChain(BalanceTokenUIDescription)
         case multiChain(tokens: [BalanceTokenUIDescription], callback: @MainActor (BalanceTokenUIDescription)->())
-        
+        case multiChainAsset(BalanceTokenUIDescription)
+
         static func == (lhs: ShareWalletAssetInfoView.AssetsType, rhs: ShareWalletAssetInfoView.AssetsType) -> Bool {
             switch (lhs, rhs) {
             case (.singleChain(let lhsToken), .singleChain(let rhsToken)):
                 return lhsToken == rhsToken
             case (.multiChain(let lhsTokens, _), .multiChain(let rhsTokens, _)):
                 return lhsTokens == rhsTokens
+            case (.multiChainAsset(let lhsToken), .multiChainAsset(let rhsToken)):
+                return lhsToken == rhsToken
             default:
                 return false
             }
@@ -245,7 +311,7 @@ extension ShareWalletAssetInfoView {
         
         func hash(into hasher: inout Hasher) {
             switch self {
-            case .singleChain(let token):
+            case .singleChain(let token), .multiChainAsset(let token):
                 hasher.combine(token)
             case .multiChain(let tokens, _):
                 hasher.combine(tokens)
