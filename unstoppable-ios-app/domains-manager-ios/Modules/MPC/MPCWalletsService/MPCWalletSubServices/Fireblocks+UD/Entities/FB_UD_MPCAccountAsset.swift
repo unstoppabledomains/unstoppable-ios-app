@@ -27,6 +27,31 @@ extension FB_UD_MPC {
             let total: String
             let decimals: Int
         }
+   
+        func createTokenUIDescription() -> BalanceTokenUIDescription {
+            let symbol = blockchainAsset.symbol
+            let chain = WalletAccountAsset.symbolFor(mpcID: blockchainAsset.blockchain.id)
+           
+            return BalanceTokenUIDescription(chain: chain ?? symbol,
+                                             symbol: symbol,
+                                             name: blockchainAsset.name,
+                                             balance: 0,
+                                             balanceUsd: 0)
+        }
+        
+        private static let mpcSymbolToIDMap: [String : String] = ["ETH":"ETHEREUM",
+                                                                  "MATIC":"POLYGON",
+                                                                  "SOL":"SOLANA",
+                                                                  "BTC":"BITCOIN",
+                                                                  "BASE":"BASE"]
+        
+        static func mpcIDFor(symbol: String) -> String? {
+            mpcSymbolToIDMap[symbol]
+        }
+        
+        static func symbolFor(mpcID: String) -> String? {
+            mpcSymbolToIDMap.first(where: { $0.value == mpcID })?.key
+        }
     }
     
     struct WalletAccountAssetsResponse: Codable {
@@ -37,7 +62,9 @@ extension FB_UD_MPC {
 
 extension Array where Element == FB_UD_MPC.WalletAccountAsset {
     func findWith(symbol: String, chain: String) -> Element? {
+        guard let id = FB_UD_MPC.WalletAccountAsset.mpcIDFor(symbol: chain) else { return nil }
+        
         // TODO: - Check for $0.blockchainAsset.blockchain.symbol when BE ready
-        first(where: { $0.blockchainAsset.symbol == symbol && $0.blockchainAsset.blockchain.id == chain })
+        return first(where: { $0.blockchainAsset.symbol == symbol && $0.blockchainAsset.blockchain.id == id })
     }
 }

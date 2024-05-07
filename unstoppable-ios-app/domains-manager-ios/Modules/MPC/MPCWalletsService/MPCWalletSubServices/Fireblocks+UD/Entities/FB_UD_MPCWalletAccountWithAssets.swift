@@ -18,8 +18,7 @@ extension FB_UD_MPC {
         }
         
         func getAssetWith(symbol: String, chain: String) throws -> WalletAccountAsset {
-            let chain = try mpcIDFor(symbol: chain)
-            guard let asset = assets.findWith(symbol: symbol, chain: chain) else { throw WalletAccountWithAssets.assetNotFound }
+            guard let asset = assets.findWith(symbol: symbol, chain: chain) else { throw WalletAccountWithAssetsError.assetNotFound }
             return asset
         }
         
@@ -29,6 +28,10 @@ extension FB_UD_MPC {
             return asset != nil
         }
         
+        func createTokens() -> [BalanceTokenUIDescription] {
+            assets.map { $0.createTokenUIDescription() }
+        }
+        
         init(account: WalletAccount,
              assets: [WalletAccountAsset]) {
             self.type = account.type
@@ -36,28 +39,11 @@ extension FB_UD_MPC {
             self.assets = assets
         }
         
-        enum WalletAccountWithAssets: String, LocalizedError {
+        enum WalletAccountWithAssetsError: String, LocalizedError {
             case assetNotFound
             
             public var errorDescription: String? {
                 return rawValue
-            }
-        }
-        
-        private func mpcIDFor(symbol: String) throws -> String {
-            switch symbol {
-            case "ETH":
-                return "ETHEREUM"
-            case "MATIC":
-                return "POLYGON"
-            case "SOL":
-                return "SOLANA"
-            case "BTC":
-                return "BITCOIN"
-            case "BASE":
-                return "BASE"
-            default:
-                throw WalletAccountWithAssets.assetNotFound
             }
         }
     }
