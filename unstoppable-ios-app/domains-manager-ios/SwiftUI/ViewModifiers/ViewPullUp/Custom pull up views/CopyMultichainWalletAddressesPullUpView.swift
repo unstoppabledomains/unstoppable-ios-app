@@ -10,6 +10,7 @@ import SwiftUI
 struct CopyMultichainWalletAddressesPullUpView: View {
     
     let tokens: [BalanceTokenUIDescription]
+    let selectionType: SelectionType
     
     var body: some View {
         ScrollView {
@@ -30,10 +31,17 @@ private extension CopyMultichainWalletAddressesPullUpView {
     func headerView() -> some View {
         VStack(spacing: 16) {
             DismissIndicatorView()
-            Text("MPC Wallet has addresses across multiple blockchains")
-                .font(.currentFont(size: 22, weight: .bold))
-                .foregroundStyle(Color.foregroundDefault)
-                .multilineTextAlignment(.center)
+            VStack(spacing: 8) {
+                Text(selectionType.title)
+                    .font(.currentFont(size: 22, weight: .bold))
+                    .foregroundStyle(Color.foregroundDefault)
+                if let subtitle = selectionType.subtitle {
+                    Text(subtitle)
+                        .font(.currentFont(size: 16))
+                        .foregroundStyle(Color.foregroundSecondary)
+                }
+            }
+            .multilineTextAlignment(.center)
         }
         .padding(.top, 16)
     }
@@ -51,18 +59,20 @@ private extension CopyMultichainWalletAddressesPullUpView {
     
     @ViewBuilder
     func listViewFor(token: BalanceTokenUIDescription) -> some View {
-        TokenSelectionRowView(token: token)
+        TokenSelectionRowView(token: token,
+                              selectionType: selectionType)
             .udListItemInCollectionButtonPadding()
         .padding(EdgeInsets(4))
     }
 }
 
 // MARK: - Private methods
-private extension CopyMultichainWalletAddressesPullUpView {
+extension CopyMultichainWalletAddressesPullUpView {
     struct TokenSelectionRowView: View {
         
         let token: BalanceTokenUIDescription
-        @State private var icon: UIImage? 
+        let selectionType: SelectionType
+        @State private var icon: UIImage?
         
         var body: some View {
             UDListItemView(title: token.name,
@@ -70,8 +80,24 @@ private extension CopyMultichainWalletAddressesPullUpView {
                            subtitleStyle: .default,
                            imageType: .uiImage(icon ?? .init()),
                            imageStyle: .full,
-                           rightViewStyle: nil)
+                           rightViewStyle: rightViewStyle())
             .onAppear(perform: onAppear)
+        }
+        
+        func rightViewStyle() -> UDListItemView.RightViewStyle {
+            switch selectionType {
+            case .copyOnly:
+                return .generic(.button(.init(icon: selectionType.icon,
+                                              callback: {
+                    CopyWalletAddressPullUpHandler.copyToClipboard(address: token.address,
+                                                                   ticker: token.symbol)
+                })))
+            case .shareOnly:
+                return .generic(.button(.init(icon: selectionType.icon,
+                                              callback: {
+                    shareItems([token.address], completion: nil)
+                })))
+            }
         }
         
         private func onAppear() {
@@ -86,7 +112,42 @@ private extension CopyMultichainWalletAddressesPullUpView {
     }
 }
 
+extension CopyMultichainWalletAddressesPullUpView {
+    enum SelectionType {
+        case copyOnly
+        case shareOnly
+        
+        var icon: Image {
+            switch self {
+            case .copyOnly:
+                return .copyToClipboardIcon
+            case .shareOnly:
+                return .shareIcon
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .copyOnly:
+                "MPC Wallet has addresses across multiple blockchains"
+            case .shareOnly:
+                "Choose address to share"
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .copyOnly:
+                nil
+            case .shareOnly:
+                "MPC Wallet has addresses across multiple blockchains"
+            }
+        }
+    }
+}
+
 #Preview {
     CopyMultichainWalletAddressesPullUpView(tokens: [MockEntitiesFabric.Tokens.mockEthToken(),
-                                                     MockEntitiesFabric.Tokens.mockMaticToken()])
+                                                     MockEntitiesFabric.Tokens.mockMaticToken()],
+                                            selectionType: .copyOnly)
 }

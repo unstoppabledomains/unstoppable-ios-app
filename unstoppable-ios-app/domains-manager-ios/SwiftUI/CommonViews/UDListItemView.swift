@@ -219,11 +219,13 @@ extension UDListItemView {
             case .button(let details):
                 Button {
                     UDVibration.buttonTap.vibrate()
-                    details.callback()
+                    Task {
+                        await details.callback()
+                    }
                 } label: {
                     createIconView()
                 }
-            case .menu(let primary, let actions):
+            case .menu(_, let actions):
                 Menu {
                     ForEach(actions, id: \.id) { action in
                         Button {
@@ -256,7 +258,7 @@ extension UDListItemView {
         
         struct GenericActionDetails {
             let icon: Image
-            let callback: EmptyCallback
+            let callback: MainActorCallback
         }
         
         struct GenericSubActionDetails {
