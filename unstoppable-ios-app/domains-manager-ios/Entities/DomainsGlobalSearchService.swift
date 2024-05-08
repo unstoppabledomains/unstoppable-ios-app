@@ -59,9 +59,7 @@ final class DomainsGlobalSearchService {
     }
     
     private func loadGlobalDomainRRInfo(for key: String) async throws -> SearchDomainProfile? {
-        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: key.lowercased()),
-           rrInfo.name.isUDTLD() {
-            
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: key.lowercased()) {
             return SearchDomainProfile(name: rrInfo.name,
                                        ownerAddress: rrInfo.address,
                                        imagePath: rrInfo.pfpURLToUse?.absoluteString,
