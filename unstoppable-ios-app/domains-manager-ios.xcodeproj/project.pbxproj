@@ -1421,6 +1421,8 @@
 		C69F997F2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F997E2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift */; };
 		C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C82869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */; };
+		C6A231F92BEB32BB0037E093 /* WalletDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */; };
+		C6A231FA2BEB32BB0037E093 /* WalletDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */; };
 		C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */; };
 		C6A2D50A284DBDCD00327C47 /* QRScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */; };
 		C6A2D50E284DBDCD00327C47 /* QRScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */; };
@@ -3778,6 +3780,7 @@
 		C69F997E2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsGlobalSearchHintHeader.swift; sourceTree = "<group>"; };
 		C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsDomainImagePreviewView.xib; sourceTree = "<group>"; };
+		C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsView.swift; sourceTree = "<group>"; };
 		C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewPresenter.swift; sourceTree = "<group>"; };
 		C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewController.swift; sourceTree = "<group>"; };
 		C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QRScannerViewController.xib; sourceTree = "<group>"; };
@@ -4702,6 +4705,7 @@
 		C60981D22822563E00546392 /* WalletDetails */ = {
 			isa = PBXGroup;
 			children = (
+				C6A231F72BEB32AF0037E093 /* WalletDetailsView */,
 				C60981D32822565300546392 /* WalletDetailsViewPresenter.swift */,
 				C60981D42822565300546392 /* WalletDetailsViewController.swift */,
 				C60981D52822565300546392 /* WalletDetailsViewController.xib */,
@@ -7532,6 +7536,14 @@
 			path = SocialsDomainImagePreviewView;
 			sourceTree = "<group>";
 		};
+		C6A231F72BEB32AF0037E093 /* WalletDetailsView */ = {
+			isa = PBXGroup;
+			children = (
+				C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */,
+			);
+			path = WalletDetailsView;
+			sourceTree = "<group>";
+		};
 		C6A2D4F2284DBD4600327C47 /* QRScanner */ = {
 			isa = PBXGroup;
 			children = (
@@ -10030,6 +10042,7 @@
 				3018AEB827EA12A700E8C37D /* AddWalletViewController.swift in Sources */,
 				C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */,
 				C6B65F592B54E4DD006D1812 /* HomeWalletCollectiblesEmptyView.swift in Sources */,
+				C6A231F92BEB32BB0037E093 /* WalletDetailsView.swift in Sources */,
 				C63095EC2B0DA66400205054 /* FirebaseAuthError.swift in Sources */,
 				C671CD0C2BC6749C005DA2FB /* PurchaseMPCWalletCart.swift in Sources */,
 				C60982402823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
@@ -11357,6 +11370,7 @@
 				C6D646A32B1ED15A00D724AC /* PublicProfileFollowersView.swift in Sources */,
 				C61807EF2B19A70F0032E543 /* PreviewPaymentConfirmationDelegate.swift in Sources */,
 				C67684AA2BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift in Sources */,
+				C6A231FA2BEB32BB0037E093 /* WalletDetailsView.swift in Sources */,
 				C6D6476D2B1EE02500D724AC /* Base64DataTransformer.swift in Sources */,
 				C6D646272B1DC2A700D724AC /* PullUpView.swift in Sources */,
 				C617FDAB2B590B6700B93433 /* NavigationViewWithCustomTitle.swift in Sources */,

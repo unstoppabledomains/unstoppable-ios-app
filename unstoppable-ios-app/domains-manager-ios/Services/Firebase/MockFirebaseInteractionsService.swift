@@ -32,7 +32,7 @@ final class MockFirebaseInteractionsService {
         let preferencesService = PurchaseDomainsPreferencesStorage.shared
         checkoutData = preferencesService.checkoutData
         cartStatus = .ready(cart: cart)
-//        firebaseUser = .init(email: "qq@qq.qq")
+        firebaseUser = .init(email: "qq@qq.qq")
         preferencesService.$checkoutData.publisher
             .sink { val in
                 self.checkoutData = val

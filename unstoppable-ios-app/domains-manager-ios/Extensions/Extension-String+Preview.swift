@@ -1223,8 +1223,10 @@ extension String {
         static let confirmAndSend = "CONFIRM_AND_SEND"
         
         static let parkedDomains = "PARKED_DOMAINS"
+        static let backedUp = "BACKED_UP"
+        static let backUp = "BACK_UP"
     }
-
+    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"

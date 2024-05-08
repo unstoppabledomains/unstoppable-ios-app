@@ -7,8 +7,12 @@
 
 import SwiftUI
 
-struct SettingsProfilesView: View {
+struct SettingsProfilesView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) var analyticsName
+    @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
+    @EnvironmentObject private var tabRouter: HomeTabRouter
+
     let profiles: [UserProfile]
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -19,9 +23,14 @@ struct SettingsProfilesView: View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(profiles, id: \.id) { profile in
                 Button {
-//                    logButtonPressedAnalyticEvents(button: .buyDomainTile)
+                    logButtonPressedAnalyticEvents(button: .walletInList)
                     UDVibration.buttonTap.vibrate()
-//                    buyDomainCallback()
+                    switch profile {
+                    case .wallet(let wallet):
+                        tabRouter.walletViewNavPath.append(.walletDetails(wallet))
+                    case .webAccount:
+                        return
+                    }
                 } label: {
                     SettingsProfileTileView(profile: profile)
                 }

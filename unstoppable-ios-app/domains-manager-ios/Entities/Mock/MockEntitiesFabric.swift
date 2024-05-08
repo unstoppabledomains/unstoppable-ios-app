@@ -60,7 +60,7 @@ extension MockEntitiesFabric {
         static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
             WalletWithInfo.mock.map {
                 createFrom(walletWithInfo: $0,
-                           hasRRDomain: hasRRDomain)
+                           hasRRDomain: [false].randomElement()!)
                 
             }
         }
@@ -68,7 +68,7 @@ extension MockEntitiesFabric {
         static func createFrom(walletWithInfo: WalletWithInfo,
                                hasRRDomain: Bool = true) -> WalletEntity {
             let address = walletWithInfo.address
-            let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
+            let domains: [DomainDisplayInfo] = [] // Domains.mockDomainsDisplayInfo(ownerWallet: address)
             let numOfNFTs = Int(arc4random_uniform(10) + 1)
             let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
             let portfolioRecords: [WalletPortfolioRecord] = [.init(wallet: address, date: Date().adding(days: -10), value: 6.8),
