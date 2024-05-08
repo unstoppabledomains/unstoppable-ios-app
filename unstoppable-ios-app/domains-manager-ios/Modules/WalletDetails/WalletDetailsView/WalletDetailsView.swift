@@ -28,13 +28,12 @@ struct WalletDetailsView: View {
             HomeExploreSeparatorView()
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-            
             domainsListView()
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
         }.environment(\.defaultMinListRowHeight, 28)
         .listStyle(.plain)
-        .listRowSpacing(0)
+        .listRowSpacing(20)
         .background(Color.backgroundDefault)
         .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
             if let wallet = wallets.findWithAddress(wallet.address) {
