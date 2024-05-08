@@ -249,7 +249,14 @@ private extension WalletDetailsViewPresenter {
     
     func copyAddressButtonPressed() {
         logButtonPressedAnalyticEvents(button: .copyWalletAddress)
-        CopyWalletAddressPullUpHandler.copyToClipboard(address: wallet.address, ticker: BlockchainType.Ethereum.rawValue)
+        guard let view = self.view else { return }
+        
+        switch wallet.getAssetsType() {
+        case .multiChain(let tokens):
+            appContext.pullUpViewService.showCopyMultichainWalletAddressesPullUp(in: view, tokens: tokens)
+        case .singleChain(let token):
+            CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
+        }
     }
  
     func externalBadgePressed() {

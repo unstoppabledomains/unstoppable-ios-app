@@ -578,7 +578,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
+    
+    func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
+                                                 tokens: [BalanceTokenUIDescription]) {
+        let selectionViewHeight: CGFloat = CopyMultichainWalletAddressesPullUpView.calculateHeightFor(tokens: tokens,
+                                                                                                      selectionType: .copyOnly)
+        let selectionView = UIHostingController(rootView: CopyMultichainWalletAddressesPullUpView(tokens: tokens,
+                                                                                                  selectionType: .copyOnly,
+                                                                                                  withDismissIndicator: false))
+            .view!
+        
+        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
 }
+
+import SwiftUI
 
 extension PullUpViewService {
     enum PullUpError: Error {

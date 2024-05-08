@@ -166,7 +166,8 @@ extension UDListItemView {
     enum RightViewStyle {
         case chevron, checkmark, checkmarkEmpty, errorCircle
         case toggle(isOn: Bool, callback: (Bool)->())
-        
+        case generic(GenericActionType)
+
         var image: Image {
             switch self {
             case .chevron:
@@ -179,12 +180,14 @@ extension UDListItemView {
                 return .infoIcon
             case .toggle:
                 return .infoIcon
+            case .generic(let type):
+                return type.icon
             }
         }
         
         var foregroundColor: Color {
             switch self {
-            case .chevron:
+            case .chevron, .generic:
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
@@ -203,12 +206,76 @@ extension UDListItemView {
             case .toggle(let isOn, let callback):
                 ListToggleView(isOn: isOn,
                                callback: callback)
+            case .generic(let type):
+                createViewForGenericActionType(type)
             default:
-                image
-                    .resizable()
-                    .squareFrame(20)
-                    .foregroundStyle(foregroundColor)
+                createIconView()
             }
+        }
+        
+        @ViewBuilder
+        func createViewForGenericActionType(_ type: GenericActionType) -> some View {
+            switch type {
+            case .button(let details):
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    Task {
+                        await details.callback()
+                    }
+                } label: {
+                    createIconView()
+                }
+            case .menu(_, let actions):
+                Menu {
+                    ForEach(actions, id: \.id) { action in
+                        Button {
+                            UDVibration.buttonTap.vibrate()
+                            Task {
+                                await action.callback()
+                            }
+                        } label: {
+                            Label(action.title, systemImage: action.iconName)
+                        }
+                    }
+                } label: {
+                    createIconView()
+                }
+                .onButtonTap()
+            }
+        }
+        
+        @ViewBuilder
+        func createIconView() -> some View {
+            image
+                .resizable()
+                .squareFrame(20)
+                .foregroundStyle(foregroundColor)
+        }
+        
+        enum GenericActionType {
+            case button(GenericActionDetails)
+            case menu(primary: GenericActionDetails, actions: [GenericSubActionDetails])
+            
+            var icon: Image {
+                switch self {
+                case .button(let details):
+                    return details.icon
+                case .menu(let primary, _):
+                    return primary.icon
+                }
+            }
+        }
+        
+        struct GenericActionDetails {
+            let icon: Image
+            let callback: MainActorCallback
+        }
+        
+        struct GenericSubActionDetails {
+            let id = UUID()
+            let title: String
+            let iconName: String
+            let callback: MainActorCallback
         }
     }
 }
@@ -217,8 +284,8 @@ extension UDListItemView {
 private extension UDListItemView {
     struct ListToggleView: View {
         
-    @State var isOn: Bool
-    let callback: (Bool)->()
+        @State var isOn: Bool
+        let callback: (Bool)->()
         
         var body: some View {
             Toggle("", isOn: $isOn)
@@ -227,7 +294,6 @@ private extension UDListItemView {
                     callback(newValue)
                 }
         }
-        
     }
 }
 

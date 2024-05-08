@@ -29,6 +29,7 @@ struct UDWallet: Codable, Hashable {
     var address: String = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
     var type: WalletType = .generatedLocally
     var hasBeenBackedUp: Bool? = false
+    private(set) var mpcMetadata: MPCWalletMetadata?
     
     func getPrivateKey() -> String? {
         switch address {
@@ -67,7 +68,31 @@ struct UDWallet: Codable, Hashable {
     
     static func createMPC(address: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
-        .init()
+        .init(address: address,
+              type: .mpc,
+              mpcMetadata: mpcMetadata)
+    }
+    
+    static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
+        let resultEth = (lhs.address == rhs.address) && lhs.address != nil
+        return resultEth
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.address)
+        hasher.combine(self.aliasName)
+        hasher.combine(self.hasBeenBackedUp)
+        hasher.combine(self.type)
+    }
+    func extractMPCMetadata() throws -> MPCWalletMetadata {
+        guard let mpcMetadata else { throw UDWallet.Error.failedToFindMPCMetadata }
+        
+        return mpcMetadata
+    }
+    
+    enum Error: String, Swift.Error, RawValueLocalizable {
+        case failedSignature
+        case failedToFindMPCMetadata
     }
 }
 
