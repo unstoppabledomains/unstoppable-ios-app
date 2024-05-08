@@ -19,6 +19,7 @@ struct ShareWalletAssetInfoView: View, ViewAnalyticsLogger {
     let walletDisplayInfo: WalletDisplayInfo
     
     @State private var domainAvatarImage: UIImage?
+    @State private var tokenImage: UIImage?
     @State private var qrImage: UIImage?
     @State private var showingHint = false
     
@@ -74,6 +75,9 @@ private extension ShareWalletAssetInfoView {
                                                                               downsampleDescription: nil) {
                     self.qrImage = image
                 }
+            }
+            token.loadTokenIcon { image in
+                tokenImage = image
             }
         }
     }
@@ -249,22 +253,61 @@ private extension ShareWalletAssetInfoView {
     func contentViewForMultiChainWallet(tokens: [BalanceTokenUIDescription],
                                         callback: @escaping @MainActor (BalanceTokenUIDescription)->()) -> some View {
         ScrollView {
-            tokensListSection(tokens: tokens,
-                              callback: callback)
+            VStack(spacing: 32) {
+                multiChainContentHeader()
+                HomeExploreSeparatorView()
+                tokensListSection(tokens: tokens,
+                                  callback: callback)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func multiChainContentHeader() -> some View {
+        if let rrDomain {
+            VStack(spacing: 20) {
+                Image(uiImage: domainAvatarImage ?? .domainSharePlaceholder)
+                    .resizable()
+                    .squareFrame(80)
+                    .clipShape(Circle())
+                VStack(spacing: 16) {
+                    HStack(spacing: 8) {
+                        Text(rrDomain.name)
+                            .textAttributes(color: .foregroundDefault,
+                                            fontSize: 32,
+                                            fontWeight: .bold)
+                            .lineLimit(1)
+                        Image.copyToClipboardIcon
+                            .resizable()
+                            .squareFrame(24)
+                            .foregroundStyle(Color.foregroundSecondary)
+                    }
+                    Text("Use your domain name instead of long wallet address in the supported apps")
+                        .textAttributes(color: .foregroundSecondary, fontSize: 16)
+                }
+            }
         }
     }
     
     @ViewBuilder
     func tokensListSection(tokens: [BalanceTokenUIDescription],
                            callback: @escaping @MainActor (BalanceTokenUIDescription)->()) -> some View {
-        UDCollectionSectionBackgroundView {
-            VStack(alignment: .center, spacing: 0) {
-                ForEach(tokens, id: \.id) { token in
-                    listViewFor(token: token, qrCodeCallback: {
-                        callback(token)
-                    })
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Copy or share wallet addresses to request crypto or collectibles")
+                .foregroundStyle(Color.foregroundDefault)
+                .font(.currentFont(size: 16, weight: .medium))
+            UDCollectionSectionBackgroundView {
+                VStack(alignment: .center, spacing: 0) {
+                    ForEach(tokens, id: \.id) { token in
+                        listViewFor(token: token, qrCodeCallback: {
+                            callback(token)
+                        })
+                    }
                 }
             }
+            Text("MPC Wallet has addresses across multiple blockchains.")
+                .foregroundStyle(Color.foregroundSecondary)
+                .font(.currentFont(size: 14, weight: .medium))
         }
     }
     
@@ -282,9 +325,24 @@ private extension ShareWalletAssetInfoView {
 private extension ShareWalletAssetInfoView {
     @ViewBuilder
     func contentViewForMultiChainAssetWallet(token: BalanceTokenUIDescription) -> some View {
+        tokenHeaderView()
         qrImageView()
         walletDetailsView(token: token)
         Spacer()
+    }
+    
+    @ViewBuilder
+    func tokenHeaderView() -> some View {
+        VStack(spacing: 20) {
+            Image(uiImage: tokenImage ?? .init())
+                .resizable()
+                .squareFrame(80)
+                .clipShape(Circle())
+            Text(getTokenToShare()?.name ?? "")
+                .textAttributes(color: .foregroundDefault,
+                                fontSize: 32,
+                                fontWeight: .bold)
+        }
     }
 }
 
@@ -321,7 +379,7 @@ extension ShareWalletAssetInfoView {
 }
 
 #Preview {
-    ShareWalletAssetInfoView(asset: .singleChain(MockEntitiesFabric.Tokens.mockEthToken()),
+    ShareWalletAssetInfoView(asset: .multiChainAsset(MockEntitiesFabric.Tokens.mockEthToken()),
                              rrDomain: nil,
                              walletDisplayInfo: MockEntitiesFabric.Wallet.mockEntities()[0].displayInfo)
 }
