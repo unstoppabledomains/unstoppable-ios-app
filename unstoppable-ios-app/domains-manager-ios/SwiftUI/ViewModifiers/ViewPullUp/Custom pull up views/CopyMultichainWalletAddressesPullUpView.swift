@@ -11,6 +11,7 @@ struct CopyMultichainWalletAddressesPullUpView: View {
     
     let tokens: [BalanceTokenUIDescription]
     let selectionType: SelectionType
+    var withDismissIndicator = true
     
     var body: some View {
         ScrollView {
@@ -44,7 +45,9 @@ private extension CopyMultichainWalletAddressesPullUpView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            DismissIndicatorView()
+            if withDismissIndicator {
+                DismissIndicatorView()
+            }
             VStack(spacing: 8) {
                 Text(selectionType.title)
                     .font(.currentFont(size: 22, weight: .bold))
