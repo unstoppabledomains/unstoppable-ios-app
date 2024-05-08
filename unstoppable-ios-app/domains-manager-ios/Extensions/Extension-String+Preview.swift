@@ -455,7 +455,7 @@ extension String {
         static let settingsAppearanceThemeDark = "SETTINGS_APPEARANCE_THEME_DARK"
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
         static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
-
+        
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
         static let restoreFromICloudBackup = "RESTORE_FROM_ICLOUD_BACKUP"
@@ -857,7 +857,7 @@ extension String {
         static let password = "PASSWORD"
         static let parked = "PARKED"
         static let parkedDomain = "PARKED_DOMAIN"
-        static let parkedDomains = "PARKED_DOMAINS"
+        static let parkedDomainsFound = "PARKED_DOMAINS_FOUND"
         static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
         static let parkingExpiresOn = "PARKING_EXPIRES_ON"
         static let parkingExpired = "PARKING_EXPIRED"
@@ -1221,6 +1221,8 @@ extension String {
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
+        
+        static let parkedDomains = "PARKED_DOMAINS"
     }
 
     enum BlockChainIcons: String {

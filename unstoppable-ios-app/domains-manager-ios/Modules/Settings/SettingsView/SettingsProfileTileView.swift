@@ -91,7 +91,7 @@ private extension SettingsProfileTileView {
     @ViewBuilder
     func profileSecondaryIconView() -> some View {
         profileRRIconView()
-            .offset(x: -12)
+            .offset(x: -16)
             .padding(.trailing, -12)
     }
     
@@ -134,11 +134,20 @@ private extension SettingsProfileTileView {
             .padding(4)
     }
     
+    var title: String {
+        switch profile {
+        case .wallet(let wallet):
+            return wallet.displayName
+        case .webAccount:
+            return String.Constants.parkedDomains.localized()
+        }
+    }
+    
     @ViewBuilder
     func profileTitles() -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                Text("Vault")
+                Text(title)
                     .font(.currentFont(size: 16, weight: .medium))
                     .foregroundStyle(Color.foregroundDefault)
                     .frame(height: 24)
@@ -162,6 +171,8 @@ private extension SettingsProfileTileView {
             } else if wallet.isAbleToSetRR {
                 profileSubtitleTextView(text: String.Constants.noPrimaryDomain.localized(),
                                         foregroundColor: .foregroundWarning)
+            } else {
+                profileSubtitleTextView(text: " ")
             }
         case .webAccount(let user):
             profileSubtitleTextView(text: user.email ?? "")
@@ -181,6 +192,7 @@ private extension SettingsProfileTileView {
                                  foregroundColor: Color = .foregroundSecondary) -> some View {
         Text(text)
             .foregroundStyle(foregroundColor)
+            .lineLimit(1)
     }
 }
 

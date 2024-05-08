@@ -132,6 +132,7 @@ private extension SettingsView {
         Text(text)
             .font(.currentFont(size: 16, weight: .medium))
             .foregroundStyle(Color.foregroundAccent)
+            .frame(maxWidth: 150)
     }
     
     @MainActor
