@@ -163,7 +163,7 @@ private extension ShareWalletAssetInfoView {
     
     struct UseDomainNameTip: Tip {
         let id: String = "tip"
-        let title: Text = Text("Use your domain name instead of long wallet address in the supported apps")
+        let title: Text = Text(String.Constants.useDomainNameInsteadOfAddress.localized())
     }
 }
 
