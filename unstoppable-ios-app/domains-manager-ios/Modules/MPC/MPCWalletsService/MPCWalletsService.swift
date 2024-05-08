@@ -58,6 +58,28 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
 
         return try await subService.getBalancesFor(wallet: wallet, walletMetadata: walletMetadata)
     }
+    
+    func canTransferAssets(symbol: String,
+                           chain: String,
+                           by walletMetadata: MPCWalletMetadata) -> Bool {
+        guard let subService = try? getSubServiceFor(provider: walletMetadata.provider) else { return false }
+        
+        return subService.canTransferAssets(symbol: symbol, chain: chain, by: walletMetadata)
+    }
+    
+    func transferAssets(_ amount: Double,
+                        symbol: String,
+                        chain: String,
+                        destinationAddress: String,
+                        by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try await subService.transferAssets(amount,
+                                                   symbol: symbol,
+                                                   chain: chain,
+                                                   destinationAddress: destinationAddress,
+                                                   by: walletMetadata)
+    }
 }
 
 // MARK: - Private methods

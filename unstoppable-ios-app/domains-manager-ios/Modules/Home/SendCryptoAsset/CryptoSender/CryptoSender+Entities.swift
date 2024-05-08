@@ -178,6 +178,10 @@ extension CryptoSender {
                                  decimals: 18)],
         ]
         
+        static func getSupportedToken(by symbol: String) -> Self? {
+            CryptoSender.SupportedToken(rawValue: symbol.uppercased())
+        }
+        
         func getContractAddress(for chain: ChainSpec) throws -> HexAddress {
             guard let addresses = Self.array[self]?[chain.blockchainType] else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain

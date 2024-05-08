@@ -121,7 +121,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     
                     continuation.yield(.getWalletAccountDetails)
                     let walletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
-                                                                                       authTokens: authTokens)
+                                                                                       accessToken: authTokens.accessToken.jwt)
                     logMPC("Did get wallet account details")
                     let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
                                                                      tokens: authTokens,
@@ -152,12 +152,14 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                      chain: BlockchainType,
                      by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
         let deviceId = connectedWalletDetails.deviceId
         await waitForActionReadyToStart(deviceId: deviceId)
         defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
         let start = Date()
         let account = connectedWalletDetails.firstAccount
-        let asset = try account.getAssetWith(chain: chain)
+        let asset = try account.getAssetToSignWith(chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let mpcMessage = messageString.convertToMPCMessage
         let encoding = convertMPCMessageTypeToFBUDEncoding(mpcMessage.type)
@@ -173,8 +175,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         switch operationStatus {
         case .txReady(let txId):
             logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
-            let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
-                                                                            authTokenProvider: self)
             try await mpcConnector.signTransactionWith(txId: txId)
             logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
             let signature = try await networkService.waitForOperationSignedAndGetTxSignature(accessToken: token,
@@ -187,8 +187,60 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
-    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
+    func canTransferAssets(symbol: String,
+                           chain: String,
+                           by walletMetadata: MPCWalletMetadata) -> Bool {
+        do {
+            let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+            let account = connectedWalletDetails.firstAccount
+            return account.canSendCryptoTo(symbol: symbol,
+                                           chain: chain)
+        } catch {
+            return false
+        }
+    }
+    
+    func transferAssets(_ amount: Double,
+                        symbol: String,
+                        chain: String,
+                        destinationAddress: String,
+                        by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
+                                                                        authTokenProvider: self)
+        let deviceId = connectedWalletDetails.deviceId
+        await waitForActionReadyToStart(deviceId: deviceId)
+        defer { Task { await actionsQueuer.removeActive(deviceId: deviceId) } }
+        let start = Date()
+        let account = connectedWalletDetails.firstAccount
+        let asset = try account.getAssetWith(symbol: symbol, chain: chain)
+        let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let requestOperation = try await networkService.startAssetTransfer(accessToken: token,
+                                                                           accountId: account.id,
+                                                                           assetId: asset.id,
+                                                                           destinationAddress: destinationAddress,
+                                                                           amount: amount)
+        let operationId = requestOperation.id
+        logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
+        let operationStatus = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
+                                                                                       operationId: operationId)
+        switch operationStatus {
+        case .txReady(let txId):
+            logMPC("It took \(Date().timeIntervalSince(start)) to get tx id")
+            try await mpcConnector.signTransactionWith(txId: txId)
+            logMPC("It took \(Date().timeIntervalSince(start)) to sign by mpc connector")
+            let txHash = try await networkService.waitForTxCompletedAndGetHash(accessToken: token,
+                                                                               operationId: operationId)
+            logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
+            return txHash
+        case .signed(let signature):
+            logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
+            throw MPCConnectionServiceError.incorrectOperationState
+        }
+    }
+    
+    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
+        let connectedWalletDetails = try await refreshWalletAccountDetailsForWalletWith(walletMetadata: walletMetadata)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let account = connectedWalletDetails.firstAccount
         let assets = account.assets.compactMap({ $0 })
@@ -236,10 +288,26 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let accounts: [FB_UD_MPC.WalletAccountWithAssets]
     }
     
+    private func refreshWalletAccountDetailsForWalletWith(walletMetadata: MPCWalletMetadata) async throws -> FB_UD_MPC.ConnectedWalletDetails {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let deviceId = connectedWalletDetails.deviceId
+        let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let walletAccountDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
+                                                                                  accessToken: token)
+
+        let authTokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+        let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
+                                                         tokens: authTokens,
+                                                         firstAccount: walletAccountDetails.firstAccount,
+                                                         accounts: walletAccountDetails.accounts)
+        try walletsDataStorage.storeAccountsDetails(mpcWallet.createWalletAccountsDetails())
+
+        return mpcWallet
+    }
+    
     private func getWalletAccountDetailsForWalletWith(deviceId: String,
-                                                      authTokens: FB_UD_MPC.AuthTokens) async throws -> WalletDetails {
+                                                      accessToken: String) async throws -> WalletDetails {
         let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
-        let accessToken = authTokens.accessToken.jwt
         
         let accountsResponse = try await networkService.getAccounts(accessToken: accessToken)
         let accounts = accountsResponse.items
@@ -318,6 +386,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case failedToGetEthAddress
         case noAccountsForWallet
         case invalidWalletMetadata
+        case incorrectOperationState
         
         public var errorDescription: String? {
             return rawValue

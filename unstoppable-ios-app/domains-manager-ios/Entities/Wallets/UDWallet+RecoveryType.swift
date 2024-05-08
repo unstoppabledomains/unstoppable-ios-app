@@ -22,7 +22,6 @@ extension UDWallet {
                 self = .privateKey
             case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
                 self = .recoveryPhrase
-                // TODO: - MPC
             case .importedUnverified, .mpc, .externalLinked:
                 return nil
             }

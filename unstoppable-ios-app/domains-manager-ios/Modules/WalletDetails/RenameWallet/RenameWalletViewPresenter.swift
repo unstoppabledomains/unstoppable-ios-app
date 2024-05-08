@@ -58,7 +58,6 @@ extension RenameWalletViewPresenter: RenameWalletViewPresenterProtocol {
                     name = walletDisplayInfo.name
                 case .external(let walletMakeName, _):
                     name = walletDisplayInfo.isNameSet ? walletDisplayInfo.name : walletMakeName
-                    // TODO: - MPC
                 case .imported, .mpc:
                     if walletDisplayInfo.isNameSet {
                         name = walletDisplayInfo.name
