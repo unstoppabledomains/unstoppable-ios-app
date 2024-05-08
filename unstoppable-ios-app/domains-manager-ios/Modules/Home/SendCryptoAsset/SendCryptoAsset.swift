@@ -79,11 +79,6 @@ extension SendCryptoAsset {
             }
         }
         
-        func addressFor(chainType: BlockchainType) -> String? {
-            let recordsIdentifier = chainType.domainRecordIdentifier()
-            return records[recordsIdentifier]
-        }
-        
         init(wallet: WalletEntity) async throws {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
