@@ -133,10 +133,7 @@ private extension UDListItemView {
     @ViewBuilder
     func rightView() -> some View {
         if let rightViewStyle  {
-            rightViewStyle.image
-                .resizable()
-                .squareFrame(20)
-                .foregroundStyle(rightViewStyle.foregroundColor)
+            rightViewStyle.view()
         }
     }
 }
@@ -168,7 +165,8 @@ extension UDListItemView {
     
     enum RightViewStyle {
         case chevron, checkmark, checkmarkEmpty, errorCircle
-        
+        case generic(GenericActionType)
+
         var image: Image {
             switch self {
             case .chevron:
@@ -179,12 +177,14 @@ extension UDListItemView {
                 return .checkCircleEmpty
             case .errorCircle:
                 return .infoIcon
+            case .generic(let type):
+                return type.icon
             }
         }
         
         var foregroundColor: Color {
             switch self {
-            case .chevron:
+            case .chevron, .generic:
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
@@ -193,6 +193,81 @@ extension UDListItemView {
             case .errorCircle:
                 return .foregroundDanger
             }
+        }
+        
+        @ViewBuilder
+        func view() -> some View {
+            switch self {
+            case .generic(let type):
+                createViewForGenericActionType(type)
+            default:
+                createIconView()
+            }
+        }
+        
+        @ViewBuilder
+        func createIconView() -> some View {
+            image
+                .resizable()
+                .squareFrame(20)
+                .foregroundStyle(foregroundColor)
+        }
+        
+        @ViewBuilder
+        func createViewForGenericActionType(_ type: GenericActionType) -> some View {
+            switch type {
+            case .button(let details):
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    Task {
+                        await details.callback()
+                    }
+                } label: {
+                    createIconView()
+                }
+            case .menu(_, let actions):
+                Menu {
+                    ForEach(actions, id: \.id) { action in
+                        Button {
+                            UDVibration.buttonTap.vibrate()
+                            Task {
+                                await action.callback()
+                            }
+                        } label: {
+                            Label(action.title, systemImage: action.iconName)
+                        }
+                    }
+                } label: {
+                    createIconView()
+                }
+                .onButtonTap()
+            }
+        }
+        
+        enum GenericActionType {
+            case button(GenericActionDetails)
+            case menu(primary: GenericActionDetails, actions: [GenericSubActionDetails])
+            
+            var icon: Image {
+                switch self {
+                case .button(let details):
+                    return details.icon
+                case .menu(let primary, _):
+                    return primary.icon
+                }
+            }
+        }
+        
+        struct GenericActionDetails {
+            let icon: Image
+            let callback: MainActorCallback
+        }
+        
+        struct GenericSubActionDetails {
+            let id = UUID()
+            let title: String
+            let iconName: String
+            let callback: MainActorCallback
         }
     }
 }

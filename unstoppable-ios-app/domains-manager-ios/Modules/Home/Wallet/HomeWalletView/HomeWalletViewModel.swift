@@ -123,7 +123,12 @@ extension HomeWalletView {
         func walletSubActionPressed(_ subAction: WalletSubAction) {
             switch subAction {
             case .copyWalletAddress:
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
+                switch selectedWallet.getAssetsType() {
+                case .multiChain(let tokens):
+                    router.pullUp = .custom(.copyMultichainAddressPullUp(tokens: tokens, selectionType: .copyOnly))
+                case .singleChain(let token):
+                    CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
+                }
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
             case .buyMPC:
