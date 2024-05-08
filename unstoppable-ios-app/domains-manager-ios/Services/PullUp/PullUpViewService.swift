@@ -160,7 +160,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             selectionViewHeight = 420
             title = String.Constants.removeWalletAlertTitle.localized(walletInfo.walletSourceName.lowercased(), address)
             subtitle = walletInfo.isWithPrivateKey ? String.Constants.removeWalletAlertSubtitlePrivateKey.localized() : String.Constants.removeWalletAlertSubtitleRecoveryPhrase.localized()
-            buttonTitle = String.Constants.removeWallet.localized(walletInfo.walletSourceName.lowercased())
+            buttonTitle = String.Constants.removeWallet.localized()
         } else {
             selectionViewHeight = 368
             title = String.Constants.disconnectWalletAlertTitle.localized(address)

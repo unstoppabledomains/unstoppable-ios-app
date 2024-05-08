@@ -375,7 +375,7 @@
 "VIEW_PRIVATE_KEY" = "View private key";
 "RENAME" = "Rename";
 "SEE_DOMAINS_STORED_IN_WALLET" = "See %@ stored in %@";
-"REMOVE_WALLET" = "Remove %@";
+"REMOVE_WALLET" = "Remove wallet";
 "DISCONNECT_WALLET" = "Disconnect wallet";
 "NOT_BACKED_UP" = "Not backed up";
 "IMPORTED_WALLET_BACKUP_HINT" = "Save an encrypted copy of your recovery phrase on iCloud.";

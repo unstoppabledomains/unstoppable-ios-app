@@ -127,11 +127,28 @@ private extension WalletDetailsView {
 private extension WalletDetailsView {
     func walletActions() -> [WalletDetails.WalletAction] {
         var actions: [WalletDetails.WalletAction] = [.rename]
+        var subActions: [WalletDetails.WalletSubAction] = []
         
         if wallet.displayInfo.source.canBeBackedUp {
             actions.append(.backUp(wallet.displayInfo.backupState))
+    
+            if let recoveryType = UDWallet.RecoveryType(walletType: wallet.udWallet.type) {
+                switch recoveryType {
+                case .privateKey:
+                    subActions.append(.privateKey)
+                case .recoveryPhrase:
+                    subActions.append(.recoveryPhrase)
+                }
+            }
         }
-        actions.append(.more)
+        
+        if wallet.displayInfo.isConnected {
+            subActions.append(.disconnectWallet)
+        } else {
+            subActions.append(.removeWallet)
+        }
+        
+        actions.append(.more(subActions))
         
         return actions
     }
@@ -224,7 +241,7 @@ enum WalletDetails {
             case .rename:
                 return "send"
             case .backUp:
-                return "buy"
+                return "backUp"
             case .more:
                 return "more"
             }
@@ -232,7 +249,7 @@ enum WalletDetails {
         
         case rename
         case backUp(WalletDisplayInfo.BackupState)
-        case more
+        case more([WalletSubAction])
         
         var title: String {
             switch self {
@@ -278,8 +295,8 @@ enum WalletDetails {
             switch self {
             case .backUp, .rename:
                 return []
-            case .more:
-                return WalletSubAction.allCases
+            case .more(let subActions):
+                return subActions
             }
         }
         
@@ -304,40 +321,48 @@ enum WalletDetails {
     
     enum WalletSubAction: String, CaseIterable, HomeWalletSubActionItem {
         
-        case copyWalletAddress
-        case connectedApps
-        case buyMPC
+        case privateKey
+        case recoveryPhrase
+        case removeWallet
+        case disconnectWallet
         
         var title: String {
             switch self {
-            case .copyWalletAddress:
-                return String.Constants.copyWalletAddress.localized()
-            case .connectedApps:
-                return String.Constants.connectedAppsTitle.localized()
-            case .buyMPC:
-                return "Buy MPC"
+            case .privateKey:
+                return String.Constants.viewPrivateKey.localized()
+            case .recoveryPhrase:
+                return String.Constants.viewRecoveryPhrase.localized()
+            case .removeWallet:
+                return String.Constants.removeWallet.localized()
+            case .disconnectWallet:
+                return  String.Constants.disconnectWallet.localized()
             }
         }
         
         var icon: Image {
             switch self {
-            case .copyWalletAddress:
+            case .recoveryPhrase, .privateKey:
                 return Image.systemDocOnDoc
-            case .connectedApps:
-                return Image.systemAppBadgeCheckmark
-            case .buyMPC:
-                return .wallet3Icon
+            case .removeWallet, .disconnectWallet:
+                return Image.trashIcon
+            }
+        }
+        
+        var isDestructive: Bool {
+            switch self {
+            case .recoveryPhrase, .privateKey:
+                return false
+            case .removeWallet, .disconnectWallet:
+                return true
             }
         }
         
         var analyticButton: Analytics.Button {
             switch self {
-            case .copyWalletAddress:
-                return .copyWalletAddress
-            case .connectedApps:
-                return .connectedApps
-            case .buyMPC:
-                return .unblock
+            case .recoveryPhrase, .privateKey:
+                return .walletRecoveryPhrase
+            case .removeWallet, .disconnectWallet:
+                return .walletRemove
             }
         }
     }
