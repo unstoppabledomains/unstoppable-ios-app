@@ -8,14 +8,13 @@
 import SwiftUI
 
 enum HomeWalletNavigationDestination: Hashable {
-    case settings
+    case settings(SettingsView.InitialAction)
     case qrScanner(selectedWallet: WalletEntity)
     case minting(mode: MintDomainsNavigationController.Mode,
                  mintedDomains: [DomainDisplayInfo],
                  domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
                  mintingNavProvider: (MintDomainsNavigationController)->())
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
-    case walletsList(WalletsListViewPresenter.InitialAction)
     case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
     case walletDetails(WalletEntity)
 
@@ -28,8 +27,6 @@ enum HomeWalletNavigationDestination: Hashable {
         case (.minting, .minting):
             return true
         case (.purchaseDomains, .purchaseDomains):
-            return true
-        case (.walletsList, .walletsList):
             return true
         case (.login, .login):
             return true
@@ -50,8 +47,6 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("minting")
         case .purchaseDomains:
             hasher.combine("purchaseDomains")
-        case .walletsList:
-            hasher.combine("walletsList")
         case .login:
             hasher.combine("login")
         case .walletDetails:
@@ -66,8 +61,8 @@ struct HomeWalletLinkNavigationDestination {
     @ViewBuilder
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
-        case .settings:
-            SettingsView()
+        case .settings(let initialAction):
+            SettingsView(initialAction: initialAction)
         case .qrScanner(let selectedWallet):
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
@@ -82,10 +77,6 @@ struct HomeWalletLinkNavigationDestination {
             .ignoresSafeArea()
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
-                .toolbar(.hidden, for: .navigationBar)
-                .ignoresSafeArea()
-        case .walletsList(let initialAction):
-            WalletsListViewControllerWrapper(initialAction: initialAction)
                 .toolbar(.hidden, for: .navigationBar)
                 .ignoresSafeArea()
         case .login(let mode, let callback):

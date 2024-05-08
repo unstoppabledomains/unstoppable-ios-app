@@ -13,7 +13,7 @@ struct HomeSettingsNavButtonView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     var body: some View {
-        NavigationLink(value: HomeWalletNavigationDestination.settings) {
+        NavigationLink(value: HomeWalletNavigationDestination.settings(.none)) {
             Image.settingsIcon
                 .resizable()
                 .squareFrame(24)
