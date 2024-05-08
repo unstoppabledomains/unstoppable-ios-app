@@ -39,6 +39,7 @@ private extension SecuritySettingsView {
             }
         }
         .padding(.horizontal, 16)
+        .background(Color.backgroundDefault)
     }
     
     @ViewBuilder

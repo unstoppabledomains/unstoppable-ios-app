@@ -10,15 +10,23 @@ import SwiftUI
 struct WalletDetailsDomainItemView: View {
     
     @Environment(\.imageLoadingService) var imageLoadingService
-    
+    @EnvironmentObject var tabRouter: HomeTabRouter
+
     let domain: DomainDisplayInfo
+    let selectionCallback: EmptyCallback
     @State private var domainIcon: UIImage?
     
     var body: some View {
-        UDListItemView(title: domain.name,
-                       imageType: .uiImage(domainIcon ?? .init()),
-                       imageStyle: .full)
-            .onAppear(perform: onAppear)
+        UDCollectionListRowButton(content: {
+            UDListItemView(title: domain.name,
+                           imageType: .uiImage(domainIcon ?? .init()),
+                           imageStyle: .full)
+                .udListItemInCollectionButtonPadding()
+        }, callback: {
+            selectionCallback()
+        })
+        .padding(4)
+        .onAppear(perform: onAppear)
     }
 }
 
@@ -36,5 +44,6 @@ private extension WalletDetailsDomainItemView {
 }
 
 #Preview {
-    WalletDetailsDomainItemView(domain: MockEntitiesFabric.Domains.mockDomainDisplayInfo())
+    WalletDetailsDomainItemView(domain: MockEntitiesFabric.Domains.mockDomainDisplayInfo(),
+                                selectionCallback: { })
 }
