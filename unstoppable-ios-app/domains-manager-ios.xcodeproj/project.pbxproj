@@ -1429,6 +1429,10 @@
 		C6A231FA2BEB32BB0037E093 /* WalletDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */; };
 		C6A231FC2BEB494D0037E093 /* WalletDetailsDomainItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231FB2BEB494D0037E093 /* WalletDetailsDomainItemView.swift */; };
 		C6A231FD2BEB494D0037E093 /* WalletDetailsDomainItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231FB2BEB494D0037E093 /* WalletDetailsDomainItemView.swift */; };
+		C6A231FF2BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */; };
+		C6A232002BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */; };
+		C6A232022BEB53310037E093 /* RenameWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A232012BEB53310037E093 /* RenameWalletView.swift */; };
+		C6A232032BEB53310037E093 /* RenameWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A232012BEB53310037E093 /* RenameWalletView.swift */; };
 		C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */; };
 		C6A2D50A284DBDCD00327C47 /* QRScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */; };
 		C6A2D50E284DBDCD00327C47 /* QRScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */; };
@@ -3792,6 +3796,8 @@
 		C6A231F42BEB22230037E093 /* TextAttributesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAttributesModifier.swift; sourceTree = "<group>"; };
 		C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsView.swift; sourceTree = "<group>"; };
 		C6A231FB2BEB494D0037E093 /* WalletDetailsDomainItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailsDomainItemView.swift; sourceTree = "<group>"; };
+		C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSourceImageView.swift; sourceTree = "<group>"; };
+		C6A232012BEB53310037E093 /* RenameWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameWalletView.swift; sourceTree = "<group>"; };
 		C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewPresenter.swift; sourceTree = "<group>"; };
 		C6A2D504284DBDCD00327C47 /* QRScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewController.swift; sourceTree = "<group>"; };
 		C6A2D505284DBDCD00327C47 /* QRScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QRScannerViewController.xib; sourceTree = "<group>"; };
@@ -7555,6 +7561,8 @@
 			children = (
 				C6A231F82BEB32BB0037E093 /* WalletDetailsView.swift */,
 				C6A231FB2BEB494D0037E093 /* WalletDetailsDomainItemView.swift */,
+				C6A231FE2BEB52CB0037E093 /* WalletSourceImageView.swift */,
+				C6A232012BEB53310037E093 /* RenameWalletView.swift */,
 			);
 			path = WalletDetailsView;
 			sourceTree = "<group>";
@@ -10383,6 +10391,7 @@
 				C6534A9D2BBFBA10008EEBB5 /* HomeExploreUserWalletDomainsSectionView.swift in Sources */,
 				C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */,
 				C6952A402BC50BEA00F4B475 /* FB_UD_MPCWalletAuthTokenProvider.swift in Sources */,
+				C6A232022BEB53310037E093 /* RenameWalletView.swift in Sources */,
 				C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */,
 				C62901002BAAD3C3008B35A2 /* NumberPadInputInterpreter.swift in Sources */,
 				C6D0F442283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
@@ -10413,6 +10422,7 @@
 				C6534AA92BBFBA10008EEBB5 /* HomeExploreSeparatorView.swift in Sources */,
 				C6B761CC2BB3BEB700773943 /* HomeActivityView.swift in Sources */,
 				C6D647442B1EDA5900D724AC /* SignPaymentTransactionUIConfiguration.swift in Sources */,
+				C6A231FF2BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */,
 				C6124CE12924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C69F992C2A9F1264004B1958 /* Color.swift in Sources */,
 				C6ECBF6B28D07FE000E94309 /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
@@ -11181,6 +11191,7 @@
 				C61807FA2B19A80E0032E543 /* InitialsView.swift in Sources */,
 				C61808262B19AB320032E543 /* DomainTransferServiceProtocol.swift in Sources */,
 				C61807FE2B19A84F0032E543 /* QRCodeMonkeyServiceProvider.swift in Sources */,
+				C6A232032BEB53310037E093 /* RenameWalletView.swift in Sources */,
 				C68F15712BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */,
 				C6B65F5D2B54ECD7006D1812 /* HomeWalletContentTypeSelectorView.swift in Sources */,
 				C6BF80212BA2BB1D00CC4CB3 /* MPCOnboardingEnterCredentialsViewController.swift in Sources */,
@@ -11306,6 +11317,7 @@
 				C6D645B52B1DBC3100D724AC /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				C6D646122B1DC0DD00D724AC /* UnifiedConnectedAppInfoHolder.swift in Sources */,
 				C6D645842B1DBA8600D724AC /* UIMenuDomainAvatarLoader.swift in Sources */,
+				C6A232002BEB52CB0037E093 /* WalletSourceImageView.swift in Sources */,
 				C6D645B42B1DBC2600D724AC /* CollectionGenericContentViewReusableView.swift in Sources */,
 				C6D645BE2B1DBD0D00D724AC /* BaseViewController.swift in Sources */,
 				C6D6476C2B1EDFAA00D724AC /* WalletConnectClientUIHandler.swift in Sources */,

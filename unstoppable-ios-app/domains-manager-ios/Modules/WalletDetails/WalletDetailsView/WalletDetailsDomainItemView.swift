@@ -25,7 +25,6 @@ struct WalletDetailsDomainItemView: View {
 // MARK: - Private methods
 private extension WalletDetailsDomainItemView {
     func onAppear() {
-        print("Appear \(domain.name)")
         loadDomainIcon()
     }
     

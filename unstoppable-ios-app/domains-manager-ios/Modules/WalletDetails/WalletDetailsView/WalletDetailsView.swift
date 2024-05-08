@@ -11,8 +11,11 @@ struct WalletDetailsView: View {
     
     @Environment(\.walletsDataService) private var walletsDataService
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var tabRouter: HomeTabRouter
 
     @State var wallet: WalletEntity
+    
+    @State private var isRenaming = false
     
     var body: some View {
         List {
@@ -21,9 +24,9 @@ struct WalletDetailsView: View {
                 .listRowInsets(EdgeInsets(0))
             HomeWalletActionsView(actions: walletActions(),
                                   actionCallback: { action in
-//                viewModel.walletActionPressed(action)
+                walletActionPressed(action)
             }, subActionCallback: { subAction in
-//                viewModel.walletSubActionPressed(subAction)
+                walletSubActionPressed(subAction)
             })
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -48,6 +51,9 @@ struct WalletDetailsView: View {
                 dismiss()
             }
         }
+        .sheet(isPresented: $isRenaming, content: {
+            RenameWalletView(wallet: wallet)
+        })
     }
     
 }
@@ -68,27 +74,9 @@ private extension WalletDetailsView {
         .listRowSeparator(.hidden)
     }
     
-    var isCenteredImage: Bool {
-        switch wallet.displayInfo.source {
-        case .locallyGenerated, .external:
-            return false
-        case .imported, .mpc:
-            return true
-        }
-    }
-    
     @ViewBuilder
     func headerIcon() -> some View {
-        Image(uiImage: wallet.displayInfo.source.displayIcon)
-            .resizable()
-            .squareFrame(isCenteredImage ? 40 : 80)
-            .padding(isCenteredImage ? 20 : 0)
-            .background(Color.backgroundMuted2)
-            .clipShape(Circle())
-            .overlay(
-                Circle()
-                    .stroke(Color.borderSubtle, lineWidth: 1)
-            )
+        WalletSourceImageView(displayInfo: wallet.displayInfo)
     }
     
     @ViewBuilder
@@ -121,6 +109,15 @@ private extension WalletDetailsView {
         }
         .buttonStyle(.plain)
     }
+    
+    func copyAddressButtonPressed() {
+        switch wallet.getAssetsType() {
+        case .multiChain(let tokens):
+            tabRouter.pullUp = .custom(.copyMultichainAddressPullUp(tokens: tokens, selectionType: .copyOnly))
+        case .singleChain(let token):
+            CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
+        }
+    }
 }
 
 // MARK: - Actions
@@ -151,6 +148,19 @@ private extension WalletDetailsView {
         actions.append(.more(subActions))
         
         return actions
+    }
+    
+    func walletActionPressed(_ action: WalletDetails.WalletAction) {
+        switch action {
+        case .rename:
+            isRenaming = true
+        case .backUp, .more:
+            return
+        }
+    }
+    
+    func walletSubActionPressed(_ action: WalletDetails.WalletSubAction) {
+        
     }
 }
 

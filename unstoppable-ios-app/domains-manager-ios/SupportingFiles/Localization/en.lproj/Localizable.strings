@@ -403,7 +403,7 @@
 "POLYGON_TRANSACTIONS" = "Polygon transactions";
 
 // Rename wallet
-"WALLET_NAME_PLACEHOLDER" = "Name your %@";
+"WALLET_NAME_PLACEHOLDER" = "Name your wallet";
 "WALLET_NAME_TOO_LONG_ERROR" = "Too long name";
 "WALLET_NAME_NOT_UNIQUE_ERROR" = "%@ name should be unique";
 
