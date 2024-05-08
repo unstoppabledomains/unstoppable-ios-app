@@ -160,7 +160,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             selectionViewHeight = 420
             title = String.Constants.removeWalletAlertTitle.localized(walletInfo.walletSourceName.lowercased(), address)
             subtitle = walletInfo.isWithPrivateKey ? String.Constants.removeWalletAlertSubtitlePrivateKey.localized() : String.Constants.removeWalletAlertSubtitleRecoveryPhrase.localized()
-            buttonTitle = String.Constants.removeWallet.localized(walletInfo.walletSourceName.lowercased())
+            buttonTitle = String.Constants.removeWallet.localized()
         } else {
             selectionViewHeight = 368
             title = String.Constants.disconnectWalletAlertTitle.localized(address)
@@ -578,7 +578,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
+    
+    func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
+                                                 tokens: [BalanceTokenUIDescription]) {
+        let selectionViewHeight: CGFloat = CopyMultichainWalletAddressesPullUpView.calculateHeightFor(tokens: tokens,
+                                                                                                      selectionType: .copyOnly)
+        let selectionView = UIHostingController(rootView: CopyMultichainWalletAddressesPullUpView(tokens: tokens,
+                                                                                                  selectionType: .copyOnly,
+                                                                                                  withDismissIndicator: false))
+            .view!
+        
+        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
 }
+
+import SwiftUI
 
 extension PullUpViewService {
     enum PullUpError: Error {

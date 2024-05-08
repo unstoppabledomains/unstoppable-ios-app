@@ -472,6 +472,7 @@ extension Analytics {
         case transferDomainConfirmation, sendMaxCryptoInfo
         case noRecordsSetToSendCrypto
         case sendCryptoForTheFirstTimeConfirmation
+        case copyMultiChainAddresses
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

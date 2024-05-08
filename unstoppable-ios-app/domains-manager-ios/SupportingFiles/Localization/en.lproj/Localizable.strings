@@ -314,13 +314,7 @@
 // Domains Collection
 "SEARCH_DOMAINS_TITLE" = "Search your domains";
 "SEARCH_DOMAINS_HINT" = "Example: \"matt.crypto\"";
-"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "No domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Import your domains to manage your profile and login to apps.";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE" = "Recovery phrase\nor private key";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE" = "For domains already minted";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE" = "External wallet";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc for domains already minted";
-"IMPORT_YOUR_DOMAINS" = "Import your domains";
+"NO_DOMAINS" = "No domains";
 
 // Statuses
 "UPDATING_RECORDS" = "Updating records";
@@ -375,7 +369,7 @@
 "VIEW_PRIVATE_KEY" = "View private key";
 "RENAME" = "Rename";
 "SEE_DOMAINS_STORED_IN_WALLET" = "See %@ stored in %@";
-"REMOVE_WALLET" = "Remove %@";
+"REMOVE_WALLET" = "Remove wallet";
 "DISCONNECT_WALLET" = "Disconnect wallet";
 "NOT_BACKED_UP" = "Not backed up";
 "IMPORTED_WALLET_BACKUP_HINT" = "Save an encrypted copy of your recovery phrase on iCloud.";
@@ -386,6 +380,7 @@
 "COPY_ADDRESS" = "Copy address";
 "ETH_ADDRESS" = "ETH address";
 "ZIL_ADDRESS" = "ZIL address";
+"WHAT_IS_EXTERNAL_WALLET" = "What is an external wallet?";
 "IMPORT_CONNECTED_WALLET_DESCRIPTION" = "Manage your Web3 domains using an external wallet without importing a recovery phrase or private key. Your linked wallet will be used for message & transaction signing.";
 "WALLET_WAS_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
 
@@ -403,7 +398,7 @@
 "POLYGON_TRANSACTIONS" = "Polygon transactions";
 
 // Rename wallet
-"WALLET_NAME_PLACEHOLDER" = "Name your %@";
+"WALLET_NAME_PLACEHOLDER" = "Name your wallet";
 "WALLET_NAME_TOO_LONG_ERROR" = "Too long name";
 "WALLET_NAME_NOT_UNIQUE_ERROR" = "%@ name should be unique";
 
@@ -1099,7 +1094,7 @@ More tabs are coming in the next updates.";
 "INCORRECT_EMAIL_FORMAT" = "Incorrect email format";
 "SELF_CUSTODY" = "Self Custody";
 "RECOVERY_PHRASE_OR_PRIVATE_KEY" = "Recovery phrase or private key";
-"EXTERNAL_WALLET" = "External wallet";
+"EXTERNAL" = "External";
 "CREATE_NEW_WALLET" = "Create New Wallet";
 "MPC_AUTHORIZING" = "Authorizing...";
 "MPC_READY_TO_USE" = "Ready to use!";
@@ -1112,6 +1107,10 @@ More tabs are coming in the next updates.";
 "IMPORT_MPC_WALLET_IN_PROGRESS_TITLE" = "Importing your\nMPC Wallet...";
 "IMPORT_MPC_WALLET_FINISHED_TITLE" = "All set, start using your MPC Wallet";
 "IMPORT_MPC_WALLET_FAILED_TITLE" = "Importing your\nMPC Wallet";
+"MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION" = "MPC Wallet has addresses across multiple blockchains.";
+"CHOOSE_ADDRESS_TO_SHARE" = "Choose address to share";
+"USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS" = "Use your domain name instead of long wallet address in the supported apps";
+"COPY_OR_SHARE_WALLET_ADDRESS" = "Copy or share wallet addresses to request crypto or collectibles";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
@@ -1120,3 +1119,5 @@ More tabs are coming in the next updates.";
 "CONFIRM_AND_SEND" = "Confirm & Send";
 
 "PARKED_DOMAINS" = "Parked domains";
+"BACKED_UP" = "Backed up";
+"BACK_UP" = "Back up";

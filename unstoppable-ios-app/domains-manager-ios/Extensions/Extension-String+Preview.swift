@@ -421,13 +421,7 @@ extension String {
         // Domains Collection
         static let searchDomainsTitle = "SEARCH_DOMAINS_TITLE"
         static let searchDomainsHint = "SEARCH_DOMAINS_HINT"
-        static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
-        static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
-        static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
-        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
-        static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
-        static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
-        static let importYourDomains = "IMPORT_YOUR_DOMAINS"
+        static let noDomains = "NO_DOMAINS"
         
         // Statuses
         static let updatingRecords = "UPDATING_RECORDS"
@@ -489,6 +483,7 @@ extension String {
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
+        static let whatIsExternalWallet = "WHAT_IS_EXTERNAL_WALLET"
         static let importConnectedWalletDescription = "IMPORT_CONNECTED_WALLET_DESCRIPTION"
         static let walletWasDisconnectedMessage = "WALLET_WAS_DISCONNECTED_MESSAGE"
         static let addToBackupNewWalletSubtitle = "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE"
@@ -1201,7 +1196,7 @@ extension String {
         static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
         static let selfCustody = "SELF_CUSTODY"
         static let recoveryPhraseOrPrivateKey = "RECOVERY_PHRASE_OR_PRIVATE_KEY"
-        static let externalWallet = "EXTERNAL_WALLET"
+        static let external = "EXTERNAL"
         static let createNewWallet = "CREATE_NEW_WALLET"
         static let mpcAuthorizing = "MPC_AUTHORIZING"
         static let mpcReadyToUse = "MPC_READY_TO_USE"
@@ -1215,6 +1210,10 @@ extension String {
         static let importMPCWalletInProgressTitle = "IMPORT_MPC_WALLET_IN_PROGRESS_TITLE"
         static let importMPCWalletFinishedTitle = "IMPORT_MPC_WALLET_FINISHED_TITLE"
         static let importMPCWalletFailedTitle = "IMPORT_MPC_WALLET_FAILED_TITLE"
+        static let mpcWalletShareMultiChainDescription = "MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION"
+        static let chooseAddressToShare = "CHOOSE_ADDRESS_TO_SHARE"
+        static let useDomainNameInsteadOfAddress = "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS"
+        static let copyOrShareWalletAddress = "COPY_OR_SHARE_WALLET_ADDRESS"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
@@ -1223,8 +1222,10 @@ extension String {
         static let confirmAndSend = "CONFIRM_AND_SEND"
         
         static let parkedDomains = "PARKED_DOMAINS"
+        static let backedUp = "BACKED_UP"
+        static let backUp = "BACK_UP"
     }
-
+    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"

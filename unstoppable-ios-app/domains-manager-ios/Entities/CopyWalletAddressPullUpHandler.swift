@@ -9,6 +9,10 @@ import Foundation
 import UIKit
 
 struct CopyWalletAddressPullUpHandler {
+    static func copyToClipboard(token: BalanceTokenUIDescription) {
+        copyToClipboard(address: token.address, ticker: token.symbol)
+    }
+    
     static func copyToClipboard(address: String, ticker: String) {
         Task {
             await MainActor.run {

@@ -18,10 +18,14 @@ protocol HomeWalletActionItem: Identifiable, Hashable {
     var title: String { get }
     var icon: Image { get }
     var isDimmed: Bool { get }
+    var tint: Color { get }
     var analyticButton: Analytics.Button { get }
     var subActions: [SubAction] { get }
 }
 
+extension HomeWalletActionItem {
+    var tint: Color { .foregroundAccent }
+}
 
 protocol HomeWalletSubActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
     var title: String { get }

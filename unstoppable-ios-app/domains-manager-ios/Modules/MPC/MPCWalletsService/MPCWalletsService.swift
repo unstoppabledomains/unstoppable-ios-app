@@ -80,6 +80,12 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                                                    destinationAddress: destinationAddress,
                                                    by: walletMetadata)
     }
+    
+    func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription] {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+
+        return try subService.getTokens(for: walletMetadata)
+    }
 }
 
 // MARK: - Private methods

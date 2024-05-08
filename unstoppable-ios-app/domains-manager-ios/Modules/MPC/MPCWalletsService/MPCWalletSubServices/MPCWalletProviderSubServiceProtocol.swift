@@ -26,4 +26,5 @@ protocol MPCWalletProviderSubServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> String
+    func getTokens(for walletMetadata: MPCWalletMetadata) throws -> [BalanceTokenUIDescription]
 }
