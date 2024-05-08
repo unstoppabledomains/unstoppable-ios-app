@@ -28,7 +28,7 @@ struct ShareWalletAssetInfoView: View, ViewAnalyticsLogger {
             contentViewsForWalletAssetType()
         }
         .onAppear(perform: onAppear)
-        .padding(EdgeInsets(top: 30, leading: 16, bottom: 0, trailing: 16))
+        .padding(.horizontal, 16)
         .task {
             if #available(iOS 17.0, *) {
                 try? Tips.configure(
@@ -99,9 +99,11 @@ private extension ShareWalletAssetInfoView {
         switch asset {
         case .singleChain(let token):
             dismissIndicator()
+                .padding(.top, 30)
             contentViewForSingleChainWallet(token: token)
         case .multiChain(let tokens, let callback):
             contentViewForMultiChainWallet(tokens: tokens, callback: callback)
+                .padding(.top, 30)
         case .multiChainAsset(let token):
             contentViewForMultiChainAssetWallet(token: token)
         }
@@ -282,7 +284,7 @@ private extension ShareWalletAssetInfoView {
                             .squareFrame(24)
                             .foregroundStyle(Color.foregroundSecondary)
                     }
-                    Text("Use your domain name instead of long wallet address in the supported apps")
+                    Text(String.Constants.useDomainNameInsteadOfAddress.localized())
                         .textAttributes(color: .foregroundSecondary, fontSize: 16)
                 }
             }
@@ -293,7 +295,7 @@ private extension ShareWalletAssetInfoView {
     func tokensListSection(tokens: [BalanceTokenUIDescription],
                            callback: @escaping @MainActor (BalanceTokenUIDescription)->()) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Copy or share wallet addresses to request crypto or collectibles")
+            Text(String.Constants.copyOrShareWalletAddress.localized())
                 .foregroundStyle(Color.foregroundDefault)
                 .font(.currentFont(size: 16, weight: .medium))
             UDCollectionSectionBackgroundView {
@@ -305,7 +307,7 @@ private extension ShareWalletAssetInfoView {
                     }
                 }
             }
-            Text("MPC Wallet has addresses across multiple blockchains.")
+            Text(String.Constants.mpcWalletShareMultiChainDescription.localized())
                 .foregroundStyle(Color.foregroundSecondary)
                 .font(.currentFont(size: 14, weight: .medium))
         }

@@ -1214,6 +1214,10 @@ extension String {
         static let importMPCWalletInProgressTitle = "IMPORT_MPC_WALLET_IN_PROGRESS_TITLE"
         static let importMPCWalletFinishedTitle = "IMPORT_MPC_WALLET_FINISHED_TITLE"
         static let importMPCWalletFailedTitle = "IMPORT_MPC_WALLET_FAILED_TITLE"
+        static let mpcWalletShareMultiChainDescription = "MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION"
+        static let chooseAddressToShare = "CHOOSE_ADDRESS_TO_SHARE"
+        static let useDomainNameInsteadOfAddress = "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS"
+        static let copyOrShareWalletAddress = "COPY_OR_SHARE_WALLET_ADDRESS"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

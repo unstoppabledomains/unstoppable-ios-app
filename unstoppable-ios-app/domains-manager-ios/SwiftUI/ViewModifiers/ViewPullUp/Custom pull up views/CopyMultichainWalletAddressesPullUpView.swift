@@ -155,9 +155,9 @@ extension CopyMultichainWalletAddressesPullUpView {
         var title: String {
             switch self {
             case .copyOnly, .allOptions:
-                "MPC Wallet has addresses across multiple blockchains"
+                String.Constants.mpcWalletShareMultiChainDescription.localized()
             case .shareOnly:
-                "Choose address to share"
+                String.Constants.chooseAddressToShare.localized()
             }
         }
         
@@ -166,7 +166,7 @@ extension CopyMultichainWalletAddressesPullUpView {
             case .copyOnly, .allOptions:
                 nil
             case .shareOnly:
-                "MPC Wallet has addresses across multiple blockchains"
+                String.Constants.mpcWalletShareMultiChainDescription.localized()
             }
         }
     }
