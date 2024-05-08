@@ -63,12 +63,27 @@ private extension WalletDetailsView {
         .listRowSeparator(.hidden)
     }
     
+    var isCenteredImage: Bool {
+        switch wallet.displayInfo.source {
+        case .locallyGenerated, .external:
+            return false
+        case .imported, .mpc:
+            return true
+        }
+    }
+    
     @ViewBuilder
     func headerIcon() -> some View {
         Image(uiImage: wallet.displayInfo.source.displayIcon)
             .resizable()
-            .squareFrame(80)
+            .squareFrame(isCenteredImage ? 40 : 80)
+            .padding(isCenteredImage ? 20 : 0)
+            .background(Color.backgroundMuted2)
             .clipShape(Circle())
+            .overlay(
+                Circle()
+                    .stroke(Color.borderSubtle, lineWidth: 1)
+            )
     }
     
     @ViewBuilder
@@ -192,6 +207,18 @@ enum WalletDetails {
                 return .cloudIcon
             case .more:
                 return .dotsIcon
+            }
+        }
+        
+        var tint: Color {
+            switch self {
+            case .backUp(let state):
+                if case .backedUp = state {
+                    return .foregroundSuccess
+                }
+                return .foregroundAccent
+            default:
+                return .foregroundAccent
             }
         }
         
