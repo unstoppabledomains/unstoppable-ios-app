@@ -123,7 +123,7 @@ extension WalletsDataService: WalletsDataServiceProtocol {
     }
     
     func loadBalanceFor(walletAddress: HexAddress) async throws -> [WalletTokenPortfolio] {
-        try await networkService.fetchCryptoPortfolioFor(wallet: walletAddress)
+        try await networkService.fetchCryptoPortfolioFor(wallet: "0x7808bc9f997f4408325f01feb0b7ea1a88b4c6d2")
     }
     
     func loadAdditionalBalancesFor(domainName: DomainName) async -> [WalletTokenPortfolio] {

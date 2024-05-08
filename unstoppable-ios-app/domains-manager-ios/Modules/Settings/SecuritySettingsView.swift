@@ -13,6 +13,7 @@ struct SecuritySettingsView: View, ViewAnalyticsLogger {
 
     var analyticsName: Analytics.ViewName { .securitySettings }
     
+    @State private var id = UUID()
     @State private var shouldRequireSAOnAppOpening = User.instance.getSettings().shouldRequireSAOnAppOpening
     
     var body: some View {
@@ -22,6 +23,7 @@ struct SecuritySettingsView: View, ViewAnalyticsLogger {
             .onChange(of: shouldRequireSAOnAppOpening) { newValue in
                 setRequireSAOnAppOpening(isOn: shouldRequireSAOnAppOpening)
             }
+            .id(id)
     }
 }
 
@@ -153,7 +155,7 @@ private extension SecuritySettingsView {
                 }
                 
                 DispatchQueue.main.async {
-                    self .setSettingsBiometricEnabled(result == true)
+                    self.setSettingsBiometricEnabled(result == true)
                 }
             }
         } else {
@@ -174,6 +176,7 @@ private extension SecuritySettingsView {
         var settings = User.instance.getSettings()
         settings.touchIdActivated = isEnabled
         User.instance.update(settings: settings)
+        id = UUID()
     }
     
     @MainActor

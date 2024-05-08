@@ -83,9 +83,8 @@ private extension SetupPasscodeViewController {
            // Find first vc who called EnterPasscode.
            let vc = nav.viewControllers.reversed().first(where: { !($0 is EnterPasscodeViewController) }) {
             nav.popToViewController(vc, animated: true)
-        } else {
-            navigationController?.popViewController(animated: true)
-            navigationController?.popViewController(animated: true)
+        } else if let nav = navigationController {
+            nav.popToViewController(nav.viewControllers[nav.viewControllers.count - 3], animated: true)
         }
     }
 }

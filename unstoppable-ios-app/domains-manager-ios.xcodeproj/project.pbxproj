@@ -5439,8 +5439,8 @@
 				C63DBCC72BE492B8008F3D2C /* SettingsView.swift */,
 				C6D20FCA2BE4A9DC003617B7 /* SettingsProfilesView.swift */,
 				C6D20FC72BE4A9A6003617B7 /* SettingsProfileTileView.swift */,
+				C6FEA91C2BEB725C004FD740 /* SecuritySettingsView.swift */,
 				C60E9BA028218DCB00CD7593 /* Entities */,
-				C692C317282E483F00C31393 /* SecuritySettingsViewController */,
 				C692C33E282EA5E400C31393 /* AppearanceSettingsViewController */,
 			);
 			path = Settings;
@@ -7167,14 +7167,6 @@
 				C6DF9865290F81D40098733A /* WebsiteURLValidator.swift */,
 			);
 			path = Validators;
-			sourceTree = "<group>";
-		};
-		C692C317282E483F00C31393 /* SecuritySettingsViewController */ = {
-			isa = PBXGroup;
-			children = (
-				C6FEA91C2BEB725C004FD740 /* SecuritySettingsView.swift */,
-			);
-			path = SecuritySettingsViewController;
 			sourceTree = "<group>";
 		};
 		C692C33E282EA5E400C31393 /* AppearanceSettingsViewController */ = {
