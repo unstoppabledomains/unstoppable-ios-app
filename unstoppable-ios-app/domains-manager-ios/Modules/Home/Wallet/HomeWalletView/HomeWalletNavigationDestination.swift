@@ -17,6 +17,8 @@ enum HomeWalletNavigationDestination: Hashable {
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
     case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
     case walletDetails(WalletEntity)
+    case securitySettings
+    case setupPasscode(SetupPasscodeViewController.Mode)
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
@@ -31,6 +33,10 @@ enum HomeWalletNavigationDestination: Hashable {
         case (.login, .login):
             return true
         case (.walletDetails, .walletDetails):
+            return true
+        case (.securitySettings, .securitySettings):
+            return true
+        case (.setupPasscode, .setupPasscode):
             return true
         default:
             return false
@@ -51,6 +57,10 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("login")
         case .walletDetails:
             hasher.combine("walletDetails")
+        case .securitySettings:
+            hasher.combine("securitySettings")
+        case .setupPasscode:
+            hasher.combine("setupPasscode")
         }
     }
     
@@ -86,6 +96,11 @@ struct HomeWalletLinkNavigationDestination {
                 .ignoresSafeArea()
         case .walletDetails(let wallet):
             WalletDetailsView(wallet: wallet)
+        case .securitySettings:
+            SecuritySettingsView()
+        case .setupPasscode(let mode):
+            SetupPasscodeViewControllerWrapper(mode: mode)
+                .ignoresSafeArea()
         }
     }
     

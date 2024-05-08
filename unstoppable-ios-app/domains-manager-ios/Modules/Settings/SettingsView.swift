@@ -34,10 +34,6 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing, content: topBarButton)
             }
-            .navigationDestination(for: SettingsNavigationDestination.self) { destination in
-                SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
-                    .ignoresSafeArea()
-            }
             .onAppear(perform: onAppear)
     }
     
@@ -368,7 +364,7 @@ private extension SettingsView {
     func didSelect(moreItem: MoreSectionItems) {
         switch moreItem {
         case .security:
-            return
+            tabRouter.walletViewNavPath.append(HomeWalletNavigationDestination.securitySettings)
         case .testnet:
             return
         }

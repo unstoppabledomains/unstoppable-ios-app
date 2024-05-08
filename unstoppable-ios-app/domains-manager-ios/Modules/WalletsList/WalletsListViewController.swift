@@ -68,9 +68,6 @@ extension WalletsListViewController: UICollectionViewDelegate {
 // MARK: - InteractivePushNavigation
 extension WalletsListViewController: CNavigationControllerChildTransitioning {
     func popNavBarAnimatedTransitioning(to viewController: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if cNavigationController?.viewControllers.first(where: { $0 is SettingsViewController }) != nil {
-            return BackToSettingsNavBarPopAnimation(animationDuration: CNavigationHelper.DefaultNavAnimationDuration)
-        }
         return nil
     }
 }

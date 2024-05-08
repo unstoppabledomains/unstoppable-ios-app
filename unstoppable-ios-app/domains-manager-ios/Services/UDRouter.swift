@@ -10,23 +10,6 @@ import SwiftUI
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
-    func showSettings(in viewController: CNavigationController,
-                      loginCallback: LoginFlowNavigationController.LoggedInCallback?) {
-        let settingsVC = buildSettingsModule(loginCallback: loginCallback)
-        viewController.pushViewController(settingsVC, animated: true)
-    }
-    
-    func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
-        let vc = SettingsViewController.nibInstance()
-        let presenter = SettingsPresenter(view: vc,
-                                          loginCallback: loginCallback,
-                                          notificationsService: appContext.notificationsService,
-                                          firebaseAuthenticationService: appContext.firebaseParkedDomainsAuthenticationService)
-        vc.presenter = presenter
-        
-        return vc
-    }
-    
     func showWalletsList(in viewController: CNavigationController, initialAction: WalletsListViewPresenter.InitialAction) {
         let walletsListVC = buildWalletsListModule(initialAction: initialAction)
         viewController.pushViewController(walletsListVC, animated: true)
@@ -156,12 +139,6 @@ class UDRouter: DomainProfileSignatureValidator {
         let vc = buildEnterBackupToRestoreWalletsModule(for: backup,
                                                         walletsRestoredCallback: walletsRestoredCallback)
         presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
-    func showSecuritySettingsScreen(in viewController: CNavigationController) {
-        let vc = buildSecuritySettingsModule()
-        
-        viewController.pushViewController(vc, animated: true)
     }
     
     func showAppearanceSettingsScreen(in viewController: UINavigationController) {
@@ -687,13 +664,6 @@ private extension UDRouter {
                                                              walletsRestoredCallback: walletsRestoredCallback)
         vc.presenter = presenter
         
-        return vc
-    }
-    
-    func buildSecuritySettingsModule() -> UIViewController {
-        let vc = SecuritySettingsViewController.nibInstance()
-        let presenter = SecuritySettingsViewPresenter(view: vc)
-        vc.presenter = presenter
         return vc
     }
     
