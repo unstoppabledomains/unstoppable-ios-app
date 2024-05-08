@@ -129,10 +129,6 @@ extension FB_UD_MPC {
             await Task.sleep(seconds: 0.5)
             return .init(items: [])
         }
-        
-       
-        
-      
     }
     
     struct MPCWalletsDefaultDataStorage: MPCWalletsDataStorage {

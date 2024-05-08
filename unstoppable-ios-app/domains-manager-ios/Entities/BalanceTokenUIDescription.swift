@@ -10,6 +10,7 @@ import UIKit
 struct BalanceTokenUIDescription: Hashable, Identifiable {
     var id: String { "\(chain)/\(symbol)" }
     
+    let address: String
     let chain: String
     let symbol: String
     let gasCurrency: String
@@ -36,6 +37,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     }
     
     init(walletBalance: WalletTokenPortfolio) {
+        self.address = walletBalance.address
         self.chain = walletBalance.symbol
         self.symbol = walletBalance.symbol
         self.gasCurrency = walletBalance.gasCurrency
@@ -47,13 +49,15 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.logoURL = URL(string: walletBalance.logoUrl ?? "")
     }
     
-    init(chain: String,
+    init(address: String,
+         chain: String,
          symbol: String,
          name: String,
          balance: Double,
          balanceUsd: Double,
          marketUsd: Double? = nil,
          marketPctChange24Hr: Double? = nil) {
+        self.address = address
         self.chain = chain
         self.symbol = symbol
         self.gasCurrency = symbol
@@ -69,6 +73,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
          parentSymbol: String,
          parentMarketUSD: Double?,
          parentLogoURL: URL?) {
+        self.address = walletToken.address
         self.chain = chain
         self.symbol = walletToken.symbol
         self.gasCurrency = walletToken.gasCurrency
@@ -171,7 +176,8 @@ extension BalanceTokenUIDescription {
 // MARK: - Skeleton
 extension BalanceTokenUIDescription {
     static func createSkeletonEntity() -> BalanceTokenUIDescription {
-        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+        var token = BalanceTokenUIDescription(address: "",
+                                              chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
         token.isSkeleton = true
         return token
     }
