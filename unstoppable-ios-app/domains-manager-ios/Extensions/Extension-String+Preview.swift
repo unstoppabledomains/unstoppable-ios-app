@@ -421,13 +421,7 @@ extension String {
         // Domains Collection
         static let searchDomainsTitle = "SEARCH_DOMAINS_TITLE"
         static let searchDomainsHint = "SEARCH_DOMAINS_HINT"
-        static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
-        static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
-        static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
-        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
-        static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
-        static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
-        static let importYourDomains = "IMPORT_YOUR_DOMAINS"
+        static let noDomains = "NO_DOMAINS"
         
         // Statuses
         static let updatingRecords = "UPDATING_RECORDS"

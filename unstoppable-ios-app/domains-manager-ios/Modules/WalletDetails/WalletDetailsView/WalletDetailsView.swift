@@ -97,6 +97,7 @@ private extension WalletDetailsView {
     func copyAddressButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            copyAddressButtonPressed()
         } label: {
             HStack(spacing: 8) {
                 Text(copyButtonTitle)
@@ -154,14 +155,90 @@ private extension WalletDetailsView {
         switch action {
         case .rename:
             isRenaming = true
-        case .backUp, .more:
+        case .backUp(let state):
+            let isNetworkReachable = appContext.networkReachabilityService?.isReachable == true
+            guard isNetworkReachable else { return }
+            
+            switch state {
+            case .backedUp:
+                return
+            case .importedNotBackedUp, .locallyGeneratedNotBackedUp:
+                showBackupWalletScreenIfAvailable()
+            }
+        case .more:
             return
         }
     }
     
-    func walletSubActionPressed(_ action: WalletDetails.WalletSubAction) {
+    func showBackupWalletScreenIfAvailable() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        guard iCloudWalletStorage.isICloudAvailable() else {
+            view.showICloudDisabledAlert()
+            return
+        }
         
+        UDRouter().showBackupWalletScreen(for: wallet.udWallet, walletBackedUpCallback: { _ in
+            AppReviewService.shared.appReviewEventDidOccurs(event: .walletBackedUp)
+        }, in: view)
     }
+    
+    func revealRecoveryPhrase(recoveryType: UDWallet.RecoveryType) {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        Task {
+            do {
+                try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                UDRouter().showRecoveryPhrase(of: wallet.udWallet,
+                                              recoveryType: recoveryType,
+                                              in: view,
+                                              dismissCallback: {
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .didRevealPK)
+                })
+            }
+        }
+    }
+    
+    func walletSubActionPressed(_ action: WalletDetails.WalletSubAction) {
+        switch action {
+        case .privateKey:
+            revealRecoveryPhrase(recoveryType: .privateKey)
+        case .recoveryPhrase:
+            revealRecoveryPhrase(recoveryType: .recoveryPhrase)
+        case .removeWallet, .disconnectWallet:
+            askToRemoveWallet()
+        }
+    }
+    
+    func askToRemoveWallet() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        Task {
+            do {
+                try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: wallet.displayInfo)
+                await view.dismissPullUpMenu()
+                try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                await removeWallet()
+            }
+        }
+    }
+ 
+    func removeWallet() async {
+        appContext.udWalletsService.remove(wallet: wallet.udWallet)
+        // WC2 only
+        await appContext.walletConnectServiceV2.disconnect(from: wallet.address)
+        let wallets = appContext.udWalletsService.getUserWallets()
+        guard !wallets.isEmpty else { return }
+        indicateWalletRemoved()
+    }
+    
+    func indicateWalletRemoved() {
+        if wallet.udWallet.type == .externalLinked {
+            appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
+        } else {
+            appContext.toastMessageService.showToast(.walletRemoved(walletName: wallet.displayInfo.walletSourceName), isSticky: false)
+        }
+    }
+    
 }
 
 // MARK: - Domains list
@@ -177,11 +254,11 @@ private extension WalletDetailsView {
     
     @ViewBuilder
     func noDomainsView() -> some View {
-        Text("No domains")
+        Text(String.Constants.noDomains.localized())
             .foregroundStyle(Color.foregroundSecondary)
             .font(.currentFont(size: 20, weight: .bold))
             .frame(maxWidth: .infinity)
-            .frame(height: 300)
+            .frame(height: 200)
     }
     
     var nonRRDomains: [DomainDisplayInfo] {
@@ -239,142 +316,4 @@ private extension WalletDetailsView {
 
 #Preview {
     WalletDetailsView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
-}
-
-
-enum WalletDetails {
-    
-    enum WalletAction: HomeWalletActionItem {
-        
-        var id: String {
-            switch self {
-            case .rename:
-                return "send"
-            case .backUp:
-                return "backUp"
-            case .more:
-                return "more"
-            }
-        }
-        
-        case rename
-        case backUp(WalletDisplayInfo.BackupState)
-        case more([WalletSubAction])
-        
-        var title: String {
-            switch self {
-            case .rename:
-                return String.Constants.rename.localized()
-            case .backUp(let state):
-                if case .backedUp = state {
-                    return String.Constants.backedUp.localized()
-                }
-                return String.Constants.backUp.localized()
-            case .more:
-                return String.Constants.more.localized()
-            }
-        }
-        
-        var icon: Image {
-            switch self {
-            case .rename:
-                return .brushSparkle
-            case .backUp(let state):
-                if case .backedUp = state {
-                    return Image(uiImage: state.icon)
-                }
-                return .cloudIcon
-            case .more:
-                return .dotsIcon
-            }
-        }
-        
-        var tint: Color {
-            switch self {
-            case .backUp(let state):
-                if case .backedUp = state {
-                    return .foregroundSuccess
-                }
-                return .foregroundAccent
-            default:
-                return .foregroundAccent
-            }
-        }
-        
-        var subActions: [WalletSubAction] {
-            switch self {
-            case .backUp, .rename:
-                return []
-            case .more(let subActions):
-                return subActions
-            }
-        }
-        
-        var analyticButton: Analytics.Button {
-            switch self {
-            case .rename:
-                return .walletRename
-            case .backUp:
-                return .walletBackup
-            case .more:
-                return .more
-            }
-        }
-        
-        var isDimmed: Bool {
-            switch self {
-            case .rename, .backUp, .more:
-                return false
-            }
-        }
-    }
-    
-    enum WalletSubAction: String, CaseIterable, HomeWalletSubActionItem {
-        
-        case privateKey
-        case recoveryPhrase
-        case removeWallet
-        case disconnectWallet
-        
-        var title: String {
-            switch self {
-            case .privateKey:
-                return String.Constants.viewPrivateKey.localized()
-            case .recoveryPhrase:
-                return String.Constants.viewRecoveryPhrase.localized()
-            case .removeWallet:
-                return String.Constants.removeWallet.localized()
-            case .disconnectWallet:
-                return  String.Constants.disconnectWallet.localized()
-            }
-        }
-        
-        var icon: Image {
-            switch self {
-            case .recoveryPhrase, .privateKey:
-                return Image.systemDocOnDoc
-            case .removeWallet, .disconnectWallet:
-                return Image.trashIcon
-            }
-        }
-        
-        var isDestructive: Bool {
-            switch self {
-            case .recoveryPhrase, .privateKey:
-                return false
-            case .removeWallet, .disconnectWallet:
-                return true
-            }
-        }
-        
-        var analyticButton: Analytics.Button {
-            switch self {
-            case .recoveryPhrase, .privateKey:
-                return .walletRecoveryPhrase
-            case .removeWallet, .disconnectWallet:
-                return .walletRemove
-            }
-        }
-    }
-    
 }

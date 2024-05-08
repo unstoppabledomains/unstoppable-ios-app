@@ -314,13 +314,7 @@
 // Domains Collection
 "SEARCH_DOMAINS_TITLE" = "Search your domains";
 "SEARCH_DOMAINS_HINT" = "Example: \"matt.crypto\"";
-"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "No domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Import your domains to manage your profile and login to apps.";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE" = "Recovery phrase\nor private key";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE" = "For domains already minted";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE" = "External wallet";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc for domains already minted";
-"IMPORT_YOUR_DOMAINS" = "Import your domains";
+"NO_DOMAINS" = "No domains";
 
 // Statuses
 "UPDATING_RECORDS" = "Updating records";
