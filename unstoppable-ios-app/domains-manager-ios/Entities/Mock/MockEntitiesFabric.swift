@@ -81,7 +81,7 @@ extension MockEntitiesFabric {
         static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
             WalletWithInfo.mock.map {
                 createFrom(walletWithInfo: $0,
-                           hasRRDomain: [false].randomElement()!)
+                           hasRRDomain: hasRRDomain)
                 
             }
         }

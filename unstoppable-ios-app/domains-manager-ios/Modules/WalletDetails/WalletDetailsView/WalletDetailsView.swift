@@ -17,6 +17,8 @@ struct WalletDetailsView: View {
     var body: some View {
         List {
             headerView()
+                .padding(.bottom, 32)
+                .listRowInsets(EdgeInsets(0))
             HomeWalletActionsView(actions: walletActions(),
                                   actionCallback: { action in
 //                viewModel.walletActionPressed(action)
@@ -25,15 +27,19 @@ struct WalletDetailsView: View {
             })
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(0))
+
             HomeExploreSeparatorView()
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(0))
+                .padding(.vertical, 24)
+            
             domainsListView()
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
         }.environment(\.defaultMinListRowHeight, 28)
-        .listStyle(.plain)
-        .listRowSpacing(20)
+        .listRowSpacing(0)
         .background(Color.backgroundDefault)
         .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
             if let wallet = wallets.findWithAddress(wallet.address) {
@@ -151,9 +157,56 @@ private extension WalletDetailsView {
             .frame(height: 300)
     }
     
+    var nonRRDomains: [DomainDisplayInfo] {
+        wallet.domains.filter({ !$0.isSetForRR })
+    }
+    
     @ViewBuilder
     func domainsListSection() -> some View {
-        
+        domainsSectionHeaderView()
+        if let rrDomain = wallet.rrDomain {
+            domainSectionView {
+                listViewFor(domain: rrDomain)
+            }
+        }
+        if !nonRRDomains.isEmpty {
+            domainSectionView {
+                ForEach(nonRRDomains) { domain in
+                    listViewFor(domain: domain)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func domainSectionView(@ViewBuilder content: @escaping () -> some View) -> some View {
+        Section {
+            content()
+        }
+        .listRowBackground(Color.backgroundOverlay)
+        .listRowSeparator(.hidden)
+        .sectionSpacing(16)
+    }
+    
+    
+    @ViewBuilder
+    func domainsSectionHeaderView() -> some View {
+        HStack(spacing: 8) {
+            Text(String.Constants.domains.localized())
+                .foregroundStyle(Color.foregroundDefault)
+            Text(String(wallet.domains.count))
+                .foregroundStyle(Color.foregroundSecondary)
+            Spacer()
+        }
+        .font(.currentFont(size: 20, weight: .bold))
+        .listRowInsets(EdgeInsets(4))
+    }
+    
+    @ViewBuilder
+    func listViewFor(domain: DomainDisplayInfo) -> some View {
+        WalletDetailsDomainItemView(domain: domain)
+            .udListItemInCollectionButtonPadding()
+            .listRowInsets(EdgeInsets(4))
     }
 }
 
