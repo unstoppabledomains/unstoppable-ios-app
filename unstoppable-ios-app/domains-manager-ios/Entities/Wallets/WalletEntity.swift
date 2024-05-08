@@ -156,9 +156,6 @@ extension WalletEntity {
     func getAssetsType() -> AssetsType {
         if case .mpc = udWallet.type {
             do {
-//                return .multiChain([MockEntitiesFabric.Tokens.mockEthToken(),
-//                                    MockEntitiesFabric.Tokens.mockMaticToken()])
-                
                 let mpcMetadata = try udWallet.extractMPCMetadata()
                 let tokens = try appContext.mpcWalletsService.getTokens(for: mpcMetadata)
                 return .multiChain(tokens)
