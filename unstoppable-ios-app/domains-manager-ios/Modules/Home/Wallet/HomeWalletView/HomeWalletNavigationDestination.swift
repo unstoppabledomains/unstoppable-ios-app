@@ -16,7 +16,8 @@ enum HomeWalletNavigationDestination: Hashable {
                  mintingNavProvider: (MintDomainsNavigationController)->())
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
     case walletsList(WalletsListViewPresenter.InitialAction)
-    
+    case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
+
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.settings, .settings):
@@ -28,6 +29,8 @@ enum HomeWalletNavigationDestination: Hashable {
         case (.purchaseDomains, .purchaseDomains):
             return true
         case (.walletsList, .walletsList):
+            return true
+        case (.login, .login):
             return true
         default:
             return false
@@ -46,6 +49,8 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("purchaseDomains")
         case .walletsList:
             hasher.combine("walletsList")
+        case .login:
+            hasher.combine("login")
         }
     }
     
@@ -57,28 +62,32 @@ struct HomeWalletLinkNavigationDestination {
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
         case .settings:
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(for: SettingsNavigationDestination.self) { destination in
-                    SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
-                }
+            SettingsView()
         case .qrScanner(let selectedWallet):
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                 .navigationBarTitleDisplayMode(.inline)
+                .ignoresSafeArea()
         case .minting(let mode, let mintedDomains, let domainsMintedCallback, let mintingNavProvider):
             MintDomainsNavigationControllerWrapper(mode: mode,
                                                    mintedDomains: mintedDomains,
                                                    domainsMintedCallback: domainsMintedCallback,
                                                    mintingNavProvider: mintingNavProvider)
             .toolbar(.hidden, for: .navigationBar)
+            .ignoresSafeArea()
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
         case .walletsList(let initialAction):
             WalletsListViewControllerWrapper(initialAction: initialAction)
                 .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
+        case .login(let mode, let callback):
+            LoginFlowNavigationControllerWrapper(mode: mode,
+                                                 callback: callback)
+                .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
         }
     }
     

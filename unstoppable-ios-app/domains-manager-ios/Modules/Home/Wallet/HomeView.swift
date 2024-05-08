@@ -23,7 +23,6 @@ struct HomeView: View, ViewAnalyticsLogger {
                 }
                 .navigationDestination(for: HomeWalletNavigationDestination.self) { destination in
                     HomeWalletLinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
                 }
                 .trackAppearanceAnalytics(analyticsLogger: self)
                 .passViewAnalyticsDetails(logger: self)

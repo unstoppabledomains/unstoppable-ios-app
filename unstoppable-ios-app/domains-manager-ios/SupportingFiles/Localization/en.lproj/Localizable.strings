@@ -347,6 +347,7 @@
 "SETTINGS_APPEARANCE_THEME_LIGHT" = "Light";
 "SETTINGS_APPEARANCE_THEME_DARK" = "Dark";
 "SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
+"YOU_ARE_UNSTOPPABLE" = "You are Unstoppable!";
 
 // Wallets list
 "MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";
@@ -754,7 +755,7 @@
 "PASSWORD" = "Password";
 "PARKED" = "In Unstoppable Vault";
 "PARKED_DOMAIN" = "Domain in Unstoppable Vault";
-"PARKED_DOMAINS" = "Domains in Unstoppable Vault";
+"PARKED_DOMAINS_FOUND" = "Domains in Unstoppable Vault";
 "PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";
 "PARKING_EXPIRES_ON" = "Expires on %@";
 "PARKING_EXPIRED" = "Unstoppable Vault expired";
@@ -1117,3 +1118,5 @@ More tabs are coming in the next updates.";
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE" = "Ensure accuracy of the recipient address as transactions are irreversible. Once sent, transactions cannot be reversed. You agree to bear all risks associated with the transaction.";
 "REVIEW_TX_AGAIN" = "Review Transaction Again";
 "CONFIRM_AND_SEND" = "Confirm & Send";
+
+"PARKED_DOMAINS" = "Parked domains";
