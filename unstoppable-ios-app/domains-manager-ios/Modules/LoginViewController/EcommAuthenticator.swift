@@ -77,7 +77,6 @@ private extension EcommAuthenticator {
             return // Ignore case when user cancelled auth
         } else {
             didAuthWithResult(.failed(error))
-            //            view?.showAlertWith(error: error, handler: nil)
         }
     }
     
