@@ -13,6 +13,8 @@ struct SettingsView: View, ViewAnalyticsLogger {
     @Environment(\.userProfilesService) var userProfilesService
     @EnvironmentObject private var tabRouter: HomeTabRouter
     
+    @State var initialAction: InitialAction
+    
     @State private var profiles: [UserProfile] = []
     @State private var pullUp: ViewPullUpConfigurationType?
     @State private var error: Error?
@@ -32,21 +34,26 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing, content: topBarButton)
             }
-            .navigationDestination(for: SettingsNavigationDestination.self) { destination in
-                SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
-                    .ignoresSafeArea()
-            }
+            .onAppear(perform: onAppear)
     }
     
 }
 
 // MARK: - Private methods
 private extension SettingsView {
+    func onAppear() {
+        Task {
+            await Task.sleep(seconds: 0.2)
+            checkIfCanAddWalletAndPerform(action: initialAction, isImportOnly: true)
+            initialAction = .none
+        }
+    }
+    
     @ViewBuilder
     func contentView() -> some View {
         ScrollView {
             PublicProfileSeparatorView(verticalPadding: 0)
-                .padding(.bottom, 20)
+                .padding(.vertical, 20)
             profilesListView()
             PublicProfileSeparatorView(verticalPadding: 0)
                 .padding(.vertical, 20)
@@ -56,7 +63,7 @@ private extension SettingsView {
             footerView()
                 .padding(.top, 20)
         }
-        .padding()
+        .padding(.horizontal, 16)
     }
     
     @ViewBuilder
@@ -172,7 +179,124 @@ private extension SettingsView {
 private extension SettingsView {
     @ViewBuilder
     func profilesListView() -> some View {
+        profilesHeaderView()
         SettingsProfilesView(profiles: profiles)
+    }
+    
+    @ViewBuilder
+    func profilesHeaderView() -> some View {
+        HStack(spacing: 8) {
+            Text(String.Constants.profiles.localized())
+                .textAttributes(color: .foregroundDefault,
+                                fontSize: 20,
+                                fontWeight: .bold)
+            walletActionsButton()
+            Spacer()
+            addWalletsButton()
+        }
+        .frame(height: 24)
+        .padding(.bottom, 16)
+    }
+    
+    @ViewBuilder
+    func walletActionsButton() -> some View {
+        if appContext.networkReachabilityService?.isReachable == true,
+           !appContext.udWalletsService.fetchCloudWalletClusters().isEmpty {
+            Menu {
+                Button(String.Constants.manageICloudBackups.localized(),
+                       systemImage: "cloud") {
+                    UDVibration.buttonTap.vibrate()
+                    logButtonPressedAnalyticEvents(button: .manageICloudBackups)
+                    showManageBackupsAction()
+                }
+            } label: {
+                Image.dotsCircleIcon
+                    .resizable()
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
+            .onButtonTap()
+        }
+    }
+    
+    @ViewBuilder
+    func addWalletsButton() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            checkIfCanAddWalletAndPerform(action: .showImportWalletOptionsPullUp, isImportOnly: false)
+        } label: {
+            HStack(spacing: 8) {
+                Text(String.Constants.add.localized())
+                    .font(.currentFont(size: 16, weight: .medium))
+                Image.plusIconNav
+                    .resizable()
+                    .squareFrame(24)
+            }
+            .foregroundStyle(Color.foregroundSecondary)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    func showManageBackupsAction() {
+        Task {
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+            let udWalletsService = appContext.udWalletsService
+            
+            guard iCloudWalletStorage.isICloudAvailable() else {
+                view.showICloudDisabledAlert()
+                return
+            }
+            
+            do {
+                let action = try await appContext.pullUpViewService.showManageBackupsSelectionPullUp(in: view)
+                
+                switch action {
+                case .restore:
+                    let backups = udWalletsService.fetchCloudWalletClusters().sorted(by: {
+                        if $0.isCurrent || $1.isCurrent {
+                            return $0.isCurrent
+                        }
+                        return $0.date > $1.date
+                    })
+                    
+                    if backups.count == 1 {
+                        await view.dismissPullUpMenu()
+                        restoreWalletFrom(backup: backups[0])
+                    } else {
+                        let displayBackups = backups.map({ ICloudBackupDisplayInfo(date: $0.date, backedUpWallets: $0.wallets, isCurrent: $0.isCurrent) })
+                        let selectedBackup = try await appContext.pullUpViewService.showRestoreFromICloudBackupSelectionPullUp(in: view, backups: displayBackups)
+                        if let index = displayBackups.firstIndex(where: { $0 == selectedBackup }) {
+                            await view.dismissPullUpMenu()
+                            restoreWalletFrom(backup: backups[index])
+                        }
+                    }
+                case .delete:
+                    try await appContext.pullUpViewService.showDeleteAllICloudBackupsPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                    udWalletsService.eraseAllBackupClusters()
+                    SecureHashStorage.clearPassword()
+                }
+            } catch { }
+        }
+    }
+    
+    func restoreWalletFrom(backup: UDWalletsService.WalletCluster) {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        UDRouter().showRestoreWalletsFromBackupScreen(for: backup,
+                                                      walletsRestoredCallback: {
+            showICloudBackupRestoredToast()
+            AppReviewService.shared.appReviewEventDidOccurs(event: .didRestoreWalletsFromBackUp)
+        }, in: view)
+    }
+    
+    func showICloudBackupRestoredToast() {
+        Task {
+            await MainActor.run {
+                appContext.toastMessageService.showToast(.iCloudBackupRestored, isSticky: false)
+            }
+        }
     }
 }
 
@@ -240,7 +364,7 @@ private extension SettingsView {
     func didSelect(moreItem: MoreSectionItems) {
         switch moreItem {
         case .security:
-            return
+            tabRouter.walletViewNavPath.append(HomeWalletNavigationDestination.securitySettings)
         case .testnet:
             return
         }
@@ -335,7 +459,150 @@ private extension SettingsView {
     }
 }
 
-// MARK: - Entities
+// MARK: - Private methods
+private extension SettingsView {
+    func checkIfCanAddWalletAndPerform(action: InitialAction, isImportOnly: Bool) {
+        guard appContext.udWalletsService.canAddNewWallet else {
+            showWalletsNumberLimitReachedPullUp()
+            return
+        }
+        
+        switch action {
+        case .none:
+            return
+        case .showImportWalletOptionsPullUp:
+            showAddWalletPullUp(isImportOnly: isImportOnly)
+        case .showAllAddWalletOptionsPullUp:
+            showAddWalletPullUp(isImportOnly: false)
+        case .importWallet:
+            importNewWallet()
+        case .connectWallet:
+            connectNewWallet()
+        case .createNewWallet:
+            createNewWallet()
+        }
+    }
+    
+    func showAddWalletPullUp(isImportOnly: Bool) {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        Task {
+            let actions: [WalletDetailsAddWalletAction]
+            if isImportOnly {
+                actions = [.mpc, .recoveryOrKey, .connect]
+            } else {
+                actions = WalletDetailsAddWalletAction.allCases
+            }
+            do {
+                let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
+                                                                                                 presentationOptions: .default,
+                                                                                                 actions: actions)
+                await view.dismissPullUpMenu()
+                didSelectAddWalletAction(action)
+            } catch { }
+        }
+    }
+    
+    func didSelectAddWalletAction(_ action: WalletDetailsAddWalletAction) {
+        Task {
+            await MainActor.run {
+                switch action {
+                case .create:
+                    createNewWallet()
+                case .recoveryOrKey:
+                    importNewWallet()
+                case .connect:
+                    connectNewWallet()
+                case .mpc:
+                    activateMPCWallet()
+                }
+            }
+        }
+    }
+    
+    func createNewWallet() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        UDRouter().showCreateLocalWalletScreen(createdCallback: handleWalletAddedResult, in: view)
+    }
+    
+    func importNewWallet() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        UDRouter().showImportVerifiedWalletScreen(walletImportedCallback: handleWalletAddedResult, in: view)
+    }
+    
+    func connectNewWallet() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        UDRouter().showConnectExternalWalletScreen(walletConnectedCallback: handleWalletAddedResult, in: view)
+    }
+ 
+    func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
+        switch result {
+        case .cancelled, .failedToAdd:
+            return
+        case .created(let wallet), .createdAndBackedUp(let wallet):
+            addWalletAfterAdded(wallet)
+        }
+    }
+    
+    func activateMPCWallet() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
+    }
+    
+    func handleMPCActivationResult(_ result: ActivateMPCWalletFlow.FlowResult) {
+        switch result {
+        case .activated(let wallet):
+            addWalletAfterAdded(wallet)
+        case .restart:
+            Task {
+                guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+                await view.presentedViewController?.dismiss(animated: true)
+                activateMPCWallet()
+            }
+        }
+    }
+    
+    func addWalletAfterAdded(_ wallet: UDWallet) {
+        var walletName = String.Constants.wallet.localized()
+        if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
+            walletName = displayInfo.walletSourceName
+        }
+        appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+        for profile in profiles {
+            if case .wallet(let walletEntity) = profile,
+               walletEntity.address == wallet.address {
+                tabRouter.walletViewNavPath.append(.walletDetails(walletEntity))
+                break
+            }
+        }
+        AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+    }
+    
+    func showWalletsNumberLimitReachedPullUp() {
+        Task {
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
+            
+            let walletsLimit = appContext.udWalletsService.walletsNumberLimit
+            await appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                   maxNumberOfWallets: walletsLimit)
+        }
+    }
+}
+
+// MARK: - InitialAction
+extension SettingsView {
+    enum InitialAction {
+        case none
+        case importWallet, connectWallet, createNewWallet
+        case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
+    }
+}
+
 private extension SettingsView {
     enum MoreSectionItems: Identifiable {
         var id: String {
@@ -460,6 +727,6 @@ private extension SettingsView {
 
 #Preview {
     NavigationStack {
-        SettingsView()
+        SettingsView(initialAction: .none)
     }
 }

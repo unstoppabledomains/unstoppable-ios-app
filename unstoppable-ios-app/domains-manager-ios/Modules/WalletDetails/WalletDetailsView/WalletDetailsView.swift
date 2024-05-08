@@ -93,7 +93,6 @@ private extension WalletDetailsView {
                 UDVibration.buttonTap.vibrate()
                 externalBadgePressed()
             } label: {
-                
                 HStack(spacing: 8) {
                     Image.externalWalletIndicator
                         .resizable()
@@ -354,9 +353,21 @@ private extension WalletDetailsView {
     
     @ViewBuilder
     func listViewFor(domain: DomainDisplayInfo) -> some View {
-        WalletDetailsDomainItemView(domain: domain)
-            .udListItemInCollectionButtonPadding()
-            .listRowInsets(EdgeInsets(4))
+        WalletDetailsDomainItemView(domain: domain,
+                                    selectionCallback: {
+            didSelectDomain(domain)
+        })
+        .listRowInsets(EdgeInsets(0))
+    }
+    
+    func didSelectDomain(_ domain: DomainDisplayInfo) {
+        Task {
+            await tabRouter.showDomainProfile(domain,
+                                              wallet: wallet,
+                                              preRequestedAction: nil,
+                                              shouldResetNavigation: false,
+                                              dismissCallback: nil)
+        }
     }
 }
 

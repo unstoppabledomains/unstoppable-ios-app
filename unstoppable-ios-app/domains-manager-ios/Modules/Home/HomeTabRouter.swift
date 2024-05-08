@@ -242,11 +242,11 @@ extension HomeTabRouter {
         }
     }
     
-    func runAddWalletFlow(initialAction: WalletsListViewPresenter.InitialAction = .none) {
+    func runAddWalletFlow(initialAction: SettingsView.InitialAction = .none) {
         Task {
             await popToRootAndWait()
             tabViewSelection = .wallets
-            walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
+            walletViewNavPath.append(HomeWalletNavigationDestination.settings(initialAction))
         }
     }
     
