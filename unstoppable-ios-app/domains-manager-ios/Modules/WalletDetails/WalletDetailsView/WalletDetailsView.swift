@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WalletDetailsView: View {
+struct WalletDetailsView: View, ViewAnalyticsLogger {
     
     @Environment(\.walletsDataService) private var walletsDataService
     @Environment(\.dismiss) var dismiss
@@ -16,6 +16,9 @@ struct WalletDetailsView: View {
     @State var wallet: WalletEntity
     
     @State private var isRenaming = false
+    
+    var analyticsName: Analytics.ViewName { .walletDetails }
+    var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet : wallet.address] }
     
     var body: some View {
         List {
@@ -43,6 +46,7 @@ struct WalletDetailsView: View {
                 .listRowSeparator(.hidden)
         }.environment(\.defaultMinListRowHeight, 28)
         .listRowSpacing(0)
+        .clearListBackground()
         .background(Color.backgroundDefault)
         .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
             if let wallet = wallets.findWithAddress(wallet.address) {
@@ -66,12 +70,46 @@ private extension WalletDetailsView {
             headerIcon()
             VStack(spacing: 16) {
                 nameTextView()
-                copyAddressButton()
+                underNameView()
             }
         }
         .frame(maxWidth: .infinity)
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
+    }
+    
+    @ViewBuilder
+    func underNameView() -> some View {
+        HStack(spacing: 16) {
+            externalWalletBadgeView()
+            copyAddressButton()
+        }
+    }
+    
+    @ViewBuilder
+    func externalWalletBadgeView() -> some View {
+        if case .external = wallet.displayInfo.source {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                externalBadgePressed()
+            } label: {
+                
+                HStack(spacing: 8) {
+                    Image.externalWalletIndicator
+                        .resizable()
+                        .squareFrame(20)
+                    Text(String.Constants.external.localized())
+                        .font(.currentFont(size: 16, weight: .medium))
+                }
+                .foregroundStyle(Color.foregroundSecondary)
+                .frame(height: 20)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Color.backgroundSubtle)
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+        }
     }
     
     @ViewBuilder
@@ -97,6 +135,7 @@ private extension WalletDetailsView {
     func copyAddressButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .copyWalletAddress)
             copyAddressButtonPressed()
         } label: {
             HStack(spacing: 8) {
@@ -118,6 +157,14 @@ private extension WalletDetailsView {
         case .singleChain(let token):
             CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
         }
+    }
+    
+    func externalBadgePressed() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+
+        
+        logButtonPressedAnalyticEvents(button: .showConnectedWalletInfo)
+        appContext.pullUpViewService.showConnectedWalletInfoPullUp(in: view)
     }
 }
 
@@ -291,7 +338,6 @@ private extension WalletDetailsView {
         .listRowSeparator(.hidden)
         .sectionSpacing(16)
     }
-    
     
     @ViewBuilder
     func domainsSectionHeaderView() -> some View {

@@ -118,6 +118,7 @@ extension Image {
     static let iconStar24 = Image("iconStar24")
     static let shieldKeyhole = Image("shieldKeyhole")
     static let cloudIcon = Image("cloudIcon")
+    static let externalWalletIndicator = Image("externalWalletIndicator")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")
