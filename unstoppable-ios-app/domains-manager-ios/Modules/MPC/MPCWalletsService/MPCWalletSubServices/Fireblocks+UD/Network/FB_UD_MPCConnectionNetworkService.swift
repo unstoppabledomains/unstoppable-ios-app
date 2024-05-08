@@ -34,10 +34,19 @@ extension FB_UD_MPC {
                                  assetId: String,
                                  message: String,
                                  encoding: SignMessageEncoding) async throws -> OperationDetails
+        func startAssetTransfer(accessToken: String,
+                                accountId: String,
+                                assetId: String,
+                                destinationAddress: String,
+                                amount: Double) async throws -> OperationDetails
         func waitForOperationReadyAndGetTxId(accessToken: String,
                                              operationId: String) async throws -> OperationReadyResponse
         func waitForOperationSignedAndGetTxSignature(accessToken: String,
                                                      operationId: String) async throws -> String
+        func waitForOperationCompleted(accessToken: String,
+                                       operationId: String) async throws
+        func waitForTxCompletedAndGetHash(accessToken: String,
+                                          operationId: String) async throws -> String
         
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio]
     }

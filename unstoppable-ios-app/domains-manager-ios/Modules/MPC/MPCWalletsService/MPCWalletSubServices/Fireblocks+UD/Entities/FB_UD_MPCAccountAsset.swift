@@ -34,3 +34,10 @@ extension FB_UD_MPC {
         let next: String?
     }
 }
+
+extension Array where Element == FB_UD_MPC.WalletAccountAsset {
+    func findWith(symbol: String, chain: String) -> Element? {
+        // TODO: - Check for $0.blockchainAsset.blockchain.symbol when BE ready
+        first(where: { $0.blockchainAsset.symbol == symbol && $0.blockchainAsset.blockchain.id == chain })
+    }
+}

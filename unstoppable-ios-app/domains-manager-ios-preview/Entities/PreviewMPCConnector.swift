@@ -40,6 +40,18 @@ extension FB_UD_MPC {
     }
     
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+        func startAssetTransfer(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: Double) async throws -> FB_UD_MPC.OperationDetails {
+            .init(id: "1", status: "", type: "")
+        }
+        
+        func waitForOperationCompleted(accessToken: String, operationId: String) async throws {
+            
+        }
+        
+        func waitForTxCompletedAndGetHash(accessToken: String, operationId: String) async throws -> String {
+            ""
+        }
+        
       
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
             MockEntitiesFabric.Wallet.mockEntities()[0].balance

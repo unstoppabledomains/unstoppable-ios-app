@@ -1,5 +1,5 @@
 //
-//  CryptoSenderProtocol.swift
+//  ConcreteCryptoSenderProtocol.swift
 //  domains-manager-ios
 //
 //  Created by Roman Medvid on 20.03.2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol CryptoSenderProtocol {
+protocol ConcreteCryptoSenderProtocol {
     init(wallet: UDWallet)
     
     /// Indicates if Sender supports sending of a token on the chain

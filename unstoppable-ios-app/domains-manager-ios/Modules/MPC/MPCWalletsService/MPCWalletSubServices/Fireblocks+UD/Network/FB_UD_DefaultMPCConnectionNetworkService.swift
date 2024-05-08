@@ -228,9 +228,6 @@ extension FB_UD_MPC {
                 let message: String
                 let encoding: SignMessageEncoding
             }
-            struct Response: Codable {
-                let operation: OperationDetails
-            }
             
             let body = RequestBody(message: message, encoding: encoding)
             let headers = buildAuthBearerHeader(token: accessToken)
@@ -239,6 +236,34 @@ extension FB_UD_MPC {
                                          body: body,
                                          method: .post,
                                          headers: headers)
+            return try await runStartOperationUsing(request: request)
+        }
+        
+        func startAssetTransfer(accessToken: String,
+                                accountId: String,
+                                assetId: String,
+                                destinationAddress: String,
+                                amount: Double) async throws -> OperationDetails {
+            struct RequestBody: Codable {
+                let destinationAddress: String
+                let amount: String
+            }
+            
+            let body = RequestBody(destinationAddress: destinationAddress, amount: String(amount))
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.assetTransfersURL(accountId: accountId, assetId: assetId)
+            let request = try APIRequest(urlString: url,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            return try await runStartOperationUsing(request: request)
+        }
+        
+        private func runStartOperationUsing(request: APIRequest) async throws -> OperationDetails {
+            struct Response: Codable {
+                let operation: OperationDetails
+            }
+            
             let response: Response = try await makeDecodableAPIRequest(request)
             return response.operation
         }
@@ -272,15 +297,34 @@ extension FB_UD_MPC {
             return signature
         }
         
+        func waitForTxCompletedAndGetHash(accessToken: String,
+                                          operationId: String) async throws -> String {
+            let operation = try await waitForOperationStatuses(accessToken: accessToken,
+                                                               operationId: operationId,
+                                                               statuses: [.processing, .completed])
+            guard let signature = operation.transaction?.id else {
+                throw MPCNetworkServiceError.missingTxIdInTransactionOperation
+            }
+            return signature
+        }
+        
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
             try await networkService.fetchCryptoPortfolioForMPC(wallet: wallet, accessToken: accessToken)
         }
         
+        func waitForOperationCompleted(accessToken: String,
+                                       operationId: String) async throws {
+            try await waitForOperationStatuses(accessToken: accessToken,
+                                               operationId: operationId,
+                                               statuses: [.completed])
+        }
+        
+        @discardableResult
         private func waitForOperationStatuses(accessToken: String,
-                                            operationId: String,
-                                            statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
+                                              operationId: String,
+                                              statuses: Set<TransactionOperationStatus>) async throws -> OperationDetails {
             let statuses = statuses.map { $0.rawValue }
-            for i in 0..<50 {
+            for _ in 0..<120 {
                 let operation = try await getOperationWith(accessToken: accessToken,
                                                            operationId: operationId)
                 if statuses.contains(operation.status) {
@@ -347,6 +391,7 @@ extension FB_UD_MPC {
             case waitForKeyOperationStatusTimeout
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
+            case missingTxIdInTransactionOperation
             
             public var errorDescription: String? {
                 return rawValue

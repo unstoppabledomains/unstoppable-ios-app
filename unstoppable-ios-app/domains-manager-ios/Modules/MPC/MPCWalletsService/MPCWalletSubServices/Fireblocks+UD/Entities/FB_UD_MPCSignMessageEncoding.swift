@@ -23,6 +23,7 @@ extension FB_UD_MPC {
         
         struct Transaction: Codable {
             let externalVendorTransactionId: String?
+            let id: String?
         }
         
         struct Result: Codable {
