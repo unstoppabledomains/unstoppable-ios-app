@@ -61,8 +61,9 @@ private extension SettingsView {
             othersSection()
                 .padding(.top, 12)
             footerView()
-                .padding(.top, 20)
+                .padding(.vertical, 20)
         }
+        .scrollIndicators(.hidden)
         .padding(.horizontal, 16)
     }
     

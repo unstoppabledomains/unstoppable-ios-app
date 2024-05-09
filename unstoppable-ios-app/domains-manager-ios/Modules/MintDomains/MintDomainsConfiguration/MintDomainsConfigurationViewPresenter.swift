@@ -92,13 +92,12 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
     }
     
     func walletSelectorButtonPressed() {
-        Task {
-            guard let view = self.view else { return }
-                    
-            do {
-                self.selectedWallet = try await UDRouter().showWalletSelectionToMintDomainsScreen(selectedWallet: selectedWallet, in: view)
-                updateUIForSelectedWallet()
-            }
+        guard let view = self.view else { return }
+        
+        UDRouter().showWalletSelectionToMintDomainsScreen(in: view,
+                                                          selectedWallet: selectedWallet) { [weak self] wallet in
+            self?.selectedWallet = wallet
+            self?.updateUIForSelectedWallet()
         }
     }
     

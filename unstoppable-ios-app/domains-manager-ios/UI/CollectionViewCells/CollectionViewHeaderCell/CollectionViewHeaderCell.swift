@@ -76,9 +76,6 @@ private extension CollectionViewHeaderCell {
             let button = TextButton(frame: frame)
             button.isSuccess = isSuccess
             return button
-        case .warning:
-            let button = TextWarningButton(frame: frame)
-            return button
         }
     }
     
@@ -90,7 +87,6 @@ private extension CollectionViewHeaderCell {
 extension CollectionViewHeaderCell {
     enum ActionButtonType {
         case text(isSuccess: Bool)
-        case warning
     }
     
     struct ActionButtonConfiguration {

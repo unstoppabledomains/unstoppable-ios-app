@@ -132,7 +132,7 @@ extension HomeTabRouter {
                            wallet: WalletEntity,
                            preRequestedAction: PreRequestedProfileAction?,
                            shouldResetNavigation: Bool = true,
-                           dismissCallback: EmptyCallback?) async {
+                           sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection) async {
         if shouldResetNavigation {
             await popToRootAndWait()
             tabViewSelection = .wallets
@@ -167,7 +167,7 @@ extension HomeTabRouter {
             presentedDomain = .init(domain: domain,
                                     wallet: wallet,
                                     preRequestedProfileAction: preRequestedAction,
-                                    dismissCallback: dismissCallback)
+                                    sourceScreen: sourceScreen)
         case .parked:
             let action = await UDRouter().showDomainProfileParkedActionModule(in: topVC,
                                                                               domain: domain,
@@ -528,7 +528,7 @@ extension HomeTabRouter {
         let domain: DomainDisplayInfo
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
-        var dismissCallback: EmptyCallback? = nil
+        var sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection
     }
     
     struct UBTSearchPresentationDetails: Identifiable {

@@ -119,8 +119,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
             case .showDomainProfile(let domain, let wallet):
                 await router.showDomainProfile(domain,
                                                wallet: wallet,
-                                               preRequestedAction: nil,
-                                               dismissCallback: nil)
+                                               preRequestedAction: nil)
             case .primaryDomainMinted(let primaryDomain):
                 await router.primaryDomainMinted(primaryDomain)
             case .showHomeScreenList:
@@ -292,7 +291,7 @@ private extension CoreAppCoordinator {
             case .mintDomainsVerificationCode(let email, let code):
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
             case .showUserDomainProfile(let domain, let wallet, let action):
-                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action, dismissCallback: nil) }
+                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action) }
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
             }

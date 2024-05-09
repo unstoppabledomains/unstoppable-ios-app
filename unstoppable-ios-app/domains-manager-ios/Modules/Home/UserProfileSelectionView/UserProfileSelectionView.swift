@@ -43,6 +43,7 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
     
     enum Mode {
         case `default`, walletProfileSelection(selectedWallet: WalletEntity)
+        case walletSelection(selectedWallet: WalletEntity?, selectionCallback: (WalletEntity)->())
     }
     
 }
@@ -57,6 +58,11 @@ private extension UserProfileSelectionView {
             self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
         case .walletProfileSelection(let selectedWallet):
             self.selectedProfile = .wallet(selectedWallet)
+            self.profiles = profiles.filter({ $0.isWalletProfile && $0.id != selectedProfile?.id })
+        case .walletSelection(let selectedWallet, _):
+            if let selectedWallet {
+                self.selectedProfile = .wallet(selectedWallet)
+            }
             self.profiles = profiles.filter({ $0.isWalletProfile && $0.id != selectedProfile?.id })
         }
     }
@@ -101,10 +107,23 @@ private extension UserProfileSelectionView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             presentationMode.wrappedValue.dismiss()
-            userProfilesService.setActiveProfile(profile)
             logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
+            didSelectProfile(profile)
         })
         .padding(EdgeInsets(4))
+    }
+    
+    func didSelectProfile(_ profile: UserProfile) {
+        switch mode {
+        case .default, .walletProfileSelection:
+            userProfilesService.setActiveProfile(profile)
+        case .walletSelection(_, let callback):
+            guard case .wallet(let walletEntity) = profile else {
+                return
+            }
+            
+            callback(walletEntity)
+        }
     }
     
     @ViewBuilder

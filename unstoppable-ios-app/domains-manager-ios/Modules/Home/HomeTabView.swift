@@ -69,8 +69,8 @@ struct HomeTabView: View {
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
                                                wallet: presentationDetails.wallet,
                                                preRequestedAction: presentationDetails.preRequestedProfileAction,
-                                               sourceScreen: .domainsCollection,
-                                               dismissCallback: presentationDetails.dismissCallback)
+                                               sourceScreen: presentationDetails.sourceScreen,
+                                               tabRouter: router)
             .ignoresSafeArea()
             .pullUpHandler(router)
         })

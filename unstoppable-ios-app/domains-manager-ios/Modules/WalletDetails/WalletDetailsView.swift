@@ -14,6 +14,7 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
     @EnvironmentObject var tabRouter: HomeTabRouter
 
     @State var wallet: WalletEntity
+    let source: UDRouter.WalletDetailsSource
     
     @State private var isRenaming = false
     
@@ -354,6 +355,7 @@ private extension WalletDetailsView {
     @ViewBuilder
     func listViewFor(domain: DomainDisplayInfo) -> some View {
         WalletDetailsDomainItemView(domain: domain,
+                                    canSetRR: wallet.isReverseResolutionChangeAllowed(),
                                     selectionCallback: {
             didSelectDomain(domain)
         })
@@ -361,16 +363,22 @@ private extension WalletDetailsView {
     }
     
     func didSelectDomain(_ domain: DomainDisplayInfo) {
-        Task {
-            await tabRouter.showDomainProfile(domain,
-                                              wallet: wallet,
-                                              preRequestedAction: nil,
-                                              shouldResetNavigation: false,
-                                              dismissCallback: nil)
+        switch source {
+        case .settings:
+            Task {
+                await tabRouter.showDomainProfile(domain,
+                                                  wallet: wallet,
+                                                  preRequestedAction: nil,
+                                                  shouldResetNavigation: false,
+                                                  sourceScreen: .domainsList)
+            }
+        case .domainDetails(let domainChangeCallback):
+            domainChangeCallback(domain)
         }
     }
 }
 
 #Preview {
-    WalletDetailsView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0])
+    WalletDetailsView(wallet: MockEntitiesFabric.Wallet.mockEntities()[0],
+                      source: .settings)
 }
