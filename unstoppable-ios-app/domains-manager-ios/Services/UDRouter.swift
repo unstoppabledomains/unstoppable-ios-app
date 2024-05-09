@@ -13,7 +13,8 @@ class UDRouter: DomainProfileSignatureValidator {
     func showWalletDetailsOf(wallet: WalletEntity,
                              source: WalletDetailsSource,
                              in viewController: UINavigationController) {
-        let walletDetailsVC = UIHostingController(rootView: WalletDetailsView(wallet: wallet))
+        let walletDetailsVC = UIHostingController(rootView: WalletDetailsView(wallet: wallet,
+                                                                              source: source))
         viewController.pushViewController(walletDetailsVC, animated: true)
     }
     
@@ -784,9 +785,8 @@ private extension UDRouter {
 
 extension UDRouter {
     enum WalletDetailsSource {
-        case walletsList
-        case domainDetails
-        case domainsCollection
+        case settings
+        case domainDetails(domainChangeCallback: (DomainDisplayInfo)->())
     }
     
     enum UDRouterError: Error {

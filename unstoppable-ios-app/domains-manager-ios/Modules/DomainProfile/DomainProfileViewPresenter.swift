@@ -180,7 +180,10 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
                           let wallet = appContext.walletsDataService.wallets.findWithAddress(dataHolder.wallet.address) else { return }
                     
                     UDRouter().showWalletDetailsOf(wallet: wallet,
-                                                   source: .domainDetails,
+                                                   source: .domainDetails(domainChangeCallback: { [weak self] domain in
+                        navigation.popViewController(animated: true)
+                        self?.replace(domain: domain, wallet: wallet)
+                    }),
                                                    in: navigation)
                     
                 }

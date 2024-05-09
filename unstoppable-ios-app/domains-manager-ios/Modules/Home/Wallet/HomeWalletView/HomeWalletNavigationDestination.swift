@@ -95,7 +95,7 @@ struct HomeWalletLinkNavigationDestination {
                 .toolbar(.hidden, for: .navigationBar)
                 .ignoresSafeArea()
         case .walletDetails(let wallet):
-            WalletDetailsView(wallet: wallet)
+            WalletDetailsView(wallet: wallet, source: .settings)
         case .securitySettings:
             SecuritySettingsView()
         case .setupPasscode(let mode):

@@ -275,6 +275,7 @@ private extension DomainProfileViewController {
     }
     
     @objc func closeButtonPressed() {
+        UDVibration.buttonTap.vibrate()
         logButtonPressedAnalyticEvents(button: .close)
         dismiss(animated: true)
     }
