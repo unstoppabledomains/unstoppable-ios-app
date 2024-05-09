@@ -104,19 +104,19 @@ extension CopyMultichainWalletAddressesPullUpView {
         func rightViewStyle() -> UDListItemView.RightViewStyle {
             switch selectionType {
             case .copyOnly:
-                return .generic(.button(.init(icon: selectionType.icon,
-                                              callback: copyAction)))
+                return .generic(.init(type: .button(.init(icon: selectionType.icon,
+                                                          callback: copyAction))))
             case .shareOnly:
-                return .generic(.button(.init(icon: selectionType.icon,
-                                              callback: shareAction)))
+                return .generic(.init(type: .button(.init(icon: selectionType.icon,
+                                                          callback: shareAction))))
             case .allOptions(let qrCodeCallback):
-                return .generic(.menu(primary: .init(icon: .copyToClipboardIcon, callback: { }),
-                                      actions: [.init(title: String.Constants.copyWalletAddress.localized(), iconName: "doc.on.doc",
-                                                      callback: copyAction),
-                                                .init(title: String.Constants.shareAddress.localized(), iconName: "square.and.arrow.up",
-                                                      callback: shareAction),
-                                                .init(title: String.Constants.qrCode.localized(), iconName: "qrcode",
-                                                      callback: qrCodeCallback)]))
+                return .generic(.init(type: .menu(primary: .init(icon: .copyToClipboardIcon, callback: { }),
+                                                  actions: [.init(title: String.Constants.copyWalletAddress.localized(), iconName: "doc.on.doc",
+                                                                  callback: copyAction),
+                                                            .init(title: String.Constants.shareAddress.localized(), iconName: "square.and.arrow.up",
+                                                                  callback: shareAction),
+                                                            .init(title: String.Constants.qrCode.localized(), iconName: "qrcode",
+                                                                  callback: qrCodeCallback)])))
             }
         }
         

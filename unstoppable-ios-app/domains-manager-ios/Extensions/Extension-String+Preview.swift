@@ -1224,6 +1224,7 @@ extension String {
         static let parkedDomains = "PARKED_DOMAINS"
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
+        static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
     }
     
     enum BlockChainIcons: String {

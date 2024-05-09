@@ -16,6 +16,7 @@ struct UDListItemView: View {
     let title: String
     var titleColor: Color = .foregroundDefault
     var subtitle: String? = nil
+    var subtitleIcon: ImageType? = nil
     var subtitleStyle: SubtitleStyle = .default
     var value: String? = nil
     var imageType: ImageType
@@ -68,8 +69,9 @@ private extension UDListItemView {
     }
     
     @ViewBuilder
-    func imageForCurrentType(size: CGSize,
-                             tintColor: UIColor?) -> some View {
+    func imageForType(_ imageType: ImageType,
+                      size: CGSize,
+                      tintColor: UIColor?) -> some View {
         switch imageType {
         case .image(let image):
             image
@@ -85,6 +87,14 @@ private extension UDListItemView {
     }
     
     @ViewBuilder
+    func imageForCurrentType(size: CGSize,
+                             tintColor: UIColor?) -> some View {
+        imageForType(self.imageType,
+                     size: size,
+                     tintColor: tintColor)
+    }
+    
+    @ViewBuilder
     func titleView() -> some View {
         Text(title)
             .font(.currentFont(size: 16, weight: .medium))
@@ -96,8 +106,15 @@ private extension UDListItemView {
     func subtitleView() -> some View {
         switch subtitleStyle {
         case .default:
-            subtitleText()
-                .foregroundStyle(Color.foregroundSecondary)
+            HStack(spacing: 8) {
+                if let subtitleIcon {
+                    imageForType(subtitleIcon,
+                                 size: .square(size: 16),
+                                 tintColor: .foregroundSecondary)
+                }
+                subtitleText()
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
         case .accent:
             subtitleText(fontWeight: .medium)
                 .foregroundStyle(Color.foregroundAccent)
@@ -166,7 +183,7 @@ extension UDListItemView {
     enum RightViewStyle {
         case chevron, checkmark, checkmarkEmpty, errorCircle
         case toggle(isOn: Bool, callback: (Bool)->())
-        case generic(GenericActionType)
+        case generic(GenericActionDescription)
 
         var image: Image {
             switch self {
@@ -180,14 +197,14 @@ extension UDListItemView {
                 return .infoIcon
             case .toggle:
                 return .infoIcon
-            case .generic(let type):
-                return type.icon
+            case .generic(let desc):
+                return desc.type.icon
             }
         }
         
         var foregroundColor: Color {
             switch self {
-            case .chevron, .generic:
+            case .chevron:
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
@@ -197,6 +214,8 @@ extension UDListItemView {
                 return .foregroundDanger
             case .toggle:
                 return .foregroundDanger
+            case .generic(let desc):
+                return desc.tintColor
             }
         }
         
@@ -206,8 +225,8 @@ extension UDListItemView {
             case .toggle(let isOn, let callback):
                 ListToggleView(isOn: isOn,
                                callback: callback)
-            case .generic(let type):
-                createViewForGenericActionType(type)
+            case .generic(let desc):
+                createViewForGenericActionType(desc.type)
             default:
                 createIconView()
             }
@@ -240,6 +259,7 @@ extension UDListItemView {
                 } label: {
                     createIconView()
                 }
+                .buttonStyle(.plain)
                 .onButtonTap()
             }
         }
@@ -250,6 +270,11 @@ extension UDListItemView {
                 .resizable()
                 .squareFrame(20)
                 .foregroundStyle(foregroundColor)
+        }
+        
+        struct GenericActionDescription {
+            let type: GenericActionType
+            var tintColor: Color = .foregroundMuted
         }
         
         enum GenericActionType {
