@@ -49,5 +49,10 @@ extension FB_UD_MPC {
                                           operationId: String) async throws -> String
         
         func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio]
+        func getAssetTransferEstimations(accessToken: String,
+                                         accountId: String,
+                                         assetId: String,
+                                         destinationAddress: String,
+                                         amount: Double) async throws -> NetworkFeeResponse
     }
 }

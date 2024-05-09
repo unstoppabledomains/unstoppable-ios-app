@@ -1137,6 +1137,8 @@
 		C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
+		C67681282BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
+		C67681292BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
 		C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A62BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */; };
@@ -3579,6 +3581,7 @@
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCNetworkFee.swift; sourceTree = "<group>"; };
 		C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCRefreshBootstrapTokenResponse.swift; sourceTree = "<group>"; };
 		C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletAccountWithAssets.swift; sourceTree = "<group>"; };
 		C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCSignMessageEncoding.swift; sourceTree = "<group>"; };
@@ -6183,6 +6186,7 @@
 				C6952A332BC4FFC200F4B475 /* FB_UD_MPCAccount.swift */,
 				C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */,
 				C6952A362BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift */,
+				C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */,
 				C6952A392BC5053800F4B475 /* FB_UD_MPCBlockchain.swift */,
 				C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */,
 				C68A5AD12BDB7E95003702A2 /* FB_UD_MPCOperationReadyResponse.swift */,
@@ -9385,6 +9389,7 @@
 				C6DDF2612B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift in Sources */,
 				C669C3842912576D00837F21 /* UITextField.swift in Sources */,
 				C6534A8F2BBFBA10008EEBB5 /* HomeExploreFollowerRelationshipTypePickerView.swift in Sources */,
+				C67681282BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */,
 				C6B659242B68E49500CA6A68 /* HomeWalletTokenNotMatchingRowView.swift in Sources */,
 				C6124CCC29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				C69F99292A9F1264004B1958 /* View.swift in Sources */,
@@ -11562,6 +11567,7 @@
 				C6D646D92B1ED31100D724AC /* DomainProfileBadgeDisplayInfo.swift in Sources */,
 				C688C1A52B84946C00BD233A /* SelectableChatRowView.swift in Sources */,
 				C6A5CB1F2B75DC7000E41D12 /* PreviewWCRequests.swift in Sources */,
+				C67681292BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */,
 				C6C8F8482B217E9600A9834D /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6D6476F2B1EE06B00D724AC /* MintingDomainListCell.swift in Sources */,
 				C6F4332D2BB15066000C5E46 /* WalletBalancesStorage.swift in Sources */,

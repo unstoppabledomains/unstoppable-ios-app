@@ -133,9 +133,9 @@ extension CopyMultichainWalletAddressesPullUpView {
         }
         
         private func loadTokenIcon() {
-                token.loadTokenIcon { image in
-                    self.icon = image
-                }
+            token.loadTokenIcon { image in
+                self.icon = image
+            }
         }
     }
 }
