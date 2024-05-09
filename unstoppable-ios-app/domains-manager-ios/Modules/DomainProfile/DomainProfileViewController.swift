@@ -736,12 +736,14 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
     let wallet: WalletEntity
     let preRequestedAction: PreRequestedProfileAction?
     let sourceScreen: DomainProfileViewPresenter.SourceScreen
+    let tabRouter: HomeTabRouter
     
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = UDRouter().buildDomainProfileModule(domain: domain,
                                                      wallet: wallet,
                                                      preRequestedAction: preRequestedAction,
-                                                     sourceScreen: sourceScreen)
+                                                     sourceScreen: sourceScreen, 
+                                                     tabRouter: tabRouter)
         let nav = UINavigationController(rootViewController: vc)
         nav.isModalInPresentation = true
 
@@ -765,7 +767,8 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
                 .sheet(isPresented: $isPresenting) {
                    DomainProfileViewControllerWrapper(domain: domain,
                                                       wallet: wallet, preRequestedAction: nil,
-                                                       sourceScreen: .domainsCollection)
+                                                      sourceScreen: .domainsCollection,
+                                                      tabRouter: MockEntitiesFabric.Home.createHomeTabRouter())
                 }
                 .onAppear {
                     isPresenting = true

@@ -221,41 +221,20 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(nav, animated: true)
     }
     
-    func showSetupNewReverseResolutionModule(in nav: CNavigationController,
-                                             wallet: WalletEntity,
-                                             domains: [DomainDisplayInfo],
-                                             reverseResolutionDomain: DomainDisplayInfo,
-                                             resultCallback: @escaping DomainItemSelectedCallback) {
-        let vc = buildSetupReverseResolutionModule(wallet: wallet,
-                                                   domains: domains,
-                                                   reverseResolutionDomain: reverseResolutionDomain,
-                                                   resultCallback: resultCallback)
-        
-        nav.pushViewController(vc, animated: true)
-    }
-    
     func showSetupChangeReverseResolutionModule(in viewController: UIViewController,
                                                 wallet: WalletEntity,
-                                                domain: DomainDisplayInfo,
+                                                tabRouter: HomeTabRouter,
                                                 resultCallback: @escaping MainActorAsyncCallback) {
-        let vc = buildSetupChangeReverseResolutionModule(wallet: wallet,
-                                                         domain: domain,
-                                                         resultCallback: resultCallback)
+        let view = ReverseResolutionSelectionView(wallet: wallet,
+                                                  mode: .change,
+                                                  domainSetCallback: { domain in
+            resultCallback()
+        })
+            .environmentObject(tabRouter)
+        let vc = UIHostingController(rootView: view)
         
-        presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
-    func runSetupReverseResolutionFlow(in viewController: UIViewController,
-                                       for wallet: WalletEntity,
-                                       mode: SetupWalletsReverseResolutionNavigationManager.Mode) async -> SetupWalletsReverseResolutionNavigationManager.Result {
-        await withSafeCheckedMainActorContinuation { completion in
-            let vc = buildSetupReverseResolutionFlowModule(mode: mode,
-                                                           wallet: wallet) { result in
-                completion(result)
-            }
-            
-            viewController.present(vc, animated: true)
-        }
+        
+        viewController.present(vc, animated: true)
     }
     
     func showReverseResolutionInProgressScreen(in viewController: UIViewController,
@@ -272,13 +251,15 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildDomainProfileModule(domain: DomainDisplayInfo,
                                   wallet: WalletEntity,
                                   preRequestedAction: PreRequestedProfileAction?,
-                                  sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
+                                  sourceScreen: DomainProfileViewPresenter.SourceScreen,
+                                  tabRouter: HomeTabRouter) -> UIViewController {
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,
                                                    domain: domain,
                                                    wallet: wallet,
                                                    preRequestedAction: preRequestedAction,
                                                    sourceScreen: sourceScreen,
+                                                   tabRouter: tabRouter,
                                                    walletsDataService: appContext.walletsDataService,
                                                    domainRecordsService: appContext.domainRecordsService,
                                                    domainTransactionsService: appContext.domainTransactionsService,
@@ -623,43 +604,6 @@ private extension UDRouter {
                                                                         transactionsService: appContext.domainTransactionsService,
                                                                         notificationsService: appContext.notificationsService)
         vc.presenter = presenter
-        return vc
-    }
-    
-    func buildSetupReverseResolutionModule(wallet: WalletEntity,
-                                           domains: [DomainDisplayInfo],
-                                           reverseResolutionDomain: DomainDisplayInfo,
-                                           resultCallback: @escaping DomainItemSelectedCallback) -> UIViewController {
-        let vc = SetupReverseResolutionViewController.nibInstance()
-        let presenter = SetupNewReverseResolutionDomainPresenter(view: vc,
-                                                                 wallet: wallet,
-                                                                 domains: domains,
-                                                                 reverseResolutionDomain: reverseResolutionDomain,
-                                                                 udWalletsService: appContext.udWalletsService,
-                                                                 resultCallback: resultCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildSetupChangeReverseResolutionModule(wallet: WalletEntity,
-                                                 domain: DomainDisplayInfo,
-                                                 resultCallback: @escaping MainActorAsyncCallback) -> UIViewController {
-        let vc = SetupReverseResolutionViewController.nibInstance()
-        let presenter = SetupChangeReverseResolutionDomainPresenter(view: vc,
-                                                                    wallet: wallet,
-                                                                    domain: domain,
-                                                                    udWalletsService: appContext.udWalletsService,
-                                                                    resultCallback: resultCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildSetupReverseResolutionFlowModule(mode: SetupWalletsReverseResolutionNavigationManager.Mode,
-                                               wallet: WalletEntity,
-                                               resultCallback: @escaping SetupWalletsReverseResolutionNavigationManager.ReverseResolutionSetCallback) -> UIViewController {
-        let vc = SetupWalletsReverseResolutionNavigationManager(mode: mode,
-                                                                wallet: wallet)
-        vc.reverseResolutionSetCallback = resultCallback
         return vc
     }
     

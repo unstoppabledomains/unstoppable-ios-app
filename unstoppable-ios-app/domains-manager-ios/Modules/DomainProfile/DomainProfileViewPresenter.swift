@@ -46,6 +46,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     private let stateController: StateController = StateController()
     private let sourceScreen: SourceScreen
     private var dataHolder: DataHolder
+    private var tabRouter: HomeTabRouter
     private var sections = [any DomainProfileSection]()
     private var cancellables: Set<AnyCancellable> = []
 
@@ -61,6 +62,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
          wallet: WalletEntity,
          preRequestedAction: PreRequestedProfileAction?,
          sourceScreen: SourceScreen,
+         tabRouter: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol,
          domainRecordsService: DomainRecordsServiceProtocol,
          domainTransactionsService: DomainTransactionsServiceProtocol,
@@ -76,6 +78,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
         self.domainTransactionsService = domainTransactionsService
         self.coinRecordsService = coinRecordsService
         self.walletsDataService = walletsDataService
+        self.tabRouter = tabRouter
         super.init()
         walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
             self?.walletsUpdated(wallets)
@@ -639,11 +642,11 @@ private extension DomainProfileViewPresenter {
     
     @MainActor
     func showSetupReverseResolutionModule() {
-        guard let navigation = view?.cNavigationController else { return }
+        guard let view else { return }
         
-        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+        UDRouter().showSetupChangeReverseResolutionModule(in: view,
                                                           wallet: dataHolder.wallet,
-                                                          domain: dataHolder.domain,
+                                                          tabRouter: tabRouter,
                                                           resultCallback: { [weak self] in
             self?.didSetDomainForReverseResolution()
         })
@@ -1032,9 +1035,9 @@ private extension DomainProfileViewPresenter {
             let walletInfo = dataHolder.wallet.displayInfo
             let state = stateController.state
             
-            var isSetPrimaryActionAvailable: Bool { !domain.isPrimary && domain.isInteractable }
-            var isSetReverseResolutionActionAvailable: Bool { domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name }
-            var isSetReverseResolutionActionVisible: Bool { state == .default || state == .updatingRecords }
+            let isSetPrimaryActionAvailable: Bool = !domain.isPrimary && domain.isInteractable
+            let isSetReverseResolutionActionAvailable: Bool = domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name
+            let isSetReverseResolutionActionVisible: Bool = state == .default || state == .updatingRecords
             
             var topActionsGroup: DomainProfileActionsGroup = [.copyDomain]
             
