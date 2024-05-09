@@ -153,12 +153,17 @@ private extension ShareWalletAssetInfoView {
                          style: .circle(size: .small,
                                         style: .raisedTertiaryWhite),
                          callback: {
-            logButtonPressedAnalyticEvents(button: .copyToClipboard)
+            logButtonPressedAnalyticEvents(button: .copyDomain)
             UDVibration.buttonTap.vibrate()
-            UIPasteboard.general.string = domain.name
-            appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
+            copyDomainName(domain.name)
             showingHint.toggle()
         })
+    }
+    
+    @MainActor
+    func copyDomainName(_ domainName: String) {
+        UIPasteboard.general.string = domainName
+        appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
     }
     
     struct UseDomainNameTip: Tip {
@@ -261,7 +266,9 @@ private extension ShareWalletAssetInfoView {
                 tokensListSection(tokens: tokens,
                                   callback: callback)
             }
+            .padding(.bottom, 16)
         }
+        .scrollIndicators(.hidden)
     }
     
     @ViewBuilder
@@ -273,22 +280,36 @@ private extension ShareWalletAssetInfoView {
                     .squareFrame(80)
                     .clipShape(Circle())
                 VStack(spacing: 16) {
-                    HStack(spacing: 8) {
-                        Text(rrDomain.name)
-                            .textAttributes(color: .foregroundDefault,
-                                            fontSize: 32,
-                                            fontWeight: .bold)
-                            .lineLimit(1)
-                        Image.copyToClipboardIcon
-                            .resizable()
-                            .squareFrame(24)
-                            .foregroundStyle(Color.foregroundSecondary)
-                    }
+                    multiChainCopyDomainNameHeader(domainName: rrDomain.name)
                     Text(String.Constants.useDomainNameInsteadOfAddress.localized())
                         .textAttributes(color: .foregroundSecondary, fontSize: 16)
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func multiChainCopyDomainNameHeader(domainName: String) -> some View {
+        Button {
+            logButtonPressedAnalyticEvents(button: .copyDomain)
+            UDVibration.buttonTap.vibrate()
+            Task {
+                await copyDomainName(domainName)
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Text(domainName)
+                    .textAttributes(color: .foregroundDefault,
+                                    fontSize: 32,
+                                    fontWeight: .bold)
+                    .lineLimit(1)
+                Image.copyToClipboardIcon
+                    .resizable()
+                    .squareFrame(24)
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
+        }
+        .buttonStyle(.plain)
     }
     
     @ViewBuilder
