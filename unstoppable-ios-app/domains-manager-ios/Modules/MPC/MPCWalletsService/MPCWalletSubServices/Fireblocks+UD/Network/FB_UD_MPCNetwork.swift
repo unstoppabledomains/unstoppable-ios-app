@@ -46,6 +46,11 @@ extension FB_UD_MPC {
                 assetURL(accountId: accountId, assetId: assetId).appendingURLPathComponents("transfers")
             }
             
+            static var estimatesURL: String { v1URL.appendingURLPathComponents("estimates") }
+            static func assetTransfersEstimatesURL(accountId: String, assetId: String) -> String {
+                estimatesURL.appendingURLPathComponents("accounts", accountId, "assets", assetId, "transfers")
+            }
+            
             static var operationsURL: String { v1URL.appendingURLPathComponents("operations") }
             static func operationURL(operationId: String) -> String {
                 operationsURL.appendingURLPathComponents(operationId)
@@ -53,3 +58,4 @@ extension FB_UD_MPC {
         }
     }
 }
+

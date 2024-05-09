@@ -205,14 +205,19 @@ private extension ConfirmSendAssetReviewInfoView {
     }
     
     func getTransactionSpeedActions() -> [InfoActionDescription] {
-        SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
-            InfoActionDescription(title: txSpeed.title,
-                                  subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
-                                  iconName: txSpeed.iconName,
-                                  tintColor: tintColorFor(txSpeed: txSpeed),
-                                  analyticName: .selectTransactionSpeed,
-                                  analyticParameters: [.transactionSpeed: txSpeed.rawValue],
-                                  action: { didSelectTransactionSpeed(txSpeed) })
+        switch sourceWallet.udWallet.type {
+        case .mpc:
+            return  []
+        default:
+            return SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
+                InfoActionDescription(title: txSpeed.title,
+                                      subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
+                                      iconName: txSpeed.iconName,
+                                      tintColor: tintColorFor(txSpeed: txSpeed),
+                                      analyticName: .selectTransactionSpeed,
+                                      analyticParameters: [.transactionSpeed: txSpeed.rawValue],
+                                      action: { didSelectTransactionSpeed(txSpeed) })
+            }
         }
     }
     

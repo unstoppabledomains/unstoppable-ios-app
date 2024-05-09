@@ -29,15 +29,36 @@ extension FB_UD_MPC {
         }
    
         func createTokenUIDescription() -> BalanceTokenUIDescription {
-            let symbol = blockchainAsset.symbol
-            let chain = WalletAccountAsset.symbolFor(mpcID: blockchainAsset.blockchain.id)
-           
-            return BalanceTokenUIDescription(address: address,
-                                             chain: chain ?? symbol,
+            var symbol = blockchainAsset.symbol
+            var chain: String
+            var parentSymbol: String?
+            var name = blockchainAsset.name
+            
+            if let resolvedChain = WalletAccountAsset.symbolFor(mpcID: blockchainAsset.blockchain.id) {
+                if resolvedChain != symbol { // Token
+                    parentSymbol = symbol
+                    chain = symbol
+                    symbol = resolvedChain
+                    name = blockchainAsset.blockchain.name
+                } else { // Coin
+                    chain = resolvedChain
+                }
+            } else {
+                chain = symbol // Coin
+            }
+            
+            var token = BalanceTokenUIDescription(address: address,
+                                             chain: chain,
                                              symbol: symbol,
-                                             name: blockchainAsset.name,
+                                             name: name,
                                              balance: 0,
                                              balanceUsd: 0)
+            
+            if let parentSymbol {
+                token.parentSymbol = parentSymbol
+            }
+            
+            return token
         }
         
         private static let mpcSymbolToIDMap: [String : String] = ["ETH":"ETHEREUM",

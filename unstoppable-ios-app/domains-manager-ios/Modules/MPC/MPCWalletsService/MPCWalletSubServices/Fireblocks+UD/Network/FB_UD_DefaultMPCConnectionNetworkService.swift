@@ -348,6 +348,28 @@ extension FB_UD_MPC {
             return response
         }
         
+        
+        func getAssetTransferEstimations(accessToken: String,
+                                         accountId: String,
+                                         assetId: String,
+                                         destinationAddress: String,
+                                         amount: Double) async throws -> NetworkFeeResponse {
+            struct RequestBody: Codable {
+                let destinationAddress: String
+                let amount: String
+            }
+            
+            let body = RequestBody(destinationAddress: destinationAddress, amount: String(amount))
+            let headers = buildAuthBearerHeader(token: accessToken)
+            let url = MPCNetwork.URLSList.assetTransfersEstimatesURL(accountId: accountId, assetId: assetId)
+            let request = try APIRequest(urlString: url,
+                                         body: body,
+                                         method: .post,
+                                         headers: headers)
+            let response: NetworkFeeResponse = try await makeDecodableAPIRequest(request)
+            return response
+        }
+        
         // MARK: - Private methods
         private func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
             do {
