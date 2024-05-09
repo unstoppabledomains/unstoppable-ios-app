@@ -348,7 +348,7 @@ private extension CNavigationBarContentView {
     
     func calculateInlineSearchBarY() -> CGFloat {
         let searchBarY: CGFloat = Constants.inlineSearchBarY
-        return isSearchActive ? ((CNavigationBar.Constants.navigationBarHeight - UDSearchBar.searchContainerHeight) / 2) : (searchBarY - yOffset)
+        return (searchBarY - yOffset)
     }
     
     func addSearchControllerWith(searchBarConfiguration: SearchBarConfiguration) {
@@ -356,11 +356,6 @@ private extension CNavigationBarContentView {
         let searchBarView = searchBarConfiguration.searchBarViewBuilder()
         addSubview(searchBarView)
         self.searchBarConfiguration?.searchBarView = searchBarView
-        if case .inline = searchBarConfiguration.searchBarPlacement {
-            searchBarView.responderChangedCallback = { [weak self] isActive in
-                self?.setSearchActive(isActive, animated: true)
-            }
-        }
 
         switch searchBarConfiguration.searchBarPlacement {
         case .rightBarButton:
@@ -438,13 +433,13 @@ extension CNavigationBarContentView {
     struct SearchBarConfiguration {
         let id: UUID
         var searchBarPlacement: SearchBarPlacement = .rightBarButton
-        var searchBarViewBuilder: (()->(UDSearchBar))
+        var searchBarViewBuilder: (()->(UISearchBar))
         
-        var searchBarView: UDSearchBar?
+        var searchBarView: UISearchBar?
         
         internal init(id: UUID = .init(),
                       searchBarPlacement: CNavigationBarContentView.SearchBarPlacement = .rightBarButton,
-                      searchBarViewBuilder: @escaping (() -> (UDSearchBar))) {
+                      searchBarViewBuilder: @escaping (() -> (UISearchBar))) {
             self.id = id
             self.searchBarPlacement = searchBarPlacement
             self.searchBarViewBuilder = searchBarViewBuilder
