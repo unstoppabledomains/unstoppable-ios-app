@@ -30,6 +30,7 @@ extension FB_UD_MPC {
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
         private let actionsQueuer = ActionsQueuer()
+        private var didRefreshAuthToken = false
 
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
@@ -233,7 +234,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                                operationId: operationId)
             logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
             return txHash
-        case .signed(let signature):
+        case .signed:
             logMPC("It took \(Date().timeIntervalSince(start)) to send crypto")
             throw MPCConnectionServiceError.incorrectOperationState
         }
@@ -245,7 +246,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> Double {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
-        let deviceId = connectedWalletDetails.deviceId
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(symbol: symbol, chain: chain)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
@@ -435,13 +435,16 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         let deviceId = wallet.deviceId
         let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
         let accessToken = tokens.accessToken
-        if !accessToken.isExpired {
+        if !accessToken.isExpired,
+           didRefreshAuthToken {
             return accessToken.jwt
         }
         
         let refreshToken = tokens.refreshToken
         if !refreshToken.isExpired {
-            return try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
+            let token = try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
+            didRefreshAuthToken = true
+            return token
         }
         
         let bootstrapToken = tokens.bootstrapToken
