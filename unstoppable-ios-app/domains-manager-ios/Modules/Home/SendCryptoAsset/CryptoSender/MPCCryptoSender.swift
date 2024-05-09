@@ -10,7 +10,6 @@ import Foundation
 struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     
     let mpcMetadata: MPCWalletMetadata
-    let wallet: UDWallet // TODO: - Remove when MPC wallet capable of handling gas fee
     let mpcWalletsService = appContext.mpcWalletsService
     
     func canSendCrypto(chainDesc: CryptoSenderChainDescription) -> Bool {
@@ -45,7 +44,8 @@ struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     }
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
-        // TODO: - Remove when MPC wallet capable of handling gas fee
-        try await UDCryptoSender(wallet: wallet).fetchGasPrices(chainDesc: chainDesc)
+        .init(normal: .init(units: 0),
+              fast: .init(units: 0),
+              urgent: .init(units: 0))
     }
 }
