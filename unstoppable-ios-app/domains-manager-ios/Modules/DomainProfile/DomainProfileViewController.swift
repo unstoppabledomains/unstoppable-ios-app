@@ -17,7 +17,7 @@ protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol
 }
 
 @MainActor
-protocol DomainProfileSectionViewProtocol: BaseViewController & WalletConnectController {
+protocol DomainProfileSectionViewProtocol: BaseViewController {
     func scrollToItem(_ item: DomainProfileViewController.Item, atPosition position: UICollectionView.ScrollPosition, animated: Bool)
     func hideKeyboard()
 }
