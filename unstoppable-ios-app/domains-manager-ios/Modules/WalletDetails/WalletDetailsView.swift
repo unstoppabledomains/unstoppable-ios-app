@@ -355,6 +355,7 @@ private extension WalletDetailsView {
     @ViewBuilder
     func listViewFor(domain: DomainDisplayInfo) -> some View {
         WalletDetailsDomainItemView(domain: domain,
+                                    canSetRR: wallet.isReverseResolutionChangeAllowed(),
                                     selectionCallback: {
             didSelectDomain(domain)
         })
