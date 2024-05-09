@@ -10,54 +10,11 @@ import SwiftUI
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
-    func showWalletsList(in viewController: CNavigationController, initialAction: WalletsListViewPresenter.InitialAction) {
-        let walletsListVC = buildWalletsListModule(initialAction: initialAction)
-        viewController.pushViewController(walletsListVC, animated: true)
-    }
-    
-    func buildWalletsListModule(initialAction: WalletsListViewPresenter.InitialAction) -> UIViewController {
-        let vc = WalletsListViewController.nibInstance()
-        let presenter = WalletsListViewPresenter(view: vc,
-                                                 initialAction: initialAction,
-                                                 networkReachabilityService: appContext.networkReachabilityService,
-                                                 udWalletsService: appContext.udWalletsService)
-        vc.presenter = presenter
-        
-        return vc
-    }
-    
     func showWalletDetailsOf(wallet: WalletEntity,
                              source: WalletDetailsSource,
                              in viewController: CNavigationController) {
-        let walletDetailsVC = buildWalletDetailsModuleFor(wallet: wallet, walletRemovedCallback: { [weak viewController] in
-            switch source {
-            case .walletsList:
-                viewController?.popViewController(animated: true)
-            case .domainDetails, .domainsCollection:
-                viewController?.dismiss(animated: true)
-            }
-        })
-        
-        switch source {
-        case .walletsList, .domainDetails:
-            viewController.pushViewController(walletDetailsVC, animated: true)
-        case .domainsCollection:
-            walletDetailsVC.currentNavBackStyle = .cancel
-            presentInEmptyCRootNavigation(walletDetailsVC, in: viewController)
-        }
-    }
-    
-    func buildWalletDetailsModuleFor(wallet: WalletEntity, walletRemovedCallback: EmptyCallback?) -> WalletDetailsViewController {
-        let vc = WalletDetailsViewController.nibInstance()
-        let presenter = WalletDetailsViewPresenter(view: vc,
-                                                   wallet: wallet,
-                                                   networkReachabilityService: appContext.networkReachabilityService,
-                                                   udWalletsService: appContext.udWalletsService,
-                                                   walletConnectServiceV2: appContext.walletConnectServiceV2)
-        presenter.walletRemovedCallback = walletRemovedCallback
-        vc.presenter = presenter
-        
-        return vc
+        let walletDetailsVC = UIHostingController(rootView: WalletDetailsView(wallet: wallet))
+        viewController.pushViewController(walletDetailsVC, animated: true)
     }
     
     func showAddWalletScreenForAction(_ action: WalletDetailsAddWalletAction,
@@ -109,14 +66,6 @@ class UDRouter: DomainProfileSignatureValidator {
                             dismissCallback: EmptyCallback?) {
         let revealVC = buildRevealRecoveryPhraseModule(for: wallet, recoveryType: recoveryType)
         presentInEmptyCRootNavigation(revealVC, in: viewController, dismissCallback: dismissCallback)
-    }
-    
-    func showRenameWalletScreen(of wallet: UDWallet,
-                                walletDisplayInfo: WalletDisplayInfo,
-                                nameUpdatedCallback: @escaping RenameWalletViewPresenter.WalletNameUpdatedCallback,
-                                in viewController: UIViewController) {
-        let renameDetailsVC = buildRenameWalletModuleFor(wallet: wallet, walletDisplayInfo: walletDisplayInfo, nameUpdatedCallback: nameUpdatedCallback)
-        presentInEmptyCRootNavigation(renameDetailsVC, in: viewController)
     }
     
     func showBackupWalletScreen(for wallet: UDWallet,
@@ -204,12 +153,6 @@ class UDRouter: DomainProfileSignatureValidator {
         let vc = buildMintingDomainsInProgressModule(mintingDomainsWithDisplayInfo: mintingDomainsWithDisplayInfo,
                                                      mintingDomainSelectedCallback: mintingDomainSelectedCallback)
         
-        presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
-    func showWalletDomains(wallet: WalletEntity,
-                           in viewController: UIViewController) {
-        let vc = buildWalletDomainsListModule(wallet: wallet)
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
@@ -323,26 +266,6 @@ class UDRouter: DomainProfileSignatureValidator {
                                                         walletInfo: walletInfo)
         
         presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
-    @discardableResult
-    func showDomainProfileScreen(in viewController: UIViewController,
-                                 domain: DomainDisplayInfo,
-                                 wallet: WalletEntity,
-                                 preRequestedAction: PreRequestedProfileAction?,
-                                 dismissCallback: EmptyCallback?) async -> CNavigationController? {
-        guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: wallet.displayInfo) else { return nil }
-        let vc = buildDomainProfileModule(domain: domain,
-                                          wallet: wallet,
-                                          preRequestedAction: preRequestedAction,
-                                          sourceScreen: .domainsCollection)
-
-        let nav = presentInEmptyCRootNavigation(vc,
-                                                in: viewController,
-                                                dismissCallback: dismissCallback)
-        nav.isModalInPresentation = true
-        
-        return nav
     }
     
     func pushDomainProfileScreen(in nav: CNavigationController,
@@ -621,19 +544,6 @@ private extension UDRouter {
         return vc
     }
     
-    func buildRenameWalletModuleFor(wallet: UDWallet, walletDisplayInfo: WalletDisplayInfo, nameUpdatedCallback: @escaping RenameWalletViewPresenter.WalletNameUpdatedCallback) -> UIViewController {
-        
-        let vc = RenameWalletViewController.nibInstance()
-        let presenter = RenameWalletViewPresenter(view: vc,
-                                                  wallet: wallet,
-                                                  walletDisplayInfo: walletDisplayInfo,
-                                                  udWalletsService: appContext.udWalletsService,
-                                                  nameUpdatedCallback: nameUpdatedCallback)
-        vc.presenter = presenter
-        
-        return vc
-    }
-    
     func buildCreateBackupPasswordToBackupWalletModule(for wallet: UDWallet, walletBackedUpCallback: @escaping WalletBackedUpCallback) -> UIViewController {
         let vc = CreatePasswordViewController.nibInstance()
         let presenter = CreateBackupPasswordToBackupWalletPresenter(view: vc,
@@ -724,14 +634,6 @@ private extension UDRouter {
                                                                         mintingDomainSelectedCallback: mintingDomainSelectedCallback,
                                                                         transactionsService: appContext.domainTransactionsService,
                                                                         notificationsService: appContext.notificationsService)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildWalletDomainsListModule(wallet: WalletEntity) -> UIViewController {
-        let vc = DomainsListViewController.nibInstance()
-        let presenter = DomainsListPresenter(view: vc,
-                                             wallet: wallet)
         vc.presenter = presenter
         return vc
     }

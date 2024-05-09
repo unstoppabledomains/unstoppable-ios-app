@@ -37,6 +37,7 @@ private extension SecuritySettingsView {
                 actionsSection()
                 securitySettingsSection()
             }
+            .padding(.top, 32)
         }
         .padding(.horizontal, 16)
         .background(Color.backgroundDefault)

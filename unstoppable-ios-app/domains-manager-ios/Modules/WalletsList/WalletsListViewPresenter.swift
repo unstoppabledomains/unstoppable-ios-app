@@ -190,11 +190,6 @@ private extension WalletsListViewPresenter {
     }
     
     func showDetailsOf(wallet: WalletEntity) {
-        guard let nav = view?.cNavigationController else { return }
-        
-        UDRouter().showWalletDetailsOf(wallet: wallet,
-                                       source: .walletsList,
-                                       in: nav)
     }
     
     func didSelectAddWalletAction(_ action: WalletDetailsAddWalletAction) {

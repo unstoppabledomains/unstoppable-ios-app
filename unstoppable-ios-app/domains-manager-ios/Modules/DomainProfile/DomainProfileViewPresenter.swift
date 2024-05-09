@@ -84,10 +84,14 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     }
     
     func walletsUpdated(_ wallets: [WalletEntity]) {
-        if let wallet = wallets.findWithAddress(dataHolder.wallet.address),
-           wallet != dataHolder.wallet {
-            dataHolder.wallet = wallet
-            refreshDomainProfileDetails(animated: true)
+        if let wallet = wallets.findWithAddress(dataHolder.wallet.address) {
+            if wallet != dataHolder.wallet {
+                dataHolder.wallet = wallet
+                refreshDomainProfileDetails(animated: true)
+            }
+        } else {
+            view?.dismiss(animated: true)
+            return
         }
         
         let domains = wallets.combinedDomains()
