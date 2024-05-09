@@ -111,7 +111,7 @@ extension CopyMultichainWalletAddressesPullUpView {
                                                           callback: shareAction))))
             case .allOptions(let qrCodeCallback):
                 return .generic(.init(type: .menu(primary: .init(icon: .copyToClipboardIcon, callback: { }),
-                                                  actions: [.init(title: String.Constants.copyWalletAddress.localized(), iconName: "doc.on.doc",
+                                                  actions: [.init(title: String.Constants.copyWalletAddress.localized(), iconName: String.SystemImage.copy.name,
                                                                   callback: copyAction),
                                                             .init(title: String.Constants.shareAddress.localized(), iconName: "square.and.arrow.up",
                                                                   callback: shareAction),

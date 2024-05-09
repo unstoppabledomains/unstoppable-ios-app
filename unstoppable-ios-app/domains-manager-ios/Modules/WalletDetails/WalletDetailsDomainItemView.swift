@@ -69,14 +69,14 @@ private extension WalletDetailsDomainItemView {
     
     func getActions() -> [UDListItemView.RightViewStyle.GenericSubActionDetails] {
         var actions: [UDListItemView.RightViewStyle.GenericSubActionDetails] = [.init(title: String.Constants.copyDomain.localized(),
-                                                                                      iconName: "doc.on.doc",
+                                                                                      iconName: String.SystemImage.copy.name,
                                                                                       callback: copyDomainName)]
         
         if canSetRR,
            domain.isAbleToSetAsRR,
            !domain.isSetForRR {
             actions.append(.init(title: String.Constants.setAsPrimaryDomain.localized(),
-                                 iconName: "crown",
+                                 iconName: String.SystemImage.crown.name,
                                  callback: setAsRR))
         }
         

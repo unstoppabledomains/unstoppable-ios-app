@@ -1227,6 +1227,13 @@ extension String {
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
     }
     
+    enum SystemImage: String {
+        case copy = "doc.on.doc"
+        case crown
+        
+        var name: String { rawValue }
+    }
+    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"
