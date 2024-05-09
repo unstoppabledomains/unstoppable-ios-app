@@ -136,16 +136,12 @@ class UDRouter: DomainProfileSignatureValidator {
                               in: viewController)
     }
     
-    func showWalletSelectionToMintDomainsScreen(selectedWallet: WalletEntity?,
-                                                in viewController: UIViewController) async throws -> WalletEntity {
-        try await withSafeCheckedThrowingMainActorContinuation { completion in
-            let vc = buildSelectWalletToMintModule(selectedWallet: selectedWallet,
-                                                   walletSelectedCallback: { wallet in
-                completion(.success(wallet))
-            })
-            
-            presentInEmptyCRootNavigation(vc, in: viewController, dismissCallback: { completion(.failure(UDRouterError.dismissed)) })
-        }
+    func showWalletSelectionToMintDomainsScreen(in viewController: UIViewController,
+                                                selectedWallet: WalletEntity?,
+                                                selectionCallback: @escaping (WalletEntity)->()) {
+        showProfileSelectionScreen(mode: .walletSelection(selectedWallet: selectedWallet,
+                                                          selectionCallback: selectionCallback),
+                                   in: viewController)
     }
     
     func showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: [MintingDomainWithDisplayInfo],
@@ -182,7 +178,13 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func showProfileSelectionScreen(selectedWallet: WalletEntity,
                                     in viewController: UIViewController) {
-        let vc = UserProfileSelectionView.viewController(mode: .walletProfileSelection(selectedWallet: selectedWallet))
+        showProfileSelectionScreen(mode: .walletProfileSelection(selectedWallet: selectedWallet),
+                                   in: viewController)
+    }
+    
+    private func showProfileSelectionScreen(mode: UserProfileSelectionView.Mode,
+                                            in viewController: UIViewController) {
+        let vc = UserProfileSelectionView.viewController(mode: mode)
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
         }
@@ -584,18 +586,7 @@ private extension UDRouter {
         vc.presenter = presenter
         return vc
     }
-    
-    func buildSelectWalletToMintModule(selectedWallet: WalletEntity?, walletSelectedCallback: @escaping WalletSelectedCallback) -> UIViewController {
-        let vc = WalletsListViewController.nibInstance()
-        let presenter = WalletListSelectionToMintDomainsPresenter(view: vc,
-                                                                  udWalletsService: appContext.udWalletsService,
-                                                                  selectedWallet: selectedWallet,
-                                                                  networkReachabilityService: appContext.networkReachabilityService,
-                                                                  walletSelectedCallback: walletSelectedCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
+   
     func buildMintingDomainsInProgressModule(mintingDomainsWithDisplayInfo: [MintingDomainWithDisplayInfo],
                                              mintingDomainSelectedCallback: MintingDomainSelectedCallback?) -> UIViewController {
         let vc = TransactionInProgressViewController.nibInstance()
