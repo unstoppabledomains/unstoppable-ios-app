@@ -86,6 +86,20 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
 
         return try subService.getTokens(for: walletMetadata)
     }
+    
+    func fetchGasFeeFor(_ amount: Double,
+                        symbol: String,
+                        chain: String,
+                        destinationAddress: String,
+                        by walletMetadata: MPCWalletMetadata) async throws -> Double {
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try await subService.fetchGasFeeFor(amount,
+                                                   symbol: symbol,
+                                                   chain: chain,
+                                                   destinationAddress: destinationAddress,
+                                                   by: walletMetadata)
+    }
 }
 
 // MARK: - Private methods

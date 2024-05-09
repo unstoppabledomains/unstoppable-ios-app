@@ -14,7 +14,7 @@ struct CryptoSender: UniversalCryptoSenderProtocol {
         switch wallet.type {
         case .mpc:
             let mpcMetadata = try wallet.extractMPCMetadata()
-            sender = MPCCryptoSender(mpcMetadata: mpcMetadata, wallet: wallet)
+            sender = MPCCryptoSender(mpcMetadata: mpcMetadata)
         default:
             sender = UDCryptoSender(wallet: wallet)
         }

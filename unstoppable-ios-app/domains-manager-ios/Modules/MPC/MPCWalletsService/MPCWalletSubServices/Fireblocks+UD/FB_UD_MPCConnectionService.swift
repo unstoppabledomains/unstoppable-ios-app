@@ -239,6 +239,32 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
+    func fetchGasFeeFor(_ amount: Double,
+                        symbol: String,
+                        chain: String,
+                        destinationAddress: String,
+                        by walletMetadata: MPCWalletMetadata) async throws -> Double {
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let deviceId = connectedWalletDetails.deviceId
+        let account = connectedWalletDetails.firstAccount
+        let asset = try account.getAssetWith(symbol: symbol, chain: chain)
+        let token = try await getAuthTokens(wallet: connectedWalletDetails)
+        let estimations = try await networkService.getAssetTransferEstimations(accessToken: token,
+                                                                               accountId: account.id,
+                                                                               assetId: asset.id,
+                                                                               destinationAddress: destinationAddress,
+                                                                               amount: amount)
+        guard let networkFee = estimations.networkFee else {
+            throw MPCConnectionServiceError.missingNetworkFee
+        }
+        
+        guard let amount = Double(networkFee.amount) else {
+            throw MPCConnectionServiceError.invalidNetworkFeeAmountFormat
+        }
+        
+        return amount
+    }
+    
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         let connectedWalletDetails = try await refreshWalletAccountDetailsForWalletWith(walletMetadata: walletMetadata)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
@@ -394,6 +420,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case noAccountsForWallet
         case invalidWalletMetadata
         case incorrectOperationState
+        case missingNetworkFee
+        case invalidNetworkFeeAmountFormat
         
         public var errorDescription: String? {
             return rawValue
