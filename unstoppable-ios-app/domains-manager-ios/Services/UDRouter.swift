@@ -12,7 +12,7 @@ import SwiftUI
 class UDRouter: DomainProfileSignatureValidator {
     func showWalletDetailsOf(wallet: WalletEntity,
                              source: WalletDetailsSource,
-                             in viewController: CNavigationController) {
+                             in viewController: UINavigationController) {
         let walletDetailsVC = UIHostingController(rootView: WalletDetailsView(wallet: wallet))
         viewController.pushViewController(walletDetailsVC, animated: true)
     }
@@ -266,19 +266,6 @@ class UDRouter: DomainProfileSignatureValidator {
                                                         walletInfo: walletInfo)
         
         presentInEmptyCRootNavigation(vc, in: viewController)
-    }
-    
-    func pushDomainProfileScreen(in nav: CNavigationController,
-                                 domain: DomainDisplayInfo,
-                                 wallet: WalletEntity,
-                                 preRequestedAction: PreRequestedProfileAction?) async {
-        guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: wallet.displayInfo) else { return }
-
-        let vc = buildDomainProfileModule(domain: domain,
-                                          wallet: wallet,
-                                          preRequestedAction: preRequestedAction,
-                                          sourceScreen: .domainsList)
-        nav.pushViewController(vc, animated: true)
     }
     
     func buildDomainProfileModule(domain: DomainDisplayInfo,

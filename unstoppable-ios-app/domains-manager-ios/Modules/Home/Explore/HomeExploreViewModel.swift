@@ -90,8 +90,7 @@ extension HomeExploreViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: nil,
-                                           shouldResetNavigation: false,
-                                           dismissCallback: nil)
+                                           shouldResetNavigation: false)
         }
     }
     

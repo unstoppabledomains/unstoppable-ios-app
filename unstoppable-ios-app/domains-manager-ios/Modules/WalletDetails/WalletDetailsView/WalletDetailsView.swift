@@ -366,7 +366,7 @@ private extension WalletDetailsView {
                                               wallet: wallet,
                                               preRequestedAction: nil,
                                               shouldResetNavigation: false,
-                                              dismissCallback: nil)
+                                              sourceScreen: .domainsList)
         }
     }
 }

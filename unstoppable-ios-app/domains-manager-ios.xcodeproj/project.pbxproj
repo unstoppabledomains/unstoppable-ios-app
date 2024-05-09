@@ -1123,6 +1123,10 @@
 		C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
+		C676812E2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */; };
+		C676812F2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */; };
+		C67681312BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */; };
+		C67681322BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */; };
 		C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A62BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */; };
@@ -3523,6 +3527,8 @@
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItemAppearance.swift; sourceTree = "<group>"; };
+		C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarAppearance.swift; sourceTree = "<group>"; };
 		C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCRefreshBootstrapTokenResponse.swift; sourceTree = "<group>"; };
 		C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletAccountWithAssets.swift; sourceTree = "<group>"; };
 		C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCSignMessageEncoding.swift; sourceTree = "<group>"; };
@@ -5391,6 +5397,8 @@
 				C6010D1E287FC99400FBD401 /* Task.swift */,
 				C6C1EC5E2A3AD483005EB37D /* UIAction.swift */,
 				C628E36727FDDB230044E408 /* UIButton.swift */,
+				C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */,
+				C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */,
 				C6456F29280030AB00A517D5 /* UICollectionView.swift */,
 				C6456F242800308200A517D5 /* UICollectionViewCell.swift */,
 				C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */,
@@ -9043,6 +9051,7 @@
 				C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */,
 				C6D647852B1EE26400D724AC /* ExternalEventUIFlow.swift in Sources */,
 				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
+				C676812E2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
@@ -10038,6 +10047,7 @@
 				C63F1D0D28AF31D5000A5C12 /* AnalyticsServiceProtocol.swift in Sources */,
 				C6B65F6F2B550ED5006D1812 /* NFTsAPIRequestBuilder.swift in Sources */,
 				C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
+				C67681312BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */,
 				C655CAA92B16E82800FDA063 /* PurchaseDomainsEnterZIPCodeView.swift in Sources */,
 				C6D6E59928194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
 				C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */,
@@ -10415,6 +10425,7 @@
 				C6D6477F2B1EE1DF00D724AC /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6D645AB2B1DBB3F00D724AC /* BaseListCollectionViewCell.swift in Sources */,
 				C67097AD2BABD47E00BB8AB1 /* DebounceObject.swift in Sources */,
+				C67681322BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */,
 				C6D6462C2B1DC2BC00D724AC /* ResizableRoundedImageView.swift in Sources */,
 				C630E4B72B7F58BC008F3269 /* MessageInputView.swift in Sources */,
 				C6BF801E2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift in Sources */,
@@ -10991,6 +11002,7 @@
 				C6D6476C2B1EDFAA00D724AC /* WalletConnectClientUIHandler.swift in Sources */,
 				C6B65F7A2B550FC2006D1812 /* WalletNFTsServiceProtocol.swift in Sources */,
 				C688C1A72B84A31100BD233A /* ChatsList.swift in Sources */,
+				C676812F2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */,
 				C6D645BD2B1DBCF000D724AC /* DashesView.swift in Sources */,
 				C6D645FE2B1DBFBA00D724AC /* DomainsPurchasedDetails.swift in Sources */,
 				C621A4462BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,

@@ -176,7 +176,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
             switch sourceScreen {
             case .domainsCollection:
                 await MainActor.run {
-                    guard let navigation = view?.cNavigationController,
+                    guard let navigation = view?.navigationController,
                           let wallet = appContext.walletsDataService.wallets.findWithAddress(dataHolder.wallet.address) else { return }
                     
                     UDRouter().showWalletDetailsOf(wallet: wallet,
@@ -986,6 +986,7 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func closeProfileScreen() async {
         await view?.cNavigationController?.presentingViewController?.dismiss(animated: true)
+        await view?.navigationController?.presentingViewController?.dismiss(animated: true)
     }
     
     @MainActor
