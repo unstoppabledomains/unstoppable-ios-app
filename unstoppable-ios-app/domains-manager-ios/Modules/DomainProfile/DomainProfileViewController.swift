@@ -766,7 +766,8 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
             ProgressView()
                 .sheet(isPresented: $isPresenting) {
                    DomainProfileViewControllerWrapper(domain: domain,
-                                                      wallet: wallet, preRequestedAction: nil,
+                                                      wallet: wallet,
+                                                      preRequestedAction: nil,
                                                       sourceScreen: .domainsCollection,
                                                       tabRouter: MockEntitiesFabric.Home.createHomeTabRouter())
                 }

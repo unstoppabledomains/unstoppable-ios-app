@@ -223,10 +223,11 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func showSetupChangeReverseResolutionModule(in viewController: UIViewController,
                                                 wallet: WalletEntity,
+                                                domain: DomainDisplayInfo,
                                                 tabRouter: HomeTabRouter,
                                                 resultCallback: @escaping MainActorAsyncCallback) {
         let view = ReverseResolutionSelectionView(wallet: wallet,
-                                                  mode: .change,
+                                                  mode: .certain(domain),
                                                   domainSetCallback: { domain in
             resultCallback()
         })

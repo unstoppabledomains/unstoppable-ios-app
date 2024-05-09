@@ -646,6 +646,7 @@ private extension DomainProfileViewPresenter {
         
         UDRouter().showSetupChangeReverseResolutionModule(in: view,
                                                           wallet: dataHolder.wallet,
+                                                          domain: dataHolder.domain,
                                                           tabRouter: tabRouter,
                                                           resultCallback: { [weak self] in
             self?.didSetDomainForReverseResolution()
