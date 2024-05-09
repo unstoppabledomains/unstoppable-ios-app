@@ -1110,7 +1110,7 @@ More tabs are coming in the next updates.";
 "MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION" = "MPC Wallet has addresses across multiple blockchains.";
 "CHOOSE_ADDRESS_TO_SHARE" = "Choose address to share";
 "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS" = "Use your domain name instead of long wallet address in the supported apps";
-"COPY_OR_SHARE_WALLET_ADDRESS" = "Copy or share wallet addresses to request crypto or collectibles";
+"COPY_OR_SHARE_WALLET_ADDRESS" = "Copy or share wallet addresses to request crypto or Unstoppable domains";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

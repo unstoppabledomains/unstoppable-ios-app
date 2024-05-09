@@ -10,7 +10,6 @@ import Foundation
 struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     
     let mpcMetadata: MPCWalletMetadata
-    let wallet: UDWallet // TODO: - Remove when MPC wallet capable of handling gas fee
     let mpcWalletsService = appContext.mpcWalletsService
     
     func canSendCrypto(chainDesc: CryptoSenderChainDescription) -> Bool {
@@ -27,21 +26,26 @@ struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     }
     
     func sendCrypto(dataToSend: CryptoSenderDataToSend) async throws -> String {
-        let toAddress = dataToSend.toAddress
-        return try await mpcWalletsService.transferAssets(dataToSend.amount,
-                                                          symbol: dataToSend.chainDesc.symbol,
-                                                          chain: dataToSend.chainDesc.chain,
-                                                          destinationAddress: toAddress,
-                                                          by: mpcMetadata)
+        try await mpcWalletsService.transferAssets(dataToSend.amount,
+                                                   symbol: dataToSend.chainDesc.symbol,
+                                                   chain: dataToSend.chainDesc.chain,
+                                                   destinationAddress: dataToSend.toAddress,
+                                                   by: mpcMetadata)
     }
     
     func computeGasFeeFor(dataToSend: CryptoSenderDataToSend) async throws -> EVMCoinAmount {
-        // TODO: - Remove when MPC wallet capable of handling gas fee
-        try await UDCryptoSender(wallet: wallet).computeGasFeeFor(dataToSend: dataToSend)
+        let amount = try await mpcWalletsService.fetchGasFeeFor(dataToSend.amount,
+                                                                symbol: dataToSend.chainDesc.symbol,
+                                                                chain: dataToSend.chainDesc.chain,
+                                                                destinationAddress: dataToSend.toAddress,
+                                                                by: mpcMetadata)
+        
+        return EVMCoinAmount(units: amount)
     }
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
-        // TODO: - Remove when MPC wallet capable of handling gas fee
-        try await UDCryptoSender(wallet: wallet).fetchGasPrices(chainDesc: chainDesc)
+        .init(normal: .init(units: 0),
+              fast: .init(units: 0),
+              urgent: .init(units: 0))
     }
 }
