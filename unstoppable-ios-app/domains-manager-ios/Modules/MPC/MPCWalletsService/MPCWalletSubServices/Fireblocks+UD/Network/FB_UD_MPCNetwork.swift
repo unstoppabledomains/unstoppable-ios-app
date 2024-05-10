@@ -11,7 +11,7 @@ extension FB_UD_MPC {
     enum MPCNetwork {
         enum URLSList {
             static var baseURL: String {
-                "https://api.ud-staging.com" // NetworkConfig.migratedBaseUrl
+                NetworkConfig.migratedBaseUrl
             }
             
             static var v1URL: String { baseURL.appendingURLPathComponents("wallet", "v1") }
