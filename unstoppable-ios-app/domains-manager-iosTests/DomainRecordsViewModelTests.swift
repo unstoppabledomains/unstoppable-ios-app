@@ -332,6 +332,15 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
     }
     
+    func testSignHashSimpleWithArray() {
+        let cow = "cow".data(using: .utf8)!
+        let privateKeyData = Crypto.hash(cow)
+
+        let dataSignHash = simpleTypedDataWithArray.signHash
+        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHash, with: privateKeyData)
+        XCTAssertEqual(signed!.hexString.dropLast(2), "b7f0ddd5f022171055057420aa2b379ff21eb3c10cd800eb26e24c9226f5a0087905c757b1d0a510998a5fdf91162b3e5b30414def6f7d32f6964cfab6f682bf1b".dropLast(2)) // benchmark signature from Rainbow
+    }
+    
     func testConvertHashMessageIntoString() {
         let message = "0x070678b2c6913be3e6a50a10aabfd5ec2513fa6dff0219c2f53d0222d35478fa"
         let data = Data(message.droppedHexPrefix.hexToBytes())
