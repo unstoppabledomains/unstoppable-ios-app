@@ -13,6 +13,7 @@ class SignatureTests: XCTestCase {
     static let timeout: TimeInterval = 3000
 
     var simpleTypedData: EIP712TypedData!
+    var simpleTypedDataWithArray: EIP712TypedData!
     var typedDataOpenSea: EIP712TypedData!
 
     override func setUp() {
@@ -59,6 +60,55 @@ class SignatureTests: XCTestCase {
         let data = stringSimple.data(using: .utf8)!
         simpleTypedData = try? JSONDecoder().decode(EIP712TypedData.self, from: data)
         XCTAssertNotNil(simpleTypedData)
+        
+        /////
+        ///
+        let stringSimpleWithArray = """
+{
+    "types": {
+        "EIP712Domain": [
+            {"name": "name", "type": "string"},
+            {"name": "version", "type": "string"},
+            {"name": "chainId", "type": "uint256"},
+            {"name": "verifyingContract", "type": "address"}
+        ],
+        "Contents": [
+            {"name": "title", "body": "string"},
+        ],
+        "Person": [
+            {"name": "name", "type": "string"},
+            {"name": "wallet", "type": "address"}
+        ],
+        "Mail": [
+            {"name": "from", "type": "Person"},
+            {"name": "to", "type": "Person"},
+            {"name": "contents", "type": "Contents[]"}
+        ]
+    },
+    "primaryType": "Mail",
+    "domain": {
+        "name": "Ether Mail",
+        "version": "1",
+        "chainId": 1,
+        "verifyingContract": "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
+    },
+    "message": {
+        "from": {
+            "name": "Cow",
+            "wallet": "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826"
+        },
+        "to": {
+            "name": "Bob",
+            "wallet": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB"
+        },
+        "contents": [{"title": "Hello", "body": "How are you"]
+    }
+}
+"""
+        let dataSimpleWithArray = stringSimpleWithArray.data(using: .utf8)!
+        simpleTypedDataWithArray = try? JSONDecoder().decode(EIP712TypedData.self, from: dataSimpleWithArray)
+        XCTAssertNotNil(simpleTypedDataWithArray)
+        ///
         
         let stringOpenSea = """
 {
