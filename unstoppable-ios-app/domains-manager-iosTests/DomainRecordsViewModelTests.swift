@@ -72,17 +72,18 @@ class SignatureTests: XCTestCase {
             {"name": "chainId", "type": "uint256"},
             {"name": "verifyingContract", "type": "address"}
         ],
-        "Contents": [
-            {"name": "title", "body": "string"},
+        "Mail": [
+            {"name": "from", "type": "Person"},
+            {"name": "to", "type": "Person"},
+            {"name": "contents", "type": "Contents[]"}
         ],
         "Person": [
             {"name": "name", "type": "string"},
             {"name": "wallet", "type": "address"}
         ],
-        "Mail": [
-            {"name": "from", "type": "Person"},
-            {"name": "to", "type": "Person"},
-            {"name": "contents", "type": "Contents[]"}
+        "Contents": [
+            {"name": "title", "type": "string"},
+            {"name": "body", "type": "string"}
         ]
     },
     "primaryType": "Mail",
@@ -101,12 +102,18 @@ class SignatureTests: XCTestCase {
             "name": "Bob",
             "wallet": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB"
         },
-        "contents": [{"title": "Hello", "body": "How are you"]
+        "contents": [
+                {"title": "Hello", "body": "How are you"}
+                    ]
     }
 }
 """
         let dataSimpleWithArray = stringSimpleWithArray.data(using: .utf8)!
-        simpleTypedDataWithArray = try? JSONDecoder().decode(EIP712TypedData.self, from: dataSimpleWithArray)
+        do {
+            simpleTypedDataWithArray = try JSONDecoder().decode(EIP712TypedData.self, from: dataSimpleWithArray)
+        } catch {
+            print (error)
+        }
         XCTAssertNotNil(simpleTypedDataWithArray)
         ///
         
