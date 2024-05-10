@@ -212,13 +212,24 @@ extension UIViewController {
         let titleItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: true)
         let linkItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: false)
         let activityItems: [Any] = [titleItem, linkItem] + additionalItems
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityViewController.completionWithItemsHandler = { _, completed, _, _ in
+        
+        shareItems(activityItems) { completed in
             if completed {
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
             }
         }
-        present(activityViewController, animated: true)
+    }
+    
+    func shareItems(_ items: [Any], completion: ((Bool)->())?) {
+        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        activityVC.completionWithItemsHandler = { _, completed, _, _ in
+            completion?(completed)
+        }
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            activityVC.popoverPresentationController?.sourceView = view
+        }
+        
+        present(activityVC, animated: true, completion: nil)
     }
 }
  
