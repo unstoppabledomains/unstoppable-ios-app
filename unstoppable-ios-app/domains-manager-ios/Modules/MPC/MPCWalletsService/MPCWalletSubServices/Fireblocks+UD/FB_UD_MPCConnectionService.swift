@@ -30,7 +30,6 @@ extension FB_UD_MPC {
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
         private let actionsQueuer = ActionsQueuer()
-        private var didRefreshAuthToken = false
 
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
@@ -439,15 +438,13 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         let deviceId = wallet.deviceId
         let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
         let accessToken = tokens.accessToken
-        if !accessToken.isExpired,
-           didRefreshAuthToken {
+        if !accessToken.isExpired {
             return accessToken.jwt
         }
         
         let refreshToken = tokens.refreshToken
         if !refreshToken.isExpired {
             let token = try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
-            didRefreshAuthToken = true
             return token
         }
         
