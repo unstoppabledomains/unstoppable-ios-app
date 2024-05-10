@@ -116,7 +116,7 @@ extension HomeWalletView {
         
         private func showProfile(of domain: DomainDisplayInfo) {
             Task {
-                await router.showDomainProfile(domain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
+                await router.showDomainProfile(domain, wallet: selectedWallet, preRequestedAction: nil)
             }
         }
         

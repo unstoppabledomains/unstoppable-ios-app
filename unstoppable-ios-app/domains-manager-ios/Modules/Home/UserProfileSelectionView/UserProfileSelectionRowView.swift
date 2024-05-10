@@ -48,7 +48,7 @@ private extension UserProfileSelectionRowView {
     }
     
     func isWalletAbleToSetRR(_ wallet: WalletEntity) -> Bool {
-        wallet.displayInfo.udDomainsCount > 0
+        wallet.isAbleToSetRR
     }
     
     func titleForProfile(_ profile: UserProfile) -> String {

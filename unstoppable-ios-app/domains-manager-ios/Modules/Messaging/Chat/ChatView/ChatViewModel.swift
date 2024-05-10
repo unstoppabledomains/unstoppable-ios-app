@@ -982,8 +982,7 @@ private extension ChatViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: action,
-                                           shouldResetNavigation: false,
-                                           dismissCallback: nil)
+                                           shouldResetNavigation: false)
         case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
             router.showPublicDomainProfile(of: publicDomainDisplayInfo,
                                            by: wallet,

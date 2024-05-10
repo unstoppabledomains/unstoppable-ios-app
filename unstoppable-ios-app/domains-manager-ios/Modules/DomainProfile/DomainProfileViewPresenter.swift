@@ -46,6 +46,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     private let stateController: StateController = StateController()
     private let sourceScreen: SourceScreen
     private var dataHolder: DataHolder
+    private var tabRouter: HomeTabRouter
     private var sections = [any DomainProfileSection]()
     private var cancellables: Set<AnyCancellable> = []
 
@@ -61,6 +62,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
          wallet: WalletEntity,
          preRequestedAction: PreRequestedProfileAction?,
          sourceScreen: SourceScreen,
+         tabRouter: HomeTabRouter,
          walletsDataService: WalletsDataServiceProtocol,
          domainRecordsService: DomainRecordsServiceProtocol,
          domainTransactionsService: DomainTransactionsServiceProtocol,
@@ -76,6 +78,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
         self.domainTransactionsService = domainTransactionsService
         self.coinRecordsService = coinRecordsService
         self.walletsDataService = walletsDataService
+        self.tabRouter = tabRouter
         super.init()
         walletsDataService.walletsPublisher.receive(on: DispatchQueue.main).sink { [weak self] wallets in
             self?.walletsUpdated(wallets)
@@ -84,10 +87,14 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     }
     
     func walletsUpdated(_ wallets: [WalletEntity]) {
-        if let wallet = wallets.findWithAddress(dataHolder.wallet.address),
-           wallet != dataHolder.wallet {
-            dataHolder.wallet = wallet
-            refreshDomainProfileDetails(animated: true)
+        if let wallet = wallets.findWithAddress(dataHolder.wallet.address) {
+            if wallet != dataHolder.wallet {
+                dataHolder.wallet = wallet
+                refreshDomainProfileDetails(animated: true)
+            }
+        } else {
+            view?.dismiss(animated: true)
+            return
         }
         
         let domains = wallets.combinedDomains()
@@ -172,11 +179,14 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
             switch sourceScreen {
             case .domainsCollection:
                 await MainActor.run {
-                    guard let navigation = view?.cNavigationController,
+                    guard let navigation = view?.navigationController,
                           let wallet = appContext.walletsDataService.wallets.findWithAddress(dataHolder.wallet.address) else { return }
                     
                     UDRouter().showWalletDetailsOf(wallet: wallet,
-                                                   source: .domainDetails,
+                                                   source: .domainDetails(domainChangeCallback: { [weak self] domain in
+                        navigation.popViewController(animated: true)
+                        self?.replace(domain: domain, wallet: wallet)
+                    }),
                                                    in: navigation)
                     
                 }
@@ -632,11 +642,12 @@ private extension DomainProfileViewPresenter {
     
     @MainActor
     func showSetupReverseResolutionModule() {
-        guard let navigation = view?.cNavigationController else { return }
+        guard let view else { return }
         
-        UDRouter().showSetupChangeReverseResolutionModule(in: navigation,
+        UDRouter().showSetupChangeReverseResolutionModule(in: view,
                                                           wallet: dataHolder.wallet,
                                                           domain: dataHolder.domain,
+                                                          tabRouter: tabRouter,
                                                           resultCallback: { [weak self] in
             self?.didSetDomainForReverseResolution()
         })
@@ -982,6 +993,7 @@ private extension DomainProfileViewPresenter {
     @MainActor
     func closeProfileScreen() async {
         await view?.cNavigationController?.presentingViewController?.dismiss(animated: true)
+        await view?.navigationController?.presentingViewController?.dismiss(animated: true)
     }
     
     @MainActor
@@ -1024,9 +1036,9 @@ private extension DomainProfileViewPresenter {
             let walletInfo = dataHolder.wallet.displayInfo
             let state = stateController.state
             
-            var isSetPrimaryActionAvailable: Bool { !domain.isPrimary && domain.isInteractable }
-            var isSetReverseResolutionActionAvailable: Bool { domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name }
-            var isSetReverseResolutionActionVisible: Bool { state == .default || state == .updatingRecords }
+            let isSetPrimaryActionAvailable: Bool = !domain.isPrimary && domain.isInteractable
+            let isSetReverseResolutionActionAvailable: Bool = domain.isAbleToSetAsRR && domain.name != walletInfo.reverseResolutionDomain?.name
+            let isSetReverseResolutionActionVisible: Bool = state == .default || state == .updatingRecords
             
             var topActionsGroup: DomainProfileActionsGroup = [.copyDomain]
             

@@ -8,15 +8,18 @@
 import SwiftUI
 
 enum HomeWalletNavigationDestination: Hashable {
-    case settings
+    case settings(SettingsView.InitialAction)
     case qrScanner(selectedWallet: WalletEntity)
     case minting(mode: MintDomainsNavigationController.Mode,
                  mintedDomains: [DomainDisplayInfo],
                  domainsMintedCallback: MintDomainsNavigationController.DomainsMintedCallback,
                  mintingNavProvider: (MintDomainsNavigationController)->())
     case purchaseDomains(domainsPurchasedCallback: PurchaseDomainsNavigationController.DomainsPurchasedCallback)
-    case walletsList(WalletsListViewPresenter.InitialAction)
-    
+    case login(mode: LoginFlowNavigationController.Mode, callback: LoginFlowNavigationController.LoggedInCallback)
+    case walletDetails(WalletEntity)
+    case securitySettings
+    case setupPasscode(SetupPasscodeViewController.Mode)
+
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.settings, .settings):
@@ -27,7 +30,13 @@ enum HomeWalletNavigationDestination: Hashable {
             return true
         case (.purchaseDomains, .purchaseDomains):
             return true
-        case (.walletsList, .walletsList):
+        case (.login, .login):
+            return true
+        case (.walletDetails, .walletDetails):
+            return true
+        case (.securitySettings, .securitySettings):
+            return true
+        case (.setupPasscode, .setupPasscode):
             return true
         default:
             return false
@@ -44,8 +53,14 @@ enum HomeWalletNavigationDestination: Hashable {
             hasher.combine("minting")
         case .purchaseDomains:
             hasher.combine("purchaseDomains")
-        case .walletsList:
-            hasher.combine("walletsList")
+        case .login:
+            hasher.combine("login")
+        case .walletDetails:
+            hasher.combine("walletDetails")
+        case .securitySettings:
+            hasher.combine("securitySettings")
+        case .setupPasscode:
+            hasher.combine("setupPasscode")
         }
     }
     
@@ -56,29 +71,36 @@ struct HomeWalletLinkNavigationDestination {
     @ViewBuilder
     static func viewFor(navigationDestination: HomeWalletNavigationDestination) -> some View {
         switch navigationDestination {
-        case .settings:
-            SettingsViewControllerWrapper()
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(for: SettingsNavigationDestination.self) { destination in
-                    SettingsLinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
-                }
+        case .settings(let initialAction):
+            SettingsView(initialAction: initialAction)
         case .qrScanner(let selectedWallet):
             QRScannerViewControllerWrapper(selectedWallet: selectedWallet, qrRecognizedCallback: { })
                 .navigationTitle(String.Constants.scanQRCodeTitle.localized())
                 .navigationBarTitleDisplayMode(.inline)
+                .ignoresSafeArea()
         case .minting(let mode, let mintedDomains, let domainsMintedCallback, let mintingNavProvider):
             MintDomainsNavigationControllerWrapper(mode: mode,
                                                    mintedDomains: mintedDomains,
                                                    domainsMintedCallback: domainsMintedCallback,
                                                    mintingNavProvider: mintingNavProvider)
             .toolbar(.hidden, for: .navigationBar)
+            .ignoresSafeArea()
         case .purchaseDomains(let callback):
             PurchaseDomainsNavigationControllerWrapper(domainsPurchasedCallback: callback)
                 .toolbar(.hidden, for: .navigationBar)
-        case .walletsList(let initialAction):
-            WalletsListViewControllerWrapper(initialAction: initialAction)
+                .ignoresSafeArea()
+        case .login(let mode, let callback):
+            LoginFlowNavigationControllerWrapper(mode: mode,
+                                                 callback: callback)
                 .toolbar(.hidden, for: .navigationBar)
+                .ignoresSafeArea()
+        case .walletDetails(let wallet):
+            WalletDetailsView(wallet: wallet, source: .settings)
+        case .securitySettings:
+            SecuritySettingsView()
+        case .setupPasscode(let mode):
+            SetupPasscodeViewControllerWrapper(mode: mode)
+                .ignoresSafeArea()
         }
     }
     

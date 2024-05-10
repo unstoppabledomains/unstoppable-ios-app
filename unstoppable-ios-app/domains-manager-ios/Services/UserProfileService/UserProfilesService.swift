@@ -17,6 +17,7 @@ final class UserProfilesService {
     
     @Published private(set) var profiles: [UserProfile] = []
     @Published private(set) var selectedProfile: UserProfile? = nil
+    var profilesPublisher: Published<[UserProfile]>.Publisher { $profiles }
     var selectedProfilePublisher: Published<UserProfile?>.Publisher { $selectedProfile }
     private var cancellables: Set<AnyCancellable> = []
 

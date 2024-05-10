@@ -12,6 +12,7 @@ struct UDToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         Toggle(configuration)
             .tint(.backgroundAccentEmphasis)
+            .font(.currentFont(size: 16, weight: .medium))
     }
     
 }

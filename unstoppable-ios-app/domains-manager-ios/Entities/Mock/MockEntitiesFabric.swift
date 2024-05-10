@@ -57,6 +57,17 @@ extension MockEntitiesFabric {
     }
     
     enum Wallet {
+        private static let mockUDWallets: [UDWallet] = [UDWallet.createUnverified(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+                                                                                   address: "0xc4a748796805dfa42cafe0901ec182936584cc6e")!,
+                                                         UDWallet.createUnverified(aliasName: "Custom name",
+                                                                                   address: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")!,
+                                                         .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                                               address: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                                               type: .generatedLocally),
+                                                         .init(aliasName: "UD",
+                                                               address: "0xCeBF5440FE9C85e037A80fFB4dF0F6a9BAcb3d01",
+                                                               type: .generatedLocally)]
+        
         static func mockMPC(hasRRDomain: Bool = true) -> WalletEntity {
             let address = "0x12313123"
             let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
@@ -79,23 +90,27 @@ extension MockEntitiesFabric {
         }
         
         static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
-            WalletWithInfo.mock.map {
-                createFrom(walletWithInfo: $0,
+            mockUDWallets.map {
+                createFrom(udWallet: $0,
                            hasRRDomain: hasRRDomain)
                 
             }
         }
    
-        static func createFrom(walletWithInfo: WalletWithInfo,
+        static func createFrom(udWallet: UDWallet,
                                hasRRDomain: Bool = true) -> WalletEntity {
-            let address = walletWithInfo.address
+            let displayInfo = WalletDisplayInfo(wallet: udWallet,
+                                                domainsCount: Int(arc4random_uniform(3)),
+                                                udDomainsCount: Int(arc4random_uniform(3)))!
+            
+            let address = udWallet.address
             let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
             let nfts = getNFTs()
             let portfolioRecords = getPortfolioRecords(address: address)
             let balance = getBalance(address: address)
             
-            return WalletEntity(udWallet: walletWithInfo.wallet,
-                                displayInfo: walletWithInfo.displayInfo!,
+            return WalletEntity(udWallet: udWallet,
+                                displayInfo: displayInfo,
                                 domains: domains,
                                 nfts: nfts,
                                 balance: balance,
@@ -277,5 +292,16 @@ extension MockEntitiesFabric {
                                       balanceUsd: 1,
                                       marketUsd: 1.02)
         }
+    }
+}
+
+fileprivate extension UDWallet {
+    init(aliasName: String,
+         address: String,
+         type: WalletType,
+         hasBeenBackedUp: Bool = false) {
+        self.aliasName = aliasName
+        self.type = type
+        self.hasBeenBackedUp = hasBeenBackedUp
     }
 }

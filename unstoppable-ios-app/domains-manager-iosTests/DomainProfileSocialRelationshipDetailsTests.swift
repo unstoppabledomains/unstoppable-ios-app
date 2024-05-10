@@ -77,25 +77,22 @@ private extension DomainProfileSocialRelationshipDetailsTests {
     }
     
     func createMockWallet(profileDomainName: String? = "preview.x") -> WalletEntity {
-        let walletWithInfo = WalletWithInfo.mock[0]
+        var wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
         
         var domains: [DomainDisplayInfo] = []
         var rrDomain: DomainDisplayInfo?
         
         if let profileDomainName {
             let domain = DomainDisplayInfo(name: profileDomainName,
-                                           ownerWallet: walletWithInfo.address,
+                                           ownerWallet: wallet.address,
                                            isSetForRR: true)
             domains.append(domain)
             rrDomain = domain
         }
         
-        return WalletEntity(udWallet: walletWithInfo.wallet,
-                            displayInfo: walletWithInfo.displayInfo!,
-                            domains: domains,
-                            nfts: [],
-                            balance: [],
-                            rrDomain: rrDomain)
+        wallet.updateDomains(domains)
+        
+        return wallet
     }
     
     func responseWithFollowerDomains(_ domains: [String], take: Int) -> DomainProfileFollowersResponse {

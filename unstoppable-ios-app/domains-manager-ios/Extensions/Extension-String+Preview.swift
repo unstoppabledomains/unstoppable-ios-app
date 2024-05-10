@@ -421,13 +421,7 @@ extension String {
         // Domains Collection
         static let searchDomainsTitle = "SEARCH_DOMAINS_TITLE"
         static let searchDomainsHint = "SEARCH_DOMAINS_HINT"
-        static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
-        static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
-        static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
-        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
-        static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
-        static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
-        static let importYourDomains = "IMPORT_YOUR_DOMAINS"
+        static let noDomains = "NO_DOMAINS"
         
         // Statuses
         static let updatingRecords = "UPDATING_RECORDS"
@@ -454,6 +448,7 @@ extension String {
         static let settingsAppearanceThemeLight = "SETTINGS_APPEARANCE_THEME_LIGHT"
         static let settingsAppearanceThemeDark = "SETTINGS_APPEARANCE_THEME_DARK"
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
+        static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
         
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
@@ -488,6 +483,7 @@ extension String {
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
+        static let whatIsExternalWallet = "WHAT_IS_EXTERNAL_WALLET"
         static let importConnectedWalletDescription = "IMPORT_CONNECTED_WALLET_DESCRIPTION"
         static let walletWasDisconnectedMessage = "WALLET_WAS_DISCONNECTED_MESSAGE"
         static let addToBackupNewWalletSubtitle = "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE"
@@ -856,7 +852,7 @@ extension String {
         static let password = "PASSWORD"
         static let parked = "PARKED"
         static let parkedDomain = "PARKED_DOMAIN"
-        static let parkedDomains = "PARKED_DOMAINS"
+        static let parkedDomainsFound = "PARKED_DOMAINS_FOUND"
         static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
         static let parkingExpiresOn = "PARKING_EXPIRES_ON"
         static let parkingExpired = "PARKING_EXPIRED"
@@ -1200,7 +1196,7 @@ extension String {
         static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
         static let selfCustody = "SELF_CUSTODY"
         static let recoveryPhraseOrPrivateKey = "RECOVERY_PHRASE_OR_PRIVATE_KEY"
-        static let externalWallet = "EXTERNAL_WALLET"
+        static let external = "EXTERNAL"
         static let createNewWallet = "CREATE_NEW_WALLET"
         static let mpcAuthorizing = "MPC_AUTHORIZING"
         static let mpcReadyToUse = "MPC_READY_TO_USE"
@@ -1224,8 +1220,20 @@ extension String {
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
+        
+        static let parkedDomains = "PARKED_DOMAINS"
+        static let backedUp = "BACKED_UP"
+        static let backUp = "BACK_UP"
+        static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
     }
-
+    
+    enum SystemImage: String {
+        case copy = "doc.on.doc"
+        case crown
+        
+        var name: String { rawValue }
+    }
+    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"

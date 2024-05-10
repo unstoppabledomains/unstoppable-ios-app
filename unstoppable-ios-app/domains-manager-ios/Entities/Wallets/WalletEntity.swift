@@ -99,7 +99,7 @@ extension WalletEntity {
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
         balance.first(where: { $0.symbol == blockchainType.rawValue })
     }
-    
+    var isAbleToSetRR: Bool { displayInfo.udDomainsCount > 0 }
     func isReverseResolutionChangeAllowed() -> Bool {
         let domainsAvailableForRR = domains.availableForRRItems()
         guard !domainsAvailableForRR.isEmpty else { return false }
