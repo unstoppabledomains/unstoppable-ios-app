@@ -423,6 +423,7 @@ extension Analytics {
     enum PullUp: String {
         case unspecified
         case settingsLegalSelection
+        case settingsLoginSelection
         case addWalletSelection
         case manageBackupsSelection
         case deleteAllICloudBackupsConfirmation

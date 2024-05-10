@@ -103,29 +103,8 @@ private extension AppDelegate {
     }
     
     func configureNavBar() {
-        let backButtonAppearance = UIBarButtonItemAppearance(style: .plain)
-        backButtonAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.disabled.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        
-        let image =  BaseViewController.NavBackIconStyle.arrow.icon
-        let backButtonBackgroundImage = image.withTintColor(.foregroundDefault, renderingMode: .alwaysOriginal).withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
-        
-        let navigationBarStandardAppearance = UINavigationBarAppearance()
-        navigationBarStandardAppearance.configureWithTransparentBackground()
-        navigationBarStandardAppearance.backButtonAppearance = backButtonAppearance
-        navigationBarStandardAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
-        navigationBarStandardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                              transitionMaskImage: backButtonBackgroundImage)
-        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarStandardAppearance
-        
-        let navigationBarScrollingEdgeAppearance = UINavigationBarAppearance()
-        navigationBarScrollingEdgeAppearance.backButtonAppearance = backButtonAppearance
-        navigationBarScrollingEdgeAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
-        navigationBarScrollingEdgeAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                   transitionMaskImage: backButtonBackgroundImage)
-        UINavigationBar.appearance().standardAppearance = navigationBarScrollingEdgeAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: true)
+        UINavigationBar.appearance().standardAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: false)
     }
     
     func setupAppearance() {

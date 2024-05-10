@@ -10,6 +10,7 @@ import Foundation
 protocol UserProfilesServiceProtocol {
     var selectedProfilePublisher: Published<UserProfile?>.Publisher  { get }
     var selectedProfile: UserProfile? { get }
+    var profilesPublisher: Published<[UserProfile]>.Publisher  { get }
     var profiles: [UserProfile] { get }
     
     func setActiveProfile(_ profile: UserProfile)

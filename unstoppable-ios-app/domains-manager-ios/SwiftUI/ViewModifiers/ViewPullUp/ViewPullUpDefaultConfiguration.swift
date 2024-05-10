@@ -386,15 +386,20 @@ extension ViewPullUpDefaultConfiguration {
     }
     
     static func legalSelectionPullUp(selectionCallback: @escaping (LegalType)->()) -> ViewPullUpDefaultConfiguration {
+        var selectedItem: LegalType?
+
         return .init(title: .text(String.Constants.settingsLegal.localized()),
                      items: LegalType.allCases,
                      itemSelectedCallback: { item in
-            guard let item = item as? LegalType else { return }
-            selectionCallback(item)
+            selectedItem = item as? LegalType
         },
                      dismissAble: true,
                      analyticName: .settingsLegalSelection,
-                     dismissCallback: nil)
+                     dismissCallback: {
+            if let selectedItem {
+                selectionCallback(selectedItem)
+            }
+        })
     }
     
     static func homeWalletBuySelectionPullUp(selectionCallback: @escaping (HomeWalletView.BuyOptions)->()) -> ViewPullUpDefaultConfiguration {
@@ -403,9 +408,7 @@ extension ViewPullUpDefaultConfiguration {
         return .init(title: nil,
                      items: HomeWalletView.BuyOptions.allCases,
                      itemSelectedCallback: { item in
-            guard let item = item as? HomeWalletView.BuyOptions else { return }
-            
-            selectedItem = item
+            selectedItem = item as? HomeWalletView.BuyOptions
         },
                      dismissAble: true,
                      analyticName: .homeWalletBuyOptions,
@@ -462,6 +465,25 @@ extension ViewPullUpDefaultConfiguration {
                      analyticName: .sendCryptoForTheFirstTimeConfirmation,
                      dismissCallback: nil)
     }
+    
+    static func loginOptionsSelectionPullUp(selectionCallback: @escaping (LoginProvider)->()) -> ViewPullUpDefaultConfiguration {
+        var selectedItem: LoginProvider?
+        
+        return .init(title: .text(String.Constants.loginWithWebTitle.localized()),
+                     subtitle: .label(.text(String.Constants.loginWithWebSubtitle.localized())),
+                     items: LoginProvider.allCases,
+                     itemSelectedCallback: { item in
+            selectedItem = item as? LoginProvider
+        },
+                     dismissAble: true,
+                     analyticName: .settingsLoginSelection,
+                     dismissCallback: {
+            if let selectedItem {
+                selectionCallback(selectedItem)
+            }
+        })
+    }
+    
 }
 
 // MARK: - Open methods

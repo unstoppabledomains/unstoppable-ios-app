@@ -16,6 +16,7 @@ struct UDListItemView: View {
     let title: String
     var titleColor: Color = .foregroundDefault
     var subtitle: String? = nil
+    var subtitleIcon: ImageType? = nil
     var subtitleStyle: SubtitleStyle = .default
     var value: String? = nil
     var imageType: ImageType
@@ -68,8 +69,9 @@ private extension UDListItemView {
     }
     
     @ViewBuilder
-    func imageForCurrentType(size: CGSize,
-                             tintColor: UIColor?) -> some View {
+    func imageForType(_ imageType: ImageType,
+                      size: CGSize,
+                      tintColor: UIColor?) -> some View {
         switch imageType {
         case .image(let image):
             image
@@ -85,6 +87,14 @@ private extension UDListItemView {
     }
     
     @ViewBuilder
+    func imageForCurrentType(size: CGSize,
+                             tintColor: UIColor?) -> some View {
+        imageForType(self.imageType,
+                     size: size,
+                     tintColor: tintColor)
+    }
+    
+    @ViewBuilder
     func titleView() -> some View {
         Text(title)
             .font(.currentFont(size: 16, weight: .medium))
@@ -96,8 +106,15 @@ private extension UDListItemView {
     func subtitleView() -> some View {
         switch subtitleStyle {
         case .default:
-            subtitleText()
-                .foregroundStyle(Color.foregroundSecondary)
+            HStack(spacing: 8) {
+                if let subtitleIcon {
+                    imageForType(subtitleIcon,
+                                 size: .square(size: 16),
+                                 tintColor: .foregroundSecondary)
+                }
+                subtitleText()
+                    .foregroundStyle(Color.foregroundSecondary)
+            }
         case .accent:
             subtitleText(fontWeight: .medium)
                 .foregroundStyle(Color.foregroundAccent)
@@ -165,7 +182,8 @@ extension UDListItemView {
     
     enum RightViewStyle {
         case chevron, checkmark, checkmarkEmpty, errorCircle
-        case generic(GenericActionType)
+        case toggle(isOn: Bool, callback: (Bool)->())
+        case generic(GenericActionDescription)
 
         var image: Image {
             switch self {
@@ -177,14 +195,16 @@ extension UDListItemView {
                 return .checkCircleEmpty
             case .errorCircle:
                 return .infoIcon
-            case .generic(let type):
-                return type.icon
+            case .toggle:
+                return .infoIcon
+            case .generic(let desc):
+                return desc.type.icon
             }
         }
         
         var foregroundColor: Color {
             switch self {
-            case .chevron, .generic:
+            case .chevron:
                 return .foregroundMuted
             case .checkmark:
                 return .foregroundAccent
@@ -192,25 +212,24 @@ extension UDListItemView {
                 return .borderEmphasis
             case .errorCircle:
                 return .foregroundDanger
+            case .toggle:
+                return .foregroundDanger
+            case .generic(let desc):
+                return desc.tintColor
             }
         }
         
         @ViewBuilder
         func view() -> some View {
             switch self {
-            case .generic(let type):
-                createViewForGenericActionType(type)
+            case .toggle(let isOn, let callback):
+                ListToggleView(isOn: isOn,
+                               callback: callback)
+            case .generic(let desc):
+                createViewForGenericActionType(desc.type)
             default:
                 createIconView()
             }
-        }
-        
-        @ViewBuilder
-        func createIconView() -> some View {
-            image
-                .resizable()
-                .squareFrame(20)
-                .foregroundStyle(foregroundColor)
         }
         
         @ViewBuilder
@@ -240,8 +259,22 @@ extension UDListItemView {
                 } label: {
                     createIconView()
                 }
+                .buttonStyle(.plain)
                 .onButtonTap()
             }
+        }
+        
+        @ViewBuilder
+        func createIconView() -> some View {
+            image
+                .resizable()
+                .squareFrame(20)
+                .foregroundStyle(foregroundColor)
+        }
+        
+        struct GenericActionDescription {
+            let type: GenericActionType
+            var tintColor: Color = .foregroundMuted
         }
         
         enum GenericActionType {
@@ -268,6 +301,23 @@ extension UDListItemView {
             let title: String
             let iconName: String
             let callback: MainActorCallback
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension UDListItemView {
+    struct ListToggleView: View {
+        
+        @State var isOn: Bool
+        let callback: (Bool)->()
+        
+        var body: some View {
+            Toggle("", isOn: $isOn)
+                .tint(.backgroundAccentEmphasis)
+                .onChange(of: isOn) { newValue in
+                    callback(newValue)
+                }
         }
     }
 }

@@ -15,6 +15,7 @@ class EnterPasscodeViewController: BaseViewController, DigitalKeyboardDelegate, 
     
     @IBOutlet private(set) weak var titleLabel: UDTitleLabel!
     @IBOutlet private(set) weak var keyboardContainerView: UIView!
+    @IBOutlet private(set) weak var topContentConstraint: NSLayoutConstraint!
     var progress: Double? { nil }
     
     var passwordsNotMatchingErrorMessage: String { "" }
@@ -29,6 +30,9 @@ class EnterPasscodeViewController: BaseViewController, DigitalKeyboardDelegate, 
         super.viewWillAppear(animated)
         
         reset()
+        if cNavigationController == nil {
+            topContentConstraint.constant = 0
+        }
     }
     
     // MARK: - DigitalKeyboardDelegate

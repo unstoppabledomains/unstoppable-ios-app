@@ -11,7 +11,7 @@ import UIKit
 extension PullUpViewService {
     func showConnectedWalletInfoPullUp(in viewController: UIViewController) {
         let selectionViewHeight: CGFloat = 352
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWallet.localized()),
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.whatIsExternalWallet.localized()),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: .externalWalletIndicator,
                                                                                  size: .small),
