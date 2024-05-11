@@ -11,11 +11,11 @@ import web3
 
 class SignatureTests: XCTestCase {
     static let timeout: TimeInterval = 3000
-
+    
     var simpleTypedData: EIP712TypedData!
     var simpleTypedDataWithArray: EIP712TypedData!
     var typedDataOpenSea: EIP712TypedData!
-
+    
     override func setUp() {
         super.setUp()
         let stringSimple = """
@@ -62,6 +62,8 @@ class SignatureTests: XCTestCase {
         XCTAssertNotNil(simpleTypedData)
         
         /////
+        ///
+        ///
         ///
         let stringSimpleWithArray = """
 {
@@ -251,7 +253,7 @@ class SignatureTests: XCTestCase {
         let data = jsonTypedData.encodeData(data: jsonTypedData.message, type: jsonTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
-
+    
     func testGenericJSON() throws {
         let jsonString = """
         {
@@ -279,11 +281,11 @@ class SignatureTests: XCTestCase {
         XCTAssertNotNil(message["object"]?.objectValue)
         XCTAssertNotNil(message["array"]!.arrayValue)
         XCTAssertNotNil(message["array"]?[0]?.objectValue)
-
+        
         XCTAssertTrue(message["object"]!["paid"]!.boolValue!)
         XCTAssertTrue(message["null"]!.isNull)
         XCTAssertFalse(message["bytes"]!.isNull)
-
+        
         XCTAssertNil(message["number"]!.stringValue)
         XCTAssertNil(message["string"]!.floatValue)
         XCTAssertNil(message["bytes"]!.boolValue)
@@ -292,44 +294,53 @@ class SignatureTests: XCTestCase {
         XCTAssertNil(message["foo"])
         XCTAssertNil(message["array"]?[2])
     }
-
+    
     func testEncodeType() {
         let result = "Mail(Person from,Person to,string contents)Person(string name,address wallet)"
         XCTAssertEqual(simpleTypedData.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
     }
-
+    
     func testEncodedTypeHash() {
         let result = "a0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2"
         XCTAssertEqual(simpleTypedData.typeHash.hexString, result)
     }
-
+    
     func testEncodeData() {
         // swiftlint:disable:next line_length
         let result = "a0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2fc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cd54f074a4af31b4411ff6a60c9719dbd559c221c8ac3492d9d872b041d703d1b5aadf3154a261abdd9086fc627b61efca26ae5702701d05cd2305f7c52a2fc8"
         let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
-
+    
     func testStructHash() {
         let result = "c52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e"
         let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(Crypto.hash(data).hexString, result)
-
+        
         let result2 = "f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f"
-//        let json = try! JSONDecoder().decode(JSON.self, from: try! JSONEncoder().encode(typedData.domain))
+        //        let json = try! JSONDecoder().decode(JSON.self, from: try! JSONEncoder().encode(typedData.domain))
         let data2 = simpleTypedData.encodeData(data: simpleTypedData.domain, type: "EIP712Domain")
         XCTAssertEqual(Crypto.hash(data2).hexString, result2)
     }
-        
+    
     func testSignHash() {
         let cow = "cow".data(using: .utf8)!
         let privateKeyData = Crypto.hash(cow)
-
+        
         let dataSignHash = simpleTypedData.signHash
         let signed = try! UDWallet.signMessageHash(messageHash: dataSignHash, with: privateKeyData)
         let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
         XCTAssertEqual(dataSignHash.hexString, result)
         XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
+    }
+    
+    
+    func testTypeEncodingWithArrays() {
+        let result = "Mail(Person from,Person to,Contents[] contents)Contents(string title,string body)Person(string name,address wallet)"
+        XCTAssertEqual(simpleTypedDataWithArray.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
+        
+        // ERROR FOUND
+        // encodeType doesn't encode Contents[]: "Mail(Person from,Person to,Contents[] contents)Person(string name,address wallet)"
     }
     
     func testSignHashSimpleWithArray() {
