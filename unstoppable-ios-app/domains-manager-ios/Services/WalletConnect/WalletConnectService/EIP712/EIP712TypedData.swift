@@ -70,7 +70,7 @@ extension EIP712TypedData {
         }
         found.insert(primaryType)
         for type in primaryTypes {
-            findDependencies(primaryType: type.type, dependencies: found)
+            findDependencies(primaryType: type.type.removeEndingBracketsIfAny, dependencies: found)
                 .forEach { found.insert($0) }
         }
         return found
@@ -531,5 +531,12 @@ extension BigUInt {
     public init?(_ text: String, radix: Int = 10) {
         // FIXME Remove this member when SE-0183 is done
         self.init(Substring(text), radix: radix)
+    }
+}
+
+extension String {
+    var removeEndingBracketsIfAny: String {
+        if self.suffix(2) == "[]" { return String(self.dropLast(2)) }
+        return self
     }
 }

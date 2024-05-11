@@ -338,9 +338,6 @@ class SignatureTests: XCTestCase {
     func testTypeEncodingWithArrays() {
         let result = "Mail(Person from,Person to,Contents[] contents)Contents(string title,string body)Person(string name,address wallet)"
         XCTAssertEqual(simpleTypedDataWithArray.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
-        
-        // ERROR FOUND
-        // encodeType doesn't encode Contents[]: "Mail(Person from,Person to,Contents[] contents)Person(string name,address wallet)"
     }
     
     func testSignHashSimpleWithArray() {
