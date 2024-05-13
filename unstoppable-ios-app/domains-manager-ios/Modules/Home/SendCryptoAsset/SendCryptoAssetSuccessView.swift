@@ -14,7 +14,7 @@ struct SendCryptoAssetSuccessView: View, ViewAnalyticsLogger {
 
     var asset: Asset
     var analyticsName: Analytics.ViewName { asset.viewName }
-    @ObservedObject private var transactionTracker = TransactionStatusTracker()
+    @StateObject private var transactionTracker = TransactionStatusTracker()
     
     var body: some View {
         VStack(spacing: 24) {
@@ -37,9 +37,6 @@ struct SendCryptoAssetSuccessView: View, ViewAnalyticsLogger {
         .toolbar(.hidden, for: .navigationBar)
         .onAppear(perform: onAppear)
         .trackAppearanceAnalytics(analyticsLogger: self)
-        .onDisappear(perform: {
-            transactionTracker.stopTracking()
-        })
     }
 }
 
@@ -164,6 +161,7 @@ private extension SendCryptoAssetSuccessView {
     }
     
     func doneAction() {
+        transactionTracker.stopTracking()
         logButtonPressedAnalyticEvents(button: .done)
         tabRouter.sendCryptoInitialData = nil
     }
