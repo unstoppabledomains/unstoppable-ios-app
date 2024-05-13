@@ -120,36 +120,39 @@ private extension SendCryptoAssetSuccessView {
     @ViewBuilder
     func actionButtons() -> some View {
         VStack(spacing: 16) {
-            if let txHash = transactionTracker.txHash {
-                viewTransactionButton(txHash: txHash)
+            if let link = getLinkToTx(transactionTracker.txHash) {
+                viewTransactionButton(link: link)
             }
             doneButton()
         }
     }
     
     @ViewBuilder
-    func viewTransactionButton(txHash: String) -> some View {
+    func viewTransactionButton(link: String.Links) -> some View {
         UDButtonView(text: String.Constants.viewTransaction.localized(),
                      style: .large(.ghostPrimary),
                      callback: {
             logButtonPressedAnalyticEvents(button: .viewTransaction)
-            viewTransaction(txHash: txHash)
+            viewTransaction(link: link)
         })
     }
     
-    func viewTransaction(txHash: String) {
+    func getLinkToTx(_ txHash: String?) -> String.Links? {
+        guard let txHash else { return nil }
+        
         let link: String.Links
         switch asset {
         case .domain:
             link = .polygonScanTransaction(txHash)
         case .token(let token, _, _):
-            switch token.blockchainType {
-            case .Ethereum:
-                link = .etherScanTransaction(txHash)
-            case .Matic, .none:
-                link = .polygonScanTransaction(txHash)
-            }
+            link = .scanTransaction(symbol: token.symbol, transaction: txHash)
         }
+        guard link.url?.host() != nil else { return nil }
+        
+        return link
+    }
+    
+    func viewTransaction(link: String.Links) {
         openLink(link)
     }
     
