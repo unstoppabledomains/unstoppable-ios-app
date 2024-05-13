@@ -261,11 +261,13 @@ extension HomeWalletView {
 
 extension HomeWalletView {
     struct NotMatchedRecordsDescription: Hashable, Identifiable {
-        var id: String { chain.rawValue }
+        var id: String { chain }
         
-        let chain: BlockchainType
+        let chain: String
+        let fullName: String
         let numberOfRecordsNotSetToChain: Int
         let ownerWallet: String
+        
     }
 }
 
