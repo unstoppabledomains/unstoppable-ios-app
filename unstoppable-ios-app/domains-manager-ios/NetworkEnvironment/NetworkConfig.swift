@@ -113,11 +113,6 @@ struct NetworkConfig {
         return okLinkBaseURL + "/eth"
     }
     
-    static func currencyIconUrl(for currency: CoinRecord) -> String {
-        let url = "https://storage.googleapis.com/unstoppable-client-assets/images/icons/\(currency.ticker)/icon.svg"
-        return url
-    }
-    
     static func currencyIconUrl(for ticker: String) -> String {
         let url = "https://storage.googleapis.com/unstoppable-client-assets/images/icons/\(ticker)/icon.svg"
         return url
