@@ -40,7 +40,7 @@ enum RestoreWalletType: Hashable, OnboardingStartOption {
         case .websiteAccount:
             return String.Constants.viewVaultedDomains.localized()
         case .mpc:
-            return String.Constants.importMPCWalletTitle.localized()
+            return String.Constants.importMPCWalletTitle.localizedMPCProduct()
         }
     }
     
