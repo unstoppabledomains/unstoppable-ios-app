@@ -40,6 +40,10 @@ extension FB_UD_MPC {
     }
     
     struct DefaultMPCConnectionNetworkService: MPCConnectionNetworkService {
+        func getAssetTransferEstimations(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: Double) async throws -> FB_UD_MPC.NetworkFeeResponse {
+            .init(priority: "", status: "", networkFee: nil)
+        }
+        
         func startAssetTransfer(accessToken: String, accountId: String, assetId: String, destinationAddress: String, amount: Double) async throws -> FB_UD_MPC.OperationDetails {
             .init(id: "1", status: "", type: "")
         }
