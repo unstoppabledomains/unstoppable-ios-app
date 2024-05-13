@@ -38,6 +38,8 @@ extension String {
 
         case walletConnectRequest = "NOTIFICATION_WALLET_CONNECT_REQUEST"
 
+        case mpcProductName = "MPC_PRODUCT_NAME"
+
         func localized() -> String {
             rawValue.localized()
         }

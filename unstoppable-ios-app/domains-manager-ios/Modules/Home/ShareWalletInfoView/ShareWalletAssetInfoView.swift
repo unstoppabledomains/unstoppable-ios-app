@@ -328,7 +328,7 @@ private extension ShareWalletAssetInfoView {
                     }
                 }
             }
-            Text(String.Constants.mpcWalletShareMultiChainDescription.localized())
+            Text(String.Constants.mpcWalletShareMultiChainDescription.localizedMPCProduct())
                 .foregroundStyle(Color.foregroundSecondary)
                 .font(.currentFont(size: 14, weight: .medium))
         }
