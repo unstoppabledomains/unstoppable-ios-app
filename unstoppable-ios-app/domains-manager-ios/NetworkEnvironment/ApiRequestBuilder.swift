@@ -886,6 +886,7 @@ extension Endpoint {
         let headers: [String: String]
         if let accessToken {
             headers = NetworkBearerAuthorisationHeaderBuilderImpl.instance.buildAuthBearerHeader(token: accessToken)
+                .appending(dict2: NetworkService.profilesAPIHeader)
         } else {
             headers = NetworkService.profilesAPIHeader
         }
