@@ -30,7 +30,6 @@ extension FB_UD_MPC {
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
         private let actionsQueuer = ActionsQueuer()
-        private var didRefreshAuthToken = false
 
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
@@ -138,12 +137,16 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                 } catch {
                     mpcConnectorInProgress?.stopJoinWallet()
                     logMPC("Did fail to create mpc wallet with error \(error.localizedDescription)")
+                    #if DEBUG
                     /// Debug Fireblocks SDK issues
-//                    let logsURL = mpcConnector.getLogsURLs()
-//                    continuation.yield(.failed(logsURL))
-//                    continuation.finish()
-                    
+                    if let logsURL = mpcConnectorInProgress?.getLogsURLs(),
+                       let view = await appContext.coreAppCoordinator.topVC {
+                       await view.shareItems([logsURL], completion: nil)
+                    }
                     continuation.finish(throwing: error)
+                    #else
+                    continuation.finish(throwing: error)
+                    #endif
                 }
             }
         }
@@ -435,15 +438,13 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         let deviceId = wallet.deviceId
         let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
         let accessToken = tokens.accessToken
-        if !accessToken.isExpired,
-           didRefreshAuthToken {
+        if !accessToken.isExpired {
             return accessToken.jwt
         }
         
         let refreshToken = tokens.refreshToken
         if !refreshToken.isExpired {
             let token = try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
-            didRefreshAuthToken = true
             return token
         }
         

@@ -158,7 +158,7 @@ extension CopyMultichainWalletAddressesPullUpView {
         var title: String {
             switch self {
             case .copyOnly, .allOptions:
-                String.Constants.mpcWalletShareMultiChainDescription.localized()
+                String.Constants.mpcWalletShareMultiChainDescription.localizedMPCProduct()
             case .shareOnly:
                 String.Constants.chooseAddressToShare.localized()
             }
@@ -169,7 +169,7 @@ extension CopyMultichainWalletAddressesPullUpView {
             case .copyOnly, .allOptions:
                 nil
             case .shareOnly:
-                String.Constants.mpcWalletShareMultiChainDescription.localized()
+                String.Constants.mpcWalletShareMultiChainDescription.localizedMPCProduct()
             }
         }
     }

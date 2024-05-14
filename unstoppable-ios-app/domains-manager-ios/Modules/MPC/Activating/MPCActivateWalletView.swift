@@ -132,11 +132,11 @@ private extension MPCActivateWalletView {
     var title: String {
         switch activationState {
         case .readyToActivate, .activating:
-            String.Constants.importMPCWalletInProgressTitle.localized()
+            String.Constants.importMPCWalletInProgressTitle.localizedMPCProduct()
         case .failed:
-            String.Constants.importMPCWalletFailedTitle.localized()
+            String.Constants.importMPCWalletFailedTitle.localizedMPCProduct()
         case .activated:
-            String.Constants.importMPCWalletFinishedTitle.localized()
+            String.Constants.importMPCWalletFinishedTitle.localizedMPCProduct()
         }
     }
     

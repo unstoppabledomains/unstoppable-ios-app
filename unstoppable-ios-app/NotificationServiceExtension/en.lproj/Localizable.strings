@@ -32,3 +32,5 @@
 
 "NOTIFICATION_NEW_CHAT_MESSAGE" = "You have a new message";
 "NOTIFICATION_NEW_CHAT_REQUEST" = "You have a new contact request";
+
+"MPC_PRODUCT_NAME" = "Unstoppable Wallet";
