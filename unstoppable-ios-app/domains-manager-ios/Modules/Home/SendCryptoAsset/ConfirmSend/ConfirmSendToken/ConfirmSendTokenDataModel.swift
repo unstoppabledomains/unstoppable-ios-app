@@ -24,7 +24,7 @@ final class ConfirmSendTokenDataModel: ObservableObject {
         }
         return nil
     }
-    
+  
     init(data: SendCryptoAsset.SendTokenAssetData) {
         self.data = data
     }

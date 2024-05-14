@@ -28,6 +28,13 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         var marketUsd: Double?
         var logoURL: URL?
         
+        init(symbol: String, balance: Double, marketUsd: Double? = nil, logoURL: URL? = nil) {
+            self.symbol = symbol
+            self.balance = balance
+            self.marketUsd = marketUsd
+            self.logoURL = logoURL
+        }
+        
         init(token: WalletTokenPortfolio) {
             symbol = token.symbol
             balance = token.balanceAmt
@@ -67,7 +74,8 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
          balance: Double,
          balanceUsd: Double,
          marketUsd: Double? = nil,
-         marketPctChange24Hr: Double? = nil) {
+         marketPctChange24Hr: Double? = nil,
+         parent: ParentDetails? = nil) {
         self.chain = chain
         self.symbol = symbol
         self.gasCurrency = symbol
@@ -76,6 +84,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.balanceUsd = balanceUsd
         self.marketUsd = marketUsd
         self.marketPctChange24Hr = marketPctChange24Hr
+        self.parent = parent
     }
     
     init(chain: String,
