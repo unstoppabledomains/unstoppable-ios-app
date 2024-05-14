@@ -35,9 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Debugger.setAllowedTopicsSet(.debugNetwork)
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
-//        Task {
-//            await appContext.imageLoadingService.clearStoredImages()
-//        }
+//        clearImagesCache()
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
@@ -113,27 +111,47 @@ private extension AppDelegate {
     
     func setVersionAndBuildNumber() {
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        setFlagIfUserUpgradedToWalletVersion(currentVersion: version)
+        if let (oldVersion, newVersion) = getAppVersions(currentVersion: version) {
+            setFlagIfUserUpgradedToWalletVersion(oldVersion: oldVersion, newVersion: newVersion)
+            clearImagesCacheIfNeeded(oldVersion: oldVersion, newVersion: newVersion)
+        }
         
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         UserDefaults.buildVersion = "Build \(version) (\(build)) \(Env.schemeDescription)"
     }
     
-    func setFlagIfUserUpgradedToWalletVersion(currentVersion: String) {
+    func getAppVersions(currentVersion: String) -> (oldVersion: Version, newVersion: Version)? {
         let oldBuildVersion = UserDefaults.buildVersion
-        guard !oldBuildVersion.isEmpty else { return }
+        guard !oldBuildVersion.isEmpty else { return nil }
         
         let components = oldBuildVersion.components(separatedBy: " ")
         
         guard components.count > 2,
               let oldVersion = try? Version.parse(versionString: components[1]),
               let newVersion = try? Version.parse(versionString: currentVersion) else {
-            return
+            return nil
         }
-
+        
+        return (oldVersion, newVersion)
+    }
+    
+    func setFlagIfUserUpgradedToWalletVersion(oldVersion: Version, newVersion: Version) {
         if oldVersion.major <= 4,
            newVersion.major == 5 {
             UserDefaults.didUpdateToWalletVersion = true
+        }
+    }
+    
+    func clearImagesCacheIfNeeded(oldVersion: Version, newVersion: Version) {
+        if oldVersion.major < 5 ||
+            (oldVersion.major == 5 && oldVersion.minor < 4) {
+            clearImagesCache()
+        }
+    }
+    
+    func clearImagesCache() {
+        Task {
+            await appContext.imageLoadingService.clearStoredImages()
         }
     }
 
