@@ -108,30 +108,32 @@ private extension SettingsProfileTileView {
         }
     }
     
-    var badgeValue: String {
+    var badgeValue: Int {
         switch profile {
         case .wallet(let wallet):
-            return String(wallet.domains.count)
+            wallet.domains.count
         case .webAccount:
-            return String(firebaseParkedDomainsService.getCachedDomains().count)
+            firebaseParkedDomainsService.getCachedDomains().count
         }
     }
     
     @ViewBuilder
     func domainsTag() -> some View {
-        Text(badgeValue)
-            .foregroundStyle(Color.foregroundSecondary)
-            .font(.currentFont(size: 14, weight: .semibold))
-            .frame(height: 24)
-            .padding(.horizontal, 8)
-            .frame(minWidth: 24)
-            .background(Color.backgroundSubtle)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .overlay {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.borderSubtle, lineWidth: 1)
-            }
-            .padding(4)
+        if badgeValue > 0 {
+            Text(String(badgeValue))
+                .foregroundStyle(Color.foregroundSecondary)
+                .font(.currentFont(size: 14, weight: .semibold))
+                .frame(height: 24)
+                .padding(.horizontal, 8)
+                .frame(minWidth: 24)
+                .background(Color.backgroundSubtle)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.borderSubtle, lineWidth: 1)
+                }
+                .padding(4)
+        }
     }
     
     var title: String {
