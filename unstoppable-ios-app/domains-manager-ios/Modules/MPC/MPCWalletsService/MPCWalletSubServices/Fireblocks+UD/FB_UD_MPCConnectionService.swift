@@ -275,7 +275,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return amount.rounded(toDecimalPlaces: trimLimit)
     }
     
-    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
+    func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         let connectedWalletDetails = try await refreshWalletAccountDetailsForWalletWith(walletMetadata: walletMetadata)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let account = connectedWalletDetails.firstAccount

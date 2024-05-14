@@ -53,10 +53,10 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
                                                 by: walletMetadata)
     }
     
-    func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
+    func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
 
-        return try await subService.getBalancesFor(wallet: wallet, walletMetadata: walletMetadata)
+        return try await subService.getBalancesFor(walletMetadata: walletMetadata)
     }
     
     func canTransferAssets(symbol: String,
