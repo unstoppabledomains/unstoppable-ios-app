@@ -335,9 +335,33 @@ class SignatureTests: XCTestCase {
     }
     
     
-    func testTypeEncodingWithArrays() {
-        let result = "Mail(Person from,Person to,Contents[] contents)Contents(string title,string body)Person(string name,address wallet)"
-        XCTAssertEqual(simpleTypedDataWithArray.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
+    func testTypeEncodingSimpleWithArrays() {
+        // Mail and Person types
+        let mailTypeEncoding = "Mail(Person from,Person to,Contents[] contents)Contents(string title,string body)Person(string name,address wallet)"
+        XCTAssertEqual(simpleTypedDataWithArray.encodeType(primaryType: "Mail"), mailTypeEncoding.data(using: .utf8)!)
+        
+        let personTypeEncoding = "Person(string name,address wallet)"
+        XCTAssertEqual(simpleTypedDataWithArray.encodeType(primaryType: "Person"), personTypeEncoding.data(using: .utf8)!)
+        
+        let personTypeHash = Crypto.hash(personTypeEncoding.data(using: .utf8)!)
+        XCTAssertEqual(personTypeHash.hexString, "b9d8c78acf9b987311de6c7b45bb6a9c8e1bf361fa7fd3467a2163f994c79500")
+    }
+    
+    func testStructEncoding() {
+        Crypto.hash("Cow".data(using: .utf8)!) + Crypto.hash("000000000000000000000000cd2a3d9f938e13cd947ec05abc7fe734df8dd826".hexToData!)
+    }
+    
+    func testElementary() {
+        let typeHash = Crypto.hash(simpleTypedDataWithArray.encodeType(primaryType: "Mail"))
+        
+        // SDK's encodeData is typeHash + encoded data
+        let encodeDataFromSDK = simpleTypedDataWithArray.encodeData(data: simpleTypedDataWithArray.message, type: "Mail")
+        
+//        let encodedFrom = Crypto.hash("Cow".data(using: .utf8)!) + Crypto.hash(
+//        
+//        let encodedData = encodedFrom
+//        
+//        let hashStruct = Crypto.hash(typeHash + encodedData)
     }
     
     func testSignHashSimpleWithArray() {
