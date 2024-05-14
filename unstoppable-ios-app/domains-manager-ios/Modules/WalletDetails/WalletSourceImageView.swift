@@ -13,9 +13,9 @@ struct WalletSourceImageView: View {
     
     private var isCenteredImage: Bool {
         switch displayInfo.source {
-        case .locallyGenerated, .external:
+        case .external:
             return false
-        case .imported, .mpc:
+        case .locallyGenerated, .imported, .mpc:
             return true
         }
     }

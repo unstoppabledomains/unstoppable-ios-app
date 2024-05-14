@@ -264,7 +264,7 @@ private extension HomeWalletView {
             }
         } label: {
             Image.dotsIcon
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: HomeWalletView.WalletAction.more.analyticButton)
