@@ -106,34 +106,6 @@ struct EnterDomainEmailView: View, UserDataValidator {
         dismiss()
         enteredEmailValueCallback(email)
     }
-//    override func isContinueButtonEnabled() -> Bool {
-//        if !email.isEmpty,
-//           value?.isEmpty == true {
-//            return true
-//        }
-//        return super.isContinueButtonEnabled()
-//    }
-//    
-//    override func valueValidationError() -> String? {
-//        guard let email = self.value else { return nil }
-//        
-//        if email.trimmedSpaces.isEmpty {
-//            return nil
-//        }
-//        
-//        let errorMessage = String.Constants.enterValidEmailAddress.localized()
-//        let emailValidationResult = getEmailValidationResult(email)
-//        
-//        switch emailValidationResult {
-//        case .success:
-//            if email.contains("@ud.me") {
-//                return errorMessage
-//            }
-//            return nil
-//        case .failure:
-//            return errorMessage
-//        }
-//    }
 }
 
 #Preview {
