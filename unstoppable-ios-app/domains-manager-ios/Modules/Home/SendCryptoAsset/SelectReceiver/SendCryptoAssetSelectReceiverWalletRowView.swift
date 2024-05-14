@@ -62,7 +62,8 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
         if case .external = wallet.displayInfo.source {
             return .full
         }
-        return .centred()
+        return .centred(foreground: wallet.udWallet.type == .mpc ? .foregroundOnEmphasis : .foregroundDefault,
+                        background: wallet.udWallet.type == .mpc ? .backgroundAccentEmphasis : .backgroundMuted)
     }
 }
 
