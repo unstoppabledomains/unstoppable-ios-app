@@ -18,18 +18,39 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     let balanceUsd: Double
     var marketUsd: Double?
     var marketPctChange24Hr: Double?
-    var parentSymbol: String?
     var logoURL: URL?
-    var parentLogoURL: URL?
-    var parentMarketUSD: Double?
+    var parent: ParentDetails?
     private(set) var isSkeleton: Bool = false
+    
+    struct ParentDetails: Hashable {
+        var symbol: String
+        var balance: Double
+        var marketUsd: Double?
+        var logoURL: URL?
+        
+        init(symbol: String, balance: Double, marketUsd: Double? = nil, logoURL: URL? = nil) {
+            self.symbol = symbol
+            self.balance = balance
+            self.marketUsd = marketUsd
+            self.logoURL = logoURL
+        }
+        
+        init(token: WalletTokenPortfolio) {
+            symbol = token.symbol
+            balance = token.balanceAmt
+            marketUsd = token.value.marketUsdAmt
+            logoURL = URL(string: token.logoUrl ?? "")
+        }
+    }
     
     static let iconSize: InitialsView.InitialsSize = .default
     static let iconStyle: InitialsView.Style = .gray
     
+    var isERC20Token: Bool { parent != nil }
+    
     var balanceSymbol: String {
         // For 'parent' token we show gas currency (which is ETH for Base token)
-        if parentSymbol == nil {
+        if parent == nil {
             return gasCurrency
         }
         return symbol
@@ -53,7 +74,8 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
          balance: Double,
          balanceUsd: Double,
          marketUsd: Double? = nil,
-         marketPctChange24Hr: Double? = nil) {
+         marketPctChange24Hr: Double? = nil,
+         parent: ParentDetails? = nil) {
         self.chain = chain
         self.symbol = symbol
         self.gasCurrency = symbol
@@ -62,13 +84,12 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.balanceUsd = balanceUsd
         self.marketUsd = marketUsd
         self.marketPctChange24Hr = marketPctChange24Hr
+        self.parent = parent
     }
     
     init(chain: String,
          walletToken: WalletTokenPortfolio.Token,
-         parentSymbol: String,
-         parentMarketUSD: Double?,
-         parentLogoURL: URL?) {
+         parent: ParentDetails) {
         self.chain = chain
         self.symbol = walletToken.symbol
         self.gasCurrency = walletToken.gasCurrency
@@ -77,23 +98,17 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
-        self.parentSymbol = parentSymbol
-        self.parentMarketUSD = parentMarketUSD
-        self.parentLogoURL = parentLogoURL
+        self.parent = parent
         self.logoURL = URL(string: walletToken.logoUrl ?? "")
     }
     
     static func extractFrom(walletBalance: WalletTokenPortfolio) -> [BalanceTokenUIDescription] {
         let tokenDescription = BalanceTokenUIDescription(walletBalance: walletBalance)
-        let parentSymbol = walletBalance.symbol
-        let parentMarketUSD = walletBalance.value.marketUsdAmt
-        let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
+        let parent = ParentDetails(token: walletBalance)
         let chainSymbol = walletBalance.symbol
         let subTokenDescriptions = walletBalance.tokens?.map({ BalanceTokenUIDescription(chain: chainSymbol,
                                                                                          walletToken: $0,
-                                                                                         parentSymbol: parentSymbol,
-                                                                                         parentMarketUSD: parentMarketUSD,
-                                                                                         parentLogoURL: parentLogoURL) })
+                                                                                         parent: parent) })
             .filter({ $0.balanceUsd >= 1 }) ?? []
         
         return [tokenDescription] + subTokenDescriptions
@@ -122,8 +137,8 @@ extension BalanceTokenUIDescription {
     }
     
     func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
-        if let parentSymbol {
-            BalanceTokenUIDescription.loadIconFor(ticker: parentSymbol, logoURL: parentLogoURL, iconUpdated: iconUpdated)
+        if let parentSymbol = parent?.symbol {
+            BalanceTokenUIDescription.loadIconFor(ticker: parentSymbol, logoURL: parent?.logoURL, iconUpdated: iconUpdated)
         } else {
             iconUpdated(nil)
         }

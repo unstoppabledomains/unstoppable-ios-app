@@ -110,19 +110,31 @@ private extension ConfirmSendAssetReviewInfoView {
                         .foregroundStyle(Color.foregroundSecondary)
                     Spacer()
                 }
-                    .frame(width: geom.size.width * 0.38)
+                .frame(width: geom.size.width * 0.38)
                 HStack(spacing: 8) {
                     UIImageBridgeView(image: info.icon,
                                       tintColor: info.iconColor)
                     .squareFrame(24)
                     .clipShape(Circle())
-                    Text(info.value)
-                        .font(.currentFont(size: 16, weight: .medium))
-                        .foregroundStyle(info.valueColor)
-                    if let subValue = info.subValue {
-                        Text(subValue)
-                            .font(.currentFont(size: 16, weight: .medium))
-                            .foregroundStyle(Color.foregroundSecondary)
+                    VStack(alignment: .leading,
+                           spacing: -4) {
+                        HStack(spacing: 8) {
+                            Text(info.value)
+                                .font(.currentFont(size: 16, weight: .medium))
+                                .frame(height: 24)
+                                .foregroundStyle(info.valueColor)
+                            if let subValue = info.subValue {
+                                Text(subValue)
+                                    .font(.currentFont(size: 16, weight: .medium))
+                                    .foregroundStyle(Color.foregroundSecondary)
+                            }
+                        }
+                        if let errorMessage = info.errorMessage {
+                            Text(errorMessage)
+                                .font(.currentFont(size: 15, weight: .medium))
+                                .foregroundStyle(Color.foregroundDanger)
+                                .frame(height: 24)
+                        }
                     }
                 }
                 Spacer()
@@ -157,6 +169,7 @@ private extension ConfirmSendAssetReviewInfoView {
         let value: String
         var valueColor: Color = .foregroundDefault
         var subValue: String? = nil
+        var errorMessage: String? = nil
         var actions: [InfoActionDescription] = []
         var analyticName: Analytics.Button? = nil
     }
@@ -198,7 +211,9 @@ private extension ConfirmSendAssetReviewInfoView {
         switch asset {
         case .token(let dataModel):
             getSectionsForToken(selectedTxSpeed: dataModel.txSpeed,
-                                gasUsd: dataModel.gasFeeUsd)
+                                gasUsd: dataModel.gasFeeUsd, 
+                                gasFee: dataModel.gasFee, 
+                                token: dataModel.token)
         case .domain:
             getSectionsForDomain()
         }
@@ -245,7 +260,9 @@ private extension ConfirmSendAssetReviewInfoView {
     }
     
     func getSectionsForToken(selectedTxSpeed: SendCryptoAsset.TransactionSpeed,
-                             gasUsd: Double?) -> [SectionType] {
+                             gasUsd: Double?,
+                             gasFee: Double?,
+                             token: BalanceTokenUIDescription) -> [SectionType] {
         [getFromWalletInfoSection(),
          getChainInfoSection(),
          .infoValue(.init(title: String.Constants.speed.localized(),
@@ -255,10 +272,31 @@ private extension ConfirmSendAssetReviewInfoView {
                           valueColor: Color(uiColor: tintColorFor(txSpeed: selectedTxSpeed)),
                           actions: getTransactionSpeedActions(),
                           analyticName: .transactionSpeedSelection)),
-         .infoValue(.init(title: String.Constants.feeEstimate.localized(),
-                          icon: .tildaIcon,
-                          value: gasUsdTitleFor(gasUsd: gasUsd))),
+         getGasFeeSection(gasUsd: gasUsd,
+                          gasFee: gasFee,
+                          token: token),
          .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+    }
+    
+    func getGasFeeErrorMessage(gasFee: Double?,
+                               token: BalanceTokenUIDescription) -> String? {
+        guard let gasFee else { return nil }
+        
+        if let parent = token.parent,
+           parent.balance <= gasFee {
+            return String.Constants.insufficientToken.localized(parent.symbol)
+        }
+        return nil
+    }
+    
+    func getGasFeeSection(gasUsd: Double?,
+                          gasFee: Double?,
+                          token: BalanceTokenUIDescription) -> SectionType {
+        .infoValue(.init(title: String.Constants.feeEstimate.localized(),
+                         icon: .tildaIcon,
+                         value: gasUsdTitleFor(gasUsd: gasUsd),
+                         errorMessage: getGasFeeErrorMessage(gasFee: gasFee,
+                                                             token: token)))
     }
     
     func getFromWalletInfoSection() -> SectionType {

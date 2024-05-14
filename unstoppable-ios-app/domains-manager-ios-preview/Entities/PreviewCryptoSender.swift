@@ -22,7 +22,7 @@ struct CryptoSender: CryptoSenderProtocol {
     }
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
-        .init(wei: 12300)
+        .init(units: 0.11)
     }
     
     func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {

@@ -226,12 +226,24 @@ extension MockEntitiesFabric {
             mockEthToken()
         }
         
+        static func mockUSDTToken(parent: BlockchainType = .Ethereum) -> BalanceTokenUIDescription {
+            BalanceTokenUIDescription(chain: "ETH",
+                                      symbol: "USDT",
+                                      name: "USDT",
+                                      balance: 10,
+                                      balanceUsd: 10,
+                                      marketUsd: 1,
+                                      parent: .init(symbol: parent.rawValue,
+                                                    balance: 0,
+                                                    marketUsd: 3900))
+        }
+        
         static func mockEthToken() -> BalanceTokenUIDescription {
             BalanceTokenUIDescription(chain: "ETH",
                                       symbol: "ETH",
                                       name: "Ethereum",
                                       balance: 1,
-                                      balanceUsd: 1,
+                                      balanceUsd: 3900.34,
                                       marketUsd: 3900.34)
         }
         
