@@ -1060,7 +1060,7 @@ More tabs are coming in the next updates.";
 "MAX" = "Max";
 "TRANSFER_DOMAIN_CONFIRMATION_HINT" = "By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.";
 "TRANSFER_DOMAIN_SUCCESS_TITLE" = "Domain transfer\nhas started";
-"SEND_CRYPTO_SUCCESS_TITLE" = "Successfully sent";
+"SEND_CRYPTO_SUCCESS_TITLE" = "Transaction sent to the blockchain";
 "TRANSACTION_TAKES_N_MINUTES" = "This transaction usually takes ~%i minutes.";
 "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE" = "We will send all %@ less required network costs";
 "NOT_ENOUGH_TOKEN" = "Not enough %@";

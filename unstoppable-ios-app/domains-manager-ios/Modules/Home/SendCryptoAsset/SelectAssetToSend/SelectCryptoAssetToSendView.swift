@@ -64,7 +64,7 @@ private extension SelectCryptoAssetToSendView {
                 .sorted(by: { lhs, rhs in
                     lhs.balanceUsd > rhs.balanceUsd
                 })
-                .map { createTokenToSendFrom(token: $0, in: currencies) }
+                .compactMap { createTokenToSendFrom(token: $0, in: currencies) }
             
             self.notAddedTokens = tokens.filter { $0.address == nil }
             self.tokens = tokens.filter { $0.address != nil }
@@ -76,13 +76,18 @@ private extension SelectCryptoAssetToSendView {
     }
     
     func createTokenToSendFrom(token: BalanceTokenUIDescription,
-                               in currencies: [CoinRecord]) -> BalanceTokenToSend {
+                               in currencies: [CoinRecord]) -> BalanceTokenToSend? {
         if receiver.domainName != nil {
             let address = receiver.addressFor(token: token, in: currencies)
             return BalanceTokenToSend(token: token, address: address)
         }
         
-        return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+        switch token.blockchainType {
+        case .Ethereum, .Matic:
+            return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+        case .none:
+            return nil
+        }
     }
     
     struct BalanceTokenToSend: Identifiable {

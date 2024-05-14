@@ -946,7 +946,6 @@
 		C664B6492914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B6482914BE3D00A76154 /* DomainProfileMetadataSection.swift */; };
 		C664B6502914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B64E2914C0F000A76154 /* DomainProfileMetadataCell.swift */; };
 		C664B6542914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C664B64F2914C0F000A76154 /* DomainProfileMetadataCell.xib */; };
-		C664B6592914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B6582914EB0400A76154 /* EnterEmailValuePresenter.swift */; };
 		C664B6602914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B65E2914FAC100A76154 /* DomainProfileNoSocialsCell.swift */; };
 		C664B6642914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C664B65F2914FAC100A76154 /* DomainProfileNoSocialsCell.xib */; };
 		C664B66929153FE300A76154 /* DomainProfileWeb3WebsiteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B66829153FE300A76154 /* DomainProfileWeb3WebsiteSection.swift */; };
@@ -994,17 +993,8 @@
 		C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C354291168C000837F21 /* DomainProfileSocialsSection.swift */; };
 		C669C35C29117B1100837F21 /* DomainProfileSocialCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C35A29117B1100837F21 /* DomainProfileSocialCell.swift */; };
 		C669C36029117B1100837F21 /* DomainProfileSocialCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C35B29117B1100837F21 /* DomainProfileSocialCell.xib */; };
-		C669C3682912197C00837F21 /* EnterValueViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3652912197C00837F21 /* EnterValueViewPresenter.swift */; };
-		C669C36C2912197C00837F21 /* EnterValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3662912197C00837F21 /* EnterValueViewController.swift */; };
-		C669C3702912197C00837F21 /* EnterValueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C3672912197C00837F21 /* EnterValueViewController.xib */; };
-		C669C37529121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C37429121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift */; };
-		C669C37A2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3792912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift */; };
 		C669C37F29124C2600837F21 /* SocialsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C37E29124C2600837F21 /* SocialsType.swift */; };
 		C669C3842912576D00837F21 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3832912576D00837F21 /* UITextField.swift */; };
-		C669C38C2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3892912632100837F21 /* SocialsVerificationViewPresenter.swift */; };
-		C669C3902912632100837F21 /* SocialsVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C38A2912632100837F21 /* SocialsVerificationViewController.swift */; };
-		C669C3942912632100837F21 /* SocialsVerificationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C38B2912632100837F21 /* SocialsVerificationViewController.xib */; };
-		C669C399291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C398291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift */; };
 		C669C39E291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C39D291280C900837F21 /* DomainProfileBadgesSection.swift */; };
 		C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3A32912AD4200837F21 /* DomainProfileBadgeCell.swift */; };
 		C669C3A92912AD4200837F21 /* DomainProfileBadgeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C3A42912AD4200837F21 /* DomainProfileBadgeCell.xib */; };
@@ -1093,6 +1083,8 @@
 		C673D59D29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */; };
 		C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
+		C67681282BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
+		C67681292BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
 		C676812E2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */; };
 		C676812F2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */; };
 		C67681312BEC807B0093AFA0 /* UINavigationBarAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */; };
@@ -1105,8 +1097,6 @@
 		C676813C2BECB47C0093AFA0 /* ListItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C67681392BECB47B0093AFA0 /* ListItemView.xib */; };
 		C676813D2BECB47C0093AFA0 /* ListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676813A2BECB47C0093AFA0 /* ListItemView.swift */; };
 		C676813E2BECB47C0093AFA0 /* ListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C676813A2BECB47C0093AFA0 /* ListItemView.swift */; };
-		C67681282BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
-		C67681292BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */; };
 		C67684A32BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A42BCEB9AC0062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */; };
 		C67684A62BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */; };
@@ -2064,7 +2054,6 @@
 		C6D6466E2B1ED11B00D724AC /* DomainProfileTopInfoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3DD29027BE200A2B3A0 /* DomainProfileTopInfoData.swift */; };
 		C6D6466F2B1ED11B00D724AC /* DomainProfileSectionsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A352528F017220057D34B /* DomainProfileSectionsFactory.swift */; };
 		C6D646702B1ED11B00D724AC /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902C628E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift */; };
-		C6D646712B1ED11B00D724AC /* DomainProfileAddSocialNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C37429121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift */; };
 		C6D646722B1ED11B00D724AC /* DomainProfileUpdatingRecordsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B609291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift */; };
 		C6D646732B1ED11B00D724AC /* DomainProfileViewControllerItemsEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189828F8391700C6AD4D /* DomainProfileViewControllerItemsEntities.swift */; };
 		C6D646742B1ED11B00D724AC /* DomainProfileUpdateDataRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B5FF291936FD00F543A7 /* DomainProfileUpdateDataRequestType.swift */; };
@@ -2147,20 +2136,12 @@
 		C6D646C52B1ED24300D724AC /* GroupedCoinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C298B2834E30000626851 /* GroupedCoinRecord.swift */; };
 		C6D646C62B1ED24E00D724AC /* SocialsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C37E29124C2600837F21 /* SocialsType.swift */; };
 		C6D646C72B1ED25300D724AC /* WebsiteURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DF9865290F81D40098733A /* WebsiteURLValidator.swift */; };
-		C6D646C82B1ED25F00D724AC /* EnterValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3662912197C00837F21 /* EnterValueViewController.swift */; };
-		C6D646C92B1ED25F00D724AC /* EnterValueViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C3672912197C00837F21 /* EnterValueViewController.xib */; };
-		C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3652912197C00837F21 /* EnterValueViewPresenter.swift */; };
 		C6D646CE2B1ED27900D724AC /* ViewWithDashesProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60982702824094100546392 /* ViewWithDashesProgress.swift */; };
 		C6D646CF2B1ED28400D724AC /* PrimaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E1189D28F85BC600C6AD4D /* PrimaryWhiteButton.swift */; };
 		C6D646D02B1ED28800D724AC /* RaisedTertiaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3C129014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift */; };
 		C6D646D12B1ED29500D724AC /* DomainRecordsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEB02833BBE300978ED5 /* DomainRecordsData.swift */; };
-		C6D646D22B1ED2B900D724AC /* EnterDomainProfileSocialValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3792912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift */; };
 		C6D646D32B1ED2C800D724AC /* UDTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D0548D27FF07390036B200 /* UDTextField.swift */; };
 		C6D646D42B1ED2D500D724AC /* UDTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D0549227FF07470036B200 /* UDTextField.xib */; };
-		C6D646D52B1ED2E700D724AC /* SocialsVerificationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C669C38B2912632100837F21 /* SocialsVerificationViewController.xib */; };
-		C6D646D62B1ED2E700D724AC /* DomainProfileSocialsVerificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C398291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift */; };
-		C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C38A2912632100837F21 /* SocialsVerificationViewController.swift */; };
-		C6D646D82B1ED2E700D724AC /* SocialsVerificationViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C669C3892912632100837F21 /* SocialsVerificationViewPresenter.swift */; };
 		C6D646D92B1ED31100D724AC /* DomainProfileBadgeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */; };
 		C6D646DA2B1ED33400D724AC /* DomainProfileSocialAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */; };
 		C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646DB2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift */; };
@@ -2168,7 +2149,6 @@
 		C6D646E22B1ED49D00D724AC /* TableViewSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E34327FDB1310044E408 /* TableViewSelectionCell.swift */; };
 		C6D646E32B1ED49D00D724AC /* TableViewSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C628E34427FDB1310044E408 /* TableViewSelectionCell.xib */; };
 		C6D646E42B1ED4D000D724AC /* WalletAddressFieldCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAE828374C7300379C38 /* WalletAddressFieldCollectionCell.swift */; };
-		C6D646E52B1ED4E500D724AC /* EnterEmailValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B6582914EB0400A76154 /* EnterEmailValuePresenter.swift */; };
 		C6D646E62B1ED4EE00D724AC /* UserDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E83283E626400500B6D /* UserDataValidator.swift */; };
 		C6D646E92B1ED51100D724AC /* PreviewNFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646E72B1ED51100D724AC /* PreviewNFCService.swift */; };
 		C6D646EB2B1ED55F00D724AC /* NFCService+Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646EA2B1ED55F00D724AC /* NFCService+Entities.swift */; };
@@ -2336,6 +2316,8 @@
 		C6D6E59928194AC9008C66BB /* TextTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E59828194AC9008C66BB /* TextTertiaryButton.swift */; };
 		C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E5AC281A13B1008C66BB /* CollectionReusableRoundedBackground.swift */; };
 		C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */; };
+		C6D868192BF3218100EEBCFC /* EnterDomainEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D868182BF3218100EEBCFC /* EnterDomainEmailView.swift */; };
+		C6D8681A2BF3218100EEBCFC /* EnterDomainEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D868182BF3218100EEBCFC /* EnterDomainEmailView.swift */; };
 		C6D8FF1B2B82E7A80094A21E /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */; };
 		C6D8FF1C2B82E7A80094A21E /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */; };
 		C6D8FF1E2B82EB740094A21E /* TextMessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */; };
@@ -3304,7 +3286,6 @@
 		C664B6482914BE3D00A76154 /* DomainProfileMetadataSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileMetadataSection.swift; sourceTree = "<group>"; };
 		C664B64E2914C0F000A76154 /* DomainProfileMetadataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileMetadataCell.swift; sourceTree = "<group>"; };
 		C664B64F2914C0F000A76154 /* DomainProfileMetadataCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileMetadataCell.xib; sourceTree = "<group>"; };
-		C664B6582914EB0400A76154 /* EnterEmailValuePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailValuePresenter.swift; sourceTree = "<group>"; };
 		C664B65E2914FAC100A76154 /* DomainProfileNoSocialsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileNoSocialsCell.swift; sourceTree = "<group>"; };
 		C664B65F2914FAC100A76154 /* DomainProfileNoSocialsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileNoSocialsCell.xib; sourceTree = "<group>"; };
 		C664B66829153FE300A76154 /* DomainProfileWeb3WebsiteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteSection.swift; sourceTree = "<group>"; };
@@ -3350,17 +3331,8 @@
 		C669C354291168C000837F21 /* DomainProfileSocialsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialsSection.swift; sourceTree = "<group>"; };
 		C669C35A29117B1100837F21 /* DomainProfileSocialCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialCell.swift; sourceTree = "<group>"; };
 		C669C35B29117B1100837F21 /* DomainProfileSocialCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileSocialCell.xib; sourceTree = "<group>"; };
-		C669C3652912197C00837F21 /* EnterValueViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterValueViewPresenter.swift; sourceTree = "<group>"; };
-		C669C3662912197C00837F21 /* EnterValueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterValueViewController.swift; sourceTree = "<group>"; };
-		C669C3672912197C00837F21 /* EnterValueViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EnterValueViewController.xib; sourceTree = "<group>"; };
-		C669C37429121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileAddSocialNavigationController.swift; sourceTree = "<group>"; };
-		C669C3792912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterDomainProfileSocialValuePresenter.swift; sourceTree = "<group>"; };
 		C669C37E29124C2600837F21 /* SocialsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsType.swift; sourceTree = "<group>"; };
 		C669C3832912576D00837F21 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
-		C669C3892912632100837F21 /* SocialsVerificationViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsVerificationViewPresenter.swift; sourceTree = "<group>"; };
-		C669C38A2912632100837F21 /* SocialsVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsVerificationViewController.swift; sourceTree = "<group>"; };
-		C669C38B2912632100837F21 /* SocialsVerificationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsVerificationViewController.xib; sourceTree = "<group>"; };
-		C669C398291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSocialsVerificationPresenter.swift; sourceTree = "<group>"; };
 		C669C39D291280C900837F21 /* DomainProfileBadgesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgesSection.swift; sourceTree = "<group>"; };
 		C669C3A32912AD4200837F21 /* DomainProfileBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgeCell.swift; sourceTree = "<group>"; };
 		C669C3A42912AD4200837F21 /* DomainProfileBadgeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileBadgeCell.xib; sourceTree = "<group>"; };
@@ -3417,12 +3389,12 @@
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCNetworkFee.swift; sourceTree = "<group>"; };
 		C676812D2BEC806B0093AFA0 /* UIBarButtonItemAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItemAppearance.swift; sourceTree = "<group>"; };
 		C67681302BEC807B0093AFA0 /* UINavigationBarAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarAppearance.swift; sourceTree = "<group>"; };
 		C67681332BEC9ECD0093AFA0 /* UDListItemInCollectionButtonPaddingModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDListItemInCollectionButtonPaddingModifier.swift; sourceTree = "<group>"; };
 		C67681392BECB47B0093AFA0 /* ListItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListItemView.xib; sourceTree = "<group>"; };
 		C676813A2BECB47C0093AFA0 /* ListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListItemView.swift; sourceTree = "<group>"; };
-		C67681272BEC59C90093AFA0 /* FB_UD_MPCNetworkFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCNetworkFee.swift; sourceTree = "<group>"; };
 		C67684A22BCEB9A60062474F /* FB_UD_MPCRefreshBootstrapTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCRefreshBootstrapTokenResponse.swift; sourceTree = "<group>"; };
 		C67684A52BD21E0C0062474F /* FB_UD_MPCWalletAccountWithAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCWalletAccountWithAssets.swift; sourceTree = "<group>"; };
 		C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCSignMessageEncoding.swift; sourceTree = "<group>"; };
@@ -3893,6 +3865,7 @@
 		C6D6E59828194AC9008C66BB /* TextTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTertiaryButton.swift; sourceTree = "<group>"; };
 		C6D6E5AC281A13B1008C66BB /* CollectionReusableRoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackground.swift; sourceTree = "<group>"; };
 		C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		C6D868182BF3218100EEBCFC /* EnterDomainEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterDomainEmailView.swift; sourceTree = "<group>"; };
 		C6D8FF1A2B82E7A80094A21E /* MessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF1D2B82EB740094A21E /* TextMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageRowView.swift; sourceTree = "<group>"; };
 		C6D8FF202B82F3DC0094A21E /* ImageMessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMessageRowView.swift; sourceTree = "<group>"; };
@@ -5475,6 +5448,7 @@
 				C6D647932B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift */,
 				C63A350A28F0071B0057D34B /* DomainProfileViewController.swift */,
 				C63A350B28F0071B0057D34B /* DomainProfileViewController.xib */,
+				C6D868182BF3218100EEBCFC /* EnterDomainEmailView.swift */,
 				C6C4217529371428005B791B /* DomainProfileTutorial */,
 				C6E1189228F80CBA00C6AD4D /* CollectionReusableViews */,
 				C6011ABA28F4043700342666 /* Cells */,
@@ -5509,7 +5483,6 @@
 				C6124CE02924C236005E6537 /* CachedDomainProfileInfo.swift */,
 				C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */,
 				C63902C628E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift */,
-				C669C37429121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift */,
 				C60CB4EC2B201791007FD3CF /* DomainProfilePendingChanges.swift */,
 				C63A352528F017220057D34B /* DomainProfileSectionsFactory.swift */,
 				C63A352028F016780057D34B /* DomainProfileSectionType.swift */,
@@ -6212,29 +6185,6 @@
 				C669C35B29117B1100837F21 /* DomainProfileSocialCell.xib */,
 			);
 			path = DomainProfileSocialCell;
-			sourceTree = "<group>";
-		};
-		C669C3642912196300837F21 /* EnterValue */ = {
-			isa = PBXGroup;
-			children = (
-				C669C3652912197C00837F21 /* EnterValueViewPresenter.swift */,
-				C669C3792912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift */,
-				C664B6582914EB0400A76154 /* EnterEmailValuePresenter.swift */,
-				C669C3662912197C00837F21 /* EnterValueViewController.swift */,
-				C669C3672912197C00837F21 /* EnterValueViewController.xib */,
-			);
-			path = EnterValue;
-			sourceTree = "<group>";
-		};
-		C669C3882912630D00837F21 /* SocialsVerification */ = {
-			isa = PBXGroup;
-			children = (
-				C669C3892912632100837F21 /* SocialsVerificationViewPresenter.swift */,
-				C669C398291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift */,
-				C669C38A2912632100837F21 /* SocialsVerificationViewController.swift */,
-				C669C38B2912632100837F21 /* SocialsVerificationViewController.xib */,
-			);
-			path = SocialsVerification;
 			sourceTree = "<group>";
 		};
 		C669C3A22912AD2D00837F21 /* DomainProfileBadgeCell */ = {
@@ -7878,7 +7828,6 @@
 				C6F6AF6728A4D1D200A7B571 /* CustomScrollingBehaviourProtocols */,
 				C60CA26228324E7C00AB1B36 /* DomainDetails */,
 				C63A350828F006FB0057D34B /* DomainProfile */,
-				C669C3642912196300837F21 /* EnterValue */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
 				C6A89C622B31722E008AB043 /* HotFeatureSuggestion */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
@@ -7894,7 +7843,6 @@
 				C652629528110B6D00F1D699 /* SecurityWallViewController */,
 				C624D78E281BCA0100F55530 /* Settings */,
 				C6A2D5A7285061DF00327C47 /* SignTransactions */,
-				C669C3882912630D00837F21 /* SocialsVerification */,
 				C642A6A12841155700299C6E /* TransactionInProgress */,
 				C685D8112AA978DE00212879 /* UBTSearch */,
 				C6386840285C2D37000F98C4 /* UpgradeToPolygonTutorial */,
@@ -8513,7 +8461,6 @@
 				C62C3FB1283F67B60094FC93 /* NoDomainsToMintViewController.xib in Resources */,
 				C664B6542914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */,
 				C6A474D829D150A40073415F /* NoParkedDomainsFoundViewController.xib in Resources */,
-				C669C3702912197C00837F21 /* EnterValueViewController.xib in Resources */,
 				C6A2D53F284E13A300327C47 /* QRScannerPermissionsView.xib in Resources */,
 				C671E3A928FEA2D400A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C66804C5280D9EC8007E6390 /* DigitalKeyboardViewController.xib in Resources */,
@@ -8540,7 +8487,6 @@
 				C664B6642914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
 				C6AD181328D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
 				C685A95F28409AFE00E54044 /* MintDomainsConfigurationCardCell.xib in Resources */,
-				C669C3942912632100837F21 /* SocialsVerificationViewController.xib in Resources */,
 				306DB219268B2BFE009D95DE /* uns-config.json in Resources */,
 				C671E3BD290133E000A2B3A0 /* CropImageViewController.xib in Resources */,
 				C6A2D5B0285062D100327C47 /* BaseSignTransactionView.xib in Resources */,
@@ -8608,7 +8554,6 @@
 				C6960C412B19985C00B79E28 /* InfoPlist.strings in Resources */,
 				C6960C3F2B19984700B79E28 /* Colors.xcassets in Resources */,
 				C6C8F8902B21829000A9834D /* AppearanceSettingsViewController.xib in Resources */,
-				C6D646D52B1ED2E700D724AC /* SocialsVerificationViewController.xib in Resources */,
 				C6D647A82B1F18B000D724AC /* HappyEnd.storyboard in Resources */,
 				C6D646282B1DC2A700D724AC /* PullUpView.xib in Resources */,
 				C6C8F8B22B2182CF00A9834D /* MintDomainsConfigurationSelectionCell.xib in Resources */,
@@ -8692,7 +8637,6 @@
 				C6D6469B2B1ED14E00D724AC /* ManageMultiChainDomainAddressCell.xib in Resources */,
 				C6D647362B1ED9EF00D724AC /* PaymentTransactionGasOnlyCostView.xib in Resources */,
 				C6960C482B19986E00B79E28 /* HelveticaNeue-Custom.ttf in Resources */,
-				C6D646C92B1ED25F00D724AC /* EnterValueViewController.xib in Resources */,
 				C6C8F8192B217CC000A9834D /* WalletConnectedViewController.xib in Resources */,
 				C6C8F8E12B21836400A9834D /* NoParkedDomainsFoundViewController.xib in Resources */,
 				C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
@@ -8920,7 +8864,6 @@
 				C6124CCC29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				C69F99292A9F1264004B1958 /* View.swift in Sources */,
 				C671CD062BC66D6E005DA2FB /* EcomPurchaseMPCWalletService.swift in Sources */,
-				C669C38C2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6952A372BC500D200F4B475 /* FB_UD_MPCAccountAsset.swift in Sources */,
 				C6D6E5062817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
 				C69F99782A9F2206004B1958 /* PublicProfileFollowersView.swift in Sources */,
@@ -9000,7 +8943,6 @@
 				C671E3AC28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C63A77A828F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				29AA6AA42BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift in Sources */,
-				C664B6592914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
 				C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */,
 				C632BE592BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift in Sources */,
 				C628E36327FDDAA00044E408 /* UILabel.swift in Sources */,
@@ -9092,7 +9034,6 @@
 				C664311528D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C69F99212A9F1264004B1958 /* HexagonShape.swift in Sources */,
 				C66689502811717C002062B4 /* PasscodeButton.swift in Sources */,
-				C669C3682912197C00837F21 /* EnterValueViewPresenter.swift in Sources */,
 				29AA6AA82BAC389D00D24FB5 /* CryptoSender.swift in Sources */,
 				C6493A022B63A8B700457363 /* TrackingPressingStateModifier.swift in Sources */,
 				C650F8C42BA41A2A00BDA099 /* FireblocksKeyStorageProvider.swift in Sources */,
@@ -9247,6 +9188,7 @@
 				29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
 				C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */,
 				C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
+				C6D868192BF3218100EEBCFC /* EnterDomainEmailView.swift in Sources */,
 				C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C655CA972B16E51B00FDA063 /* View+Skeleton.swift in Sources */,
@@ -9373,7 +9315,6 @@
 				C6952A632BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift in Sources */,
 				C6952A342BC4FFC200F4B475 /* FB_UD_MPCAccount.swift in Sources */,
 				C60982A2282A588E00546392 /* NewExternalWalletConnectedPresenter.swift in Sources */,
-				C669C3902912632100837F21 /* SocialsVerificationViewController.swift in Sources */,
 				C64F8E042B60F4AF0075D37F /* ViewPullUpCustomContentConfiguration.swift in Sources */,
 				C68F15792BD76A550049BFA2 /* MPCWalletActivationState.swift in Sources */,
 				C669C35C29117B1100837F21 /* DomainProfileSocialCell.swift in Sources */,
@@ -9405,7 +9346,6 @@
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
 				C6E0DC5D2B71E2410069E100 /* ShareWalletInfoView.swift in Sources */,
-				C669C37529121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C6C8F8292B217D7C00A9834D /* WCRegistryWalletProxy.swift in Sources */,
 				C6952A482BC526F800F4B475 /* FB_UD_MPCValetStorage.swift in Sources */,
 				C6D6476B2B1EDFAA00D724AC /* WalletConnectClientUIHandler.swift in Sources */,
@@ -9671,7 +9611,6 @@
 				C691CFA828C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6A359352BB6BB2100B1209A /* TxHash.swift in Sources */,
 				C6B65FA42B5791B4006D1812 /* HomeWalletDomainCellView.swift in Sources */,
-				C669C37A2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6FF2D9C28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
 				C6534A992BBFBA10008EEBB5 /* HomeExploreTrendingProfilesSectionView.swift in Sources */,
 				C663A4D62B7D09490099BCE8 /* UpdateToWalletGreetingsView.swift in Sources */,
@@ -9833,12 +9772,10 @@
 				C6011AB628F4022300342666 /* DomainProfileCryptoSection.swift in Sources */,
 				C6C99592289D313D00367362 /* CNavigationHelper.swift in Sources */,
 				C6EECEA22833A67900978ED5 /* DomainRecordsServiceProtocol.swift in Sources */,
-				C669C399291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
 				C68F15702BD69E7E0049BFA2 /* MPCResendCodeButton.swift in Sources */,
 				C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */,
 				30BA2B302529020E0097817E /* Extensions.swift in Sources */,
 				C6DEA16A2BD8D2AB00838215 /* ActivateMPCWalletFlowNavigationDestination.swift in Sources */,
-				C669C36C2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				3048B47727FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */,
 				C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */,
 				C6B6858B280077F7000F9037 /* UIImage.swift in Sources */,
@@ -10018,7 +9955,6 @@
 				C632BE5A2BA59ECF00C95B2D /* FB_UD_MPCSuccessAuthResponse.swift in Sources */,
 				C6D646BA2B1ED1A300D724AC /* UDDomainSharingCardView.swift in Sources */,
 				C6D645B32B1DBC1A00D724AC /* DateFormattingService.swift in Sources */,
-				C6D646C82B1ED25F00D724AC /* EnterValueViewController.swift in Sources */,
 				C64939F92B6373EC00457363 /* DeviceShakeViewModifier.swift in Sources */,
 				C618087D2B19BC290032E543 /* AvatarStyleClipped.swift in Sources */,
 				C6952A672BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift in Sources */,
@@ -10288,7 +10224,6 @@
 				C6DA0B762B7C5F69009920B5 /* SectionSpacingModifier.swift in Sources */,
 				C6C8F8112B217CC000A9834D /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				C6B65F982B566B37006D1812 /* NFTDisplayInfo.swift in Sources */,
-				C6D646D72B1ED2E700D724AC /* SocialsVerificationViewController.swift in Sources */,
 				C6C8F9442B2184A000A9834D /* SceneDelegateProtocol.swift in Sources */,
 				C6D6472C2B1ED99F00D724AC /* ManageBackupsAction.swift in Sources */,
 				C6D645BB2B1DBC9100D724AC /* DomainDisplayInfo.swift in Sources */,
@@ -10314,7 +10249,6 @@
 				C63DBCC92BE492B8008F3D2C /* SettingsView.swift in Sources */,
 				C61808172B19AADA0032E543 /* FirebaseDomain.swift in Sources */,
 				C6A89C5E2B316540008AB043 /* HotFeaturesSuggestionsFetcher.swift in Sources */,
-				C6D646CA2B1ED26300D724AC /* EnterValueViewPresenter.swift in Sources */,
 				C6E8562A2BBE983900AAFDE4 /* PresentAsModalPreviewView.swift in Sources */,
 				C6D645CD2B1DBD4100D724AC /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				C6A3592F2BB68D9B00B1209A /* ConcreteCryptoSenderProtocol.swift in Sources */,
@@ -10621,7 +10555,6 @@
 				C6D646772B1ED12100D724AC /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C6534AC42BBFBAF5008EEBB5 /* SelectedUserProfileInfoStorageProtocol.swift in Sources */,
 				C6C8F8CF2B21832F00A9834D /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
-				C6D646712B1ED11B00D724AC /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C6C8F8232B217CC000A9834D /* CreateLocalWalletPresenter.swift in Sources */,
 				C617D0B12B9C334600607555 /* PublicProfileBadgesSectionView.swift in Sources */,
 				C6D6466D2B1ED11B00D724AC /* BadgeLeaderboardSelectionItem.swift in Sources */,
@@ -10738,8 +10671,6 @@
 				C6D646272B1DC2A700D724AC /* PullUpView.swift in Sources */,
 				C617FDAB2B590B6700B93433 /* NavigationViewWithCustomTitle.swift in Sources */,
 				C68F15742BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift in Sources */,
-				C6D646D82B1ED2E700D724AC /* SocialsVerificationViewPresenter.swift in Sources */,
-				C6D646E52B1ED4E500D724AC /* EnterEmailValuePresenter.swift in Sources */,
 				C6D645AC2B1DBB5700D724AC /* CollectionReusableRoundedBackground.swift in Sources */,
 				C6952A3B2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */,
 				C67213E32BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
@@ -10825,6 +10756,7 @@
 				C6D6461E2B1DC23600D724AC /* BlockChainItem.swift in Sources */,
 				C6C8F87D2B21827700A9834D /* LoginWithEmailViewPresenter.swift in Sources */,
 				C618085D2B19BBFE0032E543 /* CircleIconButton.swift in Sources */,
+				C6D8681A2BF3218100EEBCFC /* EnterDomainEmailView.swift in Sources */,
 				C6D646212B1DC25B00D724AC /* NamingService.swift in Sources */,
 				C6D647582B1EDC1C00D724AC /* CollectionTextHeaderReusableView.swift in Sources */,
 				C68A5AD32BDB7EA4003702A2 /* FB_UD_MPCOperationReadyResponse.swift in Sources */,
@@ -10965,7 +10897,6 @@
 				C6D646872B1ED12D00D724AC /* DomainProfileBadgesSection.swift in Sources */,
 				C6C8F9532B21858200A9834D /* PreviewValet.swift in Sources */,
 				C6C8F9252B2183B700A9834D /* PasscodeInputView.swift in Sources */,
-				C6D646D62B1ED2E700D724AC /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
 				C6203A5D2B88387B000A1A8E /* MockEntitiesFabric+Domains.swift in Sources */,
 				C6D646C62B1ED24E00D724AC /* SocialsType.swift in Sources */,
 				C6B65FAE2B57A5BB006D1812 /* DismissIndicatorView.swift in Sources */,
@@ -11000,7 +10931,6 @@
 				C6B65F8E2B565B1F006D1812 /* HomeWalletActionsView.swift in Sources */,
 				C6960C382B19973F00B79E28 /* NetworkConfig.swift in Sources */,
 				C6D646292B1DC2AB00D724AC /* PullUpCollectionViewCell.swift in Sources */,
-				C6D646D22B1ED2B900D724AC /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6B2E20D2B9702D800CEA1F9 /* DomainProfileSocialRelationshipDetails.swift in Sources */,
 				C6952A3E2BC5084000F4B475 /* NetworkBearerAuthorisationHeaderBuilder.swift in Sources */,
 				C6C8F80E2B217C8F00A9834D /* NSLayoutHelper.swift in Sources */,

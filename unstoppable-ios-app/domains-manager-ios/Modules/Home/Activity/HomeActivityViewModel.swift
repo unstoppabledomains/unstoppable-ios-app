@@ -17,7 +17,7 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
     
-    @Published private var txsResponse: WalletTransactionsResponse?
+    @Published private var txsResponses: [WalletTransactionsResponse] = []
     @Published private(set) var isLoadingMore = false
     private let router: HomeTabRouter
     private var selectedProfile: UserProfile
@@ -49,10 +49,10 @@ extension HomeActivityViewModel {
     private var txsDisplayInfo: [WalletTransactionDisplayInfo] {
         switch selectedProfile {
         case .wallet(let wallet):
-            return txsResponse?.txs.map {
+            return txsResponses.flatMap { $0.txs }.map {
                 WalletTransactionDisplayInfo(serializedTransaction: $0,
                                              userWallet: wallet.address)
-            } ?? []
+            }
         case .webAccount:
             return []
         }
@@ -60,7 +60,7 @@ extension HomeActivityViewModel {
     
     func willDisplayTransaction(_ transaction: WalletTransactionDisplayInfo) {
         let txsDisplayInfo = self.txsDisplayInfo.sorted(by: { $0.time > $1.time })
-        if txsResponse?.canLoadMore == true,
+        if txsResponses.first(where: { $0.canLoadMore }) != nil,
            !isLoadingMore,
            let i = txsDisplayInfo.firstIndex(where: { $0 == transaction }),
            i >= txsDisplayInfo.count - 6 {
@@ -88,7 +88,7 @@ private extension HomeActivityViewModel {
     }
     
     func didUpdateSelectedProfile() {
-        txsResponse = nil
+        txsResponses = []
         loadTxsForSelectedProfileNonBlocking(forceReload: true)
     }
     
@@ -103,12 +103,38 @@ private extension HomeActivityViewModel {
         
         isLoadingMore = true
         do {
-            let txsResponse = try await walletTransactionsService.getTransactionsFor(wallet: wallet.address,
-                                                                                     forceReload: forceReload)
-            self.txsResponse = txsResponse
+            let tokens = getWalletTokens()
+            let addresses = Set(tokens.map { $0.address })
+
+            var responses = [WalletTransactionsResponse]()
+            try await withThrowingTaskGroup(of: WalletTransactionsResponse.self) { group in
+                for address in addresses {
+                    group.addTask {
+                        try await self.walletTransactionsService.getTransactionsFor(wallet: address,
+                                                                                    forceReload: forceReload)
+                    }
+                }
+                
+                for try await response in group {
+                    responses.append(response)
+                }
+            }
+            
+            self.txsResponses = responses
         } catch {
             self.error = error
         }
         isLoadingMore = false
+    }
+    
+    func getWalletTokens() -> [BalanceTokenUIDescription] {
+        guard case .wallet(let wallet) = selectedProfile else { return [] }
+
+        switch wallet.getAssetsType() {
+        case .multiChain(let tokens):
+            return tokens
+        case .singleChain(let token):
+            return [token]
+        }
     }
 }

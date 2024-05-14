@@ -521,8 +521,7 @@ private extension WalletsDataService {
         switch wallet.udWallet.type {
         case .mpc:
             let mpcMetadata = try wallet.udWallet.extractMPCMetadata()
-            return try await mpcWalletsService.getBalancesFor(wallet: wallet.address,
-                                                              walletMetadata: mpcMetadata)
+            return try await mpcWalletsService.getBalancesFor(walletMetadata: mpcMetadata)
         default:
             return try await loadBalanceFor(walletAddress: wallet.address)
         }

@@ -307,17 +307,18 @@ extension ViewPullUpDefaultConfiguration {
               dismissCallback: dismissCallback)
     }
     
-    static func recordDoesNotMatchOwner(chain: BlockchainType,
+    static func recordDoesNotMatchOwner(ticker: String,
+                                        fullName: String,
                                         ownerAddress: String,
                                         updateRecordsCallback: @escaping MainActorAsyncCallback) async -> ViewPullUpDefaultConfiguration {
-        let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(chain.rawValue,
+        let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
                                                                                         size: .default,
                                                                                         style: .gray),
                                                                   downsampleDescription: .icon)
         
         return .init(icon: .init(icon: icon ?? .appleIcon,
                                  size: .large),
-                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(chain.fullName)),
+                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(fullName)),
                      subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnersAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
                                                              highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
                      actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
