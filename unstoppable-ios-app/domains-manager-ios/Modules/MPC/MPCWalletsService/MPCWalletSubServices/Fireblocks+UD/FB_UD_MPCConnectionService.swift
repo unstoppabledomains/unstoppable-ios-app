@@ -218,6 +218,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let start = Date()
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(symbol: symbol, chain: chain)
+        let amount = try trimAmount(amount, forAsset: asset)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let requestOperation = try await networkService.startAssetTransfer(accessToken: token,
                                                                            accountId: account.id,
@@ -251,6 +252,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         let account = connectedWalletDetails.firstAccount
         let asset = try account.getAssetWith(symbol: symbol, chain: chain)
+        let amount = try trimAmount(amount, forAsset: asset)
         let token = try await getAuthTokens(wallet: connectedWalletDetails)
         let estimations = try await networkService.getAssetTransferEstimations(accessToken: token,
                                                                                accountId: account.id,
@@ -266,6 +268,11 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
         
         return amount
+    }
+    
+    private func trimAmount(_ amount: Double, forAsset asset: FB_UD_MPC.WalletAccountAsset) throws -> Double {
+        let trimLimit = asset.balance?.decimals ?? 9
+        return amount.rounded(toDecimalPlaces: trimLimit)
     }
     
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
@@ -351,7 +358,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         for account in accounts {
             let assetsResponse = try await networkService.getAccountAssets(accountId: account.id,
                                                                            accessToken: accessToken,
-                                                                           includeBalances: false)
+                                                                           includeBalances: true)
             let accountWithAssets = FB_UD_MPC.WalletAccountWithAssets(account: account,
                                                                       assets: assetsResponse.items)
             accountsWithAssets.append(accountWithAssets)
@@ -425,6 +432,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case incorrectOperationState
         case missingNetworkFee
         case invalidNetworkFeeAmountFormat
+        case failedToTrimAmount
         
         public var errorDescription: String? {
             return rawValue
