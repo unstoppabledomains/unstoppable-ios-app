@@ -1219,7 +1219,10 @@ extension String {
         static let useDomainNameInsteadOfAddress = "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS"
         static let copyOrShareWalletAddress = "COPY_OR_SHARE_WALLET_ADDRESS"
         static let mpcProductName = "MPC_PRODUCT_NAME"
-        
+        static let mpcWrongVerificationCodeMessage = "MPC_WRONG_VERIFICATION_CODE_MESSAGE"
+        static let mpcWrongPasswordMessage = "MPC_WRONG_PASSWORD_MESSAGE"
+        static let change = "CHANGE"
+
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"

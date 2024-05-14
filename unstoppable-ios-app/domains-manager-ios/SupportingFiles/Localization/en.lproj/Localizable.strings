@@ -1113,6 +1113,9 @@ More tabs are coming in the next updates.";
 "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS" = "Use your domain name instead of long wallet addresses in supported apps";
 "COPY_OR_SHARE_WALLET_ADDRESS" = "Copy or share wallet addresses to request crypto or Unstoppable domains";
 "MPC_PRODUCT_NAME" = "Unstoppable Wallet";
+"MPC_WRONG_VERIFICATION_CODE_MESSAGE" = "You’ve entered wrong verification code";
+"MPC_WRONG_PASSWORD_MESSAGE" = "You’ve entered wrong password for %@";
+"CHANGE" = "Change";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

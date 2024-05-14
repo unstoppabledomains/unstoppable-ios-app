@@ -143,10 +143,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                        let view = await appContext.coreAppCoordinator.topVC {
                        await view.shareItems([logsURL], completion: nil)
                     }
-                    continuation.finish(throwing: error)
-                    #else
-                    continuation.finish(throwing: error)
                     #endif
+                    continuation.finish(throwing: error)
                 }
             }
         }

@@ -49,9 +49,9 @@ private extension MPCActivateWalletEnterView {
     var title: String {
         switch dataType {
         case .passcode:
-            "You’ve entered wrong verification code"
+            String.Constants.mpcWrongVerificationCodeMessage.localized()
         case .password:
-            "You’ve entered wrong password for MPC Wallet"
+            String.Constants.mpcWrongPasswordMessage.localizedMPCProduct()
         }
     }
     
@@ -82,20 +82,11 @@ private extension MPCActivateWalletEnterView {
                 dismiss()
                 changeEmailCallback()
             } label: {
-                Text("Change")
+                Text(String.Constants.change.localized())
                     .foregroundStyle(Color.foregroundAccent)
                     .font(.currentFont(size: 16, weight: .medium))
             }
             .buttonStyle(.plain)
-        }
-    }
-    
-    var subtitle: String {
-        switch dataType {
-        case .passcode:
-            "You’ve entered wrong verification code"
-        case .password:
-            "You’ve entered wrong password for MPC Wallet"
         }
     }
     
