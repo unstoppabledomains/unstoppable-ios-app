@@ -89,13 +89,27 @@ private extension SettingsProfileTileView {
         }
     }
     
+    private var primaryIconTintColor: Color {
+        switch profile {
+        case .wallet(let wallet):
+            switch wallet.displayInfo.source {
+            case .external, .locallyGenerated, .imported:
+                return .foregroundDefault
+            case .mpc:
+                return .white
+            }
+        case .webAccount:
+            return .foregroundDefault
+        }
+    }
+    
     @ViewBuilder
     func profilePrimaryIconWith(image: Image,
                                 isFullImage: Bool,
                                 background: Color) -> some View {
         image
             .resizable()
-            .foregroundStyle(Color.white)
+            .foregroundStyle(primaryIconTintColor)
             .squareFrame(isFullImage ? 40 : 24)
             .padding(isFullImage ? 0 : 8)
             .background(background)

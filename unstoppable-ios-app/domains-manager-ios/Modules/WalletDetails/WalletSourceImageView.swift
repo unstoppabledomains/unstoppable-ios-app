@@ -20,9 +20,19 @@ struct WalletSourceImageView: View {
         }
     }
     
+    private var tintColor: Color {
+        switch displayInfo.source {
+        case .external, .locallyGenerated, .imported:
+            return .foregroundDefault
+        case .mpc:
+            return .white
+        }
+    }
+    
     var body: some View {
         Image(uiImage: displayInfo.source.displayIcon)
             .resizable()
+            .foregroundStyle(tintColor)
             .squareFrame(isCenteredImage ? 40 : 80)
             .padding(isCenteredImage ? 20 : 0)
             .background(displayInfo.source == .mpc ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)

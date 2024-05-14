@@ -744,13 +744,20 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
                                                      preRequestedAction: preRequestedAction,
                                                      sourceScreen: sourceScreen, 
                                                      tabRouter: tabRouter)
-        let nav = UINavigationController(rootViewController: vc)
+        let nav = ProfileNavController(rootViewController: vc)
         nav.isModalInPresentation = true
 
         return nav
     }
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+    final class ProfileNavController: UINavigationController {
+        override var traitCollection: UITraitCollection {
+            UITraitCollection(traitsFrom: [super.traitCollection, UITraitCollection(userInterfaceStyle: .dark)])
+        }
+    }
+    
 }
 
 #Preview {
