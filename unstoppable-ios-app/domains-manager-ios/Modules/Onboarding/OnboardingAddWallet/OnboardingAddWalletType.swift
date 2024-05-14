@@ -22,7 +22,7 @@ enum OnboardingAddWalletType: OnboardingStartOption {
     var title: String {
         switch self {
         case .mpcWallet:
-            return "MPC Wallet"
+            return String.Constants.mpcProductName.localized()
         case .selfCustody:
             return String.Constants.selfCustody.localized()
         }
