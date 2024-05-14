@@ -25,7 +25,7 @@ struct WalletSourceImageView: View {
             .resizable()
             .squareFrame(isCenteredImage ? 40 : 80)
             .padding(isCenteredImage ? 20 : 0)
-            .background(Color.backgroundMuted2)
+            .background(displayInfo.source == .mpc ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
             .clipShape(Circle())
             .overlay(
                 Circle()

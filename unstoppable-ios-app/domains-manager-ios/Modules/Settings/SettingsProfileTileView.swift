@@ -77,11 +77,28 @@ private extension SettingsProfileTileView {
     
     @ViewBuilder
     func profilePrimaryIconView() -> some View {
-        Image.shieldKeyhole
+        switch profile {
+        case .wallet(let wallet):
+            profilePrimaryIconWith(image: Image(uiImage: wallet.displayInfo.source.displayIcon),
+                                   isFullImage: wallet.udWallet.type == .externalLinked,
+                                   background: wallet.displayInfo.source == .mpc ? .backgroundAccentEmphasis : .backgroundMuted2)
+        case .webAccount:
+            profilePrimaryIconWith(image: .vaultSafeIcon,
+                                   isFullImage: false,
+                                   background: .backgroundMuted2)
+        }
+    }
+    
+    @ViewBuilder
+    func profilePrimaryIconWith(image: Image,
+                                isFullImage: Bool,
+                                background: Color) -> some View {
+        image
             .resizable()
-            .squareFrame(24)
-            .padding(8)
-            .background(Color.backgroundAccentEmphasis)
+            .foregroundStyle(Color.white)
+            .squareFrame(isFullImage ? 40 : 24)
+            .padding(isFullImage ? 0 : 8)
+            .background(background)
             .clipShape(Circle())
             .padding(4)
             .background(Color.backgroundOverlay)
