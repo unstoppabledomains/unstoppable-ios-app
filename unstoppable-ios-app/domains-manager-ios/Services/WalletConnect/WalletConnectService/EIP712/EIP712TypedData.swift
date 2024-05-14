@@ -102,9 +102,9 @@ extension EIP712TypedData {
                 try valueTypes.forEach { field in
                     if let _ = types[field.type],
                         let json = data[field.name] {
-                        let nestEncoded = encodeData(data: json, type: field.type)
+                        let nestEncoded = encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
                         values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
-                    } else if let value = makeABIValue(data: data[field.name], type: field.type) {
+                    } else if let value = makeABIValue(data: data[field.name], type: field.type.removeEndingBracketsIfAny) {
                         values.append(value)
                     }
                 }
@@ -538,5 +538,9 @@ extension String {
     var removeEndingBracketsIfAny: String {
         if self.suffix(2) == "[]" { return String(self.dropLast(2)) }
         return self
+    }
+    
+    var hexToData: Data? {
+        Data(self.hexToBytes())
     }
 }
