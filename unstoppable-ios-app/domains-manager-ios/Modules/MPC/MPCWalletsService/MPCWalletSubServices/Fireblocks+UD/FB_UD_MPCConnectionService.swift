@@ -270,9 +270,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return amount
     }
     
-    private func trimAmount(_ amount: Double, forAsset asset: FB_UD_MPC.WalletAccountAsset) throws -> Double {
+    private func trimAmount(_ amount: Double, forAsset asset: FB_UD_MPC.WalletAccountAsset) throws -> String {
         let trimLimit = asset.balance?.decimals ?? 9
-        return amount.rounded(toDecimalPlaces: trimLimit)
+        return amount.formatted(toMaxNumberAfterComa: trimLimit)
     }
     
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {

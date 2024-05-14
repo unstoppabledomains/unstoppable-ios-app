@@ -243,13 +243,13 @@ extension FB_UD_MPC {
                                 accountId: String,
                                 assetId: String,
                                 destinationAddress: String,
-                                amount: Double) async throws -> OperationDetails {
+                                amount: String) async throws -> OperationDetails {
             struct RequestBody: Codable {
                 let destinationAddress: String
                 let amount: String
             }
             
-            let body = RequestBody(destinationAddress: destinationAddress, amount: String(amount))
+            let body = RequestBody(destinationAddress: destinationAddress, amount: amount)
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetTransfersURL(accountId: accountId, assetId: assetId)
             let request = try APIRequest(urlString: url,
@@ -353,13 +353,13 @@ extension FB_UD_MPC {
                                          accountId: String,
                                          assetId: String,
                                          destinationAddress: String,
-                                         amount: Double) async throws -> NetworkFeeResponse {
+                                         amount: String) async throws -> NetworkFeeResponse {
             struct RequestBody: Codable {
                 let destinationAddress: String
                 let amount: String
             }
             
-            let body = RequestBody(destinationAddress: destinationAddress, amount: String(amount))
+            let body = RequestBody(destinationAddress: destinationAddress, amount: amount)
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetTransfersEstimatesURL(accountId: accountId, assetId: assetId)
             let request = try APIRequest(urlString: url,
