@@ -281,7 +281,7 @@ private extension WalletsDataService {
             if pendingTransactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
             } else if pendingTransactions.containMintingInProgress(domain) {
-                domainState = .minting
+                domainState = .transfer
             } else if pendingTransactions.containReverseResolutionOperationProgress(domain) {
                 domainState = .updatingReverseResolution
             } else if pendingTransactions.containPending(domain) {

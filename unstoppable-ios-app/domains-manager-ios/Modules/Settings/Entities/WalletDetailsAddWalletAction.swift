@@ -21,7 +21,7 @@ enum WalletDetailsAddWalletAction: String, CaseIterable, PullUpCollectionViewCel
         case .connect:
             return String.Constants.connectWalletExternal.localized()
         case .mpc:
-            return "Import MPC Wallet"
+            return String.Constants.importMPCWalletTitle.localizedMPCProduct()
         }
     }
     

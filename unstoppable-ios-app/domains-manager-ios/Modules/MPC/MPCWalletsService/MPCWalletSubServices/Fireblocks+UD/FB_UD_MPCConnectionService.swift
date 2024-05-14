@@ -143,10 +143,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                        let view = await appContext.coreAppCoordinator.topVC {
                        await view.shareItems([logsURL], completion: nil)
                     }
-                    continuation.finish(throwing: error)
-                    #else
-                    continuation.finish(throwing: error)
                     #endif
+                    continuation.finish(throwing: error)
                 }
             }
         }
@@ -270,9 +268,9 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         return amount
     }
     
-    private func trimAmount(_ amount: Double, forAsset asset: FB_UD_MPC.WalletAccountAsset) throws -> Double {
+    private func trimAmount(_ amount: Double, forAsset asset: FB_UD_MPC.WalletAccountAsset) throws -> String {
         let trimLimit = asset.balance?.decimals ?? 9
-        return amount.rounded(toDecimalPlaces: trimLimit)
+        return amount.formatted(toMaxNumberAfterComa: trimLimit)
     }
     
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {

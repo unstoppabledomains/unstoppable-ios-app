@@ -20,7 +20,7 @@ struct CryptoSender: UniversalCryptoSenderProtocol {
     }
     
     func computeGasFeeFor(dataToSend: CryptoSenderDataToSend) async throws -> EVMCoinAmount {
-        .init(wei: 12300)
+        .init(units: 0.11)
     }
     
     func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {

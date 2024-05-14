@@ -75,7 +75,7 @@ private extension MPCActivateWalletStateCardView {
                     .font(.currentFont(size: 28, weight: .bold))
                     .foregroundStyle(Color.foregroundDefault)
                     .minimumScaleFactor(0.6)
-                Text("MPC Wallet")
+                Text(String.Constants.mpcProductName.localized())
                     .font(.currentFont(size: 16))
                     .foregroundStyle(Color.foregroundDefault)
             }

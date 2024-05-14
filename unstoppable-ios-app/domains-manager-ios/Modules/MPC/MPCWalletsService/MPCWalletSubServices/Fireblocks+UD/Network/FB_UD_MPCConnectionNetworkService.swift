@@ -38,7 +38,7 @@ extension FB_UD_MPC {
                                 accountId: String,
                                 assetId: String,
                                 destinationAddress: String,
-                                amount: Double) async throws -> OperationDetails
+                                amount: String) async throws -> OperationDetails
         func waitForOperationReadyAndGetTxId(accessToken: String,
                                              operationId: String) async throws -> OperationReadyResponse
         func waitForOperationSignedAndGetTxSignature(accessToken: String,
@@ -53,6 +53,6 @@ extension FB_UD_MPC {
                                          accountId: String,
                                          assetId: String,
                                          destinationAddress: String,
-                                         amount: Double) async throws -> NetworkFeeResponse
+                                         amount: String) async throws -> NetworkFeeResponse
     }
 }
