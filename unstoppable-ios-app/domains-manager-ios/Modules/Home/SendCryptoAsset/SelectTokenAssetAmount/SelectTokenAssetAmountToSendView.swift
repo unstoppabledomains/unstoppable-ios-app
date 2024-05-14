@@ -246,7 +246,9 @@ private extension SelectTokenAssetAmountToSendView {
     func maxButtonPressed() {
         guard !isUsingMax else { return }
         
-        pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
+        if !token.isERC20Token {
+            pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
+        }
         setMaxInputValue()
     }
     

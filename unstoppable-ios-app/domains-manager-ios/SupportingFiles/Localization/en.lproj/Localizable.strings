@@ -516,6 +516,7 @@
 "BALANCE" = "Balance";
 "ESTIMATED_FEE" = "Estimated fee";
 "INSUFFICIENT_BALANCE" = "Insufficient balance";
+"INSUFFICIENT_TOKEN" = "Insufficient %@";
 "NETWORK" = "Network";
 
 "WALLET_VERIFIED_INFO_TITLE" = "Verified";

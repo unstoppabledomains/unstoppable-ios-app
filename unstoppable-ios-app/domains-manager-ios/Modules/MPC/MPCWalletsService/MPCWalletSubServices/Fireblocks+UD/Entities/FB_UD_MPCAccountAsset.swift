@@ -48,14 +48,15 @@ extension FB_UD_MPC {
             }
             
             var token = BalanceTokenUIDescription(address: address,
-                                             chain: chain,
-                                             symbol: symbol,
-                                             name: name,
-                                             balance: 0,
-                                             balanceUsd: 0)
+                                                  chain: chain,
+                                                  symbol: symbol,
+                                                  name: name,
+                                                  balance: 0,
+                                                  balanceUsd: 0)
             
             if let parentSymbol {
-                token.parentSymbol = parentSymbol
+                token.parent = .init(symbol: parentSymbol,
+                                     balance: 0.0)
             }
             
             return token

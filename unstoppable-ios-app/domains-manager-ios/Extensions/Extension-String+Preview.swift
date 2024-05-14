@@ -625,6 +625,7 @@ extension String {
         static let balance = "BALANCE"
         static let estimatedFee = "ESTIMATED_FEE"
         static let insufficientBalance = "INSUFFICIENT_BALANCE"
+        static let insufficientToken = "INSUFFICIENT_TOKEN"
         static let network = "NETWORK"
         
         static let walletVerifiedInfoTitle = "WALLET_VERIFIED_INFO_TITLE"
