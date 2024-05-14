@@ -15,4 +15,8 @@ extension String {
     func localized(_ args: CVarArg...) -> String {
         String(format: NSLocalizedString(self, comment: ""), arguments: args)
     }
+    
+    func localizedMPCProduct() -> String {
+        self.localized(String.Constants.mpcProductName.localized())
+    }
 }

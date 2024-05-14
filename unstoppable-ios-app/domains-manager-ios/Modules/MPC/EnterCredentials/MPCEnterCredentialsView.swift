@@ -40,10 +40,10 @@ private extension MPCEnterCredentialsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.importMPCWalletTitle.localized())
+            Text(String.Constants.importMPCWalletTitle.localizedMPCProduct())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-            Text(String.Constants.importMPCWalletSubtitle.localized())
+            Text(String.Constants.importMPCWalletSubtitle.localizedMPCProduct())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)

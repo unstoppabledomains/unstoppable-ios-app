@@ -1217,6 +1217,7 @@ extension String {
         static let chooseAddressToShare = "CHOOSE_ADDRESS_TO_SHARE"
         static let useDomainNameInsteadOfAddress = "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS"
         static let copyOrShareWalletAddress = "COPY_OR_SHARE_WALLET_ADDRESS"
+        static let mpcProductName = "MPC_PRODUCT_NAME"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
