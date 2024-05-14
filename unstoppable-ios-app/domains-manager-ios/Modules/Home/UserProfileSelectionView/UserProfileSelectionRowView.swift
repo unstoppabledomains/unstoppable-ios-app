@@ -110,7 +110,7 @@ private extension UserProfileSelectionRowView {
     func imageStyleForProfile(_ profile: UserProfile) -> UDListItemView.ImageStyle {
         switch profile {
         case .wallet(let wallet):
-            if domainAvatarImage != nil {
+            if domainAvatarImage != nil || wallet.udWallet.type == .externalLinked {
                 return .full
             }
             return .centred(foreground:wallet.udWallet.type == .mpc ? .foregroundOnEmphasis : .foregroundDefault,

@@ -11,7 +11,6 @@ import SwiftUI
 final class TransactionStatusTracker: ObservableObject {
     
     @Published private(set) var txHash: String?
-    @Published private(set) var didFinishTransaction = false
     private var refreshTimer: Timer?
     
     private var trackingTransaction: TransactionType?
@@ -53,8 +52,7 @@ private extension TransactionStatusTracker {
                 case .domainTransfer(let domain):
                     try await refreshTransactionStatusForDomain(domain)
                 case .txHash(let txHash):
-                    self.txHash = txHash
-                    stopRefreshTimer()
+                    setTxHash(txHash)
                 case .none:
                     stopRefreshTimer()
                 }
@@ -68,13 +66,17 @@ private extension TransactionStatusTracker {
     func refreshTransactionStatusForDomain(_ domain: DomainItem) async throws {
         let transactions = try await appContext.domainTransactionsService.updatePendingTransactionsListFor(domains: [domain])
         
-        if let transaction = transactions
+        if let transactionHash = transactions
             .filterPending(extraCondition: { $0.operation == .transferDomain })
-            .first {
-            txHash = transaction.transactionHash
-        } else {
-            didFinishTransaction = true
+            .first?
+            .transactionHash {
+            setTxHash(transactionHash)
         }
+    }
+    
+    func setTxHash(_ txHash: String) {
+        self.txHash = txHash
+        stopRefreshTimer()
     }
 }
 

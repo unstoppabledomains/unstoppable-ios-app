@@ -80,6 +80,46 @@ struct NetworkConfig {
     
     private static let okLinkBaseURL = "https://www.oklink.com"
     
+    private static func okLinkChainIdentifierFor(symbol: String) -> String? {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+
+        switch symbol {
+        case "ETH":
+            if isTestnetUsed {
+                return "sepolia-test"
+            }
+            return "eth"
+        case "MATIC":
+            if isTestnetUsed {
+                return "amoy"
+            }
+            return "polygon"
+        case "SOL":
+            if isTestnetUsed {
+                return nil
+            }
+            return "sol"
+        case "BTC":
+            if isTestnetUsed {
+                return nil
+            }
+            return "btc"
+        case "BASE":
+            if isTestnetUsed {
+                return nil
+            }
+            return "base"
+        default:
+            return nil
+        }
+    }
+    
+    static func baseNetworkScanUrl(symbol: String) -> String {
+        guard let identifier = okLinkChainIdentifierFor(symbol: symbol) else { return "" }
+        
+        return okLinkBaseURL + "/\(identifier)"
+    }
+    
     static var basePolygonNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
@@ -94,11 +134,6 @@ struct NetworkConfig {
             return okLinkBaseURL + "/sepolia-test"
         }
         return okLinkBaseURL + "/eth"
-    }
-    
-    static func currencyIconUrl(for currency: CoinRecord) -> String {
-        let url = "https://storage.googleapis.com/unstoppable-client-assets/images/icons/\(currency.ticker)/icon.svg"
-        return url
     }
     
     static func currencyIconUrl(for ticker: String) -> String {

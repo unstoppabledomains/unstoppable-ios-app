@@ -29,6 +29,7 @@ struct ViewPullUp: ViewModifier {
                 }
             }, content: { type in
                 pullUpContentView(type: type)
+                    .background(Color.backgroundDefault)
                     .onAppear {
                         appContext.analyticsService.log(event: .pullUpDidAppear,
                                                         withParameters: [.pullUpName : type.analyticName.rawValue].adding(type.additionalAnalyticParameters))

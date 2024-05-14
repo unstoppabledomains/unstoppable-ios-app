@@ -80,15 +80,9 @@ extension EVMCryptoSender {
     
     private func fetchGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
         // here routes to Status or Infura source
-        
-        let prices: EstimatedGasPrices
-        do {
-            prices = try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
-        } catch {
-            try await Task.sleep(nanoseconds: 500_000_000)
-            return try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
+        try await NetworkService().doubleAttempt {
+            try await NetworkService().fetchInfuraGasPrices(chainId: chainId)
         }
-        return prices
     }
 }
 

@@ -865,19 +865,14 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         guard transaction.nonce == nil else {
             return transaction
         }
-        
-        guard let nonce = await fetchNonce(transaction: transaction, chainId: chainId),
-              let nonceBig = BigUInt(nonce.droppedHexPrefix, radix: 16) else {
-            throw WalletConnectRequestError.failedFetchNonce
-        }
         var newTx = transaction
-        newTx.nonce = EthereumQuantity(quantity: nonceBig)
+        newTx.nonce = try await fetchNonce(transaction: transaction, chainId: chainId)
         return newTx
     }
     
-    private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async -> String? {
-        guard let addressString = transaction.from?.hex() else { return nil }
-        return await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
+    private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumQuantity {
+        guard let addressString = transaction.from?.hex() else { throw WalletConnectRequestError.failedFetchNonce }
+        return try await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
     }
 }
 

@@ -13,6 +13,7 @@ extension String {
         case udLogoPng
         case etherScanAddress(_ address: String), polygonScanAddress(_ address: String)
         case etherScanTransaction(_ transaction: String), polygonScanTransaction(_ transaction: String)
+        case scanTransaction(symbol: String, transaction: String)
         case deprecatedCoinTLDPage
         case domainProfilePage(domainName: String)
         case ensDomainProfilePage(domainName: String)
@@ -57,6 +58,8 @@ extension String {
                 return "https://unstoppabledomains.com/"
             case .mintDomainGuide:
                 return "https://cdn.unstoppabledomains.com/bucket/mobile-app/what_is_minting.mp4"
+            case .scanTransaction(let symbol, let transaction):
+                return NetworkConfig.baseNetworkScanUrl(symbol: symbol) + "/tx/\(transaction)"
             case .etherScanTransaction(let transaction):
                 return NetworkConfig.baseEthereumNetworkScanUrl + "/tx/\(transaction)"
             case .polygonScanTransaction(let transaction):
@@ -404,6 +407,7 @@ extension String {
         static let transactionFailed = "TRANSACTION_FAILED"
         static let connectionLost = "CONNECTION_LOST"
         static let gasFeeFailed = "GAS_FEE_FETCH_FAILED"
+        static let nonceFailed = "NONCE_FETCH_FAILED"
         static let pleaseCheckInternetConnection = "PLEASE_CHECK_INTERNET_CONNECTION"
         static let failedToPickImageFromPhotoLibraryErrorMessage = "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE"
         static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"

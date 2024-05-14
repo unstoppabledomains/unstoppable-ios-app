@@ -42,5 +42,8 @@ struct SettingsProfilesView: View, ViewAnalyticsLogger {
 
 
 #Preview {
-    SettingsProfilesView(profiles: [MockEntitiesFabric.Profile.createWalletProfile()])
+    SettingsProfilesView(profiles: [MockEntitiesFabric.Profile.createWalletProfile(),
+                                    MockEntitiesFabric.Profile.createExternalWalletProfile(),
+                                    MockEntitiesFabric.Profile.createWebAccountProfile(),
+                                    ])
 }

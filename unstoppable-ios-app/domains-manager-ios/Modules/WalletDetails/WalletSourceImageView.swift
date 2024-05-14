@@ -13,19 +13,29 @@ struct WalletSourceImageView: View {
     
     private var isCenteredImage: Bool {
         switch displayInfo.source {
-        case .locallyGenerated, .external:
+        case .external:
             return false
-        case .imported, .mpc:
+        case .locallyGenerated, .imported, .mpc:
             return true
+        }
+    }
+    
+    private var tintColor: Color {
+        switch displayInfo.source {
+        case .external, .locallyGenerated, .imported:
+            return .foregroundDefault
+        case .mpc:
+            return .white
         }
     }
     
     var body: some View {
         Image(uiImage: displayInfo.source.displayIcon)
             .resizable()
+            .foregroundStyle(tintColor)
             .squareFrame(isCenteredImage ? 40 : 80)
             .padding(isCenteredImage ? 20 : 0)
-            .background(Color.backgroundMuted2)
+            .background(displayInfo.source == .mpc ? Color.backgroundAccentEmphasis : Color.backgroundMuted2)
             .clipShape(Circle())
             .overlay(
                 Circle()

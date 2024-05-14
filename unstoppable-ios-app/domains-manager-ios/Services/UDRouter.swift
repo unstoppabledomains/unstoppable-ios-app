@@ -286,22 +286,11 @@ class UDRouter: DomainProfileSignatureValidator {
         return true
     }
     
-    func runAddSocialsFlow(with mode: DomainProfileAddSocialNavigationController.Mode,
-                           socialType: SocialsType,
-                           socialVerifiedCallback: @escaping DomainProfileAddSocialNavigationController.SocialVerifiedCallback,
-                           in viewController: CNavigationController) {
-        let mintDomainsNavigationController = DomainProfileAddSocialNavigationController(mode: mode, socialType: socialType)
-        mintDomainsNavigationController.socialVerifiedCallback = socialVerifiedCallback
-        viewController.pushViewController(mintDomainsNavigationController,
-                                          animated: true)
-        mintDomainsNavigationController.navigationBar.isModalInPageSheet = viewController.navigationBar.isModalInPageSheet
-    }
-    
-    func showEnterEmailValueModule(in nav: CNavigationController,
+    func showEnterEmailValueModule(in nav: UINavigationController,
                                     email: String?,
                                     enteredEmailValueCallback: @escaping EnterEmailValueCallback) {
-        let vc = buildEnterEmailValueModule(email: email,
-                                            enteredEmailValueCallback: enteredEmailValueCallback)
+        let vc = UIHostingController(rootView: EnterDomainEmailView(email: email ?? "",
+                                                                    enteredEmailValueCallback: enteredEmailValueCallback))
         
         nav.pushViewController(vc, animated: true)
     }
@@ -609,16 +598,6 @@ private extension UDRouter {
                                                                             walletInfo: walletInfo,
                                                                             transactionsService: appContext.domainTransactionsService,
                                                                             notificationsService: appContext.notificationsService)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildEnterEmailValueModule(email: String?,
-                                    enteredEmailValueCallback: @escaping EnterEmailValueCallback) -> UIViewController {
-        let vc = EnterValueViewController.nibInstance()
-        let presenter = EnterEmailValuePresenter(view: vc,
-                                                 email: email,
-                                                 enteredEmailValueCallback: enteredEmailValueCallback)
         vc.presenter = presenter
         return vc
     }

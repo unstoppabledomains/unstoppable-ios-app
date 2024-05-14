@@ -187,6 +187,11 @@ fileprivate extension ImageLoadingService {
             }
             return await fetchImageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
         case .currencyTicker(let ticker, let size, let style):
+            if let image = UIImage(named: ticker) {
+                cacheStorage.cache(image: image, forKey: source.keyFor(downsampleDescription: downsampleDescription))
+                await storeImage(image, for: source)
+                return image
+            }
             if let url = URL(string: NetworkConfig.currencyIconUrl(for: ticker)),
                let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 cacheStorage.cache(image: image, forKey: source.keyFor(downsampleDescription: downsampleDescription))

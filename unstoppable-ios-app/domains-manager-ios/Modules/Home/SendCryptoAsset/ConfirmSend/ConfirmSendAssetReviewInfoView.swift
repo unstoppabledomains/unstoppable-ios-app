@@ -185,10 +185,10 @@ private extension ConfirmSendAssetReviewInfoView {
         
     }
     
-    func getBlockchainType() -> BlockchainType {
+    func getBlockchainType() -> BlockchainType? {
         switch asset {
         case .token(let dataModel):
-            dataModel.token.blockchainType ?? .Matic
+            dataModel.token.blockchainType
         case .domain(let domain):
             domain.blockchain ?? .Matic
         }
@@ -263,7 +263,7 @@ private extension ConfirmSendAssetReviewInfoView {
          .infoValue(.init(title: String.Constants.feeEstimate.localized(),
                           icon: .tildaIcon,
                           value: gasUsdTitleFor(gasUsd: gasUsd))),
-         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())].compactMap({ $0 })
     }
     
     func getFromWalletInfoSection() -> SectionType {
@@ -272,10 +272,13 @@ private extension ConfirmSendAssetReviewInfoView {
                          value: sourceWallet.domainOrDisplayName))
     }
     
-    func getChainInfoSection() -> SectionType {
-        .infoValue(.init(title: String.Constants.chain.localized(),
-                         icon: chainIcon,
-                         value: getBlockchainType().fullName))
+    func getChainInfoSection() -> SectionType? {
+        if let blockchain = getBlockchainType() {
+            return .infoValue(.init(title: String.Constants.chain.localized(),
+                                    icon: chainIcon,
+                                    value: blockchain.fullName))
+        }
+        return nil
     }
     
     func gasUsdTitleFor(gasUsd: Double?) -> String {
@@ -288,7 +291,7 @@ private extension ConfirmSendAssetReviewInfoView {
     func getSectionsForDomain() -> [SectionType] {
         [getFromWalletInfoSection(),
          getChainInfoSection(),
-         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())].compactMap { $0 }
     }
     
     var chainIcon: UIImage {

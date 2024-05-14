@@ -49,6 +49,12 @@ extension MockEntitiesFabric {
             .webAccount(.init(email: "oleg@unstoppabledomains.com"))
         }
         
+        static func createExternalWalletProfile(hasRRDomain: Bool = true) -> UserProfile {
+            let wallet = Wallet.mockExternalWallet(hasRRDomain: hasRRDomain)
+            
+            return .wallet(wallet)
+        }
+        
         static func createWalletProfile(using wallet: WalletEntity? = nil) -> UserProfile {
             let wallet = wallet ?? Wallet.mockEntities().first!
             
@@ -67,6 +73,21 @@ extension MockEntitiesFabric {
                                                          .init(aliasName: "UD",
                                                                address: "0xCeBF5440FE9C85e037A80fFB4dF0F6a9BAcb3d01",
                                                                type: .generatedLocally)]
+        
+        static func mockExternalWallet(hasRRDomain: Bool = true) -> WalletEntity {
+            let address = "0x84585360d34f6c72BE438fdde7147D27d2A85f9f"
+            let externalWallet = WCWalletsProvider.WalletRecord(id: ExternalWalletMake.MetaMask.rawValue,
+                                                                name: "Metamask",
+                                                                homepage: nil,
+                                                                appStoreLink: nil,
+                                                                mobile: .init(native: "", universal: ""),
+                                                                isV2Compatible: true)
+            let udWallet = UDWallet.createLinked(aliasName: address,
+                                               address: address,
+                                               externalWallet: externalWallet)
+            let wallet = createFrom(udWallet: udWallet, hasRRDomain: hasRRDomain)
+            return wallet
+        }
         
         static func mockMPC(hasRRDomain: Bool = true) -> WalletEntity {
             let address = "0x12313123"

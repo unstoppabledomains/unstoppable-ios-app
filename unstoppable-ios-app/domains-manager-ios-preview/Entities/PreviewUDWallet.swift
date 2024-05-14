@@ -15,6 +15,10 @@ struct UDWallet: Codable, Hashable {
     var hasBeenBackedUp: Bool? = false
     private(set) var mpcMetadata: MPCWalletMetadata?
     
+    struct WalletConnectionInfo: Codable {
+        var externalWallet: WCWalletsProvider.WalletRecord
+    }
+    
     func getPrivateKey() -> String? {
         switch address {
         case "0xc4a748796805dfa42cafe0901ec182936584cc6e":
@@ -28,23 +32,17 @@ struct UDWallet: Codable, Hashable {
         }
     }
     
-    var mockingExternalWalletType: ExternalWalletMake?
-    var isExternalConnectionActive: Bool {
-        mockingExternalWalletType != nil
+    private var walletConnectionInfo: WalletConnectionInfo?
+   
+    func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
+        walletConnectionInfo?.externalWallet
     }
     
-    func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
-        if let mockingExternalWalletType {
-            return .init(id: mockingExternalWalletType.rawValue, 
-                         name: "Rainbow",
-                         homepage: nil,
-                         appStoreLink: nil,
-                         mobile: .init(native: "", universal: ""),
-                         isV2Compatible: true)
-            
-        }
-        return nil
+    
+    func getExternalWalletName() -> String? {
+        walletConnectionInfo?.externalWallet.name
     }
+    
     
     func getMnemonics() -> String? {
         nil
@@ -70,7 +68,17 @@ struct UDWallet: Codable, Hashable {
                         type: .importedUnverified,
                         hasBeenBackedUp: false)
     }
-    
+    static func createLinked(aliasName: String,
+                             address: String,
+                             externalWallet: WCWalletsProvider.WalletRecord) -> UDWallet {
+        var udWallet = UDWallet(aliasName: aliasName,
+                                address: address,
+                                type: .externalLinked,
+                                hasBeenBackedUp: false)
+        udWallet.walletConnectionInfo = UDWallet.WalletConnectionInfo(externalWallet: externalWallet)
+        
+        return udWallet
+    }
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.address)
         hasher.combine(self.aliasName)
