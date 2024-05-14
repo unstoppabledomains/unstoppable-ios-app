@@ -181,7 +181,6 @@ private extension ConfirmSendTokenView {
         
         if let parent = token.parent { // ERC20 Token
             let parentBalance = parent.balance
-            print(parentBalance)
             return parentBalance >= gasFee
         } else {
             let balance = token.balance
