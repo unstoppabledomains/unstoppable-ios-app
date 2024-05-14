@@ -170,22 +170,6 @@ private extension DomainProfileSocialsSection {
             return
         }
     }
-
-    func handleEditAction(for description: DomainProfileSocialAccount) {
-        logProfileSectionButtonPressedAnalyticEvent(button: .edit, parameters: [.fieldName : description.analyticsName])
-        guard let nav = controller?.viewController?.cNavigationController else { return }
-        
-        let socialType = description.type
-        
-        Task { @MainActor in
-            UDRouter().runAddSocialsFlow(with: .domainProfile,
-                                         socialType: socialType,
-                                         socialVerifiedCallback: { result in
-                
-            },
-                                         in: nav)
-        }
-    }
     
     func handleCopyAction(for description: DomainProfileSocialAccount) {
         Task { @MainActor in
