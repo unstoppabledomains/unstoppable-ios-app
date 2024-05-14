@@ -100,7 +100,7 @@ extension EIP712TypedData {
             values.append(typeHashValue)
             if let valueTypes = types[type] {
                 try valueTypes.forEach { field in
-                    if let _ = types[field.type],
+                    if let _ = types[field.type.removeEndingBracketsIfAny],
                         let json = data[field.name] {
                         let nestEncoded = encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
                         values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
