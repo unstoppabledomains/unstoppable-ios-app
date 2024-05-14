@@ -436,26 +436,44 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
 extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     func getAuthTokens(wallet: FB_UD_MPC.ConnectedWalletDetails) async throws -> String {
         let deviceId = wallet.deviceId
-        let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
-        let accessToken = tokens.accessToken
-        if !accessToken.isExpired {
-            return accessToken.jwt
+        if let getTokenTask = await actionsQueuer.getTokenTask(deviceId: deviceId) {
+            return try await getTokenTask.value
         }
         
-        let refreshToken = tokens.refreshToken
-        if !refreshToken.isExpired {
-            let token = try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
-            return token
+        let getTokenTask = Task<String, Error> {
+            let deviceId = wallet.deviceId
+            let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
+            let accessToken = tokens.accessToken
+            if !accessToken.isExpired {
+                return accessToken.jwt
+            }
+            
+            let refreshToken = tokens.refreshToken
+            if !refreshToken.isExpired {
+                let token = try await refreshAndStoreToken(refreshToken: refreshToken, deviceId: deviceId)
+                return token
+            }
+            
+            let bootstrapToken = tokens.bootstrapToken
+            if !bootstrapToken.isExpired {
+                return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken,
+                                                               currentDeviceId: deviceId)
+            }
+            
+            // All tokens has expired. Need to go through the bootstrap process from the beginning.
+            throw MPCConnectionServiceError.tokensExpired
         }
         
-        let bootstrapToken = tokens.bootstrapToken
-        if !bootstrapToken.isExpired {
-            return try await refreshAndStoreBootstrapToken(bootstrapToken: bootstrapToken,
-                                                           currentDeviceId: deviceId)
+        await actionsQueuer.setTokenTask(deviceId: deviceId, task: getTokenTask)
+        do {
+            let value = try await getTokenTask.value
+            await actionsQueuer.setTokenTask(deviceId: deviceId, task: nil)
+            
+            return value
+        } catch {
+            await actionsQueuer.setTokenTask(deviceId: deviceId, task: nil)
+            throw error
         }
-        
-        // All tokens has expired. Need to go through the bootstrap process from the beginning.
-        throw MPCConnectionServiceError.tokensExpired
     }
     
     func refreshAndStoreToken(refreshToken: JWToken,
@@ -491,6 +509,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
 extension FB_UD_MPC.MPCConnectionService {
     actor ActionsQueuer {
         private var ongoingDeviceIds: Set<String> = []
+        private var tokenTasks: [String: Task<String, Error>] = [:]
         
         func isActive(deviceId: String) -> Bool {
             ongoingDeviceIds.contains(deviceId)
@@ -507,6 +526,15 @@ extension FB_UD_MPC.MPCConnectionService {
         
         func removeActive(deviceId: String) {
             ongoingDeviceIds.remove(deviceId)
+        }
+        
+        func getTokenTask(deviceId: String) -> Task<String, Error>? {
+            tokenTasks[deviceId]
+        }
+
+        func setTokenTask(deviceId: String,
+                          task: Task<String, Error>?) {
+            tokenTasks[deviceId] = task
         }
     }
 }
