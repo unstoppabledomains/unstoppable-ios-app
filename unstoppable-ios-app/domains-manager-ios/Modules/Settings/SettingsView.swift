@@ -640,10 +640,8 @@ private extension SettingsView {
         
         var backgroundColor: Color {
             switch self {
-            case .security:
-                return .brandDeepBlue
-            case .testnet:
-                return .brandSkyBlue
+            case .security, .testnet:
+                return .backgroundMuted2
             }
         }
        
