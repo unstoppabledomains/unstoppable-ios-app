@@ -13,7 +13,6 @@ protocol AddCurrencyViewPresenterProtocol: BasePresenterProtocol {
     func didSearchWith(key: String)
 }
 
-typealias AddCurrencyCallback = ([GroupedCoinRecord])->()
 
 @MainActor
 final class AddCurrencyViewPresenter {

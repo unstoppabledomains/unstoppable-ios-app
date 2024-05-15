@@ -1392,6 +1392,10 @@
 		C6A2D5C228508DA800327C47 /* PaymentTransactionCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D5C128508DA800327C47 /* PaymentTransactionCostView.swift */; };
 		C6A2D5C728508DB900327C47 /* PaymentTransactionCostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A2D5C628508DB900327C47 /* PaymentTransactionCostView.xib */; };
 		C6A2D5CD2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D5CC2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift */; };
+		C6A2F0BF2BF45F92005024FE /* AddCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2F0BE2BF45F92005024FE /* AddCurrencyView.swift */; };
+		C6A2F0C02BF45F92005024FE /* AddCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2F0BE2BF45F92005024FE /* AddCurrencyView.swift */; };
+		C6A2F0C22BF46123005024FE /* AddCurrencyRecordItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2F0C12BF46123005024FE /* AddCurrencyRecordItemView.swift */; };
+		C6A2F0C32BF46123005024FE /* AddCurrencyRecordItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2F0C12BF46123005024FE /* AddCurrencyRecordItemView.swift */; };
 		C6A359272BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */; };
 		C6A359282BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */; };
 		C6A3592A2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */; };
@@ -3590,6 +3594,8 @@
 		C6A2D5C128508DA800327C47 /* PaymentTransactionCostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionCostView.swift; sourceTree = "<group>"; };
 		C6A2D5C628508DB900327C47 /* PaymentTransactionCostView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTransactionCostView.xib; sourceTree = "<group>"; };
 		C6A2D5CC2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectServerRequestConfirmationView.swift; sourceTree = "<group>"; };
+		C6A2F0BE2BF45F92005024FE /* AddCurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyView.swift; sourceTree = "<group>"; };
+		C6A2F0C12BF46123005024FE /* AddCurrencyRecordItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyRecordItemView.swift; sourceTree = "<group>"; };
 		C6A359262BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoReceiverInfoTitleView.swift; sourceTree = "<group>"; };
 		C6A359292BB5586700B1209A /* NavigationTrackerViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTrackerViewModifier.swift; sourceTree = "<group>"; };
 		C6A359312BB699FC00B1209A /* ConfirmSendTokenDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSendTokenDataModel.swift; sourceTree = "<group>"; };
@@ -7603,6 +7609,8 @@
 		C6C9DEB22834C90700BAC36F /* AddCurrency */ = {
 			isa = PBXGroup;
 			children = (
+				C6A2F0BE2BF45F92005024FE /* AddCurrencyView.swift */,
+				C6A2F0C12BF46123005024FE /* AddCurrencyRecordItemView.swift */,
 				C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */,
 				C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */,
 				C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */,
@@ -9374,6 +9382,7 @@
 				C67213E22BAA967C0075B9C7 /* SendCryptoAssetRootView.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C6A231F52BEB22230037E093 /* TextAttributesModifier.swift in Sources */,
+				C6A2F0BF2BF45F92005024FE /* AddCurrencyView.swift in Sources */,
 				C6A359272BB52CDC00B1209A /* SendCryptoReceiverInfoTitleView.swift in Sources */,
 				C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */,
 				C688C1862B846F1B00BD233A /* ChannelView.swift in Sources */,
@@ -9592,6 +9601,7 @@
 				C65CEB892B6749EE00A13B34 /* PreviewWalletsDataService.swift in Sources */,
 				C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95B28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
+				C6A2F0C22BF46123005024FE /* AddCurrencyRecordItemView.swift in Sources */,
 				C6456F2F2800520E00A517D5 /* Vibration.swift in Sources */,
 				C6B761E72BB3EF3B00773943 /* WalletTransactionsCacheProtocol.swift in Sources */,
 				C6B4098F28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
@@ -10349,6 +10359,7 @@
 				C6C8F8772B21826700A9834D /* UDRouter.swift in Sources */,
 				C6D6457C2B1D8ADE00D724AC /* AttributedText.swift in Sources */,
 				C6B761CD2BB3BEB700773943 /* HomeActivityView.swift in Sources */,
+				C6A2F0C32BF46123005024FE /* AddCurrencyRecordItemView.swift in Sources */,
 				C64F8DFF2B60F2140075D37F /* ViewPullUpDefaultConfiguration.swift in Sources */,
 				C61808462B19B93E0032E543 /* PreviewAnalyticsService.swift in Sources */,
 				C6C8F86E2B2181F400A9834D /* UIStackView.swift in Sources */,
@@ -10889,6 +10900,7 @@
 				C6952A4C2BC5296200F4B475 /* FB_UD_MPCWalletsDataStorage.swift in Sources */,
 				C6D6475D2B1EDD8300D724AC /* WalletConnectRequestError.swift in Sources */,
 				C6960C312B1994EC00B79E28 /* PreviewDebugger.swift in Sources */,
+				C6A2F0C02BF45F92005024FE /* AddCurrencyView.swift in Sources */,
 				C6D646DD2B1ED3F500D724AC /* PreviewDomainProfileSignatureValidator.swift in Sources */,
 				C6D6467B2B1ED12100D724AC /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C6C8F8922B21829000A9834D /* AppearanceSettingsCell.swift in Sources */,

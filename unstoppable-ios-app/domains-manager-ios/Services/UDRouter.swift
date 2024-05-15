@@ -113,9 +113,15 @@ class UDRouter: DomainProfileSignatureValidator {
                          excludedCurrencies: [CoinRecord],
                          addCurrencyCallback: @escaping AddCurrencyCallback,
                          in viewController: UIViewController) {
-        let vc = buildAddCurrencyModule(currencies: currencies, excludedCurrencies: excludedCurrencies, addCurrencyCallback: addCurrencyCallback)
-        vc.isModalInPresentation = true
-        presentInEmptyRootNavigation(vc, in: viewController)
+        let view = AddCurrencyView(currencies: currencies,
+                                   excludedCurrencies: excludedCurrencies,
+                                   addCurrencyCallback: { [weak viewController] currency in
+            addCurrencyCallback(currency)
+            viewController?.dismiss(animated: true, completion: nil)
+        })
+        let vc = UIHostingController(rootView: view)
+        let nav = UINavigationController(rootViewController: vc)
+        viewController.present(nav, animated: true)
     }
     
     func showManageMultiChainDomainAddresses(for records: [CryptoRecord],
