@@ -117,11 +117,14 @@ extension EIP712TypedData {
     }
     
     private func encodeArray(data: [JSON], type: String) throws -> Data {
-        var result: Data = Data()
-        let arrayData = try data.reduce(into: result) { res, el in
-            res.append( try encodeData(data: el, type: type) )
+        let encoder = ABIEncoder()
+        var values: [ABIValue] = []
+        try data.forEach { element in
+            let encodedElement = try encodeData(data: element, type: type)
+            values.append(try ABIValue(Crypto.hash(encodedElement), type: .bytes(32)))
         }
-        return arrayData
+        try encoder.encode(tuple: values)
+        return encoder.data
     }
 
     /// Helper func for `encodeData`
