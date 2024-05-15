@@ -371,10 +371,6 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
-        default:
-            description = ""
-            selectionViewHeight = 304
-            Debugger.printFailure("Attempting to show domain minted on chain description for unsupported chain", critical: true)
         }
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(chain.fullName),
                                                                      contentAlignment: .center,

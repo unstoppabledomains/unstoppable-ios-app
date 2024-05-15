@@ -113,9 +113,15 @@ class UDRouter: DomainProfileSignatureValidator {
                          excludedCurrencies: [CoinRecord],
                          addCurrencyCallback: @escaping AddCurrencyCallback,
                          in viewController: UIViewController) {
-        let vc = buildAddCurrencyModule(currencies: currencies, excludedCurrencies: excludedCurrencies, addCurrencyCallback: addCurrencyCallback)
-        vc.isModalInPresentation = true
-        presentInEmptyRootNavigation(vc, in: viewController)
+        let view = AddCurrencyView(currencies: currencies,
+                                   excludedCurrencies: excludedCurrencies,
+                                   addCurrencyCallback: { [weak viewController] currency in
+            addCurrencyCallback(currency)
+            viewController?.dismiss(animated: true, completion: nil)
+        })
+        let vc = UIHostingController(rootView: view)
+        let nav = UINavigationController(rootViewController: vc)
+        viewController.present(nav, animated: true)
     }
     
     func showManageMultiChainDomainAddresses(for records: [CryptoRecord],
@@ -549,19 +555,6 @@ private extension UDRouter {
         let vc = DomainDetailsViewController.nibInstance()
         let presenter = DomainDetailsViewPresenter(view: vc,
                                                       domain: domain)
-        vc.presenter = presenter
-        return vc
-    }
-    
-    func buildAddCurrencyModule(currencies: [CoinRecord],
-                                excludedCurrencies: [CoinRecord],
-                                addCurrencyCallback: @escaping AddCurrencyCallback) -> UIViewController {
-        let vc = AddCurrencyViewController.nibInstance()
-        let presenter = AddCurrencyViewPresenter(view: vc,
-                                                 currencies: currencies,
-                                                 excludedCurrencies: excludedCurrencies,
-                                                 coinRecordsService: appContext.coinRecordsService,
-                                                 addCurrencyCallback: addCurrencyCallback)
         vc.presenter = presenter
         return vc
     }

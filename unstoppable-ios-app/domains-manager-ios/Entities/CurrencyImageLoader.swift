@@ -14,15 +14,18 @@ final class CurrencyImageLoader {
     private(set) var ticker: String?
     private(set) var initialsSize: InitialsView.InitialsSize
     private(set) var initialsStyle: InitialsView.Style
+    private var imageCallback: ((UIImage?)->())?
     private let downsampleDescription: DownsampleDescription = .icon
 
     nonisolated
-    init(currencyImageView: UIImageView,
+    init(currencyImageView: UIImageView?,
          initialsSize: InitialsView.InitialsSize,
-         initialsStyle: InitialsView.Style = .gray) {
+         initialsStyle: InitialsView.Style = .gray,
+         imageCallback: ((UIImage?)->())? = nil) {
         self.currencyImageView = currencyImageView
         self.initialsSize = initialsSize
         self.initialsStyle = initialsStyle
+        self.imageCallback = imageCallback
     }
     
     func loadImage(for currency: CoinRecord) {
@@ -76,5 +79,6 @@ final class CurrencyImageLoader {
     func set(currencyImage: UIImage?) {
         currencyImageView?.image = currencyImage
         currencyImageView?.backgroundColor = currencyImage == nil ? initialsStyle.backgroundColor : nil
+        imageCallback?(currencyImage)
     }
 }
