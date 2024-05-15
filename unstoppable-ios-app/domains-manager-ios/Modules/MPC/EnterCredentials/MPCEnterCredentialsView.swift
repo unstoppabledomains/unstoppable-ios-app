@@ -19,15 +19,18 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
     @State private var error: Error?
     
     var body: some View {
-        VStack(spacing: isIPSE ? 16 : 32) {
-            headerView()
-            VStack(alignment: .leading, spacing: 16) {
-                emailInputView()
-                passwordInputView()
+        ScrollView {
+            VStack(spacing: isIPSE ? 16 : 32) {
+                headerView()
+                VStack(alignment: .leading, spacing: 16) {
+                    emailInputView()
+                    passwordInputView()
+                }
+                actionButtonView()
+                Spacer()
             }
-            actionButtonView()
-            Spacer()
         }
+        .scrollDisabled(true)
         .padding()
         .animation(.default, value: UUID())
         .displayError($error)
@@ -43,6 +46,7 @@ private extension MPCEnterCredentialsView {
             Text(String.Constants.importMPCWalletTitle.localizedMPCProduct())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
+                .multilineTextAlignment(.center)
             Text(String.Constants.importMPCWalletSubtitle.localizedMPCProduct())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
@@ -136,8 +140,7 @@ private extension MPCEnterCredentialsView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let view = MPCEnterCredentialsView(credentialsCallback: { _ in })
-    let vc = UIHostingController(rootView: view)
+    let vc = MPCOnboardingEnterCredentialsViewController()
     let nav = CNavigationController(rootViewController: vc)
     
     return nav
