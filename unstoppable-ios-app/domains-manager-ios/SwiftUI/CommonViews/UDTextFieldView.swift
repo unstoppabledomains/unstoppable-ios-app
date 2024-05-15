@@ -44,7 +44,7 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
             .frame(height: height)
         }
         .frame(maxWidth: .infinity)
-        .animation(.default, value: UUID())
+        .animation(.default, value: state)
         .onAppear {
             switch focusBehaviour {
             case .default:

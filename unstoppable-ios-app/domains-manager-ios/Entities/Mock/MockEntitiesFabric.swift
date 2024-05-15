@@ -327,6 +327,12 @@ extension MockEntitiesFabric {
                                       marketUsd: 1.02)
         }
     }
+    
+    enum CoinRecords {
+        static func mockRecords() -> [CoinRecord] {
+            [.init(expandedTicker: "crypto.MATIC.version.MATIC.address", regexPattern: nil, isDeprecated: false)!]
+        }
+    }
 }
 
 fileprivate extension UDWallet {

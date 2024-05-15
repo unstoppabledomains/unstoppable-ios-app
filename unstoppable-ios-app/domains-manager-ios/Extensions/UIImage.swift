@@ -31,7 +31,6 @@ extension UIImage {
     static let stopIcon = UIImage(named: "stopIcon")!
     static let infoIcon16 = UIImage(named: "infoIcon16")!
     static let infoIcon12 = UIImage(named: "infoIcon12")!
-    static let iconStar24 = UIImage(named: "iconStar24")!
 
     static let crossWhite = UIImage(named: "crossWhite")!
     static let refreshIcon = UIImage(named: "refreshIcon")!

@@ -31,13 +31,14 @@ final class InitialsView: UIView {
         self.setup()
     }
     
+    private var currentInterfaceStyle: UIUserInterfaceStyle { SceneDelegate.shared?.window?.traitCollection.userInterfaceStyle ?? .dark }
+    
     func toInitialsImage() -> UIImage? {
         layer.cornerRadius = bounds.width / 2
         layer.borderColor = UIColor.borderSubtle.cgColor
         layer.borderWidth = 1
         let image = self.renderedImage()
         
-        let currentInterfaceStyle = self.traitCollection.userInterfaceStyle
         let missingInterfaceStyle: UIUserInterfaceStyle
         if currentInterfaceStyle == .light {
             missingInterfaceStyle = .dark
@@ -64,7 +65,7 @@ final class InitialsView: UIView {
 // MARK: - Public functions
 fileprivate extension InitialsView {
     func setup() {
-        backgroundColor = style.backgroundColor
+        backgroundColor = style.backgroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: currentInterfaceStyle))
         setupLabel()
     }
     
@@ -79,7 +80,7 @@ fileprivate extension InitialsView {
             
             initialsLabel.setAttributedTextWith(text: initials,
                                                 font: .currentFont(withSize: fontSizeForInitialsSize(size), weight: .medium),
-                                                textColor: style.foregroundColor,
+                                                textColor: style.foregroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: currentInterfaceStyle)),
                                                 alignment: .center)
         } else {
             Debugger.printFailure("Initialise initials view without initials", critical: true)

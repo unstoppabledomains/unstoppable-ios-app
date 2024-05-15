@@ -104,7 +104,10 @@ private extension SettingsView {
                 Label(String.Constants.logOut.localized(), systemImage: "rectangle.portrait.and.arrow.right")
             }
         } label: {
-            topActinTextView(text: webUser.displayName)
+            Image.peopleCircleIcon
+                .resizable()
+                .squareFrame(28)
+                .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: .logOut)
@@ -562,7 +565,7 @@ private extension SettingsView {
             Task {
                 guard let view = appContext.coreAppCoordinator.topVC else { return }
 
-                await view.presentedViewController?.dismiss(animated: true)
+                await view.presentingViewController?.dismiss(animated: true)
                 activateMPCWallet()
             }
         }
@@ -637,10 +640,8 @@ private extension SettingsView {
         
         var backgroundColor: Color {
             switch self {
-            case .security:
-                return .brandDeepBlue
-            case .testnet:
-                return .brandSkyBlue
+            case .security, .testnet:
+                return .backgroundMuted2
             }
         }
        
@@ -697,7 +698,7 @@ private extension SettingsView {
         var icon: Image {
             switch self {
             case .rateUs:
-                return .iconStar24
+                return .settingsIconStar
             case .learn:
                 return .settingsIconLearn
             case .twitter:

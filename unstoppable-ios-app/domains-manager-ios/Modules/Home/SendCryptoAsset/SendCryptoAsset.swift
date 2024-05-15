@@ -72,7 +72,7 @@ extension SendCryptoAsset {
         
         private func resolveCoinRecordChainIdentifier(_ chain: String) -> String {
             switch chain {
-            case "ETH":
+            case BlockchainType.Ethereum.rawValue:
                 return "ERC20"
             default:
                 return chain
