@@ -32,7 +32,6 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
         }
         .scrollDisabled(true)
         .padding()
-        .animation(.default, value: UUID())
         .displayError($error)
     }
     
