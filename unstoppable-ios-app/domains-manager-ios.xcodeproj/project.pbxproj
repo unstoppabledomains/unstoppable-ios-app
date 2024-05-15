@@ -1180,13 +1180,8 @@
 		C688C1A92B84A3A700BD233A /* MessagingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308962A7A22D500E7CE21 /* MessagingImageView.swift */; };
 		C688C1AA2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C688C1AB2B84A4CF00BD233A /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
-		C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
-		C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
-		C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
 		C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953872834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift */; };
 		C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */; };
-		C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */; };
-		C689539E2834D08F0046CBA3 /* AddCurrencyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */; };
 		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
 		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
@@ -1901,8 +1896,6 @@
 		C6D3B9CF2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */; };
 		C6D3B9D42A6EC8C00091B279 /* MessagingAPIServiceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9D32A6EC8BF0091B279 /* MessagingAPIServiceHelper.swift */; };
 		C6D3B9D92A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9D82A6ECC9B0091B279 /* XMTPEntitiesTransformer.swift */; };
-		C6D5DAB32835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
-		C6D5DAB72835505200379C38 /* AddCurrencyEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */; };
 		C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DABB2836021300379C38 /* CryptoRecord.swift */; };
 		C6D5DAC1283629D800379C38 /* MockDomainRecordsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAC0283629D800379C38 /* MockDomainRecordsService.swift */; };
 		C6D5DAC828365A3400379C38 /* FABCounterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAC728365A3400379C38 /* FABCounterButton.swift */; };
@@ -2083,13 +2076,6 @@
 		C6D646892B1ED12D00D724AC /* DomainProfileGeneralInfoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3D829027BB500A2B3A0 /* DomainProfileGeneralInfoSection.swift */; };
 		C6D6468A2B1ED12D00D724AC /* DomainProfileTopInfoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011AB028F3FA1500342666 /* DomainProfileTopInfoSection.swift */; };
 		C6D6468B2B1ED12D00D724AC /* DomainProfileCryptoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011AB528F4022300342666 /* DomainProfileCryptoSection.swift */; };
-		C6D6468C2B1ED13C00D724AC /* AddCurrencyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */; };
-		C6D6468D2B1ED13C00D724AC /* AddCurrencyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */; };
-		C6D6468E2B1ED13C00D724AC /* AddCurrencyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */; };
-		C6D6468F2B1ED13C00D724AC /* AddCurrencyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */; };
-		C6D646902B1ED13C00D724AC /* AddCurrencyEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */; };
-		C6D646912B1ED13C00D724AC /* AddCurrencyViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */; };
-		C6D646922B1ED13C00D724AC /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
 		C6D646932B1ED14400D724AC /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CD029223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift */; };
 		C6D646942B1ED14400D724AC /* DomainProfileActionCoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CB82922283D005E6537 /* DomainProfileActionCoverViewController.swift */; };
 		C6D646952B1ED14400D724AC /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */; };
@@ -3456,13 +3442,8 @@
 		C688C19D2B848D0600BD233A /* ChatRequestsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequestsListView.swift; sourceTree = "<group>"; };
 		C688C1A02B8490F700BD233A /* ChatRequestsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequestsListViewModel.swift; sourceTree = "<group>"; };
 		C688C1A32B84946C00BD233A /* SelectableChatRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableChatRowView.swift; sourceTree = "<group>"; };
-		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
-		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
-		C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyViewController.xib; sourceTree = "<group>"; };
 		C68953872834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionGenericContentViewReusableView.swift; sourceTree = "<group>"; };
 		C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextHeaderReusableView.swift; sourceTree = "<group>"; };
-		C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyCell.swift; sourceTree = "<group>"; };
-		C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyCell.xib; sourceTree = "<group>"; };
 		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -3806,8 +3787,6 @@
 		C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPEnvironmentNamespace.swift; sourceTree = "<group>"; };
 		C6D3B9D32A6EC8BF0091B279 /* MessagingAPIServiceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingAPIServiceHelper.swift; sourceTree = "<group>"; };
 		C6D3B9D82A6ECC9B0091B279 /* XMTPEntitiesTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPEntitiesTransformer.swift; sourceTree = "<group>"; };
-		C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyEmptyCell.swift; sourceTree = "<group>"; };
-		C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyEmptyCell.xib; sourceTree = "<group>"; };
 		C6D5DABB2836021300379C38 /* CryptoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoRecord.swift; sourceTree = "<group>"; };
 		C6D5DAC0283629D800379C38 /* MockDomainRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainRecordsService.swift; sourceTree = "<group>"; };
 		C6D5DAC728365A3400379C38 /* FABCounterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABCounterButton.swift; sourceTree = "<group>"; };
@@ -6697,15 +6676,6 @@
 			path = ChannelView;
 			sourceTree = "<group>";
 		};
-		C68953972834D0820046CBA3 /* AddCurrencyCell */ = {
-			isa = PBXGroup;
-			children = (
-				C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */,
-				C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */,
-			);
-			path = AddCurrencyCell;
-			sourceTree = "<group>";
-		};
 		C689C1782ADE6D1700AA0186 /* FeatureFlags */ = {
 			isa = PBXGroup;
 			children = (
@@ -7611,10 +7581,6 @@
 			children = (
 				C6A2F0BE2BF45F92005024FE /* AddCurrencyView.swift */,
 				C6A2F0C12BF46123005024FE /* AddCurrencyRecordItemView.swift */,
-				C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */,
-				C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */,
-				C68953792834CB730046CBA3 /* AddCurrencyViewController.xib */,
-				C6D5DAAF2835503000379C38 /* Cells */,
 			);
 			path = AddCurrency;
 			sourceTree = "<group>";
@@ -7705,24 +7671,6 @@
 				C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */,
 			);
 			path = XMTP;
-			sourceTree = "<group>";
-		};
-		C6D5DAAF2835503000379C38 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C68953972834D0820046CBA3 /* AddCurrencyCell */,
-				C6D5DAB02835503600379C38 /* AddCurrencyEmptyCell */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		C6D5DAB02835503600379C38 /* AddCurrencyEmptyCell */ = {
-			isa = PBXGroup;
-			children = (
-				C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */,
-				C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */,
-			);
-			path = AddCurrencyEmptyCell;
 			sourceTree = "<group>";
 		};
 		C6D5DACC28374B1F00379C38 /* ManageMultiChainDomainAddresses */ = {
@@ -8431,7 +8379,6 @@
 				C651DC56286C115900808D4C /* WatchFaceDomainImagePreviewView.xib in Resources */,
 				C6A2D5C728508DB900327C47 /* PaymentTransactionCostView.xib in Resources */,
 				C6A2D523284DBDF300327C47 /* QRScannerSightView.xib in Resources */,
-				C6D5DAB72835505200379C38 /* AddCurrencyEmptyCell.xib in Resources */,
 				C6A2D545284E3AB900327C47 /* QRScannerDomainInfoView.xib in Resources */,
 				C6D9E29928535E3E002CDAC2 /* ShareDomainImagePullUpView.xib in Resources */,
 				C671E39228FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib in Resources */,
@@ -8456,7 +8403,6 @@
 				C60982BA282A768700546392 /* CreatePasswordViewController.xib in Resources */,
 				C6D0549327FF07480036B200 /* UDTextField.xib in Resources */,
 				C645131B28096CB600413C51 /* Localizable.stringsdict in Resources */,
-				C689539E2834D08F0046CBA3 /* AddCurrencyCell.xib in Resources */,
 				C60982C4282A77D300546392 /* ConfirmWordsViewController.xib in Resources */,
 				C679B615291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C60982C9282A78CA00546392 /* RecoveryPhraseViewController.xib in Resources */,
@@ -8487,7 +8433,6 @@
 				303CB4B6273A894F0064495D /* resolver-keys.json in Resources */,
 				3064868D2527253C00388026 /* LaunchScreen.storyboard in Resources */,
 				C673D5A129FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */,
-				C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */,
 				C6FEA91B2BEB700F004FD740 /* SettingsCollectionViewCell.xib in Resources */,
 				C6D0F43C283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
 				C6C57C582869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
@@ -8590,7 +8535,6 @@
 				C6960C4A2B19986E00B79E28 /* Inter-ExtraBold.ttf in Resources */,
 				C6C8F8D52B21834200A9834D /* UpgradeToPolygonTutorial.xib in Resources */,
 				C6D646B12B1ED17E00D724AC /* SocialsDomainImagePreviewView.xib in Resources */,
-				C6D6468E2B1ED13C00D724AC /* AddCurrencyViewController.xib in Resources */,
 				C6D647702B1EE06B00D724AC /* MintingDomainListCell.xib in Resources */,
 				C6D6465F2B1ED10D00D724AC /* DomainProfileNoSocialsCell.xib in Resources */,
 				C6960C4D2B19986E00B79E28 /* SF-Pro.ttf in Resources */,
@@ -8616,12 +8560,10 @@
 				C6FEA9192BEB700E004FD740 /* SettingsCollectionViewCell.xib in Resources */,
 				C6D6473D2B1ED9EF00D724AC /* PaymentTransactionCostView.xib in Resources */,
 				C6D646D42B1ED2D500D724AC /* UDTextField.xib in Resources */,
-				C6D646902B1ED13C00D724AC /* AddCurrencyEmptyCell.xib in Resources */,
 				C6D646F02B1ED5B200D724AC /* AddWalletViewController.xib in Resources */,
 				C6C8F8422B217E9600A9834D /* CreatePasswordViewController.xib in Resources */,
 				C6C8F8512B217E9600A9834D /* ConfirmWordConfirmationCell.xib in Resources */,
 				C6C8F8B12B2182CF00A9834D /* MintDomainsConfigurationViewController.xib in Resources */,
-				C6D6468C2B1ED13C00D724AC /* AddCurrencyCell.xib in Resources */,
 				C6D6475F2B1EDDB700D724AC /* TransactionInProgressViewController.xib in Resources */,
 				C6960C472B19986E00B79E28 /* Inter-ExtraLight.ttf in Resources */,
 				C6960C402B19985C00B79E28 /* Localizable.stringsdict in Resources */,
@@ -8982,7 +8924,6 @@
 				C671E3E42902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift in Sources */,
 				C6E041A42951A8C20080F8E3 /* ConnectedAppImageView.swift in Sources */,
 				C666E09929CB3F960003DECB /* FirebaseDomain.swift in Sources */,
-				C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */,
 				C632BE412BA5962A00C95B2D /* FB_UD_FireblocksConnector.swift in Sources */,
 				30BA2B36252914100097817E /* Helpers.swift in Sources */,
 				C6B761F92BB4011D00773943 /* HomeActivityNavigationDestination.swift in Sources */,
@@ -9177,7 +9118,6 @@
 				C6D3B9D92A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */,
 				C66107942A3180DA0076782F /* MessagingNewsChannelFeed.swift in Sources */,
 				C607A5D72B32A1030088ECF3 /* NavigationContentView.swift in Sources */,
-				C6D5DAB32835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6952A602BC664C600F4B475 /* PurchaseMPCWallet.swift in Sources */,
 				C6FEA91A2BEB700F004FD740 /* SettingsCollectionViewCell.swift in Sources */,
 				C6098292282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
@@ -9599,7 +9539,6 @@
 				C6F060C22ACAA30C00BA2E7E /* MessagingService+Websockets.swift in Sources */,
 				C688C17F2B845FE500BD233A /* ChatListUserRowView.swift in Sources */,
 				C65CEB892B6749EE00A13B34 /* PreviewWalletsDataService.swift in Sources */,
-				C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95B28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6A2F0C22BF46123005024FE /* AddCurrencyRecordItemView.swift in Sources */,
 				C6456F2F2800520E00A517D5 /* Vibration.swift in Sources */,
@@ -9702,7 +9641,6 @@
 				C631DFA12B7B1ED500040221 /* InfiniteRotationModifier.swift in Sources */,
 				C6D5DAEF2837682300379C38 /* RecordChangeType.swift in Sources */,
 				C6A89C542B31632E008AB043 /* HotFeatureSuggestionsStorage.swift in Sources */,
-				C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
 				C61B3E76283E43D000500B6D /* EnterEmailViewController.swift in Sources */,
 				C63902C728E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C69F99222A9F1264004B1958 /* CircleIconButton.swift in Sources */,
@@ -10455,7 +10393,6 @@
 				C6D647392B1ED9EF00D724AC /* SignMessageRequestConfirmationView.swift in Sources */,
 				C6C8F8E82B21836400A9834D /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
 				C6C8F8272B217D3500A9834D /* WCCompatibleWallet.swift in Sources */,
-				C6D646912B1ED13C00D724AC /* AddCurrencyViewPresenter.swift in Sources */,
 				C65CEB8C2B674FC700A13B34 /* UDWalletsServiceEnvironmentKey.swift in Sources */,
 				C6C8F83D2B217E9600A9834D /* OnboardingBackupWalletPresenter.swift in Sources */,
 				C6D645C82B1DBD3900D724AC /* CNavigationBar.swift in Sources */,
@@ -10562,7 +10499,6 @@
 				C6C8F8DF2B21836400A9834D /* ParkedDomainCell.swift in Sources */,
 				C61807C12B19A2DC0032E543 /* NotificationsServiceProtocol.swift in Sources */,
 				C61807FD2B19A8470032E543 /* QRCodeServiceProtocol.swift in Sources */,
-				C6D646922B1ED13C00D724AC /* AddCurrencyEmptyCell.swift in Sources */,
 				C6D646772B1ED12100D724AC /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C6534AC42BBFBAF5008EEBB5 /* SelectedUserProfileInfoStorageProtocol.swift in Sources */,
 				C6C8F8CF2B21832F00A9834D /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
@@ -10598,7 +10534,6 @@
 				C6D645BD2B1DBCF000D724AC /* DashesView.swift in Sources */,
 				C6D645FE2B1DBFBA00D724AC /* DomainsPurchasedDetails.swift in Sources */,
 				C621A4462BB11B0100CB5CB9 /* QRScannerHint.swift in Sources */,
-				C6D6468F2B1ED13C00D724AC /* AddCurrencyCell.swift in Sources */,
 				C618084A2B19B9930032E543 /* PreviewDomainRecordsService.swift in Sources */,
 				C6B2E88F2BE9DBF400CF4BCA /* UniversalCryptoSenderProtocol.swift in Sources */,
 				C6D645B92B1DBC5000D724AC /* UIAction.swift in Sources */,
@@ -10839,7 +10774,6 @@
 				C6C8F8802B21827700A9834D /* LoginViewPresenter.swift in Sources */,
 				C6C8F95E2B21867E00A9834D /* PreviewEncrypting.swift in Sources */,
 				C6C8F96C2B21880200A9834D /* Int.swift in Sources */,
-				C6D6468D2B1ED13C00D724AC /* AddCurrencyViewController.swift in Sources */,
 				C6D6473A2B1ED9EF00D724AC /* BaseSignTransactionView.swift in Sources */,
 				C6B761F42BB3FD7500773943 /* WalletTransactionDisplayInfo.swift in Sources */,
 				C6BF6BDE2B8F3602006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift in Sources */,

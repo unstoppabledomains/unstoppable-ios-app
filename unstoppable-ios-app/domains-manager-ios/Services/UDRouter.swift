@@ -559,19 +559,6 @@ private extension UDRouter {
         return vc
     }
     
-    func buildAddCurrencyModule(currencies: [CoinRecord],
-                                excludedCurrencies: [CoinRecord],
-                                addCurrencyCallback: @escaping AddCurrencyCallback) -> UIViewController {
-        let vc = AddCurrencyViewController.nibInstance()
-        let presenter = AddCurrencyViewPresenter(view: vc,
-                                                 currencies: currencies,
-                                                 excludedCurrencies: excludedCurrencies,
-                                                 coinRecordsService: appContext.coinRecordsService,
-                                                 addCurrencyCallback: addCurrencyCallback)
-        vc.presenter = presenter
-        return vc
-    }
-    
     func buildManageMultiChainDomainAddressesModule(records: [CryptoRecord],
                                                     callback: @escaping ManageMultiChainDomainAddressesCallback) -> UIViewController {
         let vc = ManageMultiChainDomainAddressesViewController.nibInstance()

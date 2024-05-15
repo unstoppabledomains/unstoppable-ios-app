@@ -23,6 +23,7 @@ struct AddCurrencyView: View {
     
     var body: some View {
         List {
+            emptyViewIfNeeded()
             sectionWithRecords(popularRecords, title: String.Constants.popular.localized())
             sectionWithRecords(otherRecords, title: String.Constants.all.localized())
         }.environment(\.defaultMinListRowHeight, 28)
@@ -113,6 +114,14 @@ private extension AddCurrencyView {
 // MARK: - Private methods
 private extension AddCurrencyView {
     @ViewBuilder
+    func emptyViewIfNeeded() -> some View {
+        if popularRecords.isEmpty,
+           otherRecords.isEmpty {
+            HomeExploreEmptySearchResultView(mode: .noResults)
+        }
+    }
+    
+    @ViewBuilder
     func sectionWithRecords(_ records: [GroupedCoinRecord],
                             title: String) -> some View {
         if !records.isEmpty {
@@ -189,5 +198,25 @@ private extension AddCurrencyView {
         AddCurrencyView(currencies: MockEntitiesFabric.CoinRecords.mockRecords(),
                         excludedCurrencies: [],
                         addCurrencyCallback: { _ in })
+    }
+}
+
+enum CoinVersionSelectionResult: Int, CaseIterable {
+    
+    static let preselected: CoinVersionSelectionResult = .both
+    
+    case multichain
+    case legacy
+    case both
+    
+    var title: String {
+        switch self {
+        case .both:
+            return String.Constants.both.localized()
+        case .multichain:
+            return String.Constants.multiChain.localized()
+        case .legacy:
+            return String.Constants.legacy.localized()
+        }
     }
 }
