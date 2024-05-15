@@ -49,15 +49,15 @@ extension EIP712TypedData {
         return Crypto.hash(encodeType(primaryType: type))
     }
     
-    private func hashStruct(_ data: JSON, type: String) -> Data {
-        return Crypto.hash(typeHash(type) + encodeData(data: data, type: type))
-    }
+//    private func hashStruct(_ data: JSON, type: String) -> Data {
+//        return Crypto.hash(typeHash(type) + encodeData(data: data, type: type))
+//    }
 
     /// Sign-able hash for an `EIP712TypedData`
     public var signHash: Data {
         let data = Data([0x19, 0x01]) +
-            Crypto.hash(encodeData(data: domain, type: "EIP712Domain")) +
-            Crypto.hash(encodeData(data: message, type: primaryType))
+            Crypto.hash(try! encodeData(data: domain, type: "EIP712Domain")) +
+            Crypto.hash(try! encodeData(data: message, type: primaryType))
         return Crypto.hash(data)
     }
 
@@ -91,29 +91,37 @@ extension EIP712TypedData {
     /// Encode an instance of struct
     ///
     /// Implemented with `ABIEncoder` and `ABIValue`
-    public func encodeData(data: JSON, type: String) -> Data {
+    public func encodeData(data: JSON, type: String) throws -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
-        do {
-            let typeHash = Crypto.hash(encodeType(primaryType: type))
-            let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
-            values.append(typeHashValue)
-            if let valueTypes = types[type] {
-                try valueTypes.forEach { field in
-                    if let _ = types[field.type.removeEndingBracketsIfAny],
-                        let json = data[field.name] {
-                        let nestEncoded = encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
-                        values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
-                    } else if let value = makeABIValue(data: data[field.name], type: field.type.removeEndingBracketsIfAny) {
-                        values.append(value)
-                    }
+        
+        if case .array(let array) = data {
+            return try encodeArray(data: array, type: type)
+        }
+        let typeHash = Crypto.hash(encodeType(primaryType: type))
+        let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
+        values.append(typeHashValue)
+        if let valueTypes = types[type] {
+            try valueTypes.forEach { field in
+                if let _ = types[field.type.removeEndingBracketsIfAny],
+                   let json = data[field.name] {
+                    let nestEncoded = try encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
+                    values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
+                } else if let value = makeABIValue(data: data[field.name], type: field.type.removeEndingBracketsIfAny) {
+                    values.append(value)
                 }
             }
-            try encoder.encode(tuple: values)
-        } catch let error {
-            Debugger.printFailure(error.localizedDescription)
         }
+        try encoder.encode(tuple: values)
         return encoder.data
+    }
+    
+    private func encodeArray(data: [JSON], type: String) throws -> Data {
+        var result: Data = Data()
+        let arrayData = try data.reduce(into: result) { res, el in
+            res.append( try encodeData(data: el, type: type) )
+        }
+        return arrayData
     }
 
     /// Helper func for `encodeData`
