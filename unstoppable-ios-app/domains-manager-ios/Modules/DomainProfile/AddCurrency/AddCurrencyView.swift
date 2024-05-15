@@ -170,8 +170,8 @@ private extension AddCurrencyView {
     }
     
     func showChooseCoinPullUp(for coinRecord: GroupedCoinRecord, deprecatedRecord: GroupedCoinRecord) {
-        Task {
-            guard let view = await appContext.coreAppCoordinator.topVC else { return }
+        Task { @MainActor in
+            guard let view = appContext.coreAppCoordinator.topVC else { return }
             
             do {
                 let selectionResult = try await appContext.pullUpViewService.showChooseCoinVersionPullUp(for: coinRecord.coin, in: view)
