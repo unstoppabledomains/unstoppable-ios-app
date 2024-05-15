@@ -256,8 +256,10 @@ extension UIViewController {
     @MainActor
     func dismiss(animated: Bool) async {
         await withSafeCheckedMainActorContinuation { completion in
-            self.dismiss(animated: animated) {
-                completion(Void())
+            DispatchQueue.main.async {
+                self.dismiss(animated: animated) {
+                    completion(Void())
+                }
             }
         }
     }

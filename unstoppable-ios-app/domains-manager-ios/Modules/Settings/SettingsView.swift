@@ -562,7 +562,7 @@ private extension SettingsView {
             Task {
                 guard let view = appContext.coreAppCoordinator.topVC else { return }
 
-                await view.presentedViewController?.dismiss(animated: true)
+                await view.presentingViewController?.dismiss(animated: true)
                 activateMPCWallet()
             }
         }
