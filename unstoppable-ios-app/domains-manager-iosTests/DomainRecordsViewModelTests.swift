@@ -250,7 +250,7 @@ class SignatureTests: XCTestCase {
         let jsonTypedData = try JSONDecoder().decode(EIP712TypedData.self, from: jsonString.data(using: .utf8)!)
         // swiftlint:disable:next line_length
         let result = "432c2e85cd4fb1991e30556bafe6d78422c6eeb812929bc1d2d4c7053998a4099c0257114eb9399a2985f8e75dad7600c5d89fe3824ffa99ec1c3eb8bf3b0501bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000280000000000000000000000000000000000000000000000000000000000000001"
-        let data = jsonTypedData.encodeData(data: jsonTypedData.message, typeName: jsonTypedData.primaryType)
+        let data = jsonTypedData.encodeData(data: jsonTypedData.message, type: jsonTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
     
@@ -308,18 +308,18 @@ class SignatureTests: XCTestCase {
     func testEncodeData() {
         // swiftlint:disable:next line_length
         let result = "a0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2fc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cd54f074a4af31b4411ff6a60c9719dbd559c221c8ac3492d9d872b041d703d1b5aadf3154a261abdd9086fc627b61efca26ae5702701d05cd2305f7c52a2fc8"
-        let data = simpleTypedData.encodeData(data: simpleTypedData.message, typeName: simpleTypedData.primaryType)
+        let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
     
     func testStructHash() {
         let result = "c52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e"
-        let data = simpleTypedData.encodeData(data: simpleTypedData.message, typeName: simpleTypedData.primaryType)
+        let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(Crypto.hash(data).hexString, result)
         
         let result2 = "f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f"
         //        let json = try! JSONDecoder().decode(JSON.self, from: try! JSONEncoder().encode(typedData.domain))
-        let data2 = simpleTypedData.encodeData(data: simpleTypedData.domain, typeName: "EIP712Domain")
+        let data2 = simpleTypedData.encodeData(data: simpleTypedData.domain, type: "EIP712Domain")
         XCTAssertEqual(Crypto.hash(data2).hexString, result2)
     }
     
@@ -359,7 +359,7 @@ class SignatureTests: XCTestCase {
     
     func testElementary() {
         // SDK's encodeData is typeHash + encoded data
-        let encodeDataFromSDK = simpleTypedDataWithArray.encodeData(data: simpleTypedDataWithArray.message, typeName: "Mail")
+        let encodeDataFromSDK = simpleTypedDataWithArray.encodeData(data: simpleTypedDataWithArray.message, type: "Mail")
         
 //        let encodedFrom = Crypto.hash("Cow".data(using: .utf8)!) + Crypto.hash(
 //        

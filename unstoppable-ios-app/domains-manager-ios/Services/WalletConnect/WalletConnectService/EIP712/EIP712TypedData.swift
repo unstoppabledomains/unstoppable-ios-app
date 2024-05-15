@@ -24,18 +24,10 @@ public struct EIP712Domain: Codable {
 
 /// A struct represents EIP712 TypedData
 public struct EIP712TypedData: Codable {
-    public let declaredTypes: DeclaredTypes
+    public let types: [String: [EIP712Type]]
     public let primaryType: String
     public let domain: JSON
     public let message: JSON
-    
-    public struct DeclaredTypes: Codable {
-        private let types: [String: [EIP712Type]]
-        
-        func getEnclosedTypes(of typeName: String) -> [EIP712Type]? {
-            types[typeName]
-        }
-    }
 }
 
 struct Crypto {
@@ -58,14 +50,14 @@ extension EIP712TypedData {
     }
     
     private func hashStruct(_ data: JSON, type: String) -> Data {
-        return Crypto.hash(typeHash(type) + encodeData(data: data, typeName: type))
+        return Crypto.hash(typeHash(type) + encodeData(data: data, type: type))
     }
 
     /// Sign-able hash for an `EIP712TypedData`
     public var signHash: Data {
         let data = Data([0x19, 0x01]) +
-            Crypto.hash(encodeData(data: domain, typeName: "EIP712Domain")) +
-            Crypto.hash(encodeData(data: message, typeName: primaryType))
+            Crypto.hash(encodeData(data: domain, type: "EIP712Domain")) +
+            Crypto.hash(encodeData(data: message, type: primaryType))
         return Crypto.hash(data)
     }
 
@@ -73,7 +65,7 @@ extension EIP712TypedData {
     func findDependencies(primaryType: String, dependencies: Set<String> = Set<String>()) -> Set<String> {
         var found = dependencies
         guard !found.contains(primaryType),
-              let primaryTypes = declaredTypes.getEnclosedTypes(of: primaryType) else {
+            let primaryTypes = types[primaryType] else {
                 return found
         }
         found.insert(primaryType)
@@ -90,8 +82,7 @@ extension EIP712TypedData {
         depSet.remove(primaryType)
         let sorted = [primaryType] + Array(depSet).sorted()
         let encoded = sorted.map { type in
-            let subTypes = declaredTypes.getEnclosedTypes(of: type)!
-            let param = subTypes.map { "\($0.type) \($0.name)" }.joined(separator: ",")
+            let param = types[type]!.map { "\($0.type) \($0.name)" }.joined(separator: ",")
             return "\(type)(\(param))"
         }.joined()
         return encoded.data(using: .utf8) ?? Data()
@@ -100,19 +91,18 @@ extension EIP712TypedData {
     /// Encode an instance of struct
     ///
     /// Implemented with `ABIEncoder` and `ABIValue`
-    public func encodeData(data: JSON, typeName: String) -> Data {
+    public func encodeData(data: JSON, type: String) -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
         do {
-            let typeHash = Crypto.hash(encodeType(primaryType: typeName))
+            let typeHash = Crypto.hash(encodeType(primaryType: type))
             let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
             values.append(typeHashValue)
-            if let valueTypes = declaredTypes.getEnclosedTypes(of: typeName) {
+            if let valueTypes = types[type] {
                 try valueTypes.forEach { field in
-                    let typeName = field.type.removeEndingBracketsIfAny
-                    if let _ = declaredTypes.getEnclosedTypes(of: typeName),
+                    if let _ = types[field.type.removeEndingBracketsIfAny],
                         let json = data[field.name] {
-                        let nestEncoded = encodeData(data: json, typeName: field.type.removeEndingBracketsIfAny)
+                        let nestEncoded = encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
                         values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
                     } else if let value = makeABIValue(data: data[field.name], type: field.type.removeEndingBracketsIfAny) {
                         values.append(value)
