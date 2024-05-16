@@ -86,6 +86,10 @@ private extension SelectCryptoAssetToSendView {
         case .Ethereum, .Matic:
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
         case .none:
+            /// As we don't currently support Base chain but MPC does
+            if token.chain == Constants.baseChainSymbol {
+                return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+            }
             return nil
         }
     }

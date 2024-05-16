@@ -145,7 +145,7 @@ private extension SendCryptoAssetSuccessView {
         case .domain:
             link = .polygonScanTransaction(txHash)
         case .token(let token, _, _):
-            link = .scanTransaction(symbol: token.symbol, transaction: txHash)
+            link = .scanTransaction(chain: token.chain, transaction: txHash)
         }
         guard link.url?.host() != nil else { return nil }
         
