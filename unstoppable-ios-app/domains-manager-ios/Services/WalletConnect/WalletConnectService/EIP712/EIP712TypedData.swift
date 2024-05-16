@@ -96,7 +96,7 @@ extension EIP712TypedData {
         var values: [ABIValue] = []
         
         if case .array(let array) = data {
-            return try encodeArray(data: array, type: type)
+            return try encodeStructsArray(data: array, type: type)
         }
         let typeHash = Crypto.hash(encodeType(primaryType: type))
         let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
@@ -107,16 +107,30 @@ extension EIP712TypedData {
                    let json = data[field.name] {
                     let nestEncoded = try encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
                     values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
-                } else if let value = makeABIValue(data: data[field.name], type: field.type.removeEndingBracketsIfAny) {
-                    values.append(value)
+                } else {
+                    let fieldTypeName = field.type.removeEndingBracketsIfAny
+                    guard let atomicData = data[field.name] else {
+                        Debugger.printFailure("Cannot find atomoc data for \(type)", critical: false)
+                        return
+                    }
+                    if case .array(let array) = atomicData {
+                        values.append(encodeAtomicArray(data: array, type: fieldTypeName))
+                    } else {
+                        if let value = makeABIValue(data: atomicData, type: fieldTypeName) {
+                            values.append(value)
+                        }
+                        
+                    }
                 }
             }
+        } else {
+            Debugger.printFailure("Cannot find subtypes for \(type)", critical: false)
         }
         try encoder.encode(tuple: values)
         return encoder.data
     }
     
-    private func encodeArray(data: [JSON], type: String) throws -> Data {
+    private func encodeStructsArray(data: [JSON], type: String) throws -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
         try data.forEach { element in
@@ -126,41 +140,54 @@ extension EIP712TypedData {
         try encoder.encode(tuple: values)
         return encoder.data
     }
+    
+    private func encodeAtomicArray(data: [JSON], type: String) throws -> Data {
+        let encoder = ABIEncoder()
+        var values: [ABIValue] = []
+        try data.forEach { element in
+            if let value = makeABIValue(data: element, type: fieldTypeName) {
+                values.append(value)
+            }
+        }
+        try encoder.encode(tuple: values)
+        let encodedData = encoder.data
+        return try ABIValue(Crypto.hash(encodedData), type: .bytes(32))
+    }
 
     /// Helper func for `encodeData`
-    private func makeABIValue(data: JSON?, type: String) -> ABIValue? {
+    private func makeABIValue(data: JSON, type: String) -> ABIValue? {
         if (type == "string" || type == "bytes"),
-            let value = data?.stringValue,
+            let value = data.stringValue,
             let valueData = value.data(using: .utf8) {
             return try? ABIValue(Crypto.hash(valueData), type: .bytes(32))
         } else if type == "bool",
-            let value = data?.boolValue {
+            let value = data.boolValue {
             return try? ABIValue(value, type: .bool)
         } else if type == "address",
-            let value = data?.stringValue,
+            let value = data.stringValue,
             let address = TrustAddress(string: value) {
             return try? ABIValue(address, type: .address)
         } else if type.starts(with: "uint") {
             let size = parseIntSize(type: type, prefix: "uint")
             guard size > 0 else { return nil }
-            if let value = data?.floatValue {
+            if let value = data.floatValue {
                 return try? ABIValue(Int(value), type: .uint(bits: size))
-            } else if let value = data?.stringValue,
+            } else if let value = data.stringValue,
                 let bigInt = BigUInt(value: value) {
                 return try? ABIValue(bigInt, type: .uint(bits: size))
             }
         } else if type.starts(with: "int") {
             let size = parseIntSize(type: type, prefix: "int")
             guard size > 0 else { return nil }
-            if let value = data?.floatValue {
+            if let value = data.floatValue {
                 return try? ABIValue(Int(value), type: .int(bits: size))
-            } else if let value = data?.stringValue,
+            } else if let value = data.stringValue,
                 let bigInt = BigInt(value: value) {
                 return try? ABIValue(bigInt, type: .int(bits: size))
             }
         } else if type.starts(with: "bytes") {
             if let length = Int(type.dropFirst("bytes".count)),
-                let value = data?.stringValue {
+                let value = data.stringValue {
                 if value.starts(with: "0x"),
                     let hex = Data(hexString: value) {
                     return try? ABIValue(hex, type: .bytes(length))
