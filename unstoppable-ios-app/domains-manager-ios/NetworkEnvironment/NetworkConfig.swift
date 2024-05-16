@@ -97,10 +97,10 @@ struct NetworkConfig {
     
     private static let okLinkBaseURL = "https://www.oklink.com"
     
-    private static func okLinkChainIdentifierFor(symbol: String) -> String? {
+    private static func okLinkChainIdentifierFor(chain: String) -> String? {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
 
-        switch symbol {
+        switch chain {
         case "ETH":
             if isTestnetUsed {
                 return "sepolia-test"
@@ -131,8 +131,8 @@ struct NetworkConfig {
         }
     }
     
-    static func baseNetworkScanUrl(symbol: String) -> String {
-        guard let identifier = okLinkChainIdentifierFor(symbol: symbol) else { return "" }
+    static func baseNetworkScanUrl(chain: String) -> String {
+        guard let identifier = okLinkChainIdentifierFor(chain: chain) else { return "" }
         
         return okLinkBaseURL + "/\(identifier)"
     }
