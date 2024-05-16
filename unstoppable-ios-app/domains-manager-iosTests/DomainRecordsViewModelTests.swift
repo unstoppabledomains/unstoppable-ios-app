@@ -392,15 +392,15 @@ class SignatureTests: XCTestCase {
 //        try! await wallet.getPersonalSignature(messageString: <#T##String#>)
     }
     
-//    func testSignHashOpenSea() {
-//        let cow = "cow".data(using: .utf8)!
-//        let privateKeyData = Crypto.hash(cow)
-//
-//        let dataSignHashOpenSea = typedDataOpenSea.signHash
-//        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHashOpenSea, with: privateKeyData)
-//        let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
-//        XCTAssertEqual(dataSignHashOpenSea.hexString, result)
-//        XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
-//    }
+    func testSignHashOpenSea() {
+        let cow = "cow".data(using: .utf8)!
+        let privateKeyData = Crypto.hash(cow)
+
+        let dataSignHashOpenSea = typedDataOpenSea.signHash
+        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHashOpenSea, with: privateKeyData)
+        let result = "48cb4d3a559466dc99aea665d518595e689f828f4f1e70bc920975bd6ae6508b"
+        XCTAssertEqual(dataSignHashOpenSea.hexString, result)
+        XCTAssertEqual(signed!.hexString.dropLast(2), "2788ac62d663777f8c82d7fc76cca0c2e50dbf7297dadff04c811b29db859c5849afaf4850adb1803c5a34dcab523eb10534e0967ac83c176c36e755a087c1241c".dropLast(2))
+    }
     
 }
