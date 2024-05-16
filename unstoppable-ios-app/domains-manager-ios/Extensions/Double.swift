@@ -25,11 +25,12 @@ extension Double {
         return (self * multiplier).rounded() / multiplier
     }
     
-    func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int) -> String {
+    func formatted(toMaxNumberAfterComa maxNumberAfterComa: Int,
+                   minNumberAfterComa: Int = 2) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = maxNumberAfterComa
-        formatter.minimumFractionDigits = 2
+        formatter.minimumFractionDigits = minNumberAfterComa
         formatter.roundingMode = .halfEven
         
         return formatter.string(from: self as NSNumber) ?? "0.0"

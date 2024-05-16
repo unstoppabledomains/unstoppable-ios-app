@@ -83,8 +83,8 @@ final class SendCryptoAssetViewModel: ObservableObject {
     
     private func createChainDescFor(token: BalanceTokenUIDescription) -> CryptoSenderChainDescription {
         CryptoSenderChainDescription(symbol: token.symbol,
-                              chain: token.chain,
-                              env: getCurrentEnvironment())
+                                     chain: token.chain,
+                                     env: getCurrentEnvironment())
     }
     
     func sendCryptoTokenWith(sendData: SendCryptoAsset.SendTokenAssetData,

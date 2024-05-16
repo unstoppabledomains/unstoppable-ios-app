@@ -13,7 +13,6 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     let address: String
     let chain: String
     let symbol: String
-    let gasCurrency: String
     let name: String
     let balance: Double
     let balanceUsd: Double
@@ -49,19 +48,10 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     
     var isERC20Token: Bool { parent != nil }
     
-    var balanceSymbol: String {
-        // For 'parent' token we show gas currency (which is ETH for Base token)
-        if parent == nil {
-            return gasCurrency
-        }
-        return symbol
-    }
-    
     init(walletBalance: WalletTokenPortfolio) {
         self.address = walletBalance.address
         self.chain = walletBalance.symbol
-        self.symbol = walletBalance.symbol
-        self.gasCurrency = walletBalance.gasCurrency
+        self.symbol = walletBalance.gasCurrency
         self.name = walletBalance.name
         self.balance = walletBalance.balanceAmt
         self.balanceUsd = walletBalance.value.walletUsdAmt
@@ -82,7 +72,6 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.address = address
         self.chain = chain
         self.symbol = symbol
-        self.gasCurrency = symbol
         self.name = name
         self.balance = balance
         self.balanceUsd = balanceUsd
@@ -97,7 +86,6 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.address = walletToken.address
         self.chain = chain
         self.symbol = walletToken.symbol
-        self.gasCurrency = walletToken.gasCurrency
         self.name = walletToken.name
         self.balance = walletToken.balanceAmt
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
