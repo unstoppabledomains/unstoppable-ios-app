@@ -88,41 +88,52 @@ extension EIP712TypedData {
         return encoded.data(using: .utf8) ?? Data()
     }
 
+    private struct EncodedSequence {
+        let encoder = ABIEncoder()
+        var values: [ABIValue] = []
+
+        mutating func append(abiValue value: ABIValue) {
+            values.append(value)
+        }
+        
+        func getData() throws -> Data {
+            try encoder.encode(tuple: values)
+            return encoder.data
+        }
+    }
+    
     /// Encode an instance of struct
     ///
     /// Implemented with `ABIEncoder` and `ABIValue`
     public func encodeData(data: JSON, type: String) throws -> Data {
-        let encoder = ABIEncoder()
-        var values: [ABIValue] = []
-        
         if case .array(let array) = data {
             return try encodeStructsArray(data: array, type: type)
         }
+        
+        var sequence = EncodedSequence()
+        
         let typeHash = Crypto.hash(encodeType(primaryType: type))
         let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
-        values.append(typeHashValue)
+        sequence.append(abiValue: typeHashValue)
+        
         if let enclosedSubtypes = types[type] {
             try enclosedSubtypes.forEach { subtype in
-                let fieldTypeName = subtype.type.removeEndingBracketsIfAny
-
+                let subTypeName = subtype.type.removeEndingBracketsIfAny
+                guard let json = data[subtype.name] else {
+                    Debugger.printFailure("Cannot find element data for \(type)", critical: false)
+                    return
+                }
+                
                 if isAStruct(type: subtype) {
-                    guard let json = data[subtype.name] else {
-                        Debugger.printFailure("Cannot find struct data for \(type)", critical: false)
-                        return
-                    }
-                    let nestEncoded = try encodeData(data: json, type: fieldTypeName)
-                    values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
+                    let nestEncoded = try encodeData(data: json, type: subTypeName)
+                    sequence.append(abiValue: try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
                 } else {
-                    guard let atomicData = data[subtype.name] else {
-                        Debugger.printFailure("Cannot find atomic data for \(type)", critical: false)
-                        return
-                    }
-                    if case .array(let array) = atomicData {
-                        let nestedEncodedAtomic = try encodeAtomicArray(data: array, type: fieldTypeName)
-                        values.append(try ABIValue(Crypto.hash(nestedEncodedAtomic), type: .bytes(32)))
+                    if case .array(let array) = json {
+                        let nestedEncodedAtomic = try encodeAtomicArray(data: array, type: subTypeName)
+                        sequence.append(abiValue: try ABIValue(Crypto.hash(nestedEncodedAtomic), type: .bytes(32)))
                     } else {
-                        if let value = makeABIValue(data: atomicData, type: fieldTypeName) {
-                            values.append(value)
+                        if let value = makeABIValue(data: json, type: subTypeName) {
+                            sequence.append(abiValue: value)
                         }
                     }
                 }
@@ -130,8 +141,7 @@ extension EIP712TypedData {
         } else {
             Debugger.printFailure("Cannot find subtypes for \(type)", critical: false)
         }
-        try encoder.encode(tuple: values)
-        return encoder.data
+        return try sequence.getData()
     }
     
     private func isAStruct(type: EIP712Type) -> Bool {
@@ -139,28 +149,24 @@ extension EIP712TypedData {
     }
     
     private func encodeStructsArray(data: [JSON], type: String) throws -> Data {
-        let encoder = ABIEncoder()
-        var values: [ABIValue] = []
+        var sequence = EncodedSequence()
         try data.forEach { element in
             let encodedElement = try encodeData(data: element, type: type)
-            values.append(try ABIValue(Crypto.hash(encodedElement), type: .bytes(32)))
+            sequence.append(abiValue: try ABIValue(Crypto.hash(encodedElement), type: .bytes(32)))
         }
-        try encoder.encode(tuple: values)
-        return encoder.data
+        return try sequence.getData()
     }
     
     private func encodeAtomicArray(data: [JSON], type: String) throws -> Data {
-        let encoder = ABIEncoder()
-        var values: [ABIValue] = []
+        var sequence = EncodedSequence()
         data.forEach { element in
             if let value = makeABIValue(data: element, type: type) {
-                values.append(value)
+                sequence.append(abiValue: value)
             }
         }
-        try encoder.encode(tuple: values)
-        return encoder.data
+        return try sequence.getData()
     }
-
+    
     /// Helper func for `encodeData`
     private func makeABIValue(data: JSON, type: String) -> ABIValue? {
         if (type == "string" || type == "bytes"),
