@@ -112,8 +112,8 @@ extension EIP712TypedData {
         
         var sequence = EncodedSequence()
         
-        let typeHash = Crypto.hash(encodeType(primaryType: type))
-        let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
+        let typeEncoded = encodeType(primaryType: type)
+        let typeHashValue = try abiBytesOfHash(typeEncoded)
         sequence.append(abiValue: typeHashValue)
         
         if let enclosedSubtypes = types[type] {
@@ -126,11 +126,11 @@ extension EIP712TypedData {
                 
                 if isAStruct(type: subtype) {
                     let nestEncoded = try encodeData(data: json, type: subTypeName)
-                    sequence.append(abiValue: try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
+                    sequence.append(abiValue: try abiBytesOfHash(nestEncoded))
                 } else {
                     if case .array(let array) = json {
                         let nestedEncodedAtomic = try encodeAtomicArray(data: array, type: subTypeName)
-                        sequence.append(abiValue: try ABIValue(Crypto.hash(nestedEncodedAtomic), type: .bytes(32)))
+                        sequence.append(abiValue: try abiBytesOfHash(nestedEncodedAtomic))
                     } else {
                         if let value = makeABIValue(data: json, type: subTypeName) {
                             sequence.append(abiValue: value)
@@ -144,6 +144,10 @@ extension EIP712TypedData {
         return try sequence.getData()
     }
     
+    private func abiBytesOfHash(_ data: Data) throws -> ABIValue {
+        try ABIValue(Crypto.hash(data), type: .bytes(32))
+    }
+    
     private func isAStruct(type: EIP712Type) -> Bool {
         nil != types[type.type.removeEndingBracketsIfAny]
     }
@@ -152,7 +156,7 @@ extension EIP712TypedData {
         var sequence = EncodedSequence()
         try data.forEach { element in
             let encodedElement = try encodeData(data: element, type: type)
-            sequence.append(abiValue: try ABIValue(Crypto.hash(encodedElement), type: .bytes(32)))
+            sequence.append(abiValue: try abiBytesOfHash(encodedElement))
         }
         return try sequence.getData()
     }
