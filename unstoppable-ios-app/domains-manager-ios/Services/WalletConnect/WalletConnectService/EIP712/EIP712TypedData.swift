@@ -103,14 +103,18 @@ extension EIP712TypedData {
         values.append(typeHashValue)
         if let enclosedSubtypes = types[type] {
             try enclosedSubtypes.forEach { subtype in
-                if isAStruct(type: subtype),
-                   let json = data[subtype.name] {
-                    let nestEncoded = try encodeData(data: json, type: subtype.type.removeEndingBracketsIfAny)
+                let fieldTypeName = subtype.type.removeEndingBracketsIfAny
+
+                if isAStruct(type: subtype) {
+                    guard let json = data[subtype.name] else {
+                        Debugger.printFailure("Cannot find struct data for \(type)", critical: false)
+                        return
+                    }
+                    let nestEncoded = try encodeData(data: json, type: fieldTypeName)
                     values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
                 } else {
-                    let fieldTypeName = subtype.type.removeEndingBracketsIfAny
                     guard let atomicData = data[subtype.name] else {
-                        Debugger.printFailure("Cannot find atomoc data for \(type)", critical: false)
+                        Debugger.printFailure("Cannot find atomic data for \(type)", critical: false)
                         return
                     }
                     if case .array(let array) = atomicData {
@@ -120,7 +124,6 @@ extension EIP712TypedData {
                         if let value = makeABIValue(data: atomicData, type: fieldTypeName) {
                             values.append(value)
                         }
-                        
                     }
                 }
             }
