@@ -101,15 +101,15 @@ extension EIP712TypedData {
         let typeHash = Crypto.hash(encodeType(primaryType: type))
         let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
         values.append(typeHashValue)
-        if let valueTypes = types[type] {
-            try valueTypes.forEach { field in
-                if let _ = types[field.type.removeEndingBracketsIfAny],
-                   let json = data[field.name] {
-                    let nestEncoded = try encodeData(data: json, type: field.type.removeEndingBracketsIfAny)
+        if let enclosedSubtypes = types[type] {
+            try enclosedSubtypes.forEach { subtype in
+                if isAStruct(type: subtype),
+                   let json = data[subtype.name] {
+                    let nestEncoded = try encodeData(data: json, type: subtype.type.removeEndingBracketsIfAny)
                     values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
                 } else {
-                    let fieldTypeName = field.type.removeEndingBracketsIfAny
-                    guard let atomicData = data[field.name] else {
+                    let fieldTypeName = subtype.type.removeEndingBracketsIfAny
+                    guard let atomicData = data[subtype.name] else {
                         Debugger.printFailure("Cannot find atomoc data for \(type)", critical: false)
                         return
                     }
@@ -131,6 +131,10 @@ extension EIP712TypedData {
         return encoder.data
     }
     
+    private func isAStruct(type: EIP712Type) -> Bool {
+        nil != types[type.type.removeEndingBracketsIfAny]
+    }
+    
     private func encodeStructsArray(data: [JSON], type: String) throws -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
@@ -145,7 +149,7 @@ extension EIP712TypedData {
     private func encodeAtomicArray(data: [JSON], type: String) throws -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
-        try data.forEach { element in
+        data.forEach { element in
             if let value = makeABIValue(data: element, type: type) {
                 values.append(value)
             }
