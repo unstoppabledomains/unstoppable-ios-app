@@ -14,6 +14,7 @@ class SignatureTests: XCTestCase {
     
     var simpleTypedData: EIP712TypedData!
     var simpleTypedDataWithArray: EIP712TypedData!
+    var typedDataBasicArray: EIP712TypedData!
     var typedDataOpenSea: EIP712TypedData!
     
     override func setUp() {
@@ -110,6 +111,7 @@ class SignatureTests: XCTestCase {
     }
 }
 """
+        
         let dataSimpleWithArray = stringSimpleWithArray.data(using: .utf8)!
         do {
             simpleTypedDataWithArray = try JSONDecoder().decode(EIP712TypedData.self, from: dataSimpleWithArray)
@@ -118,6 +120,59 @@ class SignatureTests: XCTestCase {
         }
         XCTAssertNotNil(simpleTypedDataWithArray)
         ///
+
+        
+        /////
+        ///
+        ///
+        ///
+        let stringBasicArray = """
+{
+    "types": {
+        "EIP712Domain": [
+            {"name": "name", "type": "string"},
+            {"name": "version", "type": "string"},
+            {"name": "chainId", "type": "uint256"},
+            {"name": "verifyingContract", "type": "address"}
+        ],
+        "Mail": [
+            {"name": "from", "type": "Person"},
+            {"name": "comments", "type": "string[]"}
+        ],
+        "Person": [
+            {"name": "name", "type": "string"},
+            {"name": "wallet", "type": "address"}
+        ]
+    },
+    "primaryType": "Mail",
+    "domain": {
+        "name": "Ether Mail",
+        "version": "1",
+        "chainId": 1,
+        "verifyingContract": "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
+    },
+    "message": {
+        "from": {
+            "name": "Cow",
+            "wallet": "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826"
+        },
+        "comments": [
+                "title", "Hello", "body", "How are you"
+                    ]
+    }
+}
+"""
+        
+        let dataBasicArray = stringBasicArray.data(using: .utf8)!
+        do {
+            typedDataBasicArray = try JSONDecoder().decode(EIP712TypedData.self, from: dataBasicArray)
+        } catch {
+            print (error)
+        }
+        XCTAssertNotNil(simpleTypedDataWithArray)
+        
+        
+        
         
         let stringOpenSea = """
 {
@@ -375,6 +430,15 @@ class SignatureTests: XCTestCase {
         let dataSignHash = simpleTypedDataWithArray.signHash
         let signed = try! UDWallet.signMessageHash(messageHash: dataSignHash, with: privateKeyData)
         XCTAssertEqual(signed!.hexString.dropLast(2), "b7f0ddd5f022171055057420aa2b379ff21eb3c10cd800eb26e24c9226f5a0087905c757b1d0a510998a5fdf91162b3e5b30414def6f7d32f6964cfab6f682bf1b".dropLast(2)) // benchmark signature from Rainbow
+    }
+    
+    func testSignHashBasicArray() {
+        let cow = "cow".data(using: .utf8)!
+        let privateKeyData = Crypto.hash(cow)
+
+        let dataSignHash = typedDataBasicArray.signHash
+        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHash, with: privateKeyData)
+        XCTAssertEqual(signed!.hexString.dropLast(2), "56633d92274e4b29c960f11bb5131676e0d1903734a744400e44081b44d729d1246618b9da8bca0532ed68adb1e120bfea9336020f40de31ca5bae81e27468b91c".dropLast(2))
     }
     
     func testConvertHashMessageIntoString() {

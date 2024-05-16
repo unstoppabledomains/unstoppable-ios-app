@@ -114,7 +114,8 @@ extension EIP712TypedData {
                         return
                     }
                     if case .array(let array) = atomicData {
-                        values.append(encodeAtomicArray(data: array, type: fieldTypeName))
+                        let nestedEncodedAtomic = try encodeAtomicArray(data: array, type: fieldTypeName)
+                        values.append(try ABIValue(Crypto.hash(nestedEncodedAtomic), type: .bytes(32)))
                     } else {
                         if let value = makeABIValue(data: atomicData, type: fieldTypeName) {
                             values.append(value)
@@ -145,13 +146,12 @@ extension EIP712TypedData {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
         try data.forEach { element in
-            if let value = makeABIValue(data: element, type: fieldTypeName) {
+            if let value = makeABIValue(data: element, type: type) {
                 values.append(value)
             }
         }
         try encoder.encode(tuple: values)
-        let encodedData = encoder.data
-        return try ABIValue(Crypto.hash(encodedData), type: .bytes(32))
+        return encoder.data
     }
 
     /// Helper func for `encodeData`
