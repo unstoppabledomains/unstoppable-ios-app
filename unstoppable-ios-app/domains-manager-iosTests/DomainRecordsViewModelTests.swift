@@ -258,7 +258,7 @@ class SignatureTests: XCTestCase {
         XCTAssertNotNil(typedDataOpenSea)
     }
     
-    func testSigningMessage() async throws {
+    func testSigningMessage() async {
         let privateKey = "0x397ab335485c15be06deb7a64fd87ec93da836ee3ab189441f71d51e93bf7ce0"
         
         let message = "0x943ba9c825ad7552853ef52927dec257048efbcd9e6819fc5df9a2aac84e486f"
@@ -270,7 +270,7 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(HexAddress.hexPrefix + sigString, "0x69d4da1dd5eef16e05ef54526e55e14bcff1c183daffe96007982624072592da4f0e958cca733cc77f7c81eec5cb95b538e9403175bae294844dd1a664a060b61b")
     }
     
-    func testDecodeJSONModel() throws {
+    func testDecodeJSONModel() {
         let jsonString = """
         {
           "types": {
@@ -302,14 +302,14 @@ class SignatureTests: XCTestCase {
             }
         }
         """
-        let jsonTypedData = try JSONDecoder().decode(EIP712TypedData.self, from: jsonString.data(using: .utf8)!)
+        let jsonTypedData = try! JSONDecoder().decode(EIP712TypedData.self, from: jsonString.data(using: .utf8)!)
         // swiftlint:disable:next line_length
         let result = "432c2e85cd4fb1991e30556bafe6d78422c6eeb812929bc1d2d4c7053998a4099c0257114eb9399a2985f8e75dad7600c5d89fe3824ffa99ec1c3eb8bf3b0501bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000280000000000000000000000000000000000000000000000000000000000000001"
         let data = try! jsonTypedData.encodeData(data: jsonTypedData.message, type: jsonTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
     
-    func testGenericJSON() throws {
+    func testGenericJSON() {
         let jsonString = """
         {
           "number": 123456,
@@ -331,7 +331,7 @@ class SignatureTests: XCTestCase {
         }
         """
         let data = jsonString.data(using: .utf8)!
-        let message = try JSONDecoder().decode(JSON.self, from: data)
+        let message = try! JSONDecoder().decode(JSON.self, from: data)
         XCTAssertNil(try? JSONDecoder().decode(EIP712TypedData.self, from: data))
         XCTAssertNotNil(message["object"]?.objectValue)
         XCTAssertNotNil(message["array"]!.arrayValue)
