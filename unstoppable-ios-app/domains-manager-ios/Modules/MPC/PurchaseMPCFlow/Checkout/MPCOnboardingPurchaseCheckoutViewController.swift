@@ -26,7 +26,7 @@ final class MPCOnboardingPurchaseCheckoutViewController: BaseViewController, Vie
 private extension MPCOnboardingPurchaseCheckoutViewController {
     func didPurchaseMPCWallet() {
         Task {
-            try? await onboardingFlowManager?.handle(action: .didEnterMPCPurchaseUDCredentials)
+            try? await onboardingFlowManager?.handle(action: .didPurchaseMPCWallet)
         }
     }
 }
