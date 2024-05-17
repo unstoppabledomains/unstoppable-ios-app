@@ -113,7 +113,7 @@ extension HomeWalletView {
             case .receive, .profile, .buy, .send:
                 return []
             case .more:
-                return WalletSubAction.allCases
+                return [.copyWalletAddress, .connectedApps]
             }
         }
         
