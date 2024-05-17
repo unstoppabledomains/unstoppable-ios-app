@@ -27,7 +27,7 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
     @State private var isLoadingGlobalProfiles = false
 
     @State private var socialRelationshipDetailsPublisher: AnyCancellable?
-    private let searchService = DomainsGlobalSearchService()
+    private let searchService = DomainsGlobalSearchService(shouldResolveFullWalletAddress: false)
     
     var body: some View {
         List {
@@ -120,8 +120,7 @@ private extension SendCryptoAssetSelectReceiverView {
             return userWallets
         } else {
             return userWallets.filter {
-                $0.nameOfCurrentRepresentingDomain?.contains(inputText.lowercased()) == true ||
-                $0.address == inputText.lowercased()
+                $0.nameOfCurrentRepresentingDomain?.contains(inputText.lowercased()) == true
             }
         }
     }
@@ -201,8 +200,7 @@ private extension SendCryptoAssetSelectReceiverView {
     func getCurrentGlobalSearchResult() -> GlobalSearchResult? {
         if !globalProfiles.isEmpty {
             return .profiles(globalProfiles)
-        } else if inputText.isValidAddress(),
-                  userWallets.findWithAddress(inputText) == nil {
+        } else if inputText.isValidAddress() {
             return .fullAddress(inputText)
         }
         return nil
