@@ -389,7 +389,6 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
     }
     
-    
     func testTypeEncodingSimpleWithArrays() {
         // Mail and Person types
         let mailTypeEncoding = "Mail(Person from,Person to,Contents[] contents)Contents(string title,string body)Person(string name,address wallet)"
@@ -406,21 +405,6 @@ class SignatureTests: XCTestCase {
         
         let contentsTypeHash = Crypto.hash(contentsTypeEncoding.data(using: .utf8)!)
         XCTAssertEqual(contentsTypeHash.hexString, "da942dcfb86f1f5ba0bcc5dd938781ca8b5b1a323dd7a7af007752bd51c6d002")
-    }
-    
-    func testStructEncoding() {
-        Crypto.hash("Cow".data(using: .utf8)!) + Crypto.hash("000000000000000000000000cd2a3d9f938e13cd947ec05abc7fe734df8dd826".hexToData!)
-    }
-    
-    func testElementary() {
-        // SDK's encodeData is typeHash + encoded data
-        let encodeDataFromSDK = try! simpleTypedDataWithArray.encodeData(data: simpleTypedDataWithArray.message, type: "Mail")
-        
-//        let encodedFrom = Crypto.hash("Cow".data(using: .utf8)!) + Crypto.hash(
-//        
-//        let encodedData = encodedFrom
-//        
-//        let hashStruct = Crypto.hash(typeHash + encodedData)
     }
     
     func testSignHashSimpleWithArray() {
@@ -451,11 +435,6 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(message.lowercased(), "0x" + m.unicodeScalarToHex!.lowercased())
     }
     
-    func testGetCorrectEndResult() async {
-//        let wallet = appContext.udWalletsService.find(by: "0x94b420da794c1a8f45b70581ae015e6bd1957233")!
-//        try! await wallet.getPersonalSignature(messageString: <#T##String#>)
-    }
-    
     func testSignHashOpenSea() {
         let cow = "cow".data(using: .utf8)!
         let privateKeyData = Crypto.hash(cow)
@@ -466,5 +445,4 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(dataSignHashOpenSea.hexString, result)
         XCTAssertEqual(signed!.hexString.dropLast(2), "2788ac62d663777f8c82d7fc76cca0c2e50dbf7297dadff04c811b29db859c5849afaf4850adb1803c5a34dcab523eb10534e0967ac83c176c36e755a087c1241c".dropLast(2))
     }
-    
 }
