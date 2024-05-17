@@ -11,6 +11,7 @@ import UIKit
 struct OnboardingData: Codable {
     
     static var mpcCredentials: MPCActivateCredentials?
+    static var mpcPurchaseCredentials: MPCPurchaseUDCredentials?
     
     var wallets: [UDWallet] = []
     var passcode: String?

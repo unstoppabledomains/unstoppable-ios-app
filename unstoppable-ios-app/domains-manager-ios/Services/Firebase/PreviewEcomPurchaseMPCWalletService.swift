@@ -35,6 +35,10 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
         
     }
     
+    func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {
+        
+    }
+    
     func authoriseWithEmail(_ email: String, password: String) async throws {
         
     }

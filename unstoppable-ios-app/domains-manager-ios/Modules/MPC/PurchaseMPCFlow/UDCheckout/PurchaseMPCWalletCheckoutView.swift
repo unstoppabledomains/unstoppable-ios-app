@@ -9,10 +9,10 @@ import SwiftUI
 
 struct PurchaseMPCWalletCheckoutView: View {
     
-    @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
-    @EnvironmentObject var tabRouter: HomeTabRouter
 
+    let credentials: MPCPurchaseUDCredentials
+    let purchasedCallback: EmptyCallback
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
     @State private var isPurchasing = false
@@ -81,7 +81,6 @@ private extension PurchaseMPCWalletCheckoutView {
     func checkUpdatedCartStatus() {
         switch cartStatus {
         case .alreadyPurchasedMPCWallet:
-            // TODO: - Show on the UI
             return
         case .failedToLoadCalculations(let callback):
             pullUpError = .loadCalculationsError(tryAgainCallback: callback)
@@ -97,7 +96,6 @@ private extension PurchaseMPCWalletCheckoutView {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
 //                viewModel.handleAction(.didPurchase)
                 // Just close the flow for now
-                tabRouter.purchasingMPCWallet = false
             } catch {
                 
             }
@@ -107,6 +105,6 @@ private extension PurchaseMPCWalletCheckoutView {
 }
 
 #Preview {
-    PurchaseMPCWalletCheckoutView()
-        .environmentObject(PurchaseMPCWalletViewModel())
+    PurchaseMPCWalletCheckoutView(credentials: .init(email: "qq@qq.qq"),
+                                  purchasedCallback: { })
 }

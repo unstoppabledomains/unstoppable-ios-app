@@ -82,17 +82,7 @@ class BaseFirebaseInteractionService {
                                                                              dateDecodingStrategy: dateDecodingStrategy)
         return response
     }
-}
-
-// MARK: - Open methods
-extension BaseFirebaseInteractionService {
-    func getIdToken() async throws -> String {
-        try await firebaseAuthService.getIdToken()
-    }
-}
-
-// MARK: - Private methods
-private extension BaseFirebaseInteractionService {
+    
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         let idToken = try await getIdToken()
         
@@ -104,5 +94,12 @@ private extension BaseFirebaseInteractionService {
                                             method: apiRequest.method)
         
         return firebaseAPIRequest
+    }
+}
+
+// MARK: - Open methods
+extension BaseFirebaseInteractionService {
+    func getIdToken() async throws -> String {
+        try await firebaseAuthService.getIdToken()
     }
 }

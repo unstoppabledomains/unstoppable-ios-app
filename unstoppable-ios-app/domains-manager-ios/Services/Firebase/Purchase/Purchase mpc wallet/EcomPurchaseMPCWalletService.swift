@@ -14,6 +14,7 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     var cartStatusPublisher: Published<PurchaseMPCWalletCartStatus>.Publisher { $cartStatus }
     
     private var cancellables: Set<AnyCancellable> = []
+    private var ongoingPurchaseSession: PurchaseSessionDescription?
     
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
@@ -64,6 +65,18 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
             }
             throw error
         }
+    }
+    
+    override func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
+        guard let sessionId = ongoingPurchaseSession?.sessionId else { throw PurchaseMPCWalletError.noSessionId }
+        
+        let url = apiRequest.url.appending(queryItems: [.init(name: "guestUuid", value: sessionId)])
+        let firebaseAPIRequest = APIRequest(url: url,
+                                            headers: apiRequest.headers,
+                                            body: apiRequest.body,
+                                            method: apiRequest.method)
+        
+        return firebaseAPIRequest
     }
     
     override func filterUnsupportedProductsFrom(products: [Ecom.UDProduct]) -> [Ecom.UDProduct] {
@@ -118,11 +131,18 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
     func reset() async {
         cartStatus = .ready(cart: .empty)
         cachedPaymentDetails = nil
+        ongoingPurchaseSession = nil
         await logout()
     }
     
     func refreshCart() async throws {
         try await refreshUserCart()
+    }
+    
+    func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {
+        await prepareBeforeAuth()
+        self.ongoingPurchaseSession = PurchaseSessionDescription(email: credentials.email, sessionId: UUID().uuidString)
+        try await didAuthorise()
     }
     
     func purchaseMPCWallet() async throws {
@@ -172,5 +192,13 @@ private extension EcomPurchaseMPCWalletService {
     enum PurchaseMPCWalletError: String, LocalizedError {
         case failedToAuthorise
         case udAccountHasUnpaidVault
+        case noSessionId
     }
+    
+    struct PurchaseSessionDescription {
+        let email: String
+        let sessionId: String
+        var orderId: Int?
+    }
+    
 }
