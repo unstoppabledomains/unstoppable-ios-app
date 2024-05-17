@@ -62,4 +62,13 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
     func refreshCart() async throws {
         
     }
+    
+    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool {
+        true
+    }
+    
+    func runTakeover(credentials: MPCActivateCredentials) async throws {
+        
+    }
+    
 }
