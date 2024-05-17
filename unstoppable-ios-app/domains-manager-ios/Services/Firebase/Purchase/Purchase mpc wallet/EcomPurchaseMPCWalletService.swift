@@ -150,8 +150,24 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
         try await purchaseProductsInTheCart(to: nil,
                                             totalAmountDue: udCart.calculations.totalAmountDue)
         ongoingPurchaseSession?.orderId = cachedPaymentDetails?.orderId
-        try await waitForMPCWalletIsReady()
+        try await waitForMPCWalletIsCreated()
         isAutoRefreshCartSuspended = false
+    }
+    
+    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool {
+        do {
+            try await makeSetupWalletRequestFor(credentials: credentials, preview: true)
+            return true
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 400 { // 400 returned when email already in use
+            return false
+        } catch {
+            throw error
+        }
+    }
+    
+    func runTakeover(credentials: MPCActivateCredentials) async throws {
+        try await makeSetupWalletRequestFor(credentials: credentials, preview: false)
+        try await waitForWalletIsReadyForActivation()
     }
 }
 
@@ -196,22 +212,25 @@ private extension EcomPurchaseMPCWalletService {
         case udAccountHasUnpaidVault
         case noSessionId
         case noSessionDetails
+        case waitWalletClaimedTimeout
     }
     
     struct PurchaseSessionDescription {
         let email: String
         let sessionId: String
         var orderId: Int?
+        var wallet: EcomMPCWallet?
     }
     
     struct EcomMPCWallet: Codable {
+        let address: String
         let verified: Bool
     }
 }
 
 // MARK: - Private methods
 private extension EcomPurchaseMPCWalletService {
-    func waitForMPCWalletIsReady() async throws {
+    func waitForMPCWalletIsCreated() async throws {
         for i in 0..<60 {
             do {
                 let walletInfo = try await getMPCWalletInfo()
@@ -241,4 +260,54 @@ private extension EcomPurchaseMPCWalletService {
         let response: EcomMPCWallet = try await makeFirebaseDecodableAPIDataRequest(request)
         return response
     }
+    
+    func makeSetupWalletRequestFor(credentials: MPCActivateCredentials,
+                                   preview: Bool) async throws {
+        guard let wallet = ongoingPurchaseSession?.wallet else { throw PurchaseMPCWalletError.noSessionDetails }
+        
+        struct RequestBody: Encodable {
+            let walletEmail: String
+            let password: String
+            let preview: Bool
+        }
+        
+        let body = RequestBody(walletEmail: credentials.email, password: credentials.password, preview: preview)
+        let urlString = URLSList.USER_MPC_SETUP_URL(walletAddress: wallet.address)
+        let request = try APIRequest(urlString: urlString,
+                                     body: body,
+                                     method: .post)
+        
+        try await makeFirebaseAPIDataRequest(request)
+    }
+    
+    func waitForWalletIsReadyForActivation() async throws {
+        for i in 0..<60 {
+            let isReady = try await checkMPCWalletReady()
+            if isReady {
+                return
+            }
+            await Task.sleep(seconds: 0.5)
+        }
+        
+        throw PurchaseMPCWalletError.waitWalletClaimedTimeout
+    }
+    
+    func checkMPCWalletReady() async throws -> Bool {
+        guard let ongoingPurchaseSession,
+              let wallet = ongoingPurchaseSession.wallet else { throw PurchaseMPCWalletError.noSessionDetails }
+        
+        struct Response: Decodable {
+            let inProgress: Bool
+        }
+        
+        let email = ongoingPurchaseSession.email
+        let queryComponents = ["email" : ongoingPurchaseSession.email]
+        let urlString = URLSList.USER_MPC_STATUS_URL(walletAddress: wallet.address).appendingURLQueryComponents(queryComponents)
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request)
+        return !response.inProgress
+    }
+
 }
