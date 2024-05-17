@@ -167,7 +167,7 @@ private extension PurchaseMPCWalletTakeoverView {
     }
     
     var isValidPasswordEntered: Bool {
-        passwordInput.isEmpty
+        !passwordInput.isEmpty
     }
     
     @ViewBuilder
