@@ -149,6 +149,8 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
         isAutoRefreshCartSuspended = true
         try await purchaseProductsInTheCart(to: nil,
                                             totalAmountDue: udCart.calculations.totalAmountDue)
+        ongoingPurchaseSession?.orderId = cachedPaymentDetails?.orderId
+        try await waitForMPCWalletIsReady()
         isAutoRefreshCartSuspended = false
     }
 }
@@ -193,6 +195,7 @@ private extension EcomPurchaseMPCWalletService {
         case failedToAuthorise
         case udAccountHasUnpaidVault
         case noSessionId
+        case noSessionDetails
     }
     
     struct PurchaseSessionDescription {
@@ -201,4 +204,41 @@ private extension EcomPurchaseMPCWalletService {
         var orderId: Int?
     }
     
+    struct EcomMPCWallet: Codable {
+        let verified: Bool
+    }
+}
+
+// MARK: - Private methods
+private extension EcomPurchaseMPCWalletService {
+    func waitForMPCWalletIsReady() async throws {
+        for i in 0..<60 {
+            do {
+                let walletInfo = try await getMPCWalletInfo()
+                
+                if walletInfo.verified {
+                    /// This means this UD account already has MPC wallet and takeover already done
+                    throw MPCWalletPurchaseError.walletAlreadyPurchased
+                } else {
+                    return
+                }
+            } catch { }
+            
+            await Task.sleep(seconds: 0.5)
+        }
+    }
+    
+    func getMPCWalletInfo() async throws -> EcomMPCWallet {
+        guard let ongoingPurchaseSession,
+              let orderId = ongoingPurchaseSession.orderId else { throw PurchaseMPCWalletError.noSessionDetails }
+        
+        let queryComponents = ["email" : ongoingPurchaseSession.email,
+                               "orderId" : String(orderId)]
+        let urlString = URLSList.USER_MPC_WALLET_URL.appendingURLQueryComponents(queryComponents)
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        
+        let response: EcomMPCWallet = try await makeFirebaseDecodableAPIDataRequest(request)
+        return response
+    }
 }

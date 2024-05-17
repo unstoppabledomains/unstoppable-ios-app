@@ -94,14 +94,28 @@ private extension PurchaseMPCWalletCheckoutView {
             isPurchasing = true
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
-//                viewModel.handleAction(.didPurchase)
-                // Just close the flow for now
+                purchasedCallback()
+            } catch let error as MPCWalletPurchaseError {
+                didFailWithError(error)
             } catch {
-                
+                didFailWithError(.unknown)
             }
             isPurchasing = false
         }
     }
+    
+    func didFailWithError(_ error: MPCWalletPurchaseError) {
+//        mpcStateTitle = error.title
+//        activationState = .failed(error)
+        switch error {
+        case .walletAlreadyPurchased:
+            return
+//            enterDataType = .passcode
+        case .unknown:
+            return
+        }
+    }
+    
 }
 
 #Preview {

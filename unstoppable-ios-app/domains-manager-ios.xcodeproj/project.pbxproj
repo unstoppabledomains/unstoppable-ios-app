@@ -960,6 +960,8 @@
 		C66556712BF70DD400F0BD7A /* MPCPurchaseUDCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665566F2BF70DD400F0BD7A /* MPCPurchaseUDCredentials.swift */; };
 		C66556742BF70F7700F0BD7A /* MPCOnboardingPurchaseCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66556732BF70F7700F0BD7A /* MPCOnboardingPurchaseCheckoutViewController.swift */; };
 		C66556752BF70F7700F0BD7A /* MPCOnboardingPurchaseCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66556732BF70F7700F0BD7A /* MPCOnboardingPurchaseCheckoutViewController.swift */; };
+		C665567A2BF7303C00F0BD7A /* MPCWalletPurchaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66556792BF7303C00F0BD7A /* MPCWalletPurchaseError.swift */; };
+		C665567B2BF7303C00F0BD7A /* MPCWalletPurchaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66556792BF7303C00F0BD7A /* MPCWalletPurchaseError.swift */; };
 		C665B9AD28325282005E535C /* DomainDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665B9AA28325282005E535C /* DomainDetailsViewPresenter.swift */; };
 		C665B9B128325282005E535C /* DomainDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C665B9AB28325282005E535C /* DomainDetailsViewController.swift */; };
 		C665B9B528325282005E535C /* DomainDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C665B9AC28325282005E535C /* DomainDetailsViewController.xib */; };
@@ -3294,6 +3296,7 @@
 		C665566C2BF70D6A00F0BD7A /* PurchaseMPCWalletUDAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletUDAuthView.swift; sourceTree = "<group>"; };
 		C665566F2BF70DD400F0BD7A /* MPCPurchaseUDCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCPurchaseUDCredentials.swift; sourceTree = "<group>"; };
 		C66556732BF70F7700F0BD7A /* MPCOnboardingPurchaseCheckoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingPurchaseCheckoutViewController.swift; sourceTree = "<group>"; };
+		C66556792BF7303C00F0BD7A /* MPCWalletPurchaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPurchaseError.swift; sourceTree = "<group>"; };
 		C665B9AA28325282005E535C /* DomainDetailsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainDetailsViewPresenter.swift; sourceTree = "<group>"; };
 		C665B9AB28325282005E535C /* DomainDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainDetailsViewController.swift; sourceTree = "<group>"; };
 		C665B9AC28325282005E535C /* DomainDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainDetailsViewController.xib; sourceTree = "<group>"; };
@@ -6728,6 +6731,7 @@
 				C68F15722BD69FC50049BFA2 /* MPCActivateWalletEnterDataType.swift */,
 				C68F15782BD76A550049BFA2 /* MPCWalletActivationState.swift */,
 				C68F157B2BD76A650049BFA2 /* MPCWalletActivationError.swift */,
+				C66556792BF7303C00F0BD7A /* MPCWalletPurchaseError.swift */,
 			);
 			path = Activating;
 			sourceTree = "<group>";
@@ -9478,6 +9482,7 @@
 				C616C2D82806DBC600C212DC /* ExternalWalletMake.swift in Sources */,
 				C688C1A62B84A31000BD233A /* ChatsList.swift in Sources */,
 				C6386838285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */,
+				C665567A2BF7303C00F0BD7A /* MPCWalletPurchaseError.swift in Sources */,
 				30472D8C2672435200B0D7A7 /* Debugger.swift in Sources */,
 				C608C8312877F9D300EDEC6E /* Double.swift in Sources */,
 				C684A0282B85A8E500B751A5 /* MessageReactionSelectionView.swift in Sources */,
@@ -10718,6 +10723,7 @@
 				C6D647AA2B1F18B500D724AC /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
 				C6C8F84B2B217E9600A9834D /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
 				C6F4333D2BB25B1C000C5E46 /* ConfirmSendAssetReceiverInfoView.swift in Sources */,
+				C665567B2BF7303C00F0BD7A /* MPCWalletPurchaseError.swift in Sources */,
 				C6C8F8E32B21836400A9834D /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C6D8FF282B82FAFB0094A21E /* UnknownMessageRowView.swift in Sources */,
 				C6C8F8122B217CC000A9834D /* BaseExternalWalletConnectedPresenter.swift in Sources */,

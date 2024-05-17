@@ -42,6 +42,10 @@ class BaseFirebaseInteractionService {
         static var PAYMENT_STRIPE_URL: String { baseAPIURL.appendingURLPathComponents("payment", "stripe") }
         static var STORE_CHECKOUT_URL: String { baseAPIURL.appendingURLPathComponents("store", "checkout") }
         static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
+        
+        static var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
+        static var USER_MPC_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("mpc") }
+
 
     }
     
