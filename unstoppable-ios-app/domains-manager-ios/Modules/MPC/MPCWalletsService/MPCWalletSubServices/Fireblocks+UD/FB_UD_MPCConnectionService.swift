@@ -39,6 +39,7 @@ extension FB_UD_MPC {
             self.networkService = networkService
             self.walletsDataStorage = walletsDataStorage
             self.udWalletsService = udWalletsService
+            udWalletsService.addListener(self)
         }
     }
 }
@@ -375,6 +376,10 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     
     func clearConnectedWalletDetails(_ walletDetails: FB_UD_MPC.ConnectedWalletDetails) throws {
         let deviceId = walletDetails.deviceId
+        try clearWalletDetails(deviceId: deviceId)
+    }
+    
+    func clearWalletDetails(deviceId: String) throws {
         try walletsDataStorage.clearAuthTokensFor(deviceId: deviceId)
         try walletsDataStorage.clearAccountsDetailsFor(deviceId: deviceId)
     }
@@ -523,10 +528,8 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         Task {
             do {
                 let wallet = try findUDWalletWith(deviceId: deviceId)
-                try walletsDataStorage.clearAuthTokensFor(deviceId: deviceId)
-                try walletsDataStorage.clearAccountsDetailsFor(deviceId: deviceId)
-                udWalletsService.remove(wallet: wallet)
                 // TODO: - Ask for user's confirmation
+                udWalletsService.remove(wallet: wallet)
             }
         }
     }
@@ -542,6 +545,21 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         }
         
         throw MPCConnectionServiceError.failedToFindUDWallet
+    }
+}
+
+// MARK: - Open methods
+extension FB_UD_MPC.MPCConnectionService: UDWalletsServiceListener {
+    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+        switch notification {
+        case .walletsUpdated, .reverseResolutionDomainChanged:
+            return
+        case .walletRemoved(let wallet):
+            if let metadata = wallet.mpcMetadata,
+               let walletDeviceId = try? getDeviceIdFrom(walletMetadata: metadata) {
+                try? clearWalletDetails(deviceId: walletDeviceId)
+            }
+        }
     }
 }
 
