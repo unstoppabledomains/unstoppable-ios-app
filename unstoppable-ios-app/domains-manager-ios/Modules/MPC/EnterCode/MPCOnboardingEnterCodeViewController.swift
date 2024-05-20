@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingEnterCodeViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
+    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -46,7 +46,8 @@ private extension MPCOnboardingEnterCodeViewController {
             Debugger.printFailure("No Email passed", critical: true)
             return
         }
-        let mpcView = MPCEnterCodeView(email: email) { [weak self] code in
+        let mpcView = MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
+                                       email: email) { [weak self] code in
             DispatchQueue.main.async {
                 self?.didEnterCode(code)
             }
