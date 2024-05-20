@@ -35,7 +35,10 @@ extension PullUpViewService {
             case .signMessage(let configuration):
                 let signMessageConfirmationView = SignMessageRequestConfirmationView(frame: viewFrame)
                 signMessageConfirmationView.configureWith(configuration)
-                selectionViewHeight = signMessageConfirmationView.requiredHeight()
+                
+                let displayedMessage = DisplayedMessageType(rawString: configuration.signingMessage)
+                let requiredHeight = 400 + displayedMessage.getTextViewHeight()
+                selectionViewHeight = requiredHeight
                 signTransactionView = signMessageConfirmationView
                 pullUp = .wcRequestSignMessageConfirmation
                 connectionConfiguration = configuration.connectionConfig
