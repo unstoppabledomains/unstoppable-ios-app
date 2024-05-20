@@ -84,3 +84,29 @@ private extension SignMessageRequestConfirmationView {
         contentStackView.addArrangedSubview(wrapStack)
     }
 }
+
+enum DisplayedMessageType: DisplayedMessageProtocol {
+    case simpleMessage, typedData
+
+    func prepareContentView() -> UIView {
+        switch self {
+        case .simpleMessage: return prepareSimpleMessageView()
+        case .typedData: return prepareTypedDataView()
+        }
+    }
+    
+    
+    private func prepareSimpleMessageView() -> UIView {
+        #warning("implement")
+        return UIView()
+    }
+    
+    private func prepareTypedDataView() -> UIView {
+        #warning("implement")
+        return UIView()
+    }
+}
+
+protocol DisplayedMessageProtocol {
+    func prepareContentView() -> UIView
+}
