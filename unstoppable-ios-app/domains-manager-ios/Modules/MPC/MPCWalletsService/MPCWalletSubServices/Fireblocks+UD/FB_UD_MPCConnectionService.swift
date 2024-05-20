@@ -8,7 +8,9 @@
 import Foundation
 
 func logMPC(_ message: String) {
-    print("MPC: - \(message)")
+    #if DEBUG
+//    print("MPC: - \(message)")
+    #endif
 }
 
 struct MPCMessage {

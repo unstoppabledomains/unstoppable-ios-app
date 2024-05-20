@@ -78,6 +78,7 @@ private extension MPCActivateWalletView {
         activationState = .activating
         mpcCreateProgress = 0
         Task { @MainActor in
+            logAnalytic(event: .willActivateMPCWallet)
             
             isLoading = true
             let password = credentials.password
@@ -89,10 +90,13 @@ private extension MPCActivateWalletView {
                 }
                 
             } catch MPCWalletError.incorrectCode {
+                logAnalytic(event: .didFailActivateMPCWalletPasscode)
                 didFailWithError(.incorrectPasscode)
             } catch MPCWalletError.incorrectPassword {
+                logAnalytic(event: .didFailActivateMPCWalletPassword)
                 didFailWithError(.incorrectPassword)
             } catch {
+                logAnalytic(event: .didFailActivateMPCWalletUnknown)
                 didFailWithError(.unknown)
             }
             isLoading = false
@@ -118,6 +122,7 @@ private extension MPCActivateWalletView {
         mpcCreateProgress = CGFloat(step.stepOrder) / CGFloat (SetupMPCWalletStep.numberOfSteps)
         switch step {
         case .finished(let mpcWallet):
+            logAnalytic(event: .didActivateMPCWallet)
             mpcStateTitle = String.Constants.mpcReadyToUse.localized()
             activationState = .activated(mpcWallet)
         case .failed(let url):
@@ -188,6 +193,7 @@ private extension MPCActivateWalletView {
     func actionButtonPressed() {
         switch activationState {
         case .activated(let mpcWallet):
+            logButtonPressedAnalyticEvents(button: .getStarted)
             mpcWalletCreatedCallback(mpcWallet)
         case .readyToActivate, .activating:
             Debugger.printFailure("Inconsistent state. Button should not be visible", critical: true)
@@ -199,10 +205,13 @@ private extension MPCActivateWalletView {
     func handleActionFor(error: MPCWalletActivationError) {
         switch error {
         case .incorrectPasscode:
+            logButtonPressedAnalyticEvents(button: .reEnterPasscode)
             enterDataType = .passcode
         case .incorrectPassword:
+            logButtonPressedAnalyticEvents(button: .reEnterPassword)
             enterDataType = .password
         case .unknown:
+            logButtonPressedAnalyticEvents(button: .tryAgain)
             activateMPCWallet()
         }
     }

@@ -78,9 +78,13 @@ private extension AnalyticsService {
         let addresses = wallets.map({ $0.address }).joined(separator: ",")
         let rrDomains = wallets.compactMap({ $0.rrDomain?.name }).joined(separator: ",")
         let numberOfBackups = appContext.udWalletsService.fetchCloudWalletClusters()
+        let numberOfWallets = wallets.filter { $0.udWallet.type != .mpc }.count
+        let numberOfMPCWallets = wallets.filter { $0.udWallet.type == .mpc }.count
         set(userProperties: [.walletsAddresses: addresses,
                              .reverseResolutionDomains: rrDomains,
-                             .numberOfWallets: String(wallets.count),
+                             .numberOfTotalWallets: String(wallets.count),
+                             .numberOfWallets: String(numberOfWallets),
+                             .numberOfMPCWallets: String(numberOfMPCWallets),
                              .numberOfBackups: String(numberOfBackups.count)])
         
         let domains = wallets.combinedDomains()

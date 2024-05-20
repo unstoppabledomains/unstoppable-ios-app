@@ -12,4 +12,13 @@ enum MPCActivateWalletEnterDataType: String, Hashable, Identifiable {
     
     case passcode
     case password
+    
+    var analyticsName: Analytics.ViewName {
+        switch self {
+        case .passcode:
+                .mpcActivateEnterCode
+        case .password:
+                .mpcActivateEnterPassword
+        }
+    }
 }
