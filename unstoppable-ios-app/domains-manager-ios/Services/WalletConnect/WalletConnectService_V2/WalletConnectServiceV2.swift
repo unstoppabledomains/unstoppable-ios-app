@@ -317,7 +317,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
                                                 sessionProposal: proposal)
         }
         
-        let connectionData = try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
+        let connectionData = try await uiHandler.getConfirmationForWCRequest(config: uiConfig)
         let walletAddressToConnect = connectionData.wallet.address
         
         intentsStorage.removeAll()
@@ -958,7 +958,7 @@ extension WalletConnectServiceV2 {
             let connectionConfig = WalletConnectServiceV2.ConnectionConfig(wallet: wallet,
                                                                            appInfo: appInfo)
             let uiConfig = uiConfigBuilder(connectionConfig)
-            try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
+            try await uiHandler.getConfirmationForWCRequest(config: uiConfig)
         }
         return (connectedApp, wallet.udWallet)
     }

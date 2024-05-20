@@ -22,7 +22,7 @@ extension PullUpViewService {
         showOrUpdate(in: viewController, pullUp: .connectedExternalWalletInfo, contentView: selectionView, height: selectionViewHeight)
     }
     
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
+    func showWCRequestConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
                                              in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let signTransactionView: BaseSignTransactionView
