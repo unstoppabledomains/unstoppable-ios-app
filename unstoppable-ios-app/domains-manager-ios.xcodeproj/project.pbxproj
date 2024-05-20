@@ -1564,6 +1564,7 @@
 		C6B762062BB4067600773943 /* WalletTransactionDisplayInfoListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B762042BB4067600773943 /* WalletTransactionDisplayInfoListItemView.swift */; };
 		C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6BA69BD2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA69BC2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift */; };
 		C6BA746A2AD4398500628DC6 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74692AD4398500628DC6 /* Int.swift */; };
 		C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */; };
 		C6BA746E2AD4FE1800628DC6 /* PullUpViewService+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */; };
@@ -3684,6 +3685,7 @@
 		C6B762042BB4067600773943 /* WalletTransactionDisplayInfoListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionDisplayInfoListItemView.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
+		C6BA69BC2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCConnectionServiceTests.swift; sourceTree = "<group>"; };
 		C6BA74692AD4398500628DC6 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Messaging.swift"; sourceTree = "<group>"; };
 		C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Tools.swift"; sourceTree = "<group>"; };
@@ -4214,6 +4216,7 @@
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */,
+				C6BA69BC2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift */,
 				C67DE1422B983FD0002374CE /* HomeExploreViewModelTests.swift */,
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
@@ -9846,6 +9849,7 @@
 				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C67DE1432B983FD0002374CE /* HomeExploreViewModelTests.swift in Sources */,
 				C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */,
+				C6BA69BD2BFAE6E500DAE886 /* FB_UD_MPCConnectionServiceTests.swift in Sources */,
 				C6B2E2142B9714B100CEA1F9 /* DomainProfilesServiceTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
 				C64545EB2BE3783C0011D508 /* TestableMPCWalletsService.swift in Sources */,

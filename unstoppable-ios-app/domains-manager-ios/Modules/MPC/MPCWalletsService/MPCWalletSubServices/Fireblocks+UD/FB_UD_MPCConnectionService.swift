@@ -348,8 +348,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     
     private func getWalletAccountDetailsForWalletWith(deviceId: String,
                                                       accessToken: String) async throws -> WalletDetails {
-        let networkService = FB_UD_MPC.DefaultMPCConnectionNetworkService()
-        
         let accountsResponse = try await networkService.getAccounts(accessToken: accessToken)
         let accounts = accountsResponse.items
         var accountsWithAssets: [FB_UD_MPC.WalletAccountWithAssets] = []
