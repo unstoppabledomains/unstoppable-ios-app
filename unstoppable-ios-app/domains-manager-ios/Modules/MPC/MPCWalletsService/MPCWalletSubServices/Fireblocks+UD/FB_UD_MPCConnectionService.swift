@@ -514,7 +514,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
             return authTokens.accessToken.jwt
         } catch {
-            didExpireTokensFor(deviceId: deviceId)
+            didExpireTokensFor(deviceId: currentDeviceId)
             throw error
         }
     }
