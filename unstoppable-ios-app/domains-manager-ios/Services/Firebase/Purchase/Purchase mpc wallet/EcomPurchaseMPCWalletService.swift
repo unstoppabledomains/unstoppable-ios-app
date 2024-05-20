@@ -15,6 +15,7 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     
     private var cancellables: Set<AnyCancellable> = []
     private var ongoingPurchaseSession: PurchaseSessionDescription?
+    private var isGuestLogin: Bool { true }
     
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
@@ -37,8 +38,10 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     @discardableResult
     override func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         do {
+            logMPC("Will make data request \(apiRequest)")
             return try await super.makeFirebaseAPIDataRequest(apiRequest)
         } catch {
+            logMPC("Error data request \(apiRequest):\(error)")
             appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
@@ -53,10 +56,12 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
                                                          using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                          dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T where T : Decodable {
         do {
+            logMPC("Will make decodable request \(apiRequest)")
             return try await super.makeFirebaseDecodableAPIDataRequest(apiRequest,
                                                                        using: keyDecodingStrategy,
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
+            logMPC("Error decoding request \(apiRequest):\(error)")
             appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
                                             withParameters: [.error: error.localizedDescription,
                                                              .value: apiRequest.url.absoluteString])
@@ -95,6 +100,13 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     
     override func didRefreshCart() {
         cartStatus = .ready(cart: createCartFromUDCart(udCart))
+    }
+    
+    override func loadUserProfile() async throws -> Ecom.UDUserProfileResponse {
+        if isGuestLogin {
+            return .init(promoCredits: 0, referralCode: "", storeCredits: 0, uid: "")
+        }
+        return try await super.loadUserProfile()
     }
 }
 
@@ -142,12 +154,14 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
     func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {
         await prepareBeforeAuth()
         self.ongoingPurchaseSession = PurchaseSessionDescription(email: credentials.email, sessionId: UUID().uuidString)
+        checkoutData.isPromoCreditsOn = false
+        checkoutData.isStoreCreditsOn = false
         try await didAuthorise()
     }
     
     func purchaseMPCWallet() async throws {
         isAutoRefreshCartSuspended = true
-        try await purchaseProductsInTheCart(to: nil,
+        try await purchaseProductsInTheCart(with: .init(email: ongoingPurchaseSession?.email),
                                             totalAmountDue: udCart.calculations.totalAmountDue)
         ongoingPurchaseSession?.orderId = cachedPaymentDetails?.orderId
         try await waitForMPCWalletIsCreated()
@@ -189,6 +203,10 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func isAlreadyPurchasedMPCWallet() async throws -> Bool {
+        if isGuestLogin {
+            return false
+        }
+        
         let wallets = try await loadUserCryptoWallets()
         if wallets.first(where: { $0.type == "EvmPlatformMpcWallet" }) != nil {
             return true
