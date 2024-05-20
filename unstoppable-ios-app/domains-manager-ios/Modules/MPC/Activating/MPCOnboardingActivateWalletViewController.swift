@@ -10,7 +10,7 @@ import SwiftUI
 
 final class MPCOnboardingActivateWalletViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
+    override var analyticsName: Analytics.ViewName { .mpcActivationOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -49,7 +49,8 @@ private extension MPCOnboardingActivateWalletViewController {
             Debugger.printFailure("No MPC Code passed", critical: true)
             return
         }
-        let mpcView = MPCActivateWalletView(credentials: credentials,
+        let mpcView = MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
+                                            credentials: credentials,
                                             code: code, mpcWalletCreatedCallback: { [weak self] wallet in
             DispatchQueue.main.async {
                 self?.handleAction(.didImportWallet(wallet))

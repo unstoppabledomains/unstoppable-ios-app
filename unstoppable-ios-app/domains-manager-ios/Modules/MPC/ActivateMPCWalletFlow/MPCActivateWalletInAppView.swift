@@ -15,8 +15,9 @@ struct MPCActivateWalletInAppView: View {
     let code: String
     
     var body: some View {
-        MPCActivateWalletView(credentials: credentials,
-                              code: code, 
+        MPCActivateWalletView(analyticsName: .mpcActivationInApp, 
+                              credentials: credentials,
+                              code: code,
                               mpcWalletCreatedCallback: didCreateMPCWallet,
                               changeEmailCallback: didRequestToChangeEmail)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)

@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct MPCActivateWalletView: View {
+struct MPCActivateWalletView: View, ViewAnalyticsLogger {
 
     @Environment(\.mpcWalletsService) private var mpcWalletsService
 
+    let analyticsName: Analytics.ViewName
     @State var credentials: MPCActivateCredentials
     @State var code: String
     let mpcWalletCreatedCallback: (UDWallet)->()
@@ -40,6 +41,8 @@ struct MPCActivateWalletView: View {
                     .padding(.bottom, safeAreaInset.bottom)
             }
         }
+        .passViewAnalyticsDetails(logger: self)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
         .sheet(item: $enterDataType) { dataType in
@@ -206,7 +209,8 @@ private extension MPCActivateWalletView {
 }
 
 #Preview {
-    MPCActivateWalletView(credentials: .init(email: "",
+    MPCActivateWalletView(analyticsName: .mpcActivationOnboarding,
+                          credentials: .init(email: "",
                                              password: ""),
                           code: "",
                           mpcWalletCreatedCallback: { _ in },

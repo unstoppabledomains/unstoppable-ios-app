@@ -79,6 +79,8 @@ extension Analytics {
         case didPullToRefresh
         
         case didSendCrypto, didFailToSendCrypto
+        
+        case sendMPCBootstrapCodeError
     }
 }
 
@@ -225,7 +227,6 @@ extension Analytics {
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
         case viewMessagingImage
-        case onboardingMPCEnterCode
         
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
@@ -234,6 +235,10 @@ extension Analytics {
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
+        
+        case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp
+        case mpcActivationOnboarding, mpcActivationInApp
     }
 }
 
