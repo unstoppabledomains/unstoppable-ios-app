@@ -54,7 +54,7 @@ private extension SignMessageRequestConfirmationView {
     }
 }
 
-enum DisplayedMessageType: DisplayedMessageProtocol {
+enum DisplayedMessageType {
     static let lineHeight: CGFloat = 24
     static let padding: CGFloat = 16
     static let maxTextViewHeight: CGFloat = 176
@@ -64,10 +64,6 @@ enum DisplayedMessageType: DisplayedMessageProtocol {
     case typedData(EIP712TypedData)
     
     init(rawString: String) {
-        self = Self.simpleMessage(rawString)
-        return
-        
-        #warning("need to expand")
         guard let data = rawString.data(using: .utf8),
               let typedData = try? JSONDecoder().decode(EIP712TypedData.self, from: data) else {
             self = Self.simpleMessage(rawString)
@@ -100,7 +96,7 @@ enum DisplayedMessageType: DisplayedMessageProtocol {
     }
     
     private func getTypedDataViewHeight() -> CGFloat {
-        return CGFloat.pi
+        return 200
     }
     
     private func prepareSimpleMessageView(signingMessage: String) -> UIView {
@@ -129,11 +125,21 @@ enum DisplayedMessageType: DisplayedMessageProtocol {
     }
     
     private func prepareTypedDataView() -> UIView {
-        #warning("implement")
-        return UIView()
-    }
-}
+        let textView = EIP712View()
+//        textView.translatesAutoresizingMaskIntoConstraints = false
+//        textView.backgroundColor = .clear
+//        textView.layer.cornerRadius = 12
+//        textView.layer.borderWidth = 1
+//        textView.layer.borderColor = UIColor.borderDefault.cgColor
+//        
+        
+//        textView.setAttributedTextWith(text: signingMessage,
+//                                       font: Self.font,
+//                                       textColor: .foregroundSecondary,
+//                                       lineHeight: Self.lineHeight)
+        textView.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
+//        textView.isScrollEnabled = getSimpleMessageViewHeight(signingMessage) == Self.maxTextViewHeight
 
-protocol DisplayedMessageProtocol {
-    func prepareContentView() -> UIView
+        return textView
+    }
 }
