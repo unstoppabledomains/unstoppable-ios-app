@@ -429,6 +429,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         case missingNetworkFee
         case invalidNetworkFeeAmountFormat
         case failedToTrimAmount
+        case failedToFindUDWallet
         
         public var errorDescription: String? {
             return rawValue
@@ -482,30 +483,65 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     
     func refreshAndStoreToken(refreshToken: JWToken,
                               deviceId: String) async throws -> String {
-        let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
-        try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
-        return refreshedTokens.accessToken.jwt
+        do {
+            let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
+            try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
+            return refreshedTokens.accessToken.jwt
+        } catch {
+            didExpireTokensFor(deviceId: deviceId)
+            throw error
+        }
     }
     
     func refreshAndStoreBootstrapToken(bootstrapToken: JWToken,
                                        currentDeviceId: String) async throws -> String {
-        let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
+        do {
+            let refreshBootstrapTokenResponse = try await networkService.refreshBootstrapToken(bootstrapToken.jwt)
+            
+            let accessToken = refreshBootstrapTokenResponse.accessToken
+            let deviceId = refreshBootstrapTokenResponse.deviceId
+            let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
+            mpcConnector.stopJoinWallet()
+            
+            try await mpcConnector.waitForKeyIsReady()
+            let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
+            let txId = transactionDetails.transactionId
+            try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
+            try await mpcConnector.signTransactionWith(txId: txId)
+            let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
+            
+            try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
+            try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
+            return authTokens.accessToken.jwt
+        } catch {
+            didExpireTokensFor(deviceId: deviceId)
+            throw error
+        }
+    }
+    
+    func didExpireTokensFor(deviceId: String) {
+        Task {
+            do {
+                let wallet = try findUDWalletWith(deviceId: deviceId)
+                try walletsDataStorage.clearAuthTokensFor(deviceId: deviceId)
+                try walletsDataStorage.clearAccountsDetailsFor(deviceId: deviceId)
+                udWalletsService.remove(wallet: wallet)
+                // TODO: - Ask for user's confirmation
+            }
+        }
+    }
+    
+    func findUDWalletWith(deviceId: String) throws -> UDWallet {
+        let wallets = udWalletsService.getUserWallets()
+        for wallet in wallets {
+            if let metadata = wallet.mpcMetadata,
+               let walletDeviceId = try? getDeviceIdFrom(walletMetadata: metadata),
+               walletDeviceId == deviceId {
+                return wallet
+            }
+        }
         
-        let accessToken = refreshBootstrapTokenResponse.accessToken
-        let deviceId = refreshBootstrapTokenResponse.deviceId
-        let mpcConnector = try connectorBuilder.buildBootstrapMPCConnector(deviceId: deviceId, accessToken: accessToken)
-        mpcConnector.stopJoinWallet()
-        
-        try await mpcConnector.waitForKeyIsReady()
-        let transactionDetails = try await networkService.initTransactionWithNewKeyMaterials(accessToken: accessToken)
-        let txId = transactionDetails.transactionId
-        try await networkService.waitForTransactionWithNewKeyMaterialsReady(accessToken: accessToken)
-        try await mpcConnector.signTransactionWith(txId: txId)
-        let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
-        
-        try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
-        try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
-        return authTokens.accessToken.jwt
+        throw MPCConnectionServiceError.failedToFindUDWallet
     }
 }
 
