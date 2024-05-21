@@ -29,6 +29,8 @@ struct ShareWalletAssetInfoView: View, ViewAnalyticsLogger {
         }
         .onAppear(perform: onAppear)
         .padding(.horizontal, 16)
+        .passViewAnalyticsDetails(logger: self)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .task {
             if #available(iOS 17.0, *) {
                 try? Tips.configure(

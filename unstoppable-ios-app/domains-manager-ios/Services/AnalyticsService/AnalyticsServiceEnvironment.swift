@@ -79,6 +79,9 @@ extension Analytics {
         case didPullToRefresh
         
         case didSendCrypto, didFailToSendCrypto
+        
+        case sendMPCBootstrapCodeError
+        case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
     }
 }
 
@@ -155,7 +158,9 @@ extension Analytics {
         case walletsAddresses
         case primaryDomain
         case reverseResolutionDomains
+        case numberOfTotalWallets
         case numberOfWallets
+        case numberOfMPCWallets
         case numberOfTotalDomains
         case numberOfUDDomains
         case numberOfParkedDomains
@@ -225,7 +230,6 @@ extension Analytics {
         case purchaseDomainsSearch, purchaseDomainsCheckout, purchaseDomainsProfile
         case hotFeatureDetails
         case viewMessagingImage
-        case onboardingMPCEnterCode
         
         case shareWalletInfo, nftDetails, profileSelection
         case updateToWalletGreetings
@@ -234,6 +238,11 @@ extension Analytics {
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
+        
+        case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp
+        case mpcActivationOnboarding, mpcActivationInApp
+        case mpcActivateEnterCode, mpcActivateEnterPassword
     }
 }
 
@@ -241,7 +250,7 @@ extension Analytics {
 extension Analytics {
     enum Button: String, Codable {
         case buyDomains, mintDomains, manageDomains, importFromTheWebsite
-        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send
+        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send, logIn
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
         case termsOfUse, privacyPolicy
@@ -306,7 +315,7 @@ extension Analytics {
         case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution
         
         // Wallets list
-        case manageICloudBackups, walletInList
+        case manageICloudBackups, walletInList, walletsMenu
         
         // Web view
         case refreshPage, openBrowser, moveBack, moveForward
@@ -415,6 +424,8 @@ extension Analytics {
         case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
         case transactionSpeedSelection, selectTransactionSpeed
         case noRecordsAdded
+        
+        case reEnterPasscode, reEnterPassword
     }
 }
 

@@ -27,6 +27,8 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .onReceive(userProfilesService.profilesPublisher.receive(on: DispatchQueue.main), perform: { profiles in
                 self.profiles = profiles
             })
+            .passViewAnalyticsDetails(logger: self)
+            .trackAppearanceAnalytics(analyticsLogger: self)
             .displayError($error)
             .navigationTitle(String.Constants.settings.localized())
             .navigationBarTitleDisplayMode(.large)
@@ -132,6 +134,7 @@ private extension SettingsView {
     func loginButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .logIn)
             pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
         } label: {
             topActinTextView(text: String.Constants.login.localized())
@@ -219,7 +222,9 @@ private extension SettingsView {
                     .squareFrame(24)
                     .foregroundStyle(Color.foregroundSecondary)
             }
-            .onButtonTap()
+            .onButtonTap {
+                logButtonPressedAnalyticEvents(button: .walletsMenu)
+            }
         }
     }
     
@@ -227,6 +232,7 @@ private extension SettingsView {
     func addWalletsButton() -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: .addWallet)
             checkIfCanAddWalletAndPerform(action: .showImportWalletOptionsPullUp, isImportOnly: false)
         } label: {
             HStack(spacing: 8) {

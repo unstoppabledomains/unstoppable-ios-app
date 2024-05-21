@@ -85,7 +85,9 @@ private extension CopyMultichainWalletAddressesPullUpView {
 
 // MARK: - Private methods
 extension CopyMultichainWalletAddressesPullUpView {
-    struct TokenSelectionRowView: View {
+    struct TokenSelectionRowView: View, ViewAnalyticsLogger {
+        
+        @Environment(\.analyticsViewName) var analyticsName
         
         let token: BalanceTokenUIDescription
         let selectionType: SelectionType
@@ -121,11 +123,13 @@ extension CopyMultichainWalletAddressesPullUpView {
         }
         
         func copyAction() {
+            logButtonPressedAnalyticEvents(button: .copyWalletAddress, parameters: [.coin : token.symbol])
             CopyWalletAddressPullUpHandler.copyToClipboard(address: token.address,
                                                            ticker: token.symbol)
         }
         @MainActor
         func shareAction() {
+            logButtonPressedAnalyticEvents(button: .share, parameters: [.coin : token.symbol])
             shareItems([token.address], completion: nil)
         }
         private func onAppear() {

@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct MPCActivateWalletEnterView: View {
+struct MPCActivateWalletEnterView: View, ViewAnalyticsLogger {
     
     @Environment(\.dismiss) private var dismiss
+    var analyticsName: Analytics.ViewName { dataType.analyticsName }
     
     let dataType: MPCActivateWalletEnterDataType
     let email: String
@@ -121,6 +122,7 @@ private extension MPCActivateWalletEnterView {
     }
     
     func actionButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         dismiss()
         confirmationCallback(input)
     }

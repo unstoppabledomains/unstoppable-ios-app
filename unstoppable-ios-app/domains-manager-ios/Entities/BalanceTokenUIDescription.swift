@@ -54,7 +54,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.symbol = walletBalance.gasCurrency
         self.name = walletBalance.name
         self.balance = walletBalance.balanceAmt
-        self.balanceUsd = walletBalance.value.walletUsdAmt
+        self.balanceUsd = walletBalance.value.walletUsdAmt ?? 0
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         self.logoURL = URL(string: walletBalance.logoUrl ?? "")

@@ -7,17 +7,18 @@
 
 import SwiftUI
 
-struct MPCEnterCredentialsView: View, UserDataValidator {
+struct MPCEnterCredentialsView: View, UserDataValidator, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
+    let analyticsName: Analytics.ViewName 
     let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
     @State private var error: Error?
-    
+        
     var body: some View {
         ScrollView {
             VStack(spacing: isIPSE ? 16 : 32) {
@@ -30,6 +31,8 @@ struct MPCEnterCredentialsView: View, UserDataValidator {
                 Spacer()
             }
         }
+        .passViewAnalyticsDetails(logger: self)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .scrollDisabled(true)
         .padding()
         .displayError($error)
@@ -121,6 +124,7 @@ private extension MPCEnterCredentialsView {
     
     func actionButtonPressed() {
         Task {
+            logButtonPressedAnalyticEvents(button: .continue)
             isLoading = true
             do {
                 // Send email action
@@ -130,6 +134,7 @@ private extension MPCEnterCredentialsView {
                 let credentials = MPCActivateCredentials(email: email, password: password)
                 credentialsCallback(credentials)
             } catch {
+                logAnalytic(event: .sendMPCBootstrapCodeError, parameters: [.error: error.localizedDescription])
                 self.error = error
             }
             isLoading = false

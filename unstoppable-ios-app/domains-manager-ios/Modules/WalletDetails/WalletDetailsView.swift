@@ -49,6 +49,8 @@ struct WalletDetailsView: View, ViewAnalyticsLogger {
         .listRowSpacing(0)
         .clearListBackground()
         .background(Color.backgroundDefault)
+        .passViewAnalyticsDetails(logger: self)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .onReceive(walletsDataService.walletsPublisher.receive(on: DispatchQueue.main)) { wallets in
             if let wallet = wallets.findWithAddress(wallet.address) {
                 self.wallet = wallet
