@@ -17,6 +17,7 @@ final class FB_UD_MPCConnectionServiceTests: BaseTestClass, FB_UD_MPC.Fireblocks
     private var networkService: MockNetworkService!
     private var storage: MockMPCWalletsDataStorage!
     private var udWalletsService = TestableUDWalletsService()
+    private var uiHandler: MockMPCWalletUIHandler!
     private var mpcConnectionService: FB_UD_MPC.MPCConnectionService!
 
     override func setUp() async throws {
@@ -29,11 +30,13 @@ final class FB_UD_MPCConnectionServiceTests: BaseTestClass, FB_UD_MPC.Fireblocks
         networkService = MockNetworkService()
         networkService.deviceId = deviceId
         storage = MockMPCWalletsDataStorage()
+        uiHandler = await MockMPCWalletUIHandler()
         udWalletsService = TestableUDWalletsService()
         mpcConnectionService = .init(connectorBuilder: self,
                                      networkService: networkService,
                                      walletsDataStorage: storage,
-                                     udWalletsService: udWalletsService)
+                                     udWalletsService: udWalletsService, 
+                                     uiHandler: uiHandler)
     }
     
     func buildBootstrapMPCConnector(deviceId: String, accessToken: String) throws -> any FB_UD_MPC.FireblocksConnectorProtocol {
@@ -342,5 +345,11 @@ private final class MockMPCWalletsDataStorage: FB_UD_MPC.MPCWalletsDataStorage {
         public var errorDescription: String? {
             return rawValue
         }
+    }
+}
+
+private final class MockMPCWalletUIHandler: MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ wallet: domains_manager_ios.UDWallet) async -> Bool {
+        true
     }
 }

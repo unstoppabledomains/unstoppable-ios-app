@@ -29,3 +29,8 @@ protocol MPCWalletsServiceProtocol {
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> Double
 }
+
+@MainActor
+protocol MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ wallet: UDWallet) async -> Bool
+}

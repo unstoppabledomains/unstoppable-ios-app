@@ -282,6 +282,13 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
 }
 
+// MARK: - MPCWalletsUIHandler
+extension CoreAppCoordinator: MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ wallet: UDWallet) async -> Bool {
+        true
+    }
+}
+
 // MARK: - Passing events
 private extension CoreAppCoordinator {
     func handleDeepLinkEvent(_ event: DeepLinkEvent) {

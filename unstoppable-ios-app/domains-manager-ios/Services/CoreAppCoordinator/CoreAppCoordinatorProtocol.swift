@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEventsUIHandler {
+protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEventsUIHandler, MPCWalletsUIHandler {
     var topVC: UIViewController? { get }
     
     func startWith(window: UIWindow)

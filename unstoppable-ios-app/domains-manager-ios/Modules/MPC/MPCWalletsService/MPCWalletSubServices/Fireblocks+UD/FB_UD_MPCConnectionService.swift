@@ -29,16 +29,19 @@ extension FB_UD_MPC {
         private let networkService: MPCConnectionNetworkService
         private let walletsDataStorage: MPCWalletsDataStorage
         private let udWalletsService: UDWalletsServiceProtocol
+        private let uiHandler: MPCWalletsUIHandler
         private let actionsQueuer = ActionsQueuer()
 
         init(connectorBuilder: FireblocksConnectorBuilder = DefaultFireblocksConnectorBuilder(),
              networkService: MPCConnectionNetworkService = DefaultMPCConnectionNetworkService(),
              walletsDataStorage: MPCWalletsDataStorage = MPCWalletsDefaultDataStorage(),
-             udWalletsService: UDWalletsServiceProtocol) {
+             udWalletsService: UDWalletsServiceProtocol,
+             uiHandler: MPCWalletsUIHandler) {
             self.connectorBuilder = connectorBuilder
             self.networkService = networkService
             self.walletsDataStorage = walletsDataStorage
             self.udWalletsService = udWalletsService
+            self.uiHandler = uiHandler
             udWalletsService.addListener(self)
         }
     }
