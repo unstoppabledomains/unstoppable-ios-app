@@ -32,5 +32,5 @@ protocol MPCWalletsServiceProtocol {
 
 @MainActor
 protocol MPCWalletsUIHandler {
-    func askToReconnectMPCWallet(_ wallet: UDWallet) async -> Bool
+    func askToReconnectMPCWallet(_ wallet: UDWallet) async
 }

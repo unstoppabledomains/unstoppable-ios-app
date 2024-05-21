@@ -484,6 +484,8 @@ private extension SettingsView {
             connectNewWallet()
         case .createNewWallet:
             createNewWallet()
+        case .activateMPC:
+            activateMPCWallet()
         }
     }
     
@@ -602,7 +604,7 @@ private extension SettingsView {
 extension SettingsView {
     enum InitialAction {
         case none
-        case importWallet, connectWallet, createNewWallet
+        case importWallet, connectWallet, createNewWallet, activateMPC
         case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
     }
 }

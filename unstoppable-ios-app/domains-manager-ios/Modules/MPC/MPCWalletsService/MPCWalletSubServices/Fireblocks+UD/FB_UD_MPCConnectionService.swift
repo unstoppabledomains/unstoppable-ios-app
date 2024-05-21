@@ -474,6 +474,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             }
             
             // All tokens has expired. Need to go through the bootstrap process from the beginning.
+            didExpireTokensFor(deviceId: deviceId)
             throw MPCConnectionServiceError.tokensExpired
         }
         
@@ -518,8 +519,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             try await mpcConnector.signTransactionWith(txId: txId)
             let authTokens = try await networkService.confirmTransactionWithNewKeyMaterialsSigned(accessToken: accessToken)
             
-            try walletsDataStorage.clearAuthTokensFor(deviceId: currentDeviceId)
-            try walletsDataStorage.storeAuthTokens(authTokens, for: deviceId)
+            try walletsDataStorage.storeAuthTokens(authTokens, for: currentDeviceId)
             return authTokens.accessToken.jwt
         } catch {
             didExpireTokensFor(deviceId: currentDeviceId)
@@ -531,7 +531,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         Task {
             do {
                 let wallet = try findUDWalletWith(deviceId: deviceId)
-                // TODO: - Ask for user's confirmation
+                await uiHandler.askToReconnectMPCWallet(wallet)
                 udWalletsService.remove(wallet: wallet)
             }
         }
