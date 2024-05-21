@@ -26,6 +26,7 @@ struct ShareWalletInfoView: View, ViewAnalyticsLogger {
                 ShareWalletAssetInfoView(asset: type,
                                          rrDomain: wallet.rrDomain,
                                          walletDisplayInfo: wallet.displayInfo)
+                .passViewAnalyticsDetails(logger: self)
             }
         }
         .trackAppearanceAnalytics(analyticsLogger: self)
@@ -44,6 +45,7 @@ private extension ShareWalletInfoView {
     }
     
     func didSelectMultiChainAsset(_ token: BalanceTokenUIDescription) {
+        logButtonPressedAnalyticEvents(button: .qrCode, parameters: [.coin : token.symbol])
         navigationPath.append(ShareWalletAssetInfoView.AssetsType.multiChainAsset(token))
     }
 }

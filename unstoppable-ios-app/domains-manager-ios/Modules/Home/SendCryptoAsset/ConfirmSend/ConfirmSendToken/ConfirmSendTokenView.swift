@@ -116,7 +116,12 @@ private extension ConfirmSendTokenView {
     
     func confirmButtonPressed() {
         if UserDefaults.isSendingCryptoForTheFirstTime {
-            pullUp = .default(.showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: confirmSending))
+            pullUp = .default(.showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: {
+                Task {
+                    await Task.sleep(seconds: 0.4)
+                    confirmSending()
+                }
+            }))
         } else {
             confirmSending()
         }
