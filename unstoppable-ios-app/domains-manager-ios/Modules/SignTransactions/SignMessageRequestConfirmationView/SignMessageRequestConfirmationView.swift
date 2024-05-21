@@ -75,7 +75,7 @@ enum DisplayedMessageType {
     func prepareContentView() -> UIView {
         switch self {
         case .simpleMessage(let simpleMessage): return prepareSimpleMessageView(signingMessage: simpleMessage)
-        case .typedData: return prepareTypedDataView()
+        case .typedData(let typedData): return prepareTypedDataView(typedData: typedData)
         }
     }
     
@@ -96,7 +96,7 @@ enum DisplayedMessageType {
     }
     
     private func getTypedDataViewHeight() -> CGFloat {
-        return 200
+        return 300
     }
     
     private func prepareSimpleMessageView(signingMessage: String) -> UIView {
@@ -124,8 +124,14 @@ enum DisplayedMessageType {
         return textView
     }
     
-    private func prepareTypedDataView() -> UIView {
-        let textView = EIP712View()
+    private func prepareTypedDataView(typedData: EIP712TypedData) -> UIView {
+        let eip712view = EIP712View()
+        
+        let domainName = (typedData.domain["name"]?.unwrapString ?? "") + " / Version " + (typedData.domain["version"]?.unwrapString ?? "")
+        
+        eip712view.domainLabel.text = domainName
+        eip712view.domainLabel.font = Self.font
+        eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
 //        textView.translatesAutoresizingMaskIntoConstraints = false
 //        textView.backgroundColor = .clear
 //        textView.layer.cornerRadius = 12
@@ -137,9 +143,19 @@ enum DisplayedMessageType {
 //                                       font: Self.font,
 //                                       textColor: .foregroundSecondary,
 //                                       lineHeight: Self.lineHeight)
-        textView.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
+        eip712view.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
 //        textView.isScrollEnabled = getSimpleMessageViewHeight(signingMessage) == Self.maxTextViewHeight
 
-        return textView
+        return eip712view
+    }
+}
+
+extension JSON {
+    
+    var unwrapString: String {
+        guard case let .string(unwrapped) = self else {
+            return ""
+        }
+        return unwrapped
     }
 }
