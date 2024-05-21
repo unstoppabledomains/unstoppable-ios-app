@@ -485,6 +485,30 @@ extension ViewPullUpDefaultConfiguration {
         })
     }
     
+    static func askToReconnectMPCWalletPullUp(walletAddress: HexAddress,
+                                              resultCallback: @escaping @Sendable @MainActor (Bool)->()) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .shieldKeyhole,
+                                 size: .largeCentered,
+                                 corners: .circle,
+                                 backgroundColor: .backgroundAccentEmphasis,
+                                 tintColor: .white),
+                     title: .text("Please re-import your Unstoppable Wallet (\(walletAddress.walletAddressTruncated))"),
+                     subtitle: .label(.text("Each Unstoppable Wallet session has a termination period of three months, after which it must be re-imported. This design enhances security and ensures the protection of assets in all Unstoppable Wallets.")),
+                     actionButton: .main(content: .init(title: "Re-import wallet",
+                                                        analyticsName: .messaging,
+                                                        action: {
+            resultCallback(true)
+        })),
+                     cancelButton: .secondary(content: .init(title: String.Constants.later.localized(),
+                                                             analyticsName: .gotIt,
+                                                             action: {
+            resultCallback(false)
+        })),
+                     dismissAble: false,
+                     analyticName: .reConnectMPCWalletConfirmation,
+                     dismissCallback: nil)
+    }
+    
 }
 
 // MARK: - Open methods

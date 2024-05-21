@@ -135,6 +135,9 @@ extension HomeWalletView {
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
             case .buyMPC:
+//                router.pullUp = .default(.askToReconnectMPCWalletPullUp(walletAddress: selectedWallet.address, resultCallback: { result in
+//                    print("Result: \(result)")
+//                }))
                 router.purchasingMPCWallet = true
             }
         }

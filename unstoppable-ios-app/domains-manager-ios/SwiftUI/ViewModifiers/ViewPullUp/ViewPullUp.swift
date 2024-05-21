@@ -286,19 +286,47 @@ private extension ViewPullUp {
     
     @ViewBuilder
     func viewForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
+        imageForIconContent(iconContent)
+            .foregroundStyle(Color(uiColor: iconContent.tintColor))
+            .background(Color(uiColor: iconContent.backgroundColor))
+            .modifier(ClipShapeForIconContentModifier(iconContent: iconContent))
+    }
+    
+    @ViewBuilder
+    func imageForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
         switch iconContent.size {
-        case .large, .largeCentered, .small:
+        case .large, .small:
             Image(uiImage: iconContent.icon)
                 .resizable()
                 .squareFrame(iconContent.iconSize)
-                .foregroundStyle(Color(uiColor: iconContent.tintColor))
+        case .largeCentered:
+            Image(uiImage: iconContent.icon)
+                .resizable()
+                .squareFrame(iconContent.iconSize / 2)
+                .padding(iconContent.iconSize / 4)
         case .fixedHeight(let height):
             Image(uiImage: iconContent.icon)
                 .resizable()
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
-                .foregroundStyle(Color(uiColor: iconContent.tintColor))
         }
+    }
+    
+    struct ClipShapeForIconContentModifier: ViewModifier {
+        
+        let iconContent: ViewPullUpDefaultConfiguration.IconContent
+        
+        func body(content: Content) -> some View {
+            switch iconContent.corners {
+            case .circle:
+                content.clipShape(Circle())
+            case .custom(let radius):
+                content.clipShape(RoundedRectangle(cornerRadius: radius))
+            case .none:
+                content
+            }
+        }
+        
     }
 }
 

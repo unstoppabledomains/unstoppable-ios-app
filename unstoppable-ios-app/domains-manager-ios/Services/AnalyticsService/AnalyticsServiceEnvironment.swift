@@ -473,6 +473,7 @@ extension Analytics {
         case noRecordsSetToSendCrypto
         case sendCryptoForTheFirstTimeConfirmation
         case copyMultiChainAddresses
+        case reConnectMPCWalletConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
