@@ -133,7 +133,7 @@ enum DisplayedMessageType {
 
         eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
         
-        if let chainIdFloat = typedData.domain["chainId"]?.unwrapFloat,
+        if let chainIdFloat = typedData.domain["chainId"]?.unwrapString,
            let chain = try? UnsConfigManager.getBlockchainType(from:  Int(chainIdFloat))  {
             eip712view.chainLabel.text = chain.fullName
         }
