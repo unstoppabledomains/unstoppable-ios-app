@@ -9,7 +9,7 @@ import Foundation
 
 func logMPC(_ message: String) {
     #if DEBUG
-//    print("MPC: - \(message)")
+    print("MPC: - \(message)")
     #endif
 }
 
