@@ -132,6 +132,13 @@ enum DisplayedMessageType {
         eip712view.domainLabel.text = domainName
         eip712view.domainLabel.font = Self.font
         eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
+        
+        if let chainIdFloat = typedData.domain["chainId"]?.unwrapFloat,
+           let chain = try? UnsConfigManager.getBlockchainType(from:  Int(chainIdFloat))  {
+            eip712view.chainLabel.text = chain.fullName
+        }
+        
+        
 //        textView.translatesAutoresizingMaskIntoConstraints = false
 //        textView.backgroundColor = .clear
 //        textView.layer.cornerRadius = 12
@@ -146,6 +153,11 @@ enum DisplayedMessageType {
         eip712view.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
 //        textView.isScrollEnabled = getSimpleMessageViewHeight(signingMessage) == Self.maxTextViewHeight
 
+        let textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        eip712view.messageTextView.textContainerInset = textContainerInset
+        
+        eip712view.messageTextView.text = typedData.message.topLevelSegmentedDescription
+        
         return eip712view
     }
 }
@@ -157,5 +169,22 @@ extension JSON {
             return ""
         }
         return unwrapped
+    }
+    
+    var unwrapFloat: Float {
+        guard case let .number(unwrapped) = self else {
+            return 0
+        }
+        return unwrapped
+    }
+    
+    var topLevelSegmentedDescription: String {
+        guard case let .object(dictionary) = self else {
+            return ""
+        }
+        return dictionary.reduce(into: "") { str, dictEl in
+            str = str + dictEl.key + ":\n" + dictEl.value.debugDescription + "\n\n"
+        }
+
     }
 }
