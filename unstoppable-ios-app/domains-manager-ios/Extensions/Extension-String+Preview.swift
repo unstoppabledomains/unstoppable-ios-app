@@ -1339,4 +1339,8 @@ extension String {
     func appendingURLQueryComponents(_ components: [String : String]) -> String {
         self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
     }
+    
+    var encodingSpecialCharacters: String {
+        addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
+    }
 }

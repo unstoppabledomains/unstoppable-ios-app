@@ -75,7 +75,8 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
     override func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         guard let sessionId = ongoingPurchaseSession?.sessionId else { throw PurchaseMPCWalletError.noSessionId }
         
-        let url = apiRequest.url.appending(queryItems: [.init(name: "guestUuid", value: sessionId)])
+        var url = apiRequest.url.appending(queryItems: [.init(name: "guestUuid", value: sessionId)])
+        url = URL(string: url.absoluteString.replacingOccurrences(of: "+", with: "%2B"))!
         let firebaseAPIRequest = APIRequest(url: url,
                                             headers: apiRequest.headers,
                                             body: apiRequest.body,
@@ -240,6 +241,9 @@ private extension EcomPurchaseMPCWalletService {
         var wallet: EcomMPCWallet?
     }
     
+    struct EcomMPCWalletResponse: Codable {
+        let wallet: EcomMPCWallet
+    }
     struct EcomMPCWallet: Codable {
         let address: String
         let verified: Bool
@@ -249,7 +253,7 @@ private extension EcomPurchaseMPCWalletService {
 // MARK: - Private methods
 private extension EcomPurchaseMPCWalletService {
     func waitForMPCWalletIsCreated() async throws {
-        for i in 0..<60 {
+        for _ in 0..<60 {
             do {
                 let walletInfo = try await getMPCWalletInfo()
                 
@@ -257,6 +261,7 @@ private extension EcomPurchaseMPCWalletService {
                     /// This means this UD account already has MPC wallet and takeover already done
                     throw MPCWalletPurchaseError.walletAlreadyPurchased
                 } else {
+                    ongoingPurchaseSession?.wallet = walletInfo
                     return
                 }
             } catch { }
@@ -268,15 +273,14 @@ private extension EcomPurchaseMPCWalletService {
     func getMPCWalletInfo() async throws -> EcomMPCWallet {
         guard let ongoingPurchaseSession,
               let orderId = ongoingPurchaseSession.orderId else { throw PurchaseMPCWalletError.noSessionDetails }
-        
         let queryComponents = ["email" : ongoingPurchaseSession.email,
                                "orderId" : String(orderId)]
         let urlString = URLSList.USER_MPC_WALLET_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
         
-        let response: EcomMPCWallet = try await makeFirebaseDecodableAPIDataRequest(request)
-        return response
+        let response: EcomMPCWalletResponse = try await makeFirebaseDecodableAPIDataRequest(request)
+        return response.wallet
     }
     
     func makeSetupWalletRequestFor(credentials: MPCActivateCredentials,
@@ -319,7 +323,7 @@ private extension EcomPurchaseMPCWalletService {
         }
         
         let email = ongoingPurchaseSession.email
-        let queryComponents = ["email" : ongoingPurchaseSession.email]
+        let queryComponents = ["email" : email]
         let urlString = URLSList.USER_MPC_STATUS_URL(walletAddress: wallet.address).appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
