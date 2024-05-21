@@ -130,28 +130,15 @@ enum DisplayedMessageType {
         let domainName = (typedData.domain["name"]?.unwrapString ?? "") + " / Version " + (typedData.domain["version"]?.unwrapString ?? "")
         
         eip712view.domainLabel.text = domainName
-        eip712view.domainLabel.font = Self.font
+
         eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
         
         if let chainIdFloat = typedData.domain["chainId"]?.unwrapFloat,
            let chain = try? UnsConfigManager.getBlockchainType(from:  Int(chainIdFloat))  {
             eip712view.chainLabel.text = chain.fullName
         }
-        
-        
-//        textView.translatesAutoresizingMaskIntoConstraints = false
-//        textView.backgroundColor = .clear
-//        textView.layer.cornerRadius = 12
-//        textView.layer.borderWidth = 1
-//        textView.layer.borderColor = UIColor.borderDefault.cgColor
-//        
-        
-//        textView.setAttributedTextWith(text: signingMessage,
-//                                       font: Self.font,
-//                                       textColor: .foregroundSecondary,
-//                                       lineHeight: Self.lineHeight)
+
         eip712view.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
-//        textView.isScrollEnabled = getSimpleMessageViewHeight(signingMessage) == Self.maxTextViewHeight
 
         let textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         eip712view.messageTextView.textContainerInset = textContainerInset
@@ -163,7 +150,6 @@ enum DisplayedMessageType {
 }
 
 extension JSON {
-    
     var unwrapString: String {
         guard case let .string(unwrapped) = self else {
             return ""
