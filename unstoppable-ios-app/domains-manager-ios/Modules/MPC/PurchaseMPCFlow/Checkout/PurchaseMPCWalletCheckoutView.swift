@@ -44,10 +44,15 @@ private extension PurchaseMPCWalletCheckoutView {
     func totalView() -> some View {
         switch cartStatus {
         case .ready(let cart):
-            HStack {
-                Text("Total due:")
-                Spacer()
-                Text(formatCartPrice(cart.totalPrice))
+            if cart.totalPrice == 0 {
+                ProgressView()
+                    .padding(.bottom, 6)
+            } else {
+                HStack {
+                    Text("Total due:")
+                    Spacer()
+                    Text(formatCartPrice(cart.totalPrice))
+                }
             }
         case .alreadyPurchasedMPCWallet:
             Text("User already own mpc wallet")
@@ -59,8 +64,8 @@ private extension PurchaseMPCWalletCheckoutView {
     
     var isBuyButtonEnabled: Bool {
         switch cartStatus {
-        case .ready:
-            return true
+        case .ready(let cart):
+            return cart.totalPrice != 0
         default:
             return false
         }
