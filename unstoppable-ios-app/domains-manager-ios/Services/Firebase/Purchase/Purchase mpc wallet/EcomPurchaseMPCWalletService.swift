@@ -153,6 +153,7 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
     }
     
     func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {
+        isAutoRefreshCartSuspended = true
         await prepareBeforeAuth()
         self.ongoingPurchaseSession = PurchaseSessionDescription(email: credentials.email, sessionId: UUID().uuidString)
         checkoutData.isPromoCreditsOn = false
@@ -253,7 +254,7 @@ private extension EcomPurchaseMPCWalletService {
 // MARK: - Private methods
 private extension EcomPurchaseMPCWalletService {
     func waitForMPCWalletIsCreated() async throws {
-        for _ in 0..<60 {
+        for _ in 0..<120 {
             do {
                 let walletInfo = try await getMPCWalletInfo()
                 
@@ -264,7 +265,10 @@ private extension EcomPurchaseMPCWalletService {
                     ongoingPurchaseSession?.wallet = walletInfo
                     return
                 }
-            } catch { }
+            } catch MPCWalletPurchaseError.walletAlreadyPurchased {
+                self.cartStatus = .alreadyPurchasedMPCWallet
+                throw MPCWalletPurchaseError.walletAlreadyPurchased
+            } catch  { }
             
             await Task.sleep(seconds: 0.5)
         }
@@ -307,9 +311,12 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func waitForWalletIsReadyForActivation() async throws {
-        for i in 0..<60 {
-            let isReady = try await checkMPCWalletReady()
-            if isReady {
+        for _ in 0..<120 {
+            async let isReadyTask = checkMPCWalletReady()
+            async let walletInfoTask = getMPCWalletInfo()
+            
+            let (isReady, walletInfo) = try await (isReadyTask, walletInfoTask)
+            if isReady && walletInfo.verified {
                 return
             }
             await Task.sleep(seconds: 0.5)

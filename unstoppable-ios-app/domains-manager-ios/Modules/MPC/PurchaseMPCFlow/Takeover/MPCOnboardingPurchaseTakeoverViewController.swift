@@ -42,7 +42,9 @@ private extension MPCOnboardingPurchaseTakeoverViewController {
     
     func addChildView() {
         let mpcView = PurchaseMPCWalletTakeoverView(credentialsCallback: { [weak self] credentials in
-            self?.didTakeoverWithCredentials(credentials)
+            DispatchQueue.main.async {
+                self?.didTakeoverWithCredentials(credentials)                
+            }
         })
             .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)
