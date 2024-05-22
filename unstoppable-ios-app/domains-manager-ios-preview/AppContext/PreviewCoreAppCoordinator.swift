@@ -9,8 +9,8 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
-    func askToReconnectMPCWallet(_ wallet: UDWallet) async -> Bool {
-        true
+    func askToReconnectMPCWallet(_ wallet: UDWallet) async {
+        
     }
     
     var isReadyToHandleExternalEvents: Bool { true }

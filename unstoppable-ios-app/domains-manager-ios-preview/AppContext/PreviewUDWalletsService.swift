@@ -8,6 +8,7 @@
 import Foundation
 
 final class UDWalletsService: UDWalletsServiceProtocol {
+  
     var walletsNumberLimit: Int { 20 }
     var canAddNewWallet: Bool { true }
     
@@ -51,7 +52,10 @@ final class UDWalletsService: UDWalletsServiceProtocol {
         UDWallet()
     }
     
-    func addMPCWallet(_ wallet: UDWallet) throws { }
+    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
+        
+    }
+    
     
     func remove(wallet: UDWallet) {
         

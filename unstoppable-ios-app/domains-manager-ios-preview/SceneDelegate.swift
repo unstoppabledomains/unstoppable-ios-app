@@ -9,8 +9,7 @@ import UIKit
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
- 
-
+  
     var window: MainWindow?
     static let shared: SceneDelegateProtocol? = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegateProtocol
 
@@ -89,5 +88,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, SceneDelegateProtocol {
         
     }
     
+    func isAuthorizing() async -> Bool {
+        false
+    }
+    
+    
+
 }
 
