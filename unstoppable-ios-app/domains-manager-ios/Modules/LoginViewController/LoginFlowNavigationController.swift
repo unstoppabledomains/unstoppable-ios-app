@@ -46,7 +46,8 @@ final class LoginFlowNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
-            return cNavigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: true)
+            return nil
         }
         return super.popViewController(animated: animated, completion: completion)
     }
@@ -110,10 +111,8 @@ private extension LoginFlowNavigationController {
         if let vc = presentedViewController {
             vc.dismiss(animated: true)
         }
-        cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let loggedInCallback = self.loggedInCallback
         loggedInCallback?(result)
-        self.cNavigationController?.popViewController(animated: true) 
     }
     
     func setSwipeGestureEnabledForCurrentState() {

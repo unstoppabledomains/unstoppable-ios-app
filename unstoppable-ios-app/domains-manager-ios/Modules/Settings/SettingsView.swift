@@ -175,9 +175,13 @@ private extension SettingsView {
     func handleLoginResult(_ login: LoginFlowNavigationController.LogInResult) {
         switch login {
         case .cancel, .failedToLoadParkedDomains:
-            return
-        case .loggedIn:
-            tabRouter.walletViewNavPath.removeAll()
+            tabRouter.walletViewNavPath.removeLast()
+        case .loggedIn(let domains):
+            if !domains.isEmpty {
+                tabRouter.walletViewNavPath.removeAll()
+            } else {
+                tabRouter.walletViewNavPath.removeLast()
+            }
         }
     }
 }

@@ -373,12 +373,6 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
-    func runLoginFlow(with mode: LoginFlowNavigationController.Mode,
-                      loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
-                      in viewController: UIViewController) {
-        showLoginScreen(with: mode, loggedInCallback: loggedInCallback, in: viewController)
-    }
-    
     func showDomainProfileParkedActionModule(in viewController: UIViewController,
                                              domain: DomainDisplayInfo,
                                              imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async -> DomainProfileParkedAction {
@@ -486,15 +480,6 @@ private extension UDRouter {
         mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
         viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
                                                                 animated: true)
-    }
-    
-    func showLoginScreen(with mode: LoginFlowNavigationController.Mode,
-                         loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
-                         in viewController: UIViewController) {
-        let mintDomainsNavigationController = LoginFlowNavigationController(mode: mode)
-        mintDomainsNavigationController.loggedInCallback = loggedInCallback
-        viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
-                                                                 animated: true)
     }
 }
 
