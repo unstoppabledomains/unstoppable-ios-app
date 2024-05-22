@@ -9,16 +9,17 @@ import SwiftUI
 
 struct PurchaseMPCWalletCheckoutView: View {
     
-    @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
-    @EnvironmentObject var tabRouter: HomeTabRouter
 
+    let credentials: MPCPurchaseUDCredentials
+    let purchasedCallback: EmptyCallback
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
     @State private var isPurchasing = false
 
     var body: some View {
         VStack {
+            headerView()
             Spacer()
             totalView()
             buyButton()
@@ -41,13 +42,28 @@ struct PurchaseMPCWalletCheckoutView: View {
 // MARK: - Private methods
 private extension PurchaseMPCWalletCheckoutView {
     @ViewBuilder
+    func headerView() -> some View {
+        VStack(spacing: 16) {
+            Text("Subscribe")
+                .font(.currentFont(size: 32, weight: .bold))
+                .foregroundStyle(Color.foregroundDefault)
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    @ViewBuilder
     func totalView() -> some View {
         switch cartStatus {
         case .ready(let cart):
-            HStack {
-                Text("Total due:")
-                Spacer()
-                Text(formatCartPrice(cart.totalPrice))
+            if cart.totalPrice == 0 {
+                ProgressView()
+                    .padding(.bottom, 6)
+            } else {
+                HStack {
+                    Text("Total due:")
+                    Spacer()
+                    Text(formatCartPrice(cart.totalPrice))
+                }
             }
         case .alreadyPurchasedMPCWallet:
             Text("User already own mpc wallet")
@@ -59,8 +75,8 @@ private extension PurchaseMPCWalletCheckoutView {
     
     var isBuyButtonEnabled: Bool {
         switch cartStatus {
-        case .ready:
-            return true
+        case .ready(let cart):
+            return cart.totalPrice != 0
         default:
             return false
         }
@@ -81,7 +97,6 @@ private extension PurchaseMPCWalletCheckoutView {
     func checkUpdatedCartStatus() {
         switch cartStatus {
         case .alreadyPurchasedMPCWallet:
-            // TODO: - Show on the UI
             return
         case .failedToLoadCalculations(let callback):
             pullUpError = .loadCalculationsError(tryAgainCallback: callback)
@@ -95,18 +110,31 @@ private extension PurchaseMPCWalletCheckoutView {
             isPurchasing = true
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
-//                viewModel.handleAction(.didPurchase)
-                // Just close the flow for now
-                tabRouter.purchasingMPCWallet = false
+                purchasedCallback()
+            } catch let error as MPCWalletPurchaseError {
+                didFailWithError(error)
             } catch {
-                
+                didFailWithError(.unknown)
             }
             isPurchasing = false
         }
     }
+    
+    func didFailWithError(_ error: MPCWalletPurchaseError) {
+//        mpcStateTitle = error.title
+//        activationState = .failed(error)
+        switch error {
+        case .walletAlreadyPurchased:
+            return
+//            enterDataType = .passcode
+        case .unknown:
+            return
+        }
+    }
+    
 }
 
 #Preview {
-    PurchaseMPCWalletCheckoutView()
-        .environmentObject(PurchaseMPCWalletViewModel())
+    PurchaseMPCWalletCheckoutView(credentials: .init(email: "qq@qq.qq"),
+                                  purchasedCallback: { })
 }

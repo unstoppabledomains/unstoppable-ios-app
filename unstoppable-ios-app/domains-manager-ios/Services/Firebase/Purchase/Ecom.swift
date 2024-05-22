@@ -301,4 +301,9 @@ extension Ecom {
         let address: String
         let type: String
     }
+    
+    struct ProductsCartDetails {
+        var wallet: Ecom.UDUserAccountCryptWallet? = nil
+        var email: String? = nil
+    }
 }

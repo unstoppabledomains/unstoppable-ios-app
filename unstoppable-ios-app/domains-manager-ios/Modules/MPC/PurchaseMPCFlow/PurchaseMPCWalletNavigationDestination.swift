@@ -22,7 +22,8 @@ extension PurchaseMPCWallet {
             case .signInWithEmail:
                 PurchaseMPCWalletAuthEmailView()
             case .checkout:
-                PurchaseMPCWalletCheckoutView()
+                EmptyView()
+//                PurchaseMPCWalletCheckoutView(credentials: <#MPCPurchaseUDCredentials#>)
             }
         }
     }

@@ -17,5 +17,9 @@ protocol EcomPurchaseMPCWalletServiceProtocol {
     func authoriseWithWallet(_ wallet: UDWallet) async throws
     func reset() async
     func refreshCart() async throws
+    
+    func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws
     func purchaseMPCWallet() async throws
+    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool
+    func runTakeover(credentials: MPCActivateCredentials) async throws
 }

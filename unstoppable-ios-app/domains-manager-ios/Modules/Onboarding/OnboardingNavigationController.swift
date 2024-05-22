@@ -98,6 +98,10 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             }
         case .changeEmailFromMPCWallet:
             popTo(RestoreWalletViewController.self)
+        case .didEnterMPCPurchaseUDCredentials:
+            moveToStep(.mpcPurchaseCheckout)
+        case .didPurchaseMPCWallet:
+            moveToStep(.mpcPurchaseTakeover)
         }
     }
     
@@ -448,6 +452,24 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
+        case .mpcPurchaseAuth:
+            let vc = MPCOnboardingPurchaseUDAuthViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcPurchaseCheckout:
+            let vc = MPCOnboardingPurchaseCheckoutViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc   
+        case .mpcPurchaseTakeover:
+            let vc = MPCOnboardingPurchaseTakeoverViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc  
         }
     }
  
@@ -511,9 +533,13 @@ extension OnboardingNavigationController {
         case mpcActivate = 25
         case createNewSelection = 26
         
+        case mpcPurchaseAuth = 27
+        case mpcPurchaseCheckout = 28
+        case mpcPurchaseTakeover = 29
+        
         var isStorable: Bool {
             switch self {
-            case .mpcCode, .mpcActivate:
+            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeover:
                 return false
             default:
                 return true
@@ -532,6 +558,8 @@ extension OnboardingNavigationController {
         case didGenerateLocalWallet(UDWallet)
         case didImportWallet(UDWallet)
         case changeEmailFromMPCWallet
+        case didEnterMPCPurchaseUDCredentials
+        case didPurchaseMPCWallet
     }
     
 }

@@ -42,7 +42,16 @@ class BaseFirebaseInteractionService {
         static var PAYMENT_STRIPE_URL: String { baseAPIURL.appendingURLPathComponents("payment", "stripe") }
         static var STORE_CHECKOUT_URL: String { baseAPIURL.appendingURLPathComponents("store", "checkout") }
         static var CRYPTO_WALLETS_URL: String { baseAPIURL.appendingURLPathComponent("crypto-wallets") }
-
+        
+        static var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
+        static var USER_MPC_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("mpc") }
+        static func USER_MPC_SETUP_URL(walletAddress: String) -> String {
+            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "mpc", "claim")
+        }
+        static func USER_MPC_STATUS_URL(walletAddress: String) -> String {
+            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "mpc", "claim-status")
+        }
+        
     }
     
     let authHeaderKey = "auth-firebase-id-token"
@@ -82,17 +91,7 @@ class BaseFirebaseInteractionService {
                                                                              dateDecodingStrategy: dateDecodingStrategy)
         return response
     }
-}
-
-// MARK: - Open methods
-extension BaseFirebaseInteractionService {
-    func getIdToken() async throws -> String {
-        try await firebaseAuthService.getIdToken()
-    }
-}
-
-// MARK: - Private methods
-private extension BaseFirebaseInteractionService {
+    
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         let idToken = try await getIdToken()
         
@@ -104,5 +103,12 @@ private extension BaseFirebaseInteractionService {
                                             method: apiRequest.method)
         
         return firebaseAPIRequest
+    }
+}
+
+// MARK: - Open methods
+extension BaseFirebaseInteractionService {
+    func getIdToken() async throws -> String {
+        try await firebaseAuthService.getIdToken()
     }
 }
