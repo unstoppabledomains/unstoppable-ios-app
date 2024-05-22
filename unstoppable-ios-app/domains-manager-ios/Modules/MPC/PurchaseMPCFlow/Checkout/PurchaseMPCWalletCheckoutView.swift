@@ -19,6 +19,7 @@ struct PurchaseMPCWalletCheckoutView: View {
 
     var body: some View {
         VStack {
+            headerView()
             Spacer()
             totalView()
             buyButton()
@@ -40,6 +41,16 @@ struct PurchaseMPCWalletCheckoutView: View {
 
 // MARK: - Private methods
 private extension PurchaseMPCWalletCheckoutView {
+    @ViewBuilder
+    func headerView() -> some View {
+        VStack(spacing: 16) {
+            Text("Subscribe")
+                .font(.currentFont(size: 32, weight: .bold))
+                .foregroundStyle(Color.foregroundDefault)
+                .multilineTextAlignment(.center)
+        }
+    }
+    
     @ViewBuilder
     func totalView() -> some View {
         switch cartStatus {
