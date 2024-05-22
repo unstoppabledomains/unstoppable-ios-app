@@ -322,7 +322,7 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         do {
             try storeConnectedWalletDetails(mpcWallet)
             let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
-            try udWalletsService.addMPCWallet(udWallet)
+            try udWalletsService.addOrUpdateMPCWallet(udWallet)
             return udWallet
         } catch {
             try? clearConnectedWalletDetails(mpcWallet)
@@ -476,7 +476,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             }
             
             // All tokens has expired. Need to go through the bootstrap process from the beginning.
-            didExpireTokensFor(deviceId: deviceId)
+            await didExpireTokenWith(deviceId: deviceId)
             throw MPCConnectionServiceError.tokensExpired
         }
         
@@ -499,7 +499,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
             return refreshedTokens.accessToken.jwt
         } catch {
-            didExpireTokensFor(deviceId: deviceId)
+            await didExpireTokenWith(deviceId: deviceId)
             throw error
         }
     }
@@ -524,19 +524,31 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             try walletsDataStorage.storeAuthTokens(authTokens, for: currentDeviceId)
             return authTokens.accessToken.jwt
         } catch {
-            didExpireTokensFor(deviceId: currentDeviceId)
+            await didExpireTokenWith(deviceId: currentDeviceId)
             throw error
         }
     }
     
-    func didExpireTokensFor(deviceId: String) {
+    func didExpireTokenWith(deviceId: String) async {
+        await actionsQueuer.addRestoreDeviceId(deviceId)
+        restoreWalletIfNeeded()
+    }
+    
+    func restoreWalletIfNeeded() {
         Task {
+            guard let deviceIdToRestore = await actionsQueuer.getDeviceIdToRestoreAndStartIfNotInProgress() else { return }
             do {
-                let wallet = try findUDWalletWith(deviceId: deviceId)
-                await uiHandler.askToReconnectMPCWallet(wallet)
-                udWalletsService.remove(wallet: wallet)
-            }
+                try await restoreOrRemoveWallet(deviceId: deviceIdToRestore)
+            } catch { }
+
+            await actionsQueuer.stopAndRemoveRestoreDeviceId(deviceIdToRestore)
+            restoreWalletIfNeeded()
         }
+    }
+    
+    func restoreOrRemoveWallet(deviceId: String) async throws {
+        let wallet = try findUDWalletWith(deviceId: deviceId)
+        await uiHandler.askToReconnectMPCWallet(wallet)
     }
     
     func findUDWalletWith(deviceId: String) throws -> UDWallet {
@@ -574,6 +586,9 @@ extension FB_UD_MPC.MPCConnectionService {
         private var ongoingDeviceIds: Set<String> = []
         private var tokenTasks: [String: Task<String, Error>] = [:]
         
+        private var ongoingRestoreDeviceId: String? = nil
+        private var deviceIdsToRestore: Set<String> = []
+        
         func isActive(deviceId: String) -> Bool {
             ongoingDeviceIds.contains(deviceId)
         }
@@ -598,6 +613,31 @@ extension FB_UD_MPC.MPCConnectionService {
         func setTokenTask(deviceId: String,
                           task: Task<String, Error>?) {
             tokenTasks[deviceId] = task
+        }
+        
+        func getDeviceIdToRestoreAndStartIfNotInProgress() -> String? {
+            let isRestoringInProgress = isRestoringInProgress()
+            guard !isRestoringInProgress,
+                  let deviceIdToRestore = deviceIdsToRestore.first else { return nil }
+            startRestoringDeviceId(deviceIdToRestore)
+            return deviceIdToRestore
+        }
+        
+        func addRestoreDeviceId(_ deviceId: String) {
+            deviceIdsToRestore.insert(deviceId)
+        }
+      
+        func stopAndRemoveRestoreDeviceId(_ deviceId: String) {
+            deviceIdsToRestore.remove(deviceId)
+            ongoingRestoreDeviceId = nil
+        }
+        
+        private func startRestoringDeviceId(_ deviceId: String) {
+            ongoingRestoreDeviceId = deviceId
+        }
+        
+        private func isRestoringInProgress() -> Bool {
+            ongoingRestoreDeviceId != nil
         }
     }
 }
