@@ -36,7 +36,8 @@ final class ActivateMPCWalletViewModel: ObservableObject {
                     navigationState?.dismiss = true
                     activationResultCallback(.activated(wallet))
                 case .didRequestToChangeEmail:
-                    activationResultCallback(.restart)
+                    credentials = nil
+                    navPath.removeAll()
                 }
             } catch {
                 self.error = error
