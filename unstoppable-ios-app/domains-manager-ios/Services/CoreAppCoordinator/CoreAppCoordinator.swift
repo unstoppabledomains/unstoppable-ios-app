@@ -147,7 +147,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 // MARK: - WalletConnectUIHandler
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
-    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
+    func getConfirmationForWCRequest(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         switch currentRoot {
         case .home:
             func awaitPullUpDisappear() async {
@@ -157,7 +157,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
             do {
                 Vibration.success.vibrate()
                 let domainToProcessRequest = try await pullUpViewService
-                    .showServerConnectConfirmationPullUp(for: config,
+                    .showWCRequestConfirmationPullUp(for: config,
                                                          in: topVC)
                 await topVC.dismissPullUpMenu()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
