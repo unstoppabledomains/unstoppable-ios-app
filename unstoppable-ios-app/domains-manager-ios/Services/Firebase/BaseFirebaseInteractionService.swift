@@ -46,10 +46,10 @@ class BaseFirebaseInteractionService {
         static var USER_WALLET_URL: String { USER_URL.appendingURLPathComponent("wallet") }
         static var USER_MPC_WALLET_URL: String { USER_WALLET_URL.appendingURLPathComponent("mpc") }
         static func USER_MPC_SETUP_URL(walletAddress: String) -> String {
-            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "claim")
+            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "mpc", "claim")
         }
         static func USER_MPC_STATUS_URL(walletAddress: String) -> String {
-            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "claim-status")
+            USER_WALLET_URL.appendingURLPathComponents(walletAddress, "mpc", "claim-status")
         }
         
     }

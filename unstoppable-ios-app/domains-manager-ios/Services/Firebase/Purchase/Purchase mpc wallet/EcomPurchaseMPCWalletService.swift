@@ -291,9 +291,13 @@ private extension EcomPurchaseMPCWalletService {
             let walletEmail: String
             let password: String
             let preview: Bool
+            let sendRecoveryEmail: Bool
         }
         
-        let body = RequestBody(walletEmail: credentials.email, password: credentials.password, preview: preview)
+        let body = RequestBody(walletEmail: credentials.email, 
+                               password: credentials.password,
+                               preview: preview,
+                               sendRecoveryEmail: true)
         let urlString = URLSList.USER_MPC_SETUP_URL(walletAddress: wallet.address)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
