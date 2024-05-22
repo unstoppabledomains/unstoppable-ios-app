@@ -59,11 +59,23 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
             }, changeEmailCallback: changeEmailCallback)
                 .presentationDetents([.medium])
         }
+        .navigationBarBackButtonHidden(isBackButtonHidden)
     }
 }
 
 // MARK: - Private methods
 private extension MPCActivateWalletView {
+    var isBackButtonHidden: Bool {
+        switch activationState {
+        case .readyToActivate, .activating:
+            return true
+        case .failed:
+            return false
+        case .activated:
+            return true
+        }
+    }
+    
     func onAppear() {
         activateWalletIfReady()
     }
