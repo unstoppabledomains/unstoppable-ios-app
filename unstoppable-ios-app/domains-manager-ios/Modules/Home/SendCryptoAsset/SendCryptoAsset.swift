@@ -66,7 +66,7 @@ extension SendCryptoAsset {
             let chain = resolveCoinRecordChainIdentifier(token.chain)
             guard let tokenRecord = coinRecords.first(where: { record in
                 if record.version == nil {
-                    return chain == token.symbol
+                    return token.chain == token.symbol
                 }
                 return record.version == chain    
             }) else { return nil }
