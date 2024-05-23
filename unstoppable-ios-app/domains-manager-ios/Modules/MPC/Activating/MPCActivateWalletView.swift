@@ -93,9 +93,12 @@ private extension MPCActivateWalletView {
             logAnalytic(event: .willActivateMPCWallet)
             
             isLoading = true
+            let email = credentials.email
             let password = credentials.password
             do {
-                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code, recoveryPhrase: password)
+                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(email: email,
+                                                                                code: code,
+                                                                                recoveryPhrase: password)
                 
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)

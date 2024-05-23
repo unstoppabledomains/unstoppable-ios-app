@@ -55,7 +55,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         try await networkService.sendBootstrapCodeTo(email: email)
     }
 
-    func setupMPCWalletWith(code: String,
+    func setupMPCWalletWith(email: String,
+                            code: String,
                             recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
@@ -129,7 +130,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                     let walletDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                        accessToken: authTokens.accessToken.jwt)
                     logMPC("Did get wallet account details")
-                    let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
+                    let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(email: email,
+                                                                     deviceId: deviceId,
                                                                      tokens: authTokens,
                                                                      firstAccount: walletDetails.firstAccount,
                                                                      accounts: walletDetails.accounts)
@@ -343,13 +345,15 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     
     private func refreshWalletAccountDetailsForWalletWith(walletMetadata: MPCWalletMetadata) async throws -> FB_UD_MPC.ConnectedWalletDetails {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
+        let email = connectedWalletDetails.email
         let deviceId = connectedWalletDetails.deviceId
         return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
             let walletAccountDetails = try await getWalletAccountDetailsForWalletWith(deviceId: deviceId,
                                                                                       accessToken: token)
             
             let authTokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
-            let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(deviceId: deviceId,
+            let mpcWallet = FB_UD_MPC.ConnectedWalletDetails(email: email,
+                                                             deviceId: deviceId,
                                                              tokens: authTokens,
                                                              firstAccount: walletAccountDetails.firstAccount,
                                                              accounts: walletAccountDetails.accounts)
@@ -401,7 +405,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
             throw MPCConnectionServiceError.failedToGetEthAddress
         }
         
-        let fireblocksMetadataEntity = FB_UD_MPC.UDWalletMetadata(deviceId: connectedWallet.deviceId)
+        let fireblocksMetadataEntity = FB_UD_MPC.UDWalletMetadata(email: connectedWallet.email,
+                                                                  deviceId: connectedWallet.deviceId)
         let fireblocksMetadata = try fireblocksMetadataEntity.jsonDataThrowing()
         let mpcMetadata = MPCWalletMetadata(provider: provider, metadata: fireblocksMetadata)
         let udWallet = UDWallet.createMPC(address: ethAddress,
@@ -413,20 +418,19 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
     private func getConnectedWalletDetailsFor(deviceId: String) throws -> FB_UD_MPC.ConnectedWalletDetails {
         let tokens = try walletsDataStorage.retrieveAuthTokensFor(deviceId: deviceId)
         let accountDetails = try walletsDataStorage.retrieveAccountsDetailsFor(deviceId: deviceId)
-        return .init(accountDetails: accountDetails, tokens: tokens)
+        return FB_UD_MPC.ConnectedWalletDetails(accountDetails: accountDetails, tokens: tokens)
     }
     
     private func getConnectedWalletDetailsFor(walletMetadata: MPCWalletMetadata) throws -> FB_UD_MPC.ConnectedWalletDetails {
-        let deviceId = try getDeviceIdFrom(walletMetadata: walletMetadata)
-        let connectedWalletDetails = try getConnectedWalletDetailsFor(deviceId: deviceId)
+        let metadata = try getFBUDWalletMetadataFrom(walletMetadata: walletMetadata)
+        let connectedWalletDetails = try getConnectedWalletDetailsFor(deviceId: metadata.deviceId)
         return connectedWalletDetails
     }
     
-    private func getDeviceIdFrom(walletMetadata: MPCWalletMetadata) throws -> String {
+    private func getFBUDWalletMetadataFrom(walletMetadata: MPCWalletMetadata) throws -> FB_UD_MPC.UDWalletMetadata {
         guard let metadata = walletMetadata.metadata else { throw MPCConnectionServiceError.invalidWalletMetadata }
         let walletMetadata = try FB_UD_MPC.UDWalletMetadata.objectFromDataThrowing(metadata)
-        let deviceId = walletMetadata.deviceId
-        return deviceId
+        return walletMetadata
     }
     
     private func waitForActionReadyToStart(deviceId: String) async {
@@ -506,13 +510,13 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     }
     
     private func refreshAndStoreToken(refreshToken: JWToken,
-                              deviceId: String) async throws -> String {
+                                      deviceId: String) async throws -> String {
         do {
             let refreshedTokens = try await networkService.refreshToken(refreshToken.jwt)
             try walletsDataStorage.storeAuthTokens(refreshedTokens, for: deviceId)
             return refreshedTokens.accessToken.jwt
         } catch {
-            if case NetworkLayerError.badResponseOrStatusCode(let code, let message, let data) = error,
+            if case NetworkLayerError.badResponseOrStatusCode(_, _, let data) = error,
                let processingResponse = FB_UD_MPC.APIBadResponse.objectFromData(data),
                processingResponse.isInvalidCodeResponse {
                 await didExpireTokenWith(deviceId: deviceId)
@@ -574,8 +578,8 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
         let wallets = udWalletsService.getUserWallets()
         for wallet in wallets {
             if let metadata = wallet.mpcMetadata,
-               let walletDeviceId = try? getDeviceIdFrom(walletMetadata: metadata),
-               walletDeviceId == deviceId {
+               let metadataEntity = try? getFBUDWalletMetadataFrom(walletMetadata: metadata),
+               metadataEntity.deviceId == deviceId {
                 return wallet
             }
         }
@@ -588,7 +592,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
             let token = try await getFreshAccessTokenFor(wallet: connectedWalletDetails, forceRefresh: false)
             return try await block(token)
         } catch {
-            if case NetworkLayerError.badResponseOrStatusCode(let code, let message, let data) = error,
+            if case NetworkLayerError.badResponseOrStatusCode(let code, _, _) = error,
                code == 403 {
                 let token = try await getFreshAccessTokenFor(wallet: connectedWalletDetails, forceRefresh: true)
                 return try await block(token)
@@ -607,7 +611,7 @@ extension FB_UD_MPC.MPCConnectionService: UDWalletsServiceListener {
             return
         case .walletRemoved(let wallet):
             if let metadata = wallet.mpcMetadata,
-               let walletDeviceId = try? getDeviceIdFrom(walletMetadata: metadata) {
+               let walletDeviceId = (try? getFBUDWalletMetadataFrom(walletMetadata: metadata))?.deviceId {
                 try? clearWalletDetails(deviceId: walletDeviceId)
             }
         }
