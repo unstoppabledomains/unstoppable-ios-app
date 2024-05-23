@@ -49,15 +49,15 @@ extension EIP712TypedData {
         return Crypto.hash(encodeType(primaryType: type))
     }
     
-    private func hashStruct(_ data: JSON, type: String) -> Data {
-        return Crypto.hash(typeHash(type) + encodeData(data: data, type: type))
-    }
+//    private func hashStruct(_ data: JSON, type: String) -> Data {
+//        return Crypto.hash(typeHash(type) + encodeData(data: data, type: type))
+//    }
 
     /// Sign-able hash for an `EIP712TypedData`
     public var signHash: Data {
         let data = Data([0x19, 0x01]) +
-            Crypto.hash(encodeData(data: domain, type: "EIP712Domain")) +
-            Crypto.hash(encodeData(data: message, type: primaryType))
+            Crypto.hash(try! encodeData(data: domain, type: "EIP712Domain")) +
+            Crypto.hash(try! encodeData(data: message, type: primaryType))
         return Crypto.hash(data)
     }
 
@@ -70,7 +70,7 @@ extension EIP712TypedData {
         }
         found.insert(primaryType)
         for type in primaryTypes {
-            findDependencies(primaryType: type.type, dependencies: found)
+            findDependencies(primaryType: type.type.removeEndingBracketsIfAny, dependencies: found)
                 .forEach { found.insert($0) }
         }
         return found
@@ -88,68 +88,123 @@ extension EIP712TypedData {
         return encoded.data(using: .utf8) ?? Data()
     }
 
+    private struct EncodedSequence {
+        let encoder = ABIEncoder()
+        var values: [ABIValue] = []
+
+        mutating func append(abiValue value: ABIValue) {
+            values.append(value)
+        }
+        
+        func getData() throws -> Data {
+            try encoder.encode(tuple: values)
+            return encoder.data
+        }
+    }
+    
     /// Encode an instance of struct
     ///
     /// Implemented with `ABIEncoder` and `ABIValue`
-    public func encodeData(data: JSON, type: String) -> Data {
-        let encoder = ABIEncoder()
-        var values: [ABIValue] = []
-        do {
-            let typeHash = Crypto.hash(encodeType(primaryType: type))
-            let typeHashValue = try ABIValue(typeHash, type: .bytes(32))
-            values.append(typeHashValue)
-            if let valueTypes = types[type] {
-                try valueTypes.forEach { field in
-                    if let _ = types[field.type],
-                        let json = data[field.name] {
-                        let nestEncoded = encodeData(data: json, type: field.type)
-                        values.append(try ABIValue(Crypto.hash(nestEncoded), type: .bytes(32)))
-                    } else if let value = makeABIValue(data: data[field.name], type: field.type) {
-                        values.append(value)
+    public func encodeData(data: JSON, type: String) throws -> Data {
+        if case .array(let array) = data {
+            return try encodeStructsArray(data: array, type: type)
+        }
+        
+        var sequence = EncodedSequence()
+        
+        let typeEncoded = encodeType(primaryType: type)
+        let typeHashValue = try abiBytesOfHash(typeEncoded)
+        sequence.append(abiValue: typeHashValue)
+        
+        if let enclosedSubtypes = types[type] {
+            try enclosedSubtypes.forEach { subtype in
+                let subTypeName = subtype.type.removeEndingBracketsIfAny
+                guard let json = data[subtype.name] else {
+                    Debugger.printFailure("Cannot find element data for \(type)", critical: false)
+                    return
+                }
+                
+                if isAStruct(type: subtype) {
+                    let nestEncoded = try encodeData(data: json, type: subTypeName)
+                    sequence.append(abiValue: try abiBytesOfHash(nestEncoded))
+                } else {
+                    if case .array(let array) = json {
+                        let nestedEncodedAtomic = try encodeAtomicArray(data: array, type: subTypeName)
+                        sequence.append(abiValue: try abiBytesOfHash(nestedEncodedAtomic))
+                    } else {
+                        if let value = makeABIValue(data: json, type: subTypeName) {
+                            sequence.append(abiValue: value)
+                        }
                     }
                 }
             }
-            try encoder.encode(tuple: values)
-        } catch let error {
-            Debugger.printFailure(error.localizedDescription)
+        } else {
+            Debugger.printFailure("Cannot find subtypes for \(type)", critical: false)
         }
-        return encoder.data
+        return try sequence.getData()
     }
-
+    
+    private func abiBytesOfHash(_ data: Data) throws -> ABIValue {
+        try ABIValue(Crypto.hash(data), type: .bytes(32))
+    }
+    
+    private func isAStruct(type: EIP712Type) -> Bool {
+        nil != types[type.type.removeEndingBracketsIfAny]
+    }
+    
+    private func encodeStructsArray(data: [JSON], type: String) throws -> Data {
+        var sequence = EncodedSequence()
+        try data.forEach { element in
+            let encodedElement = try encodeData(data: element, type: type)
+            sequence.append(abiValue: try abiBytesOfHash(encodedElement))
+        }
+        return try sequence.getData()
+    }
+    
+    private func encodeAtomicArray(data: [JSON], type: String) throws -> Data {
+        var sequence = EncodedSequence()
+        data.forEach { element in
+            if let value = makeABIValue(data: element, type: type) {
+                sequence.append(abiValue: value)
+            }
+        }
+        return try sequence.getData()
+    }
+    
     /// Helper func for `encodeData`
-    private func makeABIValue(data: JSON?, type: String) -> ABIValue? {
+    private func makeABIValue(data: JSON, type: String) -> ABIValue? {
         if (type == "string" || type == "bytes"),
-            let value = data?.stringValue,
+            let value = data.stringValue,
             let valueData = value.data(using: .utf8) {
             return try? ABIValue(Crypto.hash(valueData), type: .bytes(32))
         } else if type == "bool",
-            let value = data?.boolValue {
+            let value = data.boolValue {
             return try? ABIValue(value, type: .bool)
         } else if type == "address",
-            let value = data?.stringValue,
+            let value = data.stringValue,
             let address = TrustAddress(string: value) {
             return try? ABIValue(address, type: .address)
         } else if type.starts(with: "uint") {
             let size = parseIntSize(type: type, prefix: "uint")
             guard size > 0 else { return nil }
-            if let value = data?.floatValue {
+            if let value = data.floatValue {
                 return try? ABIValue(Int(value), type: .uint(bits: size))
-            } else if let value = data?.stringValue,
+            } else if let value = data.stringValue,
                 let bigInt = BigUInt(value: value) {
                 return try? ABIValue(bigInt, type: .uint(bits: size))
             }
         } else if type.starts(with: "int") {
             let size = parseIntSize(type: type, prefix: "int")
             guard size > 0 else { return nil }
-            if let value = data?.floatValue {
+            if let value = data.floatValue {
                 return try? ABIValue(Int(value), type: .int(bits: size))
-            } else if let value = data?.stringValue,
+            } else if let value = data.stringValue,
                 let bigInt = BigInt(value: value) {
                 return try? ABIValue(bigInt, type: .int(bits: size))
             }
         } else if type.starts(with: "bytes") {
             if let length = Int(type.dropFirst("bytes".count)),
-                let value = data?.stringValue {
+                let value = data.stringValue {
                 if value.starts(with: "0x"),
                     let hex = Data(hexString: value) {
                     return try? ABIValue(hex, type: .bytes(length))
@@ -531,5 +586,16 @@ extension BigUInt {
     public init?(_ text: String, radix: Int = 10) {
         // FIXME Remove this member when SE-0183 is done
         self.init(Substring(text), radix: radix)
+    }
+}
+
+extension String {
+    var removeEndingBracketsIfAny: String {
+        if self.suffix(2) == "[]" { return String(self.dropLast(2)) }
+        return self
+    }
+    
+    var hexToData: Data? {
+        Data(self.hexToBytes())
     }
 }
