@@ -37,18 +37,6 @@ extension NibInstantiateable{
     }
 }
 
-@MainActor
-struct KeyboardSizeManager {
-    let notification: NSNotification
-    let kbdSize: CGSize
-    init? (notification: NSNotification) {
-        self.notification = notification
-        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return nil }
-        let keyboardScreenEndFrame = keyboardValue.cgRectValue
-        self.kbdSize = keyboardScreenEndFrame.size
-    }
-}
-
 extension Error {
     func getTypedDescription() -> String {
         if let error = self as? RawValueLocalizable {

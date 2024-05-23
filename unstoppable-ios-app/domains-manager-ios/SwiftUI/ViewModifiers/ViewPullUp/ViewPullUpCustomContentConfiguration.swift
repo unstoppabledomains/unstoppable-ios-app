@@ -37,8 +37,19 @@ extension ViewPullUpCustomContentConfiguration {
               height: 448,
               analyticName: .transferDomainConfirmation)
     }
+    
+    @MainActor
+    static func copyMultichainAddressPullUp(tokens: [BalanceTokenUIDescription],
+                                            selectionType: CopyMultichainWalletAddressesPullUpView.SelectionType) -> ViewPullUpCustomContentConfiguration {
+        .init(content: {
+            CopyMultichainWalletAddressesPullUpView(tokens: tokens,
+                                                    selectionType: selectionType)
+        },
+              height: CopyMultichainWalletAddressesPullUpView.calculateHeightFor(tokens: tokens,
+                                                                                 selectionType: selectionType),
+              analyticName: .copyMultiChainAddresses)
+    }
 }
-
 
 // MARK: - Open methods
 extension ViewPullUpCustomContentConfiguration {

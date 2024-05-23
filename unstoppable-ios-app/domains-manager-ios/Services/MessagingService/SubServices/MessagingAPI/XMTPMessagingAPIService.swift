@@ -53,9 +53,9 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let account = WalletXMTPSigningKey(walletEntity: wallet)
         let client = try await XMTPiOS.Client.create(account: account,
-                                                  options: .init(api: .init(env: env,
-                                                                            isSecure: true,
-                                                                            appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
+                                                     options: .init(api: .init(env: env,
+                                                                               isSecure: true,
+                                                                               appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
 
         try storeKeysDataFromClientIfNeeded(client, wallet: wallet, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)

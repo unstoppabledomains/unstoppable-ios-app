@@ -9,23 +9,24 @@ import Foundation
 
 typealias UDBigUInt = Int
 
-struct CryptoSender: CryptoSenderProtocol {
-  
-    let wallet: UDWallet
+struct CryptoSender: UniversalCryptoSenderProtocol {
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
+    func canSendCrypto(chainDesc: CryptoSenderChainDescription) -> Bool {
         true
     }
     
-    func sendCrypto(crypto: CryptoSendingSpec, chain: ChainSpec, toAddress: HexAddress) async throws -> String {
+    func sendCrypto(dataToSend: CryptoSenderDataToSend) async throws -> String {
         ""
     }
     
-    func computeGasFeeFrom(maxCrypto: CryptoSendingSpec, on chain: ChainSpec, toAddress: HexAddress) async throws -> EVMCoinAmount {
+    func computeGasFeeFor(dataToSend: CryptoSenderDataToSend) async throws -> EVMCoinAmount {
         .init(units: 0.11)
     }
     
-    func fetchGasPrices(on chain: ChainSpec) async throws -> EstimatedGasPrices {
+    func fetchGasPrices(chainDesc: CryptoSenderChainDescription) async throws -> EstimatedGasPrices {
         .init(normal: .init(gwei: 123), fast: .init(gwei: 432), urgent: .init(gwei: 742))
     }
+    
+    let wallet: UDWallet
+   
 }

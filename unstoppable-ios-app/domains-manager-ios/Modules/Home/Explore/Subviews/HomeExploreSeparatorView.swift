@@ -10,8 +10,8 @@ import SwiftUI
 struct HomeExploreSeparatorView: View {
     var body: some View {
         LineView(direction: .horizontal)
-            .foregroundStyle(Color.white.opacity(0.08))
-            .shadow(color: Color.foregroundOnEmphasis2, radius: 0, x: 0, y: -1)
+            .foregroundStyle(Color.borderDefault)
+            .shadow(color: Color.black, radius: 0, x: 0, y: -1)
     }
 }
 

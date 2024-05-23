@@ -552,8 +552,8 @@ private extension PurchaseDomainsCheckoutView {
                                        selectAnotherCallback: {
                 isSelectWalletPresented = true
             }, tryAgainCallback: {
-                guard let walletWithInfo = self.wallets.findWithAddress(wallet.address) else { return }
-                authorizeWithSelectedWallet(walletWithInfo, forceReload: true)
+                guard let wallet = self.wallets.findWithAddress(wallet.address) else { return }
+                authorizeWithSelectedWallet(wallet, forceReload: true)
             })
         case .failedToLoadCalculations(let callback):
             error = .loadCalculationsError(tryAgainCallback: callback)
@@ -672,15 +672,6 @@ private extension PullUpErrorConfiguration {
               primaryAction: primaryAction,
                      secondaryAction: secondaryAction, 
                      analyticsName: .purchaseDomainsAuthWalletError)
-    }
-    
-    static func loadCalculationsError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
-        .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
-              subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
-              primaryAction: .init(title: String.Constants.tryAgain.localized(),
-                                   callback: tryAgainCallback,
-                                   analyticsName: .tryAgain),
-              analyticsName: .purchaseDomainsCalculationsError)
     }
     
     static func purchaseError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {

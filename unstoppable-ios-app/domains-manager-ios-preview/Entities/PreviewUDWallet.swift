@@ -7,62 +7,17 @@
 
 import UIKit
 
-extension WalletWithInfo {
-    
-    static let mock: [WalletWithInfo] = UDWallet.mock.map { WalletWithInfo(wallet: $0, displayInfo: .init(wallet: $0, domainsCount: Int(arc4random_uniform(3)), udDomainsCount: Int(arc4random_uniform(3))))}
-    
-}
-
-
-enum WalletState: String, Codable {
-    case verified // private key, seed phrase
-    case externalLinked // external wallet. Read only
-}
-
-enum WalletType: String, Codable {
-    case privateKeyEntered
-    case generatedLocally
-    case defaultGeneratedLocally
-    case mnemonicsEntered
-    case importedUnverified
-    
-    func getICloudLabel() -> String? {
-        switch self {
-        case .generatedLocally, .defaultGeneratedLocally: return "GENERATED"
-        case .privateKeyEntered: return "IMPORTED_BY_PRIVATE_KEY"
-        case .mnemonicsEntered: return "IMPORTED_BY_MNEMONICS"
-        default:    Debugger.printFailure("Invalid attempt to backup wallet with the type: \(self.rawValue)", critical: true)
-            return nil
-        }
-    }
-    
-    init?(iCloudLabel: String) {
-        switch iCloudLabel {
-        case "GENERATED": self = .generatedLocally
-        case "IMPORTED_BY_PRIVATE_KEY": self = .privateKeyEntered
-        case "IMPORTED_BY_MNEMONICS": self = .mnemonicsEntered
-        default:    Debugger.printFailure("Found unknown type in iCloud: \(iCloudLabel)", critical: true)
-            return nil
-        }
-    }
-}
-
 struct UDWallet: Codable, Hashable {
-    
-    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", 
-                                         address: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
-                                         type: .importedUnverified),
-                                   .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", 
-                                         address: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
-                                         type: .generatedLocally),
-                                   .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", 
-                                         type: .generatedLocally,
-                                         mockingExternalWalletType: .Rainbow)]
     
     var aliasName: String = ""
     var address: String = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
     var type: WalletType = .generatedLocally
     var hasBeenBackedUp: Bool? = false
+    private(set) var mpcMetadata: MPCWalletMetadata?
+    
+    struct WalletConnectionInfo: Codable {
+        var externalWallet: WCWalletsProvider.WalletRecord
+    }
     
     func getPrivateKey() -> String? {
         switch address {
@@ -76,31 +31,69 @@ struct UDWallet: Codable, Hashable {
             return nil
         }
     }
-    var walletState: WalletState {
-        return self.isExternalConnectionActive ? .externalLinked : .verified
-    }
     
-    
-    var mockingExternalWalletType: ExternalWalletMake?
-    var isExternalConnectionActive: Bool {
-        mockingExternalWalletType != nil
-    }
-    
+    private var walletConnectionInfo: WalletConnectionInfo?
+   
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
-        if let mockingExternalWalletType {
-            return .init(id: mockingExternalWalletType.rawValue, 
-                         name: "Rainbow",
-                         homepage: nil,
-                         appStoreLink: nil,
-                         mobile: .init(native: "", universal: ""),
-                         isV2Compatible: true)
-            
-        }
-        return nil
+        walletConnectionInfo?.externalWallet
     }
+    
+    
+    func getExternalWalletName() -> String? {
+        walletConnectionInfo?.externalWallet.name
+    }
+    
     
     func getMnemonics() -> String? {
         nil
+    }
+    
+    static func createMPC(address: String,
+                          mpcMetadata: MPCWalletMetadata) -> UDWallet {
+        .init(address: address,
+              type: .mpc,
+              mpcMetadata: mpcMetadata)
+    }
+    
+    static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
+        let resultEth = (lhs.address == rhs.address) && lhs.address != nil
+        return resultEth
+    }
+    
+    static func createUnverified(aliasName: String? = nil,
+                                 address: HexAddress) -> UDWallet? {
+        let name = aliasName == nil ? address : aliasName!
+        return UDWallet(aliasName: name,
+                        address: address,
+                        type: .importedUnverified,
+                        hasBeenBackedUp: false)
+    }
+    static func createLinked(aliasName: String,
+                             address: String,
+                             externalWallet: WCWalletsProvider.WalletRecord) -> UDWallet {
+        var udWallet = UDWallet(aliasName: aliasName,
+                                address: address,
+                                type: .externalLinked,
+                                hasBeenBackedUp: false)
+        udWallet.walletConnectionInfo = UDWallet.WalletConnectionInfo(externalWallet: externalWallet)
+        
+        return udWallet
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.address)
+        hasher.combine(self.aliasName)
+        hasher.combine(self.hasBeenBackedUp)
+        hasher.combine(self.type)
+    }
+    func extractMPCMetadata() throws -> MPCWalletMetadata {
+        guard let mpcMetadata else { throw UDWallet.Error.failedToFindMPCMetadata }
+        
+        return mpcMetadata
+    }
+    
+    enum Error: String, Swift.Error, RawValueLocalizable {
+        case failedSignature
+        case failedToFindMPCMetadata
     }
 }
 

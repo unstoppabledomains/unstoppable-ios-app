@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 protocol TutorialViewControllerProtocol: UIViewController, CNavigationControllerChild {
     
@@ -21,7 +22,7 @@ final class TutorialViewController: UIPageViewController {
         ]
     }()
     
-    private var createNewWalletButton = MainButton()
+    private var createNewWalletButton = UDConfigurableButton()
     private var progressView = DashesProgressView()
     private var currentPage = 0
     private var progress: Double = 0.0
@@ -67,12 +68,7 @@ final class TutorialViewController: UIPageViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let buttonSideOffset: CGFloat = 16
-        let bottomOffset: CGFloat = 14 + view.safeAreaInsets.bottom
-        createNewWalletButton.frame = CGRect(x: buttonSideOffset,
-                                             y: view.bounds.height - MainButton.height - bottomOffset,
-                                             width: view.bounds.width - (buttonSideOffset * 2),
-                                             height: MainButton.height)
+        setupNavProgressViewFrame()
     }
 }
 
@@ -146,9 +142,14 @@ extension TutorialViewController: UIPageViewControllerDataSource {
 
 // MARK: - Actions
 private extension TutorialViewController {
-    @objc func didPressCreateNewWalletButton(_ sender: UITapGestureRecognizer) {
-        logButtonPressedAnalyticEvents(button: .getStarted)
+    func didPressCreateNewWalletButton() {
+        logButtonPressedAnalyticEvents(button: .createVault)
         presenter?.didPressCreateNewWalletButton()
+    }
+    
+    func didPressAddExistingWalletButton() {
+        logButtonPressedAnalyticEvents(button: .addWallet)
+        presenter?.didPressAddExistingWalletButton()
     }
     
     @objc func didPressBuyDomain(_ sender: Any) {
@@ -162,10 +163,10 @@ private extension TutorialViewController {
     func setup() {
         setupView()
         setupDelegates()
-        setupCreateNewWalletButton()
+        setupActionButtons()
         setupNavigationBar()
+        view?.addSubview(progressView)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.setupNavProgressView()
             self.setupWelcomeMessage()
             self.setupDisplayLink()
         }
@@ -180,11 +181,51 @@ private extension TutorialViewController {
         self.delegate = self
     }
     
-    func setupCreateNewWalletButton() {
-        view.addSubview(createNewWalletButton)
-        createNewWalletButton.accessibilityIdentifier = "Tutorial Create New Button"
-        createNewWalletButton.setTitle(String.Constants.getStarted.localized(), image: nil)
-        createNewWalletButton.addTarget(self, action: #selector(didPressCreateNewWalletButton(_:)), for: .touchUpInside)
+    func setupActionButtons() {
+        let isIPSE = deviceSize.isIPSE
+
+        let addExistingButtonTitle = isIPSE ? String.Constants.existingWallet : String.Constants.connectWalletTitle
+        let addExistingWalletButtonViewContainer = createAndAddUDButton(title: addExistingButtonTitle.localized(),
+                                                                        style: .large(.raisedPrimary)) { [weak self] in
+            self?.didPressAddExistingWalletButton()
+        }
+        
+        let createNewButtonTitle = isIPSE ? String.Constants.newWallet : String.Constants.createNewWallet
+        let createNewWalletButtonViewContainer = createAndAddUDButton(title: createNewButtonTitle.localized(),
+                                                                      style: .large(.raisedTertiary)) { [weak self] in
+            self?.didPressCreateNewWalletButton()
+        }
+        
+        var buttons = [addExistingWalletButtonViewContainer, createNewWalletButtonViewContainer]
+        if isIPSE {
+            buttons = buttons.reversed()
+        }
+        
+        let stack = UIStackView(arrangedSubviews: buttons)
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.spacing = 16
+        stack.axis = isIPSE ? .horizontal : .vertical
+        if isIPSE {
+            stack.distribution = .fillEqually
+        }
+        
+        view.addSubview(stack)
+        NSLayoutConstraint.activate([stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                                     stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                                     stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)])
+    }
+    
+    func createAndAddUDButton(title: String,
+                              style: UDButtonStyle, 
+                              action: @escaping EmptyCallback) -> UIView {
+        let buttonView = UDButtonView(text: title,
+                                                       style: style) {
+            action()
+        }
+        let buttonViewController = UIHostingController(rootView: buttonView)
+        let buttonViewContainer = UIView()
+        addChildViewController(buttonViewController, andEmbedToView: buttonViewContainer)
+        return buttonViewContainer
     }
     
     func setFirstTutorialScreen() {
@@ -197,8 +238,7 @@ private extension TutorialViewController {
     }
     
     func setupWelcomeMessage() {
-        guard deviceSize != .i4_7Inch,
-              let navBar = cNavigationBar else { return }
+        guard let navBar = cNavigationBar else { return }
 
         let imageViewContainer = UIView()
         imageViewContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -248,11 +288,10 @@ private extension TutorialViewController {
         customiseNavigationBackButton()
     }
     
-    func setupNavProgressView() {
+    func setupNavProgressViewFrame() {
         guard let navBar = cNavigationBar else { return }
         
         progressView.frame.origin.y = navBar.bounds.height - (navBar.navBarContentView.bounds.height / 2) - (progressView.frame.height / 2)
-        view?.addSubview(progressView)
     }
     
     func setupDisplayLink() {
@@ -308,11 +347,13 @@ extension TutorialViewController {
         case tutorialScreen2
         case tutorialScreen3
         
+        @MainActor
         var image: UIImage {
+            let isIPSE = deviceSize.isIPSE
             switch self {
-            case .tutorialScreen1: return #imageLiteral(resourceName: "tutorialIllustration1")
-            case .tutorialScreen2: return #imageLiteral(resourceName: "tutorialIllustration2")
-            case .tutorialScreen3: return #imageLiteral(resourceName: "tutorialIllustration3")
+            case .tutorialScreen1: return isIPSE ? #imageLiteral(resourceName: "tutorialIllustration1SE") :  #imageLiteral(resourceName: "tutorialIllustration1")
+            case .tutorialScreen2: return isIPSE ? #imageLiteral(resourceName: "tutorialIllustration2SE") :  #imageLiteral(resourceName: "tutorialIllustration2")
+            case .tutorialScreen3: return isIPSE ? #imageLiteral(resourceName: "tutorialIllustration3SE") :  #imageLiteral(resourceName: "tutorialIllustration3")
             }
         }
         

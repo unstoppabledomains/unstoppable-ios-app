@@ -49,7 +49,7 @@ private extension UDButtonStyle {
                 content
                     .shadow(color: Color.backgroundAccentEmphasis2, radius: 0, x: 0, y: 0)
                     .overlay {
-                        rectangleOverlay(color: .white.opacity(0.3))
+                        rectangleOverlay(color: .white.opacity(0.12))
                             
                     }
             case .raisedPrimaryWhite:

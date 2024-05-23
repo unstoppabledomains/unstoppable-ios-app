@@ -1,5 +1,5 @@
 {
-  "originHash" : "57712317d52b57378eb742d2fbaf64669df05a363013ace30768d4859c34d342",
+  "originHash" : "f99411f96d664cffc232bb9f36f9409781edb4d58110cf256f172f585edb9462",
   "pins" : [
     {
       "identity" : "amplitude-ios",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/amplitude/Amplitude-iOS",
       "state" : {
         "branch" : "main",
-        "revision" : "bfdec453a31fd35942a619ef472fcf2f09e2313a"
+        "revision" : "f780c123ca21339d37277f00449cb0f6494e676a"
       }
     },
     {
@@ -98,6 +98,15 @@
       "state" : {
         "revision" : "fa57437cc1a84df566c91bbd5df1d0619d404e09",
         "version" : "0.4.3-beta4"
+      }
+    },
+    {
+      "identity" : "ncw-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fireblocks/ncw-ios-sdk.git",
+      "state" : {
+        "revision" : "48f19d792d0f3c6431d49c22618ebd03ef7ce70d",
+        "version" : "2.4.1"
       }
     },
     {
@@ -230,8 +239,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "359c461e5561d22c6334828806cc25d759ca7aa6",
-        "version" : "2.65.0"
+        "revision" : "fc63f0cf4e55a4597407a9fc95b16a2bc44b4982",
+        "version" : "2.64.0"
       }
     },
     {
@@ -248,8 +257,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "c6afe04165c865faaa687b42c32ed76dfcc91076",
-        "version" : "1.31.0"
+        "revision" : "0904bf0feb5122b7e5c3f15db7df0eabe623dd87",
+        "version" : "1.30.0"
       }
     },
     {

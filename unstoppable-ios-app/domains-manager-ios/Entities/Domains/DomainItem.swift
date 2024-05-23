@@ -10,22 +10,10 @@ import UIKit
 
 struct DomainItem: DomainEntity, Codable, Equatable {
     
-    enum Status: String, Codable {
-        case unclaimed
-        case claiming
-        case confirmed
-    }
-    
     var name: String
     var ownerWallet: String? = nil
-    var resolver: String? = nil
     var blockchain: BlockchainType? = nil
-    var pfpURL: String?
-    var imageType: DomainProfileImageType?
-    var transactionHashes: [HexAddress] = []
-    var claimingTxId: UInt64?
-    var status: Status = .confirmed
-    
+
     func inject(owner: HexAddress) -> DomainItem {
         var domainCopy = self
         domainCopy.ownerWallet = owner
@@ -36,10 +24,6 @@ struct DomainItem: DomainEntity, Codable, Equatable {
         var origin = self
         origin.name = newDomain.name
         origin.ownerWallet = newDomain.ownerWallet
-        if claimingTxId == nil {
-            origin.claimingTxId = newDomain.claimingTxId
-        }
-        origin.status = newDomain.status
         origin.blockchain = newDomain.blockchain
         return origin
     }
@@ -50,7 +34,6 @@ extension DomainItem {
         self.name = jsonResponse.name
         self.ownerWallet = jsonResponse.ownerAddress
         self.blockchain = try? BlockchainType.getType(abbreviation: jsonResponse.blockchain)
-        self.resolver = jsonResponse.resolver
     }
 }
 
@@ -58,7 +41,7 @@ extension DomainItem: Hashable { }
 
 extension DomainItem: CustomStringConvertible {
     var description: String {
-        "Domain: \(name), claimId: \(String(describing: claimingTxId))"
+        "Domain: \(name)"
     }
 }
 

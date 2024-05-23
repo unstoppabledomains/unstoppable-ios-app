@@ -79,6 +79,9 @@ extension Analytics {
         case didPullToRefresh
         
         case didSendCrypto, didFailToSendCrypto
+        
+        case sendMPCBootstrapCodeError
+        case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
     }
 }
 
@@ -155,7 +158,9 @@ extension Analytics {
         case walletsAddresses
         case primaryDomain
         case reverseResolutionDomains
+        case numberOfTotalWallets
         case numberOfWallets
+        case numberOfMPCWallets
         case numberOfTotalDomains
         case numberOfUDDomains
         case numberOfParkedDomains
@@ -171,7 +176,7 @@ extension Analytics {
     enum ViewName: String {
         case unspecified
         case onboardingTutorial, onboardingTutorialStep, onboardingExistingUserTutorial
-        case onboardingRestoreWallet
+        case onboardingRestoreWallet, onboardingAddWallet
         case selectBackupWalletOptionsForNewWallet, onboardingSelectBackupWalletOptions
         case onboardingEnterBackupPassword, enterBackupPasswordToBackupNewWallet, enterBackupPasswordToBackupWallet, enterBackupPasswordToRestoreWallets
         case createBackupPasswordToBackupWallet, createBackupPasswordForNewWallet, onboardingCreateBackupPassword
@@ -233,6 +238,12 @@ extension Analytics {
         
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
+        
+        case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
+        case mpcEnterCodeOnboarding, mpcEnterCodeInApp
+        case mpcActivationOnboarding, mpcActivationInApp
+        case mpcActivateEnterCode, mpcActivateEnterPassword
+        case reconnectMPCWalletPrompt
     }
 }
 
@@ -240,7 +251,7 @@ extension Analytics {
 extension Analytics {
     enum Button: String, Codable {
         case buyDomains, mintDomains, manageDomains, importFromTheWebsite
-        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send
+        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut, send, logIn
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
         case termsOfUse, privacyPolicy
@@ -302,10 +313,10 @@ extension Analytics {
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
         // Wallet details
-        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution
+        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect
         
         // Wallets list
-        case manageICloudBackups, walletInList
+        case manageICloudBackups, walletInList, walletsMenu
         
         // Web view
         case refreshPage, openBrowser, moveBack, moveForward
@@ -337,6 +348,8 @@ extension Analytics {
         case moveToTop
         case websiteAccount
         case resetRecords
+        case mpc
+        case selfCustody
         
         // Referral
         case inviteFriendInfo, copyLink
@@ -412,6 +425,8 @@ extension Analytics {
         case transferDomainExchangeToggle, transferDomainConfirmAddressToggle, transferDomainClearRecordsToggle
         case transactionSpeedSelection, selectTransactionSpeed
         case noRecordsAdded
+        
+        case reEnterPasscode, reEnterPassword
     }
 }
 
@@ -420,6 +435,7 @@ extension Analytics {
     enum PullUp: String {
         case unspecified
         case settingsLegalSelection
+        case settingsLoginSelection
         case addWalletSelection
         case manageBackupsSelection
         case deleteAllICloudBackupsConfirmation
@@ -468,6 +484,8 @@ extension Analytics {
         case transferDomainConfirmation, sendMaxCryptoInfo
         case noRecordsSetToSendCrypto
         case sendCryptoForTheFirstTimeConfirmation
+        case copyMultiChainAddresses
+        case removeMPCWalletConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

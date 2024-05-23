@@ -56,6 +56,16 @@ extension View {
         topVC.openLink(link)
     }
     
+    func openUDTwitter() {
+        let twitterName = Constants.UnstoppableTwitterName
+        let appURL = URL(string: "twitter://user?screen_name=\(twitterName)")!
+        let webURL = URL(string: "https://twitter.com/\(twitterName)")!
+        
+        if !openURLExternally(appURL) {
+            openURLExternally(webURL)
+        }
+    }
+    
     func shareItems(_ items: [Any], completion: ((Bool)->())?) {
         guard let topVC = appContext.coreAppCoordinator.topVC else { return }
         

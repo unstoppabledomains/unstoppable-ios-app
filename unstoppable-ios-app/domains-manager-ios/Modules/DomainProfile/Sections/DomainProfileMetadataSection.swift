@@ -175,13 +175,14 @@ private extension DomainProfileMetadataSection {
         case .humanityCheckVerified:
             return
         case .email(let email):
+            UDVibration.buttonTap.vibrate()
             didTapChangeEmail(email)
         }
     }
     
     func didTapChangeEmail(_ email: String) {
         Task { @MainActor in
-            guard let nav = controller?.viewController?.cNavigationController else { return }
+            guard let nav = controller?.viewController?.navigationController else { return }
             
             UDRouter().showEnterEmailValueModule(in: nav, email: email) { [weak self] newEmail in
                 self?.userDidEnterNewEmail(newEmail)

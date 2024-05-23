@@ -13,6 +13,7 @@ extension String {
         case udLogoPng
         case etherScanAddress(_ address: String), polygonScanAddress(_ address: String)
         case etherScanTransaction(_ transaction: String), polygonScanTransaction(_ transaction: String)
+        case scanTransaction(chain: String, transaction: String)
         case deprecatedCoinTLDPage
         case domainProfilePage(domainName: String)
         case ensDomainProfilePage(domainName: String)
@@ -57,6 +58,8 @@ extension String {
                 return "https://unstoppabledomains.com/"
             case .mintDomainGuide:
                 return "https://cdn.unstoppabledomains.com/bucket/mobile-app/what_is_minting.mp4"
+            case .scanTransaction(let chain, let transaction):
+                return NetworkConfig.baseNetworkScanUrl(chain: chain) + "/tx/\(transaction)"
             case .etherScanTransaction(let transaction):
                 return NetworkConfig.baseEthereumNetworkScanUrl + "/tx/\(transaction)"
             case .polygonScanTransaction(let transaction):
@@ -241,6 +244,8 @@ extension String {
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let mintYourDomain = "MINT_YOUR_DOMAIN"
         static let buyDomain = "BUY_DOMAIN"
+        static let createNew = "CREATE_NEW"
+        static let addExisting = "ADD_EXISTING"
         
         static let tutorialScreen1Name = "TUTORIAL_SCREEN_1_NAME"
         static let tutorialScreen2Name = "TUTORIAL_SCREEN_2_NAME"
@@ -420,13 +425,7 @@ extension String {
         // Domains Collection
         static let searchDomainsTitle = "SEARCH_DOMAINS_TITLE"
         static let searchDomainsHint = "SEARCH_DOMAINS_HINT"
-        static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
-        static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
-        static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
-        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
-        static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
-        static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
-        static let importYourDomains = "IMPORT_YOUR_DOMAINS"
+        static let noDomains = "NO_DOMAINS"
         
         // Statuses
         static let updatingRecords = "UPDATING_RECORDS"
@@ -453,6 +452,7 @@ extension String {
         static let settingsAppearanceThemeLight = "SETTINGS_APPEARANCE_THEME_LIGHT"
         static let settingsAppearanceThemeDark = "SETTINGS_APPEARANCE_THEME_DARK"
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
+        static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
         
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
@@ -487,6 +487,7 @@ extension String {
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
+        static let whatIsExternalWallet = "WHAT_IS_EXTERNAL_WALLET"
         static let importConnectedWalletDescription = "IMPORT_CONNECTED_WALLET_DESCRIPTION"
         static let walletWasDisconnectedMessage = "WALLET_WAS_DISCONNECTED_MESSAGE"
         static let addToBackupNewWalletSubtitle = "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE"
@@ -856,7 +857,7 @@ extension String {
         static let password = "PASSWORD"
         static let parked = "PARKED"
         static let parkedDomain = "PARKED_DOMAIN"
-        static let parkedDomains = "PARKED_DOMAINS"
+        static let parkedDomainsFound = "PARKED_DOMAINS_FOUND"
         static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
         static let parkingExpiresOn = "PARKING_EXPIRES_ON"
         static let parkingExpired = "PARKING_EXPIRED"
@@ -1189,11 +1190,62 @@ extension String {
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
         
+        // Import MPC
+        static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"
+        static let importMPCWalletSubtitle = "IMPORT_MPC_WALLET_SUBTITLE"
+        static let emailAssociatedWithWallet = "EMAIL_ASSOCIATED_WITH_WALLET"
+        static let enterMPCWalletVerificationCodeTitle = "ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE"
+        static let enterMPCWalletVerificationCodeSubtitle = "ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE"
+        static let verificationCode = "VERIFICATION_CODE"
+        static let haventReceivedTheCode = "HAVENT_RECEIVED_THE_CODE"
+        static let incorrectEmailFormat = "INCORRECT_EMAIL_FORMAT"
+        static let selfCustody = "SELF_CUSTODY"
+        static let recoveryPhraseOrPrivateKey = "RECOVERY_PHRASE_OR_PRIVATE_KEY"
+        static let external = "EXTERNAL"
+        static let createNewWallet = "CREATE_NEW_WALLET"
+        static let mpcAuthorizing = "MPC_AUTHORIZING"
+        static let mpcReadyToUse = "MPC_READY_TO_USE"
+        
+        static let wrongPassword = "WRONG_PASSWORD"
+        static let wrongPasscode = "WRONG_PASSCODE"
+        static let reEnterPassword = "RE_ENTER_PASSWORD"
+        static let reEnterPasscode = "RE_ENTER_PASSCODE"
+        static let newWallet = "NEW_WALLET"
+        static let existingWallet = "EXISTING_WALLET"
+        static let importMPCWalletInProgressTitle = "IMPORT_MPC_WALLET_IN_PROGRESS_TITLE"
+        static let importMPCWalletFinishedTitle = "IMPORT_MPC_WALLET_FINISHED_TITLE"
+        static let importMPCWalletFailedTitle = "IMPORT_MPC_WALLET_FAILED_TITLE"
+        static let mpcWalletShareMultiChainDescription = "MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION"
+        static let chooseAddressToShare = "CHOOSE_ADDRESS_TO_SHARE"
+        static let useDomainNameInsteadOfAddress = "USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS"
+        static let copyOrShareWalletAddress = "COPY_OR_SHARE_WALLET_ADDRESS"
+        static let mpcProductName = "MPC_PRODUCT_NAME"
+        static let mpcWrongVerificationCodeMessage = "MPC_WRONG_VERIFICATION_CODE_MESSAGE"
+        static let mpcWrongPasswordMessage = "MPC_WRONG_PASSWORD_MESSAGE"
+        static let change = "CHANGE"
+        static let reImportMPCWalletPromptTitle = "RE_IMPORT_MPC_WALLET_PROMPT_TITLE"
+        static let reImportMPCWalletPromptSubtitle = "RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE"
+        static let reImportWallet = "RE_IMPORT_WALLET"
+        static let removeMPCWalletPullUpTitle = "REMOVE_MPC_WALLET_PULL_UP_TITLE"
+        static let removeMPCWalletPullUpSubtitle = "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE"
+        
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
+        
+        static let parkedDomains = "PARKED_DOMAINS"
+        static let backedUp = "BACKED_UP"
+        static let backUp = "BACK_UP"
+        static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
+    }
+    
+    enum SystemImage: String {
+        case copy = "doc.on.doc"
+        case crown
+        
+        var name: String { rawValue }
     }
     
     enum BlockChainIcons: String {
@@ -1268,7 +1320,28 @@ extension String {
         }
     }
     
+    var convertToMPCMessage: MPCMessage {
+        guard self.hasHexPrefix else {
+            return MPCMessage(incomingString: self, outcomingString: self, type: .utf8)
+        }
+        return MPCMessage(incomingString: self, outcomingString: self, type: .hex)
+    }
+        
     var asURL: URL? {
         URL(string: self)
+    }
+}
+
+extension String {
+    func appendingURLPathComponent(_ pathComponent: String) -> String {
+        return self + "/" + pathComponent
+    }
+    
+    func appendingURLPathComponents(_ pathComponents: String...) -> String {
+        return self + "/" + pathComponents.joined(separator: "/")
+    }
+    
+    func appendingURLQueryComponents(_ components: [String : String]) -> String {
+        self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
     }
 }

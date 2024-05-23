@@ -10,9 +10,9 @@ import UIKit
 struct BalanceTokenUIDescription: Hashable, Identifiable {
     var id: String { "\(chain)/\(symbol)" }
     
+    let address: String
     let chain: String
     let symbol: String
-    let gasCurrency: String
     let name: String
     let balance: Double
     let balanceUsd: Double
@@ -37,7 +37,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         
         init(token: WalletTokenPortfolio) {
             symbol = token.symbol
-            balance = token.balanceAmt
+            balance = token.balanceAmt ?? 0
             marketUsd = token.value.marketUsdAmt
             logoURL = URL(string: token.logoUrl ?? "")
         }
@@ -48,27 +48,20 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     
     var isERC20Token: Bool { parent != nil }
     
-    var balanceSymbol: String {
-        // For 'parent' token we show gas currency (which is ETH for Base token)
-        if parent == nil {
-            return gasCurrency
-        }
-        return symbol
-    }
-    
     init(walletBalance: WalletTokenPortfolio) {
+        self.address = walletBalance.address
         self.chain = walletBalance.symbol
-        self.symbol = walletBalance.symbol
-        self.gasCurrency = walletBalance.gasCurrency
+        self.symbol = walletBalance.gasCurrency
         self.name = walletBalance.name
-        self.balance = walletBalance.balanceAmt
-        self.balanceUsd = walletBalance.value.walletUsdAmt
+        self.balance = walletBalance.balanceAmt ?? 0
+        self.balanceUsd = walletBalance.value.walletUsdAmt ?? 0
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         self.logoURL = URL(string: walletBalance.logoUrl ?? "")
     }
     
-    init(chain: String,
+    init(address: String,
+         chain: String,
          symbol: String,
          name: String,
          balance: Double,
@@ -76,9 +69,9 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
          marketUsd: Double? = nil,
          marketPctChange24Hr: Double? = nil,
          parent: ParentDetails? = nil) {
+        self.address = address
         self.chain = chain
         self.symbol = symbol
-        self.gasCurrency = symbol
         self.name = name
         self.balance = balance
         self.balanceUsd = balanceUsd
@@ -90,9 +83,9 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     init(chain: String,
          walletToken: WalletTokenPortfolio.Token,
          parent: ParentDetails) {
+        self.address = walletToken.address
         self.chain = chain
         self.symbol = walletToken.symbol
-        self.gasCurrency = walletToken.gasCurrency
         self.name = walletToken.name
         self.balance = walletToken.balanceAmt
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
@@ -186,7 +179,8 @@ extension BalanceTokenUIDescription {
 // MARK: - Skeleton
 extension BalanceTokenUIDescription {
     static func createSkeletonEntity() -> BalanceTokenUIDescription {
-        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+        var token = BalanceTokenUIDescription(address: "",
+                                              chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
         token.isSkeleton = true
         return token
     }

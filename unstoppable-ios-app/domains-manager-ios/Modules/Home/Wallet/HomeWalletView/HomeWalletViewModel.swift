@@ -32,6 +32,7 @@ extension HomeWalletView {
         private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
+        var isWCSupported: Bool { selectedWallet.udWallet.type != .mpc }
         
         init(selectedWallet: WalletEntity,
              router: HomeTabRouter) {
@@ -119,16 +120,26 @@ extension HomeWalletView {
         
         private func showProfile(of domain: DomainDisplayInfo) {
             Task {
-                await router.showDomainProfile(domain, wallet: selectedWallet, preRequestedAction: nil, dismissCallback: nil)
+                await router.showDomainProfile(domain,
+                                               wallet: selectedWallet,
+                                               preRequestedAction: nil,
+                                               shouldResetNavigation: false)
             }
         }
         
         func walletSubActionPressed(_ subAction: WalletSubAction) {
             switch subAction {
             case .copyWalletAddress:
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: selectedWallet.address, ticker: "ETH")
+                switch selectedWallet.getAssetsType() {
+                case .multiChain(let tokens):
+                    router.pullUp = .custom(.copyMultichainAddressPullUp(tokens: tokens, selectionType: .copyOnly))
+                case .singleChain(let token):
+                    CopyWalletAddressPullUpHandler.copyToClipboard(token: token)
+                }
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
+            case .buyMPC:
+                router.purchasingMPCWallet = true
             }
         }
         
@@ -261,15 +272,44 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                                                     coinRecords: coinRecords,
                                                     resolver: nil)
                 let cryptoRecords = recordsData.records
-                let chainsToVerify: [BlockchainType] = [.Ethereum, .Matic]
-                chainsNotMatch = chainsToVerify.compactMap { chain in
+                
+                
+                struct ChainToVerifyDesc {
+                    let chain: String
+                    let fullName: String
+                    let address: String
+                    let isCaseSensitive: Bool
+                }
+                
+                let chainsToVerify: [ChainToVerifyDesc]
+                switch selectedWallet.getAssetsType() {
+                case .singleChain(let balanceTokenUIDescription):
+                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.rawValue,
+                                                                                     fullName: $0.fullName,
+                                                                                     address: balanceTokenUIDescription.address,
+                                                                                     isCaseSensitive: false) }
+                case .multiChain(let tokens):
+                    chainsToVerify = tokens
+                        .filter({ token in
+                            coinRecords.first(where: { $0.ticker == token.symbol }) != nil
+                        })
+                        .map { ChainToVerifyDesc(chain: $0.symbol,
+                                                 fullName: $0.name,
+                                                 address: $0.address,
+                                                 isCaseSensitive: BlockchainType(rawValue: $0.symbol) == nil) }
+                }
+                
+                
+                chainsNotMatch = chainsToVerify.compactMap { desc in
                     let numberOfRecordsNotSetToChain = numberOfRecords(cryptoRecords,
-                                                                       withChain: chain,
-                                                                       notSetToWallet: walletAddress)
+                                                                       withChain: desc.chain,
+                                                                       notSetToWallet: desc.address,
+                                                                       isCaseSensitive: desc.isCaseSensitive)
                     if numberOfRecordsNotSetToChain > 0 {
-                        return HomeWalletView.NotMatchedRecordsDescription(chain: chain,
+                        return HomeWalletView.NotMatchedRecordsDescription(chain: desc.chain,
+                                                                           fullName: desc.fullName,
                                                                            numberOfRecordsNotSetToChain: numberOfRecordsNotSetToChain,
-                                                                           ownerWallet: walletAddress)
+                                                                           ownerWallet: desc.address)
                     } else {
                         return nil
                     }
@@ -283,14 +323,19 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
     }
     
     func numberOfRecords(_ records: [CryptoRecord],
-                         withChain chain: BlockchainType,
-                         notSetToWallet wallet: String) -> Int {
-        let tickerRecords = records.filter { $0.coin.ticker == chain.rawValue }
+                         withChain chain: String,
+                         notSetToWallet wallet: String,
+                         isCaseSensitive: Bool) -> Int {
+        let tickerRecords = records.filter { $0.coin.ticker == chain }
         if tickerRecords.isEmpty {
             return 1
         }
         
-        return tickerRecords.filter({ $0.address != wallet }).count
+        if isCaseSensitive {
+            return tickerRecords.filter({ $0.address != wallet }).count
+        } else {
+            return tickerRecords.filter({ $0.address.lowercased() != wallet.lowercased() }).count
+        }
     }
     
     func showGreetingsIfNeeded() {

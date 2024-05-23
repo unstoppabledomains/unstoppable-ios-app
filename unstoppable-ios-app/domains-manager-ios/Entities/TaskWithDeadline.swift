@@ -74,7 +74,11 @@ final class TaskWithDeadline<Value> {
         }
     }
     
-    private enum TaskError: Error {
+    private enum TaskError: String, LocalizedError {
         case timeout
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }

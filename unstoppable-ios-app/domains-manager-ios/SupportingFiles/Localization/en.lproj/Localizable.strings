@@ -183,6 +183,8 @@
 "ALREADY_MINTED_DOMAIN" = "Import minted domains";
 "MINT_YOUR_DOMAIN" = "Mint your domains";
 "BUY_DOMAIN" = "Buy domain";
+"CREATE_NEW" = "Create new";
+"ADD_EXISTING" = "Add existing";
 
 "TUTORIAL_SCREEN_1_NAME" = "Manage NFTs and domains";
 "TUTORIAL_SCREEN_2_NAME" = "Track your crypto assets";
@@ -191,7 +193,7 @@
 // Creating wallet
 "CREATING_WALLET" = "Creating wallet";
 "CREATE_NEW_VAULT_TITLE" = "Create new wallet";
-"CREATE_NEW_VAULT_SUBTITLE" = "A wallet is a cryptocurrency address for your Web3 identity.\nUse your wallet to track your crypto assets including NFTs, manage domains and connect to Web3 apps.";
+"CREATE_NEW_VAULT_SUBTITLE" = "Wallet is used to store your domains, crypto and collectibles.";
 
 // Protect screen
 "USE_FACE_ID" = "Use Face ID";
@@ -268,15 +270,15 @@
 "PRIVACY_POLICY" = "Privacy Policy";
 
 // Connect wallet
-"CONNECT_WALLET_TITLE" = "Import your domains";
-"CONNECT_WALLET_SUBTITLE" = "Choose a way to import your domains.";
+"CONNECT_WALLET_TITLE" = "Add existing wallet";
+"CONNECT_WALLET_SUBTITLE" = "Choose a way to import your wallet into Unstoppable App.";
 "CONNECT_WALLET_ICLOUD" = "iCloud";
-"CONNECT_WALLET_ICLOUD_HINT" = "You have %@ backed up";
-"CONNECT_WALLET_RECOVERY" = "Recovery phrase or private key";
+"CONNECT_WALLET_ICLOUD_HINT" = "You have wallets backed up";
+"CONNECT_WALLET_RECOVERY" = "Import Secret Phrase\nor Private Key";
 "CONNECT_WALLET_RECOVERY_HINT" = "Ethereum & Zilliqa";
 "CONNECT_WALLET_WATCH" = "Watch wallet ";
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
-"CONNECT_WALLET_EXTERNAL" = "External wallet";
+"CONNECT_WALLET_EXTERNAL" = "Connect via WalletConnect";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
 "CONNECT_WALLET_CREATE_NEW" = "Create a new wallet";
 
@@ -313,13 +315,7 @@
 // Domains Collection
 "SEARCH_DOMAINS_TITLE" = "Search your domains";
 "SEARCH_DOMAINS_HINT" = "Example: \"matt.crypto\"";
-"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "No domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Import your domains to manage your profile and login to apps.";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE" = "Recovery phrase\nor private key";
-"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE" = "For domains already minted";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE" = "External wallet";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc for domains already minted";
-"IMPORT_YOUR_DOMAINS" = "Import your domains";
+"NO_DOMAINS" = "No domains";
 
 // Statuses
 "UPDATING_RECORDS" = "Updating records";
@@ -332,7 +328,7 @@
 "SETTINGS_HOME_SCREEN" = "Home screen";
 
 "SETTINGS_LEARN" = "Learn";
-"SETTINGS_FOLLOW_TWITTER" = "Follow us on Twitter";
+"SETTINGS_FOLLOW_TWITTER" = "Follow us on X (Twitter)";
 "SETTINGS_SUPPORT_N_FEEDBACK" = "Support & feedback";
 "SETTINGS_LEGAL" = "Legal";
 
@@ -346,6 +342,7 @@
 "SETTINGS_APPEARANCE_THEME_LIGHT" = "Light";
 "SETTINGS_APPEARANCE_THEME_DARK" = "Dark";
 "SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
+"YOU_ARE_UNSTOPPABLE" = "You are Unstoppable!";
 
 // Wallets list
 "MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";
@@ -373,7 +370,7 @@
 "VIEW_PRIVATE_KEY" = "View private key";
 "RENAME" = "Rename";
 "SEE_DOMAINS_STORED_IN_WALLET" = "See %@ stored in %@";
-"REMOVE_WALLET" = "Remove %@";
+"REMOVE_WALLET" = "Remove wallet";
 "DISCONNECT_WALLET" = "Disconnect wallet";
 "NOT_BACKED_UP" = "Not backed up";
 "IMPORTED_WALLET_BACKUP_HINT" = "Save an encrypted copy of your recovery phrase on iCloud.";
@@ -384,6 +381,7 @@
 "COPY_ADDRESS" = "Copy address";
 "ETH_ADDRESS" = "ETH address";
 "ZIL_ADDRESS" = "ZIL address";
+"WHAT_IS_EXTERNAL_WALLET" = "What is an external wallet?";
 "IMPORT_CONNECTED_WALLET_DESCRIPTION" = "Manage your Web3 domains using an external wallet without importing a recovery phrase or private key. Your linked wallet will be used for message & transaction signing.";
 "WALLET_WAS_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
 
@@ -401,7 +399,7 @@
 "POLYGON_TRANSACTIONS" = "Polygon transactions";
 
 // Rename wallet
-"WALLET_NAME_PLACEHOLDER" = "Name your %@";
+"WALLET_NAME_PLACEHOLDER" = "Name your wallet";
 "WALLET_NAME_TOO_LONG_ERROR" = "Too long name";
 "WALLET_NAME_NOT_UNIQUE_ERROR" = "%@ name should be unique";
 
@@ -754,7 +752,7 @@
 "PASSWORD" = "Password";
 "PARKED" = "In Unstoppable Vault";
 "PARKED_DOMAIN" = "Domain in Unstoppable Vault";
-"PARKED_DOMAINS" = "Domains in Unstoppable Vault";
+"PARKED_DOMAINS_FOUND" = "Domains in Unstoppable Vault";
 "PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";
 "PARKING_EXPIRES_ON" = "Expires on %@";
 "PARKING_EXPIRED" = "Unstoppable Vault expired";
@@ -1064,7 +1062,7 @@ More tabs are coming in the next updates.";
 "MAX" = "Max";
 "TRANSFER_DOMAIN_CONFIRMATION_HINT" = "By clicking, you agree to transfer ownership of this domain, understanding this action is irreversible.";
 "TRANSFER_DOMAIN_SUCCESS_TITLE" = "Domain transfer\nhas started";
-"SEND_CRYPTO_SUCCESS_TITLE" = "Successfully sent";
+"SEND_CRYPTO_SUCCESS_TITLE" = "Transaction sent to the blockchain";
 "TRANSACTION_TAKES_N_MINUTES" = "This transaction usually takes ~%i minutes.";
 "SEND_MAX_CRYPTO_INFO_PULL_UP_TITLE" = "We will send all %@ less required network costs";
 "NOT_ENOUGH_TOKEN" = "Not enough %@";
@@ -1087,8 +1085,51 @@ More tabs are coming in the next updates.";
 "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
 "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";
 
+// Import MPC
+"IMPORT_MPC_WALLET_TITLE" = "Import %@";
+"IMPORT_MPC_WALLET_SUBTITLE" = "Enter the credentials you added when you created your %@";
+"EMAIL_ASSOCIATED_WITH_WALLET" = "Email associated with a wallet";
+"ENTER_MPC_WALLET_VERIFICATION_CODE_TITLE" = "Enter verification code\nsent to your email";
+"ENTER_MPC_WALLET_VERIFICATION_CODE_SUBTITLE" = "Code sent to: %@";
+"VERIFICATION_CODE" = "Verification code";
+"HAVENT_RECEIVED_THE_CODE" = "Haven’t received the code?";
+"INCORRECT_EMAIL_FORMAT" = "Incorrect email format";
+"SELF_CUSTODY" = "Self Custody";
+"RECOVERY_PHRASE_OR_PRIVATE_KEY" = "Recovery phrase or private key";
+"EXTERNAL" = "External";
+"CREATE_NEW_WALLET" = "Create New Wallet";
+"MPC_AUTHORIZING" = "Authorizing...";
+"MPC_READY_TO_USE" = "Ready to use!";
+"WRONG_PASSWORD" = "Wrong password";
+"WRONG_PASSCODE" = "Wrong passcode";
+"RE_ENTER_PASSWORD" = "Re-enter password";
+"RE_ENTER_PASSCODE" = "Re-enter passcode";
+"NEW_WALLET" = "New Wallet";
+"EXISTING_WALLET" = "Existing Wallet";
+"IMPORT_MPC_WALLET_IN_PROGRESS_TITLE" = "Importing your\n%@...";
+"IMPORT_MPC_WALLET_FINISHED_TITLE" = "All set, start using your %@";
+"IMPORT_MPC_WALLET_FAILED_TITLE" = "Importing your\n%@";
+"MPC_WALLET_SHARE_MULTI_CHAIN_DESCRIPTION" = "%@ has addresses across multiple blockchains.";
+"CHOOSE_ADDRESS_TO_SHARE" = "Choose address to share";
+"USE_DOMAIN_NAME_INSTEAD_OF_ADDRESS" = "Use your domain name instead of long wallet addresses in supported apps";
+"COPY_OR_SHARE_WALLET_ADDRESS" = "Copy or share wallet addresses to request crypto or Unstoppable domains";
+"MPC_PRODUCT_NAME" = "Unstoppable Wallet";
+"MPC_WRONG_VERIFICATION_CODE_MESSAGE" = "You’ve entered wrong verification code";
+"MPC_WRONG_PASSWORD_MESSAGE" = "You’ve entered wrong password for %@";
+"CHANGE" = "Change";
+"RE_IMPORT_MPC_WALLET_PROMPT_TITLE" = "Please re-import your Unstoppable Wallet %@";
+"RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE" = "Periodically Unstoppable Wallets must be re-imported. This design enhances security and ensures the protection of assets in your wallet.";
+"RE_IMPORT_WALLET" = "Re-import wallet";
+"REMOVE_MPC_WALLET_PULL_UP_TITLE" = "Are you sure you want to remove your Unstoppable Wallet?";
+"REMOVE_MPC_WALLET_PULL_UP_SUBTITLE" = "This wallet will be removed immediately. You can add the wallet to the app later.";
+
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE" = "Ensure accuracy of the recipient address as transactions are irreversible. Once sent, transactions cannot be reversed. You agree to bear all risks associated with the transaction.";
 "REVIEW_TX_AGAIN" = "Review Transaction Again";
 "CONFIRM_AND_SEND" = "Confirm & Send";
+
+"PARKED_DOMAINS" = "Parked domains";
+"BACKED_UP" = "Backed up";
+"BACK_UP" = "Back up";
+"SET_AS_PRIMARY_DOMAIN" = "Set as primary domain";

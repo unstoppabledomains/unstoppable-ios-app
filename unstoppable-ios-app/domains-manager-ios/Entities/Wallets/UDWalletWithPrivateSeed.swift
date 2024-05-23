@@ -78,7 +78,7 @@ struct UDWalletWithPrivateSeed {
         }
         
         let udWallet = UDWallet.create(aliasName: aliasName,
-                                       type: type,
+                                       walletType: type,
                                        ethWallet: wrappedWallet.ethWallet,
                                        hasBeenBackedUp: hasBeenBackedUp)
         return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedWallet.privateSeed)
@@ -97,7 +97,7 @@ struct UDWalletWithPrivateSeed {
         }
         
         let udWallet = UDWallet.create(aliasName: aliasName,
-                                       type: type,
+                                       walletType: type,
                                        ethWallet: wrappedWallet.ethWallet,
                                        hasBeenBackedUp: hasBeenBackedUp)
         return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedWallet.privateSeed)
@@ -110,7 +110,7 @@ struct UDWalletWithPrivateSeed {
                                hasBeenBackedUp: Bool = false) throws -> UDWalletWithPrivateSeed {
         
         let udWallet = UDWallet.create(aliasName: aliasName,
-                                       type: type,
+                                       walletType: type,
                                        ethWallet: wrappedEthereumWallet.ethWallet,
                                        hasBeenBackedUp: hasBeenBackedUp)
         return UDWalletWithPrivateSeed(udWallet: udWallet, privateSeed: wrappedEthereumWallet.privateSeed)

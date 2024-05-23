@@ -880,15 +880,21 @@ extension Endpoint {
 
 // MARK: - Open methods
 extension Endpoint {
-    static func getCryptoPortfolio(for wallet: String) -> Endpoint {
+    static func getCryptoPortfolio(for wallet: String, accessToken: String?) -> Endpoint {
         let queryItems: [URLQueryItem] = [.init(name: "walletFields", value: "native,token"),
                                           .init(name: "forceRefresh", value: String(Int(Date().timeIntervalSince1970)))]
+        let headers: [String: String]
+        if let accessToken {
+            headers = NetworkBearerAuthorisationHeaderBuilderImpl.instance.buildAuthBearerHeader(token: accessToken)
+        } else {
+            headers = NetworkService.profilesAPIHeader
+        }
         return Endpoint(
             host: NetworkConfig.baseAPIHost,
             path: "/profile/user/\(wallet)/wallets",
             queryItems: queryItems,
             body: "",
-            headers: NetworkService.profilesAPIHeader
+            headers: headers
         )
     }
     

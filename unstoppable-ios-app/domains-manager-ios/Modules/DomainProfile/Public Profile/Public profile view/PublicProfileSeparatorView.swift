@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct PublicProfileSeparatorView: View {
+    
+    var verticalPadding: CGFloat = 8
+    
     var body: some View {
         LineView(direction: .horizontal, dashed: true)
             .foregroundColor(.white)
             .opacity(0.08)
-            .padding(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+            .padding(.vertical, verticalPadding)
     }
 }
 

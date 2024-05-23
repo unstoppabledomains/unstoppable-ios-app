@@ -30,12 +30,8 @@ final class OnboardingCreateWalletPresenter: BaseCreateWalletPresenter {
     }
     
     override func walletCreated(_ wallet: UDWallet) {
-        onboardingFlowManager?.modifyOnboardingData() { $0.wallets = [wallet] }
-        onboardingFlowManager?.setNewUserOnboardingSubFlow(.create)
-        if case .sameUserWithoutWallets = onboardingFlowManager?.onboardingFlow {
-            self.onboardingFlowManager?.moveToStep(.backupWallet)
-        } else {
-            self.onboardingFlowManager?.moveToStep(.protectWallet)
+        Task {
+            try? await onboardingFlowManager?.handle(action: .didGenerateLocalWallet(wallet))
         }
     }
 }

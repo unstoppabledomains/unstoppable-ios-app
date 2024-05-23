@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeProfileSelectorNavTitleView: View {
-    @Environment(\.userProfileService) private var userProfileService
+    @Environment(\.userProfilesService) private var userProfilesService
     @Environment(\.imageLoadingService) private var imageLoadingService
     @EnvironmentObject var tabRouter: HomeTabRouter
 
@@ -43,7 +43,7 @@ struct HomeProfileSelectorNavTitleView: View {
         .allowsHitTesting(isSelectable)
             .frame(maxWidth: 200)
             .onAppear(perform: loadAvatar)
-            .onReceive(userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main), perform: { selectedProfile in
+            .onReceive(userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main), perform: { selectedProfile in
                 if let selectedProfile {
                     avatar = nil
                     loadAvatar()
@@ -138,5 +138,5 @@ extension HomeProfileSelectorNavTitleView {
 }
 
 #Preview {
-    HomeProfileSelectorNavTitleView(profile: appContext.userProfileService.selectedProfile!)
+    HomeProfileSelectorNavTitleView(profile: appContext.userProfilesService.selectedProfile!)
 }

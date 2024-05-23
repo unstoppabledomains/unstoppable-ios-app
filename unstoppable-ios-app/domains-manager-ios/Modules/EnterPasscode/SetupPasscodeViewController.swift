@@ -73,6 +73,7 @@ private extension SetupPasscodeViewController {
         didCreatePasscode = true
         let passVC = SetupPasscodeViewController.instantiate(mode: .confirm(completionCallback: completionCallback, passcode: passcode))
         cNavigationController?.pushViewController(passVC, animated: true)
+        navigationController?.pushViewController(passVC, animated: true)
     }
     
     func didConfirmPasscode(_ passcode: [Character]) {
@@ -82,6 +83,8 @@ private extension SetupPasscodeViewController {
            // Find first vc who called EnterPasscode.
            let vc = nav.viewControllers.reversed().first(where: { !($0 is EnterPasscodeViewController) }) {
             nav.popToViewController(vc, animated: true)
+        } else if let nav = navigationController {
+            nav.popToViewController(nav.viewControllers[nav.viewControllers.count - 3], animated: true)
         }
     }
 }
@@ -113,4 +116,17 @@ extension SetupPasscodeViewController {
             }
         }
     }
+}
+
+import SwiftUI
+struct SetupPasscodeViewControllerWrapper: UIViewControllerRepresentable {
+    
+    let mode: SetupPasscodeViewController.Mode
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        SetupPasscodeViewController.instantiate(mode: mode)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
 }

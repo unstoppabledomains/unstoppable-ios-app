@@ -56,6 +56,9 @@ struct HomeTabView: View {
         .sheet(item: $router.sendCryptoInitialData, content: { initialData in
             SendCryptoAssetRootView(viewModel: SendCryptoAssetViewModel(initialData: initialData))
         })
+        .sheet(isPresented: $router.purchasingMPCWallet, content: {
+            PurchaseMPCWalletRootView()
+        })
         .sheet(item: $router.resolvingPrimaryDomainWallet, content: { presentationDetails in
             ReverseResolutionSelectionView(wallet: presentationDetails.wallet,
                                            mode: presentationDetails.mode,
@@ -66,8 +69,8 @@ struct HomeTabView: View {
             DomainProfileViewControllerWrapper(domain: presentationDetails.domain,
                                                wallet: presentationDetails.wallet,
                                                preRequestedAction: presentationDetails.preRequestedProfileAction,
-                                               sourceScreen: .domainsCollection,
-                                               dismissCallback: presentationDetails.dismissCallback)
+                                               sourceScreen: presentationDetails.sourceScreen,
+                                               tabRouter: router)
             .ignoresSafeArea()
             .pullUpHandler(router)
         })

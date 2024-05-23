@@ -13,7 +13,7 @@ import Web3PromiseKit
 
 typealias UDBigUInt = BigUInt
 
-protocol EVMCryptoSender: CryptoSenderProtocol {
+protocol EVMCryptoSender: ConcreteCryptoSenderProtocol {
     var wallet: UDWallet { get }
     var defaultSendTxGasPrice: BigUInt { get }
     
@@ -36,14 +36,14 @@ extension EVMCryptoSender {
                                                        fromAddress: self.wallet.address,
                                                        toAddress: toAddress,
                                                        chain: chain)
-        
-        guard wallet.walletState != .externalLinked else {
+        switch wallet.type {
+        case .externalLinked:
             let response = try await wallet.sendViaWalletConnectTransaction(tx: tx, chainId: chain.id)
             return response
+        default:
+            let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
+            return hash
         }
-        
-        let hash = try await JRPC_Client.instance.sendTx(transaction: tx, udWallet: self.wallet, chainIdInt: chain.id)
-        return hash
     }
     
     func computeGasFeeFrom(maxCrypto: CryptoSendingSpec,
@@ -86,7 +86,7 @@ extension EVMCryptoSender {
     }
 }
 
-struct NativeCoinCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
+struct NativeCoinCryptoSender: ConcreteCryptoSenderProtocol, EVMCryptoSender {
     let defaultSendTxGasPrice: BigUInt = 21_000
     let wallet: UDWallet
     
@@ -122,7 +122,7 @@ struct NativeCoinCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
     }
 }
 
-struct TokenCryptoSender: CryptoSenderProtocol, EVMCryptoSender {
+struct TokenCryptoSender: ConcreteCryptoSenderProtocol, EVMCryptoSender {
     let defaultSendTxGasPrice: BigUInt = 100_000
     
     let wallet: UDWallet

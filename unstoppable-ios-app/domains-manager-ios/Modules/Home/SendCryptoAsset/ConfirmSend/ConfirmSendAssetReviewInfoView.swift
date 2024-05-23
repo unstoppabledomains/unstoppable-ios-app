@@ -198,10 +198,10 @@ private extension ConfirmSendAssetReviewInfoView {
         
     }
     
-    func getBlockchainType() -> BlockchainType {
+    func getBlockchainType() -> BlockchainType? {
         switch asset {
         case .token(let dataModel):
-            dataModel.token.blockchainType ?? .Matic
+            dataModel.token.blockchainType
         case .domain(let domain):
             domain.blockchain ?? .Matic
         }
@@ -220,14 +220,19 @@ private extension ConfirmSendAssetReviewInfoView {
     }
     
     func getTransactionSpeedActions() -> [InfoActionDescription] {
-        SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
-            InfoActionDescription(title: txSpeed.title,
-                                  subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
-                                  iconName: txSpeed.iconName,
-                                  tintColor: tintColorFor(txSpeed: txSpeed),
-                                  analyticName: .selectTransactionSpeed,
-                                  analyticParameters: [.transactionSpeed: txSpeed.rawValue],
-                                  action: { didSelectTransactionSpeed(txSpeed) })
+        switch sourceWallet.udWallet.type {
+        case .mpc:
+            return  []
+        default:
+            return SendCryptoAsset.TransactionSpeed.allCases.map { txSpeed in
+                InfoActionDescription(title: txSpeed.title,
+                                      subtitle: txSpeedSubtitleFor(txSpeed: txSpeed),
+                                      iconName: txSpeed.iconName,
+                                      tintColor: tintColorFor(txSpeed: txSpeed),
+                                      analyticName: .selectTransactionSpeed,
+                                      analyticParameters: [.transactionSpeed: txSpeed.rawValue],
+                                      action: { didSelectTransactionSpeed(txSpeed) })
+            }
         }
     }
     
@@ -275,7 +280,7 @@ private extension ConfirmSendAssetReviewInfoView {
          getGasFeeSection(gasUsd: gasUsd,
                           gasFee: gasFee,
                           token: token),
-         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())].compactMap({ $0 })
     }
     
     func getGasFeeErrorMessage(gasFee: Double?,
@@ -301,14 +306,17 @@ private extension ConfirmSendAssetReviewInfoView {
     
     func getFromWalletInfoSection() -> SectionType {
         .infoValue(.init(title: String.Constants.from.localized(),
-                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.listIcon,
+                         icon: fromUserAvatar ?? sourceWallet.displayInfo.source.displayIcon,
                          value: sourceWallet.domainOrDisplayName))
     }
     
-    func getChainInfoSection() -> SectionType {
-        .infoValue(.init(title: String.Constants.chain.localized(),
-                         icon: chainIcon,
-                         value: getBlockchainType().fullName))
+    func getChainInfoSection() -> SectionType? {
+        if let blockchain = getBlockchainType() {
+            return .infoValue(.init(title: String.Constants.chain.localized(),
+                                    icon: chainIcon,
+                                    value: blockchain.fullName))
+        }
+        return nil
     }
     
     func gasUsdTitleFor(gasUsd: Double?) -> String {
@@ -321,7 +329,7 @@ private extension ConfirmSendAssetReviewInfoView {
     func getSectionsForDomain() -> [SectionType] {
         [getFromWalletInfoSection(),
          getChainInfoSection(),
-         .info(String.Constants.sendCryptoReviewPromptMessage.localized())]
+         .info(String.Constants.sendCryptoReviewPromptMessage.localized())].compactMap { $0 }
     }
     
     var chainIcon: UIImage {

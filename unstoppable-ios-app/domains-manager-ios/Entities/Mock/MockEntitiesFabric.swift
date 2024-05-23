@@ -38,15 +38,21 @@ extension MockEntitiesFabric {
         
         @MainActor
         static func createHomeTabRouterUsing(profile: UserProfile,
-                                             userProfileService: UserProfileServiceProtocol = appContext.userProfileService) -> HomeTabRouter {
+                                             userProfilesService: UserProfilesServiceProtocol = appContext.userProfilesService) -> HomeTabRouter {
             HomeTabRouter(profile: profile,
-                          userProfileService: userProfileService)
+                          userProfilesService: userProfilesService)
         }
     }
     
     enum Profile {
         static func createWebAccountProfile() -> UserProfile {
             .webAccount(.init(email: "oleg@unstoppabledomains.com"))
+        }
+        
+        static func createExternalWalletProfile(hasRRDomain: Bool = true) -> UserProfile {
+            let wallet = Wallet.mockExternalWallet(hasRRDomain: hasRRDomain)
+            
+            return .wallet(wallet)
         }
         
         static func createWalletProfile(using wallet: WalletEntity? = nil) -> UserProfile {
@@ -57,89 +63,151 @@ extension MockEntitiesFabric {
     }
     
     enum Wallet {
-        static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
-            WalletWithInfo.mock.map {
-                createFrom(walletWithInfo: $0,
-                           hasRRDomain: hasRRDomain)
-                
-            }
+        private static let mockUDWallets: [UDWallet] = [UDWallet.createUnverified(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+                                                                                   address: "0xc4a748796805dfa42cafe0901ec182936584cc6e")!,
+                                                         UDWallet.createUnverified(aliasName: "Custom name",
+                                                                                   address: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")!,
+                                                         .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                                               address: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                                               type: .generatedLocally),
+                                                         .init(aliasName: "UD",
+                                                               address: "0xCeBF5440FE9C85e037A80fFB4dF0F6a9BAcb3d01",
+                                                               type: .generatedLocally)]
+        
+        static func mockExternalWallet(hasRRDomain: Bool = true) -> WalletEntity {
+            let address = "0x84585360d34f6c72BE438fdde7147D27d2A85f9f"
+            let externalWallet = WCWalletsProvider.WalletRecord(id: ExternalWalletMake.MetaMask.rawValue,
+                                                                name: "Metamask",
+                                                                homepage: nil,
+                                                                appStoreLink: nil,
+                                                                mobile: .init(native: "", universal: ""),
+                                                                isV2Compatible: true)
+            let udWallet = UDWallet.createLinked(aliasName: address,
+                                               address: address,
+                                               externalWallet: externalWallet)
+            let wallet = createFrom(udWallet: udWallet, hasRRDomain: hasRRDomain)
+            return wallet
         }
         
-        static func createFrom(walletWithInfo: WalletWithInfo,
-                               hasRRDomain: Bool = true) -> WalletEntity {
-            let address = walletWithInfo.address
+        static func mockMPC(hasRRDomain: Bool = true) -> WalletEntity {
+            let address = "0x12313123"
             let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
-            let numOfNFTs = Int(arc4random_uniform(10) + 1)
-            let nfts = (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
-            let portfolioRecords: [WalletPortfolioRecord] = [.init(wallet: address, date: Date().adding(days: -10), value: 6.8),
-                                                             .init(wallet: address, date: Date().adding(days: -9), value: 5.2),
-                                                             .init(wallet: address, date: Date().adding(days: -8), value: 22.9),
-                                                             .init(wallet: address, date: Date().adding(days: -7), value: 22.2),
-                                                             .init(wallet: address, date: Date().adding(days: -6), value: 27.9),
-                                                             .init(wallet: address, date: Date().adding(days: -5), value: 23.2),
-                                                             .init(wallet: address, date: Date().adding(days: -4), value: 37.2),
-                                                             .init(wallet: address, date: Date().adding(days: -3), value: 32.9),
-                                                             .init(wallet: address, date: Date().adding(days: -2), value: 35.2),
-                                                             .init(wallet: address, date: Date().adding(days: -1), value: 32.9),
-                                                             .init(wallet: address, date: Date(), value: 39.2)]
-            
-            
-            let balance: [WalletTokenPortfolio] = [.init(address: address,
-                                                         symbol: "ETH",
-                                                         gasCurrency: "ETH",
-                                                         name: "Ethereum",
-                                                         type: "native",
-                                                         firstTx: nil, lastTx: nil,
-                                                         blockchainScanUrl: "https://etherscan.io/address/\(address)",
-                                                         balanceAmt: 1,
-                                                         tokens: nil,
-                                                         //                                                         nfts: nil,
-                                                         value: .init(marketUsd: "$2,206.70",
-                                                                      marketUsdAmt: 2206.7,
-                                                                      walletUsd: "$2,206.70",
-                                                                      walletUsdAmt: 2206.7,
-                                                                      marketPctChange24Hr: 0.62),
-                                                         totalValueUsdAmt: 2206.7,
-                                                         totalValueUsd: "$2,206.70",
-                                                         logoUrl: nil),
-                                                   .init(address: address,
-                                                         symbol: "MATIC", 
-                                                         gasCurrency: "MATIC",
-                                                         name: "Polygon",
-                                                         type: "native",
-                                                         firstTx: nil, lastTx: nil,
-                                                         blockchainScanUrl: "https://polygonscan.com/address/\(address)",
-                                                         balanceAmt: 1,
-                                                         tokens: [.init(type: "erc20",
-                                                                        name: "(PoS) Tether USD",
-                                                                        address: address,
-                                                                        symbol: "USDT", 
-                                                                        gasCurrency: "MATIC",
-                                                                        logoUrl: nil,
-                                                                        balanceAmt: 9.2,
-                                                                        value: .init(marketUsd: "$1",
-                                                                                     marketUsdAmt: 1,
-                                                                                     walletUsd: "$9.2",
-                                                                                     walletUsdAmt: 9.2,
-                                                                                     marketPctChange24Hr: -0.18))],
-                                                         //                                                         nfts: nil,
-                                                         value: .init(marketUsd: "$0.71",
-                                                                      marketUsdAmt: 0.71,
-                                                                      walletUsd: "$0.71",
-                                                                      walletUsdAmt: 0.71,
-                                                                      marketPctChange24Hr: 0.02),
-                                                         totalValueUsdAmt: 0.71,
-                                                         totalValueUsd: "$0.71",
-                                                         logoUrl: nil)]
-            
-            return WalletEntity(udWallet: walletWithInfo.wallet,
-                                displayInfo: walletWithInfo.displayInfo!,
+            let udWallet = UDWallet.createMPC(address: address, 
+                                              mpcMetadata: .init(provider: .fireblocksUD,
+                                                                                   metadata: .init()))
+            let displayInfo = WalletDisplayInfo(wallet: udWallet,
+                                                domainsCount: 0, udDomainsCount: 0)!
+            let portfolioRecords = getPortfolioRecords(address: address)
+            let nfts = getNFTs()
+            let balance = getBalance(address: address)
+
+            return WalletEntity(udWallet: udWallet,
+                                displayInfo: displayInfo,
                                 domains: domains,
                                 nfts: nfts,
                                 balance: balance,
                                 rrDomain: hasRRDomain ? domains.randomElement() : nil,
                                 portfolioRecords: portfolioRecords)
         }
+        
+        static func mockEntities(hasRRDomain: Bool = true) -> [WalletEntity] {
+            mockUDWallets.map {
+                createFrom(udWallet: $0,
+                           hasRRDomain: hasRRDomain)
+                
+            }
+        }
+   
+        static func createFrom(udWallet: UDWallet,
+                               hasRRDomain: Bool = true) -> WalletEntity {
+            let displayInfo = WalletDisplayInfo(wallet: udWallet,
+                                                domainsCount: Int(arc4random_uniform(3)),
+                                                udDomainsCount: Int(arc4random_uniform(3)))!
+            
+            let address = udWallet.address
+            let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
+            let nfts = getNFTs()
+            let portfolioRecords = getPortfolioRecords(address: address)
+            let balance = getBalance(address: address)
+            
+            return WalletEntity(udWallet: udWallet,
+                                displayInfo: displayInfo,
+                                domains: domains,
+                                nfts: nfts,
+                                balance: balance,
+                                rrDomain: hasRRDomain ? domains.randomElement() : nil,
+                                portfolioRecords: portfolioRecords)
+        }
+        
+        private static func getBalance(address: String) -> [WalletTokenPortfolio] {
+            [.init(address: address,
+                   symbol: "ETH",
+                   gasCurrency: "ETH",
+                   name: "Ethereum",
+                   type: "native",
+                   firstTx: nil, lastTx: nil,
+                   blockchainScanUrl: "https://etherscan.io/address/\(address)",
+                   balanceAmt: 1,
+                   tokens: nil,
+                   //                                                         nfts: nil,
+                   value: .init(marketUsd: "$2,206.70",
+                                marketUsdAmt: 2206.7,
+                                walletUsd: "$2,206.70",
+                                walletUsdAmt: 2206.7,
+                                marketPctChange24Hr: 0.62),
+                   totalValueUsdAmt: 2206.7,
+                   totalValueUsd: "$2,206.70",
+                   logoUrl: nil),
+             .init(address: address,
+                   symbol: "MATIC",
+                   gasCurrency: "MATIC",
+                   name: "Polygon",
+                   type: "native",
+                   firstTx: nil, lastTx: nil,
+                   blockchainScanUrl: "https://polygonscan.com/address/\(address)",
+                   balanceAmt: 1,
+                   tokens: [.init(type: "erc20",
+                                  name: "(PoS) Tether USD",
+                                  address: address,
+                                  symbol: "USDT",
+                                  gasCurrency: "MATIC",
+                                  logoUrl: nil,
+                                  balanceAmt: 9.2,
+                                  value: .init(marketUsd: "$1",
+                                               marketUsdAmt: 1,
+                                               walletUsd: "$9.2",
+                                               walletUsdAmt: 9.2,
+                                               marketPctChange24Hr: -0.18))],
+                   //                                                         nfts: nil,
+                   value: .init(marketUsd: "$0.71",
+                                marketUsdAmt: 0.71,
+                                walletUsd: "$0.71",
+                                walletUsdAmt: 0.71,
+                                marketPctChange24Hr: 0.02),
+                   totalValueUsdAmt: 0.71,
+                   totalValueUsd: "$0.71",
+                   logoUrl: nil)]
+        }
+        
+        private static func getPortfolioRecords(address: String) -> [WalletPortfolioRecord] {
+            [.init(wallet: address, date: Date().adding(days: -10), value: 6.8),
+             .init(wallet: address, date: Date().adding(days: -9), value: 5.2),
+             .init(wallet: address, date: Date().adding(days: -8), value: 22.9),
+             .init(wallet: address, date: Date().adding(days: -7), value: 22.2),
+             .init(wallet: address, date: Date().adding(days: -6), value: 27.9),
+             .init(wallet: address, date: Date().adding(days: -5), value: 23.2),
+             .init(wallet: address, date: Date().adding(days: -4), value: 37.2),
+             .init(wallet: address, date: Date().adding(days: -3), value: 32.9),
+             .init(wallet: address, date: Date().adding(days: -2), value: 35.2),
+             .init(wallet: address, date: Date().adding(days: -1), value: 32.9),
+             .init(wallet: address, date: Date(), value: 39.2)]
+        }
+        
+        private static func getNFTs() -> [NFTDisplayInfo] {
+            let numOfNFTs = Int(arc4random_uniform(10) + 1)
+            return (0...numOfNFTs).map { _ in  NFTs.mockDisplayInfo() }
+        }
+        
     }
   
     enum NFTs {
@@ -227,7 +295,8 @@ extension MockEntitiesFabric {
         }
         
         static func mockUSDTToken(parent: BlockchainType = .Ethereum) -> BalanceTokenUIDescription {
-            BalanceTokenUIDescription(chain: "ETH",
+            BalanceTokenUIDescription(address: "0x000",
+                                      chain: "ETH",
                                       symbol: "USDT",
                                       name: "USDT",
                                       balance: 10,
@@ -239,7 +308,8 @@ extension MockEntitiesFabric {
         }
         
         static func mockEthToken() -> BalanceTokenUIDescription {
-            BalanceTokenUIDescription(chain: "ETH",
+            BalanceTokenUIDescription(address:  "0x000",
+                                      chain: "ETH",
                                       symbol: "ETH",
                                       name: "Ethereum",
                                       balance: 1,
@@ -248,12 +318,30 @@ extension MockEntitiesFabric {
         }
         
         static func mockMaticToken() -> BalanceTokenUIDescription {
-            BalanceTokenUIDescription(chain: "MATIC",
+            BalanceTokenUIDescription(address:  "0x000",
+                                      chain: "MATIC",
                                       symbol: "MATIC",
                                       name: "Polygon",
                                       balance: 1,
                                       balanceUsd: 1,
                                       marketUsd: 1.02)
         }
+    }
+    
+    enum CoinRecords {
+        static func mockRecords() -> [CoinRecord] {
+            [.init(expandedTicker: "crypto.MATIC.version.MATIC.address", regexPattern: nil, isDeprecated: false)!]
+        }
+    }
+}
+
+fileprivate extension UDWallet {
+    init(aliasName: String,
+         address: String,
+         type: WalletType,
+         hasBeenBackedUp: Bool = false) {
+        self.aliasName = aliasName
+        self.type = type
+        self.hasBeenBackedUp = hasBeenBackedUp
     }
 }

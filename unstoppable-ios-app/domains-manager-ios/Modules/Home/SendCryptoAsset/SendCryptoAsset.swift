@@ -64,7 +64,12 @@ extension SendCryptoAsset {
                         in currencies: [CoinRecord]) -> String? {
             let coinRecords = currencies.filter { $0.ticker == token.symbol }
             let chain = resolveCoinRecordChainIdentifier(token.chain)
-            guard let tokenRecord = coinRecords.first(where: { $0.version == nil || $0.version == chain }) else { return nil }
+            guard let tokenRecord = coinRecords.first(where: { record in
+                if record.version == nil {
+                    return token.chain == token.symbol
+                }
+                return record.version == chain    
+            }) else { return nil }
             
             let recordsIdentifier = tokenRecord.expandedTicker
             return self.records[recordsIdentifier]
@@ -72,13 +77,12 @@ extension SendCryptoAsset {
         
         private func resolveCoinRecordChainIdentifier(_ chain: String) -> String {
             switch chain {
-            case "ETH":
+            case BlockchainType.Ethereum.rawValue:
                 return "ERC20"
             default:
                 return chain
             }
         }
-
         
         init(wallet: WalletEntity) async throws {
             self.walletAddress = wallet.address

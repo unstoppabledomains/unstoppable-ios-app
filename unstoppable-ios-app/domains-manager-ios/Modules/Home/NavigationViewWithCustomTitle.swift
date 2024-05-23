@@ -11,6 +11,8 @@ typealias EmptyNavigationPath = Array<Int>
 
 struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
     
+    @Environment(\.dismiss) var dismiss
+    
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
     @Binding var path: Data
@@ -33,6 +35,11 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
         })
         .onAppear(perform: {
             navigationStateProvider(navigationState)
+        })
+        .onChange(of: navigationState.dismiss, perform: { newValue in
+            if newValue {
+                self.dismiss()
+            }
         })
         .presentationStyleChecker(viewPresentationStyle: $viewPresentationStyle)
     }
@@ -70,6 +77,7 @@ final class NavigationStateManager: ObservableObject, Hashable {
     
     @Published var isTitleVisible: Bool = false
     @Published var yOffset: CGFloat = 0
+    @Published var dismiss: Bool = false
     @Published private(set) var customTitle: (() -> any View)?
     private(set) var customViewID: String?
     

@@ -18,10 +18,14 @@ protocol HomeWalletActionItem: Identifiable, Hashable {
     var title: String { get }
     var icon: Image { get }
     var isDimmed: Bool { get }
+    var tint: Color { get }
     var analyticButton: Analytics.Button { get }
     var subActions: [SubAction] { get }
 }
 
+extension HomeWalletActionItem {
+    var tint: Color { .foregroundAccent }
+}
 
 protocol HomeWalletSubActionItem: RawRepresentable, CaseIterable, Hashable where RawValue == String {
     var title: String { get }
@@ -109,7 +113,7 @@ extension HomeWalletView {
             case .receive, .profile, .buy, .send:
                 return []
             case .more:
-                return WalletSubAction.allCases
+                return [.copyWalletAddress, .connectedApps]
             }
         }
         
@@ -142,6 +146,7 @@ extension HomeWalletView {
         
         case copyWalletAddress
         case connectedApps
+        case buyMPC
         
         var title: String {
             switch self {
@@ -149,6 +154,8 @@ extension HomeWalletView {
                 return String.Constants.copyWalletAddress.localized()
             case .connectedApps:
                 return String.Constants.connectedAppsTitle.localized()
+            case .buyMPC:
+                return "Buy MPC"
             }
         }
         
@@ -158,6 +165,8 @@ extension HomeWalletView {
                 return Image.systemDocOnDoc
             case .connectedApps:
                 return Image.systemAppBadgeCheckmark
+            case .buyMPC:
+                return .wallet3Icon
             }
         }
         
@@ -167,6 +176,8 @@ extension HomeWalletView {
                 return .copyWalletAddress
             case .connectedApps:
                 return .connectedApps
+            case .buyMPC:
+                return .unblock
             }
         }
     }
@@ -250,11 +261,13 @@ extension HomeWalletView {
 
 extension HomeWalletView {
     struct NotMatchedRecordsDescription: Hashable, Identifiable {
-        var id: String { chain.rawValue }
+        var id: String { chain }
         
-        let chain: BlockchainType
+        let chain: String
+        let fullName: String
         let numberOfRecordsNotSetToChain: Int
         let ownerWallet: String
+        
     }
 }
 

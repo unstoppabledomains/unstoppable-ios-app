@@ -296,7 +296,7 @@ extension PublicProfileView {
         private func setupViewingDomain(requiredWallet: WalletEntity?) {
             if let requiredWallet {
                 viewingDomain = requiredWallet.rrDomain
-            } else if case .wallet(let wallet) = appContext.userProfileService.selectedProfile {
+            } else if case .wallet(let wallet) = appContext.userProfilesService.selectedProfile {
                 viewingDomain = wallet.rrDomain
             }
         }

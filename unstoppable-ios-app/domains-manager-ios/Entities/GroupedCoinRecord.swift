@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct GroupedCoinRecord: Hashable {
+struct GroupedCoinRecord: Hashable, Identifiable {
+    
+    var id: String { coin.ticker }
     
     var coins: [CoinRecord]
     var coin: CoinRecord { coins[0] }

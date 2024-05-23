@@ -22,7 +22,7 @@ extension UDWallet {
                 self = .privateKey
             case .defaultGeneratedLocally, .generatedLocally, .mnemonicsEntered:
                 self = .recoveryPhrase
-            case .importedUnverified:
+            case .importedUnverified, .mpc, .externalLinked:
                 return nil
             }
         }

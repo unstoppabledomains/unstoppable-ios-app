@@ -304,7 +304,7 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     @discardableResult
     private func checkIfBadSignatureErrorAndRevokeSignature(_ error: Error, for domain: DomainItem) -> Bool {
         if let detectedError = error as? NetworkLayerError,
-           case let .badResponseOrStatusCode(code, _) = detectedError,
+           case let .badResponseOrStatusCode(code, _, _) = detectedError,
            code == 403 {
             appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
             return true
@@ -401,7 +401,6 @@ extension NetworkService {
 
 // MARK: - WalletsDataNetworkServiceProtocol
 extension NetworkService: WalletsDataNetworkServiceProtocol {
-  
     func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
         let profile = try await fetchPublicProfile(for: domainName,
                                      fields: [.records])
@@ -410,10 +409,19 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
     }
     
     func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
-        let endpoint = Endpoint.getCryptoPortfolio(for: wallet)
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet, accessToken: nil)
+        return try await fetchCryptoPortfolioUsing(endpoint: endpoint)
+    }
+    
+    func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet, accessToken: accessToken)
+        return try await fetchCryptoPortfolioUsing(endpoint: endpoint)
+    }
+    
+    private func fetchCryptoPortfolioUsing(endpoint: Endpoint) async throws -> [WalletTokenPortfolio] {
         let response: [WalletTokenPortfolio] = try await fetchDecodableDataFor(endpoint: endpoint,
-                                                                          method: .get,
-                                                                          dateDecodingStrategy: .defaultDateDecodingStrategy())
+                                                                               method: .get,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
         return response
     }
 }

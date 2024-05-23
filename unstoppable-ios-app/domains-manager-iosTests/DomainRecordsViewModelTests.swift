@@ -445,4 +445,43 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(dataSignHashOpenSea.hexString, result)
         XCTAssertEqual(signed!.hexString.dropLast(2), "2788ac62d663777f8c82d7fc76cca0c2e50dbf7297dadff04c811b29db859c5849afaf4850adb1803c5a34dcab523eb10534e0967ac83c176c36e755a087c1241c".dropLast(2))
     }
+    
+//    func testSignHashOpenSea() {
+//        let cow = "cow".data(using: .utf8)!
+//        let privateKeyData = Crypto.hash(cow)
+//
+//        let dataSignHashOpenSea = typedDataOpenSea.signHash
+//        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHashOpenSea, with: privateKeyData)
+//        let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
+//        XCTAssertEqual(dataSignHashOpenSea.hexString, result)
+//        XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
+//    }
+    
+    
+    func testMPCMesessageConversionHexNo0x() {
+        let incoming = "8f6b7886409e1d2f3c24e2efc731a115"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.outcomingString, "8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.utf8)
+    }
+    
+    func testMPCMesessageConversionHexWith0x() {
+        let incoming = "0x8f6b7886409e1d2f3c24e2efc731a115"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "0x8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.outcomingString, "0x8f6b7886409e1d2f3c24e2efc731a115")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.hex)
+    }
+    
+    func testMPCMesessageConversionNoHexNo0x() {
+        let incoming = "abyrvalg"
+        let result = incoming.convertToMPCMessage
+        
+        XCTAssertEqual(result.incomingString, "abyrvalg")
+        XCTAssertEqual(result.outcomingString, "abyrvalg")
+        XCTAssertEqual(result.type, MPCMessage.MPCMessageType.utf8)
+    }
 }

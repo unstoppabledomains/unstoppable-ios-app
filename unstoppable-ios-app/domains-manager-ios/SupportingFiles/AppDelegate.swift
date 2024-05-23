@@ -32,12 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
         
-        Debugger.setAllowedTopicsSet(.debugDefault)
+        Debugger.setAllowedTopicsSet(.debugNetwork)
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
-//        Task {
-//            await appContext.imageLoadingService.clearStoredImages()
-//        }
+//        clearImagesCache()
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
@@ -103,29 +101,8 @@ private extension AppDelegate {
     }
     
     func configureNavBar() {
-        let backButtonAppearance = UIBarButtonItemAppearance(style: .plain)
-        backButtonAppearance.focused.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.disabled.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.highlighted.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
-        
-        let image =  BaseViewController.NavBackIconStyle.arrow.icon
-        let backButtonBackgroundImage = image.withTintColor(.foregroundDefault, renderingMode: .alwaysOriginal).withAlignmentRectInsets(.init(top: 0, left: -8, bottom: 0, right: 0))
-        
-        let navigationBarStandardAppearance = UINavigationBarAppearance()
-        navigationBarStandardAppearance.configureWithTransparentBackground()
-        navigationBarStandardAppearance.backButtonAppearance = backButtonAppearance
-        navigationBarStandardAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
-        navigationBarStandardAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                              transitionMaskImage: backButtonBackgroundImage)
-        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarStandardAppearance
-        
-        let navigationBarScrollingEdgeAppearance = UINavigationBarAppearance()
-        navigationBarScrollingEdgeAppearance.backButtonAppearance = backButtonAppearance
-        navigationBarScrollingEdgeAppearance.titleTextAttributes = [.foregroundColor: UIColor.foregroundDefault]
-        navigationBarScrollingEdgeAppearance.setBackIndicatorImage(backButtonBackgroundImage,
-                                                                   transitionMaskImage: backButtonBackgroundImage)
-        UINavigationBar.appearance().standardAppearance = navigationBarScrollingEdgeAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: true)
+        UINavigationBar.appearance().standardAppearance = UINavigationBarAppearance.udAppearanceWith(isTransparent: false)
     }
     
     func setupAppearance() {
@@ -134,27 +111,47 @@ private extension AppDelegate {
     
     func setVersionAndBuildNumber() {
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        setFlagIfUserUpgradedToWalletVersion(currentVersion: version)
+        if let (oldVersion, newVersion) = getAppVersions(currentVersion: version) {
+            setFlagIfUserUpgradedToWalletVersion(oldVersion: oldVersion, newVersion: newVersion)
+            clearImagesCacheIfNeeded(oldVersion: oldVersion, newVersion: newVersion)
+        }
         
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         UserDefaults.buildVersion = "Build \(version) (\(build)) \(Env.schemeDescription)"
     }
     
-    func setFlagIfUserUpgradedToWalletVersion(currentVersion: String) {
+    func getAppVersions(currentVersion: String) -> (oldVersion: Version, newVersion: Version)? {
         let oldBuildVersion = UserDefaults.buildVersion
-        guard !oldBuildVersion.isEmpty else { return }
+        guard !oldBuildVersion.isEmpty else { return nil }
         
         let components = oldBuildVersion.components(separatedBy: " ")
         
         guard components.count > 2,
               let oldVersion = try? Version.parse(versionString: components[1]),
               let newVersion = try? Version.parse(versionString: currentVersion) else {
-            return
+            return nil
         }
-
+        
+        return (oldVersion, newVersion)
+    }
+    
+    func setFlagIfUserUpgradedToWalletVersion(oldVersion: Version, newVersion: Version) {
         if oldVersion.major <= 4,
            newVersion.major == 5 {
             UserDefaults.didUpdateToWalletVersion = true
+        }
+    }
+    
+    func clearImagesCacheIfNeeded(oldVersion: Version, newVersion: Version) {
+        if oldVersion.major < 5 ||
+            (oldVersion.major == 5 && oldVersion.minor < 4) {
+            clearImagesCache()
+        }
+    }
+    
+    func clearImagesCache() {
+        Task {
+            await appContext.imageLoadingService.clearStoredImages()
         }
     }
 

@@ -50,6 +50,6 @@ struct NumberPadInputInterpreter {
     }
     
     mutating func setInput(_ input: Double) {
-        self.input = String(input)
+        self.input = input.formatted(toMaxNumberAfterComa: 50, minNumberAfterComa: 0) 
     }
 }

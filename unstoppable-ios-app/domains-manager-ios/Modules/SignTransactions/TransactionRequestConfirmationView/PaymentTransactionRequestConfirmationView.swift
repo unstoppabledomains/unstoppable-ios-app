@@ -76,8 +76,9 @@ private extension PaymentTransactionRequestConfirmationView {
         let blockchainType: BlockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum
         guard let balance = wallet.balanceFor(blockchainType: blockchainType) else { return }
         
+        let tokenDescription = BalanceTokenUIDescription(walletBalance: balance)
         costView?.setWith(cost: configuration.cost,
-                          exchangeRate: balance.value.marketUsdAmt ?? 0,
+                          exchangeRate: tokenDescription.marketUsd ?? 0,
                           blockchainType: blockchainType,
                           pullUp: pullUp)
 
@@ -85,9 +86,9 @@ private extension PaymentTransactionRequestConfirmationView {
         let quantity = cost.quantity
         let gasFee = cost.gasPrice
         let price = Double(quantity + gasFee).ethValue
-        let isEnoughMoney = balance.balanceAmt >= price
+        let isEnoughMoney = tokenDescription.balance >= price
         
-        balanceValueLabel?.setAttributedTextWith(text: balance.value.walletUsd,
+        balanceValueLabel?.setAttributedTextWith(text: String(tokenDescription.balanceUsd),
                                                  font: .currentFont(withSize: 16, weight: .medium),
                                                  textColor: isEnoughMoney ? .foregroundDefault : .foregroundWarning,
                                                  alignment: .right)

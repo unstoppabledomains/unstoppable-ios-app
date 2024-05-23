@@ -92,7 +92,7 @@ struct NetworkService {
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
         let data = try await makeAPIRequest(apiRequest)
-        
+        logMPC("Raw Response: \(try? JSONSerialization.jsonObject(with: data))")
         if let object = T.objectFromData(data,
                                          using: keyDecodingStrategy,
                                          dateDecodingStrategy: dateDecodingStrategy) {
@@ -102,6 +102,7 @@ struct NetworkService {
         }
     }
     
+    @discardableResult
     func makeAPIRequest(_ apiRequest: APIRequest) async throws -> Data {
         try await fetchData(for: apiRequest.url,
                             body: apiRequest.body,
@@ -170,18 +171,19 @@ struct NetworkService {
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             guard let response = response as? HTTPURLResponse else {
-                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")
+                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response", data: data)
             }
             
             if response.statusCode < 300 {
                 return data
             } else {
+                logMPC("Did fail with message: \(String(data: data, encoding: .utf8))")
                 if response.statusCode == Constants.backEndThrottleErrorCode {
                     Debugger.printWarning("Request failed due to backend throttling issue")
                     throw NetworkLayerError.backendThrottle
                 }
                 let message = extractErrorMessage(from: data)
-                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")
+                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)", data: data)
             }
         } catch {
             let error = error as NSError
@@ -311,30 +313,6 @@ extension NetworkService {
     struct JRPCRequestInfo {
         let name: String
         let paramsBuilder: ()->String
-    }
-    
-    enum JRPCError: Error {
-        case failedBuildUrl
-        case gasRequiredExceedsAllowance
-        case genericError(String)
-        case failedGetStatus
-        case failedParseStatusPrices
-        case failedFetchInfuraGasPrices
-        case failedFetchNonce
-        case failedParseInfuraPrices
-        case failedEncodeTxParameters
-        case failedFetchGas
-        case lowAllowance
-        case failedFetchGasLimit
-        case unknownChain
-        
-        init(message: String) {
-            if message.lowercased().starts(with: "gas required exceeds allowance") {
-                self = .gasRequiredExceedsAllowance
-            } else {
-                self = .genericError(message)
-            }
-        }
     }
     
     func doubleAttempt<T>(fetchingAction: (() async throws -> T) ) async throws -> T {
@@ -503,7 +481,7 @@ extension NetworkService {
                                                             method: .get)
             let response = try JSONDecoder().decode(GlobalRR.self, from: data)
             return response
-        } catch NetworkLayerError.badResponseOrStatusCode(let code, _) where code == 404 { // 404 means no RR domain or ENS domain
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
             return nil
         } catch {
             throw error
@@ -563,7 +541,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     }
     
     case creatingURLFailed
-    case badResponseOrStatusCode(code: Int, message: String?)
+    case badResponseOrStatusCode(code: Int, message: String?, data: Data)
     case parsingTxsError
     case responseFailedToParse
     case parsingDomainsError
@@ -603,7 +581,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     var rawValue: String {
         switch self {
         case .creatingURLFailed: return "creatingURLFailed"
-        case .badResponseOrStatusCode(let code, let message): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
+        case .badResponseOrStatusCode(let code, let message, _): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
         case .parsingTxsError: return "parsingTxsError"
         case .responseFailedToParse: return "responseFailedToParse"
         case .parsingDomainsError: return "Failed to get domains from server"
