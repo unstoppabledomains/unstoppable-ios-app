@@ -94,7 +94,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         case .undefined: return nil
         }
     }
-   
+    
     static func createUnverified(aliasName: String? = nil,
                                  address: HexAddress) -> UDWallet? {
         let name = aliasName == nil ? address : aliasName!
