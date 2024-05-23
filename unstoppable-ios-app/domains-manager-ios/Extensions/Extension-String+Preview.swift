@@ -1226,7 +1226,9 @@ extension String {
         static let reImportMPCWalletPromptTitle = "RE_IMPORT_MPC_WALLET_PROMPT_TITLE"
         static let reImportMPCWalletPromptSubtitle = "RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE"
         static let reImportWallet = "RE_IMPORT_WALLET"
-
+        static let removeMPCWalletPullUpTitle = "REMOVE_MPC_WALLET_PULL_UP_TITLE"
+        static let removeMPCWalletPullUpSubtitle = "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE"
+        
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"

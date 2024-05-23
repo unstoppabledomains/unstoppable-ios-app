@@ -79,6 +79,7 @@ extension UIImage {
     static let reverseResolutionArrows12 = UIImage(named: "reverseResolutionArrows12")!
     static let homeDomainInfoVisualisation = UIImage(named: "homeDomainInfoVisualisation")!
     static let trashIcon = UIImage(named: "trashIcon")!
+    static let trashFill = UIImage(named: "trashFill")!
     static let settingsIconAppearance = UIImage(named: "settingsIconAppearance")!
     static let infoIcon = UIImage(named: "settingsIconPrivacy")!
     static let arrowTopRight = UIImage(named: "arrowTopRight")!

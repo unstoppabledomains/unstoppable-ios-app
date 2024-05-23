@@ -15,7 +15,8 @@ struct ReconnectMPCWalletPromptView: View, ViewAnalyticsLogger {
     let walletAddress: String
     var analyticsName: Analytics.ViewName { .reconnectMPCWalletPrompt }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet : walletAddress] }
-    
+    @State private var pullUp: ViewPullUpConfigurationType?
+
     var body: some View {
         VStack {
             headerView()
@@ -25,6 +26,7 @@ struct ReconnectMPCWalletPromptView: View, ViewAnalyticsLogger {
         .padding()
         .background(Color.backgroundDefault)
         .trackAppearanceAnalytics(analyticsLogger: self)
+        .viewPullUp($pullUp)
     }
 }
 
@@ -101,6 +103,10 @@ private extension ReconnectMPCWalletPromptView {
     
     func removeButtonPressed() {
         logButtonPressedAnalyticEvents(button: .walletRemove)
+        pullUp = .default(.askToReconnectMPCWalletPullUp(walletAddress: walletAddressInBrackets, removeCallback: removeWalletConfirmed))
+    }
+    
+    func removeWalletConfirmed() {
         viewModel.handleAction(.removeWallet)
         close()
     }
