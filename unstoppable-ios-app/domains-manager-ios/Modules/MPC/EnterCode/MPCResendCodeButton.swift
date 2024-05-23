@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct MPCResendCodeButton: View {
+struct MPCResendCodeButton: View, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
+    @Environment(\.analyticsViewName) var analyticsName
 
     let email: String
     @State private var isRefreshingCode = false
@@ -36,7 +37,6 @@ struct MPCResendCodeButton: View {
         }
     }
     
-  
 }
 
 // MARK: - Private methods
@@ -51,6 +51,7 @@ private extension MPCResendCodeButton {
     }
     
     func haventReceivedCodeButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .resendCode)
         Task {
             isRefreshingCode = true
             do {

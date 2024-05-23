@@ -84,10 +84,14 @@ extension HomeWalletView {
                     }))
                 }
             case .buy:
-                router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
-                    self?.router.pullUp = nil
-                    self?.didSelectBuyOption(buyOption)
-                }))
+                if Constants.isBuyCryptoEnabled {
+                    router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
+                        self?.router.pullUp = nil
+                        self?.didSelectBuyOption(buyOption)
+                    }))
+                } else {
+                    didSelectBuyOption(.domains)
+                }
             case .more:
                 return
             }

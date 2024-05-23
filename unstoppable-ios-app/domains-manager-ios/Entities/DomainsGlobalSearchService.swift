@@ -8,8 +8,15 @@
 import Foundation
 
 final class DomainsGlobalSearchService {
+    
+    var shouldResolveFullWalletAddress = true
+    
     typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
     private var currentTask: SearchProfilesTask?
+    
+    init(shouldResolveFullWalletAddress: Bool = true) {
+        self.shouldResolveFullWalletAddress = shouldResolveFullWalletAddress
+    }
     
     func searchForGlobalProfilesExcludingUsers(with searchKey: String,
                                                walletsDataService: WalletsDataServiceProtocol) async throws -> [SearchDomainProfile] {
@@ -46,6 +53,8 @@ final class DomainsGlobalSearchService {
     
     private func searchForDomains(searchKey: String) async throws -> [SearchDomainProfile] {
         if searchKey.isValidAddress() {
+            guard shouldResolveFullWalletAddress else { return [] }
+            
             let wallet = searchKey
             if let domain = try? await loadGlobalDomainRRInfo(for: wallet) {
                 return [domain]

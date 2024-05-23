@@ -10,7 +10,7 @@ import SwiftUI
 final class MPCOnboardingEnterCredentialsViewController: BaseViewController, ViewWithDashesProgress {
         
 
-    override var analyticsName: Analytics.ViewName { .onboardingMPCEnterCode }
+    override var analyticsName: Analytics.ViewName { .mpcEnterCredentialsOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -42,7 +42,7 @@ private extension MPCOnboardingEnterCredentialsViewController {
     }
     
     func addChildView() {
-        let mpcView = MPCEnterCredentialsView { [weak self] credentials in
+        let mpcView = MPCEnterCredentialsView(analyticsName: .mpcEnterCredentialsOnboarding) { [weak self] credentials in
             DispatchQueue.main.async {
                 self?.didEnterCredentials(credentials)
             }

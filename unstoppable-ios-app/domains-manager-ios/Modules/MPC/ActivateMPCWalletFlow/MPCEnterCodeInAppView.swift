@@ -14,7 +14,8 @@ struct MPCEnterCodeInAppView: View {
     let email: String
 
     var body: some View {
-        MPCEnterCodeView(email: email,
+        MPCEnterCodeView(analyticsName: .mpcEnterCodeInApp,
+                         email: email,
                          enterCodeCallback: didEnterCode)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }

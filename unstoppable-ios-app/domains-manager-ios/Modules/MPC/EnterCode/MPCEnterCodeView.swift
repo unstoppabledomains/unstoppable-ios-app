@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct MPCEnterCodeView: View {
+struct MPCEnterCodeView: View, ViewAnalyticsLogger {
         
+    let analyticsName: Analytics.ViewName
     let email: String
     let enterCodeCallback: (String)->()
     @State private var input: String = ""
@@ -22,6 +23,8 @@ struct MPCEnterCodeView: View {
                 Spacer()
             }
         }
+        .passViewAnalyticsDetails(logger: self)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .scrollDisabled(true)
         .padding()
         .animation(.default, value: UUID())
@@ -74,6 +77,7 @@ private extension MPCEnterCodeView {
     }
     
     func actionButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
         enterCodeCallback(input)
     }
     
@@ -82,9 +86,11 @@ private extension MPCEnterCodeView {
         MPCResendCodeButton(email: email)
     }
 }
+
 #Preview {
     NavigationStack {
-        MPCEnterCodeView(email: "",
+        MPCEnterCodeView(analyticsName: .mpcEnterCodeOnboarding,
+                         email: "",
                          enterCodeCallback: { _ in })
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
