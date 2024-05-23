@@ -37,7 +37,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         
         init(token: WalletTokenPortfolio) {
             symbol = token.symbol
-            balance = token.balanceAmt
+            balance = token.balanceAmt ?? 0
             marketUsd = token.value.marketUsdAmt
             logoURL = URL(string: token.logoUrl ?? "")
         }
@@ -53,7 +53,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         self.chain = walletBalance.symbol
         self.symbol = walletBalance.gasCurrency
         self.name = walletBalance.name
-        self.balance = walletBalance.balanceAmt
+        self.balance = walletBalance.balanceAmt ?? 0
         self.balanceUsd = walletBalance.value.walletUsdAmt ?? 0
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
