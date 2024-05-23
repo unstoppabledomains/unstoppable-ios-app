@@ -7,14 +7,17 @@
 
 import Foundation
 
-final class MPCWalletsService {
+final class MPCWalletsService { 
     
     private var subServices = [MPCWalletProviderSubServiceProtocol]()
     
     private let udWalletsService: UDWalletsServiceProtocol
-    
-    init(udWalletsService: UDWalletsServiceProtocol) {
+    private let uiHandler: MPCWalletsUIHandler
+
+    init(udWalletsService: UDWalletsServiceProtocol,
+         uiHandler: MPCWalletsUIHandler) {
         self.udWalletsService = udWalletsService
+        self.uiHandler = uiHandler
         setup()
     }
     
@@ -28,13 +31,14 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     }
     
     func setupMPCWalletWith(code: String,
-                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
                     let subService = try getSubServiceFor(provider: .fireblocksUD)
                     
-                    for try await step in subService.setupMPCWalletWith(code: code, recoveryPhrase: recoveryPhrase) {
+                    for try await step in subService.setupMPCWalletWith(code: code,
+                                                                        credentials: credentials) {
                         continuation.yield(step)
                     }
                 } catch {
@@ -136,7 +140,8 @@ private extension MPCWalletsService {
     func createSubServiceFor(provider: MPCWalletProvider) -> MPCWalletProviderSubServiceProtocol {
         switch provider {
         case .fireblocksUD:
-            return FB_UD_MPC.MPCConnectionService(udWalletsService: udWalletsService)
+            return FB_UD_MPC.MPCConnectionService(udWalletsService: udWalletsService,
+                                                  uiHandler: uiHandler)
         }
     }
 }

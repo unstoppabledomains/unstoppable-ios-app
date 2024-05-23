@@ -13,6 +13,7 @@ protocol SceneDelegateProtocol {
     var window: MainWindow? { get }
     var sceneActivationState: UIScene.ActivationState { get }
     
+    func isAuthorizing() async -> Bool 
     func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle)
     func authorizeUserOnAppOpening() async throws
     func restartOnboarding()

@@ -9,15 +9,18 @@ import Foundation
 
 extension FB_UD_MPC {
     struct ConnectedWalletDetails {
+        let email: String
         let deviceId: String
         let tokens: AuthTokens
         let firstAccount: WalletAccountWithAssets
         let accounts: [WalletAccountWithAssets]
         
-        init(deviceId: String, 
+        init(email: String,
+             deviceId: String,
              tokens: AuthTokens,
              firstAccount: WalletAccountWithAssets,
              accounts: [WalletAccountWithAssets]) {
+            self.email = email
             self.deviceId = deviceId
             self.tokens = tokens
             self.firstAccount = firstAccount
@@ -25,6 +28,7 @@ extension FB_UD_MPC {
         }
         
         init(accountDetails: ConnectedWalletAccountsDetails, tokens: AuthTokens) {
+            self.email = accountDetails.email
             self.deviceId = accountDetails.deviceId
             self.tokens = tokens
             self.firstAccount = accountDetails.firstAccount
@@ -36,19 +40,22 @@ extension FB_UD_MPC {
         }
         
         func createWalletAccountsDetails() -> ConnectedWalletAccountsDetails {
-            ConnectedWalletAccountsDetails(deviceId: deviceId,
+            ConnectedWalletAccountsDetails(email: email,
+                                           deviceId: deviceId,
                                            firstAccount: firstAccount,
                                            accounts: accounts)
         }
     }
     
     struct ConnectedWalletAccountsDetails: Codable {
+        let email: String
         let deviceId: String
         let firstAccount: WalletAccountWithAssets
         let accounts: [WalletAccountWithAssets]
     }
     
     struct UDWalletMetadata: Codable {
+        let email: String
         let deviceId: String
     }
 }

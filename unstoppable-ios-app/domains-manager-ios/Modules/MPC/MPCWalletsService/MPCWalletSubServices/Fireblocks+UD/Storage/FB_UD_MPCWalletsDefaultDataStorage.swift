@@ -16,6 +16,7 @@ extension FB_UD_MPC {
         private let storage = SpecificStorage<[ConnectedWalletAccountsDetails]>(fileName: MPCWalletsDefaultDataStorage.FBUDMPCWalletsStorageFileName)
         
         func storeAuthTokens(_ tokens: AuthTokens, for deviceId: String) throws {
+            logMPC("\n\n\nWill store auth tokens.\nAccess token expire: \(tokens.accessToken.expirationDate).\nRefresh token expire: \(tokens.refreshToken.expirationDate).\nBootstrap token expire: \(tokens.bootstrapToken.expirationDate)\n\n\n")
             let data = try tokens.jsonDataThrowing()
             let key = getSecureStorageKeyFor(deviceId: deviceId)
             try secureStorage.setObject(data, forKey: key)

@@ -67,7 +67,6 @@ final class GeneralAppContext: AppContextProtocol {
         walletNFTsService = WalletNFTsService()
         walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
                                                               cache: InMemoryWalletTransactionsCache())
-        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService)
         
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
@@ -78,6 +77,8 @@ final class GeneralAppContext: AppContextProtocol {
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService,
+                                              uiHandler: coreAppCoordinator)
         
         // Wallets data
         walletsDataService = WalletsDataService(domainsService: udDomainsService,

@@ -15,7 +15,7 @@ struct MPCActivateWalletEnterView: View, ViewAnalyticsLogger {
     let dataType: MPCActivateWalletEnterDataType
     let email: String
     let confirmationCallback: (String)->()
-    let changeEmailCallback: ()->()
+    var changeEmailCallback: EmptyCallback? = nil
     @State private var input = ""
     
     var body: some View {
@@ -77,17 +77,19 @@ private extension MPCActivateWalletEnterView {
     func passwordSubtitleView() -> some View {
         HStack {
             subtitleTextView(email)
-            subtitleTextView("·")
-            Button {
-                UDVibration.buttonTap.vibrate()
-                dismiss()
-                changeEmailCallback()
-            } label: {
-                Text(String.Constants.change.localized())
-                    .foregroundStyle(Color.foregroundAccent)
-                    .font(.currentFont(size: 16, weight: .medium))
+            if let changeEmailCallback {
+                subtitleTextView("·")
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    dismiss()
+                    changeEmailCallback()
+                } label: {
+                    Text(String.Constants.change.localized())
+                        .foregroundStyle(Color.foregroundAccent)
+                        .font(.currentFont(size: 16, weight: .medium))
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
     }
     

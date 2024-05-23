@@ -92,7 +92,8 @@ final class AppContext: AppContextProtocol {
         
         walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
                                                               cache: InMemoryWalletTransactionsCache())
-        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService)
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService, 
+                                              uiHandler: coreAppCoordinator)
     }
 }
 
