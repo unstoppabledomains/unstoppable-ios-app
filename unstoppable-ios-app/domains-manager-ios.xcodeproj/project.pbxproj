@@ -1121,6 +1121,14 @@
 		C67B1DDD2BFEF60900C2A4DA /* ReconnectMPCWalletFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DDB2BFEF60900C2A4DA /* ReconnectMPCWalletFlow.swift */; };
 		C67B1DDF2BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DDE2BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift */; };
 		C67B1DE02BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DDE2BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift */; };
+		C67B1DE22BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE12BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift */; };
+		C67B1DE32BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE12BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift */; };
+		C67B1DE52BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE42BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift */; };
+		C67B1DE62BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE42BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift */; };
+		C67B1DE82BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE72BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift */; };
+		C67B1DE92BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DE72BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift */; };
+		C67B1DEB2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DEA2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift */; };
+		C67B1DEC2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B1DEA2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift */; };
 		C67B6D4C2AE79AB000F74B0B /* ImagesCacheStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D4B2AE79AB000F74B0B /* ImagesCacheStorage.swift */; };
 		C67B6D502AE79B5500F74B0B /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D4F2AE79B5500F74B0B /* ImageDataLoader.swift */; };
 		C67B6D532AE79BB600F74B0B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
@@ -3413,6 +3421,10 @@
 		C67B1DD72BFEF5C300C2A4DA /* ReconnectMPCWalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectMPCWalletViewModel.swift; sourceTree = "<group>"; };
 		C67B1DDB2BFEF60900C2A4DA /* ReconnectMPCWalletFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectMPCWalletFlow.swift; sourceTree = "<group>"; };
 		C67B1DDE2BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectMPCWalletPromptView.swift; sourceTree = "<group>"; };
+		C67B1DE12BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectMPCWalletFlowNavigationDestination.swift; sourceTree = "<group>"; };
+		C67B1DE42BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCredentialsReconnectView.swift; sourceTree = "<group>"; };
+		C67B1DE72BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCEnterCodeReconnectView.swift; sourceTree = "<group>"; };
+		C67B1DEA2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCActivateWalletReconnectView.swift; sourceTree = "<group>"; };
 		C67B6D4B2AE79AB000F74B0B /* ImagesCacheStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCacheStorage.swift; sourceTree = "<group>"; };
 		C67B6D4F2AE79B5500F74B0B /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
 		C67B6D542AE79E3B00F74B0B /* ImageLoadingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoadingServiceTests.swift; sourceTree = "<group>"; };
@@ -6437,15 +6449,19 @@
 			path = DomainProfileUpdatingRecordsCell;
 			sourceTree = "<group>";
 		};
-		C67B1DD62BFEF58F00C2A4DA /* Reconnect */ = {
+		C67B1DD62BFEF58F00C2A4DA /* ReconnectMPCWalletFlow */ = {
 			isa = PBXGroup;
 			children = (
 				C67B1DDB2BFEF60900C2A4DA /* ReconnectMPCWalletFlow.swift */,
 				C67B1DD72BFEF5C300C2A4DA /* ReconnectMPCWalletViewModel.swift */,
 				C67B1DD42BFEF58800C2A4DA /* ReconnectMPCWalletRootView.swift */,
+				C67B1DE12BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift */,
 				C67B1DDE2BFEF7BA00C2A4DA /* ReconnectMPCWalletPromptView.swift */,
+				C67B1DE42BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift */,
+				C67B1DE72BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift */,
+				C67B1DEA2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift */,
 			);
-			path = Reconnect;
+			path = ReconnectMPCWalletFlow;
 			sourceTree = "<group>";
 		};
 		C67B6D4A2AE79AA100F74B0B /* ImageLoadingService */ = {
@@ -7478,6 +7494,7 @@
 		C6BF801B2BA2B53F00CC4CB3 /* MPC */ = {
 			isa = PBXGroup;
 			children = (
+				C67B1DD62BFEF58F00C2A4DA /* ReconnectMPCWalletFlow */,
 				C6DEA1622BD8D1E000838215 /* ActivateMPCWalletFlow */,
 				C6952A5B2BC6648900F4B475 /* PurchaseMPCFlow */,
 				C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */,
@@ -7928,7 +7945,6 @@
 				C6DEA1662BD8D26D00838215 /* ActivateMPCWalletFlow.swift */,
 				C6DEA1632BD8D1FA00838215 /* ActivateMPCWalletViewModel.swift */,
 				C6DEA16F2BD8D3EF00838215 /* ActivateMPCWalletRootView.swift */,
-				C67B1DD62BFEF58F00C2A4DA /* Reconnect */,
 				C6DEA1692BD8D2AB00838215 /* ActivateMPCWalletFlowNavigationDestination.swift */,
 				C6DEA16C2BD8D3C500838215 /* MPCEnterCredentialsInAppView.swift */,
 				C6DEA1722BD8D68100838215 /* MPCEnterCodeInAppView.swift */,
@@ -8691,6 +8707,7 @@
 				C64BCB7B2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift in Sources */,
 				C68F15612BD614C20049BFA2 /* FireblocksProxyWalletRPCMessageHandler.swift in Sources */,
 				C630C7322BD779E800AC1662 /* OnboardingStartOptionsView.swift in Sources */,
+				C67B1DE22BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C6C837A12B5FF307000A6AF5 /* TabBarVisibleModifier.swift in Sources */,
@@ -8853,6 +8870,7 @@
 				C60982302823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6538DBC2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C6124CD129223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
+				C67B1DEB2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift in Sources */,
 				C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */,
 				C6C9DE942834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
 				3026FA2B27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
@@ -9065,6 +9083,7 @@
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AE2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
+				C67B1DE52BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift in Sources */,
 				C6B65F9B2B566B84006D1812 /* NFTDetailsView.swift in Sources */,
 				C6B65F652B550471006D1812 /* HomeWalletMoreTokensView.swift in Sources */,
 				C6C8F9582B2185F800A9834D /* KeychainKey.swift in Sources */,
@@ -9232,6 +9251,7 @@
 				3018AEAE27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
 				309194EF2582C52400D132B9 /* MobileAPIAccess.swift in Sources */,
 				C632BE442BA5978F00C95B2D /* FB_UD_FireblocksConnectorBuilder.swift in Sources */,
+				C67B1DE82BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift in Sources */,
 				C69F99202A9F1264004B1958 /* Line.swift in Sources */,
 				C630E4A62B7F4918008F3269 /* ChatView.swift in Sources */,
 				C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */,
@@ -10087,6 +10107,7 @@
 				C6D647252B1ED91F00D724AC /* PullUpViewService+Messaging.swift in Sources */,
 				C6D646952B1ED14400D724AC /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */,
 				C6960C3A2B19976E00B79E28 /* PreviewUser.swift in Sources */,
+				C67B1DE32BFF017700C2A4DA /* ReconnectMPCWalletFlowNavigationDestination.swift in Sources */,
 				C6D646A02B1ED15A00D724AC /* PublicProfilePullUpHeaderView.swift in Sources */,
 				C618087C2B19BC290032E543 /* SideInsets.swift in Sources */,
 				C6C8F84D2B217E9600A9834D /* RevealRecoveryPhrasePresenter.swift in Sources */,
@@ -10170,6 +10191,7 @@
 				C6952A5E2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift in Sources */,
 				C61808672B19BC050032E543 /* UDIconButtonView.swift in Sources */,
 				C6D647202B1ED91F00D724AC /* PullUpViewService+DomainProfile.swift in Sources */,
+				C67B1DE62BFF025700C2A4DA /* MPCEnterCredentialsReconnectView.swift in Sources */,
 				C6D645C12B1DBD3900D724AC /* CNavigationTransitioningContext.swift in Sources */,
 				C6B65F572B54E42C006D1812 /* HomeWalletTokenRowView.swift in Sources */,
 				C6C8F9972B218C4200A9834D /* DomainProfileLinkValidator.swift in Sources */,
@@ -10749,6 +10771,7 @@
 				C68A5AD32BDB7EA4003702A2 /* FB_UD_MPCOperationReadyResponse.swift in Sources */,
 				C6D645D72B1DBD4900D724AC /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C61DB10F2B95925C00CDA243 /* BalanceStringFormatter.swift in Sources */,
+				C67B1DEC2BFF079B00C2A4DA /* MPCActivateWalletReconnectView.swift in Sources */,
 				C6D645DB2B1DBD4D00D724AC /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C617FDA82B58E7BB00B93433 /* WalletsDataServiceProtocol.swift in Sources */,
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,
@@ -10836,6 +10859,7 @@
 				C61808732B19BC150032E543 /* View.swift in Sources */,
 				C6D6471E2B1ED88F00D724AC /* Date.swift in Sources */,
 				C6F433402BB25BD4000C5E46 /* ConfirmSendTokenViewsBuilderProtocol.swift in Sources */,
+				C67B1DE92BFF077000C2A4DA /* MPCEnterCodeReconnectView.swift in Sources */,
 				C6D646E62B1ED4EE00D724AC /* UserDataValidator.swift in Sources */,
 				C6C8F84F2B217E9600A9834D /* ConfirmWordsViewController.swift in Sources */,
 				C6D645AD2B1DBB6200D724AC /* ConnectedAppImageView.swift in Sources */,

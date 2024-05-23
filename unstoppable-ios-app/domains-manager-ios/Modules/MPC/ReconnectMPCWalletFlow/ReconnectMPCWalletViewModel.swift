@@ -10,13 +10,15 @@ import SwiftUI
 @MainActor
 final class ReconnectMPCWalletViewModel: ObservableObject {
     
-    let reconnectData: MPCWalletReconnectData
+    private let reconnectData: MPCWalletReconnectData
     let reconnectResultCallback: ReconnectMPCWalletFlow.FlowResultCallback
-    @Published var navPath: [ActivateMPCWalletFlow.NavigationDestination] = []
+    @Published var navPath: [ReconnectMPCWalletFlow.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
     @Published var isLoading = false
     @Published var error: Error?
     private var credentials: MPCActivateCredentials?
+    private var wallet: UDWallet { reconnectData.wallet }
+    var walletAddress: String { wallet.address }
     
     init(reconnectData: MPCWalletReconnectData,
          reconnectResultCallback: @escaping ReconnectMPCWalletFlow.FlowResultCallback) {
@@ -24,10 +26,15 @@ final class ReconnectMPCWalletViewModel: ObservableObject {
         self.reconnectResultCallback = reconnectResultCallback
     }
     
-    func handleAction(_ action: ActivateMPCWalletFlow.FlowAction) {
+    func handleAction(_ action: ReconnectMPCWalletFlow.FlowAction) {
         Task {
             do {
                 switch action {
+                case .reImportWallet:
+                    navPath.append(.enterCredentials(email: reconnectData.email))
+                case .removeWallet:
+                    appContext.udWalletsService.remove(wallet: wallet)
+                    reconnectResultCallback(.removed)
                 case .didEnterCredentials(let credentials):
                     self.credentials = credentials
                     navPath.append(.enterCode(email: credentials.email))

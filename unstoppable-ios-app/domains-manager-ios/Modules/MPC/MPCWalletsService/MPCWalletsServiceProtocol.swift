@@ -38,4 +38,5 @@ protocol MPCWalletsUIHandler {
 
 struct MPCWalletReconnectData {
     let wallet: UDWallet
+    let email: String
 }

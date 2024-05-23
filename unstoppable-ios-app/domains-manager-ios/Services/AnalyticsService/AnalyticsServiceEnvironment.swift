@@ -239,7 +239,7 @@ extension Analytics {
         case sendCryptoReceiverSelection, sendCryptoAssetSelection, sendCryptoTokenAmountInput, sendCryptoDomainTransferConfirmation, sendCryptoTokenConfirmation, sendCryptoScanQRCode
         case transferDomainSuccess, sendCryptoSuccess
         
-        case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp
+        case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
         case mpcEnterCodeOnboarding, mpcEnterCodeInApp
         case mpcActivationOnboarding, mpcActivationInApp
         case mpcActivateEnterCode, mpcActivateEnterPassword

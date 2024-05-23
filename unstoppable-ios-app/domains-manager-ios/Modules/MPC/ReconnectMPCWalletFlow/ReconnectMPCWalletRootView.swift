@@ -14,11 +14,11 @@ struct ReconnectMPCWalletRootView: View {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                ReconnectMPCWalletPromptView(walletAddress: viewModel.reconnectData.wallet.address)
+                ReconnectMPCWalletPromptView(walletAddress: viewModel.walletAddress)
                     .environmentObject(viewModel)
                     .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(for: ActivateMPCWalletFlow.NavigationDestination.self) { destination in
-                        ActivateMPCWalletFlow.LinkNavigationDestination.viewFor(navigationDestination: destination)
+                    .navigationDestination(for: ReconnectMPCWalletFlow.NavigationDestination.self) { destination in
+                        ReconnectMPCWalletFlow.LinkNavigationDestination.viewFor(navigationDestination: destination)
                             .ignoresSafeArea()
                             .environmentObject(viewModel)
                     }
@@ -56,7 +56,8 @@ private extension ReconnectMPCWalletRootView {
 }
 
 #Preview {
-    let reconnectData = MPCWalletReconnectData(wallet: MockEntitiesFabric.Wallet.mockEntities()[0].udWallet)
+    let reconnectData = MPCWalletReconnectData(wallet: MockEntitiesFabric.Wallet.mockEntities()[0].udWallet,
+                                               email: "qq@qq.qq")
     
     return ReconnectMPCWalletRootView(reconnectData: reconnectData,
                                       reconnectResultCallback: { _ in })

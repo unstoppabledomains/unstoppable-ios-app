@@ -569,18 +569,19 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
     }
     
     private func restoreOrRemoveWallet(deviceId: String) async throws {
-        let wallet = try findUDWalletWith(deviceId: deviceId)
-        let reconnectData = MPCWalletReconnectData(wallet: wallet)
+        let (wallet, metadataEntity) = try findUDWalletWith(deviceId: deviceId)
+        let reconnectData = MPCWalletReconnectData(wallet: wallet,
+                                                   email: metadataEntity.email)
         await uiHandler.askToReconnectMPCWallet(reconnectData)
     }
     
-    private func findUDWalletWith(deviceId: String) throws -> UDWallet {
+    private func findUDWalletWith(deviceId: String) throws -> (UDWallet, FB_UD_MPC.UDWalletMetadata) {
         let wallets = udWalletsService.getUserWallets()
         for wallet in wallets {
             if let metadata = wallet.mpcMetadata,
                let metadataEntity = try? getFBUDWalletMetadataFrom(walletMetadata: metadata),
                metadataEntity.deviceId == deviceId {
-                return wallet
+                return (wallet, metadataEntity)
             }
         }
         

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ReconnectMPCWalletPromptView: View, ViewAnalyticsLogger {
     
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: ReconnectMPCWalletViewModel
+
     let walletAddress: String
     var analyticsName: Analytics.ViewName { .reconnectMPCWalletPrompt }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet : walletAddress] }
@@ -86,7 +89,7 @@ private extension ReconnectMPCWalletPromptView {
     
     func reconnectButtonPressed() {
         logButtonPressedAnalyticEvents(button: .walletReconnect)
-        
+        viewModel.handleAction(.reImportWallet)
     }
     
     @ViewBuilder
@@ -98,6 +101,12 @@ private extension ReconnectMPCWalletPromptView {
     
     func removeButtonPressed() {
         logButtonPressedAnalyticEvents(button: .walletRemove)
+        viewModel.handleAction(.removeWallet)
+        close()
+    }
+    
+    func close() {
+        dismiss()
     }
 }
 

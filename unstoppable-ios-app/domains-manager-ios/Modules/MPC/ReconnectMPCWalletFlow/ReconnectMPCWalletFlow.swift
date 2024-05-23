@@ -16,4 +16,13 @@ extension ReconnectMPCWalletFlow {
         case reconnected
         case removed
     }
+    
+    enum FlowAction {
+        case removeWallet
+        case reImportWallet
+        case didEnterCredentials(MPCActivateCredentials)
+        case didEnterCode(String)
+        case didActivate(UDWallet)
+        case didRequestToChangeEmail
+    }
 }
