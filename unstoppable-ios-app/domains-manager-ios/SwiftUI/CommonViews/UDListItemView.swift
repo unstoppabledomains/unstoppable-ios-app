@@ -99,7 +99,7 @@ private extension UDListItemView {
         Text(title)
             .font(.currentFont(size: 16, weight: .medium))
             .foregroundStyle(titleColor)
-            .frame(height: 24)
+            .frame(minHeight: 24)
     }
     
     @ViewBuilder
