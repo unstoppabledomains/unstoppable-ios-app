@@ -1117,6 +1117,9 @@ More tabs are coming in the next updates.";
 "MPC_WRONG_VERIFICATION_CODE_MESSAGE" = "You’ve entered wrong verification code";
 "MPC_WRONG_PASSWORD_MESSAGE" = "You’ve entered wrong password for %@";
 "CHANGE" = "Change";
+"RE_IMPORT_MPC_WALLET_PROMPT_TITLE" = "Please re-import your Unstoppable Wallet %@";
+"RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE" = "Periodically Unstoppable Wallets must be re-imported. This design enhances security and ensures the protection of assets in your wallet.";
+"RE_IMPORT_WALLET" = "Re-import wallet";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";

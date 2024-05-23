@@ -349,7 +349,7 @@ private final class MockMPCWalletsDataStorage: FB_UD_MPC.MPCWalletsDataStorage {
 }
 
 private final class MockMPCWalletUIHandler: MPCWalletsUIHandler {
-    func askToReconnectMPCWallet(_ wallet: domains_manager_ios.UDWallet) async {
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
     }
 }

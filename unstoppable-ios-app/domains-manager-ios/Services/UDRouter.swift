@@ -441,6 +441,15 @@ class UDRouter: DomainProfileSignatureValidator {
         let vc = UIHostingController(rootView: view)
         viewController.present(vc, animated: true)
     }
+    
+    func showReconnectMPCWalletScreen(reconnectData: MPCWalletReconnectData,
+                                      reconnectResultCallback: @escaping ReconnectMPCWalletFlow.FlowResultCallback,
+                                      in viewController: UIViewController) {
+        let view = ReconnectMPCWalletRootView(reconnectData: reconnectData,
+                                              reconnectResultCallback: reconnectResultCallback)
+        let vc = UIHostingController(rootView: view)
+        viewController.present(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods

@@ -27,3 +27,4 @@ extension ActivateMPCWalletFlow {
     static let viewsTopOffset: CGFloat = 30
 }
 
+

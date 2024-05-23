@@ -165,8 +165,8 @@ private final class PrivateMockExternalEventsService: ExternalEventsServiceProto
 }
 
 private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
-    func askToReconnectMPCWallet(_ wallet: UDWallet) async -> Bool {
-        true
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
+        
     }
     
     func showHome(profile: domains_manager_ios.UserProfile) {

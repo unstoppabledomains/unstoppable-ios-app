@@ -243,6 +243,7 @@ extension Analytics {
         case mpcEnterCodeOnboarding, mpcEnterCodeInApp
         case mpcActivationOnboarding, mpcActivationInApp
         case mpcActivateEnterCode, mpcActivateEnterPassword
+        case reconnectMPCWalletPrompt
     }
 }
 
@@ -312,7 +313,7 @@ extension Analytics {
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
         // Wallet details
-        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution
+        case walletBackup, walletRecoveryPhrase, walletRename, walletDomainsList, walletRemove, showConnectedWalletInfo, walletReverseResolution, walletReconnect
         
         // Wallets list
         case manageICloudBackups, walletInList, walletsMenu

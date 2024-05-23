@@ -185,9 +185,9 @@ private extension ViewPullUp {
                                                  font: .currentFont(withSize: fontSize, weight: fontWeight),
                                                  textColor: textColor,
                                                  alignment: getCurrentContentAlignment(configuration: configuration)),
-                           width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2),
                            updatedAttributesList: description.highlightedText.map { AttributedText.AttributesList(text: $0.highlightedText,
-                                                                                                                  textColor: $0.highlightedColor) })
+                                                                                                                  textColor: $0.highlightedColor) }, 
+                           width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2))
             .fixedSize(horizontal: false, vertical: true)
         }
     }

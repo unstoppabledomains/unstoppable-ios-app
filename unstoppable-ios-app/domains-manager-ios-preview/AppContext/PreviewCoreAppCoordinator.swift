@@ -9,7 +9,7 @@ import UIKit
 
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
-    func askToReconnectMPCWallet(_ wallet: UDWallet) async {
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
         
     }
     
