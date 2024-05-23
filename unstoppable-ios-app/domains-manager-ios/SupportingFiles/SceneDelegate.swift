@@ -127,7 +127,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // MARK: - SceneDelegateProtocol
 extension SceneDelegate: SceneDelegateProtocol {
     var interfaceOrientation: UIInterfaceOrientation { window?.windowScene?.interfaceOrientation ?? .unknown }
-
+    
+    func isAuthorizing() async -> Bool {
+        await self.authHandler.isAuthorizing
+    }
+    
     func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle) {
         let appearanceStyle: UIUserInterfaceStyle = .dark
         window?.overrideUserInterfaceStyle = appearanceStyle

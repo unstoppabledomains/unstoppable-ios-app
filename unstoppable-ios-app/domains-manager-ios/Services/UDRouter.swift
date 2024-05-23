@@ -373,12 +373,6 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
-    func runLoginFlow(with mode: LoginFlowNavigationController.Mode,
-                      loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
-                      in viewController: UIViewController) {
-        showLoginScreen(with: mode, loggedInCallback: loggedInCallback, in: viewController)
-    }
-    
     func showDomainProfileParkedActionModule(in viewController: UIViewController,
                                              domain: DomainDisplayInfo,
                                              imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async -> DomainProfileParkedAction {
@@ -447,6 +441,15 @@ class UDRouter: DomainProfileSignatureValidator {
         let vc = UIHostingController(rootView: view)
         viewController.present(vc, animated: true)
     }
+    
+    func showReconnectMPCWalletScreen(reconnectData: MPCWalletReconnectData,
+                                      reconnectResultCallback: @escaping ReconnectMPCWalletFlow.FlowResultCallback,
+                                      in viewController: UIViewController) {
+        let view = ReconnectMPCWalletRootView(reconnectData: reconnectData,
+                                              reconnectResultCallback: reconnectResultCallback)
+        let vc = UIHostingController(rootView: view)
+        viewController.present(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -486,15 +489,6 @@ private extension UDRouter {
         mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
         viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
                                                                 animated: true)
-    }
-    
-    func showLoginScreen(with mode: LoginFlowNavigationController.Mode,
-                         loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
-                         in viewController: UIViewController) {
-        let mintDomainsNavigationController = LoginFlowNavigationController(mode: mode)
-        mintDomainsNavigationController.loggedInCallback = loggedInCallback
-        viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
-                                                                 animated: true)
     }
 }
 

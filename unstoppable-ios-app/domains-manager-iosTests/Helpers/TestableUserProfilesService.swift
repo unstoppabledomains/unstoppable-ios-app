@@ -10,11 +10,13 @@ import Foundation
 import Combine
 
 final class TestableUserProfilesService: UserProfilesServiceProtocol {
+    
    
     @Published var selectedProfile: UserProfile?
     var selectedProfilePublisher: Published<UserProfile?>.Publisher { $selectedProfile }
     
-    var profiles: [UserProfile] = [MockEntitiesFabric.Profile.createWalletProfile()]
+    @Published private(set) var profiles: [UserProfile] = [MockEntitiesFabric.Profile.createWalletProfile()]
+    var profilesPublisher: Published<[UserProfile]>.Publisher { $profiles }
     
     init(profile: UserProfile?) {
         self.selectedProfile = profile

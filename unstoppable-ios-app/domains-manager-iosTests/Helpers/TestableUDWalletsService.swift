@@ -63,7 +63,7 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
         throw TestableGenericError.generic
     }
     
-    func addMPCWallet(_ wallet: UDWallet) throws { }
+    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws { }
     
     func remove(wallet: UDWallet) {
         

@@ -76,7 +76,7 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
     func isValid(privateKey: String) async -> Bool { true }
     func createWalletFor(privateKey: String) async -> UDWalletWithPrivateSeed? { nil }
     func createWalletFor(mnemonics: String) async -> UDWalletWithPrivateSeed? { nil }
-    func addMPCWallet(_ wallet: UDWallet) throws {
+    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
         wallets.append(wallet)
     }
     func importWalletWith(privateKey: String) async throws -> UDWallet {
