@@ -14,25 +14,20 @@ struct SignMessageTransactionUIConfiguration {
 
 final class SignMessageRequestConfirmationView: BaseSignTransactionView {
     
-    private var textView: UITextView?
-    private var textViewHeight: CGFloat = 0
-
     override func additionalSetup() {
         titleLabel.setAttributedTextWith(text: String.Constants.messageSignRequestTitle.localized(),
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundDefault)
         addWalletInfo()
     }
-    
-    func requiredHeight() -> CGFloat {
-        400 + textViewHeight
-    }
 }
 
 // MARK: - Open methods
 extension SignMessageRequestConfirmationView {
     func configureWith(_ configuration: SignMessageTransactionUIConfiguration) {
-        addSigningMessageView(signingMessage: configuration.signingMessage)
+        let displayedMessage = DisplayedMessageType(rawString: configuration.signingMessage)
+        addSigningMessageView(signingMessage: displayedMessage)
+        
         setNetworkFrom(appInfo: configuration.connectionConfig.appInfo)
         setWith(appInfo: configuration.connectionConfig.appInfo)
         setWalletInfo(configuration.connectionConfig.wallet, isSelectable: false)
@@ -41,34 +36,8 @@ extension SignMessageRequestConfirmationView {
 
 // MARK: - Private methods
 private extension SignMessageRequestConfirmationView {
-    func addSigningMessageView(signingMessage: String) {
-        let textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .clear
-        textView.layer.cornerRadius = 12
-        textView.layer.borderWidth = 1
-        textView.layer.borderColor = UIColor.borderDefault.cgColor
-        textView.textContainerInset = textContainerInset
-        textView.isEditable = false
-        
-        let maxTextViewHeight: CGFloat = 176
-        let font: UIFont = .currentFont(withSize: 16, weight: .regular)
-        let lineHeight: CGFloat = 24
-        let textHeight = signingMessage.height(withConstrainedWidth: UIScreen.main.bounds.width - (16 * 2) - (textContainerInset.left * 2),
-                                               font: font,
-                                               lineHeight: lineHeight)
-        let requiredTextViewHeight = textHeight + (textContainerInset.top * 2)
-        textViewHeight = min(requiredTextViewHeight, maxTextViewHeight)
-        
-        textView.setAttributedTextWith(text: signingMessage,
-                                       font: font,
-                                       textColor: .foregroundSecondary,
-                                       lineHeight: lineHeight)
-        textView.heightAnchor.constraint(equalToConstant: textViewHeight).isActive = true
-        textView.isScrollEnabled = requiredTextViewHeight > maxTextViewHeight
-        
-        self.textView = textView
+    func addSigningMessageView(signingMessage: DisplayedMessageType) {
+        let textView = signingMessage.prepareContentView()
         contentStackView.insertArrangedSubview(textView, at: 1)
     }
     
@@ -82,5 +51,126 @@ private extension SignMessageRequestConfirmationView {
         wrapStack.alignment = .center
         
         contentStackView.addArrangedSubview(wrapStack)
+    }
+}
+
+enum DisplayedMessageType {
+    static let lineHeight: CGFloat = 24
+    static let padding: CGFloat = 16
+    static let maxTextViewHeight: CGFloat = 176
+    static let font: UIFont = .currentFont(withSize: 16, weight: .regular)
+
+    case simpleMessage(String)
+    case typedData(EIP712TypedData)
+    
+    init(rawString: String) {
+        guard let data = rawString.data(using: .utf8),
+              let typedData = try? JSONDecoder().decode(EIP712TypedData.self, from: data) else {
+            self = Self.simpleMessage(rawString)
+            return
+        }
+        self = Self.typedData(typedData)
+    }
+
+    func prepareContentView() -> UIView {
+        switch self {
+        case .simpleMessage(let simpleMessage): return prepareSimpleMessageView(signingMessage: simpleMessage)
+        case .typedData(let typedData): return prepareTypedDataView(typedData: typedData)
+        }
+    }
+    
+    func getTextViewHeight() -> CGFloat {
+        switch self {
+        case .simpleMessage(let simpleMessage): return getSimpleMessageViewHeight(simpleMessage)
+        case .typedData: return getTypedDataViewHeight()
+        }
+    }
+    
+    private func getSimpleMessageViewHeight(_ simpleMessage: String) -> CGFloat {
+        let width = UIScreen.main.bounds.width - (Self.padding * 2) - (Self.padding * 2)
+        let textHeight = simpleMessage.height(withConstrainedWidth: width,
+                                              font: Self.font,
+                                              lineHeight: Self.lineHeight)
+        let requiredTextViewHeight = textHeight + (Self.padding * 2)
+        return min(requiredTextViewHeight, Self.maxTextViewHeight)
+    }
+    
+    private func getTypedDataViewHeight() -> CGFloat {
+        return 300
+    }
+    
+    private func prepareSimpleMessageView(signingMessage: String) -> UIView {
+        let textContainerInset = UIEdgeInsets(top: Self.padding,
+                                              left: Self.padding,
+                                              bottom: Self.padding,
+                                              right: Self.padding)
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.backgroundColor = .clear
+        textView.layer.cornerRadius = 12
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.borderDefault.cgColor
+        textView.textContainerInset = textContainerInset
+        textView.isEditable = false
+        
+        
+        textView.setAttributedTextWith(text: signingMessage,
+                                       font: Self.font,
+                                       textColor: .foregroundSecondary,
+                                       lineHeight: Self.lineHeight)
+        textView.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
+        textView.isScrollEnabled = getSimpleMessageViewHeight(signingMessage) == Self.maxTextViewHeight
+
+        return textView
+    }
+    
+    private func prepareTypedDataView(typedData: EIP712TypedData) -> UIView {
+        let eip712view = EIP712View()
+        
+        let domainName = (typedData.domain["name"]?.unwrapString ?? "") + " / Version " + (typedData.domain["version"]?.unwrapString ?? "")
+        
+        eip712view.domainLabel.text = domainName
+
+        eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
+        
+        if let chainIdFloat = typedData.domain["chainId"]?.unwrapString,
+           let chain = try? UnsConfigManager.getBlockchainType(from:  Int(chainIdFloat))  {
+            eip712view.chainLabel.text = chain.fullName
+        }
+
+        eip712view.heightAnchor.constraint(equalToConstant: getTextViewHeight()).isActive = true
+
+        let textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        eip712view.messageTextView.textContainerInset = textContainerInset
+        
+        eip712view.messageTextView.text = typedData.message.topLevelSegmentedDescription
+        
+        return eip712view
+    }
+}
+
+extension JSON {
+    var unwrapString: String {
+        guard case let .string(unwrapped) = self else {
+            return ""
+        }
+        return unwrapped
+    }
+    
+    var unwrapFloat: Float {
+        guard case let .number(unwrapped) = self else {
+            return 0
+        }
+        return unwrapped
+    }
+    
+    var topLevelSegmentedDescription: String {
+        guard case let .object(dictionary) = self else {
+            return ""
+        }
+        return dictionary.reduce(into: "") { str, dictEl in
+            str = str + dictEl.key + ":\n" + dictEl.value.debugDescription + "\n\n"
+        }
+
     }
 }

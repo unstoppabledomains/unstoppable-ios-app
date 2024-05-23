@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		290136B42BFBFA3F00AB126D /* EIP712View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 290136B32BFBFA3F00AB126D /* EIP712View.xib */; };
+		290136B52BFBFA3F00AB126D /* EIP712View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 290136B32BFBFA3F00AB126D /* EIP712View.xib */; };
+		290136B72BFBFAAE00AB126D /* EIP712View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290136B62BFBFAAE00AB126D /* EIP712View.swift */; };
+		290136B82BFBFAAE00AB126D /* EIP712View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290136B62BFBFAAE00AB126D /* EIP712View.swift */; };
 		29018C8D2BACB7BC0004545D /* JRPC_Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29018C8C2BACB7BC0004545D /* JRPC_Client.swift */; };
 		290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290A60412950A89900882109 /* WalletConnectServiceV2.swift */; };
 		290A60482950AA1600882109 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 290A60472950AA1600882109 /* WalletConnect */; };
@@ -2578,6 +2582,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		290136B32BFBFA3F00AB126D /* EIP712View.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EIP712View.xib; sourceTree = "<group>"; };
+		290136B62BFBFAAE00AB126D /* EIP712View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712View.swift; sourceTree = "<group>"; };
 		29018C8C2BACB7BC0004545D /* JRPC_Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JRPC_Client.swift; sourceTree = "<group>"; };
 		290A60412950A89900882109 /* WalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSubscriberInfo.swift; sourceTree = "<group>"; };
@@ -4121,6 +4127,8 @@
 				299713CC28F6931E00743003 /* Function.swift */,
 				299713D128F6933F00743003 /* ABIEncoder.swift */,
 				299713D628F693F600743003 /* EIP712TypedData.swift */,
+				290136B32BFBFA3F00AB126D /* EIP712View.xib */,
+				290136B62BFBFAAE00AB126D /* EIP712View.swift */,
 			);
 			path = EIP712;
 			sourceTree = "<group>";
@@ -8414,6 +8422,7 @@
 				C628E32F27FDA3270044E408 /* Inter-ExtraBold.ttf in Resources */,
 				C6D6479C2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
 				C6386847285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib in Resources */,
+				290136B42BFBFA3F00AB126D /* EIP712View.xib in Resources */,
 				3046D390255C63A10099B482 /* Localizable.strings in Resources */,
 				C62C3FC1283F6E410094FC93 /* MintDomainsConfigurationViewController.xib in Resources */,
 				C60982F4282A7D7200546392 /* ConfirmWordConfirmationCell.xib in Resources */,
@@ -8525,6 +8534,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				290136B52BFBFA3F00AB126D /* EIP712View.xib in Resources */,
 				C67B6D5E2AE7F8FB00F74B0B /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -9119,6 +9129,7 @@
 				C6BF802B2BA2CC6E00CC4CB3 /* FB_UD_MPCConnectionService.swift in Sources */,
 				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C655CAA82B16E82800FDA063 /* PurchaseDomainsSelectWalletView.swift in Sources */,
+				290136B72BFBFAAE00AB126D /* EIP712View.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */,
@@ -9899,6 +9910,7 @@
 				C617CFA42B9ED9F200663516 /* TestableDomainTransactionsService.swift in Sources */,
 				C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */,
 				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
+				290136B82BFBFAAE00AB126D /* EIP712View.swift in Sources */,
 				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C67DE1432B983FD0002374CE /* HomeExploreViewModelTests.swift in Sources */,
 				C6B6B8732B91A4F900565ED2 /* TaskWithDeadlineTests.swift in Sources */,
