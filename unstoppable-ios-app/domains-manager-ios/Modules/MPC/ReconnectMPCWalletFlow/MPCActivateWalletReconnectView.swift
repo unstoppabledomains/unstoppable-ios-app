@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MPCActivateWalletReconnectView: View {
-    @EnvironmentObject var viewModel: ActivateMPCWalletViewModel
+    @EnvironmentObject var viewModel: ReconnectMPCWalletViewModel
     
     let credentials: MPCActivateCredentials
     let code: String
@@ -17,8 +17,7 @@ struct MPCActivateWalletReconnectView: View {
         MPCActivateWalletView(analyticsName: .mpcActivationInApp,
                               credentials: credentials,
                               code: code,
-                              mpcWalletCreatedCallback: didCreateMPCWallet,
-                              changeEmailCallback: didRequestToChangeEmail)
+                              mpcWalletCreatedCallback: didCreateMPCWallet)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }

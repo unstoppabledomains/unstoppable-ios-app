@@ -34,6 +34,7 @@ final class ReconnectMPCWalletViewModel: ObservableObject {
                     navPath.append(.enterCredentials(email: reconnectData.email))
                 case .removeWallet:
                     appContext.udWalletsService.remove(wallet: wallet)
+                    navigationState?.dismiss = true
                     reconnectResultCallback(.removed)
                 case .didEnterCredentials(let credentials):
                     self.credentials = credentials

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ReconnectMPCWalletPromptView: View, ViewAnalyticsLogger {
     
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: ReconnectMPCWalletViewModel
 
     let walletAddress: String
@@ -108,11 +107,6 @@ private extension ReconnectMPCWalletPromptView {
     
     func removeWalletConfirmed() {
         viewModel.handleAction(.removeWallet)
-        close()
-    }
-    
-    func close() {
-        dismiss()
     }
 }
 

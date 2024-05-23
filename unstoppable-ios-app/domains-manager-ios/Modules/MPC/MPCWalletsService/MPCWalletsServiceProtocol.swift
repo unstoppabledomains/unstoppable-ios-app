@@ -9,9 +9,8 @@ import Foundation
 
 protocol MPCWalletsServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
-    func setupMPCWalletWith(email: String,
-                            code: String,
-                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
+    func setupMPCWalletWith(code: String,
+                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
     

@@ -55,12 +55,13 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         try await networkService.sendBootstrapCodeTo(email: email)
     }
 
-    func setupMPCWalletWith(email: String,
-                            code: String,
-                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+    func setupMPCWalletWith(code: String,
+                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 var mpcConnectorInProgress: FB_UD_MPC.FireblocksConnectorProtocol?
+                let email = credentials.email
+                let recoveryPhrase = credentials.password
                 do {
                     continuation.yield(.submittingCode)
                     logMPC("Will submit code \(code). recoveryPhrase: \(recoveryPhrase)")

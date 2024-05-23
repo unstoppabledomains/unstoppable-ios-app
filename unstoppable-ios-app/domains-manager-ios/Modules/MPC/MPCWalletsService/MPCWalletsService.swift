@@ -30,17 +30,15 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         try await subService.sendBootstrapCodeTo(email: email)
     }
     
-    func setupMPCWalletWith(email: String,
-                            code: String,
-                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
+    func setupMPCWalletWith(code: String,
+                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
                     let subService = try getSubServiceFor(provider: .fireblocksUD)
                     
-                    for try await step in subService.setupMPCWalletWith(email: email,
-                                                                        code: code,
-                                                                        recoveryPhrase: recoveryPhrase) {
+                    for try await step in subService.setupMPCWalletWith(code: code,
+                                                                        credentials: credentials) {
                         continuation.yield(step)
                     }
                 } catch {
