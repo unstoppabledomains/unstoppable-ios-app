@@ -29,6 +29,7 @@ struct ViewPullUp: ViewModifier {
                 }
             }, content: { type in
                 pullUpContentView(type: type)
+                    .background(Color.backgroundDefault)
                     .onAppear {
                         appContext.analyticsService.log(event: .pullUpDidAppear,
                                                         withParameters: [.pullUpName : type.analyticName.rawValue].adding(type.additionalAnalyticParameters))
@@ -183,11 +184,10 @@ private extension ViewPullUp {
             AttributedText(attributesList: .init(text: description.text,
                                                  font: .currentFont(withSize: fontSize, weight: fontWeight),
                                                  textColor: textColor,
-                                                 alignment: getCurrentContentAlignment(configuration: configuration),
-                                                 lineHeight: lineHeight),
-                           width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2),
+                                                 alignment: getCurrentContentAlignment(configuration: configuration)),
                            updatedAttributesList: description.highlightedText.map { AttributedText.AttributesList(text: $0.highlightedText,
-                                                                                                                  textColor: $0.highlightedColor) })
+                                                                                                                  textColor: $0.highlightedColor) }, 
+                           width: UIScreen.main.bounds.width - (ViewPullUp.sideOffset * 2))
             .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -243,7 +243,7 @@ private extension ViewPullUp {
         case .primaryDanger(let content):
             buttonWithContent(content, style: .large(.raisedDanger), configuration: configuration)
         case .secondary(let content):
-            buttonWithContent(content, style: .large(.raisedTertiary), configuration: configuration)
+            buttonWithContent(content, style: .large(.ghostPrimary), configuration: configuration)
         case .secondaryDanger(let content):
             buttonWithContent(content, style: .large(.ghostDanger), configuration: configuration)
         case .textTertiary(let content):
@@ -286,19 +286,47 @@ private extension ViewPullUp {
     
     @ViewBuilder
     func viewForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
+        imageForIconContent(iconContent)
+            .foregroundStyle(Color(uiColor: iconContent.tintColor))
+            .background(Color(uiColor: iconContent.backgroundColor))
+            .modifier(ClipShapeForIconContentModifier(iconContent: iconContent))
+    }
+    
+    @ViewBuilder
+    func imageForIconContent(_ iconContent: ViewPullUpDefaultConfiguration.IconContent) -> some View {
         switch iconContent.size {
-        case .large, .largeCentered, .small:
+        case .large, .small:
             Image(uiImage: iconContent.icon)
                 .resizable()
                 .squareFrame(iconContent.iconSize)
-                .foregroundStyle(Color(uiColor: iconContent.tintColor))
+        case .largeCentered:
+            Image(uiImage: iconContent.icon)
+                .resizable()
+                .squareFrame(iconContent.iconSize / 2)
+                .padding(iconContent.iconSize / 4)
         case .fixedHeight(let height):
             Image(uiImage: iconContent.icon)
                 .resizable()
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
-                .foregroundStyle(Color(uiColor: iconContent.tintColor))
         }
+    }
+    
+    struct ClipShapeForIconContentModifier: ViewModifier {
+        
+        let iconContent: ViewPullUpDefaultConfiguration.IconContent
+        
+        func body(content: Content) -> some View {
+            switch iconContent.corners {
+            case .circle:
+                content.clipShape(Circle())
+            case .custom(let radius):
+                content.clipShape(RoundedRectangle(cornerRadius: radius))
+            case .none:
+                content
+            }
+        }
+        
     }
 }
 

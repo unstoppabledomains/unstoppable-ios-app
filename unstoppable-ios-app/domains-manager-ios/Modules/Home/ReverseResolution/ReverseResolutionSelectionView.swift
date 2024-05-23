@@ -21,9 +21,10 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
     let mode: Mode
     var domainSetCallback: (@MainActor (DomainDisplayInfo)->())? = nil
     
-    enum Mode {
+    enum Mode: Equatable {
         case selectFirst
         case change
+        case certain(DomainDisplayInfo)
     }
     
     @State private var error: Error?
@@ -72,7 +73,7 @@ struct ReverseResolutionSelectionView: View, ViewAnalyticsLogger {
                     }
                     self.wallet = wallet
                     setAvailableDomains()
-                case .change:
+                case .change, .certain:
                     return
                 }
             }
@@ -96,6 +97,8 @@ private extension ReverseResolutionSelectionView {
         case .change:
             selectedDomain = wallet.rrDomain
             domains = wallet.domains.availableForRRItems().filter({ $0.name != selectedDomain?.name })
+        case .certain(let domain):
+            selectedDomain = domain
         }
     }
     
@@ -143,20 +146,20 @@ private extension ReverseResolutionSelectionView {
                                                  font: .currentFont(withSize: 32, weight: .bold),
                                                  textColor: .foregroundDefault,
                                                  alignment: .center),
-                           width: UIScreen.main.bounds.width - 32,
                            updatedAttributesList: [.init(text: wallet.displayName,
-                                                         textColor: .foregroundSecondary)])
+                                                         textColor: .foregroundSecondary)], 
+                           width: UIScreen.main.bounds.width - 32)
             AttributedText(attributesList: .init(text: String.Constants.selectPrimaryDomainSubtitle.localized(wallet.address.walletAddressTruncated, wallet.displayName),
                                                  font: .currentFont(withSize: 16),
                                                  textColor: .foregroundSecondary,
                                                  alignment: .center),
-                           width: UIScreen.main.bounds.width - 32,
                            updatedAttributesList: [.init(text: wallet.displayName,
                                                          font: .currentFont(withSize: 16, weight: .medium),
                                                          textColor: .foregroundDefault),
                                                    .init(text: wallet.address.walletAddressTruncated,
                                                          font: .currentFont(withSize: 16, weight: .medium),
-                                                         textColor: .foregroundDefault)])
+                                                         textColor: .foregroundDefault)],
+                           width: UIScreen.main.bounds.width - 32)
         }
         .padding()
     }
@@ -170,12 +173,22 @@ private extension ReverseResolutionSelectionView {
         .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
     }
     
+    var domainInSelectedSection: DomainDisplayInfo? {
+        switch mode {
+        case .selectFirst:
+            return nil
+        case .change:
+            return wallet.rrDomain
+        case .certain(let domain):
+            return domain
+        }
+    }
+    
     @ViewBuilder
     func selectedDomainView() -> some View {
-        if case .change = mode,
-           let rrDomain = wallet.rrDomain {
+        if let domainInSelectedSection {
             domainsSectionBackground {
-                domainsRowView(rrDomain)
+                domainsRowView(domainInSelectedSection)
                     .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             }
         }
@@ -209,20 +222,25 @@ private extension ReverseResolutionSelectionView {
     
     @ViewBuilder
     func buyDomainView() -> some View {
-        UDCollectionSectionBackgroundView {
-            UDCollectionListRowButton(content: {
-                UDListItemView(title: String.Constants.buyNewDomain.localized(),
-                               titleColor: .foregroundAccent,
-                               imageType: .image(.plusIconNav),
-                               imageStyle: .clearImage(foreground: .foregroundAccent))
-                .udListItemInCollectionButtonPadding()
-            }, callback: {
-                UDVibration.buttonTap.vibrate()
-                tabRouter.runPurchaseFlow()
-            })
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        switch mode {
+        case .selectFirst, .change:
+            UDCollectionSectionBackgroundView {
+                UDCollectionListRowButton(content: {
+                    UDListItemView(title: String.Constants.buyNewDomain.localized(),
+                                   titleColor: .foregroundAccent,
+                                   imageType: .image(.plusIconNav),
+                                   imageStyle: .clearImage(foreground: .foregroundAccent))
+                    .udListItemInCollectionButtonPadding()
+                }, callback: {
+                    UDVibration.buttonTap.vibrate()
+                    tabRouter.runPurchaseFlow()
+                })
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+            }
+            .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))            
+        case .certain:
+            EmptyView()
         }
-        .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
     }
     
     var isConfirmButtonDisabled: Bool {
@@ -231,6 +249,8 @@ private extension ReverseResolutionSelectionView {
             selectedDomain == nil
         case .change:
             selectedDomain == wallet.rrDomain
+        case .certain:
+            false
         }
     }
     

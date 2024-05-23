@@ -17,7 +17,7 @@ protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol
 }
 
 @MainActor
-protocol DomainProfileSectionViewProtocol: BaseViewController & WalletConnectController {
+protocol DomainProfileSectionViewProtocol: BaseViewController {
     func scrollToItem(_ item: DomainProfileViewController.Item, atPosition position: UICollectionView.ScrollPosition, animated: Bool)
     func hideKeyboard()
 }
@@ -58,7 +58,6 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     override var scrollableContentYOffset: CGFloat? { 8 }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName: presenter.domainName] }
-    override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
     override var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
         .init(backArrowIcon: navBackStyle.icon,
               tintColor: .foregroundOnEmphasis,
@@ -71,6 +70,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     private(set) var dataSource: DataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private let minScrollYOffset: CGFloat = -40
+    private var viewTitle: String? = nil
     var dashesProgressConfiguration: DashesProgressView.Configuration { .white(numberOfDashes: 3) }
 
     override func viewDidLoad() {
@@ -85,6 +85,9 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
         super.viewWillAppear(animated)
         
         presenter.viewWillAppear()
+        if let nav = self.navigationController {
+            self.scrollingBehaviourFor(navigationController: nav)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -92,6 +95,16 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
         
         cNavigationController?.navigationBar.navBarContentView.setTitle(hidden: true, animated: false)
         presenter.viewDidAppear()
+        if let nav = self.navigationController {
+            self.scrollingBehaviourFor(navigationController: nav)
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        navigationController?.navigationBar.scrollEdgeAppearance = .udAppearanceWith(backButtonColor: .foregroundOnEmphasis,
+                                                                                     isTransparent: true)
     }
     
     override func shouldPopOnBackButton() -> Bool {
@@ -140,7 +153,7 @@ extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileS
     }
     
     func set(title: String?) {
-        navigationItem.title = title
+        self.viewTitle = title
         cNavigationController?.navigationBar.set(title: title)
     }
         
@@ -168,12 +181,26 @@ extension DomainProfileViewController: UICollectionViewDelegate {
             scrollView.contentOffset.y = minScrollYOffset
         }
         
+        if let navigationController {
+            scrollingBehaviourFor(navigationController: navigationController)
+        }
+
         cNavigationController?.underlyingScrollViewDidScroll(scrollView)
         for cell in collectionView.visibleCells {
             if let scrollListener = cell as? ScrollViewOffsetListener {
                 scrollListener.didScrollTo(offset: scrollView.contentOffset)
             }
         }
+    }
+    
+    private func scrollingBehaviourFor(navigationController: UINavigationController) {
+        let yOffset = collectionView.contentOffset.y
+        
+        title = yOffset >= 134 ? viewTitle : nil
+        navigationController.navigationBar.scrollEdgeAppearance = .udAppearanceWith(backButtonColor: .foregroundOnEmphasis,
+                                                                                    isTransparent: yOffset <= 30)
+        navigationController.navigationBar.standardAppearance = .udAppearanceWith(backButtonColor: .foregroundOnEmphasis,
+                                                                                   isTransparent: false)
     }
 }
 
@@ -246,6 +273,12 @@ private extension DomainProfileViewController {
     func logProfileButtonPressedAnalyticEvents(button: Analytics.Button) {
         logButtonPressedAnalyticEvents(button: button)
     }
+    
+    @objc func closeButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        logButtonPressedAnalyticEvents(button: .close)
+        dismiss(animated: true)
+    }
 }
 
 // MARK: - Setup functions
@@ -260,10 +293,25 @@ private extension DomainProfileViewController {
         addHideKeyboardTapGesture(cancelsTouchesInView: false, toView: nil)
         DispatchQueue.main.async {
             self.setDashesProgress(self.progress)
+            if let nav = self.navigationController,
+               self.cNavigationController == nil {
+                self.dashesProgressView?.isHidden = true
+                self.scrollingBehaviourFor(navigationController: nav)
+                self.navigationItem.titleView = nil
+            }
         }
     }
     
     func setupNavigation(actionGroups: [DomainProfileActionsGroup]) {
+        if cNavigationController == nil {
+            let closeButton = UIBarButtonItem(image: BaseViewController.NavBackIconStyle.cancel.icon,
+                                              style: .plain,
+                                              target: self,
+                                              action: #selector(closeButtonPressed))
+            closeButton.tintColor = .white
+            navigationItem.leftBarButtonItem = closeButton
+        }
+        
         if actionGroups.isEmpty {
             navigationItem.rightBarButtonItems = nil
             return
@@ -297,7 +345,7 @@ private extension DomainProfileViewController {
         let moreBarButtonItem = UIBarButtonItem(customView: moreButton)
 
         // Assign
-        navigationItem.rightBarButtonItems = [shareBarButtonItem, moreBarButtonItem]
+        navigationItem.rightBarButtonItems = [moreBarButtonItem, shareBarButtonItem]
     }
     
     func uiAction(for action: Action) -> UIAction {
@@ -688,19 +736,59 @@ struct DomainProfileViewControllerWrapper: UIViewControllerRepresentable {
     let wallet: WalletEntity
     let preRequestedAction: PreRequestedProfileAction?
     let sourceScreen: DomainProfileViewPresenter.SourceScreen
-    var dismissCallback: EmptyCallback?
+    let tabRouter: HomeTabRouter
     
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = UDRouter().buildDomainProfileModule(domain: domain,
                                                      wallet: wallet,
                                                      preRequestedAction: preRequestedAction,
-                                                     sourceScreen: sourceScreen)
-        let nav = EmptyRootCNavigationController(rootViewController: vc)
+                                                     sourceScreen: sourceScreen, 
+                                                     tabRouter: tabRouter)
+        let nav = ProfileNavController(rootViewController: vc)
         nav.isModalInPresentation = true
-        nav.dismissCallback = dismissCallback
 
         return nav
     }
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
+    final class ProfileNavController: UINavigationController {
+        override var traitCollection: UITraitCollection {
+            UITraitCollection(traitsFrom: [super.traitCollection, UITraitCollection(userInterfaceStyle: .dark)])
+        }
+    }
+    
+}
+
+#Preview {
+    
+    struct PreviewContainer: View {
+        
+        @State private var isPresenting = false
+        
+        let wallet: WalletEntity
+        let domain: DomainDisplayInfo
+        
+        var body: some View {
+            ProgressView()
+                .sheet(isPresented: $isPresenting) {
+                   DomainProfileViewControllerWrapper(domain: domain,
+                                                      wallet: wallet,
+                                                      preRequestedAction: nil,
+                                                      sourceScreen: .domainsCollection,
+                                                      tabRouter: MockEntitiesFabric.Home.createHomeTabRouter())
+                }
+                .onAppear {
+                    isPresenting = true
+                }
+        }
+        
+    }
+    
+    let wallet = MockEntitiesFabric.Wallet.mockEntities()[0]
+    let domain = wallet.domains.first!
+    
+    return PreviewContainer(wallet: wallet,
+                            domain: domain)
+    
 }

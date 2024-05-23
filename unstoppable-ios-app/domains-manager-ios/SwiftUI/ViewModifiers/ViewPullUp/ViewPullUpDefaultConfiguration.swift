@@ -226,12 +226,12 @@ extension ViewPullUpDefaultConfiguration {
                                 fontSize: CGFloat,
                                 fontWeight: UIFont.Weight,
                                 contentWidth: CGFloat) -> CGFloat {
-        let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
         switch labelType {
         case .text(let text):
+            let font = UIFont.currentFont(withSize: fontSize, weight: fontWeight)
             return text.height(withConstrainedWidth: contentWidth, font: font)
         case .highlightedText(let description):
-            return description.text.height(withConstrainedWidth: contentWidth, font: font)
+            return heightForLabel(.text(description.text), fontSize: fontSize, fontWeight: fontWeight, contentWidth: contentWidth)
         }
     }
     
@@ -307,17 +307,18 @@ extension ViewPullUpDefaultConfiguration {
               dismissCallback: dismissCallback)
     }
     
-    static func recordDoesNotMatchOwner(chain: BlockchainType,
+    static func recordDoesNotMatchOwner(ticker: String,
+                                        fullName: String,
                                         ownerAddress: String,
                                         updateRecordsCallback: @escaping MainActorAsyncCallback) async -> ViewPullUpDefaultConfiguration {
-        let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(chain.rawValue,
+        let icon = await appContext.imageLoadingService.loadImage(from: .currencyTicker(ticker,
                                                                                         size: .default,
                                                                                         style: .gray),
                                                                   downsampleDescription: .icon)
         
         return .init(icon: .init(icon: icon ?? .appleIcon,
                                  size: .large),
-                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(chain.fullName)),
+                     title: .text(String.Constants.recordDoesNotMatchOwnersAddressPullUpTitle.localized(fullName)),
                      subtitle: .label(.highlightedText(.init(text: String.Constants.recordDoesNotMatchOwnersAddressPullUpMessage.localized(ownerAddress.walletAddressTruncated),
                                                              highlightedText: [.init(highlightedText: ownerAddress.walletAddressTruncated, highlightedColor: .foregroundDefault)], analyticsActionName: nil, action: nil))),
                      actionButton: .main(content: .init(title: String.Constants.gotIt.localized(),
@@ -386,15 +387,20 @@ extension ViewPullUpDefaultConfiguration {
     }
     
     static func legalSelectionPullUp(selectionCallback: @escaping (LegalType)->()) -> ViewPullUpDefaultConfiguration {
+        var selectedItem: LegalType?
+
         return .init(title: .text(String.Constants.settingsLegal.localized()),
                      items: LegalType.allCases,
                      itemSelectedCallback: { item in
-            guard let item = item as? LegalType else { return }
-            selectionCallback(item)
+            selectedItem = item as? LegalType
         },
                      dismissAble: true,
                      analyticName: .settingsLegalSelection,
-                     dismissCallback: nil)
+                     dismissCallback: {
+            if let selectedItem {
+                selectionCallback(selectedItem)
+            }
+        })
     }
     
     static func homeWalletBuySelectionPullUp(selectionCallback: @escaping (HomeWalletView.BuyOptions)->()) -> ViewPullUpDefaultConfiguration {
@@ -403,9 +409,7 @@ extension ViewPullUpDefaultConfiguration {
         return .init(title: nil,
                      items: HomeWalletView.BuyOptions.allCases,
                      itemSelectedCallback: { item in
-            guard let item = item as? HomeWalletView.BuyOptions else { return }
-            
-            selectedItem = item
+            selectedItem = item as? HomeWalletView.BuyOptions
         },
                      dismissAble: true,
                      analyticName: .homeWalletBuyOptions,
@@ -423,6 +427,83 @@ extension ViewPullUpDefaultConfiguration {
               cancelButton: .continueButton,
               analyticName: .sendMaxCryptoInfo)
     }
+    
+    static func showUserDidNotSetRecordToDomainToSendCryptoPullUp(domainName: String,
+                                                                  chatCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .squareInfo,
+                                 size: .large),
+                     title: .text(String.Constants.noRecordsToSendCryptoPullUpTitle.localized(domainName)),
+                     subtitle: .label(.text(String.Constants.noRecordsToSendCryptoMessage.localized())),
+                     actionButton: .main(content: .init(title: String.Constants.chatToNotify.localized(),
+                                                        analyticsName: .messaging,
+                                                        action: chatCallback)),
+                     cancelButton: .secondary(content: .init(title: String.Constants.gotIt.localized(),
+                                                             analyticsName: .gotIt,
+                                                             action: nil)),
+                     dismissAble: true,
+                     analyticName: .noRecordsSetToSendCrypto,
+                     dismissCallback: nil)
+    }
+ 
+    static func showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        var icon: UIImage?
+        if User.instance.getSettings().touchIdActivated,
+           let image = appContext.authentificationService.biometricIcon {
+            icon = image
+        }
+        return .init(icon: .init(icon: .paperPlaneTopRightSend,
+                                 size: .small),
+                     title: .text(String.Constants.sendCryptoFirstTimePullUpTitle.localized()),
+                     subtitle: .label(.text(String.Constants.sendCryptoFirstTimePullUpSubtitle.localized())),
+                     actionButton: .secondary(content: .init(title: String.Constants.reviewTxAgain.localized(),
+                                                             analyticsName: .reviewTxAgain,
+                                                             action: nil)),
+                     cancelButton: .main(content: .init(title: String.Constants.confirmAndSend.localized(),
+                                                        icon: icon,
+                                                        analyticsName: .confirm,
+                                                        action: confirmCallback)),
+                     dismissAble: true,
+                     analyticName: .sendCryptoForTheFirstTimeConfirmation,
+                     dismissCallback: nil)
+    }
+    
+    static func loginOptionsSelectionPullUp(selectionCallback: @escaping (LoginProvider)->()) -> ViewPullUpDefaultConfiguration {
+        var selectedItem: LoginProvider?
+        
+        return .init(title: .text(String.Constants.loginWithWebTitle.localized()),
+                     subtitle: .label(.text(String.Constants.loginWithWebSubtitle.localized())),
+                     items: LoginProvider.allCases,
+                     itemSelectedCallback: { item in
+            selectedItem = item as? LoginProvider
+        },
+                     dismissAble: true,
+                     analyticName: .settingsLoginSelection,
+                     dismissCallback: {
+            if let selectedItem {
+                selectionCallback(selectedItem)
+            }
+        })
+    }
+    
+    static func askToReconnectMPCWalletPullUp(walletAddress: HexAddress,
+                                              removeCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .trashFill,
+                                 size: .small),
+                     title: .text(String.Constants.removeMPCWalletPullUpTitle.localized()),
+                     subtitle: .label(.text(String.Constants.removeMPCWalletPullUpSubtitle.localized())),
+                     actionButton: .primaryDanger(content: .init(title: String.Constants.removeWallet.localized(),
+                                                        analyticsName: .walletRemove,
+                                                        action: {
+            removeCallback()
+        })),
+                     cancelButton: .secondary(content: .init(title: String.Constants.cancel.localized(),
+                                                             analyticsName: .cancel,
+                                                             action: nil)),
+                     dismissAble: true,
+                     analyticName: .removeMPCWalletConfirmation,
+                     dismissCallback: nil)
+    }
+    
 }
 
 // MARK: - Open methods

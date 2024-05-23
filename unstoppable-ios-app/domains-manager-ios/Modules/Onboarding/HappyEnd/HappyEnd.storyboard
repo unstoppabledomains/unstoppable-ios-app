@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,7 +23,7 @@
                                     <constraint firstAttribute="width" secondItem="G4f-ZS-o71" secondAttribute="height" id="BLv-98-IgM"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Nx-Hs-8Tp" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Nx-Hs-8Tp" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
                                 <rect key="frame" x="16" y="748" width="358" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="5hI-BB-7aK"/>
@@ -35,29 +35,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Cqb-Qe-4Vj">
-                                <rect key="frame" x="16" y="672" width="358" height="60"/>
+                                <rect key="frame" x="16" y="691" width="358" height="33"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Av5-8E-VN5">
-                                        <rect key="frame" x="0.0" y="0.0" width="277" height="60"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" horizontalHuggingPriority="251" placeholderIntrinsicWidth="20" placeholderIntrinsicHeight="20" translatesAutoresizingMaskIntoConstraints="NO" id="0Ed-WU-IVh" customClass="UDCheckBox" customModule="domains_manager_ios" customModuleProvider="target">
-                                                <rect key="frame" x="10" y="10" width="257" height="40"/>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                <connections>
-                                                    <action selector="didTapSwitch:" destination="Y6W-OH-hqX" eventType="valueChanged" id="Ea2-AS-DVv"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="0Ed-WU-IVh" secondAttribute="trailing" constant="10" id="GYO-0e-Jfg"/>
-                                            <constraint firstItem="0Ed-WU-IVh" firstAttribute="top" secondItem="Av5-8E-VN5" secondAttribute="top" constant="10" id="WQS-8F-oZ8"/>
-                                            <constraint firstAttribute="bottom" secondItem="0Ed-WU-IVh" secondAttribute="bottom" constant="10" id="kbl-ax-c9i"/>
-                                            <constraint firstItem="0Ed-WU-IVh" firstAttribute="leading" secondItem="Av5-8E-VN5" secondAttribute="leading" constant="10" id="ue2-AU-C2r"/>
-                                        </constraints>
-                                    </view>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Agreement" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kO4-gW-kLR">
-                                        <rect key="frame" x="277" y="13.666666666666629" width="81" height="33"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="358" height="33"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" systemColor="labelColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -105,7 +86,7 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="4Nx-Hs-8Tp" secondAttribute="bottom" constant="14" id="Ryk-bX-bUN"/>
                             <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="16" id="UAx-iF-4S1"/>
                             <constraint firstItem="Cqb-Qe-4Vj" firstAttribute="leading" secondItem="4Nx-Hs-8Tp" secondAttribute="leading" id="Usq-jm-vph"/>
-                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="top" secondItem="Cqb-Qe-4Vj" secondAttribute="bottom" constant="16" id="VuB-1Z-Fgg"/>
+                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="top" secondItem="Cqb-Qe-4Vj" secondAttribute="bottom" constant="24" id="VuB-1Z-Fgg"/>
                             <constraint firstItem="e5l-zi-B00" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="XAH-Ds-Ifd"/>
                             <constraint firstItem="G4f-ZS-o71" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="gdp-kc-vbv"/>
                             <constraint firstItem="G4f-ZS-o71" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="mjr-71-0NN"/>
@@ -126,8 +107,6 @@
                     <connections>
                         <outlet property="agreementStackView" destination="Cqb-Qe-4Vj" id="kvQ-FR-1YN"/>
                         <outlet property="agreementTextView" destination="kO4-gW-kLR" id="Df5-o0-9Pv"/>
-                        <outlet property="checkbox" destination="0Ed-WU-IVh" id="JkQ-D2-m2H"/>
-                        <outlet property="checkboxContainer" destination="Av5-8E-VN5" id="6Im-dX-fuH"/>
                         <outlet property="confettiImageView" destination="G4f-ZS-o71" id="NfR-0q-rzZ"/>
                         <outlet property="getStartedButton" destination="4Nx-Hs-8Tp" id="THg-SA-8Ws"/>
                         <outlet property="subtitleLabel" destination="hVr-d4-qGj" id="5oa-xm-2SU"/>

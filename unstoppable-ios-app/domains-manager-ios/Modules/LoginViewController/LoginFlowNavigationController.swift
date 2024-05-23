@@ -46,7 +46,8 @@ final class LoginFlowNavigationController: CNavigationController {
         }
         
         if isLastViewController(topViewController) {
-            return cNavigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: true)
+            return nil
         }
         return super.popViewController(animated: animated, completion: completion)
     }
@@ -95,19 +96,23 @@ private extension LoginFlowNavigationController {
     }
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
-        viewController is ParkedDomainsFoundViewController ||
-        viewController is NoParkedDomainsFoundViewController ||
-        viewController is LoginViewController
+        if viewController is ParkedDomainsFoundViewController ||
+            viewController is NoParkedDomainsFoundViewController ||
+            viewController is LoginViewController {
+            return true
+        } else if case .email = mode,
+                  viewController is LoginWithEmailViewController {
+            return true
+        }
+        return false
     }
     
     func dismiss(result: Result) {
         if let vc = presentedViewController {
             vc.dismiss(animated: true)
         }
-        cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let loggedInCallback = self.loggedInCallback
         loggedInCallback?(result)
-        self.cNavigationController?.popViewController(animated: true) 
     }
     
     func setSwipeGestureEnabledForCurrentState() {
@@ -171,6 +176,15 @@ private extension LoginFlowNavigationController {
         setupBackButtonAlwaysVisible()
         
         switch mode {
+        case .email:
+            if let initialViewController = createStep(.loginWithEmailAndPassword) {
+                setViewControllers([initialViewController], animated: false)
+            }
+        case .authorized(let provider):
+            setViewControllers([UIViewController()], animated: false)
+            Task {
+                try? await handle(action: .authorized(provider))
+            }
         case .default, .onboarding:
             if let initialViewController = createStep(.selectLoginOption) {
                 setViewControllers([initialViewController], animated: false)
@@ -233,6 +247,8 @@ private extension LoginFlowNavigationController {
 extension LoginFlowNavigationController {
     enum Mode {
         case `default`
+        case email
+        case authorized(LoginProvider)
         case onboarding
     }
     
@@ -259,12 +275,15 @@ extension LoginFlowNavigationController {
 
 
 import SwiftUI
+@MainActor
 struct LoginFlowNavigationControllerWrapper: UIViewControllerRepresentable {
     
     let mode: LoginFlowNavigationController.Mode
+    var callback: LoginFlowNavigationController.LoggedInCallback? = nil
     
     func makeUIViewController(context: Context) -> UIViewController {
         let vc = LoginFlowNavigationController(mode: mode)
+        vc.loggedInCallback = callback
         let nav = EmptyRootCNavigationController(rootViewController: vc)
         return nav
     }

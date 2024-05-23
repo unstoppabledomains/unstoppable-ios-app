@@ -260,7 +260,7 @@ private extension PushRESTAPIService {
     }
     
     func getCurrentChainId() -> Int {
-        let network: BlockchainNetwork = User.instance.getSettings().isTestnetUsed ? .ethGoerli : .ethMainnet
+        let network: BlockchainNetwork = User.instance.getSettings().isTestnetUsed ? .ethSepolia : .ethMainnet
         return network.rawValue
     }
 }
@@ -315,19 +315,5 @@ extension PushRESTAPIService {
     struct InboxResponse: Codable {
         @DecodeIgnoringFailed
         var feeds: [PushInboxNotification]
-    }
-}
-
-extension String {
-    func appendingURLPathComponent(_ pathComponent: String) -> String {
-        return self + "/" + pathComponent
-    }
-    
-    func appendingURLPathComponents(_ pathComponents: String...) -> String {
-        return self + "/" + pathComponents.joined(separator: "/")
-    }
-    
-    func appendingURLQueryComponents(_ components: [String : String]) -> String {
-        self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
     }
 }

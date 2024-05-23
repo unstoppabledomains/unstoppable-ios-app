@@ -32,6 +32,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
     private var cancellables: Set<AnyCancellable> = []
     @Published private(set) var selectedProfile: UserProfile
     @Published private(set) var isLoading = false
+    @Published private(set) var isCreatingProfile = false
     @Published private(set) var chatState: ChatListView.ViewState = .loading
     @Published private(set) var searchData = SearchData()
     @Published private(set) var chatsListToShow: [MessagingChatDisplayInfo] = []
@@ -59,7 +60,7 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
         self.router = router
         self.messagingService = messagingService
         router.chatsListCoordinator = self
-        appContext.userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        appContext.userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             guard self?.didResolveInitialState == true else { return }
             
             if case .wallet(let selectedWallet) = selectedProfile {
@@ -95,6 +96,15 @@ final class ChatListViewModel: ObservableObject, ViewAnalyticsLogger {
 
 // MARK: - Open methods
 extension ChatListViewModel {
+    var isChannelsSupported: Bool {
+        switch selectedProfile {
+        case .wallet(let wallet):
+            return wallet.udWallet.type != .mpc
+        case .webAccount:
+            return false
+        }
+    }
+    
     func didSelectUserToChat(_ user: MessagingChatUserDisplayInfo) {
         if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == user.wallet.normalized }) {
             openChatWith(conversationState: .existingChat(existingChat))
@@ -202,6 +212,7 @@ extension ChatListViewModel {
                                                                                                 mode: searchMode,
                                                                                                 page: 1,
                                                                                                 limit: fetchLimit,
+                                                                                                isChannelsSupported: isChannelsSupported,
                                                                                                 for: profile)
                 searchData.searchUsers = searchUsers
                 searchData.searchChannels = searchChannels
@@ -272,11 +283,11 @@ extension ChatListViewModel: ChatsListCoordinator {
         case .wallet(let wallet):
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet,
                wallet.address != selectedMessagingWallet.address  {
-                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfilesService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         case .webAccount:
             if let selectedMessagingWallet = selectedProfileWalletPair?.wallet {
-                appContext.userProfileService.setActiveProfile(.wallet(selectedMessagingWallet))
+                appContext.userProfilesService.setActiveProfile(.wallet(selectedMessagingWallet))
             }
         }
     }
@@ -721,6 +732,7 @@ private extension ChatListViewModel {
     
     func createProfileFor(in wallet: WalletEntity) {
         Task {
+            isCreatingProfile = true
             do {
                 let profile = try await messagingService.createUserMessagingProfile(for: wallet)
                 let isCommunitiesEnabled = await messagingService.isCommunitiesEnabled(for: profile)
@@ -730,6 +742,7 @@ private extension ChatListViewModel {
             } catch {
                 self.error = error
             }
+            isCreatingProfile = false
         }
     }
     

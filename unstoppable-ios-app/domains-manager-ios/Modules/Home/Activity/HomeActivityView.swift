@@ -89,18 +89,24 @@ private extension HomeActivityView {
 private extension HomeActivityView {
     @ViewBuilder
     func contentList() -> some View {
-        List {
+        if viewModel.groupedTxs.isEmpty,
+           !viewModel.isLoadingMore {
+            HomeActivityEmptyView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
             txsList()
-        }.environment(\.defaultMinListRowHeight, 28)
-        .listStyle(.plain)
-        .listRowSpacing(0)
+        }
     }
     
     @ViewBuilder
     func txsList() -> some View {
-        ForEach(viewModel.groupedTxs, id: \.self) { groupedTx in
-            HomeActivityTransactionsSectionView(groupedTxs: groupedTx)
-        }
+        List {
+            ForEach(viewModel.groupedTxs, id: \.self) { groupedTx in
+                HomeActivityTransactionsSectionView(groupedTxs: groupedTx)
+            }
+        }.environment(\.defaultMinListRowHeight, 28)
+            .listStyle(.plain)
+            .listRowSpacing(0)
     }
 }
 

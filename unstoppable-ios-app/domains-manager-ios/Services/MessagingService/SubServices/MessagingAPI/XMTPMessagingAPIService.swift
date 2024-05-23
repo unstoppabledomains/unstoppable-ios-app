@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 protocol XMTPMessagingAPIServiceDataProvider {
     func getPreviousMessagesForChat(_ chat: MessagingChat,
@@ -52,10 +52,10 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func createUser(for wallet: WalletEntity) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
         let account = WalletXMTPSigningKey(walletEntity: wallet)
-        let client = try await XMTP.Client.create(account: account,
-                                                  options: .init(api: .init(env: env,
-                                                                            isSecure: true,
-                                                                            appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
+        let client = try await XMTPiOS.Client.create(account: account,
+                                                     options: .init(api: .init(env: env,
+                                                                               isSecure: true,
+                                                                               appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
 
         try storeKeysDataFromClientIfNeeded(client, wallet: wallet, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
@@ -92,7 +92,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func migrateXMTPConsentsFromUDIfNeeded(for user: MessagingChatUserProfile,
-                                            client: XMTP.Client,
+                                            client: XMTPiOS.Client,
                                             using conversations: [Conversation]) async throws {
 
         if !UserDefaults.didMigrateXMTPConsentsListFromUD,
@@ -309,8 +309,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
 // MARK: - Private methods
 private extension XMTPMessagingAPIService {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in conversation: XMTP.Conversation,
-                     client: XMTP.Client,
+                     in conversation: XMTPiOS.Conversation,
+                     client: XMTPiOS.Client,
                      chat: MessagingChat,
                      filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let senderWallet = chat.displayInfo.thisUserDetails.wallet
@@ -484,7 +484,7 @@ private extension XMTPMessagingAPIService {
 
 // MARK: - Private methods
 private extension XMTPMessagingAPIService {
-    func storeKeysDataFromClientIfNeeded(_ client: XMTP.Client,
+    func storeKeysDataFromClientIfNeeded(_ client: XMTPiOS.Client,
                                          wallet: WalletEntity,
                                          env: XMTPEnvironment) throws {
         let wallet = wallet.ethFullAddress
@@ -506,7 +506,7 @@ private extension XMTPMessagingAPIService {
     
     func sendImageAttachment(data: Data,
                              in conversation: Conversation,
-                             client: XMTP.Client,
+                             client: XMTPiOS.Client,
                              by wallet: HexAddress) async throws -> String {
         try await sendAttachment(data: data,
                                  filename: "\(UUID().uuidString).png",
@@ -520,7 +520,7 @@ private extension XMTPMessagingAPIService {
                         filename: String,
                         mimeType: String,
                         in conversation: Conversation,
-                        client: XMTP.Client,
+                        client: XMTPiOS.Client,
                         by wallet: HexAddress) async throws -> String {
         let attachment = Attachment(filename: filename,
                                     mimeType: mimeType,
@@ -568,11 +568,11 @@ private struct WalletXMTPSigningKey {
 }
 
 extension WalletXMTPSigningKey: SigningKey {
-    func sign(_ data: Data) async throws -> XMTP.Signature {
+    func sign(_ data: Data) async throws -> XMTPiOS.Signature {
         try await sign(message: HexAddress.hexPrefix + data.dataToHexString())
     }
     
-    func sign(message: String) async throws -> XMTP.Signature {
+    func sign(message: String) async throws -> XMTPiOS.Signature {
         let newMess = "0x" + Data(message.utf8).toHexString()
         let sign = try await udWallet.getPersonalSignature(messageString: newMess, shouldTryToConverToReadable: false)
         var bytes = sign.hexToBytes()

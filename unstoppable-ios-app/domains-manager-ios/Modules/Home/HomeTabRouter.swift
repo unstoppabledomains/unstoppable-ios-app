@@ -15,6 +15,7 @@ final class HomeTabRouter: ObservableObject {
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
+    @Published var purchasingMPCWallet: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
@@ -38,12 +39,12 @@ final class HomeTabRouter: ObservableObject {
     private(set) var isUpdatingPurchasedProfiles = false
     
     init(profile: UserProfile,
-         userProfileService: UserProfileServiceProtocol = appContext.userProfileService) {
+         userProfilesService: UserProfilesServiceProtocol = appContext.userProfilesService) {
         self.profile = profile
         NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification).sink { [weak self] _ in
             self?.didRegisterShakeDevice()
         }.store(in: &cancellables)
-        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile {
                 self?.profile = selectedProfile
             }
@@ -131,7 +132,7 @@ extension HomeTabRouter {
                            wallet: WalletEntity,
                            preRequestedAction: PreRequestedProfileAction?,
                            shouldResetNavigation: Bool = true,
-                           dismissCallback: EmptyCallback?) async {
+                           sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection) async {
         if shouldResetNavigation {
             await popToRootAndWait()
             tabViewSelection = .wallets
@@ -166,7 +167,7 @@ extension HomeTabRouter {
             presentedDomain = .init(domain: domain,
                                     wallet: wallet,
                                     preRequestedProfileAction: preRequestedAction,
-                                    dismissCallback: dismissCallback)
+                                    sourceScreen: sourceScreen)
         case .parked:
             let action = await UDRouter().showDomainProfileParkedActionModule(in: topVC,
                                                                               domain: domain,
@@ -236,15 +237,16 @@ extension HomeTabRouter {
             await popToRootAndWait()
             guard let wallet = appContext.walletsDataService.selectedWallet else { return }
             
+            tabViewSelection = .wallets
             walletViewNavPath.append(HomeWalletNavigationDestination.qrScanner(selectedWallet: wallet))
         }
     }
     
-    func runAddWalletFlow(initialAction: WalletsListViewPresenter.InitialAction = .none) {
+    func runAddWalletFlow(initialAction: SettingsView.InitialAction = .none) {
         Task {
             await popToRootAndWait()
             tabViewSelection = .wallets
-            walletViewNavPath.append(HomeWalletNavigationDestination.walletsList(initialAction))
+            walletViewNavPath.append(HomeWalletNavigationDestination.settings(initialAction))
         }
     }
     
@@ -294,6 +296,7 @@ extension HomeTabRouter {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
         showingUpdatedToWalletGreetings = false
+        purchasingMPCWallet = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil
@@ -303,6 +306,38 @@ extension HomeTabRouter {
         walletViewNavPath.removeAll()
         chatTabNavPath.removeAll()
         exploreTabNavPath.removeAll()
+    }
+    
+    func startMessagingWith(walletAddress: HexAddress,
+                            domainName: DomainName?,
+                            by wallet: WalletEntity) {
+        Task {
+            var messagingProfile: MessagingChatUserProfileDisplayInfo
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
+                messagingProfile = profile
+            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
+                messagingProfile = profile
+            } else {
+                await jumpToChatsList(profile: nil)
+                return
+            }
+            
+            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
+               let chat = chatsList.first(where: { chat in
+                   switch chat.type {
+                   case .private(let details):
+                       return details.otherUser.wallet.lowercased() == walletAddress
+                   case .group, .community:
+                       return false
+                   }
+               }) {
+                await showChat(chat.id, profile: messagingProfile)
+            } else {
+                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: walletAddress.ethChecksumAddress(),
+                                                                            domainName: domainName)
+                await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
+            }
+        }
     }
 }
 
@@ -353,33 +388,7 @@ extension HomeTabRouter: PublicProfileViewDelegate {
     }
     
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by wallet: WalletEntity) {
-        Task {
-            var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: wallet) {
-                messagingProfile = profile
-            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
-                messagingProfile = profile
-            } else {
-                await jumpToChatsList(profile: nil)
-                return
-            }
-            
-            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
-               let chat = chatsList.first(where: { chat in
-                   switch chat.type {
-                   case .private(let details):
-                       return details.otherUser.wallet.lowercased() == profile.walletAddress
-                   case .group, .community:
-                       return false
-                   }
-               }) {
-                await showChat(chat.id, profile: messagingProfile)
-            } else {
-                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
-                                                                            domainName: profile.name)
-                await showChatWith(options: .newChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier)), profile: messagingProfile)
-            }
-        }
+        startMessagingWith(walletAddress: profile.walletAddress, domainName: profile.name, by: wallet)
     }
     
     func publicProfileDidSelectOpenLeaderboard() {
@@ -519,7 +528,7 @@ extension HomeTabRouter {
         let domain: DomainDisplayInfo
         let wallet: WalletEntity
         var preRequestedProfileAction: PreRequestedProfileAction? = nil
-        var dismissCallback: EmptyCallback? = nil
+        var sourceScreen: DomainProfileViewPresenter.SourceScreen = .domainsCollection
     }
     
     struct UBTSearchPresentationDetails: Identifiable {

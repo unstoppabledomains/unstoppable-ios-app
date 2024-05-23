@@ -74,8 +74,10 @@ struct HomeWalletView: View, ViewAnalyticsLogger {
                 ToolbarItem(placement: .topBarTrailing) {
                     moreActionsNavButton()
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    qrNavButtonView()
+                if viewModel.isWCSupported {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        qrNavButtonView()
+                    }
                 }
             })
             .refreshable {
@@ -103,7 +105,6 @@ private extension HomeWalletView {
                                         id: id)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             updateNavTitleVisibility()
-            
         }
     }
     
@@ -195,7 +196,7 @@ private extension HomeWalletView {
                             UDVibration.buttonTap.vibrate()
                             didSelectNotMatchingTokenDescription(description)
                             logButtonPressedAnalyticEvents(button: .notMatchingToken, 
-                                                           parameters: [.chain: description.chain.rawValue])
+                                                           parameters: [.chain: description.chain])
                         } label: {
                             HomeWalletTokenNotMatchingRowView(description: description)
                         }
@@ -209,8 +210,9 @@ private extension HomeWalletView {
     
     func didSelectNotMatchingTokenDescription(_ description: NotMatchedRecordsDescription) {
         Task {
-            let pullUpConfig = await ViewPullUpDefaultConfiguration.recordDoesNotMatchOwner(chain: description.chain,
-                                                                                            ownerAddress: description.ownerWallet, updateRecordsCallback: {
+            let pullUpConfig = await ViewPullUpDefaultConfiguration.recordDoesNotMatchOwner(ticker: description.chain,
+                                                                                            fullName: description.fullName,
+                                                                                            ownerAddress: description.ownerWallet,      updateRecordsCallback: {
                 viewModel.walletActionPressed(.profile(enabled: true))
             })
             tabRouter.pullUp = .default(pullUpConfig)
@@ -262,7 +264,7 @@ private extension HomeWalletView {
             }
         } label: {
             Image.dotsIcon
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Color.foregroundDefault)
         }
         .onButtonTap {
             logButtonPressedAnalyticEvents(button: HomeWalletView.WalletAction.more.analyticButton)

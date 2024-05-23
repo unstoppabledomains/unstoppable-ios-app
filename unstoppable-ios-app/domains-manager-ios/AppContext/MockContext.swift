@@ -9,7 +9,7 @@ import Foundation
 
 #if DEBUG
 final class MockContext: AppContextProtocol {
-    private(set) lazy var userProfileService: UserProfileServiceProtocol = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+    private(set) lazy var userProfilesService: UserProfilesServiceProtocol = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
                                                                                              
                                                                                               firebaseParkedDomainsService: firebaseParkedDomainsService,
                                                                                               walletsDataService: walletsDataService)
@@ -63,6 +63,9 @@ final class MockContext: AppContextProtocol {
                                                                                                        walletsDataService: walletsDataService)
     private(set) lazy var walletTransactionsService: WalletTransactionsServiceProtocol = WalletTransactionsService(networkService: NetworkService(),
                                                                                                                    cache: InMemoryWalletTransactionsCache())
+    private(set) lazy var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService(udWalletsService: udWalletsService,
+                                                                                           uiHandler: coreAppCoordinator)
+    private(set) lazy var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol = PreviewEcomPurchaseMPCWalletService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     

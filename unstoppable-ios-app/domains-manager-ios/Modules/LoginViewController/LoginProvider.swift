@@ -7,7 +7,8 @@
 
 import UIKit
 
-enum LoginProvider: String, Hashable, Codable {
+enum LoginProvider: String, Hashable, Codable, CaseIterable, PullUpCollectionViewCellItem {
+    
     case email, google, twitter, apple
     
     var title: String {
@@ -35,4 +36,6 @@ enum LoginProvider: String, Hashable, Codable {
             return .appleIcon
         }
     }
+    
+    var analyticsName: String { rawValue }
 }

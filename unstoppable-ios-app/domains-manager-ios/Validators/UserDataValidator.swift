@@ -8,11 +8,20 @@
 import Foundation
 
 protocol UserDataValidator {
-    func isEmailValid(_ email: String) -> Result<Void, EmailValidationError>
+    func getEmailValidationResult(_ email: String) -> Result<Void, EmailValidationError>
 }
 
 extension UserDataValidator {
-    func isEmailValid(_ email: String) -> Result<Void, EmailValidationError> {
+    func isEmailValid(_ email: String) -> Bool {
+        switch getEmailValidationResult(email) {
+        case .success:
+            return true
+        case .failure:
+            return false
+        }
+    }
+    
+    func getEmailValidationResult(_ email: String) -> Result<Void, EmailValidationError> {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         

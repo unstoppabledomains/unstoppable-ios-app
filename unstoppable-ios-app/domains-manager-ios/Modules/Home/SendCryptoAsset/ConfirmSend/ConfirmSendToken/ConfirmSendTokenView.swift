@@ -13,6 +13,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     
     @ObservedObject private var dataModel: ConfirmSendTokenDataModel
     @State private var error: Error?
+    @State private var pullUp: ViewPullUpConfigurationType?
     @State private var isLoading = false
     @State private var stateId = UUID()
     @State private var lastRefreshGasFeeTime = Date()
@@ -24,7 +25,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
                                                                          .value: String(dataModel.amount.valueOf(type: .tokenAmount,
                                                                                                           for: token)),
-                                                                         .toWallet: dataModel.receiver.walletAddress,
+                                                                         .toWallet: dataModel.data.receiverAddress,
                                                                          .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
@@ -51,6 +52,7 @@ struct ConfirmSendTokenView: View, ViewAnalyticsLogger {
         .addNavigationTopSafeAreaOffset()
         .navigationTitle(String.Constants.youAreSending.localized())
         .displayError($error)
+        .viewPullUp($pullUp)
         .onAppear(perform: onAppear)
     }
     
@@ -112,10 +114,21 @@ private extension ConfirmSendTokenView {
         stateId = UUID()
     }
     
+    func confirmButtonPressed() {
+        if UserDefaults.isSendingCryptoForTheFirstTime {
+            pullUp = .default(.showSendCryptoForTheFirstTimeConfirmationPullUp(confirmCallback: {
+                Task {
+                    await Task.sleep(seconds: 0.4)
+                    confirmSending()
+                }
+            }))
+        } else {
+            confirmSending()
+        }
+    }
+    
     func confirmSending() {
-        logButtonPressedAnalyticEvents(button: .confirm,
-                                       parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
-
+        UserDefaults.isSendingCryptoForTheFirstTime = false
         Task {
             guard let view = appContext.coreAppCoordinator.topVC else { return }
             try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
@@ -148,7 +161,9 @@ private extension ConfirmSendTokenView {
     
     @ViewBuilder
     func receiverInfoView() -> some View {
-        ConfirmSendAssetReceiverInfoView(receiver: receiver)
+        ConfirmSendAssetReceiverInfoView(receiver: receiver,
+                                         receiverAddress: dataModel.data.receiverAddress,
+                                         chainType: token.blockchainType ?? .Matic)
     }
     
     @ViewBuilder
@@ -167,19 +182,27 @@ private extension ConfirmSendTokenView {
         guard let gasFee = dataModel.gasFee else { return true }
         
         let sendData = dataModel.data
-        let balance = sendData.token.balance
-        if sendData.isSendingAllTokens() {
-            return balance >= gasFee
-        }
+        let token = sendData.token
         
-        let tokenAmountToSend = sendData.getTokenAmountValueToSend()
-        return balance > tokenAmountToSend + gasFee
+        if let parent = token.parent { // ERC20 Token
+            let parentBalance = parent.balance
+            return parentBalance >= gasFee
+        } else {
+            let balance = token.balance
+            if sendData.isSendingAllTokens() {
+                return balance >= gasFee
+            }
+            
+            let tokenAmountToSend = sendData.getTokenAmountValueToSend()
+            return balance > tokenAmountToSend + gasFee
+        }
     }
     
     @ViewBuilder
     func confirmButton() -> some View {
         VStack(spacing: isIPSE ? 6 : 16) {
-            if !hasSufficientFunds {
+            if !hasSufficientFunds,
+               !dataModel.token.isERC20Token {
                 insufficientFundsLabel()
             } else {
                 totalValueLabel()
@@ -188,7 +211,9 @@ private extension ConfirmSendTokenView {
                          icon: confirmIcon,
                          style: .large(.raisedPrimary),
                          isLoading: isLoading) {
-                confirmSending()
+                logButtonPressedAnalyticEvents(button: .confirm,
+                                               parameters: [.transactionSpeed: dataModel.txSpeed.rawValue])
+                confirmButtonPressed()
             }
                          .disabled(!hasSufficientFunds)
         }
@@ -211,7 +236,8 @@ private extension ConfirmSendTokenView {
     func totalValue(gasFee: Double) -> Double {
         let sendData = dataModel.data
         var amountToSpend = sendData.amount.valueOf(type: .tokenAmount, for: token)
-        if !sendData.isSendingAllTokens() {
+        if !sendData.isSendingAllTokens(),
+           !token.isERC20Token {
             amountToSpend += gasFee
         }
         return amountToSpend
@@ -221,7 +247,13 @@ private extension ConfirmSendTokenView {
         guard let marketUsd = token.marketUsd else { return "" }
         
         let amountToSpend = totalValue(gasFee: gasFee)
-        let amountInUSD = amountToSpend * marketUsd
+        var amountInUSD = amountToSpend * marketUsd
+        
+        if let parent = token.parent, // ERC20Token
+           let parentMarketUsd = parent.marketUsd {
+            amountInUSD += gasFee * parentMarketUsd
+        }
+        
         let formattedUSDAmount = formatCartPrice(amountInUSD)
         return formattedUSDAmount
     }
@@ -238,7 +270,11 @@ private extension ConfirmSendTokenView {
             HStack(alignment: .top) {
                 Text(String.Constants.totalEstimate.localized())
                 Spacer()
-                Text("\(totalValueInUSD(gasFee: gasFee)) \(totalValueFormatted(gasFee: gasFee))")
+                if token.isERC20Token {
+                    Text("\(totalValueInUSD(gasFee: gasFee))")
+                } else {
+                    Text("\(totalValueInUSD(gasFee: gasFee)) \(totalValueFormatted(gasFee: gasFee))")
+                }
             }
             .font(.currentFont(size: 16))
             .foregroundStyle(Color.foregroundSecondary)
@@ -247,6 +283,9 @@ private extension ConfirmSendTokenView {
     }
     
     var confirmIcon: Image? {
+        if UserDefaults.isSendingCryptoForTheFirstTime {
+            return nil
+        }
         if User.instance.getSettings().touchIdActivated,
            let icon = appContext.authentificationService.biometricIcon {
             return Image(uiImage: icon)
@@ -259,8 +298,9 @@ private extension ConfirmSendTokenView {
     PresentAsModalPreviewView {
         NavigationStack {
             ConfirmSendTokenView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
-                                             token: MockEntitiesFabric.Tokens.mockUIToken(),
-                                             amount: .usdAmount(3998234.3)))
+                                             token: MockEntitiesFabric.Tokens.mockUSDTToken(),
+                                             amount: .tokenAmount(0.999),
+                                             receiverAddress: "0x1234567890"))
             .navigationBarTitleDisplayMode(.inline)
         }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())

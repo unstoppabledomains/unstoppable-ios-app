@@ -52,7 +52,7 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
         if let domainAvatarImage {
             return .uiImage(domainAvatarImage)
         }
-        return .uiImage(wallet.displayInfo.source.listIcon)
+        return .uiImage(wallet.displayInfo.source.displayIcon)
     }
     
     func imageStyleForWallet() -> UDListItemView.ImageStyle {
@@ -62,7 +62,8 @@ private extension SendCryptoAssetSelectReceiverWalletRowView {
         if case .external = wallet.displayInfo.source {
             return .full
         }
-        return .centred()
+        return .centred(foreground: wallet.udWallet.type == .mpc ? .foregroundOnEmphasis : .foregroundDefault,
+                        background: wallet.udWallet.type == .mpc ? .backgroundAccentEmphasis : .backgroundMuted)
     }
 }
 

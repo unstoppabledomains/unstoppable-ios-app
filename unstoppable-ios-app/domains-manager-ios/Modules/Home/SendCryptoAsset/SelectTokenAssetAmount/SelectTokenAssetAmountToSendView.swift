@@ -15,11 +15,11 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
     private var token: BalanceTokenUIDescription { data.token }
 
     @State private var pullUp: ViewPullUpConfigurationType?
-    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .usdAmount
+    @State private var inputType: SendCryptoAsset.TokenAssetAmountInputType = .tokenAmount
     @State private var interpreter = NumberPadInputInterpreter()
     var analyticsName: Analytics.ViewName { .sendCryptoTokenAmountInput }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [.token: token.id,
-                                                                         .toWallet: data.receiver.walletAddress,
+                                                                         .toWallet: data.receiverAddress,
                                                                          .fromWallet: viewModel.sourceWallet.address] }
     
     var body: some View {
@@ -31,9 +31,7 @@ struct SelectTokenAssetAmountToSendView: View, ViewAnalyticsLogger {
             VStack(spacing: isIPSE ? 8 : 32) {
                 VStack(spacing: 16) {
                     tokenInfoView()
-                    UDNumberPadView(inputCallback: { inputType in
-                        interpreter.addInput(inputType)
-                    })
+                    UDNumberPadView(inputCallback: addInput)
                 }
                 confirmButton()
             }
@@ -67,7 +65,7 @@ private extension SelectTokenAssetAmountToSendView {
     }
     
     var usdInputString: String {
-        formatCartPrice(interpreter.getInterpretedNumber())
+        BalanceStringFormatter.tokensBalanceUSDString(interpreter.getInterpretedNumber())
     }
     
     @ViewBuilder
@@ -139,6 +137,8 @@ private extension SelectTokenAssetAmountToSendView {
             self.inputType = .tokenAmount
         case .tokenAmount:
             self.inputType = .usdAmount
+            let roundedNumber = interpreter.getInterpretedNumber().rounded(toDecimalPlaces: 2)
+            interpreter.setInput(roundedNumber)
         }
     }
     
@@ -246,7 +246,9 @@ private extension SelectTokenAssetAmountToSendView {
     func maxButtonPressed() {
         guard !isUsingMax else { return }
         
-        pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
+        if !token.isERC20Token {
+            pullUp = .default(.maxCryptoSendInfoPullUp(token: token))
+        }
         setMaxInputValue()
     }
     
@@ -266,7 +268,8 @@ private extension SelectTokenAssetAmountToSendView {
                                            parameters: [.value: String(getCurrentInput().valueOf(type: .tokenAmount, for: token))])
             viewModel.handleAction(.userTokenValueSelected(.init(receiver: data.receiver,
                                                                  token: token,
-                                                                 amount: getCurrentInput())))
+                                                                 amount: getCurrentInput(), 
+                                                                 receiverAddress: data.receiverAddress)))
         }
                      .disabled(interpreter.getInterpretedNumber() <= 0 || !hasSufficientFunds)
     }
@@ -279,12 +282,39 @@ private extension SelectTokenAssetAmountToSendView {
             .tokenAmount(interpreter.getInterpretedNumber())
         }
     }
+    
+    func addInput(_ input: UDNumberButtonView.InputType) {
+        switch input {
+        case .erase:
+            Void()
+        default:
+            guard isAbleToAddInput() else { return }
+        }
+        
+        interpreter.addInput(input)
+    }
+    
+    func isAbleToAddInput() -> Bool {
+        switch inputType {
+        case .usdAmount:
+            // Limit USD input to two numbers after coma
+            let components = self.interpreter.getInput().components(separatedBy: ".")
+            if components.count == 2 {
+                let afterDot = components[1]
+                return afterDot.count < 2
+            }
+            return true
+        case .tokenAmount:
+            return true
+        }
+    }
 }
 
 #Preview {
     NavigationStack {
         SelectTokenAssetAmountToSendView(data: .init(receiver: MockEntitiesFabric.SendCrypto.mockReceiver(),
-                                                      token: MockEntitiesFabric.Tokens.mockUIToken()))
+                                                     token: MockEntitiesFabric.Tokens.mockUIToken(),
+                                                     receiverAddress: "0x1234567890"))
     }
         .environmentObject(MockEntitiesFabric.SendCrypto.mockViewModel())
 }

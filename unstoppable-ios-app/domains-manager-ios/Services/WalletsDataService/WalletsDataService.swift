@@ -17,6 +17,7 @@ final class WalletsDataService {
     private let transactionsService: DomainTransactionsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletNFTsService: WalletNFTsServiceProtocol
+    private let mpcWalletsService: MPCWalletsServiceProtocol
     private let networkService: WalletsDataNetworkServiceProtocol
     private let numberOfDomainsToLoadPerTime = 30
     private var refreshDomainsTimer: AnyCancellable?
@@ -31,12 +32,14 @@ final class WalletsDataService {
          transactionsService: DomainTransactionsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          walletNFTsService: WalletNFTsServiceProtocol,
+         mpcWalletsService: MPCWalletsServiceProtocol,
          networkService: WalletsDataNetworkServiceProtocol) {
         self.domainsService = domainsService
         self.walletsService = walletsService
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletNFTsService = walletNFTsService
+        self.mpcWalletsService = mpcWalletsService
         self.networkService = networkService
         walletsService.addListener(self)
         wallets = storage.getCachedWallets()
@@ -274,7 +277,7 @@ private extension WalletsDataService {
             if pendingTransactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
             } else if pendingTransactions.containMintingInProgress(domain) {
-                domainState = .minting
+                domainState = .transfer
             } else if pendingTransactions.containReverseResolutionOperationProgress(domain) {
                 domainState = .updatingReverseResolution
             } else if pendingTransactions.containPending(domain) {
@@ -331,8 +334,7 @@ private extension WalletsDataService {
         mintingDomains.map({
             let domainName = $0.name
             let domain = DomainItem(name: domainName,
-                                    ownerWallet: $0.walletAddress,
-                                    transactionHashes: [$0.transactionHash ?? ""])
+                                    ownerWallet: $0.walletAddress)
             let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domainName })
             let order = SortDomainsManager.shared.orderFor(domainName: domainName)
             
@@ -516,14 +518,25 @@ private extension WalletsDataService {
     }
     
     func loadEssentialBalanceFor(wallet: WalletEntity) async throws -> [WalletTokenPortfolio] {
-         try await loadBalanceFor(walletAddress: wallet.address)
+        switch wallet.udWallet.type {
+        case .mpc:
+            let mpcMetadata = try wallet.udWallet.extractMPCMetadata()
+            return try await mpcWalletsService.getBalancesFor(walletMetadata: mpcMetadata)
+        default:
+            return try await loadBalanceFor(walletAddress: wallet.address)
+        }
     }
     
     func loadAdditionalBalancesFor(wallet: WalletEntity) async -> [WalletTokenPortfolio] {
-        guard let profileDomainName = wallet.profileDomainName else { return [] }
-
-        let balances = await loadAdditionalBalancesFor(domainName: profileDomainName)
-        return balances
+        switch wallet.udWallet.type {
+        case .mpc:
+            return [] // Taken from native MPC addresses
+        default:
+            guard let profileDomainName = wallet.profileDomainName else { return [] }
+            
+            let balances = await loadAdditionalBalancesFor(domainName: profileDomainName)
+            return balances
+        }
     }
     
     func loadAdditionalBalancesFor(addresses: Set<String>,

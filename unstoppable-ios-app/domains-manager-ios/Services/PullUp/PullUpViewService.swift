@@ -38,7 +38,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                       presentationOptions: PullUpNamespace.AddWalletPullUpPresentationOptions,
                                       actions: [WalletDetailsAddWalletAction]) async throws -> WalletDetailsAddWalletAction {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
+            var actions = actions
+            var actionButton: PullUpSelectionViewConfiguration.ButtonType?
+            if actions.contains(.create) {
+                actions.removeAll(where: { $0 == .create })
+                actionButton = .raisedTertiary(content: .init(title: String.Constants.createNew.localized(),
+                                                              icon: nil,
+                                                              analyticsName: .createVault,
+                                                              action: {
+                    continuation(.success(.create))
+                }))
+            }
             var selectionViewHeight: CGFloat = 72 + (CGFloat(actions.count) * PullUpCollectionViewCell.Height)
+            if actionButton != nil {
+                selectionViewHeight += 72
+            }
             
             var titleConfiguration: PullUpSelectionViewConfiguration.LabelType? = nil
             if let title = presentationOptions.title {
@@ -52,10 +66,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                 selectionViewHeight += 64
             }
             
-            
             let selectionView = PullUpSelectionView(configuration: .init(title: titleConfiguration,
                                                                          contentAlignment: .center,
-                                                                         subtitle: subtitleConfiguration),
+                                                                         subtitle: subtitleConfiguration,
+                                                                         actionButton: actionButton),
                                                     items: actions,
                                                     itemSelectedCallback: { action in
                 continuation(.success(action))
@@ -146,7 +160,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             selectionViewHeight = 420
             title = String.Constants.removeWalletAlertTitle.localized(walletInfo.walletSourceName.lowercased(), address)
             subtitle = walletInfo.isWithPrivateKey ? String.Constants.removeWalletAlertSubtitlePrivateKey.localized() : String.Constants.removeWalletAlertSubtitleRecoveryPhrase.localized()
-            buttonTitle = String.Constants.removeWallet.localized(walletInfo.walletSourceName.lowercased())
+            buttonTitle = String.Constants.removeWallet.localized()
         } else {
             selectionViewHeight = 368
             title = String.Constants.disconnectWalletAlertTitle.localized(address)
@@ -357,10 +371,6 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
-        default:
-            description = ""
-            selectionViewHeight = 304
-            Debugger.printFailure("Attempting to show domain minted on chain description for unsupported chain", critical: true)
         }
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(chain.fullName),
                                                                      contentAlignment: .center,
@@ -564,7 +574,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
+    
+    func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
+                                                 tokens: [BalanceTokenUIDescription]) {
+        let selectionViewHeight: CGFloat = CopyMultichainWalletAddressesPullUpView.calculateHeightFor(tokens: tokens,
+                                                                                                      selectionType: .copyOnly)
+        let selectionView = UIHostingController(rootView: CopyMultichainWalletAddressesPullUpView(tokens: tokens,
+                                                                                                  selectionType: .copyOnly,
+                                                                                                  withDismissIndicator: false))
+            .view!
+        
+        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
 }
+
+import SwiftUI
 
 extension PullUpViewService {
     enum PullUpError: Error {

@@ -91,7 +91,7 @@ struct WalletEntity: Codable, Hashable {
 extension WalletEntity {
     
     var displayName: String { displayInfo.displayName }
-    var domainOrDisplayName: String { rrDomain == nil ? displayName : rrDomain!.name }
+    var domainOrDisplayName: String { nameOfCurrentRepresentingDomain == nil ? displayName : nameOfCurrentRepresentingDomain! }
     var totalBalance: Double { balance.reduce(0.0, { $0 + $1.totalTokensBalance }) }
     var udDomains: [DomainDisplayInfo] { domains.filter { $0.isUDDomain }}
     var profileDomainName: String? { rrDomain?.name }
@@ -99,7 +99,7 @@ extension WalletEntity {
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
         balance.first(where: { $0.symbol == blockchainType.rawValue })
     }
-    
+    var isAbleToSetRR: Bool { displayInfo.udDomainsCount > 0 }
     func isReverseResolutionChangeAllowed() -> Bool {
         let domainsAvailableForRR = domains.availableForRRItems()
         guard !domainsAvailableForRR.isEmpty else { return false }
@@ -122,18 +122,61 @@ extension WalletEntity: Identifiable {
 }
 
 extension WalletEntity {
-    enum WalletProfileState {
-        case noProfile, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
+    enum RepresentingDomainState {
+        case noRRDomain, udDomain(DomainDisplayInfo), ensDomain(DomainDisplayInfo)
     }
     
-    func getCurrentWalletProfileState() -> WalletProfileState {
+    func getCurrentWalletRepresentingDomainState() -> RepresentingDomainState {
         if let rrDomain = rrDomain {
             return .udDomain(rrDomain)
         } else if let ensDomain = domains.first(where: { $0.isENSDomain }),
                   !isReverseResolutionChangeAllowed() {
             return .ensDomain(ensDomain)
         }
-        return .noProfile
+        return .noRRDomain
+    }
+    
+    var nameOfCurrentRepresentingDomain: String? {
+        switch getCurrentWalletRepresentingDomainState() {
+        case .udDomain(let domain), .ensDomain(let domain):
+            return domain.name
+        case .noRRDomain: 
+            return nil
+        }
+    }
+}
+
+
+extension WalletEntity {
+    enum AssetsType {
+        case singleChain(BalanceTokenUIDescription)
+        case multiChain([BalanceTokenUIDescription])
+    }
+    
+    func getAssetsType() -> AssetsType {
+        if case .mpc = udWallet.type {
+            do {
+                let mpcMetadata = try udWallet.extractMPCMetadata()
+                let tokens = try appContext.mpcWalletsService.getTokens(for: mpcMetadata)
+                return .multiChain(tokens)
+            } catch {
+                return getDefaultAssetType()
+            }
+        }
+        
+        return getDefaultAssetType()
+    }
+    
+    private func getDefaultAssetType() -> AssetsType {
+        let blockchain = BlockchainType.Ethereum
+        return .singleChain(BalanceTokenUIDescription(address: ethFullAddress,
+                                                      chain: blockchain.rawValue,
+                                                      symbol: blockchain.rawValue,
+                                                      name: blockchain.fullName,
+                                                      balance: 0,
+                                                      balanceUsd: 0,
+                                                      marketUsd: nil,
+                                                      marketPctChange24Hr: nil))
     }
 }
 
@@ -141,7 +184,7 @@ extension Array where Element == WalletEntity {
     func findWithAddress(_ address: HexAddress?) -> Element? {
         guard let address = address?.normalized else { return nil }
         
-        return first(where: { $0.address == address })
+        return first(where: { $0.address.normalized == address })
     }
     
     func combinedDomains() -> [DomainDisplayInfo] {

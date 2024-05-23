@@ -11,7 +11,7 @@ import UIKit
 extension PullUpViewService {
     func showConnectedWalletInfoPullUp(in viewController: UIViewController) {
         let selectionViewHeight: CGFloat = 352
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.connectWalletExternal.localized()),
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.whatIsExternalWallet.localized()),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: .externalWalletIndicator,
                                                                                  size: .small),
@@ -22,7 +22,7 @@ extension PullUpViewService {
         showOrUpdate(in: viewController, pullUp: .connectedExternalWalletInfo, contentView: selectionView, height: selectionViewHeight)
     }
     
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
+    func showWCRequestConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
                                              in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let signTransactionView: BaseSignTransactionView
@@ -35,7 +35,10 @@ extension PullUpViewService {
             case .signMessage(let configuration):
                 let signMessageConfirmationView = SignMessageRequestConfirmationView(frame: viewFrame)
                 signMessageConfirmationView.configureWith(configuration)
-                selectionViewHeight = signMessageConfirmationView.requiredHeight()
+                
+                let displayedMessage = DisplayedMessageType(rawString: configuration.signingMessage)
+                let requiredHeight = 400 + displayedMessage.getTextViewHeight()
+                selectionViewHeight = requiredHeight
                 signTransactionView = signMessageConfirmationView
                 pullUp = .wcRequestSignMessageConfirmation
                 connectionConfiguration = configuration.connectionConfig

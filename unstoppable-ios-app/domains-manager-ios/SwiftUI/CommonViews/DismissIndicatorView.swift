@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DismissIndicatorView: View {
     
-    var color: Color = .backgroundSubtle
+    var color: Color = .foregroundSubtle
     
     var body: some View {
         HStack {

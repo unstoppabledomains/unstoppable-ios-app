@@ -8,6 +8,7 @@
 import UIKit
 
 extension MockEntitiesFabric {
+    @MainActor
     enum SendCrypto {
         
         static func mockViewModel() -> SendCryptoAssetViewModel {
@@ -15,7 +16,7 @@ extension MockEntitiesFabric {
         }
         
         static func mockReceiver() -> SendCryptoAsset.AssetReceiver {
-            .init(wallet: Wallet.mockEntities()[1])
+            .init(walletAddress: Wallet.mockEntities()[1].address)
         }
         
     }

@@ -19,12 +19,12 @@ final class ConfirmSendTokenDataModel: ObservableObject {
     var amount: SendCryptoAsset.TokenAssetAmountInput { data.amount }
     var gasFeeUsd: Double? {
         if let gasFee,
-           let marketUsd = data.token.marketUsd {
+           let marketUsd = data.token.parent?.marketUsd ?? data.token.marketUsd {
             return gasFee * marketUsd
         }
         return nil
     }
-    
+  
     init(data: SendCryptoAsset.SendTokenAssetData) {
         self.data = data
     }

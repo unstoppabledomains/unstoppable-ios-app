@@ -71,10 +71,15 @@ private extension SelectCryptoAssetToSendEmptyView {
     
     @ViewBuilder
     func actionButton() -> some View {
-        UDButtonView(text: actionButtonTitle,
-                     icon: .plusIconNav,
-                     style: .medium(.raisedTertiary),
-                     callback: actionCallback)
+        if case .tokens = assetType,
+           !Constants.isBuyCryptoEnabled {
+            EmptyView()
+        } else {
+            UDButtonView(text: actionButtonTitle,
+                         icon: .plusIconNav,
+                         style: .medium(.raisedTertiary),
+                         callback: actionCallback)
+        }
     }
     
     var actionButtonTitle: String {

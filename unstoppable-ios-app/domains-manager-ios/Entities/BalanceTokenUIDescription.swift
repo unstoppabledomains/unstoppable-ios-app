@@ -10,82 +10,98 @@ import UIKit
 struct BalanceTokenUIDescription: Hashable, Identifiable {
     var id: String { "\(chain)/\(symbol)" }
     
+    let address: String
     let chain: String
     let symbol: String
-    let gasCurrency: String
     let name: String
     let balance: Double
     let balanceUsd: Double
     var marketUsd: Double?
     var marketPctChange24Hr: Double?
-    var parentSymbol: String?
     var logoURL: URL?
-    var parentLogoURL: URL?
+    var parent: ParentDetails?
     private(set) var isSkeleton: Bool = false
+    
+    struct ParentDetails: Hashable {
+        var symbol: String
+        var balance: Double
+        var marketUsd: Double?
+        var logoURL: URL?
+        
+        init(symbol: String, balance: Double, marketUsd: Double? = nil, logoURL: URL? = nil) {
+            self.symbol = symbol
+            self.balance = balance
+            self.marketUsd = marketUsd
+            self.logoURL = logoURL
+        }
+        
+        init(token: WalletTokenPortfolio) {
+            symbol = token.symbol
+            balance = token.balanceAmt ?? 0
+            marketUsd = token.value.marketUsdAmt
+            logoURL = URL(string: token.logoUrl ?? "")
+        }
+    }
     
     static let iconSize: InitialsView.InitialsSize = .default
     static let iconStyle: InitialsView.Style = .gray
     
-    var balanceSymbol: String {
-        // For 'parent' token we show gas currency (which is ETH for Base token)
-        if parentSymbol == nil {
-            return gasCurrency
-        }
-        return symbol
-    }
+    var isERC20Token: Bool { parent != nil }
     
     init(walletBalance: WalletTokenPortfolio) {
+        self.address = walletBalance.address
         self.chain = walletBalance.symbol
-        self.symbol = walletBalance.symbol
-        self.gasCurrency = walletBalance.gasCurrency
+        self.symbol = walletBalance.gasCurrency
         self.name = walletBalance.name
-        self.balance = walletBalance.balanceAmt
-        self.balanceUsd = walletBalance.value.walletUsdAmt
+        self.balance = walletBalance.balanceAmt ?? 0
+        self.balanceUsd = walletBalance.value.walletUsdAmt ?? 0
         self.marketUsd = walletBalance.value.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletBalance.value.marketPctChange24Hr
         self.logoURL = URL(string: walletBalance.logoUrl ?? "")
     }
     
-    init(chain: String,
+    init(address: String,
+         chain: String,
          symbol: String,
          name: String,
          balance: Double,
          balanceUsd: Double,
          marketUsd: Double? = nil,
-         marketPctChange24Hr: Double? = nil) {
+         marketPctChange24Hr: Double? = nil,
+         parent: ParentDetails? = nil) {
+        self.address = address
         self.chain = chain
         self.symbol = symbol
-        self.gasCurrency = symbol
         self.name = name
         self.balance = balance
         self.balanceUsd = balanceUsd
         self.marketUsd = marketUsd
         self.marketPctChange24Hr = marketPctChange24Hr
+        self.parent = parent
     }
     
-    init(chain: String, walletToken: WalletTokenPortfolio.Token, parentSymbol: String, parentLogoURL: URL?) {
+    init(chain: String,
+         walletToken: WalletTokenPortfolio.Token,
+         parent: ParentDetails) {
+        self.address = walletToken.address
         self.chain = chain
         self.symbol = walletToken.symbol
-        self.gasCurrency = walletToken.gasCurrency
         self.name = walletToken.name
         self.balance = walletToken.balanceAmt
         self.balanceUsd = walletToken.value?.walletUsdAmt ?? 0
         self.marketUsd = walletToken.value?.marketUsdAmt ?? 0
         self.marketPctChange24Hr = walletToken.value?.marketPctChange24Hr
-        self.parentSymbol = parentSymbol
-        self.parentLogoURL = parentLogoURL
+        self.parent = parent
         self.logoURL = URL(string: walletToken.logoUrl ?? "")
     }
     
     static func extractFrom(walletBalance: WalletTokenPortfolio) -> [BalanceTokenUIDescription] {
         let tokenDescription = BalanceTokenUIDescription(walletBalance: walletBalance)
-        let parentSymbol = walletBalance.symbol
-        let parentLogoURL = URL(string: walletBalance.logoUrl ?? "")
+        let parent = ParentDetails(token: walletBalance)
         let chainSymbol = walletBalance.symbol
         let subTokenDescriptions = walletBalance.tokens?.map({ BalanceTokenUIDescription(chain: chainSymbol,
                                                                                          walletToken: $0,
-                                                                                         parentSymbol: parentSymbol,
-                                                                                         parentLogoURL: parentLogoURL) })
+                                                                                         parent: parent) })
             .filter({ $0.balanceUsd >= 1 }) ?? []
         
         return [tokenDescription] + subTokenDescriptions
@@ -114,8 +130,8 @@ extension BalanceTokenUIDescription {
     }
     
     func loadParentIcon(iconUpdated: @escaping (UIImage?)->()) {
-        if let parentSymbol {
-            BalanceTokenUIDescription.loadIconFor(ticker: parentSymbol, logoURL: parentLogoURL, iconUpdated: iconUpdated)
+        if let parentSymbol = parent?.symbol {
+            BalanceTokenUIDescription.loadIconFor(ticker: parentSymbol, logoURL: parent?.logoURL, iconUpdated: iconUpdated)
         } else {
             iconUpdated(nil)
         }
@@ -163,7 +179,8 @@ extension BalanceTokenUIDescription {
 // MARK: - Skeleton
 extension BalanceTokenUIDescription {
     static func createSkeletonEntity() -> BalanceTokenUIDescription {
-        var token = BalanceTokenUIDescription(chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+        var token = BalanceTokenUIDescription(address: "",
+                                              chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
         token.isSkeleton = true
         return token
     }

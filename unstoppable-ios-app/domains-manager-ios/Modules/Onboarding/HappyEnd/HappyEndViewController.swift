@@ -11,7 +11,6 @@ import UIKit
 protocol HappyEndViewControllerProtocol: BaseViewControllerProtocol {
     func setAgreement(visible: Bool)
     func setConfiguration(_ configuration: HappyEndViewController.Configuration)
-    func setActionButtonEnabled(_ enabled: Bool)
 }
 
 final class HappyEndViewController: BaseViewController {
@@ -21,8 +20,6 @@ final class HappyEndViewController: BaseViewController {
     @IBOutlet private weak var confettiImageView: ConfettiImageView!
     @IBOutlet private weak var agreementTextView: UITextView!
     @IBOutlet private weak var getStartedButton: MainButton!
-    @IBOutlet private weak var checkboxContainer: UIView!
-    @IBOutlet private weak var checkbox: UDCheckBox!
     @IBOutlet private weak var agreementStackView: UIStackView!
     
     private let termsOfUseText = String.Constants.termsOfUse.localized()
@@ -69,28 +66,13 @@ extension HappyEndViewController: HappyEndViewControllerProtocol {
         subtitleLabel.setSubtitle(configuration.subtitle)
         getStartedButton.setTitle(configuration.actionButtonTitle, image: nil)
     }
-    
-    func setActionButtonEnabled(_ enabled: Bool) {
-        getStartedButton.isEnabled = enabled
-    }
 }
 
 // MARK: - Actions
 private extension HappyEndViewController {
-    @IBAction func didTapSwitch(_ sender: UDCheckBox) {
-        presenter.agreementSwitchValueChanged(isOn: sender.isOn)
-        logButtonPressedAnalyticEvents(button: .agreeCheckbox, parameters: [.isOn : String(checkbox.isOn)])
-    }
-    
     @IBAction func didTapGetStartedButton(_ sender: MainButton) {
         presenter.actionButtonPressed()
         logButtonPressedAnalyticEvents(button: .getStarted)
-    }
-    
-    @objc func didTapCheckboxContainer() {
-        UDVibration.buttonTap.vibrate()
-        presenter.agreementSwitchValueChanged(isOn: checkbox.isOn)
-        logButtonPressedAnalyticEvents(button: .agreeCheckbox, parameters: [.isOn : String(checkbox.isOn)])
     }
     
     @objc func didTapAgreementTextView(_ tapGesture: UITapGestureRecognizer) {
@@ -104,8 +86,6 @@ private extension HappyEndViewController {
                       let url = String.Links.privacyPolicy.url {
                 logButtonPressedAnalyticEvents(button: .privacyPolicy)
                 WebViewController.show(in: self, withURL: url)
-            } else {
-                didTapCheckboxContainer()
             }
         }
     }
@@ -125,24 +105,25 @@ private extension HappyEndViewController {
 // MARK: - Setup methods
 private extension HappyEndViewController {
     func setup() {
-        getStartedButton.isEnabled = false
         localizeContent()
-        checkboxContainer.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCheckboxContainer)))
         agreementTextView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapAgreementTextView)))
         
-        checkbox.accessibilityIdentifier = "Happy End Agree Checkbox"
         getStartedButton.accessibilityIdentifier = "Happy End Get Started Button"
     }
     
     func localizeContent() {
         agreementTextView.isUserInteractionEnabled = true
+        agreementTextView.textAlignment = .center
         agreementTextView.setAttributedTextWith(text: String.Constants.agreeToTUAndPP.localized(),
-                                                font: .currentFont(withSize: 14, weight: .medium),
-                                                textColor: .foregroundDefault)
+                                                font: .currentFont(withSize: 13, weight: .regular),
+                                                textColor: .foregroundSecondary,
+                                                lineHeight: 20)
         agreementTextView.updateAttributesOf(text: termsOfUseText,
-                                             textColor: .foregroundAccent)
+                                             withFont: .currentFont(withSize: 13, weight: .medium),
+                                             textColor: .foregroundDefault)
         agreementTextView.updateAttributesOf(text: privacyPolicyText,
-                                             textColor: .foregroundAccent)
+                                             withFont: .currentFont(withSize: 13, weight: .medium),
+                                             textColor: .foregroundDefault)
     }
 }
 
@@ -161,4 +142,12 @@ extension HappyEndViewController {
                                               subtitle: String.Constants.domainsPurchasedSubtitle.localized(),
                                               actionButtonTitle: String.Constants.goToDomains.localized())
     }
+}
+
+@available(iOS 17, *)
+#Preview {
+    let vc = HappyEndViewController.instance()
+    let presenter = OnboardingHappyEndViewPresenter(view: vc)
+    vc.presenter = presenter
+    return vc
 }

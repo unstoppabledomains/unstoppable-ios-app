@@ -60,6 +60,8 @@ struct Constants {
     static let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
+    static let baseChainSymbol: String = "BASE"
+    static let isBuyCryptoEnabled = false
 
     
     // Shake to find
@@ -185,11 +187,9 @@ struct Env {
 
 enum BlockchainNetwork: Int, CaseIterable {
     case ethMainnet = 1
-    case ethRinkby = 4
-    case ethGoerli = 5
     case ethSepolia = 11155111
     case polygonMainnet = 137
-    case polygonMumbai = 80001
+    case polygonAmoy = 80002
     
     var id: Int { rawValue }
     
@@ -197,16 +197,12 @@ enum BlockchainNetwork: Int, CaseIterable {
         switch self {
         case .ethMainnet:
             return "mainnet"
-        case .ethRinkby:
-            return "rinkby"
-        case .ethGoerli:
-            return "goerli"
         case .ethSepolia:
             return "sepolia"
         case .polygonMainnet:
             return "polygon-mainnet"
-        case .polygonMumbai:
-            return "polygon-mumbai"
+        case .polygonAmoy:
+            return "polygon-amoy"
         }
     }
     
@@ -214,16 +210,12 @@ enum BlockchainNetwork: Int, CaseIterable {
         switch self {
         case .ethMainnet:
             return "Ethereum"
-        case .ethRinkby:
-            return "Ethereum: Rinkby"
-        case .ethGoerli:
-            return "Ethereum: Goerli"
         case .ethSepolia:
             return "Ethereum: Sepolia"
         case .polygonMainnet:
             return "Polygon"
-        case .polygonMumbai:
-            return "Polygon: Mumbai"
+        case .polygonAmoy:
+            return "Polygon: Amoy"
         }
     }
 }

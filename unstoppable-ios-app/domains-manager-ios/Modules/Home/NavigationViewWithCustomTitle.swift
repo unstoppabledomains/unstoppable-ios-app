@@ -11,6 +11,8 @@ typealias EmptyNavigationPath = Array<Int>
 
 struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : MutableCollection, Data : RandomAccessCollection, Data : RangeReplaceableCollection, Data.Element : Hashable {
     
+    @Environment(\.dismiss) var dismiss
+    
     @ViewBuilder var content: () -> Content
     var navigationStateProvider: (NavigationStateManager)->()
     @Binding var path: Data
@@ -28,10 +30,16 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
                 AnyView(customTitle())
                     .offset(y: currentTitleOffset + navigationState.yOffset)
                     .frame(maxWidth: 240)
+                    .id(navigationState.customViewID)
             }
         })
         .onAppear(perform: {
             navigationStateProvider(navigationState)
+        })
+        .onChange(of: navigationState.dismiss, perform: { newValue in
+            if newValue {
+                self.dismiss()
+            }
         })
         .presentationStyleChecker(viewPresentationStyle: $viewPresentationStyle)
     }
@@ -48,14 +56,7 @@ struct NavigationViewWithCustomTitle<Content: View, Data>: View where Data : Mut
     
     @MainActor
     private var currentDeviceOffset: CGFloat {
-        if #available(iOS 17, *) {
-            if (SceneDelegate.shared?.window?.safeAreaInsets.bottom ?? 0) > 0 {
-                return 6
-            }
-            return 11
-        } else {
-            return 11
-        }
+        return 11
     }
 }
 
@@ -76,6 +77,7 @@ final class NavigationStateManager: ObservableObject, Hashable {
     
     @Published var isTitleVisible: Bool = false
     @Published var yOffset: CGFloat = 0
+    @Published var dismiss: Bool = false
     @Published private(set) var customTitle: (() -> any View)?
     private(set) var customViewID: String?
     

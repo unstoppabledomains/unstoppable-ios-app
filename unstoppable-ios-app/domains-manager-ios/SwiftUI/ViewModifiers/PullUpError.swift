@@ -65,3 +65,14 @@ struct PullUpErrorConfiguration {
         let analyticsName: Analytics.Button
     }
 }
+
+extension PullUpErrorConfiguration {
+    static func loadCalculationsError(tryAgainCallback: @escaping MainActorAsyncCallback) -> PullUpErrorConfiguration {
+        .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
+              subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
+              primaryAction: .init(title: String.Constants.tryAgain.localized(),
+                                   callback: tryAgainCallback,
+                                   analyticsName: .tryAgain),
+              analyticsName: .purchaseDomainsCalculationsError)
+    }
+}

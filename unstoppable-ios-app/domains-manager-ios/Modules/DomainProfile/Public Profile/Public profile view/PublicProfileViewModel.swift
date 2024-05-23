@@ -296,17 +296,10 @@ extension PublicProfileView {
         private func setupViewingDomain(requiredWallet: WalletEntity?) {
             if let requiredWallet {
                 viewingDomain = requiredWallet.rrDomain
-            } else if case .wallet(let wallet) = appContext.userProfileService.selectedProfile {
+            } else if case .wallet(let wallet) = appContext.userProfilesService.selectedProfile {
                 viewingDomain = wallet.rrDomain
             }
         }
     }
     
-}
-
-func loadImageFrom(url: URL) async -> UIImage? {
-    let urlRequest = URLRequest(url: url)
-    guard let (imageData, _) = try? await URLSession.shared.data(for: urlRequest) else { return nil }
-    
-    return UIImage(data: imageData)
 }

@@ -17,7 +17,7 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
         return vc
     }
     
-    @Environment(\.userProfileService) private var userProfileService
+    @Environment(\.userProfilesService) private var userProfilesService
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var tabRouter: HomeTabRouter
 
@@ -43,6 +43,7 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
     
     enum Mode {
         case `default`, walletProfileSelection(selectedWallet: WalletEntity)
+        case walletSelection(selectedWallet: WalletEntity?, selectionCallback: (WalletEntity)->())
     }
     
 }
@@ -50,13 +51,18 @@ struct UserProfileSelectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension UserProfileSelectionView {
     func onAppear() {
-        let profiles = userProfileService.profiles
+        let profiles = userProfilesService.profiles
         switch mode {
         case .default:
-            self.selectedProfile = userProfileService.selectedProfile
+            self.selectedProfile = userProfilesService.selectedProfile
             self.profiles = profiles.filter({ $0.id != selectedProfile?.id })
         case .walletProfileSelection(let selectedWallet):
             self.selectedProfile = .wallet(selectedWallet)
+            self.profiles = profiles.filter({ $0.isWalletProfile && $0.id != selectedProfile?.id })
+        case .walletSelection(let selectedWallet, _):
+            if let selectedWallet {
+                self.selectedProfile = .wallet(selectedWallet)
+            }
             self.profiles = profiles.filter({ $0.isWalletProfile && $0.id != selectedProfile?.id })
         }
     }
@@ -101,10 +107,23 @@ private extension UserProfileSelectionView {
         }, callback: {
             UDVibration.buttonTap.vibrate()
             presentationMode.wrappedValue.dismiss()
-            userProfileService.setActiveProfile(profile)
             logButtonPressedAnalyticEvents(button: .profileSelected, parameters: [.profileId : profile.id])
+            didSelectProfile(profile)
         })
         .padding(EdgeInsets(4))
+    }
+    
+    func didSelectProfile(_ profile: UserProfile) {
+        switch mode {
+        case .default, .walletProfileSelection:
+            userProfilesService.setActiveProfile(profile)
+        case .walletSelection(_, let callback):
+            guard case .wallet(let walletEntity) = profile else {
+                return
+            }
+            
+            callback(walletEntity)
+        }
     }
     
     @ViewBuilder

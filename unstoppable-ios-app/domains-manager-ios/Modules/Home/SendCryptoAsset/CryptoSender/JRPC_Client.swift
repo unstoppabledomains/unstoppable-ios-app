@@ -12,39 +12,27 @@ struct JRPC_Client {
     static let instance = JRPC_Client()
     private init() { }
 
-    enum Error: Swift.Error {
-        case failedFetchGas
-        case failedFetchGasLimit
-    }
-    
     func fetchNonce(address: HexAddress, chainId: Int) async throws -> EthereumQuantity {
-        guard let nonce = await fetchNonce(address: address, chainId: chainId),
-              let nonceBig = BigUInt(nonce.droppedHexPrefix, radix: 16) else {
-            throw WalletConnectRequestError.failedFetchNonce
+        let nonceString = try await NetworkService().doubleAttempt {
+            try await NetworkService().getTransactionCount(address: address,
+                                                           chainId: chainId)
+        }
+        guard let nonceBig = BigUInt(nonceString.droppedHexPrefix, radix: 16) else {
+            throw NetworkService.JRPCError.failedFetchNonce
         }
         return EthereumQuantity(quantity: nonceBig)
     }
-    
-    func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
-        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
-                                                                     chainId: chainId) else {
-            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
-            return nil
-        }
-        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
-        return nonceString
-    }
-    
+        
     func fetchGasPrice(chainId: Int) async throws -> EthereumQuantity {
         guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
             Debugger.printFailure("Failed to fetch gasPrice", critical: false)
-            throw Self.Error.failedFetchGas
+            throw NetworkService.JRPCError.failedFetchGas
         }
         Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
         let gasPriceBigUInt = BigUInt(gasPrice.droppedHexPrefix, radix: 16)
         
         guard let gasPriceBigUInt else {
-            throw Self.Error.failedFetchGas
+            throw NetworkService.JRPCError.failedFetchGas
         }
         return EthereumQuantity(quantity: gasPriceBigUInt)
     }
@@ -55,16 +43,19 @@ struct JRPC_Client {
                                                                              chainId: chainId)
             guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
                 Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
-                throw Self.Error.failedFetchGasLimit
+                throw NetworkService.JRPCError.failedFetchGasLimit
             }
             Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
             return EthereumQuantity(quantity: result)
         } catch {
             if let jrpcError = error as? NetworkService.JRPCError {
                 switch jrpcError {
+                case .genericError(let message):
+                    Debugger.printFailure("Failed to fetch gas Estimate, message: \(message)", critical: false)
+                    throw NetworkService.JRPCError.failedFetchGas
                 case .gasRequiredExceedsAllowance:
                     Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                    throw WalletConnectRequestError.lowAllowance
+                    throw NetworkService.JRPCError.lowAllowance
                 default: throw WalletConnectRequestError.failedFetchGas
                 }
             } else {
@@ -79,12 +70,11 @@ struct JRPC_Client {
                         chainIdInt: Int) async throws -> String {
         
         return try await withCheckedThrowingContinuation { continuation in
-            guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
+            guard let web3 = try? getWeb3(chainIdInt: chainIdInt) else {
                 Debugger.printFailure("Failed to get net name for chain Id: \(chainIdInt)", critical: true)
                 continuation.resume(with: .failure(WalletConnectRequestError.failedToDetermineChainId))
                 return
             }
-            let web3 = Web3(rpcURL: urlString)
             
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
@@ -113,7 +103,7 @@ struct JRPC_Client {
                         }
                         continuation.resume(with: .success(result))
                     }.catch { error in
-                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription), \(error.displayTitleAndMessage())")
+                        Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription), \(error.titleAndMessage)")
                         continuation.resume(with: .failure(WalletConnectRequestError.failedSendTx))
                         return
                     }
@@ -123,6 +113,12 @@ struct JRPC_Client {
                 return
             }
         }
-        
+    }
+    
+    func getWeb3(chainIdInt: Int) throws -> Web3 {
+        guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
+            throw WalletConnectRequestError.failedToDetermineChainId
+        }
+        return Web3(rpcURL: urlString)
     }
 }

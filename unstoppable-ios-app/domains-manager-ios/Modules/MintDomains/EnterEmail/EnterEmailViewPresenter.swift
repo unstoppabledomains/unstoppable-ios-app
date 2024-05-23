@@ -52,7 +52,7 @@ extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
             } catch {
                 view?.setLoadingIndicator(active: false)
                 if let networkError = error as? NetworkLayerError,
-                   case .badResponseOrStatusCode(_, let message) = networkError,
+                   case .badResponseOrStatusCode(_, let message, _) = networkError,
                    let message,
                    let specificError = SpecificError.allCases.first(where: { message.contains($0.rawValue) }) {
                     switch specificError {

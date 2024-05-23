@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import XMTP
+import XMTPiOS
 
 struct MessagingAPIServiceHelper {
     static func getXMTPConversationFromChat(_ chat: MessagingChat,
-                                             client: XMTP.Client) throws -> XMTP.Conversation {
+                                             client: XMTPiOS.Client) throws -> XMTPiOS.Conversation {
         let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
         return metadata.encodedContainer.decode(with: client)
     }
@@ -45,8 +45,8 @@ struct MessagingAPIServiceHelper {
     }
     
     static func uploadDataToWeb3Storage(_ data: Data,
-                                 ofType type: String,
-                                 by wallet: HexAddress) async throws -> URL {
+                                        ofType type: String,
+                                        by wallet: HexAddress) async throws -> URL {
         let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet)
         let response = try await NetworkService().uploadRemoteAttachment(for: domain,
                                                                          base64: data.base64EncodedString(),

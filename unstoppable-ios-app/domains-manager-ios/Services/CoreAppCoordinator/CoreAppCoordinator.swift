@@ -119,8 +119,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
             case .showDomainProfile(let domain, let wallet):
                 await router.showDomainProfile(domain,
                                                wallet: wallet,
-                                               preRequestedAction: nil,
-                                               dismissCallback: nil)
+                                               preRequestedAction: nil)
             case .primaryDomainMinted(let primaryDomain):
                 await router.primaryDomainMinted(primaryDomain)
             case .showHomeScreenList:
@@ -147,7 +146,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 // MARK: - WalletConnectUIHandler
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
-    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
+    func getConfirmationForWCRequest(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         switch currentRoot {
         case .home:
             func awaitPullUpDisappear() async {
@@ -157,7 +156,7 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
             do {
                 Vibration.success.vibrate()
                 let domainToProcessRequest = try await pullUpViewService
-                    .showServerConnectConfirmationPullUp(for: config,
+                    .showWCRequestConfirmationPullUp(for: config,
                                                          in: topVC)
                 await topVC.dismissPullUpMenu()
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
@@ -283,6 +282,36 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
 }
 
+// MARK: - MPCWalletsUIHandler
+extension CoreAppCoordinator: MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
+        await waitForAppAuthorised()
+
+        switch currentRoot {
+        case .home(let router):
+            guard let topVC else { return }
+            await withSafeCheckedMainActorContinuation { completion in
+                UDRouter().showReconnectMPCWalletScreen(reconnectData: reconnectData,
+                                                        reconnectResultCallback: { _ in
+                    completion(Void())
+                }, in: topVC)
+            }
+        default:
+            return
+        }
+    }
+    
+    private func waitForAppAuthorised() async {
+        let isAuthorising = await SceneDelegate.shared?.isAuthorizing()
+        await Task.sleep(seconds: 0.5)
+        if isAuthorising == false,
+           SceneDelegate.shared?.sceneActivationState == .foregroundActive {
+            return
+        }
+        await waitForAppAuthorised()
+    }
+}
+
 // MARK: - Passing events
 private extension CoreAppCoordinator {
     func handleDeepLinkEvent(_ event: DeepLinkEvent) {
@@ -292,7 +321,7 @@ private extension CoreAppCoordinator {
             case .mintDomainsVerificationCode(let email, let code):
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
             case .showUserDomainProfile(let domain, let wallet, let action):
-                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action, dismissCallback: nil) }
+                Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action) }
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
             }

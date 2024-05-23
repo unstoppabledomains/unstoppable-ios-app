@@ -94,7 +94,7 @@ extension EnterEmailViewController: UDTextFieldV2Delegate {
     func didChangeText(_ udTextField: UDTextField) {
         let email = udTextField.text.trimmedSpaces
         
-        switch isEmailValid(email) {
+        switch getEmailValidationResult(email) {
         case .success:
             continueButton.isEnabled = true
         case .failure:

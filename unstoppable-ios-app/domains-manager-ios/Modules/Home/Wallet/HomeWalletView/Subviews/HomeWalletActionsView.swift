@@ -32,6 +32,7 @@ private extension HomeWalletActionsView {
         if action.subActions.isEmpty {
             walletActionButtonView(title: action.title,
                                    icon: action.icon,
+                                   tint: action.tint,
                                    isDimmed: action.isDimmed) {
                 logButtonPressedAnalyticEvents(button: action.analyticButton)
                 actionCallback(action)
@@ -54,6 +55,7 @@ private extension HomeWalletActionsView {
             } label: {
                 walletActionButtonView(title: action.title,
                                        icon: action.icon,
+                                       tint: action.tint,
                                        isDimmed: false)
             }
             .onButtonTap {
@@ -65,6 +67,7 @@ private extension HomeWalletActionsView {
     @ViewBuilder
     func walletActionButtonView(title: String,
                                 icon: Image,
+                                tint: Color,
                                 isDimmed: Bool,
                                 callback: EmptyCallback? = nil) -> some View {
         Button {
@@ -80,7 +83,7 @@ private extension HomeWalletActionsView {
                     .font(.currentFont(size: 13, weight: .medium))
                     .frame(height: 20)
             }
-            .foregroundColor(isDimmed ? .foregroundMuted : .foregroundAccent)
+            .foregroundColor(isDimmed ? .foregroundMuted : tint)
             .frame(height: 72)
             .frame(minWidth: 0, maxWidth: .infinity)
             .background(Color.backgroundOverlay)

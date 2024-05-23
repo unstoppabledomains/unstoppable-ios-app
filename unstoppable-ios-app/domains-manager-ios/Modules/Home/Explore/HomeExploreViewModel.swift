@@ -34,20 +34,20 @@ final class HomeExploreViewModel: ObservableObject, ViewAnalyticsLogger {
     private var cancellables: Set<AnyCancellable> = []
     private var socialRelationshipDetailsPublisher: AnyCancellable?
     
-    private let userProfileService: UserProfileServiceProtocol
+    private let userProfilesService: UserProfilesServiceProtocol
     private let walletsDataService: WalletsDataServiceProtocol
     private let domainProfilesService: DomainProfilesServiceProtocol
     private let searchService = DomainsGlobalSearchService()
     private let recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol
     
     init(router: HomeTabRouter,
-         userProfileService: UserProfileServiceProtocol = appContext.userProfileService,
+         userProfilesService: UserProfilesServiceProtocol = appContext.userProfilesService,
          walletsDataService: WalletsDataServiceProtocol = appContext.walletsDataService,
          domainProfilesService: DomainProfilesServiceProtocol = appContext.domainProfilesService,
          recentProfilesStorage: RecentGlobalSearchProfilesStorageProtocol = HomeExplore.RecentGlobalSearchProfilesStorage.instance) {
         self.selectedProfile = router.profile
         self.router = router
-        self.userProfileService = userProfileService
+        self.userProfilesService = userProfilesService
         self.walletsDataService = walletsDataService
         self.domainProfilesService = domainProfilesService
         self.recentProfilesStorage = recentProfilesStorage
@@ -90,8 +90,7 @@ extension HomeExploreViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: nil,
-                                           shouldResetNavigation: false,
-                                           dismissCallback: nil)
+                                           shouldResetNavigation: false)
         }
     }
     
@@ -141,7 +140,7 @@ extension HomeExploreViewModel {
 private extension HomeExploreViewModel {
     func setup() {
         setDomainsForUserWallet()
-        userProfileService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
+        userProfilesService.selectedProfilePublisher.receive(on: DispatchQueue.main).sink { [weak self] selectedProfile in
             if let selectedProfile,
                selectedProfile.id != self?.selectedProfile.id {
                 self?.selectedProfile = selectedProfile
@@ -289,10 +288,10 @@ private extension HomeExploreViewModel {
     func getSelectedUserProfileRRDomain() -> DomainDisplayInfo? {
         guard case .wallet(let wallet) = selectedProfile else { return nil }
         
-        switch wallet.getCurrentWalletProfileState() {
+        switch wallet.getCurrentWalletRepresentingDomainState() {
         case .udDomain(let domain), .ensDomain(let domain):
             return domain
-        case .noProfile:
+        case .noRRDomain:
             return nil
         }
     }

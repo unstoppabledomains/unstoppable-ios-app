@@ -51,10 +51,12 @@ protocol PullUpViewServiceProtocol {
                                              maxNumberOfWallets: Int) async
     func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,
                                                     maxNumberOfWallets: Int)
+    func showCopyMultichainWalletAddressesPullUp(in viewController: UIViewController,
+                                                 tokens: [BalanceTokenUIDescription])
     
     // MARK: - External wallet
     func showConnectedWalletInfoPullUp(in viewController: UIViewController)
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings
+    func showWCRequestConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings
     func showConnectingAppVerifiedPullUp(in viewController: UIViewController)
     func showGasFeeInfoPullUp(in viewController: UIViewController, for network: BlockchainType)
     func showNetworkNotSupportedPullUp(in viewController: UIViewController) async

@@ -57,14 +57,14 @@ extension EnvironmentValues {
 }
 
 // MARK: - User profile service
-private struct UserProfileServiceKey: EnvironmentKey {
-    static let defaultValue = appContext.userProfileService
+private struct UserProfilesServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.userProfilesService
 }
 
 extension EnvironmentValues {
-    var userProfileService: UserProfileServiceProtocol {
-        get { self[UserProfileServiceKey.self] }
-        set { self[UserProfileServiceKey.self] = newValue }
+    var userProfilesService: UserProfilesServiceProtocol {
+        get { self[UserProfilesServiceKey.self] }
+        set { self[UserProfilesServiceKey.self] = newValue }
     }
 }
 
@@ -77,5 +77,29 @@ extension EnvironmentValues {
     var domainProfilesService: DomainProfilesServiceProtocol {
         get { self[DomainProfilesServiceKey.self] }
         set { self[DomainProfilesServiceKey.self] = newValue }
+    }
+}
+
+// MARK: - MPC Wallets service
+private struct MPCWalletsServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.mpcWalletsService
+}
+
+extension EnvironmentValues {
+    var mpcWalletsService: MPCWalletsServiceProtocol {
+        get { self[MPCWalletsServiceKey.self] }
+        set { self[MPCWalletsServiceKey.self] = newValue }
+    }
+}
+
+// MARK: - MPC Wallets service
+private struct EcomPurchaseMPCWalletServiceKey: EnvironmentKey {
+    static let defaultValue = appContext.ecomPurchaseMPCWalletService
+}
+
+extension EnvironmentValues {
+    var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
+        get { self[EcomPurchaseMPCWalletServiceKey.self] }
+        set { self[EcomPurchaseMPCWalletServiceKey.self] = newValue }
     }
 }

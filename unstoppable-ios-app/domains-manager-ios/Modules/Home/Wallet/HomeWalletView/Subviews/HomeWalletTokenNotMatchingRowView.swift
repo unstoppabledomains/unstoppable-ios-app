@@ -63,7 +63,7 @@ private extension HomeWalletTokenNotMatchingRowView {
     func loadIconFor(description: HomeWalletView.NotMatchedRecordsDescription) {
         icon = nil
        
-        BalanceTokenUIDescription.loadIconFor(ticker: description.chain.rawValue, logoURL: nil) { image in
+        BalanceTokenUIDescription.loadIconFor(ticker: description.chain, logoURL: nil) { image in
             DispatchQueue.main.async {
                 self.icon = image
             }
@@ -71,7 +71,7 @@ private extension HomeWalletTokenNotMatchingRowView {
     }
     
     var title: String {
-        let fullName = description.chain.fullName
+        let fullName = description.fullName
         if description.numberOfRecordsNotSetToChain > 1 {
             return "\(fullName) (\(description.numberOfRecordsNotSetToChain))"
         }
@@ -80,7 +80,8 @@ private extension HomeWalletTokenNotMatchingRowView {
 }
 
 #Preview {
-    HomeWalletTokenNotMatchingRowView(description: .init(chain: .Ethereum,
+    HomeWalletTokenNotMatchingRowView(description: .init(chain: "ETH",
+                                                         fullName: "Ethereum",
                                                          numberOfRecordsNotSetToChain: 1,
                                                          ownerWallet: "123"))
     .frame(width: 390, height: 64)

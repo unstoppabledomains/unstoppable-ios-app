@@ -17,45 +17,9 @@ struct WalletIconSpec {
     var saturation: Float? = nil
 }
 
-// How it was generated
-enum WalletType: String, Codable {
-    case privateKeyEntered
-    case generatedLocally
-    case defaultGeneratedLocally
-    case mnemonicsEntered
-    case importedUnverified
-    
-    func getICloudLabel() -> String? {
-        switch self {
-        case .generatedLocally, .defaultGeneratedLocally: return "GENERATED"
-        case .privateKeyEntered: return "IMPORTED_BY_PRIVATE_KEY"
-        case .mnemonicsEntered: return "IMPORTED_BY_MNEMONICS"
-        default:    Debugger.printFailure("Invalid attempt to backup wallet with the type: \(self.rawValue)", critical: true)
-            return nil
-        }
-    }
-    
-    init?(iCloudLabel: String) {
-        switch iCloudLabel {
-        case "GENERATED": self = .generatedLocally
-        case "IMPORTED_BY_PRIVATE_KEY": self = .privateKeyEntered
-        case "IMPORTED_BY_MNEMONICS": self = .mnemonicsEntered
-        default:    Debugger.printFailure("Found unknown type in iCloud: \(iCloudLabel)", critical: true)
-            return nil
-        }
-    }
-}
-
-enum WalletState: String, Codable {
-    case verified // private key, seed phrase
-    case externalLinked // external wallet. Read only
-}
-
 protocol AddressContainer {
     var address: String { get }
 }
-
-
 
 struct UDWallet: Codable, @unchecked Sendable {
     enum Error: String, Swift.Error, RawValueLocalizable {
@@ -63,6 +27,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         case noWalletOwner = "No Owner Wallet Specified"
         case failedToFindWallet = "Failed to Find a Wallet"
         case failedSignature
+        case failedToFindMPCMetadata
     }
     
     struct WalletConnectionInfo: Codable {
@@ -74,22 +39,15 @@ struct UDWallet: Codable, @unchecked Sendable {
     var ethWallet: UDWalletEthereum?
     var hasBeenBackedUp: Bool? = false
     
-    var walletState: WalletState {
-        return self.isExternalConnectionActive ? .externalLinked : .verified
-    }
-    
-    var isMintingHost: Bool {
-        return walletState == .verified || walletState == .externalLinked
-    }
-    
     private var walletConnectionInfo: WalletConnectionInfo?
+    private(set) var mpcMetadata: MPCWalletMetadata?
     
     private init(aliasName: String,
-                 type: WalletType,
+                 walletType: WalletType,
                  ethWallet: UDWalletEthereum?,
                  hasBeenBackedUp: Bool = false) {
         self.aliasName = aliasName
-        self.type = type
+        self.type = walletType
         self.ethWallet = ethWallet
         self.hasBeenBackedUp = hasBeenBackedUp
     }
@@ -146,7 +104,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         switch type {
         case .Ethereum, .Matic: let wallet = UDWalletEthereum.createUnverified(address: response.address)
             return UDWallet(aliasName: aliasName,
-                            type: .importedUnverified,
+                            walletType: .importedUnverified,
                             ethWallet: wallet)
         }
     }
@@ -156,7 +114,7 @@ struct UDWallet: Codable, @unchecked Sendable {
         let name = aliasName == nil ? address : aliasName!
         let wallet = UDWalletEthereum.createUnverified(address: address)
         return UDWallet(aliasName: name,
-                        type: .importedUnverified,
+                        walletType: .importedUnverified,
                         ethWallet: wallet)
     }
     
@@ -165,7 +123,7 @@ struct UDWallet: Codable, @unchecked Sendable {
                              externalWallet: WCWalletsProvider.WalletRecord) -> UDWallet {
         let ethWallet = UDWalletEthereum.createUnverified(address: address)
         var udWallet = UDWallet(aliasName: aliasName,
-                                type: .importedUnverified,
+                                walletType: .externalLinked,
                                 ethWallet: ethWallet)
         udWallet.walletConnectionInfo = UDWallet.WalletConnectionInfo(externalWallet: externalWallet)
         
@@ -180,21 +138,21 @@ struct UDWallet: Codable, @unchecked Sendable {
         
         let mnemonics = wrappedWallet.privateSeed
         let generatedWallet: UDWallet = try await UDWallet.create(aliasName: aliasName,
-                                                                  type: .generatedLocally,
+                                                                  walletType: .generatedLocally,
                                                                   mnemonicsEthereum: mnemonics)
         return generatedWallet
     }
     
     static func createEmpty(aliasName: String) -> UDWallet {
         let generatedWallet = UDWallet(aliasName: aliasName,
-                                       type: .generatedLocally,
+                                       walletType: .generatedLocally,
                                        ethWallet: nil)
         return generatedWallet
     }
     
     
     static func create (aliasName: String,
-                        type: WalletType,
+                        walletType: WalletType,
                         mnemonicsEthereum: String,
                         hasBeenBackedUp: Bool = false) async throws -> UDWallet {
         let wrappedWallet: UDWalletEthereumWithPrivateSeed
@@ -210,12 +168,12 @@ struct UDWallet: Codable, @unchecked Sendable {
         return try create(with: wrappedWallet,
                                 aliasName: aliasName,
                                 privateKeyEthereum: privateKeyEthereum,
-                                type: type,
+                                walletType: walletType,
                                 hasBeenBackedUp: hasBeenBackedUp)
     }
     
     static func create(aliasName: String,
-                       type: WalletType,
+                       walletType: WalletType,
                        privateKeyEthereum: String,
                        hasBeenBackedUp: Bool = false) async throws -> UDWallet {
         let wrappedWallet: UDWalletEthereumWithPrivateSeed
@@ -230,14 +188,14 @@ struct UDWallet: Codable, @unchecked Sendable {
                                 aliasName: aliasName,
                                 
                                 privateKeyEthereum: privateKeyEthereum,
-                                type: type,
+                                walletType: walletType,
                                 hasBeenBackedUp: hasBeenBackedUp)
     }
     
     static private func create(with wrappedWallet: UDWalletEthereumWithPrivateSeed,
                                aliasName: String,
                                privateKeyEthereum: String,
-                               type: WalletType,
+                               walletType: WalletType,
                                hasBeenBackedUp: Bool = false) throws -> UDWallet {
         let address = wrappedWallet.ethWallet.address
         guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
@@ -248,20 +206,31 @@ struct UDWallet: Codable, @unchecked Sendable {
         KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
         
         let udWallet: UDWallet = Self.create(aliasName: aliasName,
-                                             type: type,
+                                             walletType: walletType,
                                              ethWallet: wrappedWallet.ethWallet,
                                              hasBeenBackedUp: hasBeenBackedUp)
         return udWallet
     }
     
     static func create(aliasName: String,
-                       type: WalletType,
+                       walletType: WalletType,
                        ethWallet: UDWalletEthereum,
                        hasBeenBackedUp: Bool = false) -> UDWallet {
         return UDWallet(aliasName: aliasName,
-                        type: type,
+                        walletType: walletType,
                         ethWallet: ethWallet,
                         hasBeenBackedUp: hasBeenBackedUp)
+    }
+    
+    static func createMPC(address: String,
+                          mpcMetadata: MPCWalletMetadata) -> UDWallet {
+        let ethWallet = UDWalletEthereum.createUnverified(address: address)
+        var udWallet = UDWallet(aliasName: address.normalized,
+                                walletType: .mpc,
+                                ethWallet: ethWallet)
+        udWallet.mpcMetadata = mpcMetadata
+        
+        return udWallet
     }
     
     func getAddress(for namingService: NamingService) -> String? {
@@ -286,6 +255,12 @@ struct UDWallet: Codable, @unchecked Sendable {
     
     func extractEthWallet() -> UDWalletEthereum? {
         return ethWallet
+    }
+    
+    func extractMPCMetadata() throws -> MPCWalletMetadata {
+        guard let mpcMetadata else { throw UDWallet.Error.failedToFindMPCMetadata }
+
+        return mpcMetadata
     }
 }
 
@@ -399,9 +374,9 @@ extension UDWallet: Equatable {
 
 extension UDWallet: Hashable {
     func hash(into hasher: inout Hasher) {
-        hasher.combine(extractEthWallet()?.address)
-        hasher.combine(aliasName)
-        hasher.combine(hasBeenBackedUp)
-        hasher.combine(walletState)
+        hasher.combine(self.address)
+        hasher.combine(self.aliasName)
+        hasher.combine(self.hasBeenBackedUp)
+        hasher.combine(self.type)
     }
 }

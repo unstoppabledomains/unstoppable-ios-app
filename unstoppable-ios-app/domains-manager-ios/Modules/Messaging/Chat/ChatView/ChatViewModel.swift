@@ -114,7 +114,7 @@ extension ChatViewModel {
         Task {
             if case .existingChat(let chat) = conversationState,
                case .private(let details) = chat.type {
-                _ = (try? await setUser(details.otherUser, in: chat, blocked: true))
+                _ = (try? await setUser(details.otherUser, in: chat, blocked: false))
             }
         }
     }
@@ -982,8 +982,7 @@ private extension ChatViewModel {
             await router.showDomainProfile(domain,
                                            wallet: wallet,
                                            preRequestedAction: action,
-                                           shouldResetNavigation: false,
-                                           dismissCallback: nil)
+                                           shouldResetNavigation: false)
         case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
             router.showPublicDomainProfile(of: publicDomainDisplayInfo,
                                            by: wallet,

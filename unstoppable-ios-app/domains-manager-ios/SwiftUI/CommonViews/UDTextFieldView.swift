@@ -22,12 +22,17 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .sentences
     var autocorrectionDisabled: Bool = false
+    var isSecureInput: Bool = false
+    var isErrorState: Bool = false
     var height: CGFloat = 56
     var focusedStateChangedCallback: ((Bool)->())? = nil
     @State private var state: TextFieldState = .rest
     @State private var isInspiring = false
     @FocusState private var isTextFieldFocused: Bool
     @Environment(\.isEnabled) var isEnabled
+    @State private var isSecureInputActive = true
+    @FocusState var secureInputOnFocus: Bool
+    @FocusState var secureInputOffFocus: Bool
     
     var body: some View {
         VStack {
@@ -39,7 +44,7 @@ struct UDTextFieldView: View, ViewAnalyticsLogger {
             .frame(height: height)
         }
         .frame(maxWidth: .infinity)
-        .animation(.default, value: UUID())
+        .animation(.default, value: state)
         .onAppear {
             switch focusBehaviour {
             case .default:
@@ -57,10 +62,18 @@ private extension UDTextFieldView {
     @ViewBuilder
     func getTextFieldBackground() -> some View {
         RoundedRectangle(cornerRadius: 12)
-            .fill(state.backgroundColor)
+            .fill(backgroundColor)
             .overlay {
                 currentTextFieldOverlay
             }
+    }
+    
+    var backgroundColor: Color {
+        if isErrorState {
+            .backgroundDanger
+        } else {
+            state.backgroundColor
+        }
     }
     
     var inspiringGradientColors: [Color] {
@@ -120,7 +133,7 @@ private extension UDTextFieldView {
                            height: isTextFieldVisible ? 16 : 24)
             }
             
-            TextField("", text: $text)
+            textInputView()
                 .foregroundStyle(state.textColor)
                 .placeholder(when: text.isEmpty) {
                     Text(placeholder)
@@ -138,6 +151,29 @@ private extension UDTextFieldView {
                 .frame(height: 24)
         }
     }
+    
+    @ViewBuilder
+    func textInputView() -> some View {
+        if isSecureInput {
+            secureInputField()
+        } else {
+            TextField("", text: $text)
+        }
+    }
+    
+    @ViewBuilder
+    func secureInputField() -> some View {
+        ZStack(alignment: .trailing) {
+            TextField("", text: $text)
+                .textContentType(.password)
+                .focused($secureInputOffFocus)
+                .opacity(isSecureInputActive ? 0 : 1)
+            SecureField("", text: $text)
+                .textContentType(.password)
+                .focused($secureInputOnFocus)
+                .opacity(isSecureInputActive ? 1 : 0)
+        }
+    }
 }
 
 // MARK: - Right view
@@ -147,6 +183,10 @@ private extension UDTextFieldView {
         if shouldShowRightView {
             Button {
                 UDVibration.buttonTap.vibrate()
+                if isSecureInput {
+                    isSecureInputActive.toggle()
+                    return
+                }
                 switch rightViewType {
                 case .clear:
                     text = ""
@@ -174,6 +214,9 @@ private extension UDTextFieldView {
     }
     
     var shouldShowRightView: Bool {
+        if isSecureInput {
+            return true
+        }
         switch rightViewMode {
         case .always:
             return true
@@ -190,6 +233,23 @@ private extension UDTextFieldView {
     
     @ViewBuilder
     func buildRightView() -> some View {
+        if isSecureInput {
+            buildSecureInputToggleRightView()
+        } else {
+            buildRightViewForNotSecuredInput()
+        }
+    }
+    
+    @ViewBuilder
+    func buildSecureInputToggleRightView() -> some View {
+        Image(isSecureInputActive ? "eyeIcon" : "eyeClosedIcon")
+            .resizable()
+            .squareFrame(20)
+            .foregroundStyle(Color.foregroundMuted)
+    }
+    
+    @ViewBuilder
+    func buildRightViewForNotSecuredInput() -> some View {
         switch rightViewType {
         case .clear:
             buildClearRightView()

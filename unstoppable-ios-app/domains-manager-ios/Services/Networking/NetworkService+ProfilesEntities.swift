@@ -359,12 +359,6 @@ struct BadgeDetailedInfo: Codable, Hashable {
     }
 }
 
-struct RefreshBadgesResponse: Codable {
-    let ok: Bool
-    let refresh: Bool
-    let next: Date
-}
-
 struct GeneratedMessage: Decodable {
     let message: String
     let headers: SignatureComponentHeaders
@@ -655,7 +649,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let firstTx: Date?
     let lastTx: Date?
     let blockchainScanUrl: String
-    let balanceAmt: Double
+    let balanceAmt: Double?
     let tokens: [Token]?
 //    let stats: Stats?
 //    let nfts: [NFT]?
@@ -665,7 +659,7 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let logoUrl: String?
     
     var totalTokensBalance: Double {
-        value.walletUsdAmt + (tokens?.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) }) ?? 0)
+        (value.walletUsdAmt ?? 0) + (tokens?.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) }) ?? 0)
     }
     
     struct NFT: Codable, Hashable {
@@ -692,8 +686,8 @@ struct WalletTokenPortfolio: Codable, Hashable {
     struct Value: Codable, Hashable {
         let marketUsd: String?
         let marketUsdAmt: Double?
-        let walletUsd: String
-        let walletUsdAmt: Double
+        let walletUsd: String?
+        let walletUsdAmt: Double?
         let marketPctChange24Hr: Double?
     }
     

@@ -31,7 +31,7 @@ extension UDFirebaseSigner {
     func authorizeWithGoogleSignInIdToken(_ idToken: String) async throws -> FirebaseTokenData {
         struct RequestBody: Encodable {
             var postBody: String
-            var requestUri: String = "https://unstoppabledomains.com"
+            var requestUri: String = NetworkConfig.websiteBaseUrl
             var returnIdpCredential: Bool = true
             var returnSecureToken: Bool = true
         }

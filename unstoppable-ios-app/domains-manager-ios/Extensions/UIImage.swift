@@ -31,14 +31,12 @@ extension UIImage {
     static let stopIcon = UIImage(named: "stopIcon")!
     static let infoIcon16 = UIImage(named: "infoIcon16")!
     static let infoIcon12 = UIImage(named: "infoIcon12")!
-    static let iconStar24 = UIImage(named: "iconStar24")!
 
     static let crossWhite = UIImage(named: "crossWhite")!
     static let refreshIcon = UIImage(named: "refreshIcon")!
     static let plusCircle = UIImage(named: "plusCircle")!
     static let minusCircle = UIImage(named: "minusCircle")!
     static let dotsIcon = UIImage(named: "dotsIcon")!
-    static let gearshape = UIImage(named: "gearshape")!
     static let appleIcon = UIImage(named: "appleIcon")!
     static let gasFeeIcon = UIImage(named: "gasFeeIcon")!
     static let sparklesIcon = UIImage(named: "sparklesIcon")!
@@ -81,6 +79,7 @@ extension UIImage {
     static let reverseResolutionArrows12 = UIImage(named: "reverseResolutionArrows12")!
     static let homeDomainInfoVisualisation = UIImage(named: "homeDomainInfoVisualisation")!
     static let trashIcon = UIImage(named: "trashIcon")!
+    static let trashFill = UIImage(named: "trashFill")!
     static let settingsIconAppearance = UIImage(named: "settingsIconAppearance")!
     static let infoIcon = UIImage(named: "settingsIconPrivacy")!
     static let arrowTopRight = UIImage(named: "arrowTopRight")!
@@ -168,7 +167,12 @@ extension UIImage {
     static let tildaIcon = UIImage(named: "tildaIcon")!
     static let walletExternalIcon = UIImage(named: "walletExternalIcon")!
     static let infoBubble = UIImage(named: "infoBubble")!
+    static let squareInfo = UIImage(named: "squareInfo")!
     static let vaultSafeIcon = UIImage(named: "vaultSafeIcon")!
+    static let pageText = UIImage(named: "pageText")!
+    static let shieldKeyhole = UIImage(named: "shieldKeyhole")!
+    static let backupICloud = UIImage(named: "backupICloud")!
+    static let paperPlaneTopRightSend = UIImage(named: "paperPlaneTopRightSend")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

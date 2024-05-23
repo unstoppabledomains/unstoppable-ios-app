@@ -13,8 +13,8 @@ struct HomeSettingsNavButtonView: View, ViewAnalyticsLogger {
     @Environment(\.analyticsAdditionalProperties) var additionalAppearAnalyticParameters
     
     var body: some View {
-        NavigationLink(value: HomeWalletNavigationDestination.settings) {
-            Image.gearshape
+        NavigationLink(value: HomeWalletNavigationDestination.settings(.none)) {
+            Image.settingsIcon
                 .resizable()
                 .squareFrame(24)
                 .foregroundStyle(Color.foregroundDefault)

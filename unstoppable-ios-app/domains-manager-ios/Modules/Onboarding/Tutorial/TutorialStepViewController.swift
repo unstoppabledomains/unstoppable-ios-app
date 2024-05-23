@@ -29,7 +29,7 @@ extension TutorialStepViewController {
     func configureWith(screenType: TutorialViewController.TutorialScreenType) {
         stepImageView.image = screenType.image
         let fontSize: CGFloat = deviceSize == .i4_7Inch ? 32 : 44
-        contentTopConstraint.constant = deviceSize == .i4_7Inch ? 50 : 90
+        contentTopConstraint.constant = 90
         stepNameLabel.setAttributedTextWith(text: screenType.name,
                                             font: .currentFont(withSize: fontSize, weight: .bold),
                                             textColor: .foregroundDefault)

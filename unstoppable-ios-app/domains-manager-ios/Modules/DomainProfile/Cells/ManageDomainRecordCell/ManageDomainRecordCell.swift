@@ -35,10 +35,12 @@ final class ManageDomainRecordCell: WalletAddressFieldCollectionCell {
     private var didRequestToStartEditing = false
     private var coin: CoinRecord?
     private var currencyImageLoader: CurrencyImageLoader!
+    private var tap: UITapGestureRecognizer!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
         walletAddressTF.delegate = self
         walletAddressTF.addTarget(self, action: #selector(textFieldDidEdit(_:)), for: .editingChanged)
         actionButton.setTitle("", for: .normal)
@@ -121,6 +123,11 @@ extension ManageDomainRecordCell {
             walletAddressTF.isUserInteractionEnabled = true
             walletAddressTF.resignFirstResponder()
         }
+        if walletAddressTF.isUserInteractionEnabled {
+            walletAddressTF.addGestureRecognizer(tap)
+        } else {
+            walletAddressTF.removeGestureRecognizer(tap)
+        }
         
         // Actions
         let menuTitle = actionsMenuTitle
@@ -138,9 +145,7 @@ extension ManageDomainRecordCell {
 // MARK: - UITextFieldDelegate
 extension ManageDomainRecordCell: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if !didRequestToStartEditing {
-            textEditingActionCallback?(.beginEditing)
-        } else {
+        if didRequestToStartEditing {
             checkPasteboard()
         }
         return didRequestToStartEditing
@@ -252,6 +257,11 @@ private extension ManageDomainRecordCell {
                                                             weight: .medium),
                                          textColor: style.color)
     }
+    
+    @objc func didTap() {
+        textEditingActionCallback?(.beginEditing)
+    }
+    
 }
 
 extension ManageDomainRecordCell {

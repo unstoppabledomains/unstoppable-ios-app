@@ -92,7 +92,7 @@ struct NetworkService {
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
         let data = try await makeAPIRequest(apiRequest)
-        
+        logMPC("Raw Response: \(try? JSONSerialization.jsonObject(with: data))")
         if let object = T.objectFromData(data,
                                          using: keyDecodingStrategy,
                                          dateDecodingStrategy: dateDecodingStrategy) {
@@ -102,6 +102,7 @@ struct NetworkService {
         }
     }
     
+    @discardableResult
     func makeAPIRequest(_ apiRequest: APIRequest) async throws -> Data {
         try await fetchData(for: apiRequest.url,
                             body: apiRequest.body,
@@ -170,18 +171,19 @@ struct NetworkService {
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             guard let response = response as? HTTPURLResponse else {
-                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")
+                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response", data: data)
             }
             
             if response.statusCode < 300 {
                 return data
             } else {
+                logMPC("Did fail with message: \(String(data: data, encoding: .utf8))")
                 if response.statusCode == Constants.backEndThrottleErrorCode {
                     Debugger.printWarning("Request failed due to backend throttling issue")
                     throw NetworkLayerError.backendThrottle
                 }
                 let message = extractErrorMessage(from: data)
-                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")
+                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)", data: data)
             }
         } catch {
             let error = error as NSError
@@ -251,8 +253,11 @@ struct NetworkService {
         }
         
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
-        urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
-        
+        let version = Version.getCurrentAppVersionString() ?? "version n/a"
+        urlRequest.addValue(version, forHTTPHeaderField: Self.appVersionHeaderKey)
+        let userAgent = "UnstoppableDomainsMobileIOS/\(version)"
+        urlRequest.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")
@@ -310,22 +315,15 @@ extension NetworkService {
         let paramsBuilder: ()->String
     }
     
-    enum JRPCError: Error {
-        case failedBuildUrl
-        case gasRequiredExceedsAllowance
-        case genericError(String)
-        case failedGetStatus
-        case failedParseStatusPrices
-        case failedParseInfuraPrices
-        case unknownChain
-        
-        init(message: String) {
-            if message.lowercased().starts(with: "gas required exceeds allowance") {
-                self = .gasRequiredExceedsAllowance
-            } else {
-                self = .genericError(message)
-            }
+    func doubleAttempt<T>(fetchingAction: (() async throws -> T) ) async throws -> T {
+        let fetched: T
+        do {
+            fetched = try await fetchingAction()
+        } catch {
+            try await Task.sleep(nanoseconds: 500_000_000)
+            fetched = try await fetchingAction()
         }
+        return fetched
     }
     
     func getJRPCRequest(chainId: Int,
@@ -351,18 +349,26 @@ extension NetworkService {
     
     func getTransactionCount(address: HexAddress,
                              chainId: Int) async throws -> String {
-        
-        try await getJRPCRequest(chainId: chainId,
-                       requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
-                                                    paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        let countString: String
+        do {
+            countString = try await getJRPCRequest(chainId: chainId,
+                                     requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
+                                                                  paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
+        } catch {
+            throw JRPCError.failedFetchNonce
+        }
+        return countString
     }
     
     func getGasEstimation(tx: EthereumTransaction,
                           chainId: Int) async throws -> String {
+        guard let params = tx.parameters else {
+            throw JRPCError.failedEncodeTxParameters
+        }
         
-        try await getJRPCRequest(chainId: chainId,
+        return try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_estimateGas",
-                                                    paramsBuilder: { "[\(tx.parameters), \"latest\"]"} ))
+                                                    paramsBuilder: { "[\(params), \"latest\"]"} ))
     }
     
     func getGasPrice(chainId: Int) async throws -> String {
@@ -396,7 +402,12 @@ extension NetworkService {
     
     func fetchInfuraGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
         let url = URL(string: "https://gas.api.infura.io/networks/\(chainId)/suggestedGasFees")!
-        let data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: Self.infuraBasicAuthHeader)
+        let data: Data
+        do {
+            data = try await NetworkService().fetchData(for: url, method: .get, extraHeaders: Self.infuraBasicAuthHeader)
+        } catch {
+            throw JRPCError.failedFetchInfuraGasPrices
+        }
         let jsonInf = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
         
         var priceDict: [InfuraSpeedCase: Double] = [:]
@@ -410,9 +421,9 @@ extension NetworkService {
         }
         assert(priceDict.count == Self.InfuraSpeedCase.allCases.count) // always true after forEach
         
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.low]!),
-                                  fast: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
-                                  urgent: EVMTokenAmount(gwei: priceDict[InfuraSpeedCase.high]!))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.low]!),
+                                  fast: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.medium]!),
+                                  urgent: EVMCoinAmount(gwei: priceDict[InfuraSpeedCase.high]!))
     }
     
     func getStatusGasPrices(chainId: Int) async throws -> EstimatedGasPrices {
@@ -423,18 +434,16 @@ extension NetworkService {
               let urgent = prices["fastest"] else {
             throw CryptoSender.Error.failedFetchGasPrice
         }
-        return EstimatedGasPrices(normal: EVMTokenAmount(gwei: normal),
-                                          fast: EVMTokenAmount(gwei: fast),
-                                          urgent: EVMTokenAmount(gwei: urgent))
+        return EstimatedGasPrices(normal: EVMCoinAmount(gwei: normal),
+                                          fast: EVMCoinAmount(gwei: fast),
+                                          urgent: EVMCoinAmount(gwei: urgent))
     }
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
         case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
         case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!
-        case BlockchainNetwork.ethGoerli.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
         case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
-        case BlockchainNetwork.polygonMumbai.rawValue: return try await getStatusGasPrices(env: .testnet)["MATIC"]!
         default: throw JRPCError.unknownChain
         }
     }
@@ -466,13 +475,13 @@ extension NetworkService {
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for identifier: HexAddress) async throws -> GlobalRR? {
         do {
-            guard let url = URL(string: "\(NetworkConfig.baseProfileUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
+            guard let url = URL(string: "\(NetworkConfig.baseAPIUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
             
             let data = try await NetworkService().fetchData(for: url,
                                                             method: .get)
             let response = try JSONDecoder().decode(GlobalRR.self, from: data)
             return response
-        } catch NetworkLayerError.badResponseOrStatusCode(let code, _) where code == 404 { // 404 means no RR domain or ENS domain
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
             return nil
         } catch {
             throw error
@@ -494,7 +503,7 @@ extension NetworkService {
 }
 
 extension EthereumTransaction {
-    var parameters: String {
+    var parameters: String? {
         var object: [String: String] = [:]
         if let from = self.from {
             object["from"] = from.hex()
@@ -510,8 +519,10 @@ extension EthereumTransaction {
         }
         object["data"] = data.hex()
         
-        let data = (try? JSONEncoder().encode(object)) ?? Data()
-        return String(data: data, encoding: .utf8) ?? ""
+        guard let data = try? JSONEncoder().encode(object) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
     }
 }
 
@@ -530,7 +541,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     }
     
     case creatingURLFailed
-    case badResponseOrStatusCode(code: Int, message: String?)
+    case badResponseOrStatusCode(code: Int, message: String?, data: Data)
     case parsingTxsError
     case responseFailedToParse
     case parsingDomainsError
@@ -570,7 +581,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable, Comparable {
     var rawValue: String {
         switch self {
         case .creatingURLFailed: return "creatingURLFailed"
-        case .badResponseOrStatusCode(let code, let message): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
+        case .badResponseOrStatusCode(let code, let message, _): return "BadResponseOrStatusCode: \(code) - \(message ?? "-||-")"
         case .parsingTxsError: return "parsingTxsError"
         case .responseFailedToParse: return "responseFailedToParse"
         case .parsingDomainsError: return "Failed to get domains from server"

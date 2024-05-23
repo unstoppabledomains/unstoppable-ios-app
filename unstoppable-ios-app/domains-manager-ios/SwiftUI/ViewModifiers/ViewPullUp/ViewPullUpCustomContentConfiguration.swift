@@ -37,8 +37,19 @@ extension ViewPullUpCustomContentConfiguration {
               height: 448,
               analyticName: .transferDomainConfirmation)
     }
+    
+    @MainActor
+    static func copyMultichainAddressPullUp(tokens: [BalanceTokenUIDescription],
+                                            selectionType: CopyMultichainWalletAddressesPullUpView.SelectionType) -> ViewPullUpCustomContentConfiguration {
+        .init(content: {
+            CopyMultichainWalletAddressesPullUpView(tokens: tokens,
+                                                    selectionType: selectionType)
+        },
+              height: CopyMultichainWalletAddressesPullUpView.calculateHeightFor(tokens: tokens,
+                                                                                 selectionType: selectionType),
+              analyticName: .copyMultiChainAddresses)
+    }
 }
-
 
 // MARK: - Open methods
 extension ViewPullUpCustomContentConfiguration {
@@ -56,7 +67,10 @@ extension ViewPullUpCustomContentConfiguration {
         case .signMessage(let configuration):
             let signMessageConfirmationView = SignMessageRequestConfirmationView(frame: viewFrame)
             signMessageConfirmationView.configureWith(configuration)
-            selectionViewHeight = signMessageConfirmationView.requiredHeight()
+            
+            let displayedMessage = DisplayedMessageType(rawString: configuration.signingMessage)
+            let requiredHeight = 400 + displayedMessage.getTextViewHeight()
+            selectionViewHeight = requiredHeight
             signTransactionView = signMessageConfirmationView
             pullUp = .wcRequestSignMessageConfirmation
             connectionConfiguration = configuration.connectionConfig

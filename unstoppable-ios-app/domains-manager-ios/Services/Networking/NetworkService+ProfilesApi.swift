@@ -44,7 +44,6 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     }
     
     public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
-        // https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         guard let url = Endpoint.getBadgesInfo(for: domainName).url else {
             throw NetworkLayerError.creatingURLFailed
         }
@@ -56,20 +55,18 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
         return info
     }
     
-    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
-        guard let url = Endpoint.refreshDomainBadges(for: domain).url else {
-            throw NetworkLayerError.creatingURLFailed
-        }
-        let data = try await fetchDataHandlingThrottle(for: url, method: .get)
-        guard let response = RefreshBadgesResponse.objectFromData(data,
-                                                                  dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
-            throw NetworkLayerError.failedParseProfileData
-        }
-        return response
+    public func refreshDomainBadges(for domain: DomainItem) async throws {
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        let endpoint = try Endpoint.refreshDomainBadges(for: domain,
+                                                        expires: expires,
+                                                        signature: signature)
+        
+        try await fetchDataHandlingThrottleFor(endpoint: endpoint, method: .post)
     }
     
     public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
-        // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
         guard let url = Endpoint.getBadgeDetailedInfo(for: badge).url else {
             throw NetworkLayerError.creatingURLFailed
         }
@@ -307,7 +304,7 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     @discardableResult
     private func checkIfBadSignatureErrorAndRevokeSignature(_ error: Error, for domain: DomainItem) -> Bool {
         if let detectedError = error as? NetworkLayerError,
-           case let .badResponseOrStatusCode(code, _) = detectedError,
+           case let .badResponseOrStatusCode(code, _, _) = detectedError,
            code == 403 {
             appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
             return true
@@ -404,7 +401,6 @@ extension NetworkService {
 
 // MARK: - WalletsDataNetworkServiceProtocol
 extension NetworkService: WalletsDataNetworkServiceProtocol {
-  
     func fetchProfileRecordsFor(domainName: String) async throws -> [String : String] {
         let profile = try await fetchPublicProfile(for: domainName,
                                      fields: [.records])
@@ -413,10 +409,19 @@ extension NetworkService: WalletsDataNetworkServiceProtocol {
     }
     
     func fetchCryptoPortfolioFor(wallet: String) async throws -> [WalletTokenPortfolio] {
-        let endpoint = Endpoint.getCryptoPortfolio(for: wallet)
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet, accessToken: nil)
+        return try await fetchCryptoPortfolioUsing(endpoint: endpoint)
+    }
+    
+    func fetchCryptoPortfolioForMPC(wallet: String, accessToken: String) async throws -> [WalletTokenPortfolio] {
+        let endpoint = Endpoint.getCryptoPortfolio(for: wallet, accessToken: accessToken)
+        return try await fetchCryptoPortfolioUsing(endpoint: endpoint)
+    }
+    
+    private func fetchCryptoPortfolioUsing(endpoint: Endpoint) async throws -> [WalletTokenPortfolio] {
         let response: [WalletTokenPortfolio] = try await fetchDecodableDataFor(endpoint: endpoint,
-                                                                          method: .get,
-                                                                          dateDecodingStrategy: .defaultDateDecodingStrategy())
+                                                                               method: .get,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
         return response
     }
 }

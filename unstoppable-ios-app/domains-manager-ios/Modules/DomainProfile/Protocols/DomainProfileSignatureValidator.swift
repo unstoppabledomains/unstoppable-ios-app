@@ -25,7 +25,7 @@ extension DomainProfileSignatureValidator {
             }
             
             return false
-        case .imported, .locallyGenerated:
+        case .imported, .locallyGenerated, .mpc:
             return true
         }
     }

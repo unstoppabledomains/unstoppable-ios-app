@@ -59,14 +59,10 @@ struct NetworkConfig {
     }
     
     static var baseResolveUrl: String {
-        if User.instance.getSettings().isTestnetUsed {
-            return "https://resolve.ud-staging.com"
-        } else {
-            return "https://resolve.unstoppabledomains.com"
-        }
+        baseAPIUrl + "/resolve"
     }
     
-    static var baseProfileHost: String {
+    static var baseAPIHost: String {
         if User.instance.getSettings().isTestnetUsed {
             return "api.ud-staging.com"
         } else {
@@ -74,16 +70,8 @@ struct NetworkConfig {
         }
     }
     
-    static var baseProfileUrl: String {
-        "https://\(baseProfileHost)"
-    }
-    
-    static var baseMessagingHost: String {
-        if User.instance.getSettings().isTestnetUsed {
-            return "messaging.ud-staging.com"
-        } else {
-            return "messaging.unstoppabledomains.com"
-        }
+    static var baseAPIUrl: String {
+        "https://\(baseAPIHost)"
     }
     
     private static let StagingAccessApiKey = "mob-01-stg-8792ed66-f0d6-463d-b08b-7f5667980676"
@@ -109,10 +97,50 @@ struct NetworkConfig {
     
     private static let okLinkBaseURL = "https://www.oklink.com"
     
+    private static func okLinkChainIdentifierFor(chain: String) -> String? {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+
+        switch chain {
+        case "ETH":
+            if isTestnetUsed {
+                return "sepolia-test"
+            }
+            return "eth"
+        case "MATIC":
+            if isTestnetUsed {
+                return "amoy"
+            }
+            return "polygon"
+        case "SOL":
+            if isTestnetUsed {
+                return nil
+            }
+            return "sol"
+        case "BTC":
+            if isTestnetUsed {
+                return nil
+            }
+            return "btc"
+        case "BASE":
+            if isTestnetUsed {
+                return nil
+            }
+            return "base"
+        default:
+            return nil
+        }
+    }
+    
+    static func baseNetworkScanUrl(chain: String) -> String {
+        guard let identifier = okLinkChainIdentifierFor(chain: chain) else { return "" }
+        
+        return okLinkBaseURL + "/\(identifier)"
+    }
+    
     static var basePolygonNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return okLinkBaseURL + "/mumbai"
+            return okLinkBaseURL + "/amoy"
         }
         return okLinkBaseURL + "/polygon"
     }
@@ -120,14 +148,9 @@ struct NetworkConfig {
     static var baseEthereumNetworkScanUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return okLinkBaseURL + "/goerli-test"
+            return okLinkBaseURL + "/sepolia-test"
         }
         return okLinkBaseURL + "/eth"
-    }
-    
-    static func currencyIconUrl(for currency: CoinRecord) -> String {
-        let url = "https://storage.googleapis.com/unstoppable-client-assets/images/icons/\(currency.ticker)/icon.svg"
-        return url
     }
     
     static func currencyIconUrl(for ticker: String) -> String {

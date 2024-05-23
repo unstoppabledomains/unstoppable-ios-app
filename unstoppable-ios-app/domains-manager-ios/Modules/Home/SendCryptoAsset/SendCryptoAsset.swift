@@ -57,34 +57,78 @@ extension SendCryptoAsset {
     struct AssetReceiver: Hashable {
         let walletAddress: String
         let domainName: DomainName?
-        let pfpURL: URL?
+        private(set) var pfpURL: URL?
+        private var records: [String: String] = [:]
         
-        init(wallet: WalletEntity) {
+        func addressFor(token: BalanceTokenUIDescription,
+                        in currencies: [CoinRecord]) -> String? {
+            let coinRecords = currencies.filter { $0.ticker == token.symbol }
+            let chain = resolveCoinRecordChainIdentifier(token.chain)
+            guard let tokenRecord = coinRecords.first(where: { record in
+                if record.version == nil {
+                    return token.chain == token.symbol
+                }
+                return record.version == chain    
+            }) else { return nil }
+            
+            let recordsIdentifier = tokenRecord.expandedTicker
+            return self.records[recordsIdentifier]
+        }
+        
+        private func resolveCoinRecordChainIdentifier(_ chain: String) -> String {
+            switch chain {
+            case BlockchainType.Ethereum.rawValue:
+                return "ERC20"
+            default:
+                return chain
+            }
+        }
+        
+        init(wallet: WalletEntity) async throws {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
             self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+            try await loadRecords()
         }
         
-        init(followingDomain profile: DomainProfileDisplayInfo) {
+        init(followingDomain profile: DomainProfileDisplayInfo) async throws {
             self.walletAddress = profile.ownerWallet
             self.domainName = profile.domainName
             self.pfpURL = profile.pfpURL
+            try await loadRecords()
         }
         
-        init?(globalProfile: SearchDomainProfile) {
+        init(globalProfile: SearchDomainProfile) async throws {
             guard let walletAddress = globalProfile.ownerAddress else {
                 Debugger.printFailure("Failed to create crypto asset receiver with SearchDomainProfile \(globalProfile.name)", critical: true)
-                return nil
+                throw AssetReceiverError.noWalletAddress
             }
             self.walletAddress = walletAddress
             self.domainName = globalProfile.name
             self.pfpURL = globalProfile.imagePath?.asURL
+            try await loadRecords()
         }
         
         init(walletAddress: HexAddress) {
             self.walletAddress = walletAddress
             self.domainName = nil
             self.pfpURL = nil
+        }
+        
+        mutating private func loadRecords() async throws {
+            guard let domainName else { return }
+            
+            let profile = try await appContext.domainProfilesService.fetchDomainProfileDisplayInfo(for: domainName)
+            self.records = profile.records 
+            self.pfpURL = profile.pfpURL
+        }
+        
+        enum AssetReceiverError: String, LocalizedError {
+            case noWalletAddress
+            
+            public var errorDescription: String? {
+                return rawValue
+            }
         }
     }
 }
@@ -93,16 +137,14 @@ extension SendCryptoAsset {
     struct SelectTokenAmountToSendData: Hashable {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
+        let receiverAddress: HexAddress
     }
     
     struct SendTokenAssetData: Hashable {
         let receiver: AssetReceiver
         let token: BalanceTokenUIDescription
         let amount: TokenAssetAmountInput
-        
-        var receiverAddress: HexAddress {
-            receiver.walletAddress
-        }
+        let receiverAddress: HexAddress
         
         func getTokenAmountValueToSend() -> Double {
             amount.valueOf(type: .tokenAmount, for: token)

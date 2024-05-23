@@ -10,7 +10,7 @@ import Foundation
 final class GeneralAppContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol
     
-    let userProfileService: UserProfileServiceProtocol
+    let userProfilesService: UserProfilesServiceProtocol
     let notificationsService: NotificationsServiceProtocol
     let permissionsService: PermissionsServiceProtocol
     let pullUpViewService: PullUpViewServiceProtocol
@@ -32,6 +32,8 @@ final class GeneralAppContext: AppContextProtocol {
     let walletNFTsService: WalletNFTsServiceProtocol
     let domainProfilesService: DomainProfilesServiceProtocol
     let walletTransactionsService: WalletTransactionsServiceProtocol
+    let ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol
+    let mpcWalletsService: MPCWalletsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -47,7 +49,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var appLaunchService: AppLaunchServiceProtocol = {
         AppLaunchService(coreAppCoordinator: coreAppCoordinator,
                          udWalletsService: udWalletsService, 
-                         userProfileService: userProfileService)
+                         userProfilesService: userProfilesService)
     }()
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
@@ -75,6 +77,8 @@ final class GeneralAppContext: AppContextProtocol {
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService,
+                                              uiHandler: coreAppCoordinator)
         
         // Wallets data
         walletsDataService = WalletsDataService(domainsService: udDomainsService,
@@ -82,6 +86,7 @@ final class GeneralAppContext: AppContextProtocol {
                                                 transactionsService: domainTransactionsService,
                                                 walletConnectServiceV2: walletConnectServiceV2,
                                                 walletNFTsService: walletNFTsService, 
+                                                mpcWalletsService: mpcWalletsService,
                                                 networkService: NetworkService())
         
         domainProfilesService = DomainProfilesService(storage: DomainProfileDisplayInfoCoreDataStorage(),
@@ -158,11 +163,11 @@ final class GeneralAppContext: AppContextProtocol {
         firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
                                                               firebaseSigner: firebaseSigner)
         
-        let userProfileService = UserProfileService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
+        let userProfilesService = UserProfilesService(firebaseParkedDomainsAuthenticationService: firebaseParkedDomainsAuthenticationService,
                                                 firebaseParkedDomainsService: firebaseParkedDomainsService,
                                                 walletsDataService: walletsDataService)
-        self.userProfileService = userProfileService
-        udWalletsService.addListener(userProfileService)
+        self.userProfilesService = userProfilesService
+        udWalletsService.addListener(userProfilesService)
 
         LocalNotificationsService.shared.setWith(firebaseDomainsService: firebaseParkedDomainsService)
         
@@ -173,6 +178,13 @@ final class GeneralAppContext: AppContextProtocol {
         purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebasePurchaseDomainsAuthService,
                                                                 firebaseSigner: firebaseSigner,
                                                                 preferencesService: .shared)
+        
+        let firebasePurchaseMPCWalletRefreshTokenStorage = PurchaseMPCWalletFirebaseAuthTokenStorage()
+        let ecomPurchaseMPCWalletAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                   refreshTokenStorage: firebasePurchaseMPCWalletRefreshTokenStorage)
+        ecomPurchaseMPCWalletService = EcomPurchaseMPCWalletService(firebaseAuthService: ecomPurchaseMPCWalletAuthService,
+                                                                    firebaseSigner: firebaseSigner,
+                                                                    preferencesService: .shared)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()
