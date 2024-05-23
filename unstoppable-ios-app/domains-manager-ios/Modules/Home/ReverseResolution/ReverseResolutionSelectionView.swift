@@ -146,20 +146,20 @@ private extension ReverseResolutionSelectionView {
                                                  font: .currentFont(withSize: 32, weight: .bold),
                                                  textColor: .foregroundDefault,
                                                  alignment: .center),
-                           width: UIScreen.main.bounds.width - 32,
                            updatedAttributesList: [.init(text: wallet.displayName,
-                                                         textColor: .foregroundSecondary)])
+                                                         textColor: .foregroundSecondary)], 
+                           width: UIScreen.main.bounds.width - 32)
             AttributedText(attributesList: .init(text: String.Constants.selectPrimaryDomainSubtitle.localized(wallet.address.walletAddressTruncated, wallet.displayName),
                                                  font: .currentFont(withSize: 16),
                                                  textColor: .foregroundSecondary,
                                                  alignment: .center),
-                           width: UIScreen.main.bounds.width - 32,
                            updatedAttributesList: [.init(text: wallet.displayName,
                                                          font: .currentFont(withSize: 16, weight: .medium),
                                                          textColor: .foregroundDefault),
                                                    .init(text: wallet.address.walletAddressTruncated,
                                                          font: .currentFont(withSize: 16, weight: .medium),
-                                                         textColor: .foregroundDefault)])
+                                                         textColor: .foregroundDefault)],
+                           width: UIScreen.main.bounds.width - 32)
         }
         .padding()
     }

@@ -151,9 +151,10 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         return wallet
     }
     
-    func addMPCWallet(_ wallet: UDWallet) throws {
-        guard !wallet.isAlreadyConnected() else { throw WalletError.ethWalletAlreadyExists(wallet.address) }
-        
+    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
+        if wallet.isAlreadyConnected() {
+            removeFromCacheWithoutNotification(wallet: wallet)
+        }
         store(wallet: wallet)
     }
     

@@ -282,6 +282,36 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
     
 }
 
+// MARK: - MPCWalletsUIHandler
+extension CoreAppCoordinator: MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async {
+        await waitForAppAuthorised()
+
+        switch currentRoot {
+        case .home(let router):
+            guard let topVC else { return }
+            await withSafeCheckedMainActorContinuation { completion in
+                UDRouter().showReconnectMPCWalletScreen(reconnectData: reconnectData,
+                                                        reconnectResultCallback: { _ in
+                    completion(Void())
+                }, in: topVC)
+            }
+        default:
+            return
+        }
+    }
+    
+    private func waitForAppAuthorised() async {
+        let isAuthorising = await SceneDelegate.shared?.isAuthorizing()
+        await Task.sleep(seconds: 0.5)
+        if isAuthorising == false,
+           SceneDelegate.shared?.sceneActivationState == .foregroundActive {
+            return
+        }
+        await waitForAppAuthorised()
+    }
+}
+
 // MARK: - Passing events
 private extension CoreAppCoordinator {
     func handleDeepLinkEvent(_ event: DeepLinkEvent) {

@@ -15,7 +15,7 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
     @State var credentials: MPCActivateCredentials
     @State var code: String
     let mpcWalletCreatedCallback: (UDWallet)->()
-    let changeEmailCallback: ()->()
+    var changeEmailCallback: EmptyCallback? = nil
 
     @State private var activationState: MPCWalletActivationState = .readyToActivate
     @State private var isLoading = false
@@ -59,11 +59,23 @@ struct MPCActivateWalletView: View, ViewAnalyticsLogger {
             }, changeEmailCallback: changeEmailCallback)
                 .presentationDetents([.medium])
         }
+        .navigationBarBackButtonHidden(isBackButtonHidden)
     }
 }
 
 // MARK: - Private methods
 private extension MPCActivateWalletView {
+    var isBackButtonHidden: Bool {
+        switch activationState {
+        case .readyToActivate, .activating:
+            return true
+        case .failed:
+            return false
+        case .activated:
+            return true
+        }
+    }
+    
     func onAppear() {
         activateWalletIfReady()
     }
@@ -81,9 +93,9 @@ private extension MPCActivateWalletView {
             logAnalytic(event: .willActivateMPCWallet)
             
             isLoading = true
-            let password = credentials.password
             do {
-                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code, recoveryPhrase: password)
+                let mpcWalletStepsStream = mpcWalletsService.setupMPCWalletWith(code: code,
+                                                                                credentials: credentials)
                 
                 for try await step in mpcWalletStepsStream {
                     updateForSetupMPCWalletStep(step)

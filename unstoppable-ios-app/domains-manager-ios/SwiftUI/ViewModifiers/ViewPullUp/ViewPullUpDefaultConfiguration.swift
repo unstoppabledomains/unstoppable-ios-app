@@ -485,6 +485,25 @@ extension ViewPullUpDefaultConfiguration {
         })
     }
     
+    static func askToReconnectMPCWalletPullUp(walletAddress: HexAddress,
+                                              removeCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
+        return .init(icon: .init(icon: .trashFill,
+                                 size: .small),
+                     title: .text(String.Constants.removeMPCWalletPullUpTitle.localized()),
+                     subtitle: .label(.text(String.Constants.removeMPCWalletPullUpSubtitle.localized())),
+                     actionButton: .primaryDanger(content: .init(title: String.Constants.removeWallet.localized(),
+                                                        analyticsName: .walletRemove,
+                                                        action: {
+            removeCallback()
+        })),
+                     cancelButton: .secondary(content: .init(title: String.Constants.cancel.localized(),
+                                                             analyticsName: .cancel,
+                                                             action: nil)),
+                     dismissAble: true,
+                     analyticName: .removeMPCWalletConfirmation,
+                     dismissCallback: nil)
+    }
+    
 }
 
 // MARK: - Open methods

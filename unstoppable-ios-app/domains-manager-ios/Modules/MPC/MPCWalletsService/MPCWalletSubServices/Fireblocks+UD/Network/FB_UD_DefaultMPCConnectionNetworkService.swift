@@ -114,9 +114,6 @@ extension FB_UD_MPC {
                 var includeRefreshToken: Bool = true
                 var includeBootstrapToken: Bool = true
             }
-            struct ProcessingBadResponse: Decodable {
-                let code: String
-            }
             
             do {
                 let body = Body()
@@ -129,7 +126,7 @@ extension FB_UD_MPC {
                 let response: AuthTokens = try await makeDecodableAPIRequest(request)
                 return response
             } catch NetworkLayerError.badResponseOrStatusCode(let code, let message, let data) {
-                if let processingResponse = ProcessingBadResponse.objectFromData(data),
+                if let processingResponse = APIBadResponse.objectFromData(data),
                    processingResponse.code == TransactionOperationStatus.processing.rawValue {
                     logMPC("Will wait for processing tx and try to confirm again")
                     await Task.sleep(seconds: 0.5)

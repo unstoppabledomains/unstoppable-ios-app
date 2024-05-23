@@ -145,7 +145,8 @@ extension FB_UD_MPC {
         func storeAccountsDetails(_ accountsDetails: ConnectedWalletAccountsDetails) throws { }
         func clearAccountsDetailsFor(deviceId: String) throws { }
         func retrieveAccountsDetailsFor(deviceId: String) throws -> ConnectedWalletAccountsDetails {
-            .init(deviceId: deviceId,
+            .init(email: "qq@qq.qq",
+                  deviceId: deviceId,
                   firstAccount: .init(account: .init(type: "", id: ""),
                                       assets: []),
                   accounts: [])

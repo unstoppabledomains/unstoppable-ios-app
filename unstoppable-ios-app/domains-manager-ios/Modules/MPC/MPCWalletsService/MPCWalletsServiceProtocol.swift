@@ -10,7 +10,7 @@ import Foundation
 protocol MPCWalletsServiceProtocol {
     func sendBootstrapCodeTo(email: String) async throws
     func setupMPCWalletWith(code: String,
-                            recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
+                            credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, Error>
     func signMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio]
     
@@ -28,4 +28,14 @@ protocol MPCWalletsServiceProtocol {
                         chain: String,
                         destinationAddress: String,
                         by walletMetadata: MPCWalletMetadata) async throws -> Double
+}
+
+@MainActor
+protocol MPCWalletsUIHandler {
+    func askToReconnectMPCWallet(_ reconnectData: MPCWalletReconnectData) async
+}
+
+struct MPCWalletReconnectData {
+    let wallet: UDWallet
+    let email: String
 }

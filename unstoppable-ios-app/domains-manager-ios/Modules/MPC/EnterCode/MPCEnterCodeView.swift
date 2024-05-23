@@ -78,7 +78,7 @@ private extension MPCEnterCodeView {
     
     func actionButtonPressed() {
         logButtonPressedAnalyticEvents(button: .confirm)
-        enterCodeCallback(input)
+        enterCodeCallback(input.trimmedSpaces)
     }
     
     @ViewBuilder

@@ -17,18 +17,6 @@ struct JWToken: Codable {
     var expirationDate: Date { body.expirationDate }
     var isExpired: Bool { expirationDate < Date().addingTimeInterval(5) }
     
-    init(_ jwt: String) throws {
-        let parts = jwt.components(separatedBy: ".")
-        guard parts.count == 3 else {
-            throw JWTokenError.invalidPartCount
-        }
-        
-        self.header = try JWToken.decodeTokenPart(parts[0])
-        self.body = try JWToken.decodeTokenPart(parts[1])
-        self.signature = parts[2]
-        self.jwt = jwt
-    }
-    
     struct Header: Codable {
         var alg: String
         var typ: String
@@ -57,6 +45,20 @@ struct JWToken: Codable {
         }
     }
     
+}
+
+extension JWToken {
+    init(_ jwt: String) throws {
+        let parts = jwt.components(separatedBy: ".")
+        guard parts.count == 3 else {
+            throw JWTokenError.invalidPartCount
+        }
+        
+        self.header = try JWToken.decodeTokenPart(parts[0])
+        self.body = try JWToken.decodeTokenPart(parts[1])
+        self.signature = parts[2]
+        self.jwt = jwt
+    }
 }
 
 // MARK: - Private methods
