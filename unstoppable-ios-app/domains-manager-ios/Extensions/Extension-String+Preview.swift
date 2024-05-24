@@ -453,7 +453,8 @@ extension String {
         static let settingsAppearanceThemeDark = "SETTINGS_APPEARANCE_THEME_DARK"
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
         static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
-        
+        static let feedbackEmailSubject = "FEEDBACK_EMAIL_SUBJECT"
+
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
         static let restoreFromICloudBackup = "RESTORE_FROM_ICLOUD_BACKUP"
