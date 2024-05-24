@@ -36,7 +36,7 @@ struct PushEntitiesTransformer {
     }
     
     struct CommunityChatDetails {
-        let badgeInfo: BadgeDetailedInfo
+        let badgeInfo: BadgesInfo.BadgeInfo
         let blockedUsersList: [String]
     }
     
@@ -128,14 +128,14 @@ struct PushEntitiesTransformer {
         return chat
     }
     
-    static func buildEmptyCommunityChatFor(badgeInfo: BadgeDetailedInfo,
+    static func buildEmptyCommunityChatFor(badgeInfo: BadgesInfo.BadgeInfo,
                                            user: MessagingChatUserProfile,
                                            blockedUsersList: [String]) -> MessagingChat {
         let thisUserDetails = MessagingChatUserDisplayInfo(wallet: user.wallet)
         let blockedUsersList = prepare(blockedUsersList: blockedUsersList)
-        let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.badge.code,
+        let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.code,
                                             thisUserDetails: thisUserDetails,
-                                            avatarURL: URL(string: badgeInfo.badge.logo),
+                                            avatarURL: URL(string: badgeInfo.logo),
                                             serviceIdentifier: .push,
                                             type: .community(.init(type: .badge(badgeInfo),
                                                                    isJoined: false,
