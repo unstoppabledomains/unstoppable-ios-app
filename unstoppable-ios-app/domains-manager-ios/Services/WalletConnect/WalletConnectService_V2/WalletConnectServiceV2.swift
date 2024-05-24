@@ -707,24 +707,13 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 Debugger.printInfo(topic: .WalletConnectV2, "Successfully signed TX via external wallet: \(udWallet.address)")
                 return .response(sig)
                 
-            case .mpc: print("sign with mpc")
-                return .error(.internalError) // TODO: mpc
+            case .mpc:
+                //  we have stopped handling eth_signTransaction internally
+                throw WalletConnectRequestError.methodUnsupported
                 
             default:  // locally verified wallet
-                guard let privKeyString = udWallet.getPrivateKey() else {
-                    Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                    throw WalletConnectRequestError.failedToGetPrivateKey
-                }
-                
-                let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
-                
-                let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
-                
-                let signedTx = try completedTx.sign(with: privateKey, chainId: chainId)
-                let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
-                let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
-                
-                return .response(WCAnyCodable(signature))
+                // we have stopped handling eth_signTransaction internally
+                throw WalletConnectRequestError.methodUnsupported
             }
         }
         
