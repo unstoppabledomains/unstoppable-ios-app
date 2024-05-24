@@ -450,7 +450,7 @@ private extension SettingsView {
     func openFeedbackMailForm() {
         let canSendMail = MFMailComposeViewController.canSendMail()
         let recipientMailAddress = Constants.UnstoppableSupportMail
-        let subject = "Unstoppable Domains App Feedback - iOS (\(UserDefaults.buildVersion))"
+        let subject = String.Constants.feedbackEmailSubject.localized(UserDefaults.buildVersion)
         if canSendMail {
             let mail = MFMailComposeViewController()
             mail.setToRecipients([recipientMailAddress])
