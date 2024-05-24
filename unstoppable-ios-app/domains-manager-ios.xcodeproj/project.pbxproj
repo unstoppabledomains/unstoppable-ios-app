@@ -1594,6 +1594,9 @@
 		C6BEC94B2C00382900F21FB6 /* EIP712View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290136B62BFBFAAE00AB126D /* EIP712View.swift */; };
 		C6BEC94C2C00382900F21FB6 /* EIP712View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 290136B32BFBFA3F00AB126D /* EIP712View.xib */; };
 		C6BEC94F2C0038F700F21FB6 /* PreviewEIP712TypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEC94E2C0038F700F21FB6 /* PreviewEIP712TypedData.swift */; };
+		C6BEC9512C004B0700F21FB6 /* RequestsLimitControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEC9502C004B0700F21FB6 /* RequestsLimitControllerTests.swift */; };
+		C6BEC9532C004D2A00F21FB6 /* RequestsLimitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEC9522C004D2A00F21FB6 /* RequestsLimitController.swift */; };
+		C6BEC9542C004D2A00F21FB6 /* RequestsLimitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEC9522C004D2A00F21FB6 /* RequestsLimitController.swift */; };
 		C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */; };
 		C6BF0C5B2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */; };
 		C6BF0C5C2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */; };
@@ -3727,6 +3730,8 @@
 		C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+DomainProfile.swift"; sourceTree = "<group>"; };
 		C6BB08ED2BFDB50A00123465 /* FB_UD_MPCAPIBadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPCAPIBadResponse.swift; sourceTree = "<group>"; };
 		C6BEC94E2C0038F700F21FB6 /* PreviewEIP712TypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEIP712TypedData.swift; sourceTree = "<group>"; };
+		C6BEC9502C004B0700F21FB6 /* RequestsLimitControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsLimitControllerTests.swift; sourceTree = "<group>"; };
+		C6BEC9522C004D2A00F21FB6 /* RequestsLimitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsLimitController.swift; sourceTree = "<group>"; };
 		C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetworkConfig.swift; sourceTree = "<group>"; };
 		C6BF0C5A2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPendingEventsOnAppearViewModifier.swift; sourceTree = "<group>"; };
 		C6BF6BD92B8EE724006CC2BD /* PassViewAnalyticsDetailsViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassViewAnalyticsDetailsViewModifier.swift; sourceTree = "<group>"; };
@@ -4260,6 +4265,7 @@
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
 				C62900FD2BAAD126008B35A2 /* NumberPadInputInterpreterTests.swift */,
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
+				C6BEC9502C004B0700F21FB6 /* RequestsLimitControllerTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
 				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
@@ -7351,6 +7357,7 @@
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
 				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
 				C643129A2B68A1AE00BCA2A4 /* PhotoLibraryImageSaver.swift */,
+				C6BEC9522C004D2A00F21FB6 /* RequestsLimitController.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C69F99552A9F167F004B1958 /* DomainProfileSocialAccount.swift */,
@@ -9172,6 +9179,7 @@
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C63DBCCB2BE49376008F3D2C /* NetworkService+Common.swift in Sources */,
+				C6BEC9532C004D2A00F21FB6 /* RequestsLimitController.swift in Sources */,
 				C63F1CFF28AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */,
 				309BD85F265679EA00CB0C49 /* PaymentConfiguration.swift in Sources */,
 				C6B761FC2BB403F700773943 /* HomeActivity.swift in Sources */,
@@ -9912,6 +9920,7 @@
 				C6B2E2122B970E0900CEA1F9 /* DomainProfileSocialRelationshipDetailsTests.swift in Sources */,
 				C617CFA42B9ED9F200663516 /* TestableDomainTransactionsService.swift in Sources */,
 				C632C9432BA957BF00B0072B /* UserProfilesServiceTests.swift in Sources */,
+				C6BEC9512C004B0700F21FB6 /* RequestsLimitControllerTests.swift in Sources */,
 				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
 				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C67DE1432B983FD0002374CE /* HomeExploreViewModelTests.swift in Sources */,
@@ -10008,6 +10017,7 @@
 				C6D6472E2B1ED9AA00D724AC /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C6C8F8722B21822700A9834D /* TutorialViewController.swift in Sources */,
 				C6D647372B1ED9EF00D724AC /* PaymentTransactionGasOnlyCostView.swift in Sources */,
+				C6BEC9542C004D2A00F21FB6 /* RequestsLimitController.swift in Sources */,
 				C61808712B19BC150032E543 /* Image.swift in Sources */,
 				C61807F92B19A7DF0032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
 				C61808302B19AD9D0032E543 /* PreviewStripeService.swift in Sources */,

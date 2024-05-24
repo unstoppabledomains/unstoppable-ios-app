@@ -64,7 +64,7 @@ struct ChatNavTitleView: View {
         case .community(let communityDetails):
             switch communityDetails.type {
             case .badge(let badgeInfo):
-                let displayInfo = DomainProfileBadgeDisplayInfo(badge: badgeInfo.badge)
+                let displayInfo = DomainProfileBadgeDisplayInfo(badge: badgeInfo)
                 icon = await displayInfo.loadBadgeIcon()
             }
         }
