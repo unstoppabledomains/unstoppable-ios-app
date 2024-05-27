@@ -453,7 +453,8 @@ extension String {
         static let settingsAppearanceThemeDark = "SETTINGS_APPEARANCE_THEME_DARK"
         static let settingsAppearanceChooseTheme = "SETTINGS_APPEARANCE_CHOOSE_THEME"
         static let youAreUnstoppable = "YOU_ARE_UNSTOPPABLE"
-        
+        static let feedbackEmailSubject = "FEEDBACK_EMAIL_SUBJECT"
+
         // Wallets list
         static let manageICloudBackups = "MANAGE_ICLOUD_BACKUPS"
         static let restoreFromICloudBackup = "RESTORE_FROM_ICLOUD_BACKUP"
@@ -1228,6 +1229,8 @@ extension String {
         static let reImportWallet = "RE_IMPORT_WALLET"
         static let removeMPCWalletPullUpTitle = "REMOVE_MPC_WALLET_PULL_UP_TITLE"
         static let removeMPCWalletPullUpSubtitle = "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE"
+        static let mpcWalletMessagingUnavailableMessage = "MPC_WALLET_MESSAGING_UNAVAILABLE_MESSAGE"
+        static let mpcWalletSigningUnavailableErrorMessage = "MPC_WALLET_SIGNING_UNAVAILABLE_ERROR_MESSAGE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

@@ -23,7 +23,7 @@ final class FB_UD_MPCConnectionServiceTests: BaseTestClass, FB_UD_MPC.Fireblocks
     override func setUp() async throws {
         try await super.setUp()
         
-        let metadata = FB_UD_MPC.UDWalletMetadata(deviceId: deviceId).jsonData()
+        let metadata = FB_UD_MPC.UDWalletMetadata(email: "", deviceId: deviceId).jsonData()
         mpcMetadata = MPCWalletMetadata(provider: .fireblocksUD, metadata: metadata)
         
         connector = MockFireblocksConnector()
@@ -163,7 +163,8 @@ private struct MPCEntitiesBuilder {
         let asset = createAccountAsset()
         let accountWithAsset = FB_UD_MPC.WalletAccountWithAssets(account: account,
                                                                  assets: [asset])
-        return .init(deviceId: deviceId,
+        return .init(email: "",
+                     deviceId: deviceId,
                      firstAccount: accountWithAsset, accounts: [accountWithAsset])
     }
 }

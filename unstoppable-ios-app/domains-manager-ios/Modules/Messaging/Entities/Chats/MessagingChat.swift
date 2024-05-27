@@ -31,7 +31,7 @@ struct MessagingChat: Hashable {
             
             switch (lhsCommunity.type, rhsCommunity.type) {
             case (.badge(let lhsBadge), .badge(let rhsBadge)):
-                return lhsBadge.badge.code == rhsBadge.badge.code
+                return lhsBadge.code == rhsBadge.code
             }
         default:
             return false

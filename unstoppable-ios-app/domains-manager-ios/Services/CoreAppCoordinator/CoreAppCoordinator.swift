@@ -324,6 +324,8 @@ private extension CoreAppCoordinator {
                 Task { await router.showDomainProfile(domain, wallet: wallet, preRequestedAction: action) }
             case .showPublicDomainProfile(let publicDomainDisplayInfo, let wallet, let action):
                 Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, by: wallet, preRequestedAction: action) }
+            case .activateMPCWallet:
+                router.runAddWalletFlow(initialAction: .activateMPC)
             }
         default: return
         }

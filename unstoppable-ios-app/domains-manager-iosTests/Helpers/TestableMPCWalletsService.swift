@@ -33,7 +33,7 @@ final class TestableMPCWalletsService: MPCWalletsServiceProtocol {
         
     }
     
-    func setupMPCWalletWith(code: String, recoveryPhrase: String) -> AsyncThrowingStream<SetupMPCWalletStep, any Error> {
+    func setupMPCWalletWith(code: String, credentials: MPCActivateCredentials) -> AsyncThrowingStream<SetupMPCWalletStep, any Error> {
         AsyncThrowingStream { continuation in
             continuation.finish()
         }

@@ -61,8 +61,7 @@ struct Constants {
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
     static let baseChainSymbol: String = "BASE"
-    static let isBuyCryptoEnabled = false
-
+    static let ldApplicationIdentifier: String = "ud-ios-app" // Launch darkly id
     
     // Shake to find
     static let shakeToFindServiceId: String = "090DAE5A-0DD8-4327-B074-E1E09B259597"

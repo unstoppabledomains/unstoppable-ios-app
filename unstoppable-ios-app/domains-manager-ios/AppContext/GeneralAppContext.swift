@@ -34,6 +34,7 @@ final class GeneralAppContext: AppContextProtocol {
     let walletTransactionsService: WalletTransactionsServiceProtocol
     let ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol
     let mpcWalletsService: MPCWalletsServiceProtocol
+    let udFeatureFlagsService: UDFeatureFlagsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
@@ -56,7 +57,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
-    private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
     private(set) lazy var hotFeatureSuggestionsService: HotFeatureSuggestionsServiceProtocol = HotFeatureSuggestionsService(fetcher: DefaultHotFeaturesSuggestionsFetcher())
     
     init() {
@@ -65,6 +65,7 @@ final class GeneralAppContext: AppContextProtocol {
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
         walletNFTsService = WalletNFTsService()
+        udFeatureFlagsService = UDFeatureFlagsService()
         walletTransactionsService = WalletTransactionsService(networkService: NetworkService(),
                                                               cache: InMemoryWalletTransactionsCache())
         
@@ -77,7 +78,8 @@ final class GeneralAppContext: AppContextProtocol {
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
-        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService,
+        mpcWalletsService = MPCWalletsService(udWalletsService: udWalletsService, 
+                                              udFeatureFlagsService: udFeatureFlagsService,
                                               uiHandler: coreAppCoordinator)
         
         // Wallets data

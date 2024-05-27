@@ -19,11 +19,11 @@ extension NetworkService {
         let signature: String
     }
     
-    func joinBadgeCommunity(badge: BadgeDetailedInfo,
+    func joinBadgeCommunity(badge: BadgesInfo.BadgeInfo,
                             by wallet: String,
                             signature: String) async throws -> JoinBadgeCommunityResponse {
         let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, 
-                                                          badgeCode: badge.badge.code,
+                                                          badgeCode: badge.code,
                                                           signature: signature)
         let body = try prepareRequestBodyFrom(entity: payload)
         let endpoint = Endpoint.joinBadgeCommunity(body: body)
@@ -31,10 +31,10 @@ extension NetworkService {
         return try await fetchDecodableDataFor(endpoint: endpoint, method: .post)
     }
   
-    func leaveBadgeCommunity(badge: BadgeDetailedInfo,
+    func leaveBadgeCommunity(badge: BadgesInfo.BadgeInfo,
                              by wallet: String,
                              signature: String) async throws  {
-        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, badgeCode: badge.badge.code, signature: signature)
+        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, badgeCode: badge.code, signature: signature)
 
         let body = try prepareRequestBodyFrom(entity: payload)
         let endpoint = Endpoint.leaveBadgeCommunity(body: body)
