@@ -39,9 +39,9 @@ extension DeepLinksService: DeepLinksServiceProtocol {
             }
         } else if let domainName = DomainProfileLinkValidator.getUDmeDomainName(in: components) {
             tryHandleUDDomainProfileDeepLink(domainName: domainName, params: components.queryItems, receivedState: receivedState)
-        } else if isActivateMPCWalletDeepLink(components: components) {
-            notifyWaitersWith(event: .activateMPCWallet,
-                              receivedState: receivedState)
+        } else if tryHandleActivateMPCWalletDeepLink(components: components,
+                                                     receivedState: receivedState) {
+            return
         } else  {
             tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
         }
@@ -194,7 +194,8 @@ private extension DeepLinksService {
                           receivedState: receivedState)
     }
     
-    func isActivateMPCWalletDeepLink(components: NSURLComponents) -> Bool {
+    func tryHandleActivateMPCWalletDeepLink(components: NSURLComponents,
+                                            receivedState: ExternalEventReceivedState) -> Bool {
         guard let path = components.path,
               let host = components.host else { return false }
         
@@ -202,6 +203,9 @@ private extension DeepLinksService {
         
         if Constants.udMeHosts.contains(host),
            pathComponents.last == ud_me_MPC_path {
+            let email = components.queryItems?.first(where: { $0.name == "email" })?.value
+            notifyWaitersWith(event: .activateMPCWallet(email: email),
+                              receivedState: receivedState)
             return true
         }
         return false

@@ -504,8 +504,8 @@ private extension SettingsView {
             connectNewWallet()
         case .createNewWallet:
             createNewWallet()
-        case .activateMPC:
-            activateMPCWallet()
+        case .activateMPC(let preFilledEmail):
+            activateMPCWallet(preFilledEmail: preFilledEmail)
         }
     }
     
@@ -545,7 +545,7 @@ private extension SettingsView {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
-                    activateMPCWallet()
+                    activateMPCWallet(preFilledEmail: nil)
                 }
             }
         }
@@ -578,24 +578,18 @@ private extension SettingsView {
         }
     }
     
-    func activateMPCWallet() {
+    func activateMPCWallet(preFilledEmail: String?) {
         guard udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
               let view = appContext.coreAppCoordinator.topVC else { return }
         
-        UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
+        UDRouter().showActivateMPCWalletScreen(preFilledEmail: preFilledEmail,
+                                               activationResultCallback: handleMPCActivationResult, in: view)
     }
     
     func handleMPCActivationResult(_ result: ActivateMPCWalletFlow.FlowResult) {
         switch result {
         case .activated(let wallet):
             addWalletAfterAdded(wallet)
-        case .restart:
-            Task {
-                guard let view = appContext.coreAppCoordinator.topVC else { return }
-
-                await view.presentingViewController?.dismiss(animated: true)
-                activateMPCWallet()
-            }
         }
     }
     
@@ -630,7 +624,7 @@ private extension SettingsView {
 extension SettingsView {
     enum InitialAction {
         case none
-        case importWallet, connectWallet, createNewWallet, activateMPC
+        case importWallet, connectWallet, createNewWallet, activateMPC(preFilledEmail: String?)
         case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
     }
 }

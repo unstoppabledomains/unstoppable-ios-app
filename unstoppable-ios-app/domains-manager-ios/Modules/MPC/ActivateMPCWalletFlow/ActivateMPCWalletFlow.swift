@@ -21,7 +21,6 @@ extension ActivateMPCWalletFlow {
     
     enum FlowResult {
         case activated(UDWallet)
-        case restart
     }
     
     static let viewsTopOffset: CGFloat = 30
