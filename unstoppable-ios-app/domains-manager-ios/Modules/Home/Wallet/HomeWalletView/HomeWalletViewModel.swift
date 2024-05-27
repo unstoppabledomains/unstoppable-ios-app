@@ -32,7 +32,12 @@ extension HomeWalletView {
         private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
-        var isWCSupported: Bool { selectedWallet.udWallet.type != .mpc }
+        var isWCSupported: Bool {
+            if selectedWallet.udWallet.type == .mpc {
+                return appContext.udFeatureFlagsService.valueFor(flag: .isMPCWCNativeEnabled)
+            }
+            return true
+        }
         var isSendCryptoEnabled: Bool {
             if appContext.udFeatureFlagsService.valueFor(flag: .isSendCryptoEnabled) == false {
                 return false
