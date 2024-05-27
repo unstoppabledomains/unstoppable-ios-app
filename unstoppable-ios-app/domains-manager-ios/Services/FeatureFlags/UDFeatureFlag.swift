@@ -13,12 +13,13 @@ enum UDFeatureFlag: String, CaseIterable {
     case isSendCryptoEnabled = "mobile-send-crypto-enabled"
     
     case isMPCWalletEnabled = "mobile-mpc-wallet-enabled"
+    case isMPCSendCryptoEnabled = "mobile-mpc-send-crypto-enabled"
     
     var defaultValue: Bool {
         switch self {
         case .communityMediaEnabled, .isBuyCryptoEnabled:
             return false
-        case .isSendCryptoEnabled, .isMPCWalletEnabled:
+        case .isSendCryptoEnabled, .isMPCWalletEnabled, .isMPCSendCryptoEnabled:
             return true
         }
     }
