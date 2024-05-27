@@ -17,6 +17,7 @@ struct ChatListChatRowView: View, ViewAnalyticsLogger {
     var joinCommunityCallback: EmptyCallback? = nil
     
     @State private var icon: UIImage?
+    @State private var asyncSubtitle: String?
     private let iconSize: CGFloat = 40
     
     var body: some View {
@@ -124,10 +125,14 @@ private extension ChatListChatRowView {
         } else if case .community(let details) = chat.type,
                   !details.isJoined {
             switch details.type {
-            case .badge(let badgeDetailedInfo):
-                let holders = badgeDetailedInfo.usage.holders
-                let holdersKsString = holders.asFormattedKsString
-                return String.Constants.pluralNHolders.localized(holdersKsString, holders)
+            case .badge(let badge):
+                Task {
+                    if let holders = try? await BadgeHoldersFetcher.shared.getNumberOfHoldersFor(badge: badge) {
+                        let holdersKsString = holders.asFormattedKsString
+                        asyncSubtitle = String.Constants.pluralNHolders.localized(holdersKsString, holders)
+                    }
+                }
+                return asyncSubtitle
             }
         }
         return nil
@@ -215,4 +220,37 @@ struct UnreadMessagesCounterView: View {
 
 #Preview {
     ChatListChatRowView(chat: MockEntitiesFabric.Messaging.mockPrivateChat())
+}
+
+private actor BadgeHoldersFetcher {
+    
+    private var cache: [String : Int] = [:]
+    private var ongoingTasks: [String : Task<Int, Error>] = [:]
+    private let requestsLimitController = RequestsLimitController(requestLimit: 20, timeInterval: 60) // 20 requests per 60 seconds
+
+    static let shared = BadgeHoldersFetcher()
+    
+    func getNumberOfHoldersFor(badge: BadgesInfo.BadgeInfo) async throws -> Int {
+        let code = badge.code
+        
+        if let cachedValue = cache[code] {
+            return cachedValue
+        } else if let ongoingTask = ongoingTasks[code] {
+            return try await ongoingTask.value
+        } else {
+            await requestsLimitController.acquirePermission()
+
+            let task = Task {
+                let badgeInfo = try await NetworkService().fetchBadgeDetailedInfo(for: badge)
+                return badgeInfo.usage.holders
+            }
+            
+            self.ongoingTasks[code] = task
+            let value = try await task.value
+            self.cache[code] = value
+            self.ongoingTasks[code] = nil
+            return value
+        }
+    }
+    
 }

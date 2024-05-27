@@ -17,7 +17,7 @@ import SwiftUI
             let connectConfiguration = createConnectConfiguration()
             let signConfiguration = createSignConfiguration()
             let paymentConfiguration = createPaymentConfiguration()
-            _ = try? await appContext.pullUpViewService.showServerConnectConfirmationPullUp(for: connectConfiguration,
+            _ = try? await appContext.pullUpViewService.showWCRequestConfirmationPullUp(for: connectConfiguration,
                                                                                             in: vc)
         }
     }

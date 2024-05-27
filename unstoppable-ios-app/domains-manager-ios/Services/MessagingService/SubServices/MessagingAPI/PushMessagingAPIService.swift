@@ -116,21 +116,17 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         await withTaskGroup(of: Optional<MessagingChat>.self, body: { group in
             for badge in badges {
                 group.addTask {
-                    if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
-                        if let groupChatId = badge.groupChatId,
-                           let chat = try? await self.getGroupChatBy(groupChatId: groupChatId, 
-                                                                     user: user,
-                                                                     badgeInfo: badgeInfo,
-                                                                     blockedUsersList: blockedUsersList) {
-                            return chat
-                        } else {
-                            let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo,
-                                                                                          user: user,
-                                                                                          blockedUsersList: blockedUsersList)
-                            return chat
-                        }
+                    if let groupChatId = badge.groupChatId,
+                       let chat = try? await self.getGroupChatBy(groupChatId: groupChatId,
+                                                                 user: user,
+                                                                 badgeInfo: badge,
+                                                                 blockedUsersList: blockedUsersList) {
+                        return chat
                     } else {
-                        return nil
+                        let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badge,
+                                                                                      user: user,
+                                                                                      blockedUsersList: blockedUsersList)
+                        return chat
                     }
                 }
             }
@@ -146,7 +142,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     private func getGroupChatBy(groupChatId: String,
                                 user: MessagingChatUserProfile,
-                                badgeInfo: BadgeDetailedInfo,
+                                badgeInfo: BadgesInfo.BadgeInfo,
                                 blockedUsersList: [String]) async throws -> MessagingChat {
         let env = getCurrentPushEnvironment()
         guard let pushGroup = (try await Push.PushChat.getGroup(chatId: groupChatId, env: env)) else {
@@ -178,7 +174,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             switch details.type {
             case .badge(let badgeInfo):
                 let privateKey = try await getPGPPrivateKeyFor(user: user)
-                let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
+                let signature = try Pgp.sign(message: badgeInfo.code, privateKey: privateKey)
                 let pushUser = try await getPushUser(of: user)
                 let blockedUsersList = pushUser.profile.blockedUsersList ?? []
                 let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo,
@@ -213,7 +209,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             switch details.type {
             case .badge(let badgeInfo):
                 let privateKey = try await getPGPPrivateKeyFor(user: user)
-                let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
+                let signature = try Pgp.sign(message: badgeInfo.code, privateKey: privateKey)
                 let pushUser = try await getPushUser(of: user)
                 let blockedUsersList = pushUser.profile.blockedUsersList ?? []
                 

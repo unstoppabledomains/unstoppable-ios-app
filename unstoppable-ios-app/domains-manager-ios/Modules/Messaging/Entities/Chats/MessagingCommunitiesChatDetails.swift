@@ -21,14 +21,14 @@ struct MessagingCommunitiesChatDetails: Hashable, Codable {
     var displayName: String {
         switch type {
         case .badge(let badge):
-            return badge.badge.name
+            return badge.name
         }
     }
     
     var displayIconUrl: String {
         switch type {
-        case .badge(let badgeInfo):
-            return badgeInfo.badge.logo
+        case .badge(let badge):
+            return badge.logo
         }
     }
 }
@@ -45,6 +45,6 @@ extension MessagingCommunitiesChatDetails {
 // MARK: - Open methods
 extension MessagingCommunitiesChatDetails {
     enum CommunityType: Hashable, Codable {
-        case badge(BadgeDetailedInfo)
+        case badge(BadgesInfo.BadgeInfo)
     }
 }

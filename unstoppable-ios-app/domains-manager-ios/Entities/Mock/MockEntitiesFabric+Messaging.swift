@@ -164,11 +164,10 @@ extension MockEntitiesFabric {
                 let sender = chatSenderFor(isThisUser: false)
                 members.append(sender.userDisplayInfo)
             }
-            let badgeInfo = BadgeDetailedInfo(badge: .init(code: chatId,
-                                                           name: name,
-                                                           logo: MockEntitiesFabric.ImageURLs.aiAvatar.rawValue,
-                                                           description: "This is community for this badge holders."),
-                                              usage: .init(rank: 10, holders: 10, domains: 10, featured: nil))
+            let badgeInfo = BadgesInfo.BadgeInfo(code: chatId,
+                                                 name: name,
+                                                 logo: MockEntitiesFabric.ImageURLs.aiAvatar.rawValue,
+                                                 description: "This is community for this badge holders.")
             let type: MessagingCommunitiesChatDetails.CommunityType = .badge(badgeInfo)
             let chat = MessagingChatDisplayInfo(id: chatId,
                                                 thisUserDetails: sender.userDisplayInfo,

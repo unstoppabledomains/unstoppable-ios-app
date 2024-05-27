@@ -68,7 +68,7 @@ private extension ReconnectMPCWalletPromptView {
     
     @ViewBuilder
     func subtitleText() -> some View {
-        Text(String.Constants.reImportMPCWalletPromptSubtitle.localized())
+        Text(String.Constants.reImportMPCWalletPromptSubtitle.localizedMPCProduct())
             .textAttributes(color: .foregroundSecondary, fontSize: 16)
             .multilineTextAlignment(.center)
     }
