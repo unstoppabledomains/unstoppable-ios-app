@@ -10,6 +10,7 @@ import Foundation
 enum MPCWalletError: String, LocalizedError {
     case incorrectCode
     case incorrectPassword
+    case messageSignDisabled
     
     public var errorDescription: String? {
         return rawValue

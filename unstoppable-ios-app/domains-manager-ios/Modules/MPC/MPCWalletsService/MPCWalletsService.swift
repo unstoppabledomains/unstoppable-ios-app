@@ -12,11 +12,14 @@ final class MPCWalletsService {
     private var subServices = [MPCWalletProviderSubServiceProtocol]()
     
     private let udWalletsService: UDWalletsServiceProtocol
+    private let udFeatureFlagsService: UDFeatureFlagsServiceProtocol
     private let uiHandler: MPCWalletsUIHandler
-
+    
     init(udWalletsService: UDWalletsServiceProtocol,
+         udFeatureFlagsService: UDFeatureFlagsServiceProtocol,
          uiHandler: MPCWalletsUIHandler) {
         self.udWalletsService = udWalletsService
+        self.udFeatureFlagsService = udFeatureFlagsService
         self.uiHandler = uiHandler
         setup()
     }
@@ -50,6 +53,7 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
     
     func signMessage(_ messageString: String,
                      by walletMetadata: MPCWalletMetadata) async throws -> String {
+        guard udFeatureFlagsService.valueFor(flag: .isMPCSignatureEnabled) else  { throw MPCWalletError.messageSignDisabled }
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
         return try await subService.signMessage(messageString,
