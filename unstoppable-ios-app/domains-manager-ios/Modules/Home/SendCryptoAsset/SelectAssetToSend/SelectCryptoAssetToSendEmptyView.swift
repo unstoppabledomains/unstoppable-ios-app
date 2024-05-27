@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SelectCryptoAssetToSendEmptyView: View {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     var assetType: SendCryptoAsset.AssetType
     let actionCallback: () -> Void
     
@@ -72,7 +73,7 @@ private extension SelectCryptoAssetToSendEmptyView {
     @ViewBuilder
     func actionButton() -> some View {
         if case .tokens = assetType,
-           !Constants.isBuyCryptoEnabled {
+           !udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled) {
             EmptyView()
         } else {
             UDButtonView(text: actionButtonTitle,

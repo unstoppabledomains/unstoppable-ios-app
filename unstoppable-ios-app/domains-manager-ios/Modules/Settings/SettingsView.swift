@@ -10,6 +10,7 @@ import MessageUI
 
 struct SettingsView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.userProfilesService) var userProfilesService
     @EnvironmentObject private var tabRouter: HomeTabRouter
     
@@ -512,12 +513,17 @@ private extension SettingsView {
         guard let view = appContext.coreAppCoordinator.topVC else { return }
 
         Task {
-            let actions: [WalletDetailsAddWalletAction]
+            var actions: [WalletDetailsAddWalletAction] = []
             if isImportOnly {
                 actions = [.mpc, .recoveryOrKey, .connect]
             } else {
                 actions = WalletDetailsAddWalletAction.allCases
             }
+            
+            if !udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
+                actions.removeAll(where: { $0 == .mpc })
+            }
+            
             do {
                 let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
                                                                                                  presentationOptions: .default,
@@ -573,7 +579,8 @@ private extension SettingsView {
     }
     
     func activateMPCWallet() {
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        guard udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
+              let view = appContext.coreAppCoordinator.topVC else { return }
         
         UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
     }

@@ -102,7 +102,11 @@ private extension RestoreWalletViewController {
             restoreOptions.append([.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets))])
         }
         
-        restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
+        if appContext.udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
+            restoreOptions.append([.mpc, .recoveryPhrase, .externalWallet, .websiteAccount])
+        } else {
+            restoreOptions.append([.recoveryPhrase, .externalWallet, .websiteAccount])
+        }
         
         let selectionView = RestoreWalletView(options: restoreOptions) { [weak self] restoreOption in
             self?.logButtonPressedAnalyticEvents(button: restoreOption.analyticsName)

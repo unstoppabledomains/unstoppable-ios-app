@@ -1119,10 +1119,12 @@ More tabs are coming in the next updates.";
 "MPC_WRONG_PASSWORD_MESSAGE" = "You’ve entered wrong password for %@";
 "CHANGE" = "Change";
 "RE_IMPORT_MPC_WALLET_PROMPT_TITLE" = "Please re-import your Unstoppable Wallet %@";
-"RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE" = "Periodically Unstoppable Wallets must be re-imported. This design enhances security and ensures the protection of assets in your wallet.";
+"RE_IMPORT_MPC_WALLET_PROMPT_SUBTITLE" = "Periodically %@ must be re-imported. This design enhances security and ensures the protection of assets in your wallet.";
 "RE_IMPORT_WALLET" = "Re-import wallet";
-"REMOVE_MPC_WALLET_PULL_UP_TITLE" = "Are you sure you want to remove your Unstoppable Wallet?";
+"REMOVE_MPC_WALLET_PULL_UP_TITLE" = "Are you sure you want to remove your %@?";
 "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE" = "This wallet will be removed immediately. You can add the wallet to the app later.";
+"MPC_WALLET_MESSAGING_UNAVAILABLE_MESSAGE" = "Messaging is coming soon for %@";
+"MPC_WALLET_SIGNING_UNAVAILABLE_ERROR_MESSAGE" = "This %@ functionality is temporarily unavailable.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
