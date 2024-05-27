@@ -11,10 +11,7 @@ struct ChatListEmptyStateView: View {
     let title: String
     let subtitle: String
     let icon: Image
-    let buttonTitle: String
-    let buttonIcon: Image
-    let buttonStyle: UDButtonStyle
-    let buttonCallback: MainActorCallback
+    let actionButtonConfiguration: ActionButtonConfiguration?
     
     var body: some View {
         VStack(spacing: 24) {
@@ -32,10 +29,7 @@ struct ChatListEmptyStateView: View {
             .foregroundStyle(Color.foregroundSecondary)
             .multilineTextAlignment(.center)
             
-            UDButtonView(text: buttonTitle,
-                         icon: buttonIcon,
-                         style: buttonStyle,
-                         callback: buttonCallback)
+            actionButtonForCurrentConfiguration()
         }
         .frame(maxWidth: .infinity)
         .frame(height: 400)
@@ -44,12 +38,35 @@ struct ChatListEmptyStateView: View {
     }
 }
 
+// MARK: - Private methods
+private extension ChatListEmptyStateView {
+    @ViewBuilder
+    func actionButtonForCurrentConfiguration() -> some View {
+        if let actionButtonConfiguration {
+            UDButtonView(text: actionButtonConfiguration.buttonTitle,
+                         icon: actionButtonConfiguration.buttonIcon,
+                         style: actionButtonConfiguration.buttonStyle,
+                         callback: actionButtonConfiguration.buttonCallback)
+        }
+    }
+}
+
+// MARK: - Open methods
+extension ChatListEmptyStateView {
+    struct ActionButtonConfiguration {
+        let buttonTitle: String
+        let buttonIcon: Image
+        let buttonStyle: UDButtonStyle
+        let buttonCallback: MainActorCallback
+    }
+}
+
 #Preview {
     ChatListEmptyStateView(title: "Title",
                            subtitle: "Subtitle",
                            icon: .messageCircleIcon24,
-                           buttonTitle: "Action",
-                           buttonIcon: .messagesIcon,
-                           buttonStyle: .medium(.raisedPrimary),
-                           buttonCallback: { })
+                           actionButtonConfiguration: .init(buttonTitle: "Action",
+                                                            buttonIcon: .messagesIcon,
+                                                            buttonStyle: .medium(.raisedPrimary),
+                                                            buttonCallback: { }))
 }

@@ -526,6 +526,12 @@ private extension ChatListViewModel {
             profileWalletPairsCache.append(chatProfile)
         }
         
+        if chatProfile.wallet.udWallet.type == .mpc,
+           appContext.udFeatureFlagsService.valueFor(flag: .isMPCMessagingEnabled) == false {
+            chatState = .mpcUnavailable
+            return
+        }
+        
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.rrDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
             logAnalytic(event: .willShowMessagingProfile,
