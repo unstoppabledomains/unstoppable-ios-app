@@ -33,6 +33,7 @@ extension HomeWalletView {
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
         var isWCSupported: Bool { selectedWallet.udWallet.type != .mpc }
+        var isSendCryptoEnabled: Bool { appContext.udFeatureFlagsService.valueFor(flag: .isSendCryptoEnabled) }
         
         init(selectedWallet: WalletEntity,
              router: HomeTabRouter) {

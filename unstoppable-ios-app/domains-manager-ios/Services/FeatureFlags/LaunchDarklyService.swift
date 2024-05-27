@@ -23,7 +23,7 @@ final class LaunchDarklyService {
             return }
         
         var applicationInfo = ApplicationInfo()
-        applicationInfo.applicationIdentifier(Bundle.main.bundleIdentifier)
+        applicationInfo.applicationIdentifier(Constants.ldApplicationIdentifier)
         applicationInfo.applicationVersion(Version.getCurrentAppVersionString())
         
         var config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
