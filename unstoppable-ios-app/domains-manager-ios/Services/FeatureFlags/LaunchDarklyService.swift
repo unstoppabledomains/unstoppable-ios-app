@@ -22,7 +22,13 @@ final class LaunchDarklyService {
             Debugger.printFailure("Failed to create context for Launch darkly", critical: true)
             return }
         
-        let config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
+        var applicationInfo = ApplicationInfo()
+        applicationInfo.applicationIdentifier(Bundle.main.bundleIdentifier)
+        applicationInfo.applicationVersion(Version.getCurrentAppVersionString())
+        
+        var config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
+        config.applicationInfo = applicationInfo
+
         
         LDClient.start(config: config, context: context)
     }

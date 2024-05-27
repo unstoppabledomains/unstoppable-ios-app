@@ -1160,6 +1160,8 @@ extension ChatViewModel: UDFeatureFlagsListener {
                 setIfUserCanSendAttachments()
                 reloadCachedMessages()
             }
+        default:
+            return
         }
     }
 }

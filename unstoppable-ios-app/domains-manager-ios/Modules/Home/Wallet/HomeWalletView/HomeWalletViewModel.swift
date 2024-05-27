@@ -84,7 +84,7 @@ extension HomeWalletView {
                     }))
                 }
             case .buy:
-                if Constants.isBuyCryptoEnabled {
+                if appContext.udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled) {
                     router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
                         self?.router.pullUp = nil
                         self?.didSelectBuyOption(buyOption)

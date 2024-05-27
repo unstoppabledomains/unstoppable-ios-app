@@ -9,10 +9,11 @@ import Foundation
 
 enum UDFeatureFlag: String, CaseIterable {
     case communityMediaEnabled = "ecommerce-service-users-enable-chat-community-media"
+    case isBuyCryptoEnabled = "mobile-buy-crypto-enabled"
     
     var defaultValue: Bool {
         switch self {
-        case .communityMediaEnabled:
+        case .communityMediaEnabled, .isBuyCryptoEnabled:
             return false
         }
     }
