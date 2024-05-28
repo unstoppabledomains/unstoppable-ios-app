@@ -15,7 +15,7 @@ struct ActivateMPCWalletRootView: View {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                MPCEnterCredentialsInAppView()
+                MPCEnterCredentialsInAppView(preFilledEmail: viewModel.preFilledEmail)
                     .environmentObject(viewModel)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationDestination(for: ActivateMPCWalletFlow.NavigationDestination.self) { destination in
@@ -39,8 +39,10 @@ struct ActivateMPCWalletRootView: View {
         .allowsHitTesting(!viewModel.isLoading)
     }
     
-    init(activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
-        self._viewModel = StateObject(wrappedValue: ActivateMPCWalletViewModel(activationResultCallback: activationResultCallback))
+    init(preFilledEmail: String?,
+         activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
+        self._viewModel = StateObject(wrappedValue: ActivateMPCWalletViewModel(preFilledEmail: preFilledEmail,
+                                                                               activationResultCallback: activationResultCallback))
     }
 }
 
@@ -55,5 +57,6 @@ private extension ActivateMPCWalletRootView {
 }
 
 #Preview {
-    ActivateMPCWalletRootView(activationResultCallback: { _ in })
+    ActivateMPCWalletRootView(preFilledEmail: nil,
+                              activationResultCallback: { _ in })
 }

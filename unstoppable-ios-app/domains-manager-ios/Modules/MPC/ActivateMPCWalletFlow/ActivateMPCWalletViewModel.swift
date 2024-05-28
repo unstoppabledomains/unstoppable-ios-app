@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 final class ActivateMPCWalletViewModel: ObservableObject {
     
+    let preFilledEmail: String?
     let activationResultCallback: ActivateMPCWalletFlow.FlowResultCallback
     @Published var navPath: [ActivateMPCWalletFlow.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
@@ -17,7 +18,9 @@ final class ActivateMPCWalletViewModel: ObservableObject {
     @Published var error: Error?
     private var credentials: MPCActivateCredentials?
     
-    init(activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
+    init(preFilledEmail: String?,
+         activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback) {
+        self.preFilledEmail = preFilledEmail
         self.activationResultCallback = activationResultCallback
     }
     

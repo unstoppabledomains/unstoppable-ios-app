@@ -32,7 +32,21 @@ extension HomeWalletView {
         private var cancellables: Set<AnyCancellable> = []
         private var router: HomeTabRouter
         private var lastVerifiedRecordsWalletAddress: String? = nil
-        var isWCSupported: Bool { selectedWallet.udWallet.type != .mpc }
+        var isWCSupported: Bool {
+            if selectedWallet.udWallet.type == .mpc {
+                return appContext.udFeatureFlagsService.valueFor(flag: .isMPCWCNativeEnabled)
+            }
+            return true
+        }
+        var isSendCryptoEnabled: Bool {
+            if appContext.udFeatureFlagsService.valueFor(flag: .isSendCryptoEnabled) == false {
+                return false
+            }
+            if selectedWallet.udWallet.type == .mpc {
+                return appContext.udFeatureFlagsService.valueFor(flag: .isMPCSendCryptoEnabled)
+            }
+            return true 
+        }
         
         init(selectedWallet: WalletEntity,
              router: HomeTabRouter) {
@@ -84,7 +98,7 @@ extension HomeWalletView {
                     }))
                 }
             case .buy:
-                if Constants.isBuyCryptoEnabled {
+                if appContext.udFeatureFlagsService.valueFor(flag: .isBuyCryptoEnabled) {
                     router.pullUp = .default(.homeWalletBuySelectionPullUp(selectionCallback: { [weak self] buyOption in
                         self?.router.pullUp = nil
                         self?.didSelectBuyOption(buyOption)

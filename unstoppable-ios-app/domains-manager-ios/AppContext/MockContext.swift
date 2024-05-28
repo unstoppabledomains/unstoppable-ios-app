@@ -64,6 +64,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletTransactionsService: WalletTransactionsServiceProtocol = WalletTransactionsService(networkService: NetworkService(),
                                                                                                                    cache: InMemoryWalletTransactionsCache())
     private(set) lazy var mpcWalletsService: MPCWalletsServiceProtocol = MPCWalletsService(udWalletsService: udWalletsService,
+                                                                                           udFeatureFlagsService: udFeatureFlagsService,
                                                                                            uiHandler: coreAppCoordinator)
     private(set) lazy var ecomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol = PreviewEcomPurchaseMPCWalletService()
 

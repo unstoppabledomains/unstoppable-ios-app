@@ -184,21 +184,31 @@ private extension ChatListView {
             chatsListStateContentView()
         case .loading:
             loadingStateContentView()
+        case .mpcUnavailable:
+            mpcUnavailableStateContentView()
         }
     }
     
     @ViewBuilder
     func noWalletStateContentView() -> some View {
         ChatListEmptyStateView(title: String.Constants.messagingNoWalletsTitle.localized(),
-                       subtitle: String.Constants.messagingNoWalletsSubtitle.localized(),
-                       icon: .walletIcon,
-                       buttonTitle: String.Constants.addWalletTitle.localized(),
-                       buttonIcon: .plusIcon18,
-                       buttonStyle: .medium(.raisedPrimary),
-                       buttonCallback: {
+                               subtitle: String.Constants.messagingNoWalletsSubtitle.localized(),
+                               icon: .walletIcon,
+                               actionButtonConfiguration: .init(buttonTitle: String.Constants.addWalletTitle.localized(),
+                                                                buttonIcon: .plusIcon18,
+                                                                buttonStyle: .medium(.raisedPrimary),
+                                                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .addWallet)
             viewModel.addWalletButtonPressed()
-        })
+        }))
+    }
+    
+    @ViewBuilder
+    func mpcUnavailableStateContentView() -> some View {
+        ChatListEmptyStateView(title: String.Constants.mpcWalletMessagingUnavailableMessage.localizedMPCProduct(),
+                               subtitle: "",
+                               icon: .messageCircleFilledIcon,
+                               actionButtonConfiguration: nil)
     }
     
     @ViewBuilder
@@ -223,8 +233,8 @@ private extension ChatListView {
     func chatDataTypePickerView() -> some View {
         if !viewModel.isSearchActive {
             switch viewModel.chatState {
-            case .noWallet, .createProfile, .loading:
-                if true { }
+            case .noWallet, .createProfile, .loading, .mpcUnavailable:
+                EmptyView()
             case .chatsList:
                 ChatListDataTypeSelectorView()
                     .listRowSeparator(.hidden)
@@ -313,17 +323,17 @@ private extension ChatListView {
     @ViewBuilder
     func chatsListEmptyView() -> some View {
         ChatListEmptyStateView(title: String.Constants.messagingChatsListEmptyTitle.localized(),
-                       subtitle: String.Constants.messagingChatsListEmptySubtitle.localized(),
-                       icon: .messageCircleIcon24,
-                       buttonTitle: String.Constants.newMessage.localized(),
-                       buttonIcon: .newMessageIcon,
-                       buttonStyle: .medium(.raisedPrimary),
-                       buttonCallback: {
+                               subtitle: String.Constants.messagingChatsListEmptySubtitle.localized(),
+                               icon: .messageCircleIcon24,
+                               actionButtonConfiguration: .init(buttonTitle: String.Constants.newMessage.localized(),
+                                                                buttonIcon: .newMessageIcon,
+                                                                buttonStyle: .medium(.raisedPrimary),
+                                                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                            parameters: [.value: ChatsList.DataType.chats.rawValue])
             viewModel.searchMode = .chatsOnly
             viewModel.isSearchActive = true
-        })
+        }))
     }
     
     @ViewBuilder
@@ -352,13 +362,13 @@ private extension ChatListView {
         ChatListEmptyStateView(title: String.Constants.messagingCommunitiesListEnableTitle.localized(),
                                subtitle: String.Constants.messagingCommunitiesListEnableSubtitle.localized(),
                                icon: .chatRequestsIcon,
-                               buttonTitle: String.Constants.enable.localized(),
-                               buttonIcon: Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
-                               buttonStyle: .medium(.raisedPrimary),
-                               buttonCallback: {
+                               actionButtonConfiguration: .init(buttonTitle: String.Constants.enable.localized(),
+                                                                buttonIcon: Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
+                                                                buttonStyle: .medium(.raisedPrimary),
+                                                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .createCommunityProfile)
             viewModel.createCommunitiesProfileButtonPressed()
-        })
+        }))
     }
     
     @ViewBuilder
@@ -366,14 +376,14 @@ private extension ChatListView {
         ChatListEmptyStateView(title: String.Constants.messagingCommunitiesEmptyTitle.localized(),
                                subtitle: String.Constants.messagingCommunitiesEmptySubtitle.localized(),
                                icon: .messageCircleIcon24,
-                               buttonTitle: String.Constants.learnMore.localized(),
-                               buttonIcon: .infoIcon,
-                               buttonStyle: .medium(.raisedPrimary),
-                               buttonCallback: {
+                               actionButtonConfiguration: .init(buttonTitle: String.Constants.learnMore.localized(),
+                                                                buttonIcon: .infoIcon,
+                                                                buttonStyle: .medium(.raisedPrimary),
+                                                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                            parameters: [.value: ChatsList.DataType.communities.rawValue])
             openLink(.communitiesInfo)
-        })
+        }))
     }
     
     @ViewBuilder
@@ -444,15 +454,15 @@ private extension ChatListView {
         ChatListEmptyStateView(title: String.Constants.messagingChannelsEmptyTitle.localized(),
                                subtitle: String.Constants.messagingChannelsEmptySubtitle.localized(),
                                icon: .messageCircleIcon24,
-                               buttonTitle: String.Constants.searchApps.localized(),
-                               buttonIcon: .searchIcon,
-                               buttonStyle: .medium(.raisedTertiary),
-                               buttonCallback: {
+                               actionButtonConfiguration: .init(buttonTitle: String.Constants.searchApps.localized(),
+                                                                buttonIcon: .searchIcon,
+                                                                buttonStyle: .medium(.raisedTertiary),
+                                                                buttonCallback: {
             logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                            parameters: [.value: ChatsList.DataType.channels.rawValue])
             viewModel.searchMode = .channelsOnly
             viewModel.isSearchActive = true
-        })
+        }))
     }
     
     @ViewBuilder
@@ -533,6 +543,7 @@ extension ChatListView {
         case createProfile
         case chatsList
         case loading
+        case mpcUnavailable
     }
     
     enum CommunitiesListState {

@@ -10,6 +10,7 @@ import MessageUI
 
 struct SettingsView: View, ViewAnalyticsLogger {
     
+    @Environment(\.udFeatureFlagsService) var udFeatureFlagsService
     @Environment(\.userProfilesService) var userProfilesService
     @EnvironmentObject private var tabRouter: HomeTabRouter
     
@@ -448,12 +449,21 @@ private extension SettingsView {
     
     @MainActor
     func openFeedbackMailForm() {
-        let mail = MFMailComposeViewController()
-        
-        mail.setToRecipients([Constants.UnstoppableSupportMail])
-        mail.setSubject("Unstoppable Domains App Feedback - iOS (\(UserDefaults.buildVersion))")
-        
-        appContext.coreAppCoordinator.topVC?.present(mail, animated: true)
+        let canSendMail = MFMailComposeViewController.canSendMail()
+        let recipientMailAddress = Constants.UnstoppableSupportMail
+        let subject = String.Constants.feedbackEmailSubject.localized(UserDefaults.buildVersion)
+        if canSendMail {
+            let mail = MFMailComposeViewController()
+            mail.setToRecipients([recipientMailAddress])
+            mail.setSubject(subject)
+            
+            appContext.coreAppCoordinator.topVC?.present(mail, animated: true)
+        } else {
+            let mailURLString = "mailto:\(recipientMailAddress)?subject=\(subject)"
+            guard let url = URL(string: mailURLString) else { return }
+            
+            UIApplication.shared.open(url)
+        }
     }
 }
 
@@ -494,8 +504,8 @@ private extension SettingsView {
             connectNewWallet()
         case .createNewWallet:
             createNewWallet()
-        case .activateMPC:
-            activateMPCWallet()
+        case .activateMPC(let preFilledEmail):
+            activateMPCWallet(preFilledEmail: preFilledEmail)
         }
     }
     
@@ -503,12 +513,17 @@ private extension SettingsView {
         guard let view = appContext.coreAppCoordinator.topVC else { return }
 
         Task {
-            let actions: [WalletDetailsAddWalletAction]
+            var actions: [WalletDetailsAddWalletAction] = []
             if isImportOnly {
                 actions = [.mpc, .recoveryOrKey, .connect]
             } else {
                 actions = WalletDetailsAddWalletAction.allCases
             }
+            
+            if !udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
+                actions.removeAll(where: { $0 == .mpc })
+            }
+            
             do {
                 let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
                                                                                                  presentationOptions: .default,
@@ -530,7 +545,7 @@ private extension SettingsView {
                 case .connect:
                     connectNewWallet()
                 case .mpc:
-                    activateMPCWallet()
+                    activateMPCWallet(preFilledEmail: nil)
                 }
             }
         }
@@ -563,23 +578,18 @@ private extension SettingsView {
         }
     }
     
-    func activateMPCWallet() {
-        guard let view = appContext.coreAppCoordinator.topVC else { return }
+    func activateMPCWallet(preFilledEmail: String?) {
+        guard udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
+              let view = appContext.coreAppCoordinator.topVC else { return }
         
-        UDRouter().showActivateMPCWalletScreen(activationResultCallback: handleMPCActivationResult, in: view)
+        UDRouter().showActivateMPCWalletScreen(preFilledEmail: preFilledEmail,
+                                               activationResultCallback: handleMPCActivationResult, in: view)
     }
     
     func handleMPCActivationResult(_ result: ActivateMPCWalletFlow.FlowResult) {
         switch result {
         case .activated(let wallet):
             addWalletAfterAdded(wallet)
-        case .restart:
-            Task {
-                guard let view = appContext.coreAppCoordinator.topVC else { return }
-
-                await view.presentingViewController?.dismiss(animated: true)
-                activateMPCWallet()
-            }
         }
     }
     
@@ -614,7 +624,7 @@ private extension SettingsView {
 extension SettingsView {
     enum InitialAction {
         case none
-        case importWallet, connectWallet, createNewWallet, activateMPC
+        case importWallet, connectWallet, createNewWallet, activateMPC(preFilledEmail: String?)
         case showAllAddWalletOptionsPullUp, showImportWalletOptionsPullUp
     }
 }

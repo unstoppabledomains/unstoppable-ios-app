@@ -68,7 +68,6 @@ private extension PurchaseSearchDomainsView {
         UDTextFieldView(text: $debounceObject.text,
                         placeholder: "domain.x",
                         hint: nil,
-                        rightViewType: currentSearchFieldRightViewType,
                         rightViewMode: .always,
                         leftViewType: .search,
                         focusBehaviour: .activateOnAppear,

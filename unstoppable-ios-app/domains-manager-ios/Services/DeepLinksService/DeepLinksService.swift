@@ -13,6 +13,7 @@ final class DeepLinksService {
     private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private var listeners: [DeepLinkListenerHolder] = []
     private let deepLinkPath = "/mobile"
+    private let ud_me_MPC_path = "wallet"
     private let wcScheme = "wc"
     private let customURLScheme = "unstoppabledomains"
     private var isExpectingWCInteraction = false
@@ -38,6 +39,9 @@ extension DeepLinksService: DeepLinksServiceProtocol {
             }
         } else if let domainName = DomainProfileLinkValidator.getUDmeDomainName(in: components) {
             tryHandleUDDomainProfileDeepLink(domainName: domainName, params: components.queryItems, receivedState: receivedState)
+        } else if tryHandleActivateMPCWalletDeepLink(components: components,
+                                                     receivedState: receivedState) {
+            return
         } else  {
             tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
         }
@@ -188,6 +192,23 @@ private extension DeepLinksService {
         
         notifyWaitersWith(event: .mintDomainsVerificationCode(email: email, code: code),
                           receivedState: receivedState)
+    }
+    
+    func tryHandleActivateMPCWalletDeepLink(components: NSURLComponents,
+                                            receivedState: ExternalEventReceivedState) -> Bool {
+        guard let path = components.path,
+              let host = components.host else { return false }
+        
+        let pathComponents = path.components(separatedBy: "/")
+        
+        if Constants.udMeHosts.contains(host),
+           pathComponents.last == ud_me_MPC_path {
+            let email = components.queryItems?.first(where: { $0.name == "email" })?.value
+            notifyWaitersWith(event: .activateMPCWallet(email: email),
+                              receivedState: receivedState)
+            return true
+        }
+        return false
     }
     
     func notifyWaitersWith(event: DeepLinkEvent, receivedState: ExternalEventReceivedState) {

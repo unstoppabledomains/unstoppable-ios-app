@@ -489,7 +489,7 @@ extension ViewPullUpDefaultConfiguration {
                                               removeCallback: @escaping MainActorAsyncCallback) -> ViewPullUpDefaultConfiguration {
         return .init(icon: .init(icon: .trashFill,
                                  size: .small),
-                     title: .text(String.Constants.removeMPCWalletPullUpTitle.localized()),
+                     title: .text(String.Constants.removeMPCWalletPullUpTitle.localizedMPCProduct()),
                      subtitle: .label(.text(String.Constants.removeMPCWalletPullUpSubtitle.localized())),
                      actionButton: .primaryDanger(content: .init(title: String.Constants.removeWallet.localized(),
                                                         analyticsName: .walletRemove,
