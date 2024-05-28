@@ -11235,7 +11235,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosDebug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "Dev-Env-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -11269,7 +11269,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
@@ -11445,7 +11445,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Unstoppable;
