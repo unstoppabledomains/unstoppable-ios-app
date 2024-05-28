@@ -239,6 +239,7 @@ extension String {
         static let to = "TO"
         static let domainOrAddress = "DOMAIN_OR_ADDRESS"
         static let yourWallets = "YOUR_WALLETS"
+        static let new = "NEW"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

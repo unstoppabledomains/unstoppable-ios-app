@@ -60,7 +60,7 @@ private extension OnboardingBuyMPCOptionView {
     
     @ViewBuilder
     func popularView() -> some View {
-        Text(String.Constants.popular.localized())
+        Text(String.Constants.new.localized())
             .frame(height: 20)
             .textAttributes(color: .foregroundAccent,
                             fontSize: 14,
