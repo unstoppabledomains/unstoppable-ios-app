@@ -718,6 +718,8 @@
 		C63AAC4E2C058455001E7F23 /* OnboardingBuyMPCOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AAC4C2C058455001E7F23 /* OnboardingBuyMPCOptionView.swift */; };
 		C63AAC502C0592A2001E7F23 /* EcomMPCPriceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AAC4F2C0592A2001E7F23 /* EcomMPCPriceFetcher.swift */; };
 		C63AAC522C0594EB001E7F23 /* PreviewEcomMPCPriceFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AAC512C0594EA001E7F23 /* PreviewEcomMPCPriceFetcher.swift */; };
+		C63AAC542C05B067001E7F23 /* MPCWalletPurchasingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AAC532C05B067001E7F23 /* MPCWalletPurchasingState.swift */; };
+		C63AAC552C05B067001E7F23 /* MPCWalletPurchasingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AAC532C05B067001E7F23 /* MPCWalletPurchasingState.swift */; };
 		C63AD09A2B95657C00BF8C83 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0992B95657C00BF8C83 /* LineView.swift */; };
 		C63AD09B2B95657C00BF8C83 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0992B95657C00BF8C83 /* LineView.swift */; };
 		C63AD0AA2B957D0900BF8C83 /* PublicProfileTokensSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */; };
@@ -3158,6 +3160,7 @@
 		C63AAC4C2C058455001E7F23 /* OnboardingBuyMPCOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingBuyMPCOptionView.swift; sourceTree = "<group>"; };
 		C63AAC4F2C0592A2001E7F23 /* EcomMPCPriceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EcomMPCPriceFetcher.swift; sourceTree = "<group>"; };
 		C63AAC512C0594EA001E7F23 /* PreviewEcomMPCPriceFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEcomMPCPriceFetcher.swift; sourceTree = "<group>"; };
+		C63AAC532C05B067001E7F23 /* MPCWalletPurchasingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPurchasingState.swift; sourceTree = "<group>"; };
 		C63AD0992B95657C00BF8C83 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		C63AD0A92B957D0900BF8C83 /* PublicProfileTokensSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileTokensSectionView.swift; sourceTree = "<group>"; };
 		C63AD0AC2B95823800BF8C83 /* BalanceTokenUIDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTokenUIDescription.swift; sourceTree = "<group>"; };
@@ -6950,6 +6953,7 @@
 				C6952A5F2BC664C600F4B475 /* PurchaseMPCWallet.swift */,
 				C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */,
 				C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */,
+				C63AAC532C05B067001E7F23 /* MPCWalletPurchasingState.swift */,
 				C66556682BF70B9900F0BD7A /* UDAuth */,
 				C66556722BF70F6400F0BD7A /* Checkout */,
 				C665567C2BF73D8200F0BD7A /* Takeover */,
@@ -9244,6 +9248,7 @@
 				C63AAC4D2C058455001E7F23 /* OnboardingBuyMPCOptionView.swift in Sources */,
 				C621A43F2BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
+				C63AAC542C05B067001E7F23 /* MPCWalletPurchasingState.swift in Sources */,
 				C6952A3A2BC5053800F4B475 /* FB_UD_MPCBlockchain.swift in Sources */,
 				C621A43C2BB10D2900CB5CB9 /* SendCryptoQRWalletAddressScannerView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
@@ -10966,6 +10971,7 @@
 				C61808752B19BC290032E543 /* UDTitleText.swift in Sources */,
 				C6D646512B1ED10100D724AC /* DomainProfileTopInfoCell.swift in Sources */,
 				C6C8F9732B2188FA00A9834D /* QRScannerSightView.swift in Sources */,
+				C63AAC552C05B067001E7F23 /* MPCWalletPurchasingState.swift in Sources */,
 				C6B65F9F2B57876F006D1812 /* HomeWalletNFTCellView.swift in Sources */,
 				C618085A2B19BBEB0032E543 /* PurchaseSearchDomainsView.swift in Sources */,
 				C6FEA9182BEB700E004FD740 /* SettingsCollectionViewCell.swift in Sources */,

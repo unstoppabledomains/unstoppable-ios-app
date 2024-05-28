@@ -10,7 +10,7 @@ import SwiftUI
 struct MPCActivateWalletStateCardView: View {
     
     let title: String
-    let activationState: MPCWalletActivationState
+    let mode: Mode
     let mpcCreateProgress: Double
     
     var body: some View {
@@ -75,7 +75,7 @@ private extension MPCActivateWalletStateCardView {
                     .font(.currentFont(size: 28, weight: .bold))
                     .foregroundStyle(Color.foregroundDefault)
                     .minimumScaleFactor(0.6)
-                Text(String.Constants.mpcProductName.localized())
+                Text(subtitle)
                     .font(.currentFont(size: 16))
                     .foregroundStyle(Color.foregroundDefault)
             }
@@ -83,6 +83,11 @@ private extension MPCActivateWalletStateCardView {
             Spacer()
         }
     }
+    
+    var subtitle: String {
+        String.Constants.mpcProductName.localized()
+    }
+    
     @ViewBuilder
     func numberBadgeView() -> some View {
         HStack(alignment: .center, spacing: 4) {
@@ -105,21 +110,27 @@ private extension MPCActivateWalletStateCardView {
     
     @ViewBuilder
     var badgeBackgroundColor: some View {
-        switch activationState {
-        case .readyToActivate, .activating, .failed:
-            Color.backgroundMuted
-                .background(.regularMaterial)
-        case .activated:
-            Color.white.opacity(0.44)
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating, .failed:
+                Color.backgroundMuted
+                    .background(.regularMaterial)
+            case .activated:
+                Color.white.opacity(0.44)
+            }
         }
     }
     
     var badgeBorderColor: Color {
-        switch activationState {
-        case .readyToActivate, .activating, .failed:
-                .backgroundDefault
-        case .activated:
-                .black.opacity(0.16)
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating, .failed:
+                    .backgroundDefault
+            case .activated:
+                    .black.opacity(0.16)
+            }
         }
     }
     
@@ -132,11 +143,14 @@ private extension MPCActivateWalletStateCardView {
     }
     
     var badgeDotBackgroundColor: Color {
-        switch activationState {
-        case .readyToActivate, .activating, .failed:
-                .foregroundMuted
-        case .activated:
-                .white.opacity(0.32)
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating, .failed:
+                    .foregroundMuted
+            case .activated:
+                    .white.opacity(0.32)
+            }
         }
     }
     
@@ -154,44 +168,60 @@ private extension MPCActivateWalletStateCardView {
     
     @ViewBuilder
     func stateProgressView() -> some View {
-        switch activationState {
-        case .readyToActivate, .activating:
-            CircularProgressView(progress: mpcCreateProgress)
-        case .activated:
-            Image.checkCircle
-                .resizable()
-                .foregroundStyle(.white)
-        case .failed:
-            Image.crossWhite
-                .resizable()
-                .foregroundStyle(stateBorderColor())
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating:
+                CircularProgressView(progress: mpcCreateProgress)
+            case .activated:
+                Image.checkCircle
+                    .resizable()
+                    .foregroundStyle(.white)
+            case .failed:
+                Image.crossWhite
+                    .resizable()
+                    .foregroundStyle(stateBorderColor())
+            }
         }
     }
     
     @ViewBuilder
     func stateBackgroundView() -> some View {
-        switch activationState {
-        case .readyToActivate, .activating, .failed:
-            Color.backgroundOverlay
-        case .activated:
-            Color.backgroundSuccessEmphasis
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating, .failed:
+                Color.backgroundOverlay
+            case .activated:
+                Color.backgroundSuccessEmphasis
+            }
         }
     }
     
     func stateBorderColor() -> Color {
-        switch activationState {
-        case .readyToActivate, .activating:
-                .foregroundAccent
-        case .activated:
-                .backgroundSuccessEmphasis
-        case .failed:
-                .backgroundDangerEmphasis
+        switch mode {
+        case .activation(let activationState):
+            switch activationState {
+            case .readyToActivate, .activating:
+                    .foregroundAccent
+            case .activated:
+                    .backgroundSuccessEmphasis
+            case .failed:
+                    .backgroundDangerEmphasis
+            }
         }
+    }
+}
+
+// MARK: - Open methods
+extension MPCActivateWalletStateCardView {
+    enum Mode {
+        case activation(MPCWalletActivationState)
     }
 }
 
 #Preview {
     MPCActivateWalletStateCardView(title: "Activating...",
-                                   activationState: .readyToActivate,
+                                   mode: .activation(.readyToActivate),
                                    mpcCreateProgress: 0.3)
 }
