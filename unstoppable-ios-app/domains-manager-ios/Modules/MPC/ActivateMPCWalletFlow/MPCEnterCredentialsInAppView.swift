@@ -10,9 +10,12 @@ import SwiftUI
 struct MPCEnterCredentialsInAppView: View {
     
     @EnvironmentObject var viewModel: ActivateMPCWalletViewModel
-
+    
+    let preFilledEmail: String?
+    
     var body: some View {
-        MPCEnterCredentialsView(analyticsName: .mpcEnterCredentialsInApp,
+        MPCEnterCredentialsView(mode: preFilledEmail == nil ? .freeInput : .strictEmail(preFilledEmail!),
+                                analyticsName: .mpcEnterCredentialsInApp,
                                 credentialsCallback: didEnterCredentials)
             .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
@@ -26,5 +29,5 @@ private extension MPCEnterCredentialsInAppView {
 }
 
 #Preview {
-    MPCEnterCredentialsInAppView()
+    MPCEnterCredentialsInAppView(preFilledEmail: nil)
 }
