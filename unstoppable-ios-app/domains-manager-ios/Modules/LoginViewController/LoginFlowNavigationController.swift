@@ -148,9 +148,9 @@ private extension LoginFlowNavigationController {
                 }
             }
         } catch {
-            (topViewController as? BaseViewControllerProtocol)?.showAlertWith(error: error, handler: { [weak self] _ in
-                self?.dismiss(result: .failedToLoadParkedDomains)
-            })
+            await MainActor.run {
+                moveToStep(.noParkedDomains)
+            }
         }
     }
     
