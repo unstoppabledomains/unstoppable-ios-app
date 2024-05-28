@@ -1234,6 +1234,7 @@ extension String {
         static let createMPCOnboardingSubtitle = "CREATE_MPC_ONBOARDING_SUBTITLE"
         static let createWalletOnboardingSubtitle = "CREATE_WALLET_ONBOARDING_SUBTITLE"
         static let nPricePerYear = "N_PRICE_PER_YEAR"
+        static let buyMPCEnterEmailSubtitle = "BUY_MPC_ENTER_EMAIL_SUBTITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

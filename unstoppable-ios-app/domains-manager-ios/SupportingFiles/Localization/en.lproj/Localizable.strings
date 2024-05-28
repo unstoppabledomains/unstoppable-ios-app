@@ -1128,6 +1128,7 @@ More tabs are coming in the next updates.";
 "CREATE_MPC_ONBOARDING_SUBTITLE" = "Password protected and recoverable wallet to protect your domain investment.";
 "CREATE_WALLET_ONBOARDING_SUBTITLE" = "Weak security and backup.";
 "N_PRICE_PER_YEAR" = "%@ per year";
+"BUY_MPC_ENTER_EMAIL_SUBTITLE" = "Each %@ requires a UNIQUE email address.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
