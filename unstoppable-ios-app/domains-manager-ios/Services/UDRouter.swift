@@ -435,9 +435,11 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showActivateMPCWalletScreen(activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback,
+    func showActivateMPCWalletScreen(preFilledEmail: String?,
+                                     activationResultCallback: @escaping ActivateMPCWalletFlow.FlowResultCallback,
                                      in viewController: UIViewController) {
-        let view = ActivateMPCWalletRootView(activationResultCallback: activationResultCallback)
+        let view = ActivateMPCWalletRootView(preFilledEmail: preFilledEmail,
+                                             activationResultCallback: activationResultCallback)
         let vc = UIHostingController(rootView: view)
         viewController.present(vc, animated: true)
     }

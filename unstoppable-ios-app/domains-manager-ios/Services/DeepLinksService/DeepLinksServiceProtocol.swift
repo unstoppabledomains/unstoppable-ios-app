@@ -11,7 +11,7 @@ enum DeepLinkEvent: Equatable {
     case mintDomainsVerificationCode(email: String, code: String)
     case showUserDomainProfile(domain: DomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
     case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, wallet: WalletEntity, action: PreRequestedProfileAction?)
-    case activateMPCWallet
+    case activateMPCWallet(email: String?)
 }
 
 protocol DeepLinksServiceProtocol {
