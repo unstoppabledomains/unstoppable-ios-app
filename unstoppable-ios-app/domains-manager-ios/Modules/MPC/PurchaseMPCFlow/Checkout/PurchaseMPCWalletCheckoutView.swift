@@ -44,7 +44,7 @@ private extension PurchaseMPCWalletCheckoutView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Subscribe")
+            Text(String.Constants.subscribe.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
@@ -54,14 +54,14 @@ private extension PurchaseMPCWalletCheckoutView {
     @ViewBuilder
     func totalView() -> some View {
         MPCActivateWalletStateCardView(title: cardTitle,
-                                       mode: .activation(.activating),
+                                       mode: .purchase(purchaseState),
                                        mpcCreateProgress: 0)
     }
     
     var cardTitle: String {
         switch purchaseState {
         case .purchasing:
-            "Authorizing"
+            String.Constants.mpcAuthorizing.localized()
         case .preparing, .readyToPurchase:
             String.Constants.mpcProductName.localized()
         case .failed:
@@ -124,12 +124,10 @@ private extension PurchaseMPCWalletCheckoutView {
     }
     
     func didFailWithError(_ error: MPCWalletPurchaseError) {
-//        mpcStateTitle = error.title
         purchaseState = .failed(error)
         switch error {
         case .walletAlreadyPurchased:
             return
-//            enterDataType = .passcode
         case .unknown:
             return
         }

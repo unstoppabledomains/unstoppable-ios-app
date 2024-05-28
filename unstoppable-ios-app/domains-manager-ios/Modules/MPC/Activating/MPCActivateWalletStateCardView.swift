@@ -85,7 +85,17 @@ private extension MPCActivateWalletStateCardView {
     }
     
     var subtitle: String {
-        String.Constants.mpcProductName.localized()
+        switch mode {
+        case .activation:
+            String.Constants.mpcProductName.localized()
+        case .purchase(let purchaseState):
+            switch purchaseState {
+            case .preparing, .purchasing, .failed:
+                String.Constants.mpcProductName.localized()
+            case .readyToPurchase(let price):
+                String.Constants.nPricePerYear.localized(formatCartPrice(price))
+            }
+        }
     }
     
     @ViewBuilder
@@ -114,12 +124,19 @@ private extension MPCActivateWalletStateCardView {
         case .activation(let activationState):
             switch activationState {
             case .readyToActivate, .activating, .failed:
-                Color.backgroundMuted
-                    .background(.regularMaterial)
+                defaultBadgeBackground()
             case .activated:
                 Color.white.opacity(0.44)
             }
+        case .purchase:
+            defaultBadgeBackground()
         }
+    }
+    
+    @ViewBuilder
+    func defaultBadgeBackground() -> some View {
+        Color.backgroundMuted
+            .background(.regularMaterial)
     }
     
     var badgeBorderColor: Color {
@@ -127,11 +144,17 @@ private extension MPCActivateWalletStateCardView {
         case .activation(let activationState):
             switch activationState {
             case .readyToActivate, .activating, .failed:
-                    .backgroundDefault
+                defaultBadgeBorderColor()
             case .activated:
-                    .black.opacity(0.16)
+                .black.opacity(0.16)
             }
+        case .purchase:
+            defaultBadgeBorderColor()
         }
+    }
+    
+    func defaultBadgeBorderColor() -> Color {
+        .backgroundDefault
     }
     
     @ViewBuilder
@@ -147,11 +170,17 @@ private extension MPCActivateWalletStateCardView {
         case .activation(let activationState):
             switch activationState {
             case .readyToActivate, .activating, .failed:
-                    .foregroundMuted
+                defaultDotBackgroundColor
             case .activated:
-                    .white.opacity(0.32)
+                .white.opacity(0.32)
             }
+        case .purchase:
+            defaultDotBackgroundColor
         }
+    }
+    
+    var defaultDotBackgroundColor: Color {
+        .foregroundMuted
     }
     
     @ViewBuilder
@@ -182,6 +211,9 @@ private extension MPCActivateWalletStateCardView {
                     .resizable()
                     .foregroundStyle(stateBorderColor())
             }
+        case .purchase:
+            Image.purchaseMPCIcon
+                .resizable()
         }
     }
     
@@ -191,11 +223,18 @@ private extension MPCActivateWalletStateCardView {
         case .activation(let activationState):
             switch activationState {
             case .readyToActivate, .activating, .failed:
-                Color.backgroundOverlay
+                defaultStateBackgroundView()
             case .activated:
                 Color.backgroundSuccessEmphasis
             }
+        case .purchase:
+            defaultStateBackgroundView()
         }
+    }
+    
+    @ViewBuilder
+    func defaultStateBackgroundView() -> some View {
+        Color.backgroundOverlay
     }
     
     func stateBorderColor() -> Color {
@@ -209,6 +248,13 @@ private extension MPCActivateWalletStateCardView {
             case .failed:
                     .backgroundDangerEmphasis
             }
+        case .purchase(let purchaseState):
+            switch purchaseState {
+            case .readyToPurchase, .preparing, .purchasing:
+                    .foregroundAccent
+            case .failed:
+                    .backgroundDangerEmphasis
+            }
         }
     }
 }
@@ -217,6 +263,7 @@ private extension MPCActivateWalletStateCardView {
 extension MPCActivateWalletStateCardView {
     enum Mode {
         case activation(MPCWalletActivationState)
+        case purchase(MPCWalletPurchasingState)
     }
 }
 

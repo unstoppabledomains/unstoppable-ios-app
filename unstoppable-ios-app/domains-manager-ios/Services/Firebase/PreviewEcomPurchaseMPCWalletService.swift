@@ -9,7 +9,13 @@ import Foundation
 import Combine
 
 final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
-    private var cart: PurchaseMPCWalletCart = .empty {
+    private var cart: PurchaseMPCWalletCart = PurchaseMPCWalletCart(totalPrice: 999,
+                                                                    taxes: 0,
+                                                                    storeCreditsAvailable: 0,
+                                                                    promoCreditsAvailable: 0,
+                                                                    appliedDiscountDetails: .init(storeCredits: 0,
+                                                                                                  promoCredits: 0,
+                                                                                                  others: 0)) {
         didSet {
             cartStatus = .ready(cart: cart)
         }
