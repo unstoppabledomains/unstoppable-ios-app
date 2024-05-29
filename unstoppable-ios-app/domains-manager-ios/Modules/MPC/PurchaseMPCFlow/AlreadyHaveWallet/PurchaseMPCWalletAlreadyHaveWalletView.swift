@@ -37,11 +37,19 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
             VStack(spacing: 16) {
                 Text(String.Constants.mpcWalletAlreadyPurchasedTitle.localized())
                     .titleText()
-                Text(String.Constants.mpcWalletAlreadyPurchasedSubtitle.localized())
-                    .subtitleText()
+                HStack {
+                    Text(String.Constants.email.localized() + ":")
+                        .subtitleText()
+                    Text(email)
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                }
             }
-            .multilineTextAlignment(.center)
+            Text(String.Constants.mpcWalletAlreadyPurchasedSubtitle.localized())
+                .subtitleText()
         }
+        .multilineTextAlignment(.center)
     }
     
     @ViewBuilder
