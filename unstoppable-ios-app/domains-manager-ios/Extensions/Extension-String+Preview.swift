@@ -240,6 +240,7 @@ extension String {
         static let domainOrAddress = "DOMAIN_OR_ADDRESS"
         static let yourWallets = "YOUR_WALLETS"
         static let new = "NEW"
+        static let confirmEmail = "CONFIRM_EMAIL"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

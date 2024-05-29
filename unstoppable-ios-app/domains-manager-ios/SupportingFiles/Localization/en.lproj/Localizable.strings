@@ -178,6 +178,7 @@
 "DOMAIN_OR_ADDRESS" = "Domain or Address";
 "YOUR_WALLETS" = "Your Wallets";
 "NEW" = "New";
+"CONFIRM_EMAIL" = "Confirm email";
 
 /* ONBOARDING */
 // Tutorial screens
