@@ -24,9 +24,14 @@ final class MPCOnboardingPurchaseCheckoutViewController: BaseViewController, Vie
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseCheckoutViewController {
-    func didPurchaseMPCWallet() {
-        Task {
-            try? await onboardingFlowManager?.handle(action: .didPurchaseMPCWallet)
+    func didPurchaseMPCWallet(_ result: PurchaseMPCWallet.PurchaseResult) {
+        Task { @MainActor in 
+            switch result {
+            case .purchased:
+                try? await onboardingFlowManager?.handle(action: .didPurchaseMPCWallet)
+            case .alreadyHaveWallet:
+                try? await onboardingFlowManager?.handle(action: .alreadyPurchasedMPCWallet)                
+            }
         }
     }
 }
@@ -52,8 +57,8 @@ private extension MPCOnboardingPurchaseCheckoutViewController {
         }
         
         let mpcView = PurchaseMPCWalletCheckoutView(credentials: credentials,
-                                                    purchasedCallback: { [weak self] in
-            self?.didPurchaseMPCWallet()
+                                                    purchasedCallback: { [weak self] result in
+            self?.didPurchaseMPCWallet(result)
         })
             .padding(.top, 40)
         let vc = UIHostingController(rootView: mpcView)

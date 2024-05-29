@@ -13,6 +13,7 @@ struct PurchaseMPCWalletUDAuthView: View, UserDataValidator {
     
     let credentialsCallback: (MPCPurchaseUDCredentials)->()
     @State private var emailInput: String = ""
+    @State private var emailConfirmationInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
     @State private var error: Error?
@@ -23,9 +24,10 @@ struct PurchaseMPCWalletUDAuthView: View, UserDataValidator {
                 headerView()
                 VStack(alignment: .leading, spacing: 16) {
                     emailInputView()
+                    emailConfirmationInputView()
                 }
-                actionButtonView()
                 Spacer()
+                actionButtonView()
             }
         }
         .scrollDisabled(true)
@@ -40,11 +42,11 @@ private extension PurchaseMPCWalletUDAuthView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.login.localizedMPCProduct())
+            Text(String.Constants.enterEmailTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-            Text(String.Constants.importMPCWalletSubtitle.localizedMPCProduct())
+            Text(String.Constants.buyMPCEnterEmailSubtitle.localizedMPCProduct())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
@@ -57,8 +59,27 @@ private extension PurchaseMPCWalletUDAuthView {
         VStack(spacing: 8) {
             UDTextFieldView(text: $emailInput,
                             placeholder: "name@mail.com",
-                            hint: String.Constants.emailAssociatedWithWallet.localized(),
+                            hint: String.Constants.email.localized(),
                             focusBehaviour: .activateOnAppear,
+                            keyboardType: .emailAddress,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true,
+                            isErrorState: shouldShowEmailError,
+                            focusedStateChangedCallback: { isFocused in
+                isEmailFocused = isFocused
+            })
+            if shouldShowEmailError {
+                incorrectEmailIndicatorView()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func emailConfirmationInputView() -> some View {
+        VStack(spacing: 8) {
+            UDTextFieldView(text: $emailConfirmationInput,
+                            placeholder: String.Constants.confirmEmail.localized(),
+                            focusBehaviour: .default,
                             keyboardType: .emailAddress,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
@@ -91,11 +112,15 @@ private extension PurchaseMPCWalletUDAuthView {
     }
     
     var isActionButtonDisabled: Bool {
-        !isValidEmailEntered
+        !isValidEmailEntered || !isEmailConfirmed
     }
     
     var isValidEmailEntered: Bool {
         isEmailValid(emailInput)
+    }
+    
+    var isEmailConfirmed: Bool {
+        emailInput == emailConfirmationInput
     }
     
     @ViewBuilder

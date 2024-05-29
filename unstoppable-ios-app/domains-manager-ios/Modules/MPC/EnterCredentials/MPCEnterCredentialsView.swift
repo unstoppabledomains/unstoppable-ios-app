@@ -11,13 +11,14 @@ struct MPCEnterCredentialsView: View, UserDataValidator, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    var mode: InputMode = .freeInput
+    var mode: InputMode = .freeInput()
     let analyticsName: Analytics.ViewName
     let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
+    @State private var didSetInitialEmail = false
     @State private var error: Error?
         
     var body: some View {
@@ -46,8 +47,11 @@ struct MPCEnterCredentialsView: View, UserDataValidator, ViewAnalyticsLogger {
 private extension MPCEnterCredentialsView {
     func onAppear() {
         switch mode {
-        case .freeInput:
-            return
+        case .freeInput(let email):
+            if !didSetInitialEmail {
+                didSetInitialEmail = true
+                emailInput = email ?? ""
+            }
         case .strictEmail(let email):
             self.emailInput = email
         }
@@ -166,7 +170,7 @@ private extension MPCEnterCredentialsView {
 // MARK: - Open methods
 extension MPCEnterCredentialsView {
     enum InputMode {
-        case freeInput
+        case freeInput(String? = nil)
         case strictEmail(String)
     }
 }

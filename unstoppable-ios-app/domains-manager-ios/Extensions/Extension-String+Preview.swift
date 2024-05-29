@@ -240,6 +240,7 @@ extension String {
         static let domainOrAddress = "DOMAIN_OR_ADDRESS"
         static let yourWallets = "YOUR_WALLETS"
         static let new = "NEW"
+        static let confirmEmail = "CONFIRM_EMAIL"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1235,6 +1236,12 @@ extension String {
         static let createMPCOnboardingSubtitle = "CREATE_MPC_ONBOARDING_SUBTITLE"
         static let createWalletOnboardingSubtitle = "CREATE_WALLET_ONBOARDING_SUBTITLE"
         static let nPricePerYear = "N_PRICE_PER_YEAR"
+        static let buyMPCEnterEmailSubtitle = "BUY_MPC_ENTER_EMAIL_SUBTITLE"
+        static let subscribe = "SUBSCRIBE"
+        static let mpcPurchaseErrorMessage = "MPC_PURCHASE_ERROR_MESSAGE"
+        static let mpcWalletAlreadyPurchasedTitle = "MPC_WALLET_ALREADY_PURCHASED_TITLE"
+        static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
+        static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

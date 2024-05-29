@@ -178,6 +178,7 @@
 "DOMAIN_OR_ADDRESS" = "Domain or Address";
 "YOUR_WALLETS" = "Your Wallets";
 "NEW" = "New";
+"CONFIRM_EMAIL" = "Confirm email";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -1129,6 +1130,12 @@ More tabs are coming in the next updates.";
 "CREATE_MPC_ONBOARDING_SUBTITLE" = "Password protected and recoverable wallet to protect your domain investment.";
 "CREATE_WALLET_ONBOARDING_SUBTITLE" = "Weak security and backup.";
 "N_PRICE_PER_YEAR" = "%@ per year";
+"BUY_MPC_ENTER_EMAIL_SUBTITLE" = "Each %@ requires a UNIQUE email address.";
+"SUBSCRIBE" = "Subscribe";
+"MPC_PURCHASE_ERROR_MESSAGE" = "Something went wrong, please try again";
+"MPC_WALLET_ALREADY_PURCHASED_TITLE" = "Looks like you already have Unstoppable Wallet";
+"MPC_WALLET_ALREADY_PURCHASED_SUBTITLE" = "We've extended your subscription by 1 year based on your payment. Import your Unstoppable Wallet to start using it with the app, or use a different email to create a new Unstoppable Wallet.";
+"USE_DIFFERENT_EMAIL" = "Use different email";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
