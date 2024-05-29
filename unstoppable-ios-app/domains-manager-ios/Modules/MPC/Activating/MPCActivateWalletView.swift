@@ -237,25 +237,3 @@ private extension MPCActivateWalletView {
                           mpcWalletCreatedCallback: { _ in },
                           changeEmailCallback: { })
 }
-
-struct CircularProgressView: View {
-    let progress: CGFloat
-    var lineWidth: CGFloat = 10
-    
-    var body: some View {
-        ZStack {
-            // Background for the progress bar
-            Circle()
-                .stroke(lineWidth: lineWidth)
-                .foregroundStyle(Color.backgroundMuted)
-            
-            // Foreground or the actual progress bar
-            Circle()
-                .trim(from: 0.0, to: min(progress, 1.0))
-                .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                .foregroundStyle(Color.foregroundAccent)
-                .rotationEffect(Angle(degrees: 270.0))
-                .animation(.linear, value: progress)
-        }
-    }
-}

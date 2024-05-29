@@ -201,7 +201,7 @@ private extension MPCActivateWalletStateCardView {
         case .activation(let activationState):
             switch activationState {
             case .readyToActivate, .activating:
-                CircularProgressView(progress: mpcCreateProgress)
+                CircularProgressView(mode: .lineProgress(mpcCreateProgress))
             case .activated:
                 Image.checkCircle
                     .resizable()
@@ -211,9 +211,14 @@ private extension MPCActivateWalletStateCardView {
                     .resizable()
                     .foregroundStyle(stateBorderColor())
             }
-        case .purchase:
-            Image.purchaseMPCIcon
-                .resizable()
+        case .purchase(let purchaseState):
+            switch purchaseState {
+            case .preparing, .readyToPurchase, .failed:
+                Image.purchaseMPCIcon
+                    .resizable()
+            case .purchasing:
+                CircularProgressView(mode: .continuousProgress)
+            }
         }
     }
     
