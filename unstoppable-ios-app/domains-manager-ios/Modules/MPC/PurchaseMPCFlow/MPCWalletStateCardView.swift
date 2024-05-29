@@ -85,20 +85,6 @@ private extension MPCWalletStateCardView {
         }
     }
     
-//    var subtitle: String {
-//        switch mode {
-//        case .activation:
-//            String.Constants.mpcProductName.localized()
-//        case .purchase(let purchaseState):
-//            switch purchaseState {
-//            case .preparing, .purchasing, .failed:
-//                ""
-//            case .readyToPurchase(let price):
-//                String.Constants.nPricePerYear.localized(formatCartPrice(price))
-//            }
-//        }
-//    }
-    
     @ViewBuilder
     func numberBadgeView() -> some View {
         HStack(alignment: .center, spacing: 4) {
@@ -214,10 +200,10 @@ private extension MPCWalletStateCardView {
             }
         case .purchase(let purchaseState):
             switch purchaseState {
-            case .preparing, .readyToPurchase, .failed:
+            case .readyToPurchase, .failed:
                 Image.purchaseMPCIcon
                     .resizable()
-            case .purchasing:
+            case .preparing, .purchasing:
                 CircularProgressView(mode: .continuousProgress)
             }
         }

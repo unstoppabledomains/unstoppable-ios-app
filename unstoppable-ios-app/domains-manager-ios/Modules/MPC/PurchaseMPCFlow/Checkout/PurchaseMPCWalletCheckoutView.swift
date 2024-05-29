@@ -12,7 +12,7 @@ struct PurchaseMPCWalletCheckoutView: View {
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
     let credentials: MPCPurchaseUDCredentials
-    let purchasedCallback: EmptyCallback
+    let purchasedCallback: (PurchaseMPCWallet.PurchaseResult)->()
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
     @State private var purchaseState = MPCWalletPurchasingState.preparing
@@ -124,7 +124,12 @@ private extension PurchaseMPCWalletCheckoutView {
         case .ready(let cart):
             return cart.totalPrice != 0
         default:
-            return false
+            switch purchaseState {
+            case .failed:
+                return true
+            default:
+                return false
+            }
         }
     }
     
@@ -140,6 +145,9 @@ private extension PurchaseMPCWalletCheckoutView {
             purchaseState = .failed(.unknown)
             pullUpError = .loadCalculationsError(tryAgainCallback: callback)
         case .ready(let cart):
+            if cart.totalPrice == 0 {
+                return
+            }
             if case .purchasing = purchaseState {
                 return
             }
@@ -152,7 +160,7 @@ private extension PurchaseMPCWalletCheckoutView {
             purchaseState = .purchasing
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
-                purchasedCallback()
+                purchasedCallback(.purchased)
             } catch let error as MPCWalletPurchaseError {
                 didFailWithError(error)
             } catch {
@@ -162,12 +170,11 @@ private extension PurchaseMPCWalletCheckoutView {
     }
     
     func didFailWithError(_ error: MPCWalletPurchaseError) {
-        purchaseState = .failed(error)
         switch error {
         case .walletAlreadyPurchased:
-            return
+            purchasedCallback(.alreadyHaveWallet)
         case .unknown:
-            return
+            purchaseState = .failed(error)
         }
     }
     
@@ -175,5 +182,5 @@ private extension PurchaseMPCWalletCheckoutView {
 
 #Preview {
     PurchaseMPCWalletCheckoutView(credentials: .init(email: "qq@qq.qq"),
-                                  purchasedCallback: { })
+                                  purchasedCallback: { _ in })
 }

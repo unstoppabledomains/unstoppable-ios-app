@@ -14,7 +14,7 @@ struct MPCEnterCredentialsInAppView: View {
     let preFilledEmail: String?
     
     var body: some View {
-        MPCEnterCredentialsView(mode: preFilledEmail == nil ? .freeInput : .strictEmail(preFilledEmail!),
+        MPCEnterCredentialsView(mode: preFilledEmail == nil ? .freeInput() : .strictEmail(preFilledEmail!),
                                 analyticsName: .mpcEnterCredentialsInApp,
                                 credentialsCallback: didEnterCredentials)
             .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)

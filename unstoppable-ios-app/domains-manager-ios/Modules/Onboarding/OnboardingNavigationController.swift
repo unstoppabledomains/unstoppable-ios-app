@@ -102,6 +102,21 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             moveToStep(.mpcPurchaseCheckout)
         case .didPurchaseMPCWallet:
             moveToStep(.mpcPurchaseTakeover)
+        case .alreadyPurchasedMPCWallet:
+            moveToStep(.mpcPurchaseAlreadyHaveWallet)
+        case .alreadyPurchasedMPCWalletUseDifferentEmail:
+            OnboardingData.mpcPurchaseCredentials = nil
+            popTo(MPCOnboardingPurchaseUDAuthViewController.self)
+        case .alreadyPurchasedMPCWalletImportMPC:
+            if let email = OnboardingData.mpcPurchaseCredentials?.email {
+                OnboardingData.mpcCredentials = .init(email: email, password: "")                
+            }
+            OnboardingData.mpcPurchaseCredentials = nil
+            popToRootViewController(animated: true)
+            await Task.sleep(seconds: CNavigationController.animationDuration)
+            moveToStep(.restoreWallet)
+            await Task.sleep(seconds: CNavigationController.animationDuration)
+            moveToStep(.mpcCredentials)
         }
     }
     
@@ -180,10 +195,11 @@ private extension OnboardingNavigationController {
         if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
             transitionHandler?.isInteractionEnabled = false
         } else if (topViewController is RecoveryPhraseViewController &&
-                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
-        topViewController is LoadingParkedDomainsViewController ||
-        topViewController is ParkedDomainsFoundViewController ||
-        topViewController is NoParkedDomainsFoundViewController {
+                   UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
+                    topViewController is LoadingParkedDomainsViewController ||
+                    topViewController is ParkedDomainsFoundViewController ||
+                    topViewController is NoParkedDomainsFoundViewController  ||
+                    topViewController is MPCOnboardingPurchaseAlreadyHaveWalletViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)
@@ -464,12 +480,18 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc   
+        case .mpcPurchaseAlreadyHaveWallet:
+            let vc = MPCOnboardingPurchaseAlreadyHaveWalletViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         case .mpcPurchaseTakeover:
             let vc = MPCOnboardingPurchaseTakeoverViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
-            return vc  
+            return vc
         }
     }
  
@@ -535,11 +557,12 @@ extension OnboardingNavigationController {
         
         case mpcPurchaseAuth = 27
         case mpcPurchaseCheckout = 28
-        case mpcPurchaseTakeover = 29
+        case mpcPurchaseAlreadyHaveWallet = 29
+        case mpcPurchaseTakeover = 30
         
         var isStorable: Bool {
             switch self {
-            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeover:
+            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeover, .mpcPurchaseAlreadyHaveWallet:
                 return false
             default:
                 return true
@@ -560,6 +583,10 @@ extension OnboardingNavigationController {
         case changeEmailFromMPCWallet
         case didEnterMPCPurchaseUDCredentials
         case didPurchaseMPCWallet
+        case alreadyPurchasedMPCWallet
+        
+        case alreadyPurchasedMPCWalletUseDifferentEmail
+        case alreadyPurchasedMPCWalletImportMPC
     }
     
 }

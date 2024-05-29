@@ -1239,6 +1239,9 @@ extension String {
         static let buyMPCEnterEmailSubtitle = "BUY_MPC_ENTER_EMAIL_SUBTITLE"
         static let subscribe = "SUBSCRIBE"
         static let mpcPurchaseErrorMessage = "MPC_PURCHASE_ERROR_MESSAGE"
+        static let mpcWalletAlreadyPurchasedTitle = "MPC_WALLET_ALREADY_PURCHASED_TITLE"
+        static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
+        static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

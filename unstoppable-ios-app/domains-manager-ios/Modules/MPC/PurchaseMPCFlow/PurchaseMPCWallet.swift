@@ -15,4 +15,14 @@ extension PurchaseMPCWallet {
         case loginWithEmail(email: String, password: String)
         case didPurchase
     }
+    
+    enum PurchaseResult {
+        case purchased
+        case alreadyHaveWallet
+    }
+    
+    enum AlreadyHaveWalletAction {
+        case useDifferentEmail
+        case importMPC
+    }
 }

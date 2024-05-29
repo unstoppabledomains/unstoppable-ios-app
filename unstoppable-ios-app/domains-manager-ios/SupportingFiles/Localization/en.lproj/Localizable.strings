@@ -1133,6 +1133,9 @@ More tabs are coming in the next updates.";
 "BUY_MPC_ENTER_EMAIL_SUBTITLE" = "Each %@ requires a UNIQUE email address.";
 "SUBSCRIBE" = "Subscribe";
 "MPC_PURCHASE_ERROR_MESSAGE" = "Something went wrong, please try again";
+"MPC_WALLET_ALREADY_PURCHASED_TITLE" = "Looks like you already have Unstoppable Wallet";
+"MPC_WALLET_ALREADY_PURCHASED_SUBTITLE" = "We've extended your subscription by 1 year based on your payment. Import your Unstoppable Wallet to start using it with the app, or use a different email to create a new Unstoppable Wallet.";
+"USE_DIFFERENT_EMAIL" = "Use different email";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
