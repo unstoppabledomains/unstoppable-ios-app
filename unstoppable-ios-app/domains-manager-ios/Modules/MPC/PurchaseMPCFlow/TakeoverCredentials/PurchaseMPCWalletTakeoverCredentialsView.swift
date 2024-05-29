@@ -19,8 +19,10 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
     @State private var isEmailFocused = true
+    @State private var emailInUseState: EmailInUseVerificationState = .unverified
     @State private var didSetupPurchaseEmail = false
-    
+    @StateObject private var debounceObject = DebounceObject()
+
     var body: some View {
         ScrollView {
             VStack(spacing: isIPSE ? 16 : 32) {
@@ -50,6 +52,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     func onAppear() {
         validatePasswordInput()
         setupPurchaseEmail()
+        checkIfEmailAlreadyInUseIfNeeded()
     }
     
     func setupPurchaseEmail() {
@@ -81,19 +84,26 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     @ViewBuilder
     func emailInputView() -> some View {
         VStack(spacing: 8) {
-            UDTextFieldView(text: $emailInput,
+            UDTextFieldView(text: $debounceObject.text,
                             placeholder: "name@mail.com",
                             hint: String.Constants.emailAssociatedWithWallet.localized(),
                             focusBehaviour: .activateOnAppear,
                             keyboardType: .emailAddress,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
-                            isErrorState: shouldShowEmailError,
+                            isErrorState: emailVerificationError != nil,
                             focusedStateChangedCallback: { isFocused in
                 isEmailFocused = isFocused
+                if !isFocused {
+                    checkIfEmailAlreadyInUseIfNeeded()
+                }
             })
-            if shouldShowEmailError {
-                incorrectEmailIndicatorView()
+            .onChange(of: debounceObject.debouncedText) { text in
+                emailInput = text.trimmedSpaces
+                checkIfEmailAlreadyInUseIfNeeded()
+            }
+            if let emailVerificationError {
+                incorrectEmailIndicatorView(error: emailVerificationError)
             }
         }
     }
@@ -121,17 +131,22 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         purchaseEmail != emailInput
     }
     
-    var shouldShowEmailError: Bool {
-        !isEmailFocused && !isValidEmailEntered
+    var emailVerificationError: EmailVerificationError? {
+        if case .inUse = emailInUseState {
+            return .alreadyInUse
+        } else if !isEmailFocused && !isValidEmailEntered {
+            return .incorrectFormat
+        }
+        return nil
     }
     
     @ViewBuilder
-    func incorrectEmailIndicatorView() -> some View {
+    func incorrectEmailIndicatorView(error: EmailVerificationError) -> some View {
         HStack(spacing: 8) {
             Image.alertCircle
                 .resizable()
                 .squareFrame(16)
-            Text(String.Constants.incorrectEmailFormat.localized())
+            Text(error.title)
                 .font(.currentFont(size: 12, weight: .medium))
             Spacer()
         }
@@ -147,7 +162,12 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                             focusBehaviour: .default,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
-                            isSecureInput: true)
+                            isSecureInput: true,
+                            focusedStateChangedCallback: { isFocused in
+                if !isFocused {
+                    checkIfEmailAlreadyInUseIfNeeded()
+                }
+            })
             passwordRequirementsView()
         }
     }
@@ -223,7 +243,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
     
     var isActionButtonDisabled: Bool {
-        !isValidEmailEntered || !isValidPasswordEntered || passwordInput != confirmPasswordInput || !isEmailConfirmed
+        !isValidEmailEntered || !isValidPasswordEntered || passwordInput != confirmPasswordInput || !isEmailConfirmed || !isVerifiedEmailEntered
     }
     
     var isValidEmailEntered: Bool {
@@ -231,7 +251,14 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
     
     var isValidPasswordEntered: Bool {
-        !passwordInput.isEmpty
+        passwordErrors.isEmpty
+    }
+    
+    var isVerifiedEmailEntered: Bool {
+        if case .verified(let value) = emailInUseState {
+            return emailInput == value
+        }
+        return false
     }
     
     var isEmailConfirmed: Bool {
@@ -255,6 +282,47 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         let password = passwordInput
         let credentials = MPCActivateCredentials(email: email, password: password)
         credentialsCallback(credentials)
+    }
+    
+    enum EmailVerificationError {
+        case incorrectFormat
+        case alreadyInUse
+        
+        var title: String {
+            switch self {
+            case .incorrectFormat:
+                return String.Constants.incorrectEmailFormat.localized()
+            case .alreadyInUse:
+                return String.Constants.mpcWalletEmailInUseMessage.localized()
+            }
+        }
+    }
+    
+    func checkIfEmailAlreadyInUseIfNeeded() {
+        guard !isVerifiedEmailEntered, 
+            isValidPasswordEntered else { return }
+        
+        if case .inUse = emailInUseState {
+            emailInUseState = .unverified
+        }
+        Task {
+            let email = emailInput
+            let password = passwordInput
+            let credentials = MPCTakeoverCredentials(email: email, password: password)
+            let isValid = try await ecomPurchaseMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
+            
+            if isValid {
+                emailInUseState = .verified(email)
+            } else {
+                emailInUseState = .inUse
+            }
+        }
+    }
+    
+    enum EmailInUseVerificationState {
+        case unverified
+        case verified(String)
+        case inUse
     }
 }
 

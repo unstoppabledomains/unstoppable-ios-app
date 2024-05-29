@@ -71,7 +71,8 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
     }
     
     func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
-        true
+        await Task.sleep(seconds: 1)
+        return [true, false].randomElement()!
     }
     
     func runTakeover(credentials: MPCTakeoverCredentials) async throws {
