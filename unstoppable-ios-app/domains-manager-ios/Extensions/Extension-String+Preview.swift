@@ -1244,6 +1244,7 @@ extension String {
         static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
         static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
         static let mpcPasswordValidationLengthTitle = "MPC_PASSWORD_VALIDATION_LENGTH_TITLE"
+        static let mpcPasswordValidationTooLongTitle = "MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE"
         static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
         static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
         static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"

@@ -163,6 +163,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
                             isSecureInput: true,
+                            isErrorState: isPasswordInErrorState,
                             focusedStateChangedCallback: { isFocused in
                 if !isFocused {
                     checkIfEmailAlreadyInUseIfNeeded()
@@ -170,6 +171,10 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
             })
             passwordRequirementsView()
         }
+    }
+    
+    var isPasswordInErrorState: Bool {
+        passwordErrors.contains(.tooLong)
     }
     
     @ViewBuilder
@@ -199,6 +204,8 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     func foregroundStyleFor(requirement: PasswordRequirements) -> Color {
         if isPasswordRequirementMet(requirement) {
             .foregroundSuccess
+        } else if isPasswordInErrorState && requirement == .length {
+            .foregroundDanger
         } else {
             .foregroundSecondary
         }
@@ -224,7 +231,11 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     func titleFor(requirement: PasswordRequirements) -> String {
         switch requirement {
         case .length:
-            String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
+            if passwordErrors.contains(.tooLong) {
+                String.Constants.mpcPasswordValidationTooLongTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
+            } else {
+                String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength)
+            }
         case .oneNumber:
             String.Constants.mpcPasswordValidationNumberTitle.localized()
         case .specialChar:
