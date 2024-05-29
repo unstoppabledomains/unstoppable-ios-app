@@ -70,7 +70,7 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
         
     }
     
-    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool {
+    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
         true
     }
     

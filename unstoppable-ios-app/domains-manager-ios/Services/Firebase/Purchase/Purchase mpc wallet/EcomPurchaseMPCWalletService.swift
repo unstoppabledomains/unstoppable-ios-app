@@ -170,7 +170,7 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
         isAutoRefreshCartSuspended = false
     }
     
-    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool {
+    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
         do {
             try await makeSetupWalletRequestFor(credentials: credentials, preview: true)
             return true
