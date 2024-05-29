@@ -29,6 +29,7 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
             }
             .padding()
         }
+        .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
     }
 }
@@ -90,7 +91,7 @@ private extension PurchaseMPCWalletTakeoverProgressView {
     }
     
     func actionButtonPressed() {
-        
+        runTakeover()
     }
 }
 
