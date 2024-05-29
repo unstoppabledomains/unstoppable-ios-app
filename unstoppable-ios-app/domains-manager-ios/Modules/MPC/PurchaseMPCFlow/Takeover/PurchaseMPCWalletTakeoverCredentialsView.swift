@@ -70,11 +70,11 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Setup")
+            Text(String.Constants.setup.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-            Text("Each Unstoppable Wallet requires a UNIQUE email address. Make sure you have access to an email. It can be the one used in the previous step or a different one.")
+            Text(String.Constants.mpcTakeoverCredentialsSubtitle.localized())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
@@ -170,7 +170,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         HStack(spacing: 8) {
             Circle()
                 .squareFrame(4)
-            Text(requirement.title)
+            Text(titleFor(requirement: requirement))
                 .font(.currentFont(size: 13))
             Spacer()
         }
@@ -203,16 +203,16 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         case length
         case oneNumber
         case specialChar
-        
-        var title: String {
-            switch self {
-            case .length:
-                return "Minimum 12 characters"
-            case .oneNumber:
-                return "At least one number"
-            case .specialChar:
-                return "At least one special character (e.g. -!&*)"
-            }
+    }
+    
+    func titleFor(requirement: PasswordRequirements) -> String {
+        switch requirement {
+        case .length:
+            String.Constants.mpcPasswordValidationLengthTitle.localized(minMPCWalletPasswordLength, maxMPCWalletPasswordLength)
+        case .oneNumber:
+            String.Constants.mpcPasswordValidationNumberTitle.localized()
+        case .specialChar:
+            String.Constants.mpcPasswordValidationSpecialCharTitle.localized()
         }
     }
     

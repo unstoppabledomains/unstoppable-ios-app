@@ -241,6 +241,7 @@ extension String {
         static let yourWallets = "YOUR_WALLETS"
         static let new = "NEW"
         static let confirmEmail = "CONFIRM_EMAIL"
+        static let setup = "SETUP"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1242,6 +1243,10 @@ extension String {
         static let mpcWalletAlreadyPurchasedTitle = "MPC_WALLET_ALREADY_PURCHASED_TITLE"
         static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
         static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
+        static let mpcPasswordValidationLengthTitle = "MPC_PASSWORD_VALIDATION_LENGTH_TITLE"
+        static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
+        static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
+        static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

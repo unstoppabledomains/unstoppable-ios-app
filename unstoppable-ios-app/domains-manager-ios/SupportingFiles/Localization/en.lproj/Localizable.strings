@@ -179,6 +179,7 @@
 "YOUR_WALLETS" = "Your Wallets";
 "NEW" = "New";
 "CONFIRM_EMAIL" = "Confirm email";
+"SETUP" = "Setup";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -1136,6 +1137,10 @@ More tabs are coming in the next updates.";
 "MPC_WALLET_ALREADY_PURCHASED_TITLE" = "Looks like you already have Unstoppable Wallet";
 "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE" = "We've extended your subscription by 1 year based on your payment. Import your Unstoppable Wallet to start using it with the app, or use a different email to create a new Unstoppable Wallet.";
 "USE_DIFFERENT_EMAIL" = "Use different email";
+"MPC_PASSWORD_VALIDATION_LENGTH_TITLE" = "%i to %i characters";
+"MPC_PASSWORD_VALIDATION_NUMBER_TITLE" = "At least one number";
+"MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE" = "At least one special character (e.g. -!&*)";
+"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each Unstoppable Wallet requires a UNIQUE email address. Make sure you have access to an email. It can be the one used in the previous step or a different one.";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
