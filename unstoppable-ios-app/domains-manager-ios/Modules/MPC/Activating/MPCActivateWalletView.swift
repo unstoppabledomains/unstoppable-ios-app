@@ -174,9 +174,10 @@ private extension MPCActivateWalletView {
     
     @ViewBuilder
     func mpcStateView() -> some View {
-        MPCActivateWalletStateCardView(title: mpcStateTitle,
-                                       mode: .activation(activationState),
-                                       mpcCreateProgress: mpcCreateProgress)
+        MPCWalletStateCardView(title: mpcStateTitle,
+                               subtitle: String.Constants.mpcProductName.localized(),
+                               mode: .activation(activationState),
+                               mpcCreateProgress: mpcCreateProgress)
     }
     
     @ViewBuilder

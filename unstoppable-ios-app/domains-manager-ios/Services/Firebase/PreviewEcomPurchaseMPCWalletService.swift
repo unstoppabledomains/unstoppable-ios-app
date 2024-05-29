@@ -38,7 +38,8 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
     }
     
     func purchaseMPCWallet() async throws {
-        
+        await Task.sleep(seconds: 2.2)
+        throw NSError()
     }
     
     func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {

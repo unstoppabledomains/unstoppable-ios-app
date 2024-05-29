@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct MPCActivateWalletStateCardView: View {
+struct MPCWalletStateCardView: View {
     
     let title: String
+    let subtitle: String
     let mode: Mode
     let mpcCreateProgress: Double
     
@@ -56,7 +57,7 @@ struct MPCActivateWalletStateCardView: View {
 }
 
 // MARK: - Private methods
-private extension MPCActivateWalletStateCardView {
+private extension MPCWalletStateCardView {
     @ViewBuilder
     func mpcStateBlurLine() -> some View {
         Rectangle()
@@ -84,19 +85,19 @@ private extension MPCActivateWalletStateCardView {
         }
     }
     
-    var subtitle: String {
-        switch mode {
-        case .activation:
-            String.Constants.mpcProductName.localized()
-        case .purchase(let purchaseState):
-            switch purchaseState {
-            case .preparing, .purchasing, .failed:
-                String.Constants.mpcProductName.localized()
-            case .readyToPurchase(let price):
-                String.Constants.nPricePerYear.localized(formatCartPrice(price))
-            }
-        }
-    }
+//    var subtitle: String {
+//        switch mode {
+//        case .activation:
+//            String.Constants.mpcProductName.localized()
+//        case .purchase(let purchaseState):
+//            switch purchaseState {
+//            case .preparing, .purchasing, .failed:
+//                ""
+//            case .readyToPurchase(let price):
+//                String.Constants.nPricePerYear.localized(formatCartPrice(price))
+//            }
+//        }
+//    }
     
     @ViewBuilder
     func numberBadgeView() -> some View {
@@ -254,18 +255,13 @@ private extension MPCActivateWalletStateCardView {
                     .backgroundDangerEmphasis
             }
         case .purchase(let purchaseState):
-            switch purchaseState {
-            case .readyToPurchase, .preparing, .purchasing:
-                    .foregroundAccent
-            case .failed:
-                    .backgroundDangerEmphasis
-            }
+                .foregroundAccent
         }
     }
 }
 
 // MARK: - Open methods
-extension MPCActivateWalletStateCardView {
+extension MPCWalletStateCardView {
     enum Mode {
         case activation(MPCWalletActivationState)
         case purchase(MPCWalletPurchasingState)
@@ -273,7 +269,8 @@ extension MPCActivateWalletStateCardView {
 }
 
 #Preview {
-    MPCActivateWalletStateCardView(title: "Activating...",
-                                   mode: .activation(.readyToActivate),
-                                   mpcCreateProgress: 0.3)
+    MPCWalletStateCardView(title: "Activating...",
+                           subtitle: String.Constants.mpcProductName.localized(),
+                           mode: .activation(.readyToActivate),
+                           mpcCreateProgress: 0.3)
 }

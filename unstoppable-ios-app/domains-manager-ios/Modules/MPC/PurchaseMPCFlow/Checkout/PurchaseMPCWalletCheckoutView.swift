@@ -16,6 +16,7 @@ struct PurchaseMPCWalletCheckoutView: View {
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
     @State private var purchaseState = MPCWalletPurchasingState.preparing
+    @State private var price: Int?
 
     var body: some View {
         VStack {
@@ -23,7 +24,7 @@ struct PurchaseMPCWalletCheckoutView: View {
             Spacer()
             totalView()
             Spacer()
-            buyButton()
+            bottomView()
         }
             .padding()
             .background(Color.backgroundDefault)
@@ -34,6 +35,9 @@ struct PurchaseMPCWalletCheckoutView: View {
                 }
                 self.cartStatus = cartStatus
                 checkUpdatedCartStatus()
+            }
+            .task {
+                price = try? await EcomMPCPriceFetcher.shared.fetchPrice()
             }
     }
     
@@ -53,19 +57,65 @@ private extension PurchaseMPCWalletCheckoutView {
     
     @ViewBuilder
     func totalView() -> some View {
-        MPCActivateWalletStateCardView(title: cardTitle,
-                                       mode: .purchase(purchaseState),
-                                       mpcCreateProgress: 0)
+        MPCWalletStateCardView(title: cardTitle,
+                               subtitle: cardSubtitle,
+                               mode: .purchase(purchaseState),
+                               mpcCreateProgress: 0)
     }
     
     var cardTitle: String {
         switch purchaseState {
         case .purchasing:
             String.Constants.mpcAuthorizing.localized()
-        case .preparing, .readyToPurchase:
+        case .preparing, .readyToPurchase, .failed:
             String.Constants.mpcProductName.localized()
+        }
+    }
+    
+    var cardSubtitle: String {
+        if let price {
+            return String.Constants.nPricePerYear.localized(formatCartPrice(price))
+        }
+        return ""
+    }
+    
+    @ViewBuilder
+    func bottomView() -> some View {
+        VStack(spacing: 24) {
+            errorIndicatorView()
+            buyButton()
+        }
+    }
+    
+    @ViewBuilder
+    func errorIndicatorView() -> some View {
+        switch purchaseState {
         case .failed:
-            String.Constants.somethingWentWrong.localized()
+            HStack(spacing: 8) {
+                Image.alertCircle
+                    .resizable()
+                    .squareFrame(16)
+                Text(String.Constants.mpcPurchaseErrorMessage.localized())
+                    .font(.currentFont(size: 14, weight: .medium))
+            }
+            .frame(height: 20)
+            .foregroundStyle(Color.foregroundDanger)
+        case .readyToPurchase, .preparing, .purchasing:
+            EmptyView()
+        }
+    }
+  
+    @ViewBuilder
+    func buyButton() -> some View {
+        switch purchaseState {
+        case .readyToPurchase, .failed:
+            UDButtonView(text: String.Constants.pay.localized(),
+                         icon: .appleIcon,
+                         style: .large(.applePay),
+                         callback: confirmPurchase)
+            .disabled(!isBuyButtonEnabled)
+        case .preparing, .purchasing:
+            EmptyView()
         }
     }
     
@@ -78,18 +128,6 @@ private extension PurchaseMPCWalletCheckoutView {
         }
     }
     
-    @ViewBuilder
-    func buyButton() -> some View {
-        switch purchaseState {
-        case .readyToPurchase, .failed:
-            UDButtonView(text: String.Constants.pay.localized(),
-                         style: .large(.applePay),
-                         callback: confirmPurchase)
-            .disabled(!isBuyButtonEnabled)
-        case .preparing, .purchasing:
-            EmptyView()
-        }
-    }
 }
 
 // MARK: - Private methods
