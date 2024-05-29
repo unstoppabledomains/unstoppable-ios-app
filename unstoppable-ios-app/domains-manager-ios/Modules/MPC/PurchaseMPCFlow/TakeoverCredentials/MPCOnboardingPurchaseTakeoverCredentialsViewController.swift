@@ -24,9 +24,12 @@ final class MPCOnboardingPurchaseTakeoverCredentialsViewController: BaseViewCont
 
 // MARK: - Private methods
 private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
-    func didTakeoverWithCredentials(_ credentials: MPCActivateCredentials) {
-        OnboardingData.mpcCredentials = credentials
-        onboardingFlowManager?.moveToStep(.mpcCode)
+    func didEnterTakeoverCredentials(_ credentials: MPCActivateCredentials) {
+        OnboardingData.mpcTakeoverCredentials = .init(email: credentials.email,
+                                                      password: credentials.password)
+        Task {
+            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverCredentials)
+        }
     }
 }
 
@@ -44,7 +47,7 @@ private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
         let email = OnboardingData.mpcPurchaseCredentials?.email
         let mpcView = PurchaseMPCWalletTakeoverCredentialsView(purchaseEmail: email, credentialsCallback: { [weak self] credentials in
             DispatchQueue.main.async {
-                self?.didTakeoverWithCredentials(credentials)                
+                self?.didEnterTakeoverCredentials(credentials)                
             }
         })
             .padding(.top, 40)
@@ -63,4 +66,5 @@ extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingNavi
 extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
+
 

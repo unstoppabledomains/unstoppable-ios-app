@@ -12,6 +12,7 @@ struct OnboardingData: Codable {
     
     static var mpcCredentials: MPCActivateCredentials?
     static var mpcPurchaseCredentials: MPCPurchaseUDCredentials?
+    static var mpcTakeoverCredentials: MPCTakeoverCredentials?
     
     var wallets: [UDWallet] = []
     var passcode: String?

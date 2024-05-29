@@ -740,6 +740,12 @@
 		C640F3552C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */; };
 		C640F3562C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */; };
 		C640F3582C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3572C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift */; };
+		C640F35C2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F35B2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift */; };
+		C640F35D2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F35B2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift */; };
+		C640F35F2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F35E2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift */; };
+		C640F3602C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F35E2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift */; };
+		C640F3622C0709C1009EB0F9 /* MPCTakeoverCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3612C0709C1009EB0F9 /* MPCTakeoverCredentials.swift */; };
+		C640F3632C0709C1009EB0F9 /* MPCTakeoverCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3612C0709C1009EB0F9 /* MPCTakeoverCredentials.swift */; };
 		C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */; };
 		C6420BFA28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */; };
 		C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */; };
@@ -3183,6 +3189,9 @@
 		C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPasswordValidator.swift; sourceTree = "<group>"; };
 		C640F3572C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPasswordValidatorTests.swift; sourceTree = "<group>"; };
+		C640F35B2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingPurchaseTakeoverRecoveryViewController.swift; sourceTree = "<group>"; };
+		C640F35E2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseMPCWalletTakeoverRecoveryView.swift; sourceTree = "<group>"; };
+		C640F3612C0709C1009EB0F9 /* MPCTakeoverCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCTakeoverCredentials.swift; sourceTree = "<group>"; };
 		C6420BF228AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPushAnimation.swift; sourceTree = "<group>"; };
 		C6420BF928AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashesProgressNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C642A6A22841157E00299C6E /* MintingInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingInProgressViewPresenter.swift; sourceTree = "<group>"; };
@@ -5616,6 +5625,15 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		C640F35A2C0706FF009EB0F9 /* TakeoverRecovery */ = {
+			isa = PBXGroup;
+			children = (
+				C640F35B2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift */,
+				C640F35E2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift */,
+			);
+			path = TakeoverRecovery;
+			sourceTree = "<group>";
+		};
 		C6420BF828AA655B0069DFED /* DashesProgressHeader */ = {
 			isa = PBXGroup;
 			children = (
@@ -6175,13 +6193,13 @@
 			path = Checkout;
 			sourceTree = "<group>";
 		};
-		C665567C2BF73D8200F0BD7A /* Takeover */ = {
+		C665567C2BF73D8200F0BD7A /* TakeoverCredentials */ = {
 			isa = PBXGroup;
 			children = (
 				C66556802BF73DCB00F0BD7A /* MPCOnboardingPurchaseTakeoverCredentialsViewController.swift */,
 				C665567D2BF73D9F00F0BD7A /* PurchaseMPCWalletTakeoverCredentialsView.swift */,
 			);
-			path = Takeover;
+			path = TakeoverCredentials;
 			sourceTree = "<group>";
 		};
 		C665FC1D29B0687D009699D2 /* NotificationsService */ = {
@@ -6979,7 +6997,8 @@
 				C66556682BF70B9900F0BD7A /* UDAuth */,
 				C66556722BF70F6400F0BD7A /* Checkout */,
 				C661DC282C06DB4000844AF5 /* AlreadyHaveWallet */,
-				C665567C2BF73D8200F0BD7A /* Takeover */,
+				C665567C2BF73D8200F0BD7A /* TakeoverCredentials */,
+				C640F35A2C0706FF009EB0F9 /* TakeoverRecovery */,
 				C671CD002BC667C8005DA2FB /* PurchaseMPCWalletAuthView.swift */,
 				C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */,
 				C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */,
@@ -7626,6 +7645,7 @@
 				C6BF801C2BA2B55300CC4CB3 /* MPCEnterCredentialsView.swift */,
 				C68F15622BD641470049BFA2 /* MPCActivateCredentials.swift */,
 				C665566F2BF70DD400F0BD7A /* MPCPurchaseUDCredentials.swift */,
+				C640F3612C0709C1009EB0F9 /* MPCTakeoverCredentials.swift */,
 			);
 			path = EnterCredentials;
 			sourceTree = "<group>";
@@ -8847,6 +8867,7 @@
 				C688C18C2B846FD400BD233A /* ChannelViewModel.swift in Sources */,
 				C6D6478F2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */,
 				C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */,
+				C640F35C2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift in Sources */,
 				C6B6B03E296FF74400D4E30F /* SortDomainsManager.swift in Sources */,
 				C628E30927FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
 				C6124CBE2922283D005E6537 /* DomainProfileActionCoverViewController.swift in Sources */,
@@ -9425,6 +9446,7 @@
 				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C68BAC922B919D8E00001CA0 /* ChatViewScrollHandler.swift in Sources */,
 				C61807F82B19A7D80032E543 /* ImageLoadingServiceProtocol.swift in Sources */,
+				C640F3622C0709C1009EB0F9 /* MPCTakeoverCredentials.swift in Sources */,
 				C6D20FC82BE4A9A6003617B7 /* SettingsProfileTileView.swift in Sources */,
 				C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */,
 				C6A2D528284DC45B00327C47 /* PermissionsService.swift in Sources */,
@@ -9712,6 +9734,7 @@
 				C6010D1F287FC99400FBD401 /* Task.swift in Sources */,
 				C61808152B19AAAF0032E543 /* FirebaseAuthenticationServiceProtocol.swift in Sources */,
 				C6526DDE29D2DF7800D6F2EB /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
+				C640F35F2C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift in Sources */,
 				C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				C6B2E1FC2B95C3E200CEA1F9 /* DomainProfileDisplayInfoCoreDataStorage.swift in Sources */,
@@ -10539,6 +10562,7 @@
 				C6C8F97A2B2188FA00A9834D /* ConnectedAppCell.swift in Sources */,
 				C61807B82B199E850032E543 /* UIImage+GIF.swift in Sources */,
 				C61808642B19BBFE0032E543 /* UDToggleStyle.swift in Sources */,
+				C640F3602C07092C009EB0F9 /* PurchaseMPCWalletTakeoverRecoveryView.swift in Sources */,
 				C6C8F9562B2185A900A9834D /* MintingError.swift in Sources */,
 				C6D645742B1D721D00D724AC /* PurchaseDomainsSelectWalletView.swift in Sources */,
 				C630C73A2BD7836C00AC1662 /* OnboardingAddWalletView.swift in Sources */,
@@ -10702,6 +10726,7 @@
 				C6C8F86A2B2181AE00A9834D /* WalletDisplayInfo.swift in Sources */,
 				C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */,
 				C6D647532B1EDB7C00D724AC /* SelectorButton.swift in Sources */,
+				C640F3632C0709C1009EB0F9 /* MPCTakeoverCredentials.swift in Sources */,
 				C6C8F8AB2B2182CF00A9834D /* EnterEmailViewController.swift in Sources */,
 				C6A3592B2BB5586700B1209A /* NavigationTrackerViewModifier.swift in Sources */,
 				C6D646ED2B1ED5A900D724AC /* ImportExistingExternalWalletPresenter.swift in Sources */,
@@ -10788,6 +10813,7 @@
 				C6D646AB2B1ED16900D724AC /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C618081A2B19AAEF0032E543 /* FirebaseDomainsServiceProtocol.swift in Sources */,
 				C60BC0502BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift in Sources */,
+				C640F35D2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift in Sources */,
 				C6203A5A2B883847000A1A8E /* MockEntitiesFabric+Messaging.swift in Sources */,
 				C6952A612BC664C600F4B475 /* PurchaseMPCWallet.swift in Sources */,
 				C6D646D32B1ED2C800D724AC /* UDTextField.swift in Sources */,

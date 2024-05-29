@@ -117,6 +117,8 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             moveToStep(.restoreWallet)
             await Task.sleep(seconds: CNavigationController.animationDuration)
             moveToStep(.mpcCredentials)
+        case .didEnterTakeoverCredentials:
+            moveToStep(.mpcPurchaseTakeoverRecovery)
         }
     }
     
@@ -199,6 +201,7 @@ private extension OnboardingNavigationController {
                     topViewController is LoadingParkedDomainsViewController ||
                     topViewController is ParkedDomainsFoundViewController ||
                     topViewController is NoParkedDomainsFoundViewController  ||
+                    topViewController is MPCOnboardingPurchaseTakeoverCredentialsViewController  ||
                     topViewController is MPCOnboardingPurchaseAlreadyHaveWalletViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
@@ -492,6 +495,12 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
+        case .mpcPurchaseTakeoverRecovery:
+            let vc = MPCOnboardingPurchaseTakeoverRecoveryViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         }
     }
  
@@ -559,6 +568,7 @@ extension OnboardingNavigationController {
         case mpcPurchaseCheckout = 28
         case mpcPurchaseAlreadyHaveWallet = 29
         case mpcPurchaseTakeoverCredentials = 30
+        case mpcPurchaseTakeoverRecovery = 31
         
         var isStorable: Bool {
             switch self {
@@ -584,6 +594,7 @@ extension OnboardingNavigationController {
         case didEnterMPCPurchaseUDCredentials
         case didPurchaseMPCWallet
         case alreadyPurchasedMPCWallet
+        case didEnterTakeoverCredentials
         
         case alreadyPurchasedMPCWalletUseDifferentEmail
         case alreadyPurchasedMPCWalletImportMPC

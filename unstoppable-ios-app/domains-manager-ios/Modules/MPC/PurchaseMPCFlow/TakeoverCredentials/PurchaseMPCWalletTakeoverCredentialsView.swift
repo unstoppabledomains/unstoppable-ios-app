@@ -262,9 +262,9 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                 let email = emailInput
                 let password = passwordInput
                 let credentials = MPCActivateCredentials(email: email, password: password)
-                try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
-                // Send email action
-                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
+//                try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
+//                // Send email action
+//                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
                 credentialsCallback(credentials)
             } catch {
                 self.error = error
