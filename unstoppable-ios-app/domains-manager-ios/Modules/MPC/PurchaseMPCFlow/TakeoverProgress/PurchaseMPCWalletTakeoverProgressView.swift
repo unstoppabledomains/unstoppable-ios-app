@@ -16,6 +16,8 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
     let finishCallback: EmptyCallback
     @State private var takeoverState: MPCWalletTakeoverState = .readyForTakeover
     @State private var error: Error?
+    @State private var didFinishTakeover = false
+    @State private var numberOfFailedAttempts = 0
 
     var body: some View {
         ZStack {
@@ -25,7 +27,7 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
             
             VStack {
                 Spacer()
-                actionButton()
+                actionButtons()
             }
             .padding()
         }
@@ -68,26 +70,53 @@ private extension PurchaseMPCWalletTakeoverProgressView {
         Task {
             takeoverState = .inProgress
             do {
-                try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
-                // Send email action
+                if !didFinishTakeover {
+                    try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
+                }
+                didFinishTakeover = true
                 try await mpcWalletsService.sendBootstrapCodeTo(email: credentials.email)
                 finishCallback()
             } catch {
                 takeoverState = .failed(.unknown)
+                numberOfFailedAttempts += 1
             }
         }
     }
     
     @ViewBuilder
-    func actionButton() -> some View {
+    func actionButtons() -> some View {
         switch takeoverState {
         case .readyForTakeover, .inProgress:
             EmptyView()
         case .failed:
-            UDButtonView(text: String.Constants.tryAgain.localized(),
-                         style: .large(.raisedPrimary),
-                         callback: actionButtonPressed)
+            VStack(spacing: 16) {
+                contactSupportButton()
+                tryAgainButton()
+            }
         }
+    }
+    
+    @ViewBuilder
+    func contactSupportButton() -> some View {
+        if numberOfFailedAttempts >= 2 {
+            UDButtonView(text: String.Constants.contactSupport.localized(),
+                         style: .large(.ghostPrimary),
+                         callback: contactSupportButtonPressed)
+        }
+    }
+    
+    func contactSupportButtonPressed() {
+        let recipientMailAddress = Constants.UnstoppableSupportMail
+        let subject = String.Constants.feedbackEmailSubject.localized(UserDefaults.buildVersion)
+        openEmailFormWith(recipientMailAddress: recipientMailAddress,
+                          subject: subject)
+    }
+    
+    @ViewBuilder
+    func tryAgainButton() -> some View {
+        UDButtonView(text: String.Constants.tryAgain.localized(),
+                     style: .large(.raisedPrimary),
+                     callback: actionButtonPressed)
     }
     
     func actionButtonPressed() {
