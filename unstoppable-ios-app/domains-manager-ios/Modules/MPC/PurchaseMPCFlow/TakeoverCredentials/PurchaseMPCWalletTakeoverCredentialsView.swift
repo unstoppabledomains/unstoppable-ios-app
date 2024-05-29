@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator {
     
-    @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
     var purchaseEmail: String?
@@ -19,10 +18,8 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
     @State private var passwordInput: String = ""
     @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
-    @State private var isLoading = false
     @State private var isEmailFocused = true
     @State private var didSetupPurchaseEmail = false
-    @State private var error: Error?
     
     var body: some View {
         ScrollView {
@@ -40,7 +37,6 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
             }
         }
         .padding()
-        .displayError($error)
         .onChange(of: passwordInput, perform: { newValue in
             validatePasswordInput()
         })
@@ -250,27 +246,15 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     func actionButtonView() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
                      style: .large(.raisedPrimary),
-                     isLoading: isLoading,
                      callback: actionButtonPressed)
         .disabled(isActionButtonDisabled)
     }
     
     func actionButtonPressed() {
-        Task {
-            isLoading = true
-            do {
-                let email = emailInput
-                let password = passwordInput
-                let credentials = MPCActivateCredentials(email: email, password: password)
-//                try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
-//                // Send email action
-//                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
-                credentialsCallback(credentials)
-            } catch {
-                self.error = error
-            }
-            isLoading = false
-        }
+        let email = emailInput
+        let password = passwordInput
+        let credentials = MPCActivateCredentials(email: email, password: password)
+        credentialsCallback(credentials)
     }
 }
 

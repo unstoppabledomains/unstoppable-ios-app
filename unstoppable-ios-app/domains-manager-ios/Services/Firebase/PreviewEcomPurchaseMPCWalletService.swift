@@ -74,7 +74,7 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
         true
     }
     
-    func runTakeover(credentials: MPCActivateCredentials) async throws {
+    func runTakeover(credentials: MPCTakeoverCredentials) async throws {
         
     }
     

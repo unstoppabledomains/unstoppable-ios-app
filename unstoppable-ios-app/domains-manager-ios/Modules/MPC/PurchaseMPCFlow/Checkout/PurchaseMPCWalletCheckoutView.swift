@@ -58,8 +58,7 @@ private extension PurchaseMPCWalletCheckoutView {
     func totalView() -> some View {
         MPCWalletStateCardView(title: cardTitle,
                                subtitle: cardSubtitle,
-                               mode: .purchase(purchaseState),
-                               mpcCreateProgress: 0)
+                               mode: .purchase(purchaseState))
     }
     
     var cardTitle: String {

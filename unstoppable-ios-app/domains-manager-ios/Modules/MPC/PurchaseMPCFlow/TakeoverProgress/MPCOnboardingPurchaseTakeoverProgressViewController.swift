@@ -1,5 +1,5 @@
 //
-//  MPCOnboardingPurchaseTakeoverRecoveryViewController.swift
+//  MPCOnboardingPurchaseTakeoverProgressViewController.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 29.05.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class MPCOnboardingPurchaseTakeoverRecoveryViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingPurchaseTakeoverProgressViewController: BaseViewController, ViewWithDashesProgress {
     
     override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
@@ -23,17 +23,16 @@ final class MPCOnboardingPurchaseTakeoverRecoveryViewController: BaseViewControl
 }
 
 // MARK: - Private methods
-private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
-    func didSelectTo(sendRecoveryLink: Bool) {
-        OnboardingData.mpcTakeoverCredentials?.sendRecoveryLink = sendRecoveryLink
+private extension MPCOnboardingPurchaseTakeoverProgressViewController {
+    func didTakeoverWithCredentials(_ credentials: MPCTakeoverCredentials) {
         Task {
-            try? await onboardingFlowManager?.handle(action: .didEnterTakeoverRecovery)
+            try? await onboardingFlowManager?.handle(action: .didTakeoverMPCWallet(credentials))
         }
     }
 }
 
 // MARK: - Setup methods
-private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
+private extension MPCOnboardingPurchaseTakeoverProgressViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -49,10 +48,10 @@ private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
             return
         }
         
-        let mpcView = PurchaseMPCWalletTakeoverRecoveryView(email: credentials.email,
-                                                            confirmCallback: { [weak self] sendRecoveryLink in
+        let mpcView = PurchaseMPCWalletTakeoverProgressView(credentials: credentials,
+                                                            finishCallback: { [weak self] in
             DispatchQueue.main.async {
-                self?.didSelectTo(sendRecoveryLink: sendRecoveryLink)
+                self?.didTakeoverWithCredentials(credentials)
             }
         })
             .padding(.top, 40)
@@ -62,13 +61,13 @@ private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCOnboardingPurchaseTakeoverRecoveryViewController: OnboardingNavigationHandler {
+extension MPCOnboardingPurchaseTakeoverProgressViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverRecovery }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverProgress }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCOnboardingPurchaseTakeoverRecoveryViewController: OnboardingDataHandling {
+extension MPCOnboardingPurchaseTakeoverProgressViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
 
