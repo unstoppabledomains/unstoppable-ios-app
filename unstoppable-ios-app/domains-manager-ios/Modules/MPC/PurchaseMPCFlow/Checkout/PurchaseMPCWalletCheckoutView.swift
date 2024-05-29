@@ -27,7 +27,6 @@ struct PurchaseMPCWalletCheckoutView: View {
             bottomView()
         }
             .padding()
-            .background(Color.backgroundDefault)
             .animation(.default, value: UUID())
             .onReceive(ecomPurchaseMPCWalletService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
                 if self.cartStatus.otherDiscountsApplied == 0 && cartStatus.otherDiscountsApplied != 0 {
