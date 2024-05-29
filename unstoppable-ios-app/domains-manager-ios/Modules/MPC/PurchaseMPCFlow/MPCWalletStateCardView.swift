@@ -194,9 +194,7 @@ private extension MPCWalletStateCardView {
                     .resizable()
                     .foregroundStyle(.white)
             case .failed:
-                Image.crossWhite
-                    .resizable()
-                    .foregroundStyle(stateBorderColor())
+                failedProgressView()
             }
         case .purchase(let purchaseState):
             switch purchaseState {
@@ -208,10 +206,19 @@ private extension MPCWalletStateCardView {
             }
         case .takeover(let takeoverState):
             switch takeoverState {
-            case .readyForTakeover, .inProgress, .failed:
+            case .readyForTakeover, .inProgress:
                 CircularProgressView(mode: .continuousProgress)
+            case .failed:
+                failedProgressView()
             }
         }
+    }
+    
+    @ViewBuilder
+    func failedProgressView() -> some View {
+        Image.crossWhite
+            .resizable()
+            .foregroundStyle(stateBorderColor())
     }
     
     @ViewBuilder
@@ -245,8 +252,15 @@ private extension MPCWalletStateCardView {
             case .failed:
                     .backgroundDangerEmphasis
             }
-        case .purchase, .takeover:
+        case .purchase:
                 .foregroundAccent
+        case .takeover(let takeoverState):
+            switch takeoverState {
+            case .readyForTakeover, .inProgress:
+                    .foregroundAccent
+            case .failed:
+                    .backgroundDangerEmphasis
+            }
         }
     }
 }

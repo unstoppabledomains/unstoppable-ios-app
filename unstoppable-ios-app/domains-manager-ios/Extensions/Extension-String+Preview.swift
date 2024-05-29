@@ -1252,6 +1252,8 @@ extension String {
         static let sendMeRecoveryLink = "SEND_ME_RECOVERY_LINK"
         static let dontSendMeRecoveryLink = "DONT_SEND_ME_RECOVERY_LINK"
         static let mpcWalletEmailInUseMessage = "MPC_WALLET_EMAIL_IN_USE_MESSAGE"
+        static let mpcTakeoverInProgressTitle = "MPC_TAKEOVER_IN_PROGRESS_TITLE"
+        static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

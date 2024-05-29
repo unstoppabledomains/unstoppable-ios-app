@@ -18,10 +18,16 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
     @State private var error: Error?
 
     var body: some View {
-        VStack {
+        ZStack {
             MPCWalletStateCardView(title: cardTitle,
                                    subtitle: cardSubtitle,
                                    mode: .takeover(takeoverState))
+            
+            VStack {
+                Spacer()
+                actionButton()
+            }
+            .padding()
         }
         .onAppear(perform: onAppear)
     }
@@ -30,11 +36,21 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
 // MARK: - Private methods
 private extension PurchaseMPCWalletTakeoverProgressView {
     var cardTitle: String {
-        "Preparing Wallet..."
+        switch takeoverState {
+        case .readyForTakeover, .inProgress:
+            String.Constants.mpcTakeoverInProgressTitle.localized()
+        case .failed:
+            String.Constants.somethingWentWrong.localized()
+        }
     }
     
     var cardSubtitle: String {
-        "~ 02:36"
+        switch takeoverState {
+        case .readyForTakeover, .inProgress:
+            String.Constants.mpcTakeoverInProgressSubtitle.localized()
+        case .failed:
+            String.Constants.mpcProductName.localized()
+        }
     }
     
     func onAppear() {
@@ -59,6 +75,22 @@ private extension PurchaseMPCWalletTakeoverProgressView {
                 takeoverState = .failed(.unknown)
             }
         }
+    }
+    
+    @ViewBuilder
+    func actionButton() -> some View {
+        switch takeoverState {
+        case .readyForTakeover, .inProgress:
+            EmptyView()
+        case .failed:
+            UDButtonView(text: String.Constants.tryAgain.localized(),
+                         style: .large(.raisedPrimary),
+                         callback: actionButtonPressed)
+        }
+    }
+    
+    func actionButtonPressed() {
+        
     }
 }
 
