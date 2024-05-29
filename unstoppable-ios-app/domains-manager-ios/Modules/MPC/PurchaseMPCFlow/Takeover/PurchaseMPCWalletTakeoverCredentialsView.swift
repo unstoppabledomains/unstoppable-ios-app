@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator {
+struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
@@ -17,6 +17,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator {
     @State private var emailInput: String = ""
     @State private var emailConfirmationInput: String = ""
     @State private var passwordInput: String = ""
+    @State private var passwordErrors: [MPCWalletPasswordValidationError] = []
     @State private var confirmPasswordInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
@@ -40,6 +41,9 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator {
         }
         .padding()
         .displayError($error)
+        .onChange(of: passwordInput, perform: { newValue in
+            validatePasswordInput()
+        })
         .animation(.default, value: UUID())
         .onAppear(perform: onAppear)
     }
@@ -48,6 +52,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator {
 // MARK: - Private methods
 private extension PurchaseMPCWalletTakeoverCredentialsView {
     func onAppear() {
+        validatePasswordInput()
         setupPurchaseEmail()
     }
     
@@ -56,6 +61,10 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         
         didSetupPurchaseEmail = true
         emailInput = purchaseEmail ?? ""
+    }
+    
+    func validatePasswordInput() {
+        passwordErrors = validateWalletPassword(passwordInput)
     }
     
     @ViewBuilder
@@ -165,20 +174,39 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                 .font(.currentFont(size: 13))
             Spacer()
         }
-        .foregroundStyle(Color.foregroundSecondary)
+        .foregroundStyle(foregroundStyleFor(requirement: requirement))
         .frame(minHeight: 20)
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 4)
     }
     
+    func foregroundStyleFor(requirement: PasswordRequirements) -> Color {
+        if isPasswordRequirementMet(requirement) {
+            .foregroundSuccess
+        } else {
+            .foregroundSecondary
+        }
+    }
+    
+    func isPasswordRequirementMet(_ requirement: PasswordRequirements) -> Bool {
+        switch requirement {
+        case .length:
+            !passwordErrors.contains(.tooShort) && !passwordErrors.contains(.tooLong)
+        case .oneNumber:
+            !passwordErrors.contains(.missingNumber)
+        case .specialChar:
+            !passwordErrors.contains(.missingSpecialCharacter)
+        }
+    }
+    
     enum PasswordRequirements: CaseIterable {
-        case minLength
+        case length
         case oneNumber
         case specialChar
         
         var title: String {
             switch self {
-            case .minLength:
+            case .length:
                 return "Minimum 12 characters"
             case .oneNumber:
                 return "At least one number"
