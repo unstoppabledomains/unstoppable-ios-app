@@ -42,7 +42,10 @@ private extension PurchaseMPCWalletTakeoverRecoveryView {
     
     @ViewBuilder
     func illustrationView() -> some View {
-        
+        Image.mpcWalletRecoveryIllustration
+            .resizable()
+            .padding(.horizontal, 16)
+            .aspectRatio(329 / 341, contentMode: .fill)
     }
     
     @ViewBuilder

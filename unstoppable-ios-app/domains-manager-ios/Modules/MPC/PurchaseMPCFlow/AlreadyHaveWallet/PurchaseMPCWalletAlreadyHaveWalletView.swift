@@ -45,6 +45,7 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
                                         fontSize: 16,
                                         fontWeight: .medium)
                 }
+                .lineLimit(1)
             }
             Text(String.Constants.mpcWalletAlreadyPurchasedSubtitle.localized())
                 .subtitleText()
