@@ -7,17 +7,20 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverView: View, UserDataValidator {
+struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
+    var purchaseEmail: String?
     let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
+    @State private var emailConfirmationInput: String = ""
     @State private var passwordInput: String = ""
     @State private var confirmPasswordInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
+    @State private var didSetupPurchaseEmail = false
     @State private var error: Error?
     
     var body: some View {
@@ -26,6 +29,8 @@ struct PurchaseMPCWalletTakeoverView: View, UserDataValidator {
                 headerView()
                 VStack(alignment: .leading, spacing: 16) {
                     emailInputView()
+                    emailConfirmationInputView()
+                    inputSeparatorView()
                     passwordInputView()
                     confirmPasswordInputView()
                 }
@@ -33,26 +38,38 @@ struct PurchaseMPCWalletTakeoverView: View, UserDataValidator {
                 Spacer()
             }
         }
-        .scrollDisabled(true)
         .padding()
         .displayError($error)
+        .animation(.default, value: UUID())
+        .onAppear(perform: onAppear)
     }
 }
 
 // MARK: - Private methods
-private extension PurchaseMPCWalletTakeoverView {
+private extension PurchaseMPCWalletTakeoverCredentialsView {
+    func onAppear() {
+        setupPurchaseEmail()
+    }
+    
+    func setupPurchaseEmail() {
+        guard !didSetupPurchaseEmail else { return }
+        
+        didSetupPurchaseEmail = true
+        emailInput = purchaseEmail ?? ""
+    }
+    
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Setup Unstoppable Wallet")
+            Text("Setup")
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-//            Text(String.Constants.importMPCWalletSubtitle.localizedMPCProduct())
-//                .font(.currentFont(size: 16))
-//                .foregroundStyle(Color.foregroundSecondary)
-//                .minimumScaleFactor(0.6)
-//                .multilineTextAlignment(.center)
+            Text("Each Unstoppable Wallet requires a UNIQUE email address. Make sure you have access to an email. It can be the one used in the previous step or a different one.")
+                .font(.currentFont(size: 16))
+                .foregroundStyle(Color.foregroundSecondary)
+                .minimumScaleFactor(0.6)
+                .multilineTextAlignment(.center)
         }
     }
     
@@ -74,6 +91,29 @@ private extension PurchaseMPCWalletTakeoverView {
                 incorrectEmailIndicatorView()
             }
         }
+    }
+    
+    @ViewBuilder
+    func emailConfirmationInputView() -> some View {
+        if shouldShowEmailConfirmation {
+            UDTextFieldView(text: $emailConfirmationInput,
+                            placeholder: String.Constants.confirmEmail.localized(),
+                            focusBehaviour: .default,
+                            keyboardType: .emailAddress,
+                            autocapitalization: .never,
+                            autocorrectionDisabled: true)
+        }
+    }
+    
+    @ViewBuilder
+    func inputSeparatorView() -> some View {
+        if shouldShowEmailConfirmation {
+            HomeExploreSeparatorView()
+        }
+    }
+    
+    var shouldShowEmailConfirmation: Bool {
+        purchaseEmail != emailInput
     }
     
     var shouldShowEmailError: Bool {
@@ -159,7 +199,7 @@ private extension PurchaseMPCWalletTakeoverView {
     }
     
     var isActionButtonDisabled: Bool {
-        !isValidEmailEntered || !isValidPasswordEntered || passwordInput != confirmPasswordInput
+        !isValidEmailEntered || !isValidPasswordEntered || passwordInput != confirmPasswordInput || !isEmailConfirmed
     }
     
     var isValidEmailEntered: Bool {
@@ -168,6 +208,14 @@ private extension PurchaseMPCWalletTakeoverView {
     
     var isValidPasswordEntered: Bool {
         !passwordInput.isEmpty
+    }
+    
+    var isEmailConfirmed: Bool {
+        if let purchaseEmail,
+           purchaseEmail == emailInput {
+            return true
+        }
+        return emailInput == emailConfirmationInput
     }
     
     @ViewBuilder
@@ -199,5 +247,6 @@ private extension PurchaseMPCWalletTakeoverView {
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverView(credentialsCallback: { _ in })
+    PurchaseMPCWalletTakeoverCredentialsView(purchaseEmail: "qq@qq.qq",
+                                             credentialsCallback: { _ in })
 }

@@ -101,7 +101,7 @@ extension OnboardingNavigationController: OnboardingFlowManager {
         case .didEnterMPCPurchaseUDCredentials:
             moveToStep(.mpcPurchaseCheckout)
         case .didPurchaseMPCWallet:
-            moveToStep(.mpcPurchaseTakeover)
+            moveToStep(.mpcPurchaseTakeoverCredentials)
         case .alreadyPurchasedMPCWallet:
             moveToStep(.mpcPurchaseAlreadyHaveWallet)
         case .alreadyPurchasedMPCWalletUseDifferentEmail:
@@ -486,8 +486,8 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
-        case .mpcPurchaseTakeover:
-            let vc = MPCOnboardingPurchaseTakeoverViewController()
+        case .mpcPurchaseTakeoverCredentials:
+            let vc = MPCOnboardingPurchaseTakeoverCredentialsViewController()
             vc.onboardingFlowManager = self
             addStepHandler(vc)
             
@@ -558,11 +558,11 @@ extension OnboardingNavigationController {
         case mpcPurchaseAuth = 27
         case mpcPurchaseCheckout = 28
         case mpcPurchaseAlreadyHaveWallet = 29
-        case mpcPurchaseTakeover = 30
+        case mpcPurchaseTakeoverCredentials = 30
         
         var isStorable: Bool {
             switch self {
-            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeover, .mpcPurchaseAlreadyHaveWallet:
+            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeoverCredentials, .mpcPurchaseAlreadyHaveWallet:
                 return false
             default:
                 return true

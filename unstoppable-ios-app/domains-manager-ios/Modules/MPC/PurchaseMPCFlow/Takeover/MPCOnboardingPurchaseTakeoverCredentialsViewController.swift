@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class MPCOnboardingPurchaseTakeoverViewController: BaseViewController, ViewWithDashesProgress {
+final class MPCOnboardingPurchaseTakeoverCredentialsViewController: BaseViewController, ViewWithDashesProgress {
     
     override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
@@ -23,7 +23,7 @@ final class MPCOnboardingPurchaseTakeoverViewController: BaseViewController, Vie
 }
 
 // MARK: - Private methods
-private extension MPCOnboardingPurchaseTakeoverViewController {
+private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
     func didTakeoverWithCredentials(_ credentials: MPCActivateCredentials) {
         OnboardingData.mpcCredentials = credentials
         onboardingFlowManager?.moveToStep(.mpcCode)
@@ -31,7 +31,7 @@ private extension MPCOnboardingPurchaseTakeoverViewController {
 }
 
 // MARK: - Setup methods
-private extension MPCOnboardingPurchaseTakeoverViewController {
+private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
     func setup() {
         addProgressDashesView()
         addChildView()
@@ -41,7 +41,8 @@ private extension MPCOnboardingPurchaseTakeoverViewController {
     }
     
     func addChildView() {
-        let mpcView = PurchaseMPCWalletTakeoverView(credentialsCallback: { [weak self] credentials in
+        let email = OnboardingData.mpcPurchaseCredentials?.email
+        let mpcView = PurchaseMPCWalletTakeoverCredentialsView(purchaseEmail: email, credentialsCallback: { [weak self] credentials in
             DispatchQueue.main.async {
                 self?.didTakeoverWithCredentials(credentials)                
             }
@@ -53,13 +54,13 @@ private extension MPCOnboardingPurchaseTakeoverViewController {
 }
 
 // MARK: - OnboardingNavigationHandler
-extension MPCOnboardingPurchaseTakeoverViewController: OnboardingNavigationHandler {
+extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingNavigationHandler {
     var viewController: UIViewController? { self }
-    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeover }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .mpcPurchaseTakeoverCredentials }
 }
 
 // MARK: - OnboardingDataHandling
-extension MPCOnboardingPurchaseTakeoverViewController: OnboardingDataHandling {
+extension MPCOnboardingPurchaseTakeoverCredentialsViewController: OnboardingDataHandling {
     func willNavigateBack() { }
 }
 

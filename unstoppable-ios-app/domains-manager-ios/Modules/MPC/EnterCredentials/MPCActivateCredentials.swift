@@ -10,4 +10,5 @@ import Foundation
 struct MPCActivateCredentials: Hashable {
     let email: String
     var password: String
+    var sendRecoveryLink: Bool = true
 }

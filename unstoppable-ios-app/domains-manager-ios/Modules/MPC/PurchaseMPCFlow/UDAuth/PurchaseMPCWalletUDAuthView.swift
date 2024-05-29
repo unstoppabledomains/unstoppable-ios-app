@@ -76,21 +76,12 @@ private extension PurchaseMPCWalletUDAuthView {
     
     @ViewBuilder
     func emailConfirmationInputView() -> some View {
-        VStack(spacing: 8) {
-            UDTextFieldView(text: $emailConfirmationInput,
-                            placeholder: String.Constants.confirmEmail.localized(),
-                            focusBehaviour: .default,
-                            keyboardType: .emailAddress,
-                            autocapitalization: .never,
-                            autocorrectionDisabled: true,
-                            isErrorState: shouldShowEmailError,
-                            focusedStateChangedCallback: { isFocused in
-                isEmailFocused = isFocused
-            })
-            if shouldShowEmailError {
-                incorrectEmailIndicatorView()
-            }
-        }
+        UDTextFieldView(text: $emailConfirmationInput,
+                        placeholder: String.Constants.confirmEmail.localized(),
+                        focusBehaviour: .default,
+                        keyboardType: .emailAddress,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true)
     }
     
     var shouldShowEmailError: Bool {
