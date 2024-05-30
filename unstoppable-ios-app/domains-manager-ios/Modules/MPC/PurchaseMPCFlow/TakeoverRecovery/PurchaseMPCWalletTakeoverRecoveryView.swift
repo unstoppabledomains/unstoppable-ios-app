@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverRecoveryView: View {
+struct PurchaseMPCWalletTakeoverRecoveryView: View, ViewAnalyticsLogger {
     
+    let analyticsName: Analytics.ViewName
     let email: String
     let confirmCallback: (Bool)->()
     
@@ -20,6 +21,7 @@ struct PurchaseMPCWalletTakeoverRecoveryView: View {
             actionsButtonView()
         }
         .padding()
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
 }
 
@@ -73,6 +75,7 @@ private extension PurchaseMPCWalletTakeoverRecoveryView {
     }
     
     func useRecoveryButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .useRecovery)
         confirmCallback(true)
     }
     
@@ -84,11 +87,13 @@ private extension PurchaseMPCWalletTakeoverRecoveryView {
     }
     
     func dontUseRecoveryButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .dontUseRecovery)
         confirmCallback(false)
     }
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverRecoveryView(email: "qq@qq.qq",
+    PurchaseMPCWalletTakeoverRecoveryView(analyticsName: .unspecified,
+                                          email: "qq@qq.qq",
                                           confirmCallback: { _ in })
 }

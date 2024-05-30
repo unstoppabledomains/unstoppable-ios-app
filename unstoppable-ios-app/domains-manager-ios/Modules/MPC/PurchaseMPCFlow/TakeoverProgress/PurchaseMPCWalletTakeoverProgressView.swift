@@ -7,11 +7,12 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverProgressView: View {
+struct PurchaseMPCWalletTakeoverProgressView: View, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
+    let analyticsName: Analytics.ViewName
     let credentials: MPCTakeoverCredentials
     let finishCallback: EmptyCallback
     @State private var takeoverState: MPCWalletTakeoverState = .readyForTakeover
@@ -32,6 +33,7 @@ struct PurchaseMPCWalletTakeoverProgressView: View {
             .padding()
         }
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear(perform: onAppear)
     }
 }
@@ -71,7 +73,10 @@ private extension PurchaseMPCWalletTakeoverProgressView {
             takeoverState = .inProgress
             do {
                 if !didFinishTakeover {
+                    logAnalytic(event: .mpcTakeoverStarted,
+                                parameters: [.sendRecoveryLink : String(credentials.sendRecoveryLink)])
                     try await ecomPurchaseMPCWalletService.runTakeover(credentials: credentials)
+                    logAnalytic(event: .mpcTakeoverFinished)
                 }
                 didFinishTakeover = true
                 try await mpcWalletsService.sendBootstrapCodeTo(email: credentials.email)
@@ -79,6 +84,15 @@ private extension PurchaseMPCWalletTakeoverProgressView {
             } catch {
                 takeoverState = .failed(.unknown)
                 numberOfFailedAttempts += 1
+                if didFinishTakeover {
+                    logAnalytic(event: .sendMPCBootstrapCodeError, 
+                                parameters: [.error: error.localizedDescription,
+                                             .numberOfAttempts: String(numberOfFailedAttempts)])
+                } else {
+                    logAnalytic(event: .mpcTakeoverFailed, 
+                                parameters: [.error: error.localizedDescription,
+                                             .numberOfAttempts: String(numberOfFailedAttempts)])
+                }
             }
         }
     }
@@ -106,6 +120,7 @@ private extension PurchaseMPCWalletTakeoverProgressView {
     }
     
     func contactSupportButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .contactSupport)
         let recipientMailAddress = Constants.UnstoppableSupportMail
         let subject = String.Constants.feedbackEmailSubject.localized(UserDefaults.buildVersion)
         openEmailFormWith(recipientMailAddress: recipientMailAddress,
@@ -116,15 +131,17 @@ private extension PurchaseMPCWalletTakeoverProgressView {
     func tryAgainButton() -> some View {
         UDButtonView(text: String.Constants.tryAgain.localized(),
                      style: .large(.raisedPrimary),
-                     callback: actionButtonPressed)
+                     callback: tryAgainButtonPressed)
     }
     
-    func actionButtonPressed() {
+    func tryAgainButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .tryAgain)
         runTakeover()
     }
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverProgressView(credentials: .init(email: "qq@qq.qq", password: ""),
+    PurchaseMPCWalletTakeoverProgressView(analyticsName: .unspecified,
+                                          credentials: .init(email: "qq@qq.qq", password: ""),
                                           finishCallback: { })
 }

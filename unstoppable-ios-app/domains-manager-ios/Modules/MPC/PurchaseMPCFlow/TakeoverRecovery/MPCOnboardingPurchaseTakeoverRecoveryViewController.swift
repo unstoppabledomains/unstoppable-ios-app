@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseTakeoverRecoveryViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverRecoveryOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -50,7 +50,8 @@ private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
             return
         }
         
-        let mpcView = PurchaseMPCWalletTakeoverRecoveryView(email: credentials.email,
+        let mpcView = PurchaseMPCWalletTakeoverRecoveryView(analyticsName: analyticsName,
+                                                            email: credentials.email,
                                                             confirmCallback: { [weak self] sendRecoveryLink in
             DispatchQueue.main.async {
                 self?.didSelectTo(sendRecoveryLink: sendRecoveryLink)

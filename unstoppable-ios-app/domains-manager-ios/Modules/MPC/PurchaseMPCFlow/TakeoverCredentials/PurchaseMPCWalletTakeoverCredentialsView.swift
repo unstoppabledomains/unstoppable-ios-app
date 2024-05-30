@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator {
+struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWalletPasswordValidator, ViewAnalyticsLogger {
     
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
+    let analyticsName: Analytics.ViewName
     var purchaseEmail: String?
     let credentialsCallback: (MPCActivateCredentials)->()
     @State private var emailInput: String = ""
@@ -44,6 +45,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
             validatePasswordInput()
         })
         .animation(.default, value: UUID())
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear(perform: onAppear)
     }
 }
@@ -291,6 +293,8 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     }
     
     func actionButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .continue,
+                                       parameters: [.useDifferentEmail : String(shouldShowEmailConfirmation)])
         let email = emailInput
         let password = passwordInput
         let credentials = MPCActivateCredentials(email: email, password: password)
@@ -328,6 +332,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                 emailInUseState = .verified(email)
             } else {
                 emailInUseState = .inUse
+                logAnalytic(event: .mpcEmailInUseEntered)
             }
         }
     }
@@ -340,6 +345,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverCredentialsView(purchaseEmail: "qq@qq.qq",
+    PurchaseMPCWalletTakeoverCredentialsView(analyticsName: .unspecified,
+                                             purchaseEmail: "qq@qq.qq",
                                              credentialsCallback: { _ in })
 }

@@ -5655,6 +5655,18 @@
 			path = TakeoverProgress;
 			sourceTree = "<group>";
 		};
+		C640F3712C082C2E009EB0F9 /* Activate */ = {
+			isa = PBXGroup;
+			children = (
+				C67B1DD62BFEF58F00C2A4DA /* ReconnectMPCWalletFlow */,
+				C6DEA1622BD8D1E000838215 /* ActivateMPCWalletFlow */,
+				C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */,
+				C6534A6D2BBFB9EF008EEBB5 /* EnterCode */,
+				C68F15652BD645B50049BFA2 /* Activating */,
+			);
+			path = Activate;
+			sourceTree = "<group>";
+		};
 		C6420BF828AA655B0069DFED /* DashesProgressHeader */ = {
 			isa = PBXGroup;
 			children = (
@@ -7011,6 +7023,7 @@
 				C6952A5F2BC664C600F4B475 /* PurchaseMPCWallet.swift */,
 				C6952A5C2BC6649C00F4B475 /* PurchaseMPCWalletViewModel.swift */,
 				C6952A652BC6662A00F4B475 /* PurchaseMPCWalletRootView.swift */,
+				C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */,
 				C63AAC532C05B067001E7F23 /* MPCWalletPurchasingState.swift */,
 				C66556792BF7303C00F0BD7A /* MPCWalletPurchaseError.swift */,
 				C640F36B2C071266009EB0F9 /* MPCWalletTakeoverState.swift */,
@@ -7025,7 +7038,6 @@
 				C640F3642C070CDD009EB0F9 /* TakeoverProgress */,
 				C671CD002BC667C8005DA2FB /* PurchaseMPCWalletAuthView.swift */,
 				C60BC04E2BC7AFAA00A79CDB /* PurchaseMPCWalletAuthEmailView.swift */,
-				C6952A622BC6655200F4B475 /* PurchaseMPCWalletNavigationDestination.swift */,
 			);
 			path = PurchaseMPCFlow;
 			sourceTree = "<group>";
@@ -7651,12 +7663,8 @@
 		C6BF801B2BA2B53F00CC4CB3 /* MPC */ = {
 			isa = PBXGroup;
 			children = (
-				C67B1DD62BFEF58F00C2A4DA /* ReconnectMPCWalletFlow */,
-				C6DEA1622BD8D1E000838215 /* ActivateMPCWalletFlow */,
+				C640F3712C082C2E009EB0F9 /* Activate */,
 				C6952A5B2BC6648900F4B475 /* PurchaseMPCFlow */,
-				C6BF80222BA2BB2300CC4CB3 /* EnterCredentials */,
-				C6534A6D2BBFB9EF008EEBB5 /* EnterCode */,
-				C68F15652BD645B50049BFA2 /* Activating */,
 				C6952A322BC4EE2D00F4B475 /* MPCWalletsService */,
 			);
 			path = MPC;

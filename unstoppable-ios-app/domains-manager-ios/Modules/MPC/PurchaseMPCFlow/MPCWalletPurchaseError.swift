@@ -7,7 +7,11 @@
 
 import Foundation
 
-enum MPCWalletPurchaseError: Error {
+enum MPCWalletPurchaseError: String, LocalizedError {
     case walletAlreadyPurchased
     case unknown
+    
+    public var errorDescription: String? {
+        return rawValue
+    }
 }

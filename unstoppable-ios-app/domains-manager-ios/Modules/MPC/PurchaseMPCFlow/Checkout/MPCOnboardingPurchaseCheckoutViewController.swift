@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseCheckoutViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseCheckoutOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -72,7 +72,8 @@ private extension MPCOnboardingPurchaseCheckoutViewController {
             try? await appContext.ecomPurchaseMPCWalletService.guestAuthWith(credentials: credentials)
         }
         
-        let mpcView = PurchaseMPCWalletCheckoutView(credentials: credentials,
+        let mpcView = PurchaseMPCWalletCheckoutView(analyticsName: analyticsName,
+                                                    credentials: credentials,
                                                     purchaseStateCallback: { [weak self] state in
             self?.didUpdatePurchaseState(state)
         }, purchasedCallback: { [weak self] result in
