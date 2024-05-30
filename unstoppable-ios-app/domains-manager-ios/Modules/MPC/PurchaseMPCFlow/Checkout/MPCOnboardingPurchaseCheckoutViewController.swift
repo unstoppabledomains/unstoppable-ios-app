@@ -14,7 +14,7 @@ final class MPCOnboardingPurchaseCheckoutViewController: BaseViewController, Vie
     
     weak var onboardingFlowManager: OnboardingFlowManager?
     var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
-    var progress: Double? { 0.5 }
+    var progress: Double? { 3 / 6 }
 
     override func viewDidLoad() {
         super.viewDidLoad()
