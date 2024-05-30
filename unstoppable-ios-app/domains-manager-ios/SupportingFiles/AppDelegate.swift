@@ -32,17 +32,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
         
-        Debugger.setAllowedTopicsSet(.debugNetwork)
+        Debugger.setAllowedTopicsSet(.custom([.Analytics]))
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        clearImagesCache()
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
-        var settings = User.instance.getSettings()
-        settings.networkType = .testnet
-        User.instance.update(settings: settings)
-
+        
         #endif
          
         setup()

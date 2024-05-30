@@ -33,13 +33,22 @@ private extension PurchaseMPCWalletTakeoverRecoveryView {
             Text(String.Constants.mpcTakeoverRecoveryTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
-                .multilineTextAlignment(.center)
+            subtitleView()
+        }
+        .multilineTextAlignment(.center)
+    }
+    
+    @ViewBuilder
+    func subtitleView() -> some View {
+        VStack(spacing: 0) {
             Text(String.Constants.mpcTakeoverRecoverySubtitle.localized())
-                .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
-                .multilineTextAlignment(.center)
+            Text(email)
+                .foregroundStyle(Color.foregroundDefault)
+                .lineLimit(1)
         }
+        .font(.currentFont(size: 16))
     }
     
     @ViewBuilder

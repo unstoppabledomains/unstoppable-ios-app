@@ -1143,7 +1143,7 @@ More tabs are coming in the next updates.";
 "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE" = "At least one special character (e.g. -!&*)";
 "MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each Unstoppable Wallet requires a UNIQUE email address. Make sure you have access to an email. It can be the one used in the previous step or a different one.";
 "MPC_TAKEOVER_RECOVERY_TITLE" = "Get recovery link";
-"MPC_TAKEOVER_RECOVERY_SUBTITLE" = "This is the only way to restore access to wallet if you forget your password. Obtain a recovery link to ensure you don't lose access to your assets. The recovery link wiill be sent to: dzzgnr@gmail.com";
+"MPC_TAKEOVER_RECOVERY_SUBTITLE" = "This is the only way to restore access to wallet if you forget your password. Obtain a recovery link to ensure you don't lose access to your assets. The recovery link will be sent to:";
 "SEND_ME_RECOVERY_LINK" = "Send me a recovery link";
 "DONT_SEND_ME_RECOVERY_LINK" = "Don’t send me a recovery link";
 "MPC_WALLET_EMAIL_IN_USE_MESSAGE" = "Email already in use, please use a different one";
