@@ -22,6 +22,7 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
     @Published var navPath: [PurchaseMPCWallet.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
     private var purchaseCredentials: MPCPurchaseUDCredentials?
+    private var mpcTakeoverCredentials: MPCTakeoverCredentials?
     @Published var isLoading = false
     @Published var error: Error?
     
@@ -39,11 +40,12 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
             purchaseCredentials = credentials
             navPath.append(.checkout(credentials))
         case .didPurchase(let result):
+            let purchaseEmail = purchaseCredentials?.email ?? ""
             switch result {
             case .purchased:
-                return
+                navPath.append(.enterTakoverCredentials(purchaseEmail: purchaseEmail))
             case .alreadyHaveWallet:
-                navPath.append(.alreadyHaveWallet(email: purchaseCredentials?.email ?? ""))
+                navPath.append(.alreadyHaveWallet(email: purchaseEmail))
             }
         case .didSelectAlreadyHaveWalletAction(let action):
             switch action {
@@ -52,6 +54,19 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
             case .importMPC:
                 finishWith(result: .importMPC(email: purchaseCredentials?.email ?? ""))
             }
+        case .didEnterTakeoverCredentials(let credentials):
+            self.mpcTakeoverCredentials = MPCTakeoverCredentials(email: credentials.email,
+                                                                 password: credentials.password)
+            navPath.append(.enterTakoverRecovery(email: credentials.email))
+        case .didSelectTakeoverRecoveryTo(let sendRecoveryLink):
+            mpcTakeoverCredentials?.sendRecoveryLink = sendRecoveryLink
+            guard let mpcTakeoverCredentials else {
+                Debugger.printFailure("Failed to locate takeover credentils", critical: true)
+                return
+            }
+            navPath.append(.takeover(mpcTakeoverCredentials))
+        case .didFinishTakeover:
+            finishWith(result: .importMPC(email: mpcTakeoverCredentials?.email ?? ""))
         }
     }
     
