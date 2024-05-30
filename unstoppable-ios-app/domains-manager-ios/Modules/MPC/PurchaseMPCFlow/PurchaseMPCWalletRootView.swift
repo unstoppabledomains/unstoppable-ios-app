@@ -14,7 +14,7 @@ struct PurchaseMPCWalletRootView: View {
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             ZStack {
-                PurchaseMPCWalletAuthView()
+                InAppAddWalletView()
                     .environmentObject(viewModel)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in

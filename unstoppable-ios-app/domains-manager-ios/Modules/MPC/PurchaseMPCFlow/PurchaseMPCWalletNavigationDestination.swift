@@ -9,8 +9,8 @@ import SwiftUI
 
 extension PurchaseMPCWallet {
     enum NavigationDestination: Hashable {
-        case signInWithEmail
-        case checkout
+        case udAuth
+        case checkout(MPCPurchaseUDCredentials)
         
         var isWithCustomTitle: Bool { false }
     }
@@ -19,11 +19,10 @@ extension PurchaseMPCWallet {
         @ViewBuilder
         static func viewFor(navigationDestination: NavigationDestination) -> some View {
             switch navigationDestination {
-            case .signInWithEmail:
-                PurchaseMPCWalletAuthEmailView()
-            case .checkout:
-                EmptyView()
-//                PurchaseMPCWalletCheckoutView(credentials: <#MPCPurchaseUDCredentials#>)
+            case .udAuth:
+                PurchaseMPCWalletUDAuthInAppView()
+            case .checkout(let credentials):
+                PurchaseMPCWalletCheckoutInAppView(credentials: credentials)
             }
         }
     }
