@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletUDAuthView: View, UserDataValidator {
+struct PurchaseMPCWalletUDAuthView: View, UserDataValidator, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
+    let analyticsName: Analytics.ViewName
     let credentialsCallback: (MPCPurchaseUDCredentials)->()
     @State private var emailInput: String = ""
     @State private var emailConfirmationInput: String = ""
@@ -32,6 +33,7 @@ struct PurchaseMPCWalletUDAuthView: View, UserDataValidator {
         }
         .scrollDisabled(true)
         .padding()
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .displayError($error)
     }
     
@@ -76,21 +78,12 @@ private extension PurchaseMPCWalletUDAuthView {
     
     @ViewBuilder
     func emailConfirmationInputView() -> some View {
-        VStack(spacing: 8) {
-            UDTextFieldView(text: $emailConfirmationInput,
-                            placeholder: String.Constants.confirmEmail.localized(),
-                            focusBehaviour: .default,
-                            keyboardType: .emailAddress,
-                            autocapitalization: .never,
-                            autocorrectionDisabled: true,
-                            isErrorState: shouldShowEmailError,
-                            focusedStateChangedCallback: { isFocused in
-                isEmailFocused = isFocused
-            })
-            if shouldShowEmailError {
-                incorrectEmailIndicatorView()
-            }
-        }
+        UDTextFieldView(text: $emailConfirmationInput,
+                        placeholder: String.Constants.confirmEmail.localized(),
+                        focusBehaviour: .default,
+                        keyboardType: .emailAddress,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true)
     }
     
     var shouldShowEmailError: Bool {
@@ -133,6 +126,7 @@ private extension PurchaseMPCWalletUDAuthView {
     }
     
     func actionButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .continue)
         let email = emailInput
         let credentials = MPCPurchaseUDCredentials(email: email)
         credentialsCallback(credentials)
@@ -140,5 +134,6 @@ private extension PurchaseMPCWalletUDAuthView {
 }
 
 #Preview {
-    PurchaseMPCWalletUDAuthView(credentialsCallback: { _ in })
+    PurchaseMPCWalletUDAuthView(analyticsName: .unspecified,
+                                credentialsCallback: { _ in })
 }

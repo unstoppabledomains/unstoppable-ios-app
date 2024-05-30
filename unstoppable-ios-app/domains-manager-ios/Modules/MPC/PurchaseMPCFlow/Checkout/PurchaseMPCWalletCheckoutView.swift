@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletCheckoutView: View {
+struct PurchaseMPCWalletCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
+    let analyticsName: Analytics.ViewName
     let credentials: MPCPurchaseUDCredentials
+    let purchaseStateCallback: (MPCWalletPurchasingState)->()
     let purchasedCallback: (PurchaseMPCWallet.PurchaseResult)->()
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
@@ -28,6 +30,7 @@ struct PurchaseMPCWalletCheckoutView: View {
         }
             .padding()
             .animation(.default, value: UUID())
+            .trackAppearanceAnalytics(analyticsLogger: self)
             .onReceive(ecomPurchaseMPCWalletService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
                 if self.cartStatus.otherDiscountsApplied == 0 && cartStatus.otherDiscountsApplied != 0 {
                     appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cartStatus.otherDiscountsApplied), isSticky: false)
@@ -58,8 +61,7 @@ private extension PurchaseMPCWalletCheckoutView {
     func totalView() -> some View {
         MPCWalletStateCardView(title: cardTitle,
                                subtitle: cardSubtitle,
-                               mode: .purchase(purchaseState),
-                               mpcCreateProgress: 0)
+                               mode: .purchase(purchaseState))
     }
     
     var cardTitle: String {
@@ -111,7 +113,7 @@ private extension PurchaseMPCWalletCheckoutView {
             UDButtonView(text: String.Constants.pay.localized(),
                          icon: .appleIcon,
                          style: .large(.applePay),
-                         callback: confirmPurchase)
+                         callback: buyButtonPressed)
             .disabled(!isBuyButtonEnabled)
         case .preparing, .purchasing:
             EmptyView()
@@ -141,7 +143,7 @@ private extension PurchaseMPCWalletCheckoutView {
         case .alreadyPurchasedMPCWallet:
             return
         case .failedToLoadCalculations(let callback):
-            purchaseState = .failed(.unknown)
+            setPurchaseState(purchaseState: .failed(.unknown))
             pullUpError = .loadCalculationsError(tryAgainCallback: callback)
         case .ready(let cart):
             if cart.totalPrice == 0 {
@@ -150,19 +152,25 @@ private extension PurchaseMPCWalletCheckoutView {
             if case .purchasing = purchaseState {
                 return
             }
-            purchaseState = .readyToPurchase(price: cart.totalPrice)
+            setPurchaseState(purchaseState: .readyToPurchase(price: cart.totalPrice))
         }
     }
     
-    func confirmPurchase() {
+    func buyButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .buy)
         Task {
-            purchaseState = .purchasing
+            setPurchaseState(purchaseState: .purchasing)
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
+                logAnalytic(event: .mpcWalletPurchased)
                 purchasedCallback(.purchased)
             } catch let error as MPCWalletPurchaseError {
                 didFailWithError(error)
             } catch {
+                if let purchaseError = error as? StripeService.PurchaseError,
+                   case .cancelled = purchaseError {
+                    logAnalytic(event: .mpcWalletPurchaseCancelled)
+                }
                 didFailWithError(.unknown)
             }
         }
@@ -171,15 +179,23 @@ private extension PurchaseMPCWalletCheckoutView {
     func didFailWithError(_ error: MPCWalletPurchaseError) {
         switch error {
         case .walletAlreadyPurchased:
+            logAnalytic(event: .mpcWalletAlreadyPurchased)
             purchasedCallback(.alreadyHaveWallet)
         case .unknown:
-            purchaseState = .failed(error)
+            logAnalytic(event: .mpcWalletPurchaseError, parameters: [.error: error.localizedDescription])
+            setPurchaseState(purchaseState: .failed(error))
         }
     }
     
+    func setPurchaseState(purchaseState: MPCWalletPurchasingState) {
+        self.purchaseState = purchaseState
+        purchaseStateCallback(purchaseState)
+    }
 }
 
 #Preview {
-    PurchaseMPCWalletCheckoutView(credentials: .init(email: "qq@qq.qq"),
+    PurchaseMPCWalletCheckoutView(analyticsName: .unspecified,
+                                  credentials: .init(email: "qq@qq.qq"),
+                                  purchaseStateCallback: { _ in },
                                   purchasedCallback: { _ in })
 }

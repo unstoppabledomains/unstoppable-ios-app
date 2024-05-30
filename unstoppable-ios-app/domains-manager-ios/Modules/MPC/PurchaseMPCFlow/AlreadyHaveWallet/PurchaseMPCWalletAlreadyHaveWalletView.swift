@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct PurchaseMPCWalletAlreadyHaveWalletView: View {
+struct PurchaseMPCWalletAlreadyHaveWalletView: View, ViewAnalyticsLogger {
     
+    let analyticsName: Analytics.ViewName
     let email: String
     let callback: (PurchaseMPCWallet.AlreadyHaveWalletAction)->()
     
@@ -21,6 +22,7 @@ struct PurchaseMPCWalletAlreadyHaveWalletView: View {
             }
         }
         .padding()
+        .trackAppearanceAnalytics(analyticsLogger: self)
     }
     
 }
@@ -37,11 +39,20 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
             VStack(spacing: 16) {
                 Text(String.Constants.mpcWalletAlreadyPurchasedTitle.localized())
                     .titleText()
-                Text(String.Constants.mpcWalletAlreadyPurchasedSubtitle.localized())
-                    .subtitleText()
+                HStack {
+                    Text(String.Constants.email.localized() + ":")
+                        .subtitleText()
+                    Text(email)
+                        .textAttributes(color: .foregroundDefault,
+                                        fontSize: 16,
+                                        fontWeight: .medium)
+                }
+                .lineLimit(1)
             }
-            .multilineTextAlignment(.center)
+            Text(String.Constants.mpcWalletAlreadyPurchasedSubtitle.localized())
+                .subtitleText()
         }
+        .multilineTextAlignment(.center)
     }
     
     @ViewBuilder
@@ -56,6 +67,7 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
     func changeEmailButton() -> some View {
         UDButtonView(text: String.Constants.useDifferentEmail.localized(),
                      style: .large(.ghostPrimary)) {
+            logButtonPressedAnalyticEvents(button: .useDifferentEmail)
             callback(.useDifferentEmail)
         }
     }
@@ -64,12 +76,14 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
     func importButton() -> some View {
         UDButtonView(text: String.Constants.importMPCWalletTitle.localizedMPCProduct(),
                      style: .large(.raisedPrimary)) {
+            logButtonPressedAnalyticEvents(button: .importWallet)
             callback(.importMPC)
         }
     }
 }
 
 #Preview {
-    PurchaseMPCWalletAlreadyHaveWalletView(email: "qq@qq.qq",
+    PurchaseMPCWalletAlreadyHaveWalletView(analyticsName: .unspecified,
+                                           email: "qq@qq.qq",
                                            callback: { _ in })
 }

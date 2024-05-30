@@ -241,6 +241,7 @@ extension String {
         static let yourWallets = "YOUR_WALLETS"
         static let new = "NEW"
         static let confirmEmail = "CONFIRM_EMAIL"
+        static let setup = "SETUP"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1242,7 +1243,20 @@ extension String {
         static let mpcWalletAlreadyPurchasedTitle = "MPC_WALLET_ALREADY_PURCHASED_TITLE"
         static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
         static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
-        
+        static let mpcPasswordValidationLengthTitle = "MPC_PASSWORD_VALIDATION_LENGTH_TITLE"
+        static let mpcPasswordValidationTooLongTitle = "MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE"
+        static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
+        static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
+        static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"
+        static let mpcTakeoverRecoveryTitle = "MPC_TAKEOVER_RECOVERY_TITLE"
+        static let mpcTakeoverRecoverySubtitle = "MPC_TAKEOVER_RECOVERY_SUBTITLE"
+        static let sendMeRecoveryLink = "SEND_ME_RECOVERY_LINK"
+        static let dontSendMeRecoveryLink = "DONT_SEND_ME_RECOVERY_LINK"
+        static let mpcWalletEmailInUseMessage = "MPC_WALLET_EMAIL_IN_USE_MESSAGE"
+        static let mpcTakeoverInProgressTitle = "MPC_TAKEOVER_IN_PROGRESS_TITLE"
+        static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
+        static let contactSupport = "CONTACT_SUPPORT"
+
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
         static let sendCryptoFirstTimePullUpSubtitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_SUBTITLE"

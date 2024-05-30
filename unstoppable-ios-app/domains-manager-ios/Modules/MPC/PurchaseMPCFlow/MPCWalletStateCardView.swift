@@ -12,7 +12,7 @@ struct MPCWalletStateCardView: View {
     let title: String
     let subtitle: String
     let mode: Mode
-    let mpcCreateProgress: Double
+    var mpcCreateProgress: Double = 0
     
     var body: some View {
         ZStack {
@@ -115,7 +115,7 @@ private extension MPCWalletStateCardView {
             case .activated:
                 Color.white.opacity(0.44)
             }
-        case .purchase:
+        case .purchase, .takeover:
             defaultBadgeBackground()
         }
     }
@@ -135,7 +135,7 @@ private extension MPCWalletStateCardView {
             case .activated:
                 .black.opacity(0.16)
             }
-        case .purchase:
+        case .purchase, .takeover:
             defaultBadgeBorderColor()
         }
     }
@@ -161,7 +161,7 @@ private extension MPCWalletStateCardView {
             case .activated:
                 .white.opacity(0.32)
             }
-        case .purchase:
+        case .purchase, .takeover:
             defaultDotBackgroundColor
         }
     }
@@ -194,9 +194,7 @@ private extension MPCWalletStateCardView {
                     .resizable()
                     .foregroundStyle(.white)
             case .failed:
-                Image.crossWhite
-                    .resizable()
-                    .foregroundStyle(stateBorderColor())
+                failedProgressView()
             }
         case .purchase(let purchaseState):
             switch purchaseState {
@@ -206,7 +204,21 @@ private extension MPCWalletStateCardView {
             case .preparing, .purchasing:
                 CircularProgressView(mode: .continuousProgress)
             }
+        case .takeover(let takeoverState):
+            switch takeoverState {
+            case .readyForTakeover, .inProgress:
+                CircularProgressView(mode: .continuousProgress)
+            case .failed:
+                failedProgressView()
+            }
         }
+    }
+    
+    @ViewBuilder
+    func failedProgressView() -> some View {
+        Image.crossWhite
+            .resizable()
+            .foregroundStyle(stateBorderColor())
     }
     
     @ViewBuilder
@@ -219,7 +231,7 @@ private extension MPCWalletStateCardView {
             case .activated:
                 Color.backgroundSuccessEmphasis
             }
-        case .purchase:
+        case .purchase, .takeover:
             defaultStateBackgroundView()
         }
     }
@@ -240,8 +252,15 @@ private extension MPCWalletStateCardView {
             case .failed:
                     .backgroundDangerEmphasis
             }
-        case .purchase(let purchaseState):
+        case .purchase:
                 .foregroundAccent
+        case .takeover(let takeoverState):
+            switch takeoverState {
+            case .readyForTakeover, .inProgress:
+                    .foregroundAccent
+            case .failed:
+                    .backgroundDangerEmphasis
+            }
         }
     }
 }
@@ -251,6 +270,7 @@ extension MPCWalletStateCardView {
     enum Mode {
         case activation(MPCWalletActivationState)
         case purchase(MPCWalletPurchasingState)
+        case takeover(MPCWalletTakeoverState)
     }
 }
 

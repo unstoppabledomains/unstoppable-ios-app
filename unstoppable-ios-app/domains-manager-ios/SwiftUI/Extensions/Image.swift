@@ -122,6 +122,7 @@ extension Image {
     static let mailIcon24 = Image("mailIcon24")
     static let peopleCircleIcon = Image("peopleCircleIcon")
     static let purchaseMPCIcon = Image("purchaseMPCIcon")
+    static let mpcWalletRecoveryIllustration = Image("mpcWalletRecoveryIllustration")
     
     static let cryptoFaceIcon = Image("cryptoFaceIcon")
     static let cryptoPOAPIcon = Image("cryptoPOAPIcon")

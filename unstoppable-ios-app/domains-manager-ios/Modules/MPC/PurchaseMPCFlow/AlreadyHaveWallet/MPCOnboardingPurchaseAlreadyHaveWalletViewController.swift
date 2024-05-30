@@ -9,11 +9,11 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseAlreadyHaveWalletViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseAlreadyHaveWalletOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
+    var progress: Double? { nil }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +53,8 @@ private extension MPCOnboardingPurchaseAlreadyHaveWalletViewController {
             return
         }
         
-        let mpcView = PurchaseMPCWalletAlreadyHaveWalletView(email: credentials.email,
+        let mpcView = PurchaseMPCWalletAlreadyHaveWalletView(analyticsName: analyticsName,
+                                                             email: credentials.email,
                                                              callback: { [weak self] action in
             self?.didSelectAction(action)
         })

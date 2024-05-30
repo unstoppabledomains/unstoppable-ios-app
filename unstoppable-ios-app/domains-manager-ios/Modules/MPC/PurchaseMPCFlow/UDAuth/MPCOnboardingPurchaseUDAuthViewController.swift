@@ -9,11 +9,12 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseUDAuthViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseUDAuthOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
+    var progress: Double? { 1 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +36,7 @@ private extension MPCOnboardingPurchaseUDAuthViewController {
 // MARK: - Setup methods
 private extension MPCOnboardingPurchaseUDAuthViewController {
     func setup() {
-        addProgressDashesView()
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         addChildView()
         DispatchQueue.main.async {
             self.setDashesProgress(self.progress)
@@ -43,7 +44,8 @@ private extension MPCOnboardingPurchaseUDAuthViewController {
     }
     
     func addChildView() {
-        let mpcView = PurchaseMPCWalletUDAuthView(credentialsCallback: { [weak self] credentials in
+        let mpcView = PurchaseMPCWalletUDAuthView(analyticsName: analyticsName,
+                                                  credentialsCallback: { [weak self] credentials in
             self?.didEnterCredentials(credentials)
         })
             .padding(.top, 40)

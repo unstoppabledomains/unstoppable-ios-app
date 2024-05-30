@@ -62,9 +62,11 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
             logMPC("Error decoding request \(apiRequest):\(error)")
-            appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
-                                            withParameters: [.error: error.localizedDescription,
-                                                             .value: apiRequest.url.absoluteString])
+            if apiRequest.url.host() != URL(string: URLSList.USER_MPC_WALLET_URL)?.path() {
+                appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
+                                                withParameters: [.error: error.localizedDescription,
+                                                                 .value: apiRequest.url.absoluteString])
+            }
             if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }
@@ -170,7 +172,7 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
         isAutoRefreshCartSuspended = false
     }
     
-    func validateCredentialsForTakeover(credentials: MPCActivateCredentials) async throws -> Bool {
+    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
         do {
             try await makeSetupWalletRequestFor(credentials: credentials, preview: true)
             return true
@@ -181,7 +183,7 @@ extension EcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
         }
     }
     
-    func runTakeover(credentials: MPCActivateCredentials) async throws {
+    func runTakeover(credentials: MPCTakeoverCredentials) async throws {
         try await makeSetupWalletRequestFor(credentials: credentials, preview: false)
         try await waitForWalletIsReadyForActivation()
     }
@@ -254,7 +256,7 @@ private extension EcomPurchaseMPCWalletService {
 // MARK: - Private methods
 private extension EcomPurchaseMPCWalletService {
     func waitForMPCWalletIsCreated() async throws {
-        for _ in 0..<120 {
+        for _ in 0..<240 {
             do {
                 let walletInfo = try await getMPCWalletInfo()
                 
@@ -287,7 +289,7 @@ private extension EcomPurchaseMPCWalletService {
         return response.wallet
     }
     
-    func makeSetupWalletRequestFor(credentials: MPCActivateCredentials,
+    func makeSetupWalletRequestFor(credentials: MPCTakeoverCredentials,
                                    preview: Bool) async throws {
         guard let wallet = ongoingPurchaseSession?.wallet else { throw PurchaseMPCWalletError.noSessionDetails }
         
@@ -301,7 +303,7 @@ private extension EcomPurchaseMPCWalletService {
         let body = RequestBody(walletEmail: credentials.email, 
                                password: credentials.password,
                                preview: preview,
-                               sendRecoveryEmail: true)
+                               sendRecoveryEmail: credentials.sendRecoveryLink)
         let urlString = URLSList.USER_MPC_SETUP_URL(walletAddress: wallet.address)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
@@ -311,7 +313,7 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func waitForWalletIsReadyForActivation() async throws {
-        for _ in 0..<120 {
+        for _ in 0..<240 {
             async let isReadyTask = checkMPCWalletReady()
             async let walletInfoTask = getMPCWalletInfo()
             
