@@ -13,24 +13,18 @@ struct PurchaseMPCWalletRootView: View {
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            ZStack {
-                InAppAddWalletView()
-                    .environmentObject(viewModel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in
-                        PurchaseMPCWallet.LinkNavigationDestination.viewFor(navigationDestination: destination)
-                            .ignoresSafeArea()
-                            .environmentObject(viewModel)
-                    }
-                    .onChange(of: viewModel.navPath) { _ in
-                        updateTitleView()
-                    }
-                    .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
-                
-                if viewModel.isLoading {
-                    ProgressView()
+            InAppAddWalletView()
+                .environmentObject(viewModel)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in
+                    PurchaseMPCWallet.LinkNavigationDestination.viewFor(navigationDestination: destination)
+                        .ignoresSafeArea()
+                        .environmentObject(viewModel)
                 }
-            }
+                .onChange(of: viewModel.navPath) { _ in
+                    updateTitleView()
+                }
+                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
