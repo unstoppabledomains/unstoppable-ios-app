@@ -62,9 +62,11 @@ final class EcomPurchaseMPCWalletService: EcomPurchaseInteractionService {
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
             logMPC("Error decoding request \(apiRequest):\(error)")
-            appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
-                                            withParameters: [.error: error.localizedDescription,
-                                                             .value: apiRequest.url.absoluteString])
+            if apiRequest.url.host() != URL(string: URLSList.USER_MPC_WALLET_URL)?.path() {
+                appContext.analyticsService.log(event: .purchaseFirebaseRequestError,
+                                                withParameters: [.error: error.localizedDescription,
+                                                                 .value: apiRequest.url.absoluteString])
+            }
             if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations { self.refreshUserCartAsync() }
             }

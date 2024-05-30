@@ -167,6 +167,10 @@ private extension PurchaseMPCWalletCheckoutView {
             } catch let error as MPCWalletPurchaseError {
                 didFailWithError(error)
             } catch {
+                if let purchaseError = error as? StripeService.PurchaseError,
+                   case .cancelled = purchaseError {
+                    logAnalytic(event: .mpcWalletPurchaseCancelled)
+                }
                 didFailWithError(.unknown)
             }
         }
