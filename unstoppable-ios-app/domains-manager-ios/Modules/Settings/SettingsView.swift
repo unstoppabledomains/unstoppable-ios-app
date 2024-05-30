@@ -527,7 +527,11 @@ private extension SettingsView {
             await MainActor.run {
                 switch action {
                 case .create:
-                    createNewWallet()
+                    if !udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
+                        createNewWallet()
+                    } else {
+                        showAddWalletSelection()
+                    }
                 case .recoveryOrKey:
                     importNewWallet()
                 case .connect:
@@ -537,6 +541,15 @@ private extension SettingsView {
                 }
             }
         }
+    }
+    
+    func showAddWalletSelection() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        UDRouter().showAddWalletSelection(in: view,
+                                          createCallback: {
+            createNewWallet()
+        })
     }
     
     func createNewWallet() {

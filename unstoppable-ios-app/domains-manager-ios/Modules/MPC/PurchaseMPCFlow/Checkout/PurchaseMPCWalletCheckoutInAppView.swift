@@ -19,6 +19,7 @@ struct PurchaseMPCWalletCheckoutInAppView: View {
         }, purchasedCallback: { result in
             
         })
+        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
     
 }

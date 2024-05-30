@@ -25,7 +25,11 @@ final class PurchaseMPCWalletViewModel: ObservableObject {
     func handleAction(_ action: PurchaseMPCWallet.FlowAction) {
         switch action {
         case .createNewWallet:
-            return
+            navigationState?.dismiss = true
+            Task {
+                await Task.sleep(seconds: 0.6)
+                createWalletCallback()
+            }
         case .buyMPCWallet:
             navPath.append(.udAuth)
         case .didEnterPurchaseCredentials(let credentials):

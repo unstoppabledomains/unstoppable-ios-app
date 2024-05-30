@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct InAppAddWalletView: View {
+struct InAppAddWalletView: View, ViewAnalyticsLogger {
     
     @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
+    
+    var analyticsName: Analytics.ViewName { .inAppAddWallet }
     
     var body: some View {
         OnboardingStartOptionsView(title: String.Constants.createNewVaultTitle.localized(),
@@ -17,8 +19,14 @@ struct InAppAddWalletView: View {
                                    icon: .plusCircle,
                                    options: [[.mpcWallet], [.selfCustody]],
                                    selectionCallback: didSelectAddWalletType)
-        .padding(EdgeInsets(top: 70, leading: 0, bottom: 0, trailing: 0))
-        .ignoresSafeArea()
+        .trackAppearanceAnalytics(analyticsLogger: self)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                CloseButtonView {
+                    viewModel.navigationState?.dismiss = true
+                }
+            }
+        }
     }
     
 }
