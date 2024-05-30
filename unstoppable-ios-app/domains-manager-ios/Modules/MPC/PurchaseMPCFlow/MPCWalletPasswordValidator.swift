@@ -14,12 +14,12 @@ protocol MPCWalletPasswordValidator {
 extension MPCWalletPasswordValidator {
     var minMPCWalletPasswordLength: Int { 12 }
     var maxMPCWalletPasswordLength: Int { 32 }
+    var mpcWalletPasswordSpecialCharacterRegex: NSRegularExpression { try! NSRegularExpression(pattern: "[!@#$%^&*()_+\\-\\[\\]{};':\"\\\\|,.<>\\/?]+") }
     
     func validateWalletPassword(_ password: String) -> [MPCWalletPasswordValidationError] {
         let minLength = minMPCWalletPasswordLength
         let maxLength = maxMPCWalletPasswordLength
         let numberRegex = try! NSRegularExpression(pattern: "\\d")
-        let specialCharacterRegex = try! NSRegularExpression(pattern: "[!@#$%^&*()_+\\-\\[\\]{};':\"\\\\|,.<>\\/?]+")
         
         var errors: [MPCWalletPasswordValidationError] = []
         
@@ -35,7 +35,7 @@ extension MPCWalletPasswordValidator {
             errors.append(.missingNumber)
         }
         
-        if specialCharacterRegex.firstMatch(in: password, range: NSRange(location: 0, length: password.utf16.count)) == nil {
+        if mpcWalletPasswordSpecialCharacterRegex.firstMatch(in: password, range: NSRange(location: 0, length: password.utf16.count)) == nil {
             errors.append(.missingSpecialCharacter)
         }
         
