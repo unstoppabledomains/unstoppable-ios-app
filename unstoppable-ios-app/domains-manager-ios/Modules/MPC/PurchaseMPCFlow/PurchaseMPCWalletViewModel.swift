@@ -10,11 +10,17 @@ import SwiftUI
 @MainActor
 final class PurchaseMPCWalletViewModel: ObservableObject {
     
+    let createWalletCallback: EmptyCallback
+    
     @Published var navPath: [PurchaseMPCWallet.NavigationDestination] = []
     @Published var navigationState: NavigationStateManager?
     private var purchaseCredentials: MPCPurchaseUDCredentials?
     @Published var isLoading = false
     @Published var error: Error?
+    
+    init(createWalletCallback: @escaping EmptyCallback) {
+        self.createWalletCallback = createWalletCallback
+    }
     
     func handleAction(_ action: PurchaseMPCWallet.FlowAction) {
         switch action {
