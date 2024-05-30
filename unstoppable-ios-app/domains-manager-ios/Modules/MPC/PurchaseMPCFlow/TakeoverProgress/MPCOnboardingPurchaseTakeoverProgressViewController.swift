@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseTakeoverProgressViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverProgressOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -48,7 +48,8 @@ private extension MPCOnboardingPurchaseTakeoverProgressViewController {
             return
         }
         
-        let mpcView = PurchaseMPCWalletTakeoverProgressView(credentials: credentials,
+        let mpcView = PurchaseMPCWalletTakeoverProgressView(analyticsName: analyticsName,
+                                                            credentials: credentials,
                                                             finishCallback: { [weak self] in
             DispatchQueue.main.async {
                 self?.didTakeoverWithCredentials(credentials)

@@ -83,6 +83,8 @@ extension Analytics {
         case sendMPCBootstrapCodeError
         case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
         case mpcWalletPurchased, mpcWalletAlreadyPurchased, mpcWalletPurchaseError
+        case mpcEmailInUseEntered
+        case mpcTakeoverStarted, mpcTakeoverFinished, mpcTakeoverFailed
     }
 }
 
@@ -150,6 +152,9 @@ extension Analytics {
         case didClearRecords
         case transactionSpeed
         case isApplePaySupported
+        case useDifferentEmail
+        case sendRecoveryLink
+        case numberOfAttempts
     }
 }
 
@@ -436,6 +441,8 @@ extension Analytics {
         case noRecordsAdded
         
         case reEnterPasscode, reEnterPassword
+        case useDifferentEmail, useRecovery, dontUseRecovery
+        case contactSupport
     }
 }
 

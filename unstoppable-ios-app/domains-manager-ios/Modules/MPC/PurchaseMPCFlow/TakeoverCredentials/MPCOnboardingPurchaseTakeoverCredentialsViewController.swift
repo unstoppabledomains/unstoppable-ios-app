@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseTakeoverCredentialsViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseTakeoverCredentialsOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -46,7 +46,8 @@ private extension MPCOnboardingPurchaseTakeoverCredentialsViewController {
     
     func addChildView() {
         let email = OnboardingData.mpcPurchaseCredentials?.email
-        let mpcView = PurchaseMPCWalletTakeoverCredentialsView(purchaseEmail: email, credentialsCallback: { [weak self] credentials in
+        let mpcView = PurchaseMPCWalletTakeoverCredentialsView(analyticsName: analyticsName,
+                                                               purchaseEmail: email, credentialsCallback: { [weak self] credentials in
             DispatchQueue.main.async {
                 self?.didEnterTakeoverCredentials(credentials)                
             }
