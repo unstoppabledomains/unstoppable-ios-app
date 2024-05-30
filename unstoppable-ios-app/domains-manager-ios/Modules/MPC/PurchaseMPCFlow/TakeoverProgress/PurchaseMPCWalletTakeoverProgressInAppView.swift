@@ -16,6 +16,8 @@ struct PurchaseMPCWalletTakeoverProgressInAppView: View {
         PurchaseMPCWalletTakeoverProgressView(analyticsName: .mpcPurchaseTakeoverProgressInApp,
                                               credentials: credentials,
                                               finishCallback: didFinishTakeover)
+        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

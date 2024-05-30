@@ -29,5 +29,7 @@ private extension PurchaseMPCWalletAlreadyHaveWalletInAppView {
 }
 
 #Preview {
-    PurchaseMPCWalletAlreadyHaveWalletInAppView(email: "qq@qq.qq")
+    PresentAsModalPreviewView {
+        PurchaseMPCWalletAlreadyHaveWalletInAppView(email: "qq@qq.qq")
+    }
 }

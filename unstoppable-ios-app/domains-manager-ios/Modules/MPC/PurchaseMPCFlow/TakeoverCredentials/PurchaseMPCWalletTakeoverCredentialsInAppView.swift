@@ -16,6 +16,7 @@ struct PurchaseMPCWalletTakeoverCredentialsInAppView: View {
     var body: some View {
         PurchaseMPCWalletTakeoverCredentialsView(analyticsName: .mpcPurchaseTakeoverCredentialsInApp,
                                                  purchaseEmail: purchaseEmail, credentialsCallback: didEnterTakeoverCredentials)
+        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .navigationBarBackButtonHidden(true)
     }
     
@@ -29,5 +30,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsInAppView {
 }
 
 #Preview {
-    PurchaseMPCWalletTakeoverCredentialsInAppView(purchaseEmail: "qq@qq.qq")
+    PresentAsModalPreviewView {
+        PurchaseMPCWalletTakeoverCredentialsInAppView(purchaseEmail: "qq@qq.qq")
+    }
 }
