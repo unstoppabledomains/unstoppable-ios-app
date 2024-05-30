@@ -13,7 +13,8 @@ final class MPCOnboardingPurchaseTakeoverRecoveryViewController: BaseViewControl
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
+    var progress: Double? { 5 / 6 }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +36,7 @@ private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
 // MARK: - Setup methods
 private extension MPCOnboardingPurchaseTakeoverRecoveryViewController {
     func setup() {
-        addProgressDashesView()
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         addChildView()
         DispatchQueue.main.async {
             self.setDashesProgress(self.progress)

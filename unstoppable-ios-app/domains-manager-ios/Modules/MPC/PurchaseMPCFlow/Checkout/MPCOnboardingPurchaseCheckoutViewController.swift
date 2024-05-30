@@ -13,8 +13,9 @@ final class MPCOnboardingPurchaseCheckoutViewController: BaseViewController, Vie
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
-    
+    var dashesProgressConfiguration: DashesProgressView.Configuration { .init(numberOfDashes: 3) }
+    var progress: Double? { 0.5 }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,12 +35,27 @@ private extension MPCOnboardingPurchaseCheckoutViewController {
             }
         }
     }
+    
+    func didUpdatePurchaseState(_ state: MPCWalletPurchasingState) {
+        let isBackButtonHidden: Bool
+    
+        switch state {
+        case .preparing, .failed, .readyToPurchase:
+            isBackButtonHidden = false
+        case .purchasing:
+            isBackButtonHidden = true
+        }
+
+        DispatchQueue.main.async {
+            self.cNavigationBar?.setBackButton(hidden: isBackButtonHidden)
+        }
+    }
 }
 
 // MARK: - Setup methods
 private extension MPCOnboardingPurchaseCheckoutViewController {
     func setup() {
-        addProgressDashesView()
+        addProgressDashesView(configuration: dashesProgressConfiguration)
         addChildView()
         DispatchQueue.main.async {
             self.setDashesProgress(self.progress)
@@ -57,7 +73,9 @@ private extension MPCOnboardingPurchaseCheckoutViewController {
         }
         
         let mpcView = PurchaseMPCWalletCheckoutView(credentials: credentials,
-                                                    purchasedCallback: { [weak self] result in
+                                                    purchaseStateCallback: { [weak self] state in
+            self?.didUpdatePurchaseState(state)
+        }, purchasedCallback: { [weak self] result in
             self?.didPurchaseMPCWallet(result)
         })
             .padding(.top, 40)

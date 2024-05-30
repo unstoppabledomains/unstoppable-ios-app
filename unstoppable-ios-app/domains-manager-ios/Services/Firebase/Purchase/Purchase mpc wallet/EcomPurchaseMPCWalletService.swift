@@ -254,7 +254,7 @@ private extension EcomPurchaseMPCWalletService {
 // MARK: - Private methods
 private extension EcomPurchaseMPCWalletService {
     func waitForMPCWalletIsCreated() async throws {
-        for _ in 0..<120 {
+        for _ in 0..<240 {
             do {
                 let walletInfo = try await getMPCWalletInfo()
                 
@@ -311,7 +311,7 @@ private extension EcomPurchaseMPCWalletService {
     }
     
     func waitForWalletIsReadyForActivation() async throws {
-        for _ in 0..<120 {
+        for _ in 0..<240 {
             async let isReadyTask = checkMPCWalletReady()
             async let walletInfoTask = getMPCWalletInfo()
             

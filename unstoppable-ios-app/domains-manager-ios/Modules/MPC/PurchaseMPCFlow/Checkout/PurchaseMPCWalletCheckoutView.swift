@@ -12,6 +12,7 @@ struct PurchaseMPCWalletCheckoutView: View {
     @Environment(\.ecomPurchaseMPCWalletService) private var ecomPurchaseMPCWalletService
 
     let credentials: MPCPurchaseUDCredentials
+    let purchaseStateCallback: (MPCWalletPurchasingState)->()
     let purchasedCallback: (PurchaseMPCWallet.PurchaseResult)->()
     @State private var cartStatus: PurchaseMPCWalletCartStatus = .ready(cart: .empty)
     @State private var pullUpError: PullUpErrorConfiguration?
@@ -140,7 +141,7 @@ private extension PurchaseMPCWalletCheckoutView {
         case .alreadyPurchasedMPCWallet:
             return
         case .failedToLoadCalculations(let callback):
-            purchaseState = .failed(.unknown)
+            setPurchaseState(purchaseState: .failed(.unknown))
             pullUpError = .loadCalculationsError(tryAgainCallback: callback)
         case .ready(let cart):
             if cart.totalPrice == 0 {
@@ -149,13 +150,13 @@ private extension PurchaseMPCWalletCheckoutView {
             if case .purchasing = purchaseState {
                 return
             }
-            purchaseState = .readyToPurchase(price: cart.totalPrice)
+            setPurchaseState(purchaseState: .readyToPurchase(price: cart.totalPrice))
         }
     }
     
     func confirmPurchase() {
         Task {
-            purchaseState = .purchasing
+            setPurchaseState(purchaseState: .purchasing)
             do {
                 try await ecomPurchaseMPCWalletService.purchaseMPCWallet()
                 purchasedCallback(.purchased)
@@ -172,13 +173,18 @@ private extension PurchaseMPCWalletCheckoutView {
         case .walletAlreadyPurchased:
             purchasedCallback(.alreadyHaveWallet)
         case .unknown:
-            purchaseState = .failed(error)
+            setPurchaseState(purchaseState: .failed(error))
         }
     }
     
+    func setPurchaseState(purchaseState: MPCWalletPurchasingState) {
+        self.purchaseState = purchaseState
+        purchaseStateCallback(purchaseState)
+    }
 }
 
 #Preview {
     PurchaseMPCWalletCheckoutView(credentials: .init(email: "qq@qq.qq"),
+                                  purchaseStateCallback: { _ in },
                                   purchasedCallback: { _ in })
 }

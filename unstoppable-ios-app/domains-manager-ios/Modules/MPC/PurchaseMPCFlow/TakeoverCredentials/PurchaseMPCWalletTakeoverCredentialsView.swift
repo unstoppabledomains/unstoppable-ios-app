@@ -38,6 +38,7 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
                 Spacer()
             }
         }
+        .scrollIndicators(.hidden)
         .padding()
         .onChange(of: passwordInput, perform: { newValue in
             validatePasswordInput()
@@ -60,6 +61,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         
         didSetupPurchaseEmail = true
         emailInput = purchaseEmail ?? ""
+        debounceObject.text = emailInput
     }
     
     func validatePasswordInput() {

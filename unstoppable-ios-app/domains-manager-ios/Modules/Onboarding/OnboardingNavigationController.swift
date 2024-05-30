@@ -101,6 +101,7 @@ extension OnboardingNavigationController: OnboardingFlowManager {
         case .didEnterMPCPurchaseUDCredentials:
             moveToStep(.mpcPurchaseCheckout)
         case .didPurchaseMPCWallet:
+            setNewUserOnboardingSubFlow(.create)
             moveToStep(.mpcPurchaseTakeoverCredentials)
         case .alreadyPurchasedMPCWallet:
             moveToStep(.mpcPurchaseAlreadyHaveWallet)
@@ -136,11 +137,18 @@ extension OnboardingNavigationController: OnboardingFlowManager {
         
         switch onboardingFlow {
         case .newUser(let onboardingSubFlow):
-            guard let onboardingSubFlow = onboardingSubFlow else { return }
+            guard let onboardingSubFlow = onboardingSubFlow else {
+                didFinishOnboarding()
+                return
+            }
             
             switch onboardingSubFlow {
             case .create:
-                pushBackupWalletsScreen()
+                if onboardingData.wallets.first?.type == .mpc {
+                    didFinishOnboarding()                    
+                } else {
+                    pushBackupWalletsScreen()
+                }
             case .restore, .webAccount:
                 didFinishOnboarding()
             }

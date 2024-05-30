@@ -45,7 +45,7 @@ private extension PurchaseMPCWalletTakeoverRecoveryView {
         Image.mpcWalletRecoveryIllustration
             .resizable()
             .padding(.horizontal, 16)
-            .aspectRatio(329 / 341, contentMode: .fill)
+            .aspectRatio(329 / 341, contentMode: .fit)
     }
     
     @ViewBuilder

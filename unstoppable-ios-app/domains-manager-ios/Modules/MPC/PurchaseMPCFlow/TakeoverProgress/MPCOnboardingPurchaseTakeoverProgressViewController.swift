@@ -13,7 +13,7 @@ final class MPCOnboardingPurchaseTakeoverProgressViewController: BaseViewControl
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
-    var progress: Double? { 3 / 4 }
+    var progress: Double? { nil }
     
     override func viewDidLoad() {
         super.viewDidLoad()
