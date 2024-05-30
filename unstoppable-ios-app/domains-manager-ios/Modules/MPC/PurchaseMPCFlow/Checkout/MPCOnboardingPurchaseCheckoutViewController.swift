@@ -37,17 +37,8 @@ private extension MPCOnboardingPurchaseCheckoutViewController {
     }
     
     func didUpdatePurchaseState(_ state: MPCWalletPurchasingState) {
-        let isBackButtonHidden: Bool
-    
-        switch state {
-        case .preparing, .failed, .readyToPurchase:
-            isBackButtonHidden = false
-        case .purchasing:
-            isBackButtonHidden = true
-        }
-
         DispatchQueue.main.async {
-            self.cNavigationBar?.setBackButton(hidden: isBackButtonHidden)
+            self.cNavigationBar?.setBackButton(hidden: !state.isAllowedToInterrupt)
         }
     }
 }

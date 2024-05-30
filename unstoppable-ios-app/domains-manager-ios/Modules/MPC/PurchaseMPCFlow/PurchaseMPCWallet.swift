@@ -11,9 +11,14 @@ enum PurchaseMPCWallet { }
 
 extension PurchaseMPCWallet {
     enum FlowAction {
-        case authWithProvider(LoginProvider)
-        case loginWithEmail(email: String, password: String)
-        case didPurchase
+        case createNewWallet
+        case buyMPCWallet
+        case didEnterPurchaseCredentials(MPCPurchaseUDCredentials)
+        case didPurchase(PurchaseMPCWallet.PurchaseResult)
+        case didSelectAlreadyHaveWalletAction(PurchaseMPCWallet.AlreadyHaveWalletAction)
+        case didEnterTakeoverCredentials(MPCActivateCredentials)
+        case didSelectTakeoverRecoveryTo(sendRecoveryLink: Bool)
+        case didFinishTakeover
     }
     
     enum PurchaseResult {

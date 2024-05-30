@@ -16,6 +16,7 @@ struct PurchaseMPCWalletAlreadyHaveWalletView: View, ViewAnalyticsLogger {
     var body: some View {
         ZStack {
             contentMessageView()
+                .padding(.bottom, isIPSE ? 60 : 0)
             VStack {
                 Spacer()
                 actionButtons()
