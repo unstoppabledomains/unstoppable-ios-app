@@ -82,6 +82,7 @@ extension Analytics {
         
         case sendMPCBootstrapCodeError
         case willActivateMPCWallet, didActivateMPCWallet, didFailActivateMPCWalletPassword, didFailActivateMPCWalletPasscode, didFailActivateMPCWalletUnknown
+        case mpcWalletPurchased, mpcWalletAlreadyPurchased, mpcWalletPurchaseError
     }
 }
 
