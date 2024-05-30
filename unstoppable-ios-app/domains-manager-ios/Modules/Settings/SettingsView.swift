@@ -547,8 +547,13 @@ private extension SettingsView {
         guard let view = appContext.coreAppCoordinator.topVC else { return }
         
         UDRouter().showAddWalletSelection(in: view,
-                                          createCallback: {
-            createNewWallet()
+                                          createCallback: { result in
+            switch result {
+            case .createNew:
+                createNewWallet()
+            case .importMPC(let email):
+                activateMPCWallet(preFilledEmail: email)
+            }
         })
     }
     

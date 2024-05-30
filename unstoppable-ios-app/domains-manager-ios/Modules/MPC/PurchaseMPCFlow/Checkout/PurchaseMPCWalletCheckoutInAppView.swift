@@ -9,24 +9,31 @@ import SwiftUI
 
 struct PurchaseMPCWalletCheckoutInAppView: View {
     
+    @EnvironmentObject var viewModel: PurchaseMPCWalletViewModel
+
     let credentials: MPCPurchaseUDCredentials
+    @State private var purchasingState = MPCWalletPurchasingState.preparing
     
     var body: some View {
         PurchaseMPCWalletCheckoutView(analyticsName: .mpcPurchaseCheckoutInApp,
                                       credentials: credentials,
-                                      purchaseStateCallback: { state in
-            
-        }, purchasedCallback: { result in
-            
-        })
+                                      purchaseStateCallback: handlePurchasingStateUpdated,
+                                      purchasedCallback: handleWalletPurchaseResult)
         .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
+        .navigationBarBackButtonHidden(!purchasingState.isAllowedToInterrupt)
     }
     
 }
 
 // MARK: - Private methods
 private extension PurchaseMPCWalletCheckoutInAppView {
+    func handlePurchasingStateUpdated(_ purchasingState: MPCWalletPurchasingState) {
+        self.purchasingState = purchasingState
+    }
     
+    func handleWalletPurchaseResult(_ result: PurchaseMPCWallet.PurchaseResult) {
+        viewModel.handleAction(.didPurchase(result))
+    }
 }
 
 #Preview {

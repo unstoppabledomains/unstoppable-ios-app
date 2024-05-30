@@ -11,6 +11,7 @@ extension PurchaseMPCWallet {
     enum NavigationDestination: Hashable {
         case udAuth
         case checkout(MPCPurchaseUDCredentials)
+        case alreadyHaveWallet(email: String)
         
         var isWithCustomTitle: Bool { false }
     }
@@ -23,6 +24,8 @@ extension PurchaseMPCWallet {
                 PurchaseMPCWalletUDAuthInAppView()
             case .checkout(let credentials):
                 PurchaseMPCWalletCheckoutInAppView(credentials: credentials)
+            case .alreadyHaveWallet(let email):
+                PurchaseMPCWalletAlreadyHaveWalletInAppView(email: email)
             }
         }
     }

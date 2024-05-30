@@ -41,7 +41,7 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func showAddWalletSelection(in viewController: UIViewController,
-                                createCallback: @escaping EmptyCallback) {
+                                createCallback: @escaping AddWalletResultCallback) {
         let addWalletSelectionVC = UIHostingController(rootView: PurchaseMPCWalletRootView(createWalletCallback: createCallback))
         viewController.present(addWalletSelectionVC, animated: true)
     }

@@ -12,4 +12,13 @@ enum MPCWalletPurchasingState {
     case readyToPurchase(price: Int)
     case purchasing
     case failed(MPCWalletPurchaseError)
+    
+    var isAllowedToInterrupt: Bool {
+        switch self {
+        case .preparing, .failed, .readyToPurchase:
+            return true
+        case .purchasing:
+            return false
+        }
+    }
 }

@@ -14,7 +14,8 @@ extension PurchaseMPCWallet {
         case createNewWallet
         case buyMPCWallet
         case didEnterPurchaseCredentials(MPCPurchaseUDCredentials)
-        case didPurchase
+        case didPurchase(PurchaseMPCWallet.PurchaseResult)
+        case didSelectAlreadyHaveWalletAction(PurchaseMPCWallet.AlreadyHaveWalletAction)
     }
     
     enum PurchaseResult {

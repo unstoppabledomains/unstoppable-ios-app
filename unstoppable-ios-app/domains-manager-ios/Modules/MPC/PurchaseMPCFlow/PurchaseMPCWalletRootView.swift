@@ -39,7 +39,7 @@ struct PurchaseMPCWalletRootView: View {
         .allowsHitTesting(!viewModel.isLoading)
     }
     
-    init(createWalletCallback: @escaping EmptyCallback) {
+    init(createWalletCallback: @escaping AddWalletResultCallback) {
         self._viewModel = StateObject(wrappedValue: PurchaseMPCWalletViewModel(createWalletCallback: createWalletCallback))
     }
 }
@@ -55,5 +55,5 @@ private extension PurchaseMPCWalletRootView {
 }
 
 #Preview {
-    PurchaseMPCWalletRootView(createWalletCallback: { })
+    PurchaseMPCWalletRootView(createWalletCallback: { _ in })
 }
