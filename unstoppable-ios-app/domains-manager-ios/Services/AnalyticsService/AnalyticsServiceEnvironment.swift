@@ -242,6 +242,14 @@ extension Analytics {
         case mpcEnterCredentialsOnboarding, mpcEnterCredentialsInApp, mpcEnterCredentialsReconnect
         case mpcEnterCodeOnboarding, mpcEnterCodeInApp
         case mpcActivationOnboarding, mpcActivationInApp
+        
+        case mpcPurchaseUDAuthOnboarding, mpcPurchaseUDAuthInApp
+        case mpcPurchaseCheckoutOnboarding, mpcPurchaseCheckoutInApp
+        case mpcPurchaseAlreadyHaveWalletOnboarding, mpcPurchaseAlreadyHaveWalletInApp
+        case mpcPurchaseTakeoverCredentialsOnboarding, mpcPurchaseTakeoverCredentialsInApp
+        case mpcPurchaseTakeoverRecoveryOnboarding, mpcPurchaseTakeoverRecoveryInApp
+        case mpcPurchaseTakeoverProgressOnboarding, mpcPurchaseTakeoverProgressInApp
+        
         case mpcActivateEnterCode, mpcActivateEnterPassword
         case reconnectMPCWalletPrompt
     }

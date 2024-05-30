@@ -9,7 +9,7 @@ import SwiftUI
 
 final class MPCOnboardingPurchaseUDAuthViewController: BaseViewController, ViewWithDashesProgress {
     
-    override var analyticsName: Analytics.ViewName { .mpcEnterCodeOnboarding }
+    override var analyticsName: Analytics.ViewName { .mpcPurchaseUDAuthOnboarding }
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
     
     weak var onboardingFlowManager: OnboardingFlowManager?
@@ -44,7 +44,8 @@ private extension MPCOnboardingPurchaseUDAuthViewController {
     }
     
     func addChildView() {
-        let mpcView = PurchaseMPCWalletUDAuthView(credentialsCallback: { [weak self] credentials in
+        let mpcView = PurchaseMPCWalletUDAuthView(analyticsName: analyticsName,
+                                                  credentialsCallback: { [weak self] credentials in
             self?.didEnterCredentials(credentials)
         })
             .padding(.top, 40)
