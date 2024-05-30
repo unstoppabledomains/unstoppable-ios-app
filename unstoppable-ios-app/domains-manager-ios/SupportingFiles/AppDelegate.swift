@@ -39,10 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
-        var settings = User.instance.getSettings()
-        settings.networkType = .testnet
-        User.instance.update(settings: settings)
-
+        
         #endif
          
         setup()
