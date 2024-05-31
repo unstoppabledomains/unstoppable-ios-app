@@ -23,30 +23,53 @@ struct PurchaseMPCWalletTakeoverCredentialsView: View, UserDataValidator, MPCWal
     @State private var emailInUseState: EmailInUseVerificationState = .unverified
     @State private var didSetupPurchaseEmail = false
     @StateObject private var debounceObject = DebounceObject()
+    @State private var keyboardHeight: CGFloat = 0
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: isIPSE ? 16 : 32) {
-                headerView()
-                VStack(alignment: .leading, spacing: 16) {
-                    emailInputView()
-                    emailConfirmationInputView()
-                    inputSeparatorView()
-                    passwordInputView()
-                    confirmPasswordInputView()
+        ZStack {
+            ScrollView {
+                VStack(spacing: isIPSE ? 16 : 32) {
+                    headerView()
+                    VStack(alignment: .leading, spacing: 16) {
+                        emailInputView()
+                        emailConfirmationInputView()
+                        inputSeparatorView()
+                        passwordInputView()
+                        confirmPasswordInputView()
+                    }
+                    Spacer()
                 }
-                actionButtonView()
-                Spacer()
+                .padding(.bottom, 58)
             }
+            .scrollIndicators(.hidden)
+            .padding()
+            
+            actionButtonContainerView()
+            .edgesIgnoringSafeArea(.bottom)
         }
-        .scrollIndicators(.hidden)
-        .padding()
         .onChange(of: passwordInput, perform: { newValue in
             validatePasswordInput()
         })
+        .onReceive(KeyboardService.shared.keyboardFramePublisher.receive(on: DispatchQueue.main)) { keyboardFrame in
+            keyboardHeight = keyboardFrame.height
+        }
         .animation(.default, value: UUID())
         .trackAppearanceAnalytics(analyticsLogger: self)
         .onAppear(perform: onAppear)
+    }
+    
+    @ViewBuilder
+    func actionButtonContainerView() -> some View {
+        VStack(spacing: 0) {
+            Spacer()
+            Rectangle()
+                .frame(height: 16)
+                .foregroundStyle(LinearGradient(colors: [.black, .clear], startPoint: .bottom, endPoint: .top))
+            actionButtonView()
+                .padding(.bottom, keyboardHeight + 16)
+                .padding(.horizontal, 16)
+                .background(Color.black)
+        }
     }
 }
 
@@ -138,6 +161,8 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     var emailVerificationError: EmailVerificationError? {
         if case .inUse = emailInUseState {
             return .alreadyInUse
+        } else if case .failed = emailInUseState {
+            return .failedToVerifyInUse
         } else if !isEmailFocused && !isValidEmailEntered {
             return .incorrectFormat
         }
@@ -286,12 +311,21 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
     
     @ViewBuilder
     func actionButtonView() -> some View {
+        if case .failed = emailInUseState {
+            tryAgainValidateEmailButton()
+        } else {
+            continueButton()
+        }
+    }
+    
+    @ViewBuilder
+    func continueButton() -> some View {
         UDButtonView(text: String.Constants.continue.localized(),
                      style: .large(.raisedPrimary),
                      callback: actionButtonPressed)
         .disabled(isActionButtonDisabled)
     }
-    
+   
     func actionButtonPressed() {
         logButtonPressedAnalyticEvents(button: .continue,
                                        parameters: [.useDifferentEmail : String(shouldShowEmailConfirmation)])
@@ -301,16 +335,31 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         credentialsCallback(credentials)
     }
     
+    @ViewBuilder
+    func tryAgainValidateEmailButton() -> some View {
+        UDButtonView(text: String.Constants.tryAgain.localized(),
+                     style: .large(.raisedPrimary),
+                     callback: tryAgainValidateEmailButtonPressed)
+    }
+    
+    func tryAgainValidateEmailButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .tryAgain)
+        checkIfEmailAlreadyInUseIfNeeded()
+    }
+    
     enum EmailVerificationError {
         case incorrectFormat
         case alreadyInUse
+        case failedToVerifyInUse
         
         var title: String {
             switch self {
             case .incorrectFormat:
-                return String.Constants.incorrectEmailFormat.localized()
+                String.Constants.incorrectEmailFormat.localized()
             case .alreadyInUse:
-                return String.Constants.mpcWalletEmailInUseMessage.localized()
+                String.Constants.mpcWalletEmailInUseMessage.localized()
+            case .failedToVerifyInUse:
+                String.Constants.mpcWalletEmailInUseCantVerifyMessage.localized()
             }
         }
     }
@@ -319,20 +368,28 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         guard !isVerifiedEmailEntered, 
             isValidPasswordEntered else { return }
         
-        if case .inUse = emailInUseState {
+        switch emailInUseState {
+        case .inUse, .failed:
             emailInUseState = .unverified
+        default:
+            Void()
         }
+        
         Task {
             let email = emailInput
             let password = passwordInput
             let credentials = MPCTakeoverCredentials(email: email, password: password)
-            let isValid = try await ecomPurchaseMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
-            
-            if isValid {
-                emailInUseState = .verified(email)
-            } else {
-                emailInUseState = .inUse
-                logAnalytic(event: .mpcEmailInUseEntered)
+            do {
+                let isValid = try await ecomPurchaseMPCWalletService.validateCredentialsForTakeover(credentials: credentials)
+                
+                if isValid {
+                    emailInUseState = .verified(email)
+                } else {
+                    emailInUseState = .inUse
+                    logAnalytic(event: .mpcEmailInUseEntered)
+                }
+            } catch {
+                emailInUseState = .failed
             }
         }
     }
@@ -341,6 +398,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
         case unverified
         case verified(String)
         case inUse
+        case failed
     }
 }
 
