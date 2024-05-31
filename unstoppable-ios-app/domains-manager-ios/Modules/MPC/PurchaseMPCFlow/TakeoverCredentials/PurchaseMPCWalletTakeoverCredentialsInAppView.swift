@@ -16,7 +16,6 @@ struct PurchaseMPCWalletTakeoverCredentialsInAppView: View {
     var body: some View {
         PurchaseMPCWalletTakeoverCredentialsView(analyticsName: .mpcPurchaseTakeoverCredentialsInApp,
                                                  purchaseEmail: purchaseEmail, credentialsCallback: didEnterTakeoverCredentials)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .navigationBarBackButtonHidden(true)
     }
     

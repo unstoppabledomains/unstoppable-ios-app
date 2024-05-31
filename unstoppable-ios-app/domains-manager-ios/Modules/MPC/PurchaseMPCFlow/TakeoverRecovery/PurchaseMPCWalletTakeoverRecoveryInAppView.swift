@@ -16,7 +16,6 @@ struct PurchaseMPCWalletTakeoverRecoveryInAppView: View {
         PurchaseMPCWalletTakeoverRecoveryView(analyticsName: .mpcPurchaseTakeoverRecoveryInApp,
                                               email: email,
                                               confirmCallback: didSelectToSendRecoveryLink)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .navigationBarBackButtonHidden(false)
     }
 }

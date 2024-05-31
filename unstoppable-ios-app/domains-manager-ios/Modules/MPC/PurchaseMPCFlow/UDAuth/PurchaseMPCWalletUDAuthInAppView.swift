@@ -14,7 +14,6 @@ struct PurchaseMPCWalletUDAuthInAppView: View {
     var body: some View {
         PurchaseMPCWalletUDAuthView(analyticsName: .mpcPurchaseUDAuthInApp,
                                     credentialsCallback: didEnterCredentials)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
     }
 }
 

@@ -16,7 +16,6 @@ struct PurchaseMPCWalletAlreadyHaveWalletInAppView: View {
         PurchaseMPCWalletAlreadyHaveWalletView(analyticsName: .mpcPurchaseAlreadyHaveWalletInApp,
                                                email: email,
                                                callback: didSelectAction)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .navigationBarBackButtonHidden(true)
     }
 }

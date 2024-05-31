@@ -19,7 +19,6 @@ struct PurchaseMPCWalletCheckoutInAppView: View {
                                       credentials: credentials,
                                       purchaseStateCallback: handlePurchasingStateUpdated,
                                       purchasedCallback: handleWalletPurchaseResult)
-        .padding(.top, ActivateMPCWalletFlow.viewsTopOffset)
         .navigationBarBackButtonHidden(!purchasingState.isAllowedToInterrupt)
     }
     
