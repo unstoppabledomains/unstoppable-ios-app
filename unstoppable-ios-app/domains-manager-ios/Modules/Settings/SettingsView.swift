@@ -527,10 +527,11 @@ private extension SettingsView {
             await MainActor.run {
                 switch action {
                 case .create:
-                    if !udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
-                        createNewWallet()
-                    } else {
+                    if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
+                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
                         showAddWalletSelection()
+                    } else {
+                        createNewWallet()
                     }
                 case .recoveryOrKey:
                     importNewWallet()

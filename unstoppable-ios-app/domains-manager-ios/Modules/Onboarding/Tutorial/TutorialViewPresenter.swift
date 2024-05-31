@@ -32,7 +32,10 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     }
     
     func didPressCreateNewWalletButton() {
-        if appContext.udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled) {
+        let udFeatureFlagsService = appContext.udFeatureFlagsService
+        
+        if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
+           udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
             onboardingFlowManager?.moveToStep(.createNewSelection)
         } else {
             onboardingFlowManager?.moveToStep(.createWallet)
