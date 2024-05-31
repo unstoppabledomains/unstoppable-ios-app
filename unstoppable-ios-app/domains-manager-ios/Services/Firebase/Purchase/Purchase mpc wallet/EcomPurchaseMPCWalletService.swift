@@ -291,7 +291,10 @@ private extension EcomPurchaseMPCWalletService {
     
     func makeSetupWalletRequestFor(credentials: MPCTakeoverCredentials,
                                    preview: Bool) async throws {
-        guard let wallet = ongoingPurchaseSession?.wallet else { throw PurchaseMPCWalletError.noSessionDetails }
+        guard let ongoingPurchaseSession,
+            let wallet = ongoingPurchaseSession.wallet else { throw PurchaseMPCWalletError.noSessionDetails }
+        
+        let email = ongoingPurchaseSession.email
         
         struct RequestBody: Encodable {
             let walletEmail: String
@@ -299,12 +302,12 @@ private extension EcomPurchaseMPCWalletService {
             let preview: Bool
             let sendRecoveryEmail: Bool
         }
-        
-        let body = RequestBody(walletEmail: credentials.email, 
+        let queryComponents = ["email" : ongoingPurchaseSession.email]
+        let body = RequestBody(walletEmail: credentials.email,
                                password: credentials.password,
                                preview: preview,
                                sendRecoveryEmail: credentials.sendRecoveryLink)
-        let urlString = URLSList.USER_MPC_SETUP_URL(walletAddress: wallet.address)
+        let urlString = URLSList.USER_MPC_SETUP_URL(walletAddress: wallet.address).appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)
