@@ -18,7 +18,6 @@ struct PurchaseMPCWalletRootView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in
                     PurchaseMPCWallet.LinkNavigationDestination.viewFor(navigationDestination: destination)
-                        .ignoresSafeArea()
                         .environmentObject(viewModel)
                 }
                 .onChange(of: viewModel.navPath) { _ in
@@ -49,5 +48,7 @@ private extension PurchaseMPCWalletRootView {
 }
 
 #Preview {
-    PurchaseMPCWalletRootView(createWalletCallback: { _ in })
+    PresentAsModalPreviewView {
+        PurchaseMPCWalletRootView(createWalletCallback: { _ in })
+    }
 }
