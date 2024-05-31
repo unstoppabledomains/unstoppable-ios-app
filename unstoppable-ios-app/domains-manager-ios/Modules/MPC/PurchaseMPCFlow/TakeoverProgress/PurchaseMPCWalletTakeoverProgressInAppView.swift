@@ -15,6 +15,7 @@ struct PurchaseMPCWalletTakeoverProgressInAppView: View {
     var body: some View {
         PurchaseMPCWalletTakeoverProgressView(analyticsName: .mpcPurchaseTakeoverProgressInApp,
                                               credentials: credentials,
+                                              shouldSendBootstrapCode: false,
                                               finishCallback: didFinishTakeover)
         .navigationBarBackButtonHidden(true)
     }

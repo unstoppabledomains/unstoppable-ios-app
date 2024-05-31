@@ -14,6 +14,7 @@ struct PurchaseMPCWalletTakeoverProgressView: View, ViewAnalyticsLogger {
 
     let analyticsName: Analytics.ViewName
     let credentials: MPCTakeoverCredentials
+    let shouldSendBootstrapCode: Bool
     let finishCallback: EmptyCallback
     @State private var takeoverState: MPCWalletTakeoverState = .readyForTakeover
     @State private var error: Error?
@@ -79,7 +80,9 @@ private extension PurchaseMPCWalletTakeoverProgressView {
                     logAnalytic(event: .mpcTakeoverFinished)
                 }
                 didFinishTakeover = true
-                try await mpcWalletsService.sendBootstrapCodeTo(email: credentials.email)
+                if shouldSendBootstrapCode {
+                    try await mpcWalletsService.sendBootstrapCodeTo(email: credentials.email)
+                }
                 finishCallback()
             } catch {
                 takeoverState = .failed(.unknown)
@@ -143,5 +146,6 @@ private extension PurchaseMPCWalletTakeoverProgressView {
 #Preview {
     PurchaseMPCWalletTakeoverProgressView(analyticsName: .unspecified,
                                           credentials: .init(email: "qq@qq.qq", password: ""),
+                                          shouldSendBootstrapCode: true,
                                           finishCallback: { })
 }
