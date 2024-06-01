@@ -38,7 +38,7 @@ private extension PurchaseMPCWalletAlreadyHaveWalletView {
                 .squareFrame(56)
                 .foregroundStyle(Color.foregroundAccent)
             VStack(spacing: 16) {
-                Text(String.Constants.mpcWalletAlreadyPurchasedTitle.localized())
+                Text(String.Constants.mpcWalletAlreadyPurchasedTitle.localizedMPCProduct())
                     .titleText()
                 HStack {
                     Text(String.Constants.email.localized() + ":")

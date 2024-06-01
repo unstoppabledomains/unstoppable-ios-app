@@ -100,7 +100,7 @@ private extension PurchaseMPCWalletTakeoverCredentialsView {
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-            Text(String.Constants.mpcTakeoverCredentialsSubtitle.localized())
+            Text(String.Constants.mpcTakeoverCredentialsSubtitle.localizedMPCProduct())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
