@@ -493,7 +493,7 @@ extension FB_UD_MPC.MPCConnectionService: FB_UD_MPC.WalletAuthTokenProvider {
                                                                currentDeviceId: deviceId)
             }
             
-            // All tokens has expired. Need to go through the bootstrap process from the beginning.
+            // All tokens have expired. Need to go through the bootstrap process from the beginning.
             await didExpireTokenWith(deviceId: deviceId)
             throw MPCConnectionServiceError.tokensExpired
         }
