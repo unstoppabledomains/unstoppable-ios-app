@@ -174,9 +174,9 @@ final class UDWalletsStorage {
 
 extension UDWalletsStorage {
     func initialWalletsCheck() async throws {
-        if let legacyWallets = LegacyWalletStorage.instance.getWalletsList(ownedBy: User.defaultId) {
-            try await appContext.udWalletsService.migrateToUdWallets(from: legacyWallets)
-        }
+//        if let legacyWallets = LegacyWalletStorage.instance.getWalletsList(ownedBy: User.defaultId) {
+//            try await appContext.udWalletsService.migrateToUdWallets(from: legacyWallets)
+//        }
         removeReadOnlyUnverifiedWallets()
     }
 

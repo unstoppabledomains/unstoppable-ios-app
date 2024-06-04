@@ -130,8 +130,8 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
     func restoreAndInjectWallets(using password: String) async throws -> [UDWallet] { [] }
     func eraseAllBackupClusters() { }
     
-    // Migration
-    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws { }
+//    // Migration
+//    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws { }
     
     // Listeners
     func addListener(_ listener: UDWalletsServiceListener) {
