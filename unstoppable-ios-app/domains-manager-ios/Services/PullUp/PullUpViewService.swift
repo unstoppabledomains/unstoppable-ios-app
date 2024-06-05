@@ -371,6 +371,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
+        case .Base: Debugger.printFailure("Minting cannot be on Base", critical: true)
+            description = "Base should not be used for minting"
+            selectionViewHeight = 304
+
         }
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(chain.fullName),
                                                                      contentAlignment: .center,

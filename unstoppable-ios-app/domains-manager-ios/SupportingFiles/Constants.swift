@@ -190,6 +190,8 @@ enum BlockchainNetwork: Int, CaseIterable {
     case polygonMainnet = 137
     case polygonAmoy = 80002
     
+    case baseMainnet = 8453
+    
     var id: Int { rawValue }
     
     var name: String {
@@ -202,6 +204,8 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "polygon-mainnet"
         case .polygonAmoy:
             return "polygon-amoy"
+        case .baseMainnet:
+            return "base-mainnet"
         }
     }
     
@@ -215,6 +219,8 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "Polygon"
         case .polygonAmoy:
             return "Polygon: Amoy"
+        case .baseMainnet:
+            return "Base: Sepolia"
         }
     }
 }

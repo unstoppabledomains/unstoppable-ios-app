@@ -83,7 +83,7 @@ private extension SelectCryptoAssetToSendView {
         }
         
         switch token.blockchainType {
-        case .Ethereum, .Matic:
+        case .Ethereum, .Matic, .Base:
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
         case .none:
             /// As we don't currently support Base chain but MPC does

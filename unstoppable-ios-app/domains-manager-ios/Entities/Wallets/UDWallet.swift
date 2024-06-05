@@ -106,6 +106,7 @@ struct UDWallet: Codable, @unchecked Sendable {
             return UDWallet(aliasName: aliasName,
                             walletType: .importedUnverified,
                             ethWallet: wallet)
+        case .Base: return nil 
         }
     }
     

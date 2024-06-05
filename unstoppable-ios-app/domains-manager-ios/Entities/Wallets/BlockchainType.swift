@@ -10,6 +10,7 @@ import UIKit
 enum BlockchainType: String, CaseIterable, Codable, Hashable {
     case Ethereum = "ETH"
     case Matic = "MATIC"
+    case Base = "BASE"
     
     static let cases = Self.allCases
     static func getType(abbreviation: String?) throws -> Self {
@@ -29,6 +30,8 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return UIImage(named: String.BlockChainIcons.ethereum.rawValue)!
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
+        case .Base:
+            return UIImage(named: String.BlockChainIcons.matic.rawValue)! // TODO: import Base icon
         }
     }
     
@@ -38,6 +41,8 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Ethereum"
         case .Matic:
             return "Polygon"
+        case .Base:
+            return "Base"
         }
     }
     
@@ -47,6 +52,9 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
         case .Matic:
             return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
+        case .Base:
+            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
+
         }
     }
     

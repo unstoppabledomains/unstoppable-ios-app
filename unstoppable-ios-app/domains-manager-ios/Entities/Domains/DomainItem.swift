@@ -55,7 +55,6 @@ extension DomainItem: APIRepresentable {
 
 extension DomainItem {
     /// This method checks whether or not TxCost that came from backend is valid.
-    /// Domains of ZNS should always have TxCost == nil
     /// Domains from UNS should have TxCost as value only when the backend is real
     /// - Parameters:
     ///   - service: NamingService
@@ -65,6 +64,7 @@ extension DomainItem {
         switch blockchain {
         case .Ethereum: return txCost != nil
         case .Matic: return txCost == nil
+        case .Base: return false // we don't have domains on Base
         }
     }
 }
@@ -145,6 +145,7 @@ extension DomainItem {
         switch self.getBlockchainType() {
         case .Ethereum: return true
         case .Matic: return false
+        case .Base: return false
         }
     }
 }

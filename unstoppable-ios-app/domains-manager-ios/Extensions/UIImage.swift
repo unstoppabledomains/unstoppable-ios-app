@@ -241,6 +241,8 @@ extension UIImage {
             return .ethBGLarge
         case .Matic:
             return .maticBGLarge
+        case .Base:
+            return .maticBGLarge // TODO: get Base icon
         }
     }
     
@@ -250,6 +252,8 @@ extension UIImage {
             return .ethBGSmall
         case .Matic:
             return .maticBGSmall
+        case .Base:
+            return .maticBGSmall // TODO: get Base icon
         }
     }
     
