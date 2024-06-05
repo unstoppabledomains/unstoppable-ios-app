@@ -143,7 +143,6 @@ extension CryptoSender {
         case usdc = "USDC"
         case bnb = "BNB"
         case weth = "WETH"
-        case base = "BASE"
         
         static let contractArray: [CryptoSender.SupportedToken :
                             [BlockchainType : (mainnet: String,
