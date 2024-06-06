@@ -53,7 +53,7 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         case .Matic:
             return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
         case .Base:
-            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
+            return isTestNet ? BlockchainNetwork.baseSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
 
         }
     }
