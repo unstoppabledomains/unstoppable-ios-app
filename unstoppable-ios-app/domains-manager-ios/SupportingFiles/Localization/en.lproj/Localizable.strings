@@ -382,6 +382,7 @@
 "DISCONNECT_WALLET_ALERT_TITLE" = "Are you sure you want to disconnect this wallet: %@?";
 "REMOVE_WALLET_ALERT_SUBTITLE_RECOVERY_PHRASE" = "This action is irreversible. Make sure you have saved your recovery phrase to restore access to this wallet.";
 "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY" = "This action is irreversible. Make sure you have saved your private key to restore access to this wallet.";
+"REMOVE_WALLET_ALERT_SUBTITLE_MPC" = "This action is irreversible. Make sure you have saved the password and you know the email address to restore access to this wallet";
 "COPY_ADDRESS" = "Copy address";
 "ETH_ADDRESS" = "ETH address";
 "ZIL_ADDRESS" = "ZIL address";

@@ -489,6 +489,7 @@ extension String {
         static let disconnectWalletAlertTitle = "DISCONNECT_WALLET_ALERT_TITLE"
         static let removeWalletAlertSubtitleRecoveryPhrase = "REMOVE_WALLET_ALERT_SUBTITLE_RECOVERY_PHRASE"
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
+        static let removeWalletAlertSubtitleMPC = "REMOVE_WALLET_ALERT_SUBTITLE_MPC"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
         static let whatIsExternalWallet = "WHAT_IS_EXTERNAL_WALLET"
