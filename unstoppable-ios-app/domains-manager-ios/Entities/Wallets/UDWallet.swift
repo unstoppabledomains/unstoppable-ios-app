@@ -223,9 +223,11 @@ struct UDWallet: Codable, @unchecked Sendable {
     }
     
     static func createMPC(address: String,
+                          aliasName: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
         let ethWallet = UDWalletEthereum.createUnverified(address: address)
-        var udWallet = UDWallet(aliasName: address.normalized,
+        
+        var udWallet = UDWallet(aliasName: aliasName,
                                 walletType: .mpc,
                                 ethWallet: ethWallet)
         udWallet.mpcMetadata = mpcMetadata

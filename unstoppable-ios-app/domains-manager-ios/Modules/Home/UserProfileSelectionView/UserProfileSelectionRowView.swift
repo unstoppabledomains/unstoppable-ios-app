@@ -113,8 +113,7 @@ private extension UserProfileSelectionRowView {
             if domainAvatarImage != nil || wallet.udWallet.type == .externalLinked {
                 return .full
             }
-            return .centred(foreground:wallet.udWallet.type == .mpc ? .foregroundOnEmphasis : .foregroundDefault,
-                            background: wallet.udWallet.type == .mpc ? .backgroundAccentEmphasis : .backgroundMuted)
+            return .centred()
         case .webAccount:
             return .centred()
         }

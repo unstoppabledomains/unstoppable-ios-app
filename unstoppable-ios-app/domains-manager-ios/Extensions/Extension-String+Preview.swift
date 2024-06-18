@@ -1232,6 +1232,7 @@ extension String {
         static let removeMPCWalletPullUpSubtitle = "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE"
         static let mpcWalletMessagingUnavailableMessage = "MPC_WALLET_MESSAGING_UNAVAILABLE_MESSAGE"
         static let mpcWalletSigningUnavailableErrorMessage = "MPC_WALLET_SIGNING_UNAVAILABLE_ERROR_MESSAGE"
+        static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

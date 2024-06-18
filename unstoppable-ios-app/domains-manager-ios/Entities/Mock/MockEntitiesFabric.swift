@@ -92,7 +92,8 @@ extension MockEntitiesFabric {
         static func mockMPC(hasRRDomain: Bool = true) -> WalletEntity {
             let address = "0x12313123"
             let domains = Domains.mockDomainsDisplayInfo(ownerWallet: address)
-            let udWallet = UDWallet.createMPC(address: address, 
+            let udWallet = UDWallet.createMPC(address: address,
+                                              aliasName: "Lite Wallet", 
                                               mpcMetadata: .init(provider: .fireblocksUD,
                                                                                    metadata: .init()))
             let displayInfo = WalletDisplayInfo(wallet: udWallet,
