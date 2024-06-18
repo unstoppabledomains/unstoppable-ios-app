@@ -47,9 +47,6 @@ protocol UDWalletsServiceProtocol {
     func setReverseResolution(to domain: DomainItem,
                               paymentConfirmationHandler: PaymentConfirmationHandler) async throws
     
-    // Migration
-    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws
-    
     // Listeners
     func addListener(_ listener: UDWalletsServiceListener)
     func removeListener(_ listener: UDWalletsServiceListener)
