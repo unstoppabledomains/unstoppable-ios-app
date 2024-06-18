@@ -41,8 +41,8 @@ extension FB_UD_MPC {
                 }
                 
                 /// Adjust appearance of Base coin specifically.
-                if blockchainAsset.symbol == "ETH",
-                   blockchainAsset.blockchain.id == "BASE" {
+                if blockchainAsset.symbol == BlockchainType.Ethereum.rawValue,
+                   blockchainAsset.blockchain.id == Constants.baseChainSymbol {
                     symbol = "BASE"
                     name = "Base"
                 }
