@@ -151,7 +151,18 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         return wallet
     }
     
-    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
+    func createMPCWallet(ethAddress: HexAddress,
+                         mpcMetadata: MPCWalletMetadata) throws -> UDWallet {
+        let namePrefix = String.Constants.mpcWalletDefaultName.localized()
+        let newName = UDWalletsStorage.instance.getLowestIndexedName(startingWith: namePrefix)
+        let wallet = UDWallet.createMPC(address: ethAddress,
+                                        aliasName: newName,
+                                        mpcMetadata: mpcMetadata)
+        try addOrUpdateMPCWallet(wallet)
+        return wallet
+    }
+    
+    private func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
         if wallet.isAlreadyConnected() {
             removeFromCacheWithoutNotification(wallet: wallet)
         }
