@@ -265,12 +265,31 @@ private extension ShareWalletAssetInfoView {
             VStack(spacing: 32) {
                 multiChainContentHeader()
                 HomeExploreSeparatorView()
-                tokensListSection(tokens: tokens,
+                tokensListSection(tokens: filterMultiChainTokensToDisplay(tokens: tokens),
                                   callback: callback)
             }
             .padding(.bottom, 16)
         }
         .scrollIndicators(.hidden)
+    }
+    
+    func filterMultiChainTokensToDisplay(tokens: [BalanceTokenUIDescription]) -> [BalanceTokenUIDescription] {
+        let groupedByChainTokens = [String : [BalanceTokenUIDescription]].init(grouping: tokens, by: { $0.chain })
+        
+        var tokensToDisplay = [BalanceTokenUIDescription]()
+        
+        for key in groupedByChainTokens.keys.sorted() {
+            let chainTokens = groupedByChainTokens[key] ?? []
+            let tokenToUse: BalanceTokenUIDescription
+            if chainTokens.count == 1 {
+                tokenToUse = chainTokens[0]
+            } else {
+                tokenToUse = chainTokens.filter({ $0.parent == nil }).first ?? chainTokens.first!
+            }
+            tokensToDisplay.append(tokenToUse)
+        }
+        
+        return tokensToDisplay
     }
     
     @ViewBuilder
