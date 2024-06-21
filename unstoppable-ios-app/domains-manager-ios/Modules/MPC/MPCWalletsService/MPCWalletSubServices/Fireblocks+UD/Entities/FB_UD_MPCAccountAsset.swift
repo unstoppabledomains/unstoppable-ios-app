@@ -35,13 +35,16 @@ extension FB_UD_MPC {
             var name = blockchainAsset.name
             
             if let resolvedChain = WalletAccountAsset.symbolFor(mpcID: blockchainAsset.blockchain.id) {
+                chain = resolvedChain
                 if resolvedChain != symbol { // Token
-                    parentSymbol = symbol
-                    chain = symbol
-                    symbol = resolvedChain
-                    name = blockchainAsset.blockchain.name
-                } else { // Coin
-                    chain = resolvedChain
+                    parentSymbol = resolvedChain
+                }
+                
+                /// Adjust appearance of Base coin specifically.
+                if blockchainAsset.symbol == BlockchainType.Ethereum.rawValue,
+                   blockchainAsset.blockchain.id == Constants.baseChainSymbol {
+                    symbol = "BASE"
+                    name = "Base"
                 }
             } else {
                 chain = symbol // Coin

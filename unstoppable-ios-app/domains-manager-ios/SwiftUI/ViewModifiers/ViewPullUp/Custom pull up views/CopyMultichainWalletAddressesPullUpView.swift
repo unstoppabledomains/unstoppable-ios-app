@@ -95,7 +95,7 @@ extension CopyMultichainWalletAddressesPullUpView {
         
         var body: some View {
             UDListItemView(title: token.name,
-                           subtitle: token.address,
+                           subtitle: token.address.walletAddressTruncated,
                            subtitleStyle: .default,
                            imageType: .uiImage(icon ?? .init()),
                            imageStyle: .full,

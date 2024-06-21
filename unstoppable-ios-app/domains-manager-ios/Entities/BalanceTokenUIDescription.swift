@@ -22,6 +22,10 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     var parent: ParentDetails?
     private(set) var isSkeleton: Bool = false
     
+    var isEssentialTokenException: Bool {
+        chain == BlockchainType.Matic.rawValue && symbol == CryptoSender.SupportedToken.usdc.rawValue
+    }
+    
     struct ParentDetails: Hashable {
         var symbol: String
         var balance: Double
@@ -102,7 +106,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
         let subTokenDescriptions = walletBalance.tokens?.map({ BalanceTokenUIDescription(chain: chainSymbol,
                                                                                          walletToken: $0,
                                                                                          parent: parent) })
-            .filter({ $0.balanceUsd >= 1 }) ?? []
+            .filter({ $0.balanceUsd >= 1 || $0.isEssentialTokenException }) ?? []
         
         return [tokenDescription] + subTokenDescriptions
     }
