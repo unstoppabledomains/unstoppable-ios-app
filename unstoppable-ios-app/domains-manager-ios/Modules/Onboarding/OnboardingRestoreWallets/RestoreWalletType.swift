@@ -10,6 +10,14 @@ import UIKit
 enum RestoreWalletType: Hashable, OnboardingStartOption {
     case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet, websiteAccount, mpc
     
+    var type: OnboardingStartOptionType {
+        .listItem(.init(icon: icon,
+                        title: title,
+                        subtitle: subtitle,
+                        subtitleType: subtitleType,
+                        imageStyle: imageStyle))
+    }
+    
     var icon: UIImage {
         switch self {
         case .iCloud:

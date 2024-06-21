@@ -65,3 +65,20 @@ final class PurchaseMPCWalletFirebaseAuthTokenStorage: FirebaseAuthTokenStorage 
     override var passwordKey: String { "com.unstoppable.purchase.mpc.fb.token.key" }
     
 }
+
+final class FirebaseAuthInMemoryStorage: FirebaseAuthRefreshTokenStorageProtocol {
+    
+    private var token: String? = nil
+    
+    func getAuthRefreshToken() -> String? {
+        token
+    }
+    
+    func setAuthRefreshToken(_ token: String) {
+        self.token = token
+    }
+    
+    func clearAuthRefreshToken() {
+        token = nil
+    }
+}

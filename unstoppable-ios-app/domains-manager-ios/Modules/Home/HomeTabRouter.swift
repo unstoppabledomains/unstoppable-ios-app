@@ -15,7 +15,6 @@ final class HomeTabRouter: ObservableObject {
     @Published var isSelectProfilePresented: Bool = false
     @Published var isConnectedAppsListPresented: Bool = false
     @Published var showingUpdatedToWalletGreetings: Bool = false
-    @Published var purchasingMPCWallet: Bool = false
     @Published var tabViewSelection: HomeTab = .wallets
     @Published var pullUp: ViewPullUpConfigurationType?
     @Published var walletViewNavPath: [HomeWalletNavigationDestination] = []
@@ -296,7 +295,6 @@ extension HomeTabRouter {
         isSelectProfilePresented = false
         isConnectedAppsListPresented = false
         showingUpdatedToWalletGreetings = false
-        purchasingMPCWallet = false
         presentedNFT = nil
         presentedDomain = nil
         presentedPublicDomain = nil

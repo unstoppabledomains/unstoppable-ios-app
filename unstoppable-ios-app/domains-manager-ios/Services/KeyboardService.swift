@@ -38,8 +38,10 @@ final class KeyboardServiceListenerHolder: Equatable {
 final class KeyboardService {
     
     static let shared = KeyboardService()
-        
+    
+    @Published
     private(set) var keyboardFrame: CGRect = .zero
+    var keyboardFramePublisher: Published<CGRect>.Publisher { $keyboardFrame }
     private(set) var keyboardAnimationDuration: TimeInterval = 0.25
     private(set) var keyboardAppeared = false
     private(set) var isKeyboardOpened = false

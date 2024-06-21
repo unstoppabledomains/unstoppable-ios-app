@@ -24,6 +24,6 @@ struct OnboardingAddWalletView: View {
 }
 
 #Preview {
-    OnboardingAddWalletView(options: [],
+    OnboardingAddWalletView(options: [[.mpcWallet], [.selfCustody]],
                             selectionCallback:  { _ in })
 }

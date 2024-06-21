@@ -146,7 +146,6 @@ extension HomeWalletView {
         
         case copyWalletAddress
         case connectedApps
-        case buyMPC
         
         var title: String {
             switch self {
@@ -154,8 +153,6 @@ extension HomeWalletView {
                 return String.Constants.copyWalletAddress.localized()
             case .connectedApps:
                 return String.Constants.connectedAppsTitle.localized()
-            case .buyMPC:
-                return "Buy MPC"
             }
         }
         
@@ -165,8 +162,6 @@ extension HomeWalletView {
                 return Image.systemDocOnDoc
             case .connectedApps:
                 return Image.systemAppBadgeCheckmark
-            case .buyMPC:
-                return .wallet3Icon
             }
         }
         
@@ -176,8 +171,6 @@ extension HomeWalletView {
                 return .copyWalletAddress
             case .connectedApps:
                 return .connectedApps
-            case .buyMPC:
-                return .unblock
             }
         }
     }

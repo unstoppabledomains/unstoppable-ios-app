@@ -9,34 +9,31 @@ import SwiftUI
 
 struct PurchaseMPCWalletRootView: View {
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject private var viewModel: PurchaseMPCWalletViewModel = PurchaseMPCWalletViewModel()
+    @StateObject private var viewModel: PurchaseMPCWalletViewModel 
     
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            ZStack {
-                PurchaseMPCWalletAuthView()
-                    .environmentObject(viewModel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in
-                        PurchaseMPCWallet.LinkNavigationDestination.viewFor(navigationDestination: destination)
-                            .ignoresSafeArea()
-                            .environmentObject(viewModel)
-                    }
-                    .onChange(of: viewModel.navPath) { _ in
-                        updateTitleView()
-                    }
-                    .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
-                
-                if viewModel.isLoading {
-                    ProgressView()
+            InAppAddWalletView()
+                .environmentObject(viewModel)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationDestination(for: PurchaseMPCWallet.NavigationDestination.self) { destination in
+                    PurchaseMPCWallet.LinkNavigationDestination.viewFor(navigationDestination: destination)
+                        .environmentObject(viewModel)
                 }
-            }
+                .onChange(of: viewModel.navPath) { _ in
+                    updateTitleView()
+                }
+                .trackNavigationControllerEvents(onDidNotFinishNavigationBack: updateTitleView)
         }, navigationStateProvider: { navigationState in
             self.viewModel.navigationState = navigationState
         }, path: $viewModel.navPath)
         .interactiveDismissDisabled(!viewModel.navPath.isEmpty)
         .displayError($viewModel.error)
         .allowsHitTesting(!viewModel.isLoading)
+    }
+    
+    init(createWalletCallback: @escaping AddWalletResultCallback) {
+        self._viewModel = StateObject(wrappedValue: PurchaseMPCWalletViewModel(createWalletCallback: createWalletCallback))
     }
 }
 
@@ -51,5 +48,7 @@ private extension PurchaseMPCWalletRootView {
 }
 
 #Preview {
-    PurchaseMPCWalletRootView()
+    PresentAsModalPreviewView {
+        PurchaseMPCWalletRootView(createWalletCallback: { _ in })
+    }
 }

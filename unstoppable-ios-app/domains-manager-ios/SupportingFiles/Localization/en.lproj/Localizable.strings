@@ -177,6 +177,9 @@
 "TO" = "To";
 "DOMAIN_OR_ADDRESS" = "Domain or Address";
 "YOUR_WALLETS" = "Your Wallets";
+"NEW" = "New";
+"CONFIRM_EMAIL" = "Confirm email";
+"SETUP" = "Setup";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -379,6 +382,7 @@
 "DISCONNECT_WALLET_ALERT_TITLE" = "Are you sure you want to disconnect this wallet: %@?";
 "REMOVE_WALLET_ALERT_SUBTITLE_RECOVERY_PHRASE" = "This action is irreversible. Make sure you have saved your recovery phrase to restore access to this wallet.";
 "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY" = "This action is irreversible. Make sure you have saved your private key to restore access to this wallet.";
+"REMOVE_WALLET_ALERT_SUBTITLE_MPC" = "This action is irreversible. Make sure you have saved the password and you know the email address to restore access to this wallet";
 "COPY_ADDRESS" = "Copy address";
 "ETH_ADDRESS" = "ETH address";
 "ZIL_ADDRESS" = "ZIL address";
@@ -1125,6 +1129,30 @@ More tabs are coming in the next updates.";
 "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE" = "This wallet will be removed immediately. You can add the wallet to the app later.";
 "MPC_WALLET_MESSAGING_UNAVAILABLE_MESSAGE" = "Messaging is coming soon for %@";
 "MPC_WALLET_SIGNING_UNAVAILABLE_ERROR_MESSAGE" = "This %@ functionality is temporarily unavailable.";
+"CREATE_MPC_ONBOARDING_SUBTITLE" = "Password protected and recoverable wallet to protect your domain investment.";
+"CREATE_WALLET_ONBOARDING_SUBTITLE" = "Weak security and backup.";
+"N_PRICE_PER_YEAR" = "%@ per year";
+"BUY_MPC_ENTER_EMAIL_SUBTITLE" = "Each %@ requires a UNIQUE email address.";
+"SUBSCRIBE" = "Subscribe";
+"MPC_PURCHASE_ERROR_MESSAGE" = "Something went wrong, please try again";
+"MPC_WALLET_ALREADY_PURCHASED_TITLE" = "Looks like you already have\nan %@";
+"MPC_WALLET_ALREADY_PURCHASED_SUBTITLE" = "We've extended your subscription by 1 year based on your payment. Import your Unstoppable Lite Wallet to start using it with the app.\nAlternatively purchase another Unstoppable Lite Wallet with another email.";
+"USE_DIFFERENT_EMAIL" = "Buy using different email";
+"MPC_PASSWORD_VALIDATION_LENGTH_TITLE" = "Minimum %i characters";
+"MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE" = "Minimum %i characters, maximum %i characters";
+"MPC_PASSWORD_VALIDATION_NUMBER_TITLE" = "At least one number";
+"MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE" = "At least one special character (e.g. -!&*)";
+"MPC_TAKEOVER_CREDENTIALS_SUBTITLE" = "Each %@ requires a UNIQUE email address. Make sure you have access to the email. It can be the one used in the previous step or a different one.";
+"MPC_TAKEOVER_RECOVERY_TITLE" = "Get recovery link";
+"MPC_TAKEOVER_RECOVERY_SUBTITLE" = "This is the only way to restore access to wallet if you forget your password. Obtain a recovery link to ensure you don't lose access to your assets. The recovery link will be sent to:";
+"SEND_ME_RECOVERY_LINK" = "Send me a recovery link";
+"DONT_SEND_ME_RECOVERY_LINK" = "Don’t send me a recovery link";
+"MPC_WALLET_EMAIL_IN_USE_MESSAGE" = "Email already in use, please use a different one";
+"MPC_WALLET_EMAIL_IN_USE_CANT_VERIFY_MESSAGE" = "We couldn't verify email address availability.\nPlease try again or use another email address.";
+"MPC_TAKEOVER_IN_PROGRESS_TITLE" = "Preparing Wallet...";
+"MPC_TAKEOVER_IN_PROGRESS_SUBTITLE" = "~ 01:00";
+"CONTACT_SUPPORT" = "Contact Support";
+"MPC_WALLET_DEFAULT_NAME" = "Lite Wallet";
 
 // Send crypto first time
 "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE" = "Sending cryptocurrency for the first time?";
