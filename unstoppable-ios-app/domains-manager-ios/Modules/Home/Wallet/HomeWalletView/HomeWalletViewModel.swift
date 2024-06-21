@@ -152,8 +152,6 @@ extension HomeWalletView {
                 }
             case .connectedApps:
                 router.isConnectedAppsListPresented = true
-            case .buyMPC:
-                router.purchasingMPCWallet = true
             }
         }
         

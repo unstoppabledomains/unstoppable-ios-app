@@ -8,12 +8,26 @@
 import SwiftUI
 
 protocol OnboardingStartOption: Hashable {
-    var icon: UIImage { get }
-    var title: String { get }
-    var subtitle: String? { get }
-    var subtitleType: UDListItemView.SubtitleStyle { get }
-    var imageStyle: UDListItemView.ImageStyle { get }
+    var type: OnboardingStartOptionType { get }
     var analyticsName: Analytics.Button { get }
+}
+
+enum OnboardingStartOptionType {
+    case listItem(OnboardingStartOptionListItemDetails)
+    case generic(OnboardingStartOptionViewBuilder)
+}
+
+struct OnboardingStartOptionListItemDetails {
+    let icon: UIImage
+    let title: String
+    let subtitle: String?
+    let subtitleType: UDListItemView.SubtitleStyle
+    let imageStyle: UDListItemView.ImageStyle
+}
+
+protocol OnboardingStartOptionViewBuilder {
+    @ViewBuilder
+    func buildView() -> any View
 }
 
 struct OnboardingStartOptionsView<O: OnboardingStartOption>: View {
@@ -80,18 +94,28 @@ private extension OnboardingStartOptionsView {
     @ViewBuilder
     func listViewFor(option: O) -> some View {
         UDCollectionListRowButton(content: {
-            UDListItemView(title: option.title,
-                           subtitle: option.subtitle,
-                           subtitleStyle: option.subtitleType,
-                           imageType: .uiImage(option.icon),
-                           imageStyle: option.imageStyle,
-                           rightViewStyle: nil)
+            optionContent(option)
             .udListItemInCollectionButtonPadding()
         }, callback: {
             UDVibration.buttonTap.vibrate()
             selectionCallback(option)
         })
         .padding(EdgeInsets(4))
+    }
+    
+    @ViewBuilder
+    func optionContent(_ option: O) -> some View {
+        switch option.type {
+        case .listItem(let option):
+            UDListItemView(title: option.title,
+                           subtitle: option.subtitle,
+                           subtitleStyle: option.subtitleType,
+                           imageType: .uiImage(option.icon),
+                           imageStyle: option.imageStyle,
+                           rightViewStyle: nil)
+        case .generic(let viewBuilder):
+            AnyView(viewBuilder.buildView())
+        }
     }
 }
 

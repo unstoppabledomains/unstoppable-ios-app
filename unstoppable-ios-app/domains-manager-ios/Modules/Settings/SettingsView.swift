@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import MessageUI
 
 struct SettingsView: View, ViewAnalyticsLogger {
     
@@ -449,21 +448,10 @@ private extension SettingsView {
     
     @MainActor
     func openFeedbackMailForm() {
-        let canSendMail = MFMailComposeViewController.canSendMail()
         let recipientMailAddress = Constants.UnstoppableSupportMail
         let subject = String.Constants.feedbackEmailSubject.localized(UserDefaults.buildVersion)
-        if canSendMail {
-            let mail = MFMailComposeViewController()
-            mail.setToRecipients([recipientMailAddress])
-            mail.setSubject(subject)
-            
-            appContext.coreAppCoordinator.topVC?.present(mail, animated: true)
-        } else {
-            let mailURLString = "mailto:\(recipientMailAddress)?subject=\(subject)"
-            guard let url = URL(string: mailURLString) else { return }
-            
-            UIApplication.shared.open(url)
-        }
+        openEmailFormWith(recipientMailAddress: recipientMailAddress,
+                          subject: subject)
     }
 }
 
@@ -539,7 +527,12 @@ private extension SettingsView {
             await MainActor.run {
                 switch action {
                 case .create:
-                    createNewWallet()
+                    if udFeatureFlagsService.valueFor(flag: .isMPCWalletEnabled),
+                       udFeatureFlagsService.valueFor(flag: .isMPCPurchaseEnabled) {
+                        showAddWalletSelection()
+                    } else {
+                        createNewWallet()
+                    }
                 case .recoveryOrKey:
                     importNewWallet()
                 case .connect:
@@ -549,6 +542,20 @@ private extension SettingsView {
                 }
             }
         }
+    }
+    
+    func showAddWalletSelection() {
+        guard let view = appContext.coreAppCoordinator.topVC else { return }
+        
+        UDRouter().showAddWalletSelection(in: view,
+                                          createCallback: { result in
+            switch result {
+            case .createNew:
+                createNewWallet()
+            case .importMPC(let email):
+                activateMPCWallet(preFilledEmail: email)
+            }
+        })
     }
     
     func createNewWallet() {
