@@ -1,79 +1,58 @@
 //
-//  MPCEnterCodeView.swift
+//  PurchaseMPCWalletUDAuthView.swift
 //  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 14.03.2024.
+//  Created by Oleg Kuplin on 17.05.2024.
 //
 
 import SwiftUI
 
-struct MPCEnterCredentialsView: View, UserDataValidator, ViewAnalyticsLogger {
+struct PurchaseMPCWalletUDAuthView: View, UserDataValidator, ViewAnalyticsLogger {
     
     @Environment(\.mpcWalletsService) private var mpcWalletsService
     
-    var mode: InputMode = .freeInput
     let analyticsName: Analytics.ViewName
-    let credentialsCallback: (MPCActivateCredentials)->()
+    let credentialsCallback: (MPCPurchaseUDCredentials)->()
     @State private var emailInput: String = ""
-    @State private var passwordInput: String = ""
+    @State private var emailConfirmationInput: String = ""
     @State private var isLoading = false
     @State private var isEmailFocused = true
     @State private var error: Error?
-        
+    
     var body: some View {
         ScrollView {
             VStack(spacing: isIPSE ? 16 : 32) {
                 headerView()
                 VStack(alignment: .leading, spacing: 16) {
                     emailInputView()
-                    passwordInputView()
+                    emailConfirmationInputView()
                 }
-                actionButtonView()
                 Spacer()
+                actionButtonView()
             }
         }
-        .passViewAnalyticsDetails(logger: self)
-        .trackAppearanceAnalytics(analyticsLogger: self)
         .scrollDisabled(true)
         .padding()
-        .onAppear(perform: onAppear)
+        .trackAppearanceAnalytics(analyticsLogger: self)
         .displayError($error)
     }
     
 }
 
 // MARK: - Private methods
-private extension MPCEnterCredentialsView {
-    func onAppear() {
-        switch mode {
-        case .freeInput:
-            return
-        case .strictEmail(let email):
-            self.emailInput = email
-        }
-    }
-    
+private extension PurchaseMPCWalletUDAuthView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text(String.Constants.importMPCWalletTitle.localizedMPCProduct())
+            Text(String.Constants.enterEmailTitle.localized())
                 .font(.currentFont(size: 32, weight: .bold))
                 .foregroundStyle(Color.foregroundDefault)
                 .multilineTextAlignment(.center)
-            Text(String.Constants.importMPCWalletSubtitle.localizedMPCProduct())
+            Text(String.Constants.buyMPCEnterEmailSubtitle.localizedMPCProduct())
                 .font(.currentFont(size: 16))
                 .foregroundStyle(Color.foregroundSecondary)
                 .minimumScaleFactor(0.6)
                 .multilineTextAlignment(.center)
-        }
-    }
-    
-    var emailInputDisabled: Bool {
-        switch mode {
-        case .freeInput:
-            false
-        case .strictEmail:
-            true
         }
     }
     
@@ -82,8 +61,8 @@ private extension MPCEnterCredentialsView {
         VStack(spacing: 8) {
             UDTextFieldView(text: $emailInput,
                             placeholder: "name@mail.com",
-                            hint: String.Constants.emailAssociatedWithWallet.localized(),
-                            focusBehaviour: emailInputDisabled ? .default : .activateOnAppear,
+                            hint: String.Constants.email.localized(),
+                            focusBehaviour: .activateOnAppear,
                             keyboardType: .emailAddress,
                             autocapitalization: .never,
                             autocorrectionDisabled: true,
@@ -91,11 +70,20 @@ private extension MPCEnterCredentialsView {
                             focusedStateChangedCallback: { isFocused in
                 isEmailFocused = isFocused
             })
-            .disabled(emailInputDisabled)
             if shouldShowEmailError {
                 incorrectEmailIndicatorView()
             }
         }
+    }
+    
+    @ViewBuilder
+    func emailConfirmationInputView() -> some View {
+        UDTextFieldView(text: $emailConfirmationInput,
+                        placeholder: String.Constants.confirmEmail.localized(),
+                        focusBehaviour: .default,
+                        keyboardType: .emailAddress,
+                        autocapitalization: .never,
+                        autocorrectionDisabled: true)
     }
     
     var shouldShowEmailError: Bool {
@@ -116,22 +104,16 @@ private extension MPCEnterCredentialsView {
         .padding(.leading, 16)
     }
     
-    @ViewBuilder
-    func passwordInputView() -> some View {
-        UDTextFieldView(text: $passwordInput,
-                        placeholder: String.Constants.password.localized(),
-                        focusBehaviour: emailInputDisabled ? .activateOnAppear : .default,
-                        autocapitalization: .never,
-                        autocorrectionDisabled: true,
-                        isSecureInput: true)
-    }
-    
     var isActionButtonDisabled: Bool {
-        !isValidEmailEntered || passwordInput.isEmpty
+        !isValidEmailEntered || !isEmailConfirmed
     }
     
     var isValidEmailEntered: Bool {
         isEmailValid(emailInput)
+    }
+    
+    var isEmailConfirmed: Bool {
+        emailInput == emailConfirmationInput
     }
     
     @ViewBuilder
@@ -144,37 +126,14 @@ private extension MPCEnterCredentialsView {
     }
     
     func actionButtonPressed() {
-        Task {
-            logButtonPressedAnalyticEvents(button: .continue)
-            isLoading = true
-            do {
-                // Send email action
-                let email = emailInput
-                try await mpcWalletsService.sendBootstrapCodeTo(email: email)
-                let password = passwordInput
-                let credentials = MPCActivateCredentials(email: email, password: password)
-                credentialsCallback(credentials)
-            } catch {
-                logAnalytic(event: .sendMPCBootstrapCodeError, parameters: [.error: error.localizedDescription])
-                self.error = error
-            }
-            isLoading = false
-        }
+        logButtonPressedAnalyticEvents(button: .continue)
+        let email = emailInput
+        let credentials = MPCPurchaseUDCredentials(email: email)
+        credentialsCallback(credentials)
     }
 }
 
-// MARK: - Open methods
-extension MPCEnterCredentialsView {
-    enum InputMode {
-        case freeInput
-        case strictEmail(String)
-    }
-}
-
-@available(iOS 17.0, *)
 #Preview {
-    let vc = MPCOnboardingEnterCredentialsViewController()
-    let nav = CNavigationController(rootViewController: vc)
-    
-    return nav
+    PurchaseMPCWalletUDAuthView(analyticsName: .unspecified,
+                                credentialsCallback: { _ in })
 }

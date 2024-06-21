@@ -117,3 +117,26 @@ extension View {
 extension ViewModifier {
     var screenSize: CGSize { UIScreen.main.bounds.size }
 }
+
+import MessageUI
+
+extension View {
+    func openEmailFormWith(recipientMailAddress: String,
+                           subject: String) {
+        let canSendMail = MFMailComposeViewController.canSendMail()
+        if canSendMail {
+            let mail = MFMailComposeViewController()
+            mail.setToRecipients([recipientMailAddress])
+            mail.setSubject(subject)
+            
+            Task { @MainActor in
+                appContext.coreAppCoordinator.topVC?.present(mail, animated: true)
+            }
+        } else {
+            let mailURLString = "mailto:\(recipientMailAddress)?subject=\(subject)"
+            guard let url = URL(string: mailURLString) else { return }
+            
+            UIApplication.shared.open(url)
+        }
+    }
+}

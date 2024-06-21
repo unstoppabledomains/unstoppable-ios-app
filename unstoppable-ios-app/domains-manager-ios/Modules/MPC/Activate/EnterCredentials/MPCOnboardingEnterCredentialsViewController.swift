@@ -42,7 +42,8 @@ private extension MPCOnboardingEnterCredentialsViewController {
     }
     
     func addChildView() {
-        let mpcView = MPCEnterCredentialsView(analyticsName: .mpcEnterCredentialsOnboarding) { [weak self] credentials in
+        let mpcView = MPCEnterCredentialsView(mode: .freeInput(OnboardingData.mpcCredentials?.email),
+                                              analyticsName: .mpcEnterCredentialsOnboarding) { [weak self] credentials in
             DispatchQueue.main.async {
                 self?.didEnterCredentials(credentials)
             }

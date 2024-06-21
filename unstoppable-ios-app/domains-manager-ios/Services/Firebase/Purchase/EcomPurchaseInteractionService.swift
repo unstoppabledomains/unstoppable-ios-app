@@ -35,11 +35,6 @@ class EcomPurchaseInteractionService: BaseFirebaseInteractionService {
     func cartContainsUnsupportedProducts() { }
     
     func didRefreshCart() { }
-    
-}
-
-// MARK: - Open methods
-extension EcomPurchaseInteractionService {
     func loadUserProfile() async throws -> Ecom.UDUserProfileResponse {
         let urlString = URLSList.USER_PROFILE_URL
         let request = try APIRequest(urlString: urlString,
@@ -48,6 +43,10 @@ extension EcomPurchaseInteractionService {
         return response
     }
     
+}
+
+// MARK: - Open methods
+extension EcomPurchaseInteractionService {
     func loadUserCryptoWallets() async throws -> [Ecom.UDUserAccountCryptWallet] {
         let url = URLSList.CRYPTO_WALLETS_URL.appendingURLQueryComponents(["includeMinted" : String(true)])
         let request = try APIRequest(urlString: url, method: .get)
@@ -55,7 +54,6 @@ extension EcomPurchaseInteractionService {
         
         return response.wallets
     }
-    
 }
 
 // MARK: - Cart
@@ -174,31 +172,32 @@ extension EcomPurchaseInteractionService {
 
 // MARK: - Checkout
 extension EcomPurchaseInteractionService {
-    func purchaseProductsInTheCart(to wallet: Ecom.UDUserAccountCryptWallet?,
-                                  totalAmountDue: Int) async throws {
+    func purchaseProductsInTheCart(with cartDetails: Ecom.ProductsCartDetails?,
+                                   totalAmountDue: Int) async throws {
         if totalAmountDue > 0 {
-            try await purchaseProductsInTheCartWithStripe(to: wallet,
-                                                         totalAmountDue: totalAmountDue)
+            try await purchaseProductsInTheCartWithStripe(with: cartDetails,
+                                                          totalAmountDue: totalAmountDue)
         } else {
-            try await purchaseProductsInTheCartWithCredits(to: wallet)
+            try await purchaseProductsInTheCartWithCredits(with: cartDetails)
         }
     }
     
-    private func purchaseProductsInTheCartWithStripe(to wallet: Ecom.UDUserAccountCryptWallet?,
-                                            totalAmountDue: Int) async throws {
-        let paymentDetails = try await prepareStripePaymentDetails(for: wallet, amount: totalAmountDue)
+    private func purchaseProductsInTheCartWithStripe(with cartDetails: Ecom.ProductsCartDetails?,
+                                                     totalAmountDue: Int) async throws {
+        let paymentDetails = try await prepareStripePaymentDetails(with: cartDetails, amount: totalAmountDue)
         let paymentService = appContext.createStripeInstance(amount: paymentDetails.amount, using: paymentDetails.clientSecret)
         try await paymentService.payWithStripe()
         try? await refreshUserCart()
     }
     
-    private func purchaseProductsInTheCartWithCredits(to wallet: Ecom.UDUserAccountCryptWallet?) async throws {
-        try await checkoutWithCredits(to: wallet)
+    private func purchaseProductsInTheCartWithCredits(with cartDetails: Ecom.ProductsCartDetails?) async throws {
+        try await checkoutWithCredits(with: cartDetails)
     }
     
-    private func loadStripePaymentDetails(for wallet: Ecom.UDUserAccountCryptWallet?) async throws -> Ecom.StripePaymentDetailsResponse {
+    private func loadStripePaymentDetails(with cartDetails: Ecom.ProductsCartDetails?) async throws -> Ecom.StripePaymentDetailsResponse {
         struct RequestBody: Codable {
             let cryptoWalletId: Int?
+            let email: String?
             let applyStoreCredits: Bool
             let applyPromoCredits: Bool
             let discountCode: String?
@@ -206,7 +205,8 @@ extension EcomPurchaseInteractionService {
         }
         
         let urlString = URLSList.PAYMENT_STRIPE_URL
-        let body = RequestBody(cryptoWalletId: wallet?.id,
+        let body = RequestBody(cryptoWalletId: cartDetails?.wallet?.id,
+                               email: cartDetails?.email,
                                applyStoreCredits: checkoutData.isStoreCreditsOn,
                                applyPromoCredits: checkoutData.isPromoCreditsOn,
                                discountCode: checkoutData.discountCodeIfEntered,
@@ -218,11 +218,11 @@ extension EcomPurchaseInteractionService {
         return response
     }
     
-    private func prepareStripePaymentDetails(for wallet: Ecom.UDUserAccountCryptWallet?,
-                                     amount: Int) async throws -> Ecom.StripePaymentDetails {
+    private func prepareStripePaymentDetails(with cartDetails: Ecom.ProductsCartDetails?,
+                                             amount: Int) async throws -> Ecom.StripePaymentDetails {
         try await refreshUserCart()
         do {
-            let detailsResponse = try await loadStripePaymentDetails(for: wallet)
+            let detailsResponse = try await loadStripePaymentDetails(with: cartDetails)
             let details = Ecom.StripePaymentDetails(amount: amount,
                                                     clientSecret: detailsResponse.clientSecret,
                                                     orderId: detailsResponse.orderId)
@@ -239,7 +239,7 @@ extension EcomPurchaseInteractionService {
         }
     }
     
-    private func checkoutWithCredits(to wallet: Ecom.UDUserAccountCryptWallet?) async throws {
+    private func checkoutWithCredits(with cartDetails: Ecom.ProductsCartDetails?) async throws {
         struct RequestBody: Codable {
             let cryptoWalletId: Int?
             let applyStoreCredits: Bool
@@ -249,7 +249,7 @@ extension EcomPurchaseInteractionService {
         }
         
         let urlString = URLSList.STORE_CHECKOUT_URL
-        let body = RequestBody(cryptoWalletId: wallet?.id,
+        let body = RequestBody(cryptoWalletId: cartDetails?.wallet?.id,
                                applyStoreCredits: checkoutData.isStoreCreditsOn,
                                applyPromoCredits: checkoutData.isPromoCreditsOn,
                                discountCode: checkoutData.discountCodeIfEntered,
