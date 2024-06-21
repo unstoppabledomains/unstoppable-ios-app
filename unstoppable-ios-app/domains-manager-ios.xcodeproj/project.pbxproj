@@ -45,7 +45,6 @@
 		29DE3B1328913DF500655675 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DE3B1228913DF500655675 /* Env.swift */; };
 		29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */; };
 		29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB622290A94E700A0BD08 /* ProfilesTests.swift */; };
-		3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */; };
 		3004E32C26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */; };
 		3018AEAE27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEAD27E9D50A00E8C37D /* RestoreWalletViewController.swift */; };
 		3018AEB327EA091000E8C37D /* EnterBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEB227EA091000E8C37D /* EnterBackupViewController.swift */; };
@@ -2615,7 +2614,6 @@
 		29DE3B1228913DF500655675 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+ProfilesApi.swift"; sourceTree = "<group>"; };
 		29EDB622290A94E700A0BD08 /* ProfilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesTests.swift; sourceTree = "<group>"; };
-		3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyUnitaryWallet.swift; sourceTree = "<group>"; };
 		3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletStorage.swift; sourceTree = "<group>"; };
 		300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsStorageTests.swift; sourceTree = "<group>"; };
 		300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsViewModelTests.swift; sourceTree = "<group>"; };
@@ -4925,7 +4923,6 @@
 				29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */,
 				29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */,
 				307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */,
-				3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */,
 				C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */,
 				C617FDA02B58E75B00B93433 /* WalletEntity.swift */,
 			);
@@ -8804,7 +8801,6 @@
 				C62900EE2BAAC5C0008B35A2 /* BalanceTokenIconsView.swift in Sources */,
 				29BECD0E2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
 				C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
-				3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
 				C6B65F722B550F6B006D1812 /* DomainNFTsStorage.swift in Sources */,
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
 				C60EE80F2ACD203000D699C7 /* NetworkService+MessagingApi.swift in Sources */,

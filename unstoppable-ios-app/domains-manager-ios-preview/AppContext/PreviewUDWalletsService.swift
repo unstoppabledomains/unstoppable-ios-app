@@ -52,8 +52,9 @@ final class UDWalletsService: UDWalletsServiceProtocol {
         UDWallet()
     }
     
-    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws {
-        
+    func createMPCWallet(ethAddress: HexAddress,
+                         mpcMetadata: MPCWalletMetadata) throws -> UDWallet {
+        UDWallet.createMPC(address: ethAddress, mpcMetadata: mpcMetadata)
     }
     
     

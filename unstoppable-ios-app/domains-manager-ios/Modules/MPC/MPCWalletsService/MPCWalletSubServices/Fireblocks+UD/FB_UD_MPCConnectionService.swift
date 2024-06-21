@@ -331,7 +331,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         do {
             try storeConnectedWalletDetails(mpcWallet)
             let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
-            try udWalletsService.addOrUpdateMPCWallet(udWallet)
             return udWallet
         } catch {
             try? clearConnectedWalletDetails(mpcWallet)
@@ -410,8 +409,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                   deviceId: connectedWallet.deviceId)
         let fireblocksMetadata = try fireblocksMetadataEntity.jsonDataThrowing()
         let mpcMetadata = MPCWalletMetadata(provider: provider, metadata: fireblocksMetadata)
-        let udWallet = UDWallet.createMPC(address: ethAddress,
-                                          mpcMetadata: mpcMetadata)
+        let udWallet = try udWalletsService.createMPCWallet(ethAddress: ethAddress,
+                                                            mpcMetadata: mpcMetadata)
         
         return udWallet
     }
