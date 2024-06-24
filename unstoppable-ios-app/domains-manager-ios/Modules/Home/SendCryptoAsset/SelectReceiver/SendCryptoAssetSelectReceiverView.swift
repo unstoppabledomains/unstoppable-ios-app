@@ -194,14 +194,14 @@ private extension SendCryptoAssetSelectReceiverView {
     
     enum GlobalSearchResult {
         case profiles([SearchDomainProfile])
-        case fullAddress(HexAddress)
+        case fullAddress(SendCryptoAsset.WalletAddressDetails)
     }
     
     func getCurrentGlobalSearchResult() -> GlobalSearchResult? {
         if !globalProfiles.isEmpty {
             return .profiles(globalProfiles)
-        } else if inputText.isValidAddress() {
-            return .fullAddress(inputText)
+        } else if let addressDetails = viewModel.getWalletAddressDetailsFor(address: inputText) {
+            return .fullAddress(addressDetails)
         }
         return nil
     }
@@ -227,9 +227,9 @@ private extension SendCryptoAssetSelectReceiverView {
     }
     
     @ViewBuilder
-    func selectableGlobalAddressRowView(_ address: HexAddress) -> some View {
+    func selectableGlobalAddressRowView(_ addressDetails: SendCryptoAsset.WalletAddressDetails) -> some View {
         selectableRowView({
-            UDListItemView(title: address.walletAddressTruncated,
+            UDListItemView(title: addressDetails.address.walletAddressTruncated,
                            titleColor: .foregroundDefault,
                            subtitle: nil,
                            subtitleStyle: .default,
@@ -241,8 +241,9 @@ private extension SendCryptoAssetSelectReceiverView {
                                                 bordered: true),
                            rightViewStyle: nil)
         }, callback: {
-            logAnalytic(event: .searchWalletAddressPressed, parameters: [.wallet : address])
-            viewModel.handleAction(.globalWalletAddressSelected(address))
+            logAnalytic(event: .searchWalletAddressPressed, parameters: [.wallet : addressDetails.address,
+                                                                         .coin : addressDetails.regexPattern.rawValue])
+            viewModel.handleAction(.globalWalletAddressSelected(addressDetails))
         })
     }
     
