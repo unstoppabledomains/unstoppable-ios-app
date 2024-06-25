@@ -48,7 +48,7 @@ struct SendCryptoAssetSelectReceiverView: View, ViewAnalyticsLogger {
             }
         }
         .task {
-            userWallets = appContext.walletsDataService.wallets.filter({ $0.address != viewModel.sourceWallet.address })
+            userWallets = appContext.walletsDataService.wallets
             socialRelationshipDetailsPublisher = await domainProfilesService.publisherForWalletDomainProfileDetails(wallet: viewModel.sourceWallet)
                 .receive(on: DispatchQueue.main)
                 .sink { relationshipDetails in
