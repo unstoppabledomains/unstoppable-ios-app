@@ -15,6 +15,8 @@ struct SerializedWalletTransaction: Codable {
     let timestamp: Date
     let success: Bool
     let value: Double
+    // TODO: check when nonce is included in response
+    let nonce: String
     let gas: Double
     let method: String
     let link: String
