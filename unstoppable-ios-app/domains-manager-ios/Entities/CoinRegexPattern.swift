@@ -23,6 +23,8 @@ extension CoinRegexPattern {
     }
     
     func isStringMatchingRegex(_ string: String) -> Bool {
-        string.isMatchingRegexPattern(regex)
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
+        return predicate.evaluate(with: string)
     }
 }
