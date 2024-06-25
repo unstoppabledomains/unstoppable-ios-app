@@ -89,7 +89,7 @@ private extension SendCryptoAssetSelectReceiverView {
         })
         .onChange(of: debounceObject.debouncedText) { text in
             logAnalytic(event: .didSearch, parameters: [.value : text])
-            inputText = text.lowercased().trimmedSpaces
+            inputText = text.trimmedSpaces
             searchForGlobalProfiles()
         }
     }
