@@ -16,7 +16,8 @@ extension MockEntitiesFabric {
         }
         
         static func mockReceiver() -> SendCryptoAsset.AssetReceiver {
-            .init(walletAddress: Wallet.mockEntities()[1].address)
+            .init(walletAddress: Wallet.mockEntities()[1].address,
+                  regexPattern: .ETH)
         }
         
     }
