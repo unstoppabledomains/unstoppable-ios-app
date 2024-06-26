@@ -66,8 +66,8 @@ extension UDWallet {
             
         case .mpc:
             let mpcWalletMetadata = try extractMPCMetadata()
-            return try await appContext.mpcWalletsService.signMessage(messageString,
-                                                                      by: mpcWalletMetadata)
+            return try await appContext.mpcWalletsService.signPersonalMessage(messageString,
+                                                                              by: mpcWalletMetadata)
         default:
             let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
             
@@ -127,15 +127,18 @@ extension UDWallet {
         return messageToSend
     }
     
-    func getSignTypedData(dataString: String) async throws -> String {
+    func getSignTypedData(dataString: String,
+                          blockchainType: BlockchainType = .Ethereum) async throws -> String {
         switch self.type {
         case .externalLinked:
             let signature = try await signViaWalletConnectTypedData(dataString: dataString)
             return signature
             
-        case .mpc: print("sign with mpc")
-                return ""// TODO: mpc
-            
+        case .mpc:
+            let mpcWalletMetadata = try extractMPCMetadata()
+            return try await appContext.mpcWalletsService.signTypedDataMessage(dataString, 
+                                                                               chain: blockchainType,
+                                                                               by: mpcWalletMetadata)
         default:  // locally verified wallet
             let data = dataString.data(using: .utf8)!
             let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)

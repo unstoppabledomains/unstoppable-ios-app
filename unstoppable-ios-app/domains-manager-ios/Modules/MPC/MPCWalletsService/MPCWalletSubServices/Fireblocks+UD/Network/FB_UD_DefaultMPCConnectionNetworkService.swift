@@ -220,13 +220,13 @@ extension FB_UD_MPC {
                                  accountId: String,
                                  assetId: String,
                                  message: String,
-                                 encoding: SignMessageEncoding) async throws -> OperationDetails {
+                                 signingType: MessageSigningType) async throws -> OperationDetails {
             struct RequestBody: Codable {
                 let message: String
                 let encoding: SignMessageEncoding
             }
             
-            let body = RequestBody(message: message, encoding: encoding)
+            let body = try createMessageSigningPayloadFor(message: message, signingType: signingType)
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetSignaturesURL(accountId: accountId, assetId: assetId)
             let request = try APIRequest(urlString: url,
@@ -234,6 +234,35 @@ extension FB_UD_MPC {
                                          method: .post,
                                          headers: headers)
             return try await runStartOperationUsing(request: request)
+        }
+        
+        private func createMessageSigningPayloadFor(message: String,
+                                                    signingType: MessageSigningType) throws -> any Codable {
+            switch signingType {
+            case .personalSign(let encoding):
+                struct RequestBody: Codable {
+                    let message: String
+                    let encoding: SignMessageEncoding
+                }
+                return RequestBody(message: message, encoding: encoding)
+            case .typedData:
+                struct RequestBody: Codable {
+                    let message: [String : AnyCodable]
+                    var type: String = "erc712"
+                }
+                
+                guard let messageData = message.data(using: .utf8),
+                      let messageDict = (try? JSONSerialization.jsonObject(with: messageData)) as? [String : Any] else {
+                    throw MPCNetworkServiceError.badRequestData
+                }
+                
+                var mes: [String : AnyCodable] = [:]
+                for (key, value) in messageDict {
+                    mes[key] = AnyCodable(any: value)
+                }
+                
+                return RequestBody(message: mes)
+            }
         }
         
         func startAssetTransfer(accessToken: String,
@@ -411,6 +440,7 @@ extension FB_UD_MPC {
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
             case missingTxIdInTransactionOperation
+            case badRequestData
             
             public var errorDescription: String? {
                 return rawValue

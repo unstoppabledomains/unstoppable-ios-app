@@ -118,6 +118,11 @@
 		C6011AC128F4045000342666 /* DomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */; };
 		C60319922C29775E00A77109 /* CoinRegexPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319912C29775E00A77109 /* CoinRegexPattern.swift */; };
 		C60319932C29775E00A77109 /* CoinRegexPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319912C29775E00A77109 /* CoinRegexPattern.swift */; };
+		C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
+		C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
+		C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
+		C60319992C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
+		C603199A2C2C1F7A00A77109 /* BlockchainType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6960C332B19962800B79E28 /* BlockchainType.swift */; };
 		C603A53628522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603A53528522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift */; };
 		C603D79A2A56B11800CEC696 /* MessagingChatMessageUnknownTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603D7992A56B11800CEC696 /* MessagingChatMessageUnknownTypeDisplayInfo.swift */; };
 		C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C603E8C7285859560028C21C /* CollectionViewHeaderCell.swift */; };
@@ -2768,6 +2773,8 @@
 		C6011ABB28F4045000342666 /* DomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
 		C60319912C29775E00A77109 /* CoinRegexPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRegexPattern.swift; sourceTree = "<group>"; };
+		C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPC_MessageSigningType.swift; sourceTree = "<group>"; };
+		C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockchainType+Extension.swift"; sourceTree = "<group>"; };
 		C603A53528522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IgnoreFailureArrayElement+PropertyWrapper.swift"; sourceTree = "<group>"; };
 		C603D7992A56B11800CEC696 /* MessagingChatMessageUnknownTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageUnknownTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C603E8C7285859560028C21C /* CollectionViewHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewHeaderCell.swift; sourceTree = "<group>"; };
@@ -5008,6 +5015,7 @@
 				C6C8F8242B217CDD00A9834D /* UDWallet+RecoveryType.swift */,
 				C6D6471A2B1ED85C00D724AC /* WalletError.swift */,
 				C6960C332B19962800B79E28 /* BlockchainType.swift */,
+				C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */,
 				29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */,
 				29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */,
 				307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */,
@@ -5969,6 +5977,7 @@
 				C67684A82BD2200E0062474F /* FB_UD_MPCSignMessageEncoding.swift */,
 				C68A5AD12BDB7E95003702A2 /* FB_UD_MPCOperationReadyResponse.swift */,
 				C6BB08ED2BFDB50A00123465 /* FB_UD_MPCAPIBadResponse.swift */,
+				C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -9106,6 +9115,7 @@
 				C6B65F772B550FC2006D1812 /* WalletNFTsService.swift in Sources */,
 				C6F433482BB26AF2000C5E46 /* UDCheckBoxView.swift in Sources */,
 				C6BF0C5B2B8EDEB4009CB50F /* CheckPendingEventsOnAppearViewModifier.swift in Sources */,
+				C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */,
 				C630C72C2BD7798200AC1662 /* RestoreWalletView.swift in Sources */,
 				C665566A2BF70C0000F0BD7A /* MPCOnboardingPurchaseUDAuthViewController.swift in Sources */,
 				C68F15762BD769830049BFA2 /* MPCWalletStateCardView.swift in Sources */,
@@ -9959,6 +9969,7 @@
 				C6F946DB2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				C650E28D2B9E97C5002C120A /* UDButtonStyle+Small.swift in Sources */,
 				C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */,
+				C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */,
 				C6534AB12BBFBA10008EEBB5 /* HomeExploreView.swift in Sources */,
 				C652721B2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
 				C63902C228E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
@@ -10537,6 +10548,7 @@
 				C6D647902B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */,
 				C6C8F8182B217CC000A9834D /* ConnectExternalWalletViewPresenter.swift in Sources */,
 				C6C8F99A2B218E2900A9834D /* GIFAnimationImageView.swift in Sources */,
+				C60319992C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */,
 				C6D645BF2B1DBD1E00D724AC /* ViewAnalyticsLogger.swift in Sources */,
 				C665566B2BF70C0000F0BD7A /* MPCOnboardingPurchaseUDAuthViewController.swift in Sources */,
 				C6D646FE2B1ED7BE00D724AC /* MessagingChatType.swift in Sources */,
@@ -10972,6 +10984,7 @@
 				C6D646332B1DC43D00D724AC /* TextButton.swift in Sources */,
 				C61807C52B19A3580032E543 /* PreviewAppContext.swift in Sources */,
 				C6960C3D2B1997F600B79E28 /* Constants.swift in Sources */,
+				C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */,
 				C6960C602B199AC900B79E28 /* Version.swift in Sources */,
 				C6952A5A2BC65B2500F4B475 /* WalletType.swift in Sources */,
 				C6D646532B1ED10100D724AC /* DomainProfileUpdatingRecordsCell.swift in Sources */,
@@ -11232,6 +11245,7 @@
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6C8F9A42B21907C00A9834D /* KeychainKey.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
+				C603199A2C2C1F7A00A77109 /* BlockchainType.swift in Sources */,
 				C6C8F9A22B21906300A9834D /* PrivateKeyStorage.swift in Sources */,
 				C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6E69FEF288AD405000A8346 /* String+Notification.swift in Sources */,

@@ -800,7 +800,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         }
         let typedDataString = paramsAny[1]
         let address = try parseAddress(from: paramsAny[0])
-                
+        let blockchainType = try extractBlockchainTypeFrom(request: request)
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
                                                                          messageString: typedDataString)
@@ -809,8 +809,10 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         do {
             let sigTyped: String
             switch version {
-            case .standard: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
-            case .v4: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
+            case .standard: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString,
+                                                                           blockchainType: blockchainType)
+            case .v4: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString,
+                                                                     blockchainType: blockchainType)
             }
             sig = WCAnyCodable(sigTyped)
         } catch {
@@ -819,6 +821,15 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         }
         
         return .response(sig)
+    }
+    
+    private func extractBlockchainTypeFrom(request: WalletConnectSign.Request) throws -> BlockchainType {
+        guard let chainId = Int(request.chainId.reference),
+              let blockchainNetwork = BlockchainNetwork(rawValue: chainId) else {
+            throw WalletConnectRequestError.networkNotSupported
+        }
+        
+        return blockchainNetwork.getBlockchainType()
     }
     
     // complete TX helpers
