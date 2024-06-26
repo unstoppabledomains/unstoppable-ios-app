@@ -1117,7 +1117,8 @@ extension WalletConnectServiceV2 {
                 "eth_signTransaction",
                 "personal_sign",
                 "eth_sign",
-                "eth_signTypedData"
+                "eth_signTypedData",
+                "eth_signTypedData_v4"
             ], events: []
         )
     ] }
