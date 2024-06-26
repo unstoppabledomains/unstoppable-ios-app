@@ -55,6 +55,21 @@ private extension HomeActivityTransactionsSectionView {
         .buttonStyle(.plain)
         .allowsHitTesting(tx.link != nil)
     }
+    
+    func onSpeedUpTxSelected (_ tx: WalletTransactionDisplayInfo) async throws {
+        let chain = CryptoSenderChainDescription(symbol: tx.symbol,
+                                                 chain: "ETH",
+                                                 env: .mainnet) //TODO: make particular
+        let data: CryptoSenderDataToSend = CryptoSenderDataToSend(chainDesc: chain,
+                                                                  amount: tx.value,
+                                                                  txSpeed: .normal,
+                                                                  toAddress: "")
+        //try await CryptoSender(wallet: <#T##UDWallet#>).sendCrypto(dataToSend: <#T##CryptoSenderDataToSend#>)
+    }
+    
+    func onCancelTxSelected (_ tx: WalletTransactionDisplayInfo) {
+        
+    }
 }
 
 #Preview {
