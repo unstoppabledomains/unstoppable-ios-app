@@ -44,7 +44,6 @@ private extension SignMessageRequestConfirmationView {
     func addWalletInfo() {
         let walletStackView = buildWalletInfoView()
         walletStackView.axis = .horizontal
-        walletStackView.spacing = 16
 
         let wrapStack = UIStackView(arrangedSubviews: [walletStackView])
         wrapStack.axis = .vertical
