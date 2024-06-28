@@ -15,9 +15,10 @@ import SwiftUI
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
         Task {
             let connectConfiguration = createConnectConfiguration()
-            let signConfiguration = createSignConfiguration()
+            let personalSignConfiguration = createSignConfiguration()
+            let signTypedDataConfiguration = createSignTypedDataConfiguration()
             let paymentConfiguration = createPaymentConfiguration()
-            _ = try? await appContext.pullUpViewService.showWCRequestConfirmationPullUp(for: connectConfiguration,
+            _ = try? await appContext.pullUpViewService.showWCRequestConfirmationPullUp(for: signTypedDataConfiguration,
                                                                                             in: vc)
         }
     }
@@ -42,6 +43,34 @@ private func createSignConfiguration() -> WCRequestUIConfiguration {
 
 private func createSignMessageTransactionUIConfiguration() -> SignMessageTransactionUIConfiguration {
     .init(connectionConfig: createWalletConnectConfig(), signingMessage: "lakjsdasdjalsdjaslkdjalsdkj ald")
+}
+
+private func createSignTypedDataConfiguration() -> WCRequestUIConfiguration {
+    .signMessage(createSignTypedDataTxUIConfiguration())
+}
+
+private func createSignTypedDataTxUIConfiguration() -> SignMessageTransactionUIConfiguration {
+    let mes = """
+{
+  "domain": {
+    "name": "Seaport",
+    "version": "1.6",
+    "chainId": "80002",
+    "verifyingContract": "0x0000000000000068f116a894984e2db1123eb395"
+  },
+  "primaryType": "OrderComponents",
+  "message": {
+    "orderType": "2",
+    "startTime": "1719566337",
+    "endTime": "1751102337",
+    "zoneHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "salt": "17103359048027891009",
+    "conduitKey": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "counter": "0"
+  }
+}
+"""
+    return .init(connectionConfig: createWalletConnectConfig(), signingMessage: mes)
 }
 
 private func createPaymentConfiguration() -> WCRequestUIConfiguration {
