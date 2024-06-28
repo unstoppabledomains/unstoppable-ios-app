@@ -220,13 +220,8 @@ extension FB_UD_MPC {
                                  accountId: String,
                                  assetId: String,
                                  message: String,
-                                 encoding: SignMessageEncoding) async throws -> OperationDetails {
-            struct RequestBody: Codable {
-                let message: String
-                let encoding: SignMessageEncoding
-            }
-            
-            let body = RequestBody(message: message, encoding: encoding)
+                                 signingType: MessageSigningType) async throws -> OperationDetails {
+            let body = try createMessageSigningPayloadFor(message: message, signingType: signingType)
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetSignaturesURL(accountId: accountId, assetId: assetId)
             let request = try APIRequest(urlString: url,
@@ -234,6 +229,33 @@ extension FB_UD_MPC {
                                          method: .post,
                                          headers: headers)
             return try await runStartOperationUsing(request: request)
+        }
+        
+        private func createMessageSigningPayloadFor(message: String,
+                                                    signingType: MessageSigningType) throws -> any Codable {
+            switch signingType {
+            case .personalSign(let encoding):
+                struct RequestBody: Codable {
+                    let message: String
+                    let encoding: SignMessageEncoding
+                }
+                return RequestBody(message: message, encoding: encoding)
+            case .typedData:
+                enum RequestType: String, Codable {
+                    case erc712
+                }
+                
+                enum RequestEncodingType: String, Codable {
+                    case hex
+                }
+                
+                struct RequestBody: Codable {
+                    let message: String
+                    var type: RequestType = .erc712
+                    var encoding: RequestEncodingType = .hex
+                }
+                return RequestBody(message: message.hexRepresentation)
+            }
         }
         
         func startAssetTransfer(accessToken: String,
@@ -411,6 +433,7 @@ extension FB_UD_MPC {
             case missingVendorIdInSignTransactionOperation
             case missingSignatureInSignTransactionOperation
             case missingTxIdInTransactionOperation
+            case badRequestData
             
             public var errorDescription: String? {
                 return rawValue

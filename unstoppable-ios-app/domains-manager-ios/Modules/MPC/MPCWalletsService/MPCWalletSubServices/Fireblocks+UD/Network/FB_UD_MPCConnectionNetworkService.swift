@@ -33,7 +33,7 @@ extension FB_UD_MPC {
                                  accountId: String,
                                  assetId: String,
                                  message: String,
-                                 encoding: SignMessageEncoding) async throws -> OperationDetails
+                                 signingType: MessageSigningType) async throws -> OperationDetails
         func startAssetTransfer(accessToken: String,
                                 accountId: String,
                                 assetId: String,

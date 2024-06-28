@@ -216,6 +216,15 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "Polygon: Amoy"
         }
     }
+    
+    func getBlockchainType() -> BlockchainType {
+        switch self {
+        case .ethMainnet, .ethSepolia:
+            return .Ethereum
+        case .polygonMainnet, .polygonAmoy:
+            return .Matic
+        }
+    }
 }
 
 struct Utilities {
