@@ -246,22 +246,20 @@ extension FB_UD_MPC {
                 }
                 return RequestBody(message: message, encoding: encoding)
             case .typedData:
+                enum RequestType: String, Codable {
+                    case erc712
+                }
+                
+                enum RequestEncodingType: String, Codable {
+                    case hex
+                }
+                
                 struct RequestBody: Codable {
-                    let message: [String : AnyCodable]
-                    var type: String = "erc712"
+                    let message: String
+                    var type: RequestType = .erc712
+                    var encoding: RequestEncodingType = .hex
                 }
-                
-                guard let messageData = message.data(using: .utf8),
-                      let messageDict = (try? JSONSerialization.jsonObject(with: messageData)) as? [String : Any] else {
-                    throw MPCNetworkServiceError.badRequestData
-                }
-                
-                var mes: [String : AnyCodable] = [:]
-                for (key, value) in messageDict {
-                    mes[key] = AnyCodable(any: value)
-                }
-                
-                return RequestBody(message: mes)
+                return RequestBody(message: message.hexRepresentation)
             }
         }
         
