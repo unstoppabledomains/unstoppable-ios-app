@@ -56,7 +56,9 @@ private extension SignMessageRequestConfirmationView {
 enum DisplayedMessageType {
     static let lineHeight: CGFloat = 24
     static let padding: CGFloat = 16
-    static let maxTextViewHeight: CGFloat = 176
+    static let maxTextViewHeight: CGFloat = {
+        deviceSize.isIPSE ? 220 : 320
+    }()
     static let font: UIFont = .currentFont(withSize: 16, weight: .regular)
 
     case simpleMessage(String)
@@ -95,7 +97,7 @@ enum DisplayedMessageType {
     }
     
     private func getTypedDataViewHeight() -> CGFloat {
-        return 300
+        return Self.maxTextViewHeight
     }
     
     private func prepareSimpleMessageView(signingMessage: String) -> UIView {
