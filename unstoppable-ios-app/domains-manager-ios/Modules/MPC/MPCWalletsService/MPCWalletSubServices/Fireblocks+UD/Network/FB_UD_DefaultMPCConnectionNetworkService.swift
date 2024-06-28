@@ -221,11 +221,6 @@ extension FB_UD_MPC {
                                  assetId: String,
                                  message: String,
                                  signingType: MessageSigningType) async throws -> OperationDetails {
-            struct RequestBody: Codable {
-                let message: String
-                let encoding: SignMessageEncoding
-            }
-            
             let body = try createMessageSigningPayloadFor(message: message, signingType: signingType)
             let headers = buildAuthBearerHeader(token: accessToken)
             let url = MPCNetwork.URLSList.assetSignaturesURL(accountId: accountId, assetId: assetId)
