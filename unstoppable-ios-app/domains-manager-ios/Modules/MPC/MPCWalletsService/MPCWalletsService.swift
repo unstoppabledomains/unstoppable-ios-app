@@ -51,14 +51,25 @@ extension MPCWalletsService: MPCWalletsServiceProtocol {
         }
     }
     
-    func signMessage(_ messageString: String,
-                     by walletMetadata: MPCWalletMetadata) async throws -> String {
+    func signPersonalMessage(_ messageString: String,
+                             by walletMetadata: MPCWalletMetadata) async throws -> String {
         guard udFeatureFlagsService.valueFor(flag: .isMPCSignatureEnabled) else  { throw MPCWalletError.messageSignDisabled }
         let subService = try getSubServiceFor(provider: walletMetadata.provider)
         
-        return try await subService.signMessage(messageString,
-                                                chain: .Ethereum,
-                                                by: walletMetadata)
+        return try await subService.signPersonalMessage(messageString,
+                                                        chain: .Ethereum,
+                                                        by: walletMetadata)
+    }
+    
+    func signTypedDataMessage(_ message: String,
+                              chain: BlockchainType,
+                              by walletMetadata: MPCWalletMetadata) async throws -> String {
+        guard udFeatureFlagsService.valueFor(flag: .isMPCSignatureEnabled) else  { throw MPCWalletError.messageSignDisabled }
+        let subService = try getSubServiceFor(provider: walletMetadata.provider)
+        
+        return try await subService.signTypedDataMessage(message,
+                                                         chain: chain,
+                                                         by: walletMetadata)
     }
     
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {

@@ -44,7 +44,7 @@ struct APIRequest {
         
         var bodyString: String = ""
         if let body {
-            guard let bodyStringEncoded = body.jsonString() else { throw NetworkLayerError.responseFailedToParse }
+            let bodyStringEncoded = try body.jsonStringThrowing()
             bodyString = bodyStringEncoded
         }
         

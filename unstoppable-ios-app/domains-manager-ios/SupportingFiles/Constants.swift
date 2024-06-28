@@ -24,7 +24,6 @@ struct Constants {
         
     static let distanceFromButtonToKeyboard: CGFloat = 16
     static let scrollableContentBottomOffset: CGFloat = 32
-    static let ETHRegexPattern = "^0x[a-fA-F0-9]{40}$"
     static let UnstoppableSupportMail = "support@unstoppabledomains.com"
     static let UnstoppableTwitterName = "unstoppableweb"
     static let UnstoppableGroupIdentifier = "group.unstoppabledomains.manager.extensions"
@@ -215,6 +214,15 @@ enum BlockchainNetwork: Int, CaseIterable {
             return "Polygon"
         case .polygonAmoy:
             return "Polygon: Amoy"
+        }
+    }
+    
+    func getBlockchainType() -> BlockchainType {
+        switch self {
+        case .ethMainnet, .ethSepolia:
+            return .Ethereum
+        case .polygonMainnet, .polygonAmoy:
+            return .Matic
         }
     }
 }
