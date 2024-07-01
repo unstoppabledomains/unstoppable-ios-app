@@ -46,14 +46,11 @@ private extension HomeActivityTransactionsSectionView {
     func clickableTxRowView(_ tx: WalletTransactionDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            if let url = tx.link {
-                openLink(.direct(url: url))
-            }
+            viewModel.didSelectTx(tx: tx)
         } label: {
             WalletTransactionDisplayInfoListItemView(transaction: tx)
         }
         .buttonStyle(.plain)
-        .allowsHitTesting(tx.link != nil)
     }
 }
 

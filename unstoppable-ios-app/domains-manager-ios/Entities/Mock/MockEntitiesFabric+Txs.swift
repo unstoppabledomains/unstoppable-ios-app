@@ -68,18 +68,18 @@ extension MockEntitiesFabric {
             switch type {
             case .crypto:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 1,
-                                            gas: 1,
-                                            method: "Unknown",
-                                            link: "",
-                                            imageUrl: ImageURLs.sunset.rawValue,
-                                            symbol: "MATIC",
-                                            type: "native",
-                                            from: from,
-                                            to: to)
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 1,
+                                                   gas: 1,
+                                                   method: "Unknown",
+                                                   link: URLs.generic.absoluteString,
+                                                   imageUrl: ImageURLs.sunset.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "native",
+                                                   from: from,
+                                                   to: to)
                 
             case .domain:
                 return SerializedWalletTransaction(hash: id,
