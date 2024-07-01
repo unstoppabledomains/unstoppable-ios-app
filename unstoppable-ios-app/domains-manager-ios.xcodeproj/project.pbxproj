@@ -717,6 +717,8 @@
 		C639F39E2C32D14D008CC1CB /* ConnectDarkCurveLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C639F39C2C32D14D008CC1CB /* ConnectDarkCurveLine.swift */; };
 		C639F3A02C32D1A7008CC1CB /* UDConnectCurveLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C639F39F2C32D1A7008CC1CB /* UDConnectCurveLine.swift */; };
 		C639F3A12C32D1A7008CC1CB /* UDConnectCurveLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C639F39F2C32D1A7008CC1CB /* UDConnectCurveLine.swift */; };
+		C639F3A32C32DB28008CC1CB /* ConnectLineSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C639F3A22C32DB28008CC1CB /* ConnectLineSectionView.swift */; };
+		C639F3A42C32DB28008CC1CB /* ConnectLineSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C639F3A22C32DB28008CC1CB /* ConnectLineSectionView.swift */; };
 		C63A350C28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A350928F0071B0057D34B /* DomainProfileViewPresenter.swift */; };
 		C63A351028F0071B0057D34B /* DomainProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A350A28F0071B0057D34B /* DomainProfileViewController.swift */; };
 		C63A351428F0071B0057D34B /* DomainProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63A350B28F0071B0057D34B /* DomainProfileViewController.xib */; };
@@ -3201,6 +3203,7 @@
 		C639F3982C32D10C008CC1CB /* ConnectCurveLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectCurveLine.swift; sourceTree = "<group>"; };
 		C639F39C2C32D14D008CC1CB /* ConnectDarkCurveLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectDarkCurveLine.swift; sourceTree = "<group>"; };
 		C639F39F2C32D1A7008CC1CB /* UDConnectCurveLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDConnectCurveLine.swift; sourceTree = "<group>"; };
+		C639F3A22C32DB28008CC1CB /* ConnectLineSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectLineSectionView.swift; sourceTree = "<group>"; };
 		C63A350928F0071B0057D34B /* DomainProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileViewPresenter.swift; sourceTree = "<group>"; };
 		C63A350A28F0071B0057D34B /* DomainProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileViewController.swift; sourceTree = "<group>"; };
 		C63A350B28F0071B0057D34B /* DomainProfileViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileViewController.xib; sourceTree = "<group>"; };
@@ -5591,6 +5594,7 @@
 				C639F3982C32D10C008CC1CB /* ConnectCurveLine.swift */,
 				C639F39F2C32D1A7008CC1CB /* UDConnectCurveLine.swift */,
 				C639F39C2C32D14D008CC1CB /* ConnectDarkCurveLine.swift */,
+				C639F3A22C32DB28008CC1CB /* ConnectLineSectionView.swift */,
 			);
 			path = ConnectCurveLine;
 			sourceTree = "<group>";
@@ -9975,6 +9979,7 @@
 				C63A351028F0071B0057D34B /* DomainProfileViewController.swift in Sources */,
 				C6AE670D2AA1CA260061D87D /* Debug-Tools-Dev.swift in Sources */,
 				C6952A592BC65B2500F4B475 /* WalletType.swift in Sources */,
+				C639F3A32C32DB28008CC1CB /* ConnectLineSectionView.swift in Sources */,
 				C66FCD032844871E009B9525 /* MockUserDataService.swift in Sources */,
 				C67213D92BAA90C20075B9C7 /* SendCryptoAssetViewModel.swift in Sources */,
 				C6B65FAA2B57A582006D1812 /* UserProfileSelectionView.swift in Sources */,
@@ -10785,6 +10790,7 @@
 				C665566E2BF70D6A00F0BD7A /* PurchaseMPCWalletUDAuthView.swift in Sources */,
 				C6D8FF1F2B82EB740094A21E /* TextMessageRowView.swift in Sources */,
 				C6D645DA2B1DBD4D00D724AC /* NavBarBackButtonTransitionPerformer.swift in Sources */,
+				C639F3A42C32DB28008CC1CB /* ConnectLineSectionView.swift in Sources */,
 				C6C8F8DC2B21836400A9834D /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D646E42B1ED4D000D724AC /* WalletAddressFieldCollectionCell.swift in Sources */,
 				C63DBCCC2BE49376008F3D2C /* NetworkService+Common.swift in Sources */,

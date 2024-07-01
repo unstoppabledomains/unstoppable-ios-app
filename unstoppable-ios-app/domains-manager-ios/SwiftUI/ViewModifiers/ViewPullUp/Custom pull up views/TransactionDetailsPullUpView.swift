@@ -18,7 +18,10 @@ struct TransactionDetailsPullUpView: View {
             titleViews()
             txVisualisationsView()
                 .padding(.top, 24)
-            curveLine()
+            ZStack {
+                curveLine()
+                infoSectionsView()
+            }
             viewTxButton()
             Spacer()
         }
@@ -86,22 +89,37 @@ private extension TransactionDetailsPullUpView {
     @ViewBuilder
     func infoSectionsView() -> some View {
         VStack(spacing: 0) {
-            sectionView(title: "From", 
-                        icon: .addWalletIcon,
-                        value: "oleg.x")
+            ForEach(getCurrentSections(), id: \.self) { section in
+                ConnectLineSectionView(section: section)
+                    .frame(height: ConnectCurveLine.sectionHeight)
+            }
         }
         .padding(.init(horizontal: 16))
-        .offset(y: ConnectCurveLine.sectionHeight / 2)
     }
     
-    @ViewBuilder
-    func sectionView(title: String,
-                     icon: Image,
-                     value: String) -> some View {
-        HStack {
-            
+    func getCurrentSections() -> [ConnectLineSectionView.SectionType] {
+        [.infoValue(.init(title: String.Constants.from.localized(),
+                          icon: .walletExternalIcon,
+                          value: "oleg.x")),
+         .infoValue(.init(title: String.Constants.chain.localized(),
+                          icon: chainIcon,
+                          value: getBlockchainType()?.fullName ?? "")),
+         .infoValue(.init(title: String.Constants.txFee.localized(),
+                          icon: .gas,
+                          value: "oleg.x"))]
+    }
+    
+    func getBlockchainType() -> BlockchainType? {
+        BlockchainType(rawValue: tx.symbol)
+    }
+    
+    var chainIcon: UIImage {
+        switch getBlockchainType() {
+        case .Ethereum:
+                .ethereumIcon
+        default:
+                .polygonIcon
         }
-        .frame(height: ConnectCurveLine.sectionHeight)
     }
     
     @ViewBuilder
