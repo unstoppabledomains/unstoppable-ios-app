@@ -106,7 +106,8 @@ struct UDWallet: Codable, @unchecked Sendable {
             return UDWallet(aliasName: aliasName,
                             walletType: .importedUnverified,
                             ethWallet: wallet)
-        case .Base: return nil 
+        case .Base: Debugger.printWarning("Attempt to create unverified wallet based on Base chain: failed")
+            return nil
         }
     }
     
