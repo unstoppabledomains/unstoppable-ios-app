@@ -334,6 +334,7 @@ private struct BaseVisualisationView<C: View>: View {
                         .frame(height: 24)
                         .textAttributes(color: .foregroundSecondary, fontSize: 16)
                 }
+                .minimumScaleFactor(0.7)
                 .padding(.horizontal, 16)
             }
         }
