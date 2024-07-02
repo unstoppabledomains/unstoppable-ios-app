@@ -26,15 +26,6 @@ extension BlockchainType {
         }
     }
     
-    var fullName: String {
-        switch self {
-        case .Ethereum:
-            return "Ethereum"
-        case .Matic:
-            return "Polygon"
-        }
-    }
-    
     func supportedChainId(isTestNet: Bool) -> Int {
         switch self {
         case .Ethereum:
@@ -46,5 +37,25 @@ extension BlockchainType {
     
     func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
         supportedChainId(isTestNet: env == .testnet)
+    }
+    
+    var chainIcon: UIImage {
+        switch self {
+        case .Ethereum:
+                .ethereumIcon
+        case .Matic:
+                .polygonIcon
+        }
+    }
+}
+
+extension SemiSupportedBlockchainType {
+    var chainIcon: UIImage {
+        switch self {
+        case .Bitcoin:
+                .bitcoinIcon
+        case .Solana:
+                .solanaIcon
+        }
     }
 }

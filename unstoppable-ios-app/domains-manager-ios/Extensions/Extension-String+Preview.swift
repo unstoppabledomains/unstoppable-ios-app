@@ -242,6 +242,7 @@ extension String {
         static let new = "NEW"
         static let confirmEmail = "CONFIRM_EMAIL"
         static let setup = "SETUP"
+        static let networkFee = "NETWORK_FEE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -1194,6 +1195,7 @@ extension String {
         static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
+        static let sentSuccessfully = "SENT_SUCCESSFULLY"
         
         // Import MPC
         static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"
@@ -1259,6 +1261,7 @@ extension String {
         static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
+        static let sendCrypto = "SEND_CRYPTO"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

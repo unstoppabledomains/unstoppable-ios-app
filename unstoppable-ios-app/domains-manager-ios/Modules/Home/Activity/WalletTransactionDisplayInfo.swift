@@ -22,17 +22,28 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     let from: Participant
     let to: Participant
     
+    var isDomainNFT: Bool {
+        nftName.isValidDomainName()
+    }
+    
     struct Participant: Hashable {
         let address: String
         let label: String?
         let link: URL?
         
         var displayName: String {
+            if let domainName {
+                return domainName
+            }
+            return address.walletAddressTruncated
+        }
+        
+        var domainName: String? {
             if let label,
                label.isValidDomainName() {
                 return label
             }
-            return address.walletAddressTruncated
+            return nil
         }
         
         init(address: String, domainName: String?, link: URL?) {
