@@ -80,13 +80,13 @@ private extension TransactionDetailsPullUpView {
     func getCurrentSections() -> [ConnectLineSectionView.SectionType] {
         [.infoValue(.init(title: String.Constants.from.localized(),
                           icon: .walletExternalIcon,
-                          value: "oleg.x")),
+                          value: tx.from.displayName)),
          .infoValue(.init(title: String.Constants.chain.localized(),
                           icon: chainIcon,
                           value: chainFullName)),
          .infoValue(.init(title: String.Constants.networkFee.localized(),
                           icon: .gas,
-                          value: "oleg.x"))]
+                          value: tx.gas.formatted(toMaxNumberAfterComa: 4)))]
     }
     
     var chainFullName: String {
@@ -109,18 +109,20 @@ private extension TransactionDetailsPullUpView {
     
     @ViewBuilder
     func viewTxButton() -> some View {
-        if canViewTransaction {
+        if let url = tx.link {
             UDButtonView(text: String.Constants.viewTransaction.localized(),
                          style: .large(.raisedPrimary)) {
-                
+                appContext.analyticsService.log(event: .buttonPressed,
+                                                withParameters: [.pullUpName: Analytics.PullUp.transactionDetails.rawValue,
+                                                                 .button: Analytics.Button.viewTransaction.rawValue])
+                openURL(url)
             }
         }
     }
     
-    func openLink() {
-        if let url = tx.link {
-            //            openLink(.direct(url: url))
-        }
+    @MainActor
+    func openURL(_ url: URL) {
+        openLink(.direct(url: url))
     }
     
     var canViewTransaction: Bool {
