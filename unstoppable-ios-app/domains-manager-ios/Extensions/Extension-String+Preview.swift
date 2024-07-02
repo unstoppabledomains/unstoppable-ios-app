@@ -1253,8 +1253,8 @@ extension String {
     
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
-        case zilliqa = "smallZilliqa"
         case matic = "smallMatic"
+        case base = "BASE"
     }
     
     func isMatchingRegexPattern(_ regexPattern: String) -> Bool {

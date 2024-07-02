@@ -29,7 +29,7 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
         case .Base:
-            return UIImage(named: String.BlockChainIcons.matic.rawValue)! // TODO: import Base icon
+            return UIImage(named: String.BlockChainIcons.base.rawValue)!
         }
     }
     
