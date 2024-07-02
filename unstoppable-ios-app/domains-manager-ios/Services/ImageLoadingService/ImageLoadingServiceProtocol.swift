@@ -46,6 +46,7 @@ enum ImageSource: Sendable {
     case domainNameInitials(_ domainName: String, size: InitialsView.InitialsSize)
     case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
+    case walletDomain(_ walletAddress: HexAddress)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case currencyTicker(_ ticker: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case wcApp(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo, size: InitialsView.InitialsSize)
@@ -76,6 +77,8 @@ enum ImageSource: Sendable {
                 return ImageSource.domain(domainItem).key
             }
             return ImageSource.domainInitials(domainItem, size: size).key
+        case .walletDomain(let walletAddress):
+            return walletAddress
         case .currency(let currency, let size, let style):
             return ImageSource.currencyTicker(currency.ticker, size: size, style: style).key
         case .currencyTicker(let ticker, let size, let style):

@@ -57,11 +57,12 @@ extension MockEntitiesFabric {
                                    id: String = "1",
                                    dateOffset: TimeInterval = 0,
                                    isDeposit: Bool = true) -> SerializedWalletTransaction {
-            let fromAddress = isDeposit ? "0" : userWallet
+            let otherWallet = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
+            let fromAddress = isDeposit ? otherWallet : userWallet
             let from: SerializedWalletTransaction.Participant = .init(address: fromAddress,
                                                                       label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x",
                                                                       link: "")
-            let toAddress = !isDeposit ? "0" : userWallet
+            let toAddress = !isDeposit ? otherWallet : userWallet
             let to: SerializedWalletTransaction.Participant = .init(address: toAddress,
                                                                     label: nil,
                                                                     link: "")

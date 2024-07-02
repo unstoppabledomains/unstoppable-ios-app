@@ -51,22 +51,12 @@ private extension TransactionDetailsPullUpView {
         ZStack {
             HStack(spacing: 8) {
                 TxItemVisualisationView(tx: tx)
-                txReceiverVisualisationView()
+                TxReceiverVisualisationView(tx: tx)
             }
             ConnectTransactionSign()
                 .rotationEffect(.degrees(-90))
         }
         .frame(height: 136)
-    }
-    
-    @ViewBuilder
-    func txReceiverVisualisationView() -> some View {
-        BaseVisualisationView(title: "Item",
-                              subtitle: "Item",
-                              backgroundStyle: .active(.success)) {
-            Image.addWalletIcon
-                .resizable()
-        }
     }
     
     @MainActor
@@ -208,6 +198,84 @@ private extension TransactionDetailsPullUpView {
             }
         }
     }
+    
+    struct TxReceiverVisualisationView: View {
+        
+        @Environment(\.imageLoadingService) var imageLoadingService
+        
+        let tx: WalletTransactionDisplayInfo
+        @State private var icon: UIImage?
+        
+        var body: some View {
+            BaseVisualisationView(title: title,
+                                  subtitle: subtitle,
+                                  backgroundStyle: .active(.success)) {
+                switch tx.type {
+                case .tokenDeposit, .tokenWithdrawal:
+                    iconView()
+                        .clipShape(Circle())
+                case .nftDeposit, .nftWithdrawal:
+                    iconView()
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+                                  .onAppear(perform: onAppear)
+                                  .animation(.default, value: UUID())
+        }
+        
+        var title: String {
+            if let receiverDomainName {
+                return receiverDomainName
+            }
+            return tx.to.address.walletAddressTruncated
+        }
+        
+        var subtitle: String {
+            if receiverDomainName == nil {
+                return "Recepient"
+            }
+            return tx.to.address.walletAddressTruncated
+        }
+        
+        @ViewBuilder
+        private func iconView() -> some View {
+            if let icon {
+                Image(uiImage: icon)
+                    .resizable()
+            } else {
+                Image.walletExternalIcon
+                    .resizable()
+                    .padding(8)
+                    .background(Color.backgroundMuted2)
+            }
+        }
+        
+        private func onAppear() {
+            loadIcon()
+        }
+        
+        private var receiverDomainName: String? {
+            if let domainName = tx.to.label,
+               domainName.isValidDomainName() {
+                return domainName
+            }
+            return nil
+        }
+        
+        private func loadIcon() {
+            Task {
+                if let receiverDomainName {
+                    icon = await imageLoadingService.loadImage(from: .domainNameInitials(receiverDomainName, size: .default), downsampleDescription: .mid)
+                    
+                    if let pfp = await imageLoadingService.loadImage(from: .walletDomain(tx.to.address),
+                                                                     downsampleDescription: .mid) {
+                        icon = pfp
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 private struct BaseVisualisationView<C: View>: View {
