@@ -113,29 +113,11 @@ private extension TransactionDetailsPullUpView {
                           icon: fromInfoIcon,
                           value: tx.from.displayName)),
          .infoValue(.init(title: String.Constants.chain.localized(),
-                          icon: chainIcon,
-                          value: chainFullName)),
+                          icon: tx.chainIcon,
+                          value: tx.chainFullName)),
          .infoValue(.init(title: String.Constants.networkFee.localized(),
                           icon: .gas,
                           value: tx.gas.formatted(toMaxNumberAfterComa: 4)))]
-    }
-    
-    var chainFullName: String {
-        if let blockchainType = BlockchainType(rawValue: tx.symbol) {
-            return blockchainType.fullName
-        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: tx.symbol) {
-            return blockchainType.fullName
-        }
-        return "-"
-    }
-    
-    var chainIcon: UIImage {
-        if let blockchainType = BlockchainType(rawValue: tx.symbol) {
-            return blockchainType.chainIcon
-        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: tx.symbol) {
-            return blockchainType.chainIcon
-        }
-        return .alertCircle
     }
     
     @ViewBuilder
