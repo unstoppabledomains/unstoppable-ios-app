@@ -163,7 +163,7 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
 // MARK: - Private functions
 private extension QRScannerViewPresenter {
     func setBlockchainTypePicker() {
-        view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: blockchainType)
+        view?.setBlockchainTypeSelectionWith(availableTypes: WalletConnectServiceV2.supportedNetworks, selectedType: blockchainType)
     }
     
     func setSelected(wallet: WalletEntity) {

@@ -22,8 +22,6 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         return result
     }
     
-    static let supportedCases: [BlockchainType] = [.Ethereum, .Matic]
-    
     var icon: UIImage {
         switch self {
         case .Ethereum:
