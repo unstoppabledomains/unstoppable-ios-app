@@ -35,7 +35,7 @@ private extension TransactionDetailsPullUpView {
     @ViewBuilder
     func titleViews() -> some View {
         VStack(spacing: 8) {
-            Text("Sent successfully")
+            Text(String.Constants.sentSuccessfully.localized())
                 .textAttributes(color: .foregroundDefault, fontSize: 22, fontWeight: .bold)
             HStack {
                 Text(tx.time, style: .date)
