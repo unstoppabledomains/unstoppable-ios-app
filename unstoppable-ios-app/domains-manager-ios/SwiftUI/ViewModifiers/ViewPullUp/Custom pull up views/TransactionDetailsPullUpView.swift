@@ -82,7 +82,7 @@ private extension TransactionDetailsPullUpView {
     @MainActor
     @ViewBuilder
     func curveLine() -> some View {
-        ConnectDarkCurveLine(numberOfSections: 4)
+        ConnectDarkCurveLine(numberOfSections: getCurrentSections().count + 1)
     }
     
     @MainActor
@@ -103,23 +103,28 @@ private extension TransactionDetailsPullUpView {
                           value: "oleg.x")),
          .infoValue(.init(title: String.Constants.chain.localized(),
                           icon: chainIcon,
-                          value: getBlockchainType()?.fullName ?? "")),
-         .infoValue(.init(title: String.Constants.txFee.localized(),
+                          value: chainFullName)),
+         .infoValue(.init(title: String.Constants.networkFee.localized(),
                           icon: .gas,
                           value: "oleg.x"))]
     }
     
-    func getBlockchainType() -> BlockchainType? {
-        BlockchainType(rawValue: tx.symbol)
+    var chainFullName: String {
+        if let blockchainType = BlockchainType(rawValue: tx.symbol) {
+            return blockchainType.fullName
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: tx.symbol) {
+            return blockchainType.fullName
+        }
+        return "-"
     }
     
     var chainIcon: UIImage {
-        switch getBlockchainType() {
-        case .Ethereum:
-                .ethereumIcon
-        default:
-                .polygonIcon
+        if let blockchainType = BlockchainType(rawValue: tx.symbol) {
+            return blockchainType.chainIcon
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: tx.symbol) {
+            return blockchainType.chainIcon
         }
+        return .alertCircle
     }
     
     @ViewBuilder

@@ -26,15 +26,6 @@ extension BlockchainType {
         }
     }
     
-    var fullName: String {
-        switch self {
-        case .Ethereum:
-            return "Ethereum"
-        case .Matic:
-            return "Polygon"
-        }
-    }
-    
     func supportedChainId(isTestNet: Bool) -> Int {
         switch self {
         case .Ethereum:

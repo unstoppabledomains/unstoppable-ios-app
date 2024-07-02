@@ -180,6 +180,7 @@
 "NEW" = "New";
 "CONFIRM_EMAIL" = "Confirm email";
 "SETUP" = "Setup";
+"NETWORK_FEE" = "Network Fee";
 
 /* ONBOARDING */
 // Tutorial screens

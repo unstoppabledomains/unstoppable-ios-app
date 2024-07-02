@@ -242,6 +242,7 @@ extension String {
         static let new = "NEW"
         static let confirmEmail = "CONFIRM_EMAIL"
         static let setup = "SETUP"
+        static let networkFee = "NETWORK_FEE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
