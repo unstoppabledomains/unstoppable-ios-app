@@ -12,9 +12,6 @@ final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
     
     private var networkSelectorButton: SelectorButton?
     private var networkIndicator: UIImageView?
-    private var walletInfoStackView: UIStackView?
-    private var networkFullStackView: UIStackView?
-    private var bottomStackView: UIStackView?
     private var supportedChains: [BlockchainType] = []
     private var cancellables: Set<AnyCancellable> = []
 
@@ -40,9 +37,6 @@ extension ConnectServerRequestConfirmationView {
         setNetworkFrom(appInfo: connectionConfig.appInfo)
         setWith(appInfo: connectionConfig.appInfo)
         setWithWallet(connectionConfig.wallet)
-        networkFullStackView?.isHidden = true
-        bottomStackView?.axis = .vertical
-        walletInfoStackView?.axis = .horizontal
 
         let blockchainType = getChainFromAppInfo(connectionConfig.appInfo)
         set(selectedChain: blockchainType)
@@ -57,53 +51,13 @@ private extension ConnectServerRequestConfirmationView {
     
     func addWalletInfo() {
         let walletStack = buildWalletInfoView()
-        walletStack.axis = .vertical
-        walletStack.alignment = .leading
-        walletStack.spacing = 6
-        self.walletInfoStackView = walletStack
-        
-        let networkTitleLabel = UILabel()
-        networkTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        networkTitleLabel.setAttributedTextWith(text: String.Constants.network.localized(),
-                                           font: .currentFont(withSize: 14, weight: .medium),
-                                           textColor: .foregroundSecondary,
-                                           alignment: .right,
-                                           lineHeight: 20)
-        
-        let networkSelectorButton = createNetworkSelectorButton()
-        self.networkSelectorButton = networkSelectorButton
-        
-        let networkIndicator = createNetworkIndicator()
-        self.networkIndicator = networkIndicator
-        
-        let networkIndicatorStack = UIStackView(arrangedSubviews: [networkIndicator, networkSelectorButton])
-        networkIndicatorStack.axis = .horizontal
-        networkIndicatorStack.alignment = .center
-        networkIndicatorStack.spacing = 8
-        
-        let networkFullStack = UIStackView(arrangedSubviews: [networkTitleLabel, networkIndicatorStack])
-        networkFullStack.axis = .vertical
-        networkFullStack.alignment = .trailing
-        networkFullStack.spacing = 6
-        self.networkFullStackView = networkFullStack
-        
-        let bottomStack = UIStackView(arrangedSubviews: [walletStack, networkFullStack])
-        bottomStack.spacing = 16
-        bottomStack.axis = .horizontal
+        walletStack.axis = .horizontal
+
+        let bottomStack = UIStackView(arrangedSubviews: [walletStack])
+        bottomStack.axis = .vertical
         bottomStack.alignment = .center
-        bottomStack.distribution = .fillEqually
-        self.bottomStackView = bottomStack
         
         contentStackView.addArrangedSubview(bottomStack)
-    }
-    
-    func createNetworkSelectorButton() -> SelectorButton {
-        let networkSelectorButton = SelectorButton()
-        networkSelectorButton.customTitleEdgePadding = 0
-        networkSelectorButton.translatesAutoresizingMaskIntoConstraints = false
-        networkSelectorButton.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        
-        return networkSelectorButton
     }
     
     func set(selectedChain: BlockchainType) {
@@ -135,16 +89,6 @@ private extension ConnectServerRequestConfirmationView {
         networkSelectorButton.setTitle(selectedChain.fullName, image: .chevronDown)
 
         networkIndicator?.image = UIImage.getNetworkLargeIcon(by: selectedChain)
-    }
-    
-    func createNetworkIndicator() -> UIImageView {
-        let indicator = UIImageView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.tintColor = .foregroundWarning
-        indicator.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        indicator.widthAnchor.constraint(equalTo: indicator.heightAnchor, multiplier: 1).isActive = true
-        
-        return indicator
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {

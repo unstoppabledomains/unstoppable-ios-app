@@ -150,7 +150,7 @@ private extension PaymentTransactionRequestConfirmationView {
         let walletStack = buildWalletInfoView()
         walletStack.axis = .vertical
         walletStack.alignment = .leading
-        walletStack.spacing = 6
+        walletStack.spacing = 16
 
         let balanceLabel = UILabel()
         balanceLabel.translatesAutoresizingMaskIntoConstraints = false
