@@ -111,10 +111,7 @@ private extension WalletTransactionDisplayInfoListItemView {
     var sourceText: String {
         switch transaction.type {
         case .tokenWithdrawal, .tokenDeposit:
-            if let chainType = BlockchainType(rawValue: transaction.symbol) {
-                return chainType.fullName
-            }
-            return transaction.symbol
+            return transaction.chainFullName
         case .nftDeposit, .nftWithdrawal:
             return transaction.nftName
         }

@@ -17,6 +17,7 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     let link: URL?
     let imageUrl: URL?
     let symbol: String
+    let chain: String
     let nftName: String
     let type: TransactionType
     let from: Participant
@@ -72,6 +73,7 @@ extension WalletTransactionDisplayInfo {
         self.gas = serializedTransaction.gas
         self.link = URL(string: serializedTransaction.link)
         self.imageUrl = URL(string: serializedTransaction.imageUrl ?? "")
+        self.chain = serializedTransaction.symbol
         if serializedTransaction.type == "erc20" {
             self.symbol = serializedTransaction.method
         } else {
@@ -114,5 +116,27 @@ extension WalletTransactionDisplayInfo {
                 false
             }
         }
+    }
+}
+
+import UIKit
+
+extension WalletTransactionDisplayInfo {
+    var chainFullName: String {
+        if let blockchainType = BlockchainType(rawValue: chain) {
+            return blockchainType.fullName
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chain) {
+            return blockchainType.fullName
+        }
+        return chain
+    }
+    
+    var chainIcon: UIImage {
+        if let blockchainType = BlockchainType(rawValue: chain) {
+            return blockchainType.chainIcon
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chain) {
+            return blockchainType.chainIcon
+        }
+        return .alertCircle
     }
 }
