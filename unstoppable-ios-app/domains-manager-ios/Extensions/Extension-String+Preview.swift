@@ -1261,6 +1261,7 @@ extension String {
         static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
         static let contactSupport = "CONTACT_SUPPORT"
         static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
+        static let sendCrypto = "SEND_CRYPTO"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"

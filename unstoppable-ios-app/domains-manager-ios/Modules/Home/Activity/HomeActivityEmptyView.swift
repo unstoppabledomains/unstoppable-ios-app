@@ -19,7 +19,7 @@ struct HomeActivityEmptyView: View, ViewAnalyticsLogger {
                 .squareFrame(48)
             Text(String.Constants.noTransactionsYet.localized())
                 .font(.currentFont(size: 22, weight: .bold))
-            UDButtonView(text: String.Constants.send.localized(),
+            UDButtonView(text: String.Constants.sendCrypto.localized(),
                          icon: .paperPlaneTopRight,
                          style: .medium(.raisedTertiary),
                          callback: {

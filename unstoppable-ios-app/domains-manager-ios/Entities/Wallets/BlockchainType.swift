@@ -26,15 +26,6 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Polygon"
         }
     }
-    
-    var chainIcon: UIImage {
-        switch self {
-        case .Ethereum:
-                .ethereumIcon
-        case .Matic:
-                .polygonIcon
-        }
-    }
 }
 
 enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
@@ -47,15 +38,6 @@ enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
             return "Bitcoin"
         case .Solana:
             return "Solana"
-        }
-    }
-    
-    var chainIcon: UIImage {
-        switch self {
-        case .Bitcoin:
-                .bitcoinIcon
-        case .Solana:
-                .solanaIcon
         }
     }
 }

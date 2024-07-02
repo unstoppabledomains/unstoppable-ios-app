@@ -9,7 +9,11 @@ import SwiftUI
 
 struct TransactionDetailsPullUpView: View {
     
+    @Environment(\.imageLoadingService) var imageLoadingService
+
     let tx: WalletTransactionDisplayInfo
+    
+    @State private var fromDomainIcon: UIImage?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -27,11 +31,31 @@ struct TransactionDetailsPullUpView: View {
         }
         .padding(.horizontal, 16)
         .background(Color.backgroundDefault)
+        .onAppear(perform: onAppear)
     }
 }
 
 // MARK: - Private methods
 private extension TransactionDetailsPullUpView {
+    func onAppear() {
+        loadFromInfoDomainIcon()
+    }
+    
+    func loadFromInfoDomainIcon() {
+        Task {
+            if let domainName = tx.from.domainName {
+                fromDomainIcon = await imageLoadingService.loadImage(from: .domainNameInitials(domainName,
+                                                                                               size: .default),
+                                                                     downsampleDescription: .mid)
+                
+                if let pfp = await imageLoadingService.loadImage(from: .walletDomain(tx.from.address),
+                                                                 downsampleDescription: .mid) {
+                    fromDomainIcon = pfp
+                }
+            }
+        }
+    }
+    
     @ViewBuilder
     func titleViews() -> some View {
         VStack(spacing: 8) {
@@ -77,9 +101,16 @@ private extension TransactionDetailsPullUpView {
         .padding(.init(horizontal: 16))
     }
     
+    var fromInfoIcon: UIImage {
+        if let fromDomainIcon {
+            return fromDomainIcon
+        }
+        return .walletExternalIcon
+    }
+    
     func getCurrentSections() -> [ConnectLineSectionView.SectionType] {
         [.infoValue(.init(title: String.Constants.from.localized(),
-                          icon: .walletExternalIcon,
+                          icon: fromInfoIcon,
                           value: tx.from.displayName)),
          .infoValue(.init(title: String.Constants.chain.localized(),
                           icon: chainIcon,
@@ -183,8 +214,7 @@ private extension TransactionDetailsPullUpView {
         
         @ViewBuilder
         private func iconView() -> some View {
-            Image(uiImage: itemIcon)
-                .resizable()
+            UIImageBridgeView(image: itemIcon)
         }
         
         private func onAppear() {
@@ -242,8 +272,7 @@ private extension TransactionDetailsPullUpView {
         @ViewBuilder
         private func iconView() -> some View {
             if let icon {
-                Image(uiImage: icon)
-                    .resizable()
+                UIImageBridgeView(image: icon)
             } else {
                 Image.walletExternalIcon
                     .resizable()
@@ -257,8 +286,7 @@ private extension TransactionDetailsPullUpView {
         }
         
         private var receiverDomainName: String? {
-            if let domainName = tx.to.label,
-               domainName.isValidDomainName() {
+            if let domainName = tx.to.domainName {
                 return domainName
             }
             return nil
@@ -267,7 +295,9 @@ private extension TransactionDetailsPullUpView {
         private func loadIcon() {
             Task {
                 if let receiverDomainName {
-                    icon = await imageLoadingService.loadImage(from: .domainNameInitials(receiverDomainName, size: .default), downsampleDescription: .mid)
+                    icon = await imageLoadingService.loadImage(from: .domainNameInitials(receiverDomainName, 
+                                                                                         size: .default),
+                                                               downsampleDescription: .mid)
                     
                     if let pfp = await imageLoadingService.loadImage(from: .walletDomain(tx.to.address),
                                                                      downsampleDescription: .mid) {
@@ -304,6 +334,7 @@ private struct BaseVisualisationView<C: View>: View {
                         .frame(height: 24)
                         .textAttributes(color: .foregroundSecondary, fontSize: 16)
                 }
+                .padding(.horizontal, 16)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

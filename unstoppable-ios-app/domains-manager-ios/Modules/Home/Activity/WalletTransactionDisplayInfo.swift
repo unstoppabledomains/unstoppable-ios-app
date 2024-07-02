@@ -32,11 +32,18 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
         let link: URL?
         
         var displayName: String {
+            if let domainName {
+                return domainName
+            }
+            return address.walletAddressTruncated
+        }
+        
+        var domainName: String? {
             if let label,
                label.isValidDomainName() {
                 return label
             }
-            return address.walletAddressTruncated
+            return nil
         }
         
         init(address: String, domainName: String?, link: URL?) {

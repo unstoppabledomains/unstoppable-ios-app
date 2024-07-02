@@ -188,8 +188,8 @@ fileprivate extension ImageLoadingService {
             return await fetchImageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
         case .walletDomain(let walletAddress):
             if let resolution = try? await NetworkService().fetchGlobalReverseResolution(for: walletAddress),
-               let pfpUrl = resolution.pfpURLToUse {
-                return await fetchImageFor(source: .url(pfpUrl, maxSize: nil),
+               let pfpInfo = await appContext.udDomainsService.updateDomainsPFPInfo(for: [resolution.name]).first {
+                return await fetchImageFor(source: .domainPFPSource(pfpInfo.source),
                                            downsampleDescription: downsampleDescription)
             }
             return nil
