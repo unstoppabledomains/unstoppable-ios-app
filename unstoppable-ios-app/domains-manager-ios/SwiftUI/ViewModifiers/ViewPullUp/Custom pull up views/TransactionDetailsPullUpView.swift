@@ -50,23 +50,13 @@ private extension TransactionDetailsPullUpView {
     func txVisualisationsView() -> some View {
         ZStack {
             HStack(spacing: 8) {
-                txItemVisualisationView()
+                TxItemVisualisationView(tx: tx)
                 txReceiverVisualisationView()
             }
             ConnectTransactionSign()
                 .rotationEffect(.degrees(-90))
         }
         .frame(height: 136)
-    }
-    
-    @ViewBuilder
-    func txItemVisualisationView() -> some View {
-        BaseVisualisationView(title: "Item",
-                              subtitle: "Item",
-                              backgroundStyle: .plain) {
-            Image.addWalletIcon
-                .resizable()
-        }
     }
     
     @ViewBuilder
@@ -150,101 +140,170 @@ private extension TransactionDetailsPullUpView {
 
 // MARK: - Private methods
 private extension TransactionDetailsPullUpView {
-    struct BaseVisualisationView<C: View>: View {
+    struct TxItemVisualisationView: View {
         
-        let title: String
-        let subtitle: String
-        let backgroundStyle: BackgroundStyle
-        @ViewBuilder var iconContent: () -> C
+        @Environment(\.imageLoadingService) var imageLoadingService
+
+        let tx: WalletTransactionDisplayInfo
+        @State private var icon: UIImage?
 
         var body: some View {
-            ZStack {
-                if case .active = backgroundStyle {
-                    Image.confirmSendTokenGrid
-                        .resizable()
-                }
-                VStack(spacing: 16) {
-                    iconContent()
-                        .squareFrame(40)
-                    VStack(spacing: 0) {
-                        Text(title)
-                            .frame(height: 24)
-                            .textAttributes(color: .foregroundDefault, fontSize: 20, fontWeight: .medium)
-                        Text(subtitle)
-                            .frame(height: 24)
-                            .textAttributes(color: .foregroundSecondary, fontSize: 16)
-                    }
+            BaseVisualisationView(title: title,
+                                  subtitle: subtitle,
+                                  backgroundStyle: .plain) {
+                switch tx.type {
+                case .tokenDeposit, .tokenWithdrawal:
+                    iconView()
+                        .clipShape(Circle())
+                case .nftDeposit, .nftWithdrawal:
+                    iconView()
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            .background(backgroundView())
-            .overlay {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(lineWidth: 1)
-                    .foregroundStyle(borderColor)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .onAppear(perform: onAppear)
         }
         
-        var borderColor: Color {
-            switch backgroundStyle {
-            case .plain:
-                    .white.opacity(0.08)
-            case .active(let activeBackgroundStyle):
-                activeBackgroundStyle.borderColor
+        var title: String {
+            switch tx.type {
+            case .tokenDeposit, .tokenWithdrawal:
+                BalanceStringFormatter.tokensBalanceUSDString(tx.value)
+            case .nftDeposit, .nftWithdrawal:
+                tx.nftName
             }
+        }
+        
+        var subtitle: String {
+            switch tx.type {
+            case .tokenDeposit, .tokenWithdrawal:
+                "\(tx.value.formatted(toMaxNumberAfterComa: 4)) \(tx.symbol)"
+            case .nftDeposit, .nftWithdrawal:
+                if tx.isDomainNFT {
+                    String.Constants.domain.localized()
+                } else {
+                    "NFT"
+                }
+            }
+        }
+        
+        var itemIcon: UIImage {
+            icon ?? .init()
         }
         
         @ViewBuilder
-        func backgroundView() -> some View {
-            switch backgroundStyle {
-            case .plain:
-                Color.backgroundOverlay
-            case .active(let activeBackgroundStyle):
-                activeBackgroundStyle.backgroundGradient
+        private func iconView() -> some View {
+            Image(uiImage: itemIcon)
+                .resizable()
+        }
+        
+        private func onAppear() {
+            loadIcon()
+        }
+        
+        private func loadIcon() {
+            Task {
+                if let url = tx.imageUrl {
+                    icon = await imageLoadingService.loadImage(from: .url(url, maxSize: nil),
+                                                               downsampleDescription: .mid)
+                }
+            }
+        }
+    }
+}
+
+private struct BaseVisualisationView<C: View>: View {
+    
+    let title: String
+    let subtitle: String
+    let backgroundStyle: BackgroundStyle
+    @ViewBuilder var iconContent: () -> C
+    
+    var body: some View {
+        ZStack {
+            if case .active = backgroundStyle {
+                Image.confirmSendTokenGrid
+                    .resizable()
+            }
+            VStack(spacing: 16) {
+                iconContent()
+                    .squareFrame(40)
+                VStack(spacing: 0) {
+                    Text(title)
+                        .frame(height: 24)
+                        .textAttributes(color: .foregroundDefault, fontSize: 20, fontWeight: .medium)
+                    Text(subtitle)
+                        .frame(height: 24)
+                        .textAttributes(color: .foregroundSecondary, fontSize: 16)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
+        .background(backgroundView())
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(lineWidth: 1)
+                .foregroundStyle(borderColor)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    var borderColor: Color {
+        switch backgroundStyle {
+        case .plain:
+                .white.opacity(0.08)
+        case .active(let activeBackgroundStyle):
+            activeBackgroundStyle.borderColor
+        }
+    }
+    
+    @ViewBuilder
+    func backgroundView() -> some View {
+        switch backgroundStyle {
+        case .plain:
+            Color.backgroundOverlay
+        case .active(let activeBackgroundStyle):
+            activeBackgroundStyle.backgroundGradient
+        }
+    }
+    
+    enum BackgroundStyle {
+        case plain
+        case active(ActiveBackgroundStyle)
+    }
+    
+    enum ActiveBackgroundStyle {
+        case accent
+        case success
+        
+        var borderColor: Color {
+            switch self {
+            case .accent:
+                    .foregroundAccent
+            case .success:
+                    .foregroundSuccess
             }
         }
         
-        enum BackgroundStyle {
-            case plain
-            case active(ActiveBackgroundStyle)
-        }
-        
-        enum ActiveBackgroundStyle {
-            case accent
-            case success
-            
-            var borderColor: Color {
-                switch self {
-                case .accent:
-                        .foregroundAccent
-                case .success:
-                        .foregroundSuccess
-                }
-            }
-            
-            var backgroundGradient: LinearGradient {
-                switch self {
-                case .accent:
-                    LinearGradient(
-                        stops: [
-                            Gradient.Stop(color: Color(red: 0.05, green: 0.4, blue: 1).opacity(0), location: 0.25),
-                            Gradient.Stop(color: Color(red: 0.05, green: 0.4, blue: 1).opacity(0.16), location: 1.00),
-                        ],
-                        startPoint: UnitPoint(x: 0.5, y: 0),
-                        endPoint: UnitPoint(x: 0.5, y: 1)
-                    )
-                case .success:
-                    LinearGradient(
-                        stops: [
-                            Gradient.Stop(color: Color(red: 0.05, green: 0.65, blue: 0.4).opacity(0), location: 0.25),
-                            Gradient.Stop(color: Color(red: 0.05, green: 0.65, blue: 0.4).opacity(0.16), location: 1.00),
-                        ],
-                        startPoint: UnitPoint(x: 0.5, y: 0),
-                        endPoint: UnitPoint(x: 0.5, y: 1)
-                    )
-                }
+        var backgroundGradient: LinearGradient {
+            switch self {
+            case .accent:
+                LinearGradient(
+                    stops: [
+                        Gradient.Stop(color: Color(red: 0.05, green: 0.4, blue: 1).opacity(0), location: 0.25),
+                        Gradient.Stop(color: Color(red: 0.05, green: 0.4, blue: 1).opacity(0.16), location: 1.00),
+                    ],
+                    startPoint: UnitPoint(x: 0.5, y: 0),
+                    endPoint: UnitPoint(x: 0.5, y: 1)
+                )
+            case .success:
+                LinearGradient(
+                    stops: [
+                        Gradient.Stop(color: Color(red: 0.05, green: 0.65, blue: 0.4).opacity(0), location: 0.25),
+                        Gradient.Stop(color: Color(red: 0.05, green: 0.65, blue: 0.4).opacity(0.16), location: 1.00),
+                    ],
+                    startPoint: UnitPoint(x: 0.5, y: 0),
+                    endPoint: UnitPoint(x: 0.5, y: 1)
+                )
             }
         }
     }
