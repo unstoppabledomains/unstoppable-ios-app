@@ -48,6 +48,8 @@ extension UIImage {
     static let searchIcon = UIImage(named: "searchIcon")!
     static let ethBGLarge = UIImage(named: "ethBGLarge")!
     static let maticBGLarge = UIImage(named: "maticBGLarge")!
+    static let baseBGLarge = UIImage(named: "BASE")!
+    static let baseBGSmall = UIImage(named: "BASE")!
     static let ethBGSmall = UIImage(named: "ethBGSmall")!
     static let maticBGSmall = UIImage(named: "maticBGSmall")!
     static let checkBadge = UIImage(named: "checkBadge")!
@@ -242,7 +244,7 @@ extension UIImage {
         case .Matic:
             return .maticBGLarge
         case .Base:
-            return .maticBGLarge // TODO: get Base icon
+            return .baseBGLarge
         }
     }
     
@@ -253,7 +255,7 @@ extension UIImage {
         case .Matic:
             return .maticBGSmall
         case .Base:
-            return .maticBGSmall // TODO: get Base icon
+            return .baseBGSmall
         }
     }
     
