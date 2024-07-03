@@ -42,9 +42,14 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
                                    description: String.Constants.mobileAppDescription.localized(),
                                    url: String.Links.mainLanding.urlString,
                                    icons: [String.Links.udLogoPng.urlString], 
-                                   redirect: .init(native: "", universal: nil))
+                                   redirect: createMetadataRedirect())
         
         Pair.configure(metadata: metadata)
+    }
+    
+    private func createMetadataRedirect() -> AppMetadata.Redirect {
+        let redirect = try! AppMetadata.Redirect(native: "unstoppable://", universal: "https://unstoppabledomains.com")
+        return redirect
     }
 }
 
@@ -217,7 +222,7 @@ private extension WCRequestsHandlingServiceTests {
             let metadata: WalletConnectSign.AppMetadata
         }
         
-        let redirect = AppMetadata.Redirect(native: "", universal: nil)
+        let redirect = createMetadataRedirect()
         let appMetaData = WalletConnectSign.AppMetadata(name: "name", description: "des", url: "https://g.com", icons: [], redirect: redirect)
         let participantClone = ParticipantClone(publicKey: "key", metadata: appMetaData)
         let sessionProposalClone = SessionProposalClone(relays: [],

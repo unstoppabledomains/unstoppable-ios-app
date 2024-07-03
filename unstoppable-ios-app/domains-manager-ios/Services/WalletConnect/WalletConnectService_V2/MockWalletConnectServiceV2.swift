@@ -56,7 +56,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
         if let _ = connectedWallets.first(where: { $0.address == walletAddress }) {
-            return  [.makeMock()]
+            return  []
         }
         return []
     }
@@ -105,16 +105,5 @@ private extension WCConnectedAppsStorageV2.SessionProxy {
         self.peer = peer
         self.namespaces = namespaces
         self.expiryDate = expiryDate
-    }
-    
-    static func makeMock() -> WCConnectedAppsStorageV2.SessionProxy {
-        .init(topic: "", pairingTopic: "", peer: .init(name: "",
-                                                       description: "",
-                                                       url: "",
-                                                       icons: [],
-                                                       redirect: .init(native: "",
-                                                                       universal: nil)),
-              namespaces: [:],
-              expiryDate: Date())
     }
 }

@@ -264,12 +264,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
                              projectId: AppIdentificators.wc2ProjectId,
                              socketFactory: SocketFactory())
         
+        let redirect = try! AppMetadata.Redirect(native: "unstoppable://", universal: "https://unstoppabledomains.com")
         let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),
                                    description: String.Constants.mobileAppDescription.localized(),
                                    url: String.Links.mainLanding.urlString,
                                    icons: [String.Links.udLogoPng.urlString],
-                                   redirect: .init(native: "unstoppable://",
-                                                   universal: "https://unstoppabledomains.com"))
+                                   redirect: redirect)
         
         Pair.configure(metadata: metadata)
     }
