@@ -1196,6 +1196,7 @@ extension String {
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
         static let sentSuccessfully = "SENT_SUCCESSFULLY"
+        static let receivedSuccessfully = "RECEIVED_SUCCESSFULLY"
         
         // Import MPC
         static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"

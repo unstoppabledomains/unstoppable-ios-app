@@ -1091,6 +1091,7 @@ More tabs are coming in the next updates.";
 "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE" = "%@ hasn't added an address for the crypto you wish to send";
 "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE" = "To prevent loss of funds we restrict sending of crypto if an address hasn't been added to the domain by it's owner. Kindly inform the domain owner so you can send them funds.";
 "SENT_SUCCESSFULLY" = "Sent successfully";
+"RECEIVED_SUCCESSFULLY" = "Received successfully";
 
 // Import MPC
 "IMPORT_MPC_WALLET_TITLE" = "Import %@";
