@@ -234,6 +234,8 @@ enum BlockchainNetwork: Int, CaseIterable {
             return .Ethereum
         case .polygonMainnet, .polygonAmoy:
             return .Matic
+        case .baseMainnet, .baseSepolia:
+            return .Base
         }
     }
 }
