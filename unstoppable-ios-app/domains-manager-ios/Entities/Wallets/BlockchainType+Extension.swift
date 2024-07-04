@@ -56,6 +56,8 @@ extension SemiSupportedBlockchainType {
                 .bitcoinIcon
         case .Solana:
                 .solanaIcon
+        case .Base:
+                .baseIcon
         }
     }
 }
