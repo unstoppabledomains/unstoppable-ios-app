@@ -158,8 +158,7 @@ private extension WalletTransactionDisplayInfoListItemView {
         if transaction.isDomainNFT {
             nftTxValueViewWith(name: String.Constants.domain.localized())
         } else {
-            nftTxValueViewWith(name: "NFT")
-            
+            nftTxValueViewWith(name: String.Constants.collectible.localized())
         }
     }
     

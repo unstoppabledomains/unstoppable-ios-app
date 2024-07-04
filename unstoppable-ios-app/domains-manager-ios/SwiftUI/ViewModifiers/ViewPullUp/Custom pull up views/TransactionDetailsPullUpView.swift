@@ -194,7 +194,7 @@ private extension TransactionDetailsPullUpView {
                 if tx.isDomainNFT {
                     String.Constants.domain.localized()
                 } else {
-                    "NFT"
+                    String.Constants.collectible.localized()
                 }
             }
         }

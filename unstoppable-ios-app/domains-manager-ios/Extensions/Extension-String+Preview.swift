@@ -222,6 +222,7 @@ extension String {
         static let viewInBrowser = "VIEW_IN_BROWSER"
         static let tokens = "TOKENS"
         static let collectibles = "COLLECTIBLES"
+        static let collectible = "COLLECTIBLE"
         static let receive = "RECEIVE"
         static let profile = "PROFILE"
         static let more = "MORE"
