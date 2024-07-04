@@ -57,6 +57,14 @@ extension DomainProfilesService: DomainProfilesServiceProtocol {
         try? storage.retrieveProfileFor(domainName: domainName)
     }
  
+    func fetchResolvedDomainProfileDisplayInfo(for walletAddress: HexAddress) async throws -> DomainProfileDisplayInfo {
+        let domainName = try await networkService.fetchReverseResolution(for: walletAddress)
+        guard let domainName else {
+            throw DomainProfilesServiceError.noDomainForWalletAddress
+        }
+        return try await fetchDomainProfileDisplayInfo(for: domainName)
+    }
+    
     func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo {
         let serializedProfile = try await getSerializedPublicDomainProfile(for: domainName)
         let profile = DomainProfileDisplayInfo(serializedProfile: serializedProfile)
@@ -259,6 +267,7 @@ private extension DomainProfilesService {
 extension DomainProfilesService {
     enum DomainProfilesServiceError: String, LocalizedError {
         case noDomainForSocialDetails
+        case noDomainForWalletAddress
         
         public var errorDescription: String? {
             return rawValue

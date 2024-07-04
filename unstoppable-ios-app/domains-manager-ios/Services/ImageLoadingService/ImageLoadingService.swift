@@ -186,6 +186,13 @@ fileprivate extension ImageLoadingService {
                 return image
             }
             return await fetchImageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
+        case .walletDomain(let walletAddress):
+            if let resolution = try? await NetworkService().fetchGlobalReverseResolution(for: walletAddress),
+               let pfpInfo = await appContext.udDomainsService.updateDomainsPFPInfo(for: [resolution.name]).first {
+                return await fetchImageFor(source: .domainPFPSource(pfpInfo.source),
+                                           downsampleDescription: downsampleDescription)
+            }
+            return nil
         case .currencyTicker(let ticker, let size, let style):
             if let image = UIImage(named: ticker) {
                 cacheStorage.cache(image: image, forKey: source.keyFor(downsampleDescription: downsampleDescription))

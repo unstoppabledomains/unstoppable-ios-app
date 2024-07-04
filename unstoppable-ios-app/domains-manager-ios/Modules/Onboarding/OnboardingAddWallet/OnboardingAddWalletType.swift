@@ -10,6 +10,19 @@ import UIKit
 enum OnboardingAddWalletType: OnboardingStartOption {
     case mpcWallet, selfCustody
     
+    var type: OnboardingStartOptionType {
+        switch self {
+        case .mpcWallet:
+            return .generic(OnboardingBuyMPCOptionViewBuilder())
+        case .selfCustody:
+            return .listItem(.init(icon: icon,
+                                   title: title,
+                                   subtitle: subtitle,
+                                   subtitleType: subtitleType,
+                                   imageStyle: imageStyle))
+        }
+    }
+    
     var icon: UIImage {
         switch self {
         case .mpcWallet:
@@ -31,9 +44,9 @@ enum OnboardingAddWalletType: OnboardingStartOption {
     var subtitle: String? {
         switch self {
         case .mpcWallet:
-            return "Full cryptocurrency wallet for Web3 with enhanced backup."
+            return nil
         case .selfCustody:
-            return "Weak security and backup."
+            return String.Constants.createWalletOnboardingSubtitle.localized()
         }
     }
     

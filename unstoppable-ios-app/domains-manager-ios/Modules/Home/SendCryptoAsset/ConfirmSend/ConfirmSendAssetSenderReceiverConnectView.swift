@@ -14,7 +14,7 @@ struct ConfirmSendAssetSenderReceiverConnectView: View {
     var body: some View {
         ZStack {
             curveLine()
-            connectSign()
+            ConnectTransactionSign()
         }
     }
 }
@@ -30,27 +30,6 @@ private extension ConfirmSendAssetSenderReceiverConnectView {
         .shadow(color: Color.foregroundOnEmphasis2,
                 radius: 0, x: 0, y: -1)
         .frame(height: 48)
-    }
-    
-    @ViewBuilder
-    func connectSign() -> some View {
-        Image.chevronDoubleDown
-            .resizable()
-            .squareFrame(24)
-            .foregroundStyle(Color.foregroundDefault)
-            .padding(4)
-            .background(Color.backgroundDefault)
-            .shadow(color: Color.backgroundDefault, radius: 0, x: 0, y: 0)
-            .clipShape(Circle())
-            .overlay(
-                ZStack {
-                    Circle()
-                        .stroke(Color.backgroundDefault, lineWidth: 4)
-                    Circle()
-                        .stroke(Color.borderDefault, lineWidth: 1)
-                }
-            )
-           
     }
 }
 

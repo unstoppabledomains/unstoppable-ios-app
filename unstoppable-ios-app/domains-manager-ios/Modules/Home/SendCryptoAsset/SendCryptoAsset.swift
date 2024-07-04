@@ -42,7 +42,7 @@ extension SendCryptoAsset {
         case userWalletSelected(WalletEntity)
         case followingDomainSelected(DomainProfileDisplayInfo)
         case globalProfileSelected(SearchDomainProfile)
-        case globalWalletAddressSelected(HexAddress)
+        case globalWalletAddressSelected(SendCryptoAsset.WalletAddressDetails)
         
         case userTokenToSendSelected(SelectTokenAmountToSendData)
         case userTokenValueSelected(SendTokenAssetData)
@@ -56,6 +56,7 @@ extension SendCryptoAsset {
 extension SendCryptoAsset {
     struct AssetReceiver: Hashable {
         let walletAddress: String
+        let regexPattern: CoinRegexPattern
         let domainName: DomainName?
         private(set) var pfpURL: URL?
         private var records: [String: String] = [:]
@@ -88,6 +89,7 @@ extension SendCryptoAsset {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
             self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
+            self.regexPattern = .ETH
             try await loadRecords()
         }
         
@@ -95,6 +97,7 @@ extension SendCryptoAsset {
             self.walletAddress = profile.ownerWallet
             self.domainName = profile.domainName
             self.pfpURL = profile.pfpURL
+            self.regexPattern = .ETH
             try await loadRecords()
         }
         
@@ -106,13 +109,16 @@ extension SendCryptoAsset {
             self.walletAddress = walletAddress
             self.domainName = globalProfile.name
             self.pfpURL = globalProfile.imagePath?.asURL
+            self.regexPattern = .ETH
             try await loadRecords()
         }
         
-        init(walletAddress: HexAddress) {
+        init(walletAddress: HexAddress,
+             regexPattern: CoinRegexPattern) {
             self.walletAddress = walletAddress
             self.domainName = nil
             self.pfpURL = nil
+            self.regexPattern = regexPattern
         }
         
         mutating private func loadRecords() async throws {
@@ -191,6 +197,13 @@ extension SendCryptoAsset {
     
     struct TransferDomainConfirmationData {
         let shouldClearRecords: Bool
+    }
+}
+
+extension SendCryptoAsset {
+    struct WalletAddressDetails {
+        let address: String
+        let regexPattern: CoinRegexPattern
     }
 }
 

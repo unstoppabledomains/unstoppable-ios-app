@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fireblocks/ncw-ios-sdk.git",
       "state" : {
-        "revision" : "48f19d792d0f3c6431d49c22618ebd03ef7ce70d",
-        "version" : "2.4.1"
+        "revision" : "cd6b945d84e3242e5515ad4c6b278df742b996fc",
+        "version" : "2.6.0"
       }
     },
     {
@@ -329,8 +329,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
-        "revision" : "963473b0f431a880c00a59eeda9760df02950379",
-        "version" : "1.18.5"
+        "revision" : "4736c2be84dcb136aeccf7111e67ab7cff513a7e",
+        "version" : "1.19.4"
       }
     },
     {

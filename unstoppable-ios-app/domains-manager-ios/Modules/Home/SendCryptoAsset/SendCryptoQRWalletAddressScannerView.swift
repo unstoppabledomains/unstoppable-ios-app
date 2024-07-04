@@ -47,23 +47,27 @@ private extension SendCryptoQRWalletAddressScannerView {
                 isTorchAvailable = capabilities.isTorchAvailable
             }
         case .didRecognizeQRCodes(let codes):
-            if let walletAddress = codes.first(where: { $0.isValidAddress() }) {
-                didRecognizeWalletAddress(walletAddress)
+            for code in codes {
+                if let addressDetails = viewModel.getWalletAddressDetailsFor(address: code) {
+                    didRecognizeWalletAddress(addressDetails)
+                    return
+                }
             }
         case .didFailToSetupCaptureSession:
             return
         }
     }
     
-    func didRecognizeWalletAddress(_ walletAddress: HexAddress) {
+    func didRecognizeWalletAddress(_ addressDetails: SendCryptoAsset.WalletAddressDetails) {
         guard !didRecognizeAddress else { return }
         
         didRecognizeAddress = true
-        logAnalytic(event: .didRecognizeQRWalletAddress, parameters: [.wallet: walletAddress])
+        logAnalytic(event: .didRecognizeQRWalletAddress, parameters: [.wallet: addressDetails.address,
+                                                                      .coin: addressDetails.regexPattern.rawValue])
         dismiss()
         Vibration.success.vibrate()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            viewModel.handleAction(.globalWalletAddressSelected(walletAddress))
+            viewModel.handleAction(.globalWalletAddressSelected(addressDetails))
         }
     }
 }

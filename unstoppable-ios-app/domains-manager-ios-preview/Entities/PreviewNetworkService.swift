@@ -253,6 +253,10 @@ extension NetworkService: DomainProfileNetworkServiceProtocol {
     func getTrendingDomains() async throws -> SerializedRankingDomainsResponse {
         MockEntitiesFabric.Explore.createTrendingProfiles()
     }
+    
+    func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
+        "oleg.x"
+    }
 }
 
 // MARK: - WalletTransactionsNetworkServiceProtocol

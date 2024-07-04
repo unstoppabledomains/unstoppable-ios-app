@@ -19,12 +19,14 @@ struct HomeActivityEmptyView: View, ViewAnalyticsLogger {
                 .squareFrame(48)
             Text(String.Constants.noTransactionsYet.localized())
                 .font(.currentFont(size: 22, weight: .bold))
-            UDButtonView(text: String.Constants.scanQRCodeTitle.localized(),
-                         icon: .qrBarCodeIcon,
+            UDButtonView(text: String.Constants.sendCrypto.localized(),
+                         icon: .paperPlaneTopRight,
                          style: .medium(.raisedTertiary),
                          callback: {
                 logButtonPressedAnalyticEvents(button: .qrCode)
-                tabRouter.showQRScanner()
+                if case .wallet(let wallet) = tabRouter.profile {
+                    tabRouter.sendCryptoInitialData = .init(sourceWallet: wallet)
+                }
             })
         }
         .foregroundStyle(Color.foregroundSecondary)

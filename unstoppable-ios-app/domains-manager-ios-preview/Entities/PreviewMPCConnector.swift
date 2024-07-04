@@ -66,7 +66,7 @@ extension FB_UD_MPC {
             return .init(accessToken: "", deviceId: "")
         }
         
-        func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, encoding: FB_UD_MPC.SignMessageEncoding) async throws -> FB_UD_MPC.OperationDetails {
+        func startMessageSigning(accessToken: String, accountId: String, assetId: String, message: String, signingType: FB_UD_MPC.MessageSigningType) async throws -> FB_UD_MPC.OperationDetails {
             await Task.sleep(seconds: 0.5)
             return .init(id: "", status: "", type: "")
         }

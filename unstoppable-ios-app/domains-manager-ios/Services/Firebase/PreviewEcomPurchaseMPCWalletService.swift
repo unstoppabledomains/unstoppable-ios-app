@@ -9,7 +9,13 @@ import Foundation
 import Combine
 
 final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServiceProtocol {
-    private var cart: PurchaseMPCWalletCart = .empty {
+    private var cart: PurchaseMPCWalletCart = PurchaseMPCWalletCart(totalPrice: 999,
+                                                                    taxes: 0,
+                                                                    storeCreditsAvailable: 0,
+                                                                    promoCreditsAvailable: 0,
+                                                                    appliedDiscountDetails: .init(storeCredits: 0,
+                                                                                                  promoCredits: 0,
+                                                                                                  others: 0)) {
         didSet {
             cartStatus = .ready(cart: cart)
         }
@@ -32,6 +38,11 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
     }
     
     func purchaseMPCWallet() async throws {
+        await Task.sleep(seconds: 2.2)
+        throw NSError()
+    }
+    
+    func guestAuthWith(credentials: MPCPurchaseUDCredentials) async throws {
         
     }
     
@@ -58,4 +69,15 @@ final class PreviewEcomPurchaseMPCWalletService: EcomPurchaseMPCWalletServicePro
     func refreshCart() async throws {
         
     }
+    
+    func validateCredentialsForTakeover(credentials: MPCTakeoverCredentials) async throws -> Bool {
+        await Task.sleep(seconds: 1)
+        return [true, false].randomElement()!
+    }
+    
+    func runTakeover(credentials: MPCTakeoverCredentials) async throws {
+        await Task.sleep(seconds: 0.5)
+        throw NSError()
+    }
+    
 }

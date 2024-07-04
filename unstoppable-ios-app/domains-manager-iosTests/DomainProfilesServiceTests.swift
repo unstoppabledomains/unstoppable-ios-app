@@ -345,6 +345,9 @@ private final class MockNetworkService: DomainProfileNetworkServiceProtocol, Fai
         []
     }
     
+    func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
+        nil
+    }
 }
 
 private final class MockStorage: DomainProfileDisplayInfoStorageServiceProtocol {

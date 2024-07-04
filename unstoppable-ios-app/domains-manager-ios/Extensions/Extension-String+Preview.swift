@@ -222,6 +222,7 @@ extension String {
         static let viewInBrowser = "VIEW_IN_BROWSER"
         static let tokens = "TOKENS"
         static let collectibles = "COLLECTIBLES"
+        static let collectible = "COLLECTIBLE"
         static let receive = "RECEIVE"
         static let profile = "PROFILE"
         static let more = "MORE"
@@ -239,6 +240,10 @@ extension String {
         static let to = "TO"
         static let domainOrAddress = "DOMAIN_OR_ADDRESS"
         static let yourWallets = "YOUR_WALLETS"
+        static let new = "NEW"
+        static let confirmEmail = "CONFIRM_EMAIL"
+        static let setup = "SETUP"
+        static let networkFee = "NETWORK_FEE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -486,6 +491,7 @@ extension String {
         static let disconnectWalletAlertTitle = "DISCONNECT_WALLET_ALERT_TITLE"
         static let removeWalletAlertSubtitleRecoveryPhrase = "REMOVE_WALLET_ALERT_SUBTITLE_RECOVERY_PHRASE"
         static let removeWalletAlertSubtitlePrivateKey = "REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY"
+        static let removeWalletAlertSubtitleMPC = "REMOVE_WALLET_ALERT_SUBTITLE_MPC"
         static let copyAddress = "COPY_ADDRESS"
         static let ethAddress = "ETH_ADDRESS"
         static let whatIsExternalWallet = "WHAT_IS_EXTERNAL_WALLET"
@@ -1190,6 +1196,8 @@ extension String {
         static let noRecordsToSendAnyCryptoTitle = "NO_RECORDS_TO_SEND_ANY_CRYPTO_TITLE"
         static let noRecordsToSendCryptoPullUpTitle = "NO_RECORDS_TO_SEND_CRYPTO_PULL_UP_TITLE"
         static let noRecordsToSendCryptoMessage = "NO_RECORDS_TO_SEND_CRYPTO_MESSAGE"
+        static let sentSuccessfully = "SENT_SUCCESSFULLY"
+        static let receivedSuccessfully = "RECEIVED_SUCCESSFULLY"
         
         // Import MPC
         static let importMPCWalletTitle = "IMPORT_MPC_WALLET_TITLE"
@@ -1231,6 +1239,31 @@ extension String {
         static let removeMPCWalletPullUpSubtitle = "REMOVE_MPC_WALLET_PULL_UP_SUBTITLE"
         static let mpcWalletMessagingUnavailableMessage = "MPC_WALLET_MESSAGING_UNAVAILABLE_MESSAGE"
         static let mpcWalletSigningUnavailableErrorMessage = "MPC_WALLET_SIGNING_UNAVAILABLE_ERROR_MESSAGE"
+        static let createMPCOnboardingSubtitle = "CREATE_MPC_ONBOARDING_SUBTITLE"
+        static let createWalletOnboardingSubtitle = "CREATE_WALLET_ONBOARDING_SUBTITLE"
+        static let nPricePerYear = "N_PRICE_PER_YEAR"
+        static let buyMPCEnterEmailSubtitle = "BUY_MPC_ENTER_EMAIL_SUBTITLE"
+        static let subscribe = "SUBSCRIBE"
+        static let mpcPurchaseErrorMessage = "MPC_PURCHASE_ERROR_MESSAGE"
+        static let mpcWalletAlreadyPurchasedTitle = "MPC_WALLET_ALREADY_PURCHASED_TITLE"
+        static let mpcWalletAlreadyPurchasedSubtitle = "MPC_WALLET_ALREADY_PURCHASED_SUBTITLE"
+        static let useDifferentEmail = "USE_DIFFERENT_EMAIL"
+        static let mpcPasswordValidationLengthTitle = "MPC_PASSWORD_VALIDATION_LENGTH_TITLE"
+        static let mpcPasswordValidationTooLongTitle = "MPC_PASSWORD_VALIDATION_TOO_LONG_TITLE"
+        static let mpcPasswordValidationNumberTitle = "MPC_PASSWORD_VALIDATION_NUMBER_TITLE"
+        static let mpcPasswordValidationSpecialCharTitle = "MPC_PASSWORD_VALIDATION_SPECIAL_CHAR_TITLE"
+        static let mpcTakeoverCredentialsSubtitle = "MPC_TAKEOVER_CREDENTIALS_SUBTITLE"
+        static let mpcTakeoverRecoveryTitle = "MPC_TAKEOVER_RECOVERY_TITLE"
+        static let mpcTakeoverRecoverySubtitle = "MPC_TAKEOVER_RECOVERY_SUBTITLE"
+        static let sendMeRecoveryLink = "SEND_ME_RECOVERY_LINK"
+        static let dontSendMeRecoveryLink = "DONT_SEND_ME_RECOVERY_LINK"
+        static let mpcWalletEmailInUseMessage = "MPC_WALLET_EMAIL_IN_USE_MESSAGE"
+        static let mpcWalletEmailInUseCantVerifyMessage = "MPC_WALLET_EMAIL_IN_USE_CANT_VERIFY_MESSAGE"
+        static let mpcTakeoverInProgressTitle = "MPC_TAKEOVER_IN_PROGRESS_TITLE"
+        static let mpcTakeoverInProgressSubtitle = "MPC_TAKEOVER_IN_PROGRESS_SUBTITLE"
+        static let contactSupport = "CONTACT_SUPPORT"
+        static let mpcWalletDefaultName = "MPC_WALLET_DEFAULT_NAME"
+        static let sendCrypto = "SEND_CRYPTO"
         
         // Send crypto first time
         static let sendCryptoFirstTimePullUpTitle = "SEND_CRYPTO_FIRST_TIME_PULL_UP_TITLE"
@@ -1346,5 +1379,9 @@ extension String {
     
     func appendingURLQueryComponents(_ components: [String : String]) -> String {
         self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
+    }
+    
+    var encodingSpecialCharacters: String {
+        addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }
 }

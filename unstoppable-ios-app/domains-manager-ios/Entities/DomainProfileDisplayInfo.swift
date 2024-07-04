@@ -32,6 +32,12 @@ struct DomainProfileDisplayInfo: Hashable {
         }
     }
     
+    var pfpInfo: DomainPFPInfo {
+        DomainPFPInfo(domainName: domainName,
+                      pfpURL: pfpURL?.absoluteString,
+                      imageType: imageType)
+    }
+    
 }
 
 extension DomainProfileDisplayInfo {

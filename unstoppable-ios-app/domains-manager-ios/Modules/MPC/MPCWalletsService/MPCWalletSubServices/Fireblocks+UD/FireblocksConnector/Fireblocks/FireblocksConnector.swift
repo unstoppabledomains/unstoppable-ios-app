@@ -95,7 +95,12 @@ extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
             logMPC("Key is ready")
             return
         } else {
-            if attempt >= 80 {
+            #if targetEnvironment(simulator)
+            let maxAttempt: Int = 380
+            #else
+            let maxAttempt: Int = 80
+            #endif
+            if attempt >= maxAttempt {
                 logMPC("Key is not ready. Abort due to timeout")
                 throw FireblocksConnectorError.waitForKeysTimeout
             }
@@ -114,7 +119,13 @@ extension FireblocksConnector: FB_UD_MPC.FireblocksConnectorProtocol {
     }
     func signTransactionWith(txId: String) async throws {
         let fireblocks = self.fireblocks!
-        let task = TaskWithDeadline(deadline: 20) {
+        #if targetEnvironment(simulator)
+        let deadline: TimeInterval = 200
+        #else
+        let deadline: TimeInterval = 20
+        #endif
+        
+        let task = TaskWithDeadline(deadline: deadline) {
             logMPC("Will sign transaction")
             do {
                 let signatureStatus = try await fireblocks.signTransaction(txId: txId)

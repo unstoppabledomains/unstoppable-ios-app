@@ -84,10 +84,17 @@ private extension SelectCryptoAssetToSendView {
         
         switch token.blockchainType {
         case .Ethereum, .Matic, .Base:
+            guard receiver.regexPattern == .ETH else { 
+                Debugger.printFailure("Wrong regex pattern: \(receiver.regexPattern) for chain: \(String(describing: token.blockchainType?.fullName))")
+                return nil }
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
         case .none:
-            /// As we don't currently support Base chain but MPC does
-            if token.chain == Constants.baseChainSymbol {
+            if token.symbol == receiver.regexPattern.rawValue,
+               token.parent == nil {
+                return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+            } /// As we don't currently support Base chain but MPC does
+            else if token.chain == Constants.baseChainSymbol,
+                    receiver.regexPattern == .ETH {
                 return BalanceTokenToSend(token: token, address: receiver.walletAddress)
             }
             return nil
@@ -117,10 +124,12 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func assetTypePickerView() -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            UDTabsPickerView(selectedTab: $selectedType,
-                             tabs: SendCryptoAsset.AssetType.allCases)
-            HomeExploreSeparatorView()
+        if case .ETH = receiver.regexPattern {
+            VStack(alignment: .leading, spacing: 20) {
+                UDTabsPickerView(selectedTab: $selectedType,
+                                 tabs: SendCryptoAsset.AssetType.allCases)
+                HomeExploreSeparatorView()
+            }
         }
     }
     

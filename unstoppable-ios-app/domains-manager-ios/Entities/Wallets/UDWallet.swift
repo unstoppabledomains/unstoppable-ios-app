@@ -95,21 +95,21 @@ struct UDWallet: Codable, @unchecked Sendable {
         }
     }
     
-    static func createUnverified(response: NetworkService.TxCryptoWalletResponse) -> UDWallet? {
-        let aliasName = response.humanAddress
-        guard let type = try? BlockchainType.getType(abbreviation: response.blockchain) else {
-            return nil
-        }
-        
-        switch type {
-        case .Ethereum, .Matic: let wallet = UDWalletEthereum.createUnverified(address: response.address)
-            return UDWallet(aliasName: aliasName,
-                            walletType: .importedUnverified,
-                            ethWallet: wallet)
-        case .Base: Debugger.printWarning("Attempt to create unverified wallet based on Base chain: failed")
-            return nil
-        }
-    }
+//    static func createUnverified(response: NetworkService.TxCryptoWalletResponse) -> UDWallet? {
+//        let aliasName = response.humanAddress
+//        guard let type = try? BlockchainType.getType(abbreviation: response.blockchain) else {
+//            return nil
+//        }
+//        
+//        switch type {
+//        case .Ethereum, .Matic: let wallet = UDWalletEthereum.createUnverified(address: response.address)
+//            return UDWallet(aliasName: aliasName,
+//                            walletType: .importedUnverified,
+//                            ethWallet: wallet)
+//        case .Base: Debugger.printWarning("Attempt to create unverified wallet based on Base chain: failed")
+//            return nil
+//        }
+//    }
     
     static func createUnverified(aliasName: String? = nil,
                                  address: HexAddress) -> UDWallet? {
@@ -225,9 +225,11 @@ struct UDWallet: Codable, @unchecked Sendable {
     }
     
     static func createMPC(address: String,
+                          aliasName: String,
                           mpcMetadata: MPCWalletMetadata) -> UDWallet {
         let ethWallet = UDWalletEthereum.createUnverified(address: address)
-        var udWallet = UDWallet(aliasName: address.normalized,
+        
+        var udWallet = UDWallet(aliasName: aliasName,
                                 walletType: .mpc,
                                 ethWallet: ethWallet)
         udWallet.mpcMetadata = mpcMetadata

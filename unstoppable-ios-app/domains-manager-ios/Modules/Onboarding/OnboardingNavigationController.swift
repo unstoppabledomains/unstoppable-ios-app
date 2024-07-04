@@ -98,6 +98,35 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             }
         case .changeEmailFromMPCWallet:
             popTo(RestoreWalletViewController.self)
+        case .didEnterMPCPurchaseUDCredentials:
+            moveToStep(.mpcPurchaseCheckout)
+        case .didPurchaseMPCWallet:
+            setNewUserOnboardingSubFlow(.create)
+            moveToStep(.mpcPurchaseTakeoverCredentials)
+        case .alreadyPurchasedMPCWallet:
+            moveToStep(.mpcPurchaseAlreadyHaveWallet)
+        case .alreadyPurchasedMPCWalletUseDifferentEmail:
+            OnboardingData.mpcPurchaseCredentials = nil
+            popTo(MPCOnboardingPurchaseUDAuthViewController.self)
+        case .alreadyPurchasedMPCWalletImportMPC:
+            if let email = OnboardingData.mpcPurchaseCredentials?.email {
+                OnboardingData.mpcCredentials = .init(email: email, password: "")                
+            }
+            OnboardingData.mpcPurchaseCredentials = nil
+            popToRootViewController(animated: true)
+            await Task.sleep(seconds: CNavigationController.animationDuration)
+            moveToStep(.restoreWallet)
+            await Task.sleep(seconds: CNavigationController.animationDuration)
+            moveToStep(.mpcCredentials)
+        case .didEnterTakeoverCredentials:
+            moveToStep(.mpcPurchaseTakeoverRecovery)
+        case .didEnterTakeoverRecovery:
+            moveToStep(.mpcPurchaseTakeoverProgress)
+        case .didTakeoverMPCWallet(let credentials):
+            OnboardingData.mpcCredentials = .init(email: credentials.email, password: credentials.password)
+            OnboardingData.mpcTakeoverCredentials = nil
+            OnboardingData.mpcPurchaseCredentials = nil
+            moveToStep(.mpcCode)
         }
     }
     
@@ -108,11 +137,18 @@ extension OnboardingNavigationController: OnboardingFlowManager {
         
         switch onboardingFlow {
         case .newUser(let onboardingSubFlow):
-            guard let onboardingSubFlow = onboardingSubFlow else { return }
+            guard let onboardingSubFlow = onboardingSubFlow else {
+                didFinishOnboarding()
+                return
+            }
             
             switch onboardingSubFlow {
             case .create:
-                pushBackupWalletsScreen()
+                if onboardingData.wallets.first?.type == .mpc {
+                    didFinishOnboarding()                    
+                } else {
+                    pushBackupWalletsScreen()
+                }
             case .restore, .webAccount:
                 didFinishOnboarding()
             }
@@ -176,10 +212,14 @@ private extension OnboardingNavigationController {
         if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
             transitionHandler?.isInteractionEnabled = false
         } else if (topViewController is RecoveryPhraseViewController &&
-                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
-        topViewController is LoadingParkedDomainsViewController ||
-        topViewController is ParkedDomainsFoundViewController ||
-        topViewController is NoParkedDomainsFoundViewController {
+                   UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
+                    topViewController is LoadingParkedDomainsViewController ||
+                    topViewController is ParkedDomainsFoundViewController ||
+                    topViewController is NoParkedDomainsFoundViewController  ||
+                    topViewController is MPCOnboardingPurchaseTakeoverCredentialsViewController  ||
+                    topViewController is MPCOnboardingPurchaseTakeoverProgressViewController ||
+                    (topViewController is MPCOnboardingEnterCodeViewController && isPurchasingMPC) ||
+                    topViewController is MPCOnboardingPurchaseAlreadyHaveWalletViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)
@@ -187,6 +227,14 @@ private extension OnboardingNavigationController {
         } else {
             transitionHandler.isInteractionEnabled = true
         }
+    }
+    
+    var isPurchasingMPC: Bool {
+        if case .newUser(let subflow) = flow,
+           subflow == .create {
+          return true
+        }
+        return false
     }
 }
 
@@ -448,6 +496,42 @@ private extension OnboardingNavigationController {
             addStepHandler(vc)
             
             return vc
+        case .mpcPurchaseAuth:
+            let vc = MPCOnboardingPurchaseUDAuthViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcPurchaseCheckout:
+            let vc = MPCOnboardingPurchaseCheckoutViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc   
+        case .mpcPurchaseAlreadyHaveWallet:
+            let vc = MPCOnboardingPurchaseAlreadyHaveWalletViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcPurchaseTakeoverCredentials:
+            let vc = MPCOnboardingPurchaseTakeoverCredentialsViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcPurchaseTakeoverRecovery:
+            let vc = MPCOnboardingPurchaseTakeoverRecoveryViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
+        case .mpcPurchaseTakeoverProgress:
+            let vc = MPCOnboardingPurchaseTakeoverProgressViewController()
+            vc.onboardingFlowManager = self
+            addStepHandler(vc)
+            
+            return vc
         }
     }
  
@@ -511,9 +595,16 @@ extension OnboardingNavigationController {
         case mpcActivate = 25
         case createNewSelection = 26
         
+        case mpcPurchaseAuth = 27
+        case mpcPurchaseCheckout = 28
+        case mpcPurchaseAlreadyHaveWallet = 29
+        case mpcPurchaseTakeoverCredentials = 30
+        case mpcPurchaseTakeoverRecovery = 31
+        case mpcPurchaseTakeoverProgress = 32
+        
         var isStorable: Bool {
             switch self {
-            case .mpcCode, .mpcActivate:
+            case .mpcCode, .mpcActivate, .mpcPurchaseCheckout, .mpcPurchaseTakeoverCredentials, .mpcPurchaseAlreadyHaveWallet, .mpcPurchaseTakeoverRecovery, .mpcPurchaseTakeoverProgress:
                 return false
             default:
                 return true
@@ -532,6 +623,15 @@ extension OnboardingNavigationController {
         case didGenerateLocalWallet(UDWallet)
         case didImportWallet(UDWallet)
         case changeEmailFromMPCWallet
+        case didEnterMPCPurchaseUDCredentials
+        case didPurchaseMPCWallet
+        case alreadyPurchasedMPCWallet
+        case didEnterTakeoverCredentials
+        case didEnterTakeoverRecovery
+        case didTakeoverMPCWallet(MPCTakeoverCredentials)
+        
+        case alreadyPurchasedMPCWalletUseDifferentEmail
+        case alreadyPurchasedMPCWalletImportMPC
     }
     
 }

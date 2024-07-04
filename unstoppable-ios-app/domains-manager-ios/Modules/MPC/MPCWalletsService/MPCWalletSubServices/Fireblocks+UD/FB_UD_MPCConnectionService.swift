@@ -159,9 +159,31 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         }
     }
     
-    func signMessage(_ messageString: String,
-                     chain: BlockchainType,
-                     by walletMetadata: MPCWalletMetadata) async throws -> String {
+    func signPersonalMessage(_ messageString: String,
+                             chain: BlockchainType,
+                             by walletMetadata: MPCWalletMetadata) async throws -> String {
+        let mpcMessage = messageString.convertToMPCMessage
+        let encoding = convertMPCMessageTypeToFBUDEncoding(mpcMessage.type)
+        
+        return try await signMessage(mpcMessage.outcomingString,
+                                     signingType: .personalSign(encoding),
+                                     chain: chain,
+                                     by: walletMetadata)
+    }
+    
+    func signTypedDataMessage(_ message: String,
+                              chain: BlockchainType,
+                              by walletMetadata: MPCWalletMetadata) async throws -> String {
+        try await signMessage(message,
+                              signingType: .typedData,
+                              chain: chain,
+                              by: walletMetadata)
+    }
+    
+    private func signMessage(_ message: String,
+                             signingType: FB_UD_MPC.MessageSigningType,
+                             chain: BlockchainType,
+                             by walletMetadata: MPCWalletMetadata) async throws -> String {
         let connectedWalletDetails = try getConnectedWalletDetailsFor(walletMetadata: walletMetadata)
         let mpcConnector = try connectorBuilder.buildWalletMPCConnector(wallet: connectedWalletDetails,
                                                                         authTokenProvider: self)
@@ -173,13 +195,11 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         let asset = try account.getAssetToSignWith(chain: chain)
         
         return try await performAuthErrorCatchingBlock(connectedWalletDetails: connectedWalletDetails) { token in
-            let mpcMessage = messageString.convertToMPCMessage
-            let encoding = convertMPCMessageTypeToFBUDEncoding(mpcMessage.type)
             let requestOperation = try await networkService.startMessageSigning(accessToken: token,
                                                                                 accountId: account.id,
                                                                                 assetId: asset.id,
-                                                                                message: mpcMessage.outcomingString,
-                                                                                encoding: encoding)
+                                                                                message: message,
+                                                                                signingType: signingType)
             let operationId = requestOperation.id
             logMPC("It took \(Date().timeIntervalSince(start)) to get operationId")
             let operationStatus = try await networkService.waitForOperationReadyAndGetTxId(accessToken: token,
@@ -331,7 +351,6 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
         do {
             try storeConnectedWalletDetails(mpcWallet)
             let udWallet = try createUDWalletFrom(connectedWallet: mpcWallet)
-            try udWalletsService.addOrUpdateMPCWallet(udWallet)
             return udWallet
         } catch {
             try? clearConnectedWalletDetails(mpcWallet)
@@ -410,8 +429,8 @@ extension FB_UD_MPC.MPCConnectionService: MPCWalletProviderSubServiceProtocol {
                                                                   deviceId: connectedWallet.deviceId)
         let fireblocksMetadata = try fireblocksMetadataEntity.jsonDataThrowing()
         let mpcMetadata = MPCWalletMetadata(provider: provider, metadata: fireblocksMetadata)
-        let udWallet = UDWallet.createMPC(address: ethAddress,
-                                          mpcMetadata: mpcMetadata)
+        let udWallet = try udWalletsService.createMPCWallet(ethAddress: ethAddress,
+                                                            mpcMetadata: mpcMetadata)
         
         return udWallet
     }

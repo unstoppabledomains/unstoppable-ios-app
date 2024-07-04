@@ -27,7 +27,8 @@ protocol UDWalletsServiceProtocol {
     func importWalletWith(mnemonics: String) async throws -> UDWallet
     
     func addExternalWalletWith(address: String, walletRecord: WCWalletsProvider.WalletRecord) throws -> UDWallet
-    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws
+    func createMPCWallet(ethAddress: HexAddress,
+                         mpcMetadata: MPCWalletMetadata) throws -> UDWallet
     func remove(wallet: UDWallet)
     func removeAllWallets()
     
@@ -46,9 +47,6 @@ protocol UDWalletsServiceProtocol {
     func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName?
     func setReverseResolution(to domain: DomainItem,
                               paymentConfirmationHandler: PaymentConfirmationHandler) async throws
-    
-    // Migration
-    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws
     
     // Listeners
     func addListener(_ listener: UDWalletsServiceListener)

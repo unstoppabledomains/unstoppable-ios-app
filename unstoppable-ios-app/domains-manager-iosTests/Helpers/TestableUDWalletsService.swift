@@ -63,7 +63,10 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
         throw TestableGenericError.generic
     }
     
-    func addOrUpdateMPCWallet(_ wallet: UDWallet) throws { }
+    func createMPCWallet(ethAddress: HexAddress,
+                         mpcMetadata: MPCWalletMetadata) throws -> UDWallet {
+        UDWallet.createMPC(address: ethAddress, aliasName: "Lite Wallet", mpcMetadata: mpcMetadata)
+    }
     
     func remove(wallet: UDWallet) {
         
@@ -106,10 +109,6 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
     }
     
     func setReverseResolution(to domain: DomainItem, paymentConfirmationHandler: any PaymentConfirmationHandler) async throws {
-        
-    }
-    
-    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws {
         
     }
     

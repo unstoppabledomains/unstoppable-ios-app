@@ -49,6 +49,14 @@ extension ViewPullUpCustomContentConfiguration {
                                                                                  selectionType: selectionType),
               analyticName: .copyMultiChainAddresses)
     }
+    
+    static func transactionDetailsPullUp(tx: WalletTransactionDisplayInfo) -> ViewPullUpCustomContentConfiguration {
+        .init(content: {
+            TransactionDetailsPullUpView(tx: tx)
+        },
+              height: 544,
+              analyticName: .transactionDetails)
+    }
 }
 
 // MARK: - Open methods

@@ -44,7 +44,6 @@ private extension SignMessageRequestConfirmationView {
     func addWalletInfo() {
         let walletStackView = buildWalletInfoView()
         walletStackView.axis = .horizontal
-        walletStackView.spacing = 16
 
         let wrapStack = UIStackView(arrangedSubviews: [walletStackView])
         wrapStack.axis = .vertical
@@ -57,7 +56,9 @@ private extension SignMessageRequestConfirmationView {
 enum DisplayedMessageType {
     static let lineHeight: CGFloat = 24
     static let padding: CGFloat = 16
-    static let maxTextViewHeight: CGFloat = 176
+    static let maxTextViewHeight: CGFloat = {
+        deviceSize.isIPSE ? 220 : 320
+    }()
     static let font: UIFont = .currentFont(withSize: 16, weight: .regular)
 
     case simpleMessage(String)
@@ -96,7 +97,7 @@ enum DisplayedMessageType {
     }
     
     private func getTypedDataViewHeight() -> CGFloat {
-        return 300
+        return Self.maxTextViewHeight
     }
     
     private func prepareSimpleMessageView(signingMessage: String) -> UIView {
@@ -133,7 +134,7 @@ enum DisplayedMessageType {
 
         eip712view.contractLabel.text = typedData.domain["verifyingContract"]?.unwrapString
         
-        if let chainIdFloat = typedData.domain["chainId"]?.unwrapString,
+        if let chainIdFloat = typedData.domain["chainId"]?.unwrapFloat,
            let chain = try? UnsConfigManager.getBlockchainType(from:  Int(chainIdFloat))  {
             eip712view.chainLabel.text = chain.fullName
         }

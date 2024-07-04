@@ -102,11 +102,12 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         guard let view = self.view else { return }
         
         UDVibration.buttonTap.vibrate()
-        Task {
-            view.stopCaptureSession()
+        Task.detached(priority: .background) { [weak self] in
+            guard let self else { return }
+            await view.stopCaptureSession()
             await UDRouter().showConnectedAppsListScreen(in: view)
-            showNumberOfAppsConnected()
-            view.startCaptureSession()
+            await showNumberOfAppsConnected()
+            await view.startCaptureSession()
         }
     }
     

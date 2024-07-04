@@ -13,24 +13,9 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
     case Base = "BASE"
     
     static let cases = Self.allCases
-    static func getType(abbreviation: String?) throws -> Self {
-        guard let abbreviation = abbreviation else { throw InitError.invalidBlockchainAbbreviation }
-        let sample = abbreviation.lowercased().trimmed
-        guard let result = Self.cases.first(where: {$0.rawValue.lowercased() == sample} ) else {
-            throw InitError.invalidBlockchainAbbreviation
-        }
-        return result
-    }
     
-    var icon: UIImage {
-        switch self {
-        case .Ethereum:
-            return UIImage(named: String.BlockChainIcons.ethereum.rawValue)!
-        case .Matic:
-            return UIImage(named: String.BlockChainIcons.matic.rawValue)!
-        case .Base:
-            return UIImage(named: String.BlockChainIcons.base.rawValue)!
-        }
+    enum InitError: Error {
+        case invalidBlockchainAbbreviation
     }
     
     var fullName: String {
@@ -43,25 +28,21 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Base"
         }
     }
+}
+
+enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
+    case Bitcoin = "BTC"
+    case Solana = "SOL"
+    case Base = "BASE"
     
-    func supportedChainId(isTestNet: Bool) -> Int {
+    var fullName: String {
         switch self {
-        case .Ethereum:
-            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
-        case .Matic:
-            return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
+        case .Bitcoin:
+            return "Bitcoin"
+        case .Solana:
+            return "Solana"
         case .Base:
-            return isTestNet ? BlockchainNetwork.baseSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
-
+            return "Base"
         }
-    }
-    
-    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
-        supportedChainId(isTestNet: env == .testnet)
-    }
-
-    
-    enum InitError: Error {
-        case invalidBlockchainAbbreviation
     }
 }

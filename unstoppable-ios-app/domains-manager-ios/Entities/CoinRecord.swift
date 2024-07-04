@@ -20,8 +20,8 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
         self.ticker = ticker
         self.version = version
         self.expandedTicker = expandedTicker
-        self.regexPattern = regexPattern ?? Constants.ETHRegexPattern
-        if let version = version {          
+        self.regexPattern = regexPattern ?? CoinRegexPattern.ETH.regex
+        if let version = version {
             self.isPrimaryChain = CoinRecord.primaryChainsMap[ticker] == version
         } else {
             self.isPrimaryChain = true
