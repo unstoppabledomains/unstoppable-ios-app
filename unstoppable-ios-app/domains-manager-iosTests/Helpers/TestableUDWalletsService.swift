@@ -112,10 +112,6 @@ final class TestableUDWalletsService: UDWalletsServiceProtocol {
         
     }
     
-    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws {
-        
-    }
-    
     func addListener(_ listener: any UDWalletsServiceListener) {
         listeners.append(listener)
     }

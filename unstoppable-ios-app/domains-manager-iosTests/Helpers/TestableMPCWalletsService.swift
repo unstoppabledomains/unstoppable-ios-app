@@ -9,6 +9,7 @@ import Foundation
 @testable import domains_manager_ios
 
 final class TestableMPCWalletsService: MPCWalletsServiceProtocol {
+ 
     func getBalancesFor(walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         []
     }
@@ -39,9 +40,14 @@ final class TestableMPCWalletsService: MPCWalletsServiceProtocol {
         }
     }
     
-    func signMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String {
+    func signPersonalMessage(_ messageString: String, by walletMetadata: MPCWalletMetadata) async throws -> String {
         ""
     }
+    
+    func signTypedDataMessage(_ message: String, chain: BlockchainType, by walletMetadata: MPCWalletMetadata) async throws -> String {
+        ""
+    }
+    
     
     func getBalancesFor(wallet: String, walletMetadata: MPCWalletMetadata) async throws -> [WalletTokenPortfolio] {
         []
