@@ -7,6 +7,7 @@
 
 import UIKit
 import LaunchDarkly
+import OSLog
 
 final class LaunchDarklyService {
     
@@ -28,7 +29,7 @@ final class LaunchDarklyService {
         
         var config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
         config.applicationInfo = applicationInfo
-
+        config.logger = .disabled 
         
         LDClient.start(config: config, context: context)
     }

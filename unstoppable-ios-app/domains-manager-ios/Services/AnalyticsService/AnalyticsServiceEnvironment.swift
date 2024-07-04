@@ -503,6 +503,7 @@ extension Analytics {
         case sendCryptoForTheFirstTimeConfirmation
         case copyMultiChainAddresses
         case removeMPCWalletConfirmation
+        case transactionDetails
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

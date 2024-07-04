@@ -57,29 +57,30 @@ extension MockEntitiesFabric {
                                    id: String = "1",
                                    dateOffset: TimeInterval = 0,
                                    isDeposit: Bool = true) -> SerializedWalletTransaction {
-            let fromAddress = isDeposit ? "0" : userWallet
+            let otherWallet = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
+            let fromAddress = isDeposit ? otherWallet : userWallet
             let from: SerializedWalletTransaction.Participant = .init(address: fromAddress,
                                                                       label: "ksdjhfskdjfhsdkfjhsdkjfhsdkjfhsdkjfhsdkjfh.x",
                                                                       link: "")
-            let toAddress = !isDeposit ? "0" : userWallet
+            let toAddress = !isDeposit ? otherWallet : userWallet
             let to: SerializedWalletTransaction.Participant = .init(address: toAddress,
                                                                     label: nil,
                                                                     link: "")
             switch type {
             case .crypto:
                 return SerializedWalletTransaction(hash: id,
-                                            block: "",
-                                            timestamp: Date().addingTimeInterval(dateOffset),
-                                            success: true,
-                                            value: 1,
-                                            gas: 1,
-                                            method: "Unknown",
-                                            link: "",
-                                            imageUrl: ImageURLs.sunset.rawValue,
-                                            symbol: "MATIC",
-                                            type: "native",
-                                            from: from,
-                                            to: to)
+                                                   block: "",
+                                                   timestamp: Date().addingTimeInterval(dateOffset),
+                                                   success: true,
+                                                   value: 1,
+                                                   gas: 1,
+                                                   method: "Unknown",
+                                                   link: URLs.generic.absoluteString,
+                                                   imageUrl: ImageURLs.sunset.rawValue,
+                                                   symbol: "MATIC",
+                                                   type: "native",
+                                                   from: from,
+                                                   to: to)
                 
             case .domain:
                 return SerializedWalletTransaction(hash: id,

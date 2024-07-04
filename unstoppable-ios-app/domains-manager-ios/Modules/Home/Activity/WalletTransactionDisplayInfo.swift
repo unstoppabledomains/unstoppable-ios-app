@@ -17,10 +17,15 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
     let link: URL?
     let imageUrl: URL?
     let symbol: String
+    let chainName: String
     let nftName: String
     let type: TransactionType
     let from: Participant
     let to: Participant
+    
+    var isDomainNFT: Bool {
+        nftName.isValidDomainName()
+    }
     
     struct Participant: Hashable {
         let address: String
@@ -28,11 +33,18 @@ struct WalletTransactionDisplayInfo: Hashable, Identifiable {
         let link: URL?
         
         var displayName: String {
+            if let domainName {
+                return domainName
+            }
+            return address.walletAddressTruncated
+        }
+        
+        var domainName: String? {
             if let label,
                label.isValidDomainName() {
                 return label
             }
-            return address.walletAddressTruncated
+            return nil
         }
         
         init(address: String, domainName: String?, link: URL?) {
@@ -61,6 +73,7 @@ extension WalletTransactionDisplayInfo {
         self.gas = serializedTransaction.gas
         self.link = URL(string: serializedTransaction.link)
         self.imageUrl = URL(string: serializedTransaction.imageUrl ?? "")
+        self.chainName = serializedTransaction.symbol
         if serializedTransaction.type == "erc20" {
             self.symbol = serializedTransaction.method
         } else {
@@ -103,5 +116,27 @@ extension WalletTransactionDisplayInfo {
                 false
             }
         }
+    }
+}
+
+import UIKit
+
+extension WalletTransactionDisplayInfo {
+    var chainFullName: String {
+        if let blockchainType = BlockchainType(rawValue: chainName) {
+            return blockchainType.fullName
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chainName) {
+            return blockchainType.fullName
+        }
+        return chainName
+    }
+    
+    var chainIcon: UIImage {
+        if let blockchainType = BlockchainType(rawValue: chainName) {
+            return blockchainType.chainIcon
+        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chainName) {
+            return blockchainType.chainIcon
+        }
+        return .alertCircle
     }
 }

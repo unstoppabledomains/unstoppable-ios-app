@@ -71,6 +71,10 @@ extension HomeActivityViewModel {
     func didPullToRefresh() async {
         await loadTxsForSelectedProfile(forceReload: true)
     }
+    
+    func didSelectTx(tx: WalletTransactionDisplayInfo) {
+        router.pullUp = .custom(.transactionDetailsPullUp(tx: tx))
+    }
 }
 
 // MARK: - Setup methods

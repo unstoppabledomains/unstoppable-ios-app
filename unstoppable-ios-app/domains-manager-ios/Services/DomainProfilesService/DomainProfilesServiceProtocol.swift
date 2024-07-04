@@ -13,6 +13,7 @@ protocol DomainProfilesServiceProtocol {
     
     func getCachedDomainProfileDisplayInfo(for domainName: String) -> DomainProfileDisplayInfo?
     func fetchDomainProfileDisplayInfo(for domainName: DomainName) async throws -> DomainProfileDisplayInfo
+    func fetchResolvedDomainProfileDisplayInfo(for walletAddress: HexAddress) async throws -> DomainProfileDisplayInfo
     func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, Error>
     @discardableResult
     func updateUserDomainProfile(for domain: DomainDisplayInfo,

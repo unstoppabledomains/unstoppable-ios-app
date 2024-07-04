@@ -17,4 +17,30 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
     enum InitError: Error {
         case invalidBlockchainAbbreviation
     }
+    
+    var fullName: String {
+        switch self {
+        case .Ethereum:
+            return "Ethereum"
+        case .Matic:
+            return "Polygon"
+        }
+    }
+}
+
+enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
+    case Bitcoin = "BTC"
+    case Solana = "SOL"
+    case Base = "BASE"
+    
+    var fullName: String {
+        switch self {
+        case .Bitcoin:
+            return "Bitcoin"
+        case .Solana:
+            return "Solana"
+        case .Base:
+            return "Base"
+        }
+    }
 }

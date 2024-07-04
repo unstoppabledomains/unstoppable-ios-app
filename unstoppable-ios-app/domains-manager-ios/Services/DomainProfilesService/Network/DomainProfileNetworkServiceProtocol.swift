@@ -22,4 +22,5 @@ protocol DomainProfileNetworkServiceProtocol {
     
     func getProfileSuggestions(for domainName: DomainName) async throws -> SerializedDomainProfileSuggestionsResponse
     func getTrendingDomains() async throws -> SerializedRankingDomainsResponse
+    func fetchReverseResolution(for address: HexAddress) async throws -> DomainName?
 }
