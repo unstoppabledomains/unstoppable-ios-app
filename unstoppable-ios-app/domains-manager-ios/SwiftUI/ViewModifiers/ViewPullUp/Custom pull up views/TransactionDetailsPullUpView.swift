@@ -59,7 +59,7 @@ private extension TransactionDetailsPullUpView {
     @ViewBuilder
     func titleViews() -> some View {
         VStack(spacing: 8) {
-            Text(String.Constants.sentSuccessfully.localized())
+            Text(title)
                 .textAttributes(color: .foregroundDefault, fontSize: 22, fontWeight: .bold)
             HStack {
                 Text(tx.time, style: .date)
@@ -67,6 +67,15 @@ private extension TransactionDetailsPullUpView {
                 Text(tx.time, style: .time)
             }
             .textAttributes(color: .foregroundSecondary, fontSize: 16)
+        }
+    }
+    
+    var title: String {
+        switch tx.type {
+        case .tokenDeposit, .nftDeposit:
+            String.Constants.receivedSuccessfully.localized()
+        case .tokenWithdrawal, .nftWithdrawal:
+            String.Constants.sentSuccessfully.localized()
         }
     }
     
@@ -185,7 +194,7 @@ private extension TransactionDetailsPullUpView {
                 if tx.isDomainNFT {
                     String.Constants.domain.localized()
                 } else {
-                    "NFT"
+                    String.Constants.collectible.localized()
                 }
             }
         }
@@ -216,9 +225,11 @@ private extension TransactionDetailsPullUpView {
     struct TxReceiverVisualisationView: View {
         
         @Environment(\.imageLoadingService) var imageLoadingService
+        @Environment(\.domainProfilesService) var domainProfilesService
         
         let tx: WalletTransactionDisplayInfo
         @State private var icon: UIImage?
+        @State private var profile: DomainProfileDisplayInfo?
         
         var body: some View {
             BaseVisualisationView(title: title,
@@ -246,7 +257,7 @@ private extension TransactionDetailsPullUpView {
         
         var subtitle: String {
             if receiverDomainName == nil {
-                return "Recepient"
+                return String.Constants.recipient.localized()
             }
             return tx.to.address.walletAddressTruncated
         }
@@ -268,24 +279,23 @@ private extension TransactionDetailsPullUpView {
         }
         
         private var receiverDomainName: String? {
-            if let domainName = tx.to.domainName {
-                return domainName
+            if let profile {
+                return profile.domainName
             }
             return nil
         }
         
         private func loadIcon() {
             Task {
-                if let receiverDomainName {
-                    icon = await imageLoadingService.loadImage(from: .domainNameInitials(receiverDomainName, 
+                if let profile = try? await domainProfilesService.fetchResolvedDomainProfileDisplayInfo(for: tx.to.address) {
+                    self.profile = profile
+                    icon = await imageLoadingService.loadImage(from: .domainNameInitials(profile.domainName,
                                                                                          size: .default),
                                                                downsampleDescription: .mid)
-                    
-                    if let pfp = await imageLoadingService.loadImage(from: .walletDomain(tx.to.address),
-                                                                     downsampleDescription: .mid) {
-                        icon = pfp
-                    }
+                    icon = await imageLoadingService.loadImage(from: .domainPFPSource(profile.pfpInfo.source),
+                                                               downsampleDescription: .mid)
                 }
+               
             }
         }
     }

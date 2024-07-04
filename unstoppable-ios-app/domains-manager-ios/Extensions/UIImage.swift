@@ -17,6 +17,7 @@ extension UIImage {
     static let warningIcon = UIImage(named: "warningIcon")!
     static let ethereumIcon = UIImage(named: "ethereumIcon")!
     static let polygonIcon = UIImage(named: "polygonIcon")!
+    static let baseIcon = UIImage(named: "baseIcon")!
     static let externalWalletIndicator = UIImage(named: "externalWalletIndicator")!
     static let cloudIcon = UIImage(named: "cloudIcon")!
     static let checkCircleWhite = UIImage(named: "checkCircleWhite")!
