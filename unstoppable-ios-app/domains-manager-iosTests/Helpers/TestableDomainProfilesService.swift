@@ -28,6 +28,11 @@ final class TestableDomainProfilesService: DomainProfilesServiceProtocol, Failab
         throw TestableGenericError.generic
     }
     
+    func fetchResolvedDomainProfileDisplayInfo(for walletAddress: HexAddress) async throws -> DomainProfileDisplayInfo {
+        try failIfNeeded()
+        throw TestableGenericError.generic
+    }
+    
     func getCachedAndRefreshDomainProfileStream(for domainName: DomainName) -> AsyncThrowingStream<DomainProfileDisplayInfo, any Error> {
         AsyncThrowingStream { continuation in
             continuation.finish(throwing: TestableGenericError.generic)
