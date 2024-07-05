@@ -663,9 +663,9 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             throw WalletConnectRequestError.failedBuildParams
         }
         let messageString = paramsAny[1]
-        let address =  try parseAddress(from: paramsAny[0])
-        
-        let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
+        let walletAddress =  try parseAddress(from: paramsAny[0])
+        try throwUnsupportedMethodIfMPCWallet(walletAddress: walletAddress)
+        let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
                                                                          request: request,
                                                                          messageString: messageString)
         
@@ -674,7 +674,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
             sig = WCAnyCodable(sigTyped)
         } catch {
-            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
+            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(walletAddress)", critical: false)
             throw WalletConnectRequestError.failedToSignMessage
         }
         
@@ -686,6 +686,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let walletAddress = tx.from?.hex(eip55: true).normalized else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
+            try throwUnsupportedMethodIfMPCWallet(walletAddress: walletAddress)
             let udWallet = try detectWallet(by: walletAddress).udWallet
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
@@ -735,6 +736,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let walletAddress = tx.from?.hex(eip55: true) else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
+            try throwUnsupportedMethodIfMPCWallet(walletAddress: walletAddress)
             let udWallet = try detectWallet(by: walletAddress).udWallet
             let chainIdInt = try request.getChainId()
             let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
@@ -747,10 +749,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             case .externalLinked:
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
-                
-            case .mpc: print("sign with mpc")
-                return .error(.internalError) // TODO: mpc
-                
+            case .mpc:
+                throw WalletConnectRequestError.methodUnsupported
             default:  // locally verified wallet
                 let hash = try await JRPC_Client.instance.sendTx(transaction: completedTx,
                                                                  udWallet: udWallet,
@@ -873,6 +873,13 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumQuantity {
         guard let addressString = transaction.from?.hex() else { throw WalletConnectRequestError.failedFetchNonce }
         return try await JRPC_Client.instance.fetchNonce(address: addressString, chainId: chainId)
+    }
+    
+    private func throwUnsupportedMethodIfMPCWallet(walletAddress: String) throws {
+        let udWallet = try detectWallet(by: walletAddress).udWallet
+        if case .mpc = udWallet.type {
+            throw WalletConnectRequestError.methodUnsupported
+        }
     }
 }
 
