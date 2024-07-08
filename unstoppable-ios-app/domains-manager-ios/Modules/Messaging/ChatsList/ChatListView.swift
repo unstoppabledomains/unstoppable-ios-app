@@ -363,8 +363,9 @@ private extension ChatListView {
                                subtitle: String.Constants.messagingCommunitiesListEnableSubtitle.localized(),
                                icon: .chatRequestsIcon,
                                actionButtonConfiguration: .init(buttonTitle: String.Constants.enable.localized(),
-                                                                buttonIcon: Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
+                                                                buttonIcon: viewModel.isCreatingProfile ? nil : Image(uiImage: appContext.authentificationService.biometricIcon ?? .init()),
                                                                 buttonStyle: .medium(.raisedPrimary),
+                                                                isLoading: viewModel.isCreatingProfile,
                                                                 buttonCallback: {
             logButtonPressedAnalyticEvents(button: .createCommunityProfile)
             viewModel.createCommunitiesProfileButtonPressed()
