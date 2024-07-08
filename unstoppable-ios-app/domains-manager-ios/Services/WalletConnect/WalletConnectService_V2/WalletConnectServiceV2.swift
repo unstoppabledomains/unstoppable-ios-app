@@ -1103,7 +1103,7 @@ extension WalletConnectServiceV2 {
 
 // Client V2 part
 extension WalletConnectServiceV2 {
-  
+    static let supportedNetworks: [BlockchainType] = [.Ethereum, .Matic]
     
     // namespaces required from wallets by UD app as Client
     var requiredNamespaces: [String: ProposalNamespace]  { [

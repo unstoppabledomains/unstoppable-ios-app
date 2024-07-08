@@ -54,22 +54,6 @@ extension DomainItem: APIRepresentable {
 // Decision methods based on DomainItem values
 
 extension DomainItem {
-    /// This method checks whether or not TxCost that came from backend is valid.
-    /// Domains of ZNS should always have TxCost == nil
-    /// Domains from UNS should have TxCost as value only when the backend is real
-    /// - Parameters:
-    ///   - service: NamingService
-    ///   - txCost: Optional TxCost that needs to be validated
-    /// - Returns: validation
-    static func isValidTxCost(blockchain: BlockchainType, txCost: NetworkService.TxCost?) -> Bool {
-        switch blockchain {
-        case .Ethereum: return txCost != nil
-        case .Matic: return txCost == nil
-        }
-    }
-}
-
-extension DomainItem {
     public func ethSign(message: String) async throws -> String {
         guard let ownerAddress = self.ownerWallet,
               let ownerWallet = appContext.udWalletsService.find(by: ownerAddress) else {
@@ -145,6 +129,7 @@ extension DomainItem {
         switch self.getBlockchainType() {
         case .Ethereum: return true
         case .Matic: return false
+        case .Base: return false
         }
     }
 }

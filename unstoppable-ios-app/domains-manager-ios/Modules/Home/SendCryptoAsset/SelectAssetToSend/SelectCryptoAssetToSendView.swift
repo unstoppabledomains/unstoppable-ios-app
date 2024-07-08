@@ -83,8 +83,10 @@ private extension SelectCryptoAssetToSendView {
         }
         
         switch token.blockchainType {
-        case .Ethereum, .Matic:
-            guard receiver.regexPattern == .ETH else { return nil }
+        case .Ethereum, .Matic, .Base:
+            guard receiver.regexPattern == .ETH else { 
+                Debugger.printFailure("Wrong regex pattern: \(receiver.regexPattern) for chain: \(String(describing: token.blockchainType?.fullName))")
+                return nil }
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
         case .none:
             if token.symbol == receiver.regexPattern.rawValue,

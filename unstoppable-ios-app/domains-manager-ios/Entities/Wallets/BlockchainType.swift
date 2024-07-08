@@ -10,9 +10,9 @@ import UIKit
 enum BlockchainType: String, CaseIterable, Codable, Hashable {
     case Ethereum = "ETH"
     case Matic = "MATIC"
+    case Base = "BASE"
     
     static let cases = Self.allCases
-    static let supportedCases: [BlockchainType] = [.Ethereum, .Matic]
     
     enum InitError: Error {
         case invalidBlockchainAbbreviation
@@ -24,6 +24,8 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Ethereum"
         case .Matic:
             return "Polygon"
+        case .Base:
+            return "Base"
         }
     }
 }

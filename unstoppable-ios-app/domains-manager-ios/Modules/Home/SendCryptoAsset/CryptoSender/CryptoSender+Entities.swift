@@ -144,7 +144,7 @@ extension CryptoSender {
         case bnb = "BNB"
         case weth = "WETH"
         
-        static let array: [CryptoSender.SupportedToken :
+        static let contractArray: [CryptoSender.SupportedToken :
                             [BlockchainType : (mainnet: String,
                                                testnet: String?,
                                                decimals: UInt8)]] =
@@ -183,7 +183,7 @@ extension CryptoSender {
         }
         
         func getContractAddress(for chain: ChainSpec) throws -> HexAddress {
-            guard let addresses = Self.array[self]?[chain.blockchainType] else {
+            guard let addresses = Self.contractArray[self]?[chain.blockchainType] else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
             }
             guard let contract =  chain.env == .mainnet ? addresses.mainnet : addresses.testnet else {
@@ -193,7 +193,7 @@ extension CryptoSender {
         }
         
         func getContractDecimals(for chainType: BlockchainType) throws -> UInt8 {
-            guard let decimals = Self.array[self]?[chainType]?.decimals else {
+            guard let decimals = Self.contractArray[self]?[chainType]?.decimals else {
                 throw CryptoSender.Error.decimalsNotIdentified
             }
             return decimals
