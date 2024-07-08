@@ -99,7 +99,7 @@ extension ChatListViewModel {
     var isChannelsSupported: Bool {
         switch selectedProfile {
         case .wallet(let wallet):
-            return wallet.udWallet.type != .mpc
+            return true
         case .webAccount:
             return false
         }
