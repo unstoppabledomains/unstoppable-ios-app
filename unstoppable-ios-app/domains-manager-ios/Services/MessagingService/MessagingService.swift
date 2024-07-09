@@ -119,7 +119,8 @@ extension MessagingService: MessagingServiceProtocol {
  
     func createUserMessagingProfile(for wallet: WalletEntity) async throws -> MessagingChatUserProfileDisplayInfo {
         let profile = try await createUserProfile(for: wallet, serviceIdentifier: defaultServiceIdentifier)
-        if Constants.isCommunitiesEnabled {
+        if wallet.udWallet.type != .mpc,
+           Constants.isCommunitiesEnabled {
             _ = try? await createUserProfile(for: wallet, serviceIdentifier: communitiesServiceIdentifier)
         }
         return profile

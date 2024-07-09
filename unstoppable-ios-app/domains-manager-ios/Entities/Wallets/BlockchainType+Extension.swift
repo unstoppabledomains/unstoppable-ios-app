@@ -23,6 +23,8 @@ extension BlockchainType {
             return UIImage(named: String.BlockChainIcons.ethereum.rawValue)!
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
+        case .Base:
+                    return UIImage(named: String.BlockChainIcons.base.rawValue)!
         }
     }
     
@@ -32,6 +34,8 @@ extension BlockchainType {
             return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
         case .Matic:
             return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
+        case .Base:
+            return isTestNet ? BlockchainNetwork.baseSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
         }
     }
     
@@ -45,6 +49,8 @@ extension BlockchainType {
                 .ethereumIcon
         case .Matic:
                 .polygonIcon
+        case .Base:
+                .baseIcon
         }
     }
 }

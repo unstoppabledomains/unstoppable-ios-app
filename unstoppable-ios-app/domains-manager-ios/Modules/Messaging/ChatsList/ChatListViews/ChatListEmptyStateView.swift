@@ -46,6 +46,7 @@ private extension ChatListEmptyStateView {
             UDButtonView(text: actionButtonConfiguration.buttonTitle,
                          icon: actionButtonConfiguration.buttonIcon,
                          style: actionButtonConfiguration.buttonStyle,
+                         isLoading: actionButtonConfiguration.isLoading,
                          callback: actionButtonConfiguration.buttonCallback)
         }
     }
@@ -55,8 +56,9 @@ private extension ChatListEmptyStateView {
 extension ChatListEmptyStateView {
     struct ActionButtonConfiguration {
         let buttonTitle: String
-        let buttonIcon: Image
+        let buttonIcon: Image?
         let buttonStyle: UDButtonStyle
+        var isLoading: Bool = false
         let buttonCallback: MainActorCallback
     }
 }
