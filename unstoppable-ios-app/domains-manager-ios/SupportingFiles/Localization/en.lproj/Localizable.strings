@@ -349,6 +349,7 @@
 "SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
 "YOU_ARE_UNSTOPPABLE" = "You are Unstoppable!";
 "FEEDBACK_EMAIL_SUBJECT" = "Unstoppable Domains App Feedback - iOS (%@)";
+"VIEW_OR_MOVE_VAULTED_DOMAINS" = "View or move vaulted domains";
 
 // Wallets list
 "MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";

@@ -22,24 +22,69 @@ struct SettingsProfilesView: View, ViewAnalyticsLogger {
     var body: some View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
             ForEach(profiles, id: \.id) { profile in
-                Button {
-                    logButtonPressedAnalyticEvents(button: .walletInList)
-                    UDVibration.buttonTap.vibrate()
-                    switch profile {
-                    case .wallet(let wallet):
-                        tabRouter.walletViewNavPath.append(.walletDetails(wallet))
-                    case .webAccount:
-                        return
-                    }
-                } label: {
-                    SettingsProfileTileView(profile: profile)
-                }
-                .buttonStyle(.plain)
+                tileViewForProfile(profile)
             }
         }
     }
 }
 
+// MARK: - Private methods
+private extension SettingsProfilesView {
+    @ViewBuilder
+    func tileViewForProfile(_ profile: UserProfile) -> some View {
+        switch profile {
+        case .wallet(let wallet):
+            titleViewForWalletProfile(profile, wallet: wallet)
+        case .webAccount(let firebaseUser):
+            titleViewForFirebaseUserProfile(profile,
+                                            firebaseUser: firebaseUser)
+        }
+    }
+    
+    @ViewBuilder
+    func titleViewForWalletProfile(_ profile: UserProfile,
+                                   wallet: WalletEntity) -> some View {
+        Button {
+            logButtonPressedAnalyticEvents(button: .walletInList)
+            UDVibration.buttonTap.vibrate()
+            tabRouter.walletViewNavPath.append(.walletDetails(wallet))
+        } label: {
+            SettingsProfileTileView(profile: profile)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    func titleViewForFirebaseUserProfile(_ profile: UserProfile,
+                                         firebaseUser: FirebaseUser) -> some View {
+        Menu {
+            Button(role: .destructive) {    
+                askToLogOut()
+            } label: {
+                Label(String.Constants.logOut.localized(), systemImage: "rectangle.portrait.and.arrow.right")
+            }
+        } label: {
+            SettingsProfileTileView(profile: profile)
+        }
+        .onButtonTap {
+            logButtonPressedAnalyticEvents(button: .logOut)
+        }
+    }
+    
+    func askToLogOut() {
+        Task { @MainActor in
+            guard let topVC = appContext.coreAppCoordinator.topVC else { return }
+            
+            do {
+                try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: topVC)
+                await topVC.dismissPullUpMenu()
+                try await appContext.authentificationService.verifyWith(uiHandler: topVC, purpose: .confirm)
+                appContext.firebaseParkedDomainsAuthenticationService.logOut()
+                appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+            }
+        }
+    }
+}
 
 #Preview {
     SettingsProfilesView(profiles: [MockEntitiesFabric.Profile.createWalletProfile(),

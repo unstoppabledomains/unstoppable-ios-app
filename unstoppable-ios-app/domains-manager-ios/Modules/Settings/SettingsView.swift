@@ -33,9 +33,6 @@ struct SettingsView: View, ViewAnalyticsLogger {
             .navigationTitle(String.Constants.settings.localized())
             .navigationBarTitleDisplayMode(.large)
             .viewPullUp($pullUp)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing, content: topBarButton)
-            }
             .onAppear(perform: onAppear)
     }
     
@@ -78,69 +75,7 @@ private extension SettingsView {
             Spacer()
         }
     }
-    
-    var webUser: FirebaseUser? {
-        for profile in profiles {
-            if case .webAccount(let firebaseUser) = profile {
-                return firebaseUser
-            }
-        }
-        return nil
-    }
-    
-    @ViewBuilder
-    func topBarButton() -> some View {
-        if let webUser {
-            webUserActionButton(webUser)
-        } else {
-            loginButton()
-        }
-    }
-    
-    @ViewBuilder
-    func webUserActionButton(_ webUser: FirebaseUser) -> some View {
-        Menu {
-            Button(role: .destructive) {
-                askToLogOut()
-            } label: {
-                Label(String.Constants.logOut.localized(), systemImage: "rectangle.portrait.and.arrow.right")
-            }
-        } label: {
-            Image.peopleCircleIcon
-                .resizable()
-                .squareFrame(28)
-                .foregroundStyle(Color.foregroundDefault)
-        }
-        .onButtonTap {
-            logButtonPressedAnalyticEvents(button: .logOut)
-        }
-    }
-    
-    func askToLogOut() {
-        Task { @MainActor in
-            guard let topVC = appContext.coreAppCoordinator.topVC else { return }
-            
-            do {
-                try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: topVC)
-                await topVC.dismissPullUpMenu()
-                try await appContext.authentificationService.verifyWith(uiHandler: topVC, purpose: .confirm)
-                appContext.firebaseParkedDomainsAuthenticationService.logOut()
-                appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func loginButton() -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            logButtonPressedAnalyticEvents(button: .logIn)
-            pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
-        } label: {
-            topActinTextView(text: String.Constants.login.localized())
-        }
-    }
-    
+  
     @ViewBuilder
     func topActinTextView(text: String) -> some View {
         Text(text)
@@ -392,11 +327,28 @@ private extension SettingsView {
         otherItemsList()
     }
     
+    var settingsItemsToShow: [SettingsItems] {
+        var items = SettingsItems.allCases
+        if webUser != nil {
+            items.removeAll(where: { $0 == .viewVaulted })
+        }
+        return items
+    }
+    
+    var webUser: FirebaseUser? {
+        for profile in profiles {
+            if case .webAccount(let firebaseUser) = profile {
+                return firebaseUser
+            }
+        }
+        return nil
+    }
+    
     @ViewBuilder
     func otherItemsList() -> some View {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
-                ForEach(SettingsItems.allCases, id: \.self) { moreItem in
+                ForEach(settingsItemsToShow, id: \.self) { moreItem in
                     listViewFor(otherItem: moreItem)
                 }
             }
@@ -432,6 +384,8 @@ private extension SettingsView {
                 openFeedbackMailForm()
             case .legal:
                 pullUp = .default(.legalSelectionPullUp(selectionCallback: didSelectLegalType))
+            case .viewVaulted:
+                pullUp = .default(.loginOptionsSelectionPullUp(selectionCallback: didSelectToAuthWith))
             }
         }
     }
@@ -707,7 +661,7 @@ private extension SettingsView {
     }
     
     enum SettingsItems: CaseIterable {
-        case rateUs, learn, twitter, support, legal
+        case rateUs, learn, viewVaulted, twitter, support, legal
         
         var title: String {
             switch self {
@@ -721,6 +675,8 @@ private extension SettingsView {
                 return String.Constants.settingsSupportNFeedback.localized()
             case .legal:
                 return String.Constants.settingsLegal.localized()
+            case .viewVaulted:
+                return String.Constants.viewOrMoveVaultedDomains.localized()
             }
         }
         
@@ -736,6 +692,8 @@ private extension SettingsView {
                 return .settingsIconFeedback
             case .legal:
                 return .settingsIconLegal
+            case .viewVaulted:
+                return .vaultSafeIcon
             }
         }
         
@@ -751,6 +709,8 @@ private extension SettingsView {
                 return .settingsSupport
             case .legal:
                 return .settingsLegal
+            case .viewVaulted:
+                return .viewVaultedDomains
             }
         }
     }
