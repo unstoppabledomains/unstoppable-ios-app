@@ -470,8 +470,8 @@ extension ViewPullUpDefaultConfiguration {
     static func loginOptionsSelectionPullUp(selectionCallback: @escaping (LoginProvider)->()) -> ViewPullUpDefaultConfiguration {
         var selectedItem: LoginProvider?
         
-        return .init(title: .text(String.Constants.loginWithWebTitle.localized()),
-                     subtitle: .label(.text(String.Constants.loginWithWebSubtitle.localized())),
+        return .init(icon: .init(icon: .vaultSafeIcon, size: .large),
+                     title: .text(String.Constants.viewOrMoveVaultedDomains.localized()),
                      items: LoginProvider.allCases,
                      itemSelectedCallback: { item in
             selectedItem = item as? LoginProvider
