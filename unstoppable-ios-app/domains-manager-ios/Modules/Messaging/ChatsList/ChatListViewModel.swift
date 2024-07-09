@@ -185,10 +185,10 @@ extension ChatListViewModel {
             guard let selectedProfileWalletPair,
                   let profile = selectedProfileWalletPair.profile,
                   let view = appContext.coreAppCoordinator.topVC else { return }
-            
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
+                isCreatingProfile = true
                 try await messagingService.createCommunityProfile(for: profile)
                 try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
                                                         profile: profile,
@@ -197,6 +197,7 @@ extension ChatListViewModel {
             } catch {
                 self.error = error
             }
+            isCreatingProfile = false
         }
     }
     
