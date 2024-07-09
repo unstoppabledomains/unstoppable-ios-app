@@ -11,7 +11,6 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     var title: String { get }
     var progress: Double? { get }
 
-    func didSelectItem(_ item: ParkedDomainsFoundViewController.Item)
     func importButtonPressed()
 }
 
@@ -38,47 +37,21 @@ class ParkedDomainsFoundViewPresenter {
 // MARK: - ParkedDomainsFoundViewPresenterProtocol
 extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtocol {
     func viewDidLoad() {
-        showData()
         Task { @MainActor in
+            view?.setWith(email: webUser?.email ?? "", numberOfDomainsFound: domains.count)
             view?.setDashesProgress(progress)
         }
     }
-    
-    @MainActor
-    func didSelectItem(_ item: ParkedDomainsFoundViewController.Item) {
-        UDVibration.buttonTap.vibrate()
-        guard let view else { return }
-        
-        switch item {
-        case .parkedDomain(let domain):
-            switch domain.parkingStatus {
-            case .parkedButExpiresSoon(let expiresDate):
-                appContext.pullUpViewService.showParkedDomainExpiresSoonPullUp(in: view, expiresDate: expiresDate)
-            case .parkingTrial(let expiresDate):
-                appContext.pullUpViewService.showParkedDomainTrialExpiresPullUp(in: view, expiresDate: expiresDate)
-            case .parked, .freeParking:
-                appContext.pullUpViewService.showParkedDomainInfoPullUp(in: view)
-            case .parkingExpired:
-                appContext.pullUpViewService.showParkedDomainExpiredPullUp(in: view)
-            default:
-                return
+}
+
+// MARK: - Private methods
+private extension ParkedDomainsFoundViewPresenter {
+    var webUser: FirebaseUser? {
+        for profile in appContext.userProfilesService.profiles {
+            if case .webAccount(let firebaseUser) = profile {
+                return firebaseUser
             }
         }
+        return nil
     }
 }
-
-// MARK: - Private functions
-private extension ParkedDomainsFoundViewPresenter {
-    func showData() {
-        Task {
-            var snapshot = ParkedDomainsFoundSnapshot()
-           
-            snapshot.appendSections([.main])
-            snapshot.appendItems(domains.map({ ParkedDomainsFoundViewController.Item.parkedDomain($0) }))
-            
-            await view?.applySnapshot(snapshot, animated: true)
-        }
-    }
-}
-
-

@@ -39,7 +39,7 @@ extension MockEntitiesFabric {
                     domains.append(domain)
                 }
             }
-                        
+            
             return domains
         }
         
@@ -104,6 +104,10 @@ extension MockEntitiesFabric {
                       name: "free.x",
                       ownerAddress: "123")
             ]
+        }
+        
+        static func mockFirebaseDomainsDisplayInfo() -> [FirebaseDomainDisplayInfo] {
+            mockFirebaseDomains().map { FirebaseDomainDisplayInfo(firebaseDomain: $0) }
         }
     }
 }
