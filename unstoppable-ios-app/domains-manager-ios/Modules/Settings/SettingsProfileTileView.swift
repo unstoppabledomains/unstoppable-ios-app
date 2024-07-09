@@ -172,7 +172,7 @@ private extension SettingsProfileTileView {
         case .wallet(let wallet):
             return wallet.displayName
         case .webAccount:
-            return String.Constants.parkedDomains.localized()
+            return String.Constants.domainVault.localized()
         }
     }
     

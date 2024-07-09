@@ -1272,7 +1272,7 @@ extension String {
         static let reviewTxAgain = "REVIEW_TX_AGAIN"
         static let confirmAndSend = "CONFIRM_AND_SEND"
         
-        static let parkedDomains = "PARKED_DOMAINS"
+        static let domainVault = "DOMAIN_VAULT"
         static let backedUp = "BACKED_UP"
         static let backUp = "BACK_UP"
         static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"

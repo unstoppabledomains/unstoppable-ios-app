@@ -1166,7 +1166,7 @@ More tabs are coming in the next updates.";
 "REVIEW_TX_AGAIN" = "Review Transaction Again";
 "CONFIRM_AND_SEND" = "Confirm & Send";
 
-"PARKED_DOMAINS" = "Parked domains";
+"DOMAIN_VAULT" = "Domain Vault";
 "BACKED_UP" = "Backed up";
 "BACK_UP" = "Back up";
 "SET_AS_PRIMARY_DOMAIN" = "Set as primary domain";
