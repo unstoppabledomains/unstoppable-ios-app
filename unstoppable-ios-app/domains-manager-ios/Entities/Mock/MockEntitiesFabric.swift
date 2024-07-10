@@ -297,7 +297,7 @@ extension MockEntitiesFabric {
         
         static func mockUSDTToken(parent: BlockchainType = .Ethereum) -> BalanceTokenUIDescription {
             BalanceTokenUIDescription(address: "0x000",
-                                      chain: "ETH",
+                                      chain: BlockchainType.Ethereum.shortCode,
                                       symbol: "USDT",
                                       name: "USDT",
                                       balance: 10,
@@ -310,9 +310,9 @@ extension MockEntitiesFabric {
         
         static func mockEthToken() -> BalanceTokenUIDescription {
             BalanceTokenUIDescription(address:  "0x000",
-                                      chain: "ETH",
+                                      chain: BlockchainType.Ethereum.shortCode,
                                       symbol: "ETH",
-                                      name: "Ethereum",
+                                      name: BlockchainType.Ethereum.fullName,
                                       balance: 1,
                                       balanceUsd: 3900.34,
                                       marketUsd: 3900.34)
@@ -320,9 +320,9 @@ extension MockEntitiesFabric {
         
         static func mockMaticToken() -> BalanceTokenUIDescription {
             BalanceTokenUIDescription(address:  "0x000",
-                                      chain: "MATIC",
+                                      chain: BlockchainType.Matic.shortCode,
                                       symbol: "MATIC",
-                                      name: "Polygon",
+                                      name: BlockchainType.Matic.fullName,
                                       balance: 1,
                                       balanceUsd: 1,
                                       marketUsd: 1.02)

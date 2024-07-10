@@ -18,6 +18,8 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         case invalidBlockchainAbbreviation
     }
     
+    var shortCode: String { rawValue }
+    
     var fullName: String {
         switch self {
         case .Ethereum:

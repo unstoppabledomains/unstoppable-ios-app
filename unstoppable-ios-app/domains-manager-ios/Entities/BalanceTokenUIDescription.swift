@@ -184,7 +184,12 @@ extension BalanceTokenUIDescription {
 extension BalanceTokenUIDescription {
     static func createSkeletonEntity() -> BalanceTokenUIDescription {
         var token = BalanceTokenUIDescription(address: "",
-                                              chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+                                              chain: BlockchainType.Ethereum.shortCode,
+                                              symbol: "000",
+                                              name: "0000000000000000",
+                                              balance: 10000,
+                                              balanceUsd: 10000,
+                                              marketUsd: 1)
         token.isSkeleton = true
         return token
     }

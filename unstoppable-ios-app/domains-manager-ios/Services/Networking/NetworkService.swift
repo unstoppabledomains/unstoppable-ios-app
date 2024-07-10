@@ -383,13 +383,14 @@ extension NetworkService {
         let data = try await NetworkService().fetchData(for: url, method: .get)
         
         guard let jsonPrices = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-              let eth = jsonPrices["ETH"] as? [String: Any],
+              let eth = jsonPrices[BlockchainType.Ethereum.shortCode] as? [String: Any],
               let ethPrices = eth["averageGasPrices"] as? [String: Int],
-              let matic = jsonPrices["MATIC"] as? [String: Any],
+              let matic = jsonPrices[BlockchainType.Matic.shortCode] as? [String: Any],
               let maticPrices = matic["averageGasPrices"] as? [String: Int] else {
                  throw JRPCError.failedGetStatus
              }
-        return ["ETH": ethPrices, "MATIC": maticPrices]
+        return [BlockchainType.Ethereum.shortCode: ethPrices,
+                BlockchainType.Matic.shortCode: maticPrices]
     }
     
     enum InfuraSpeedCase: String, CaseIterable {
@@ -441,9 +442,9 @@ extension NetworkService {
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
-        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["ETH"]!
-        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)["MATIC"]!
-        case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)["ETH"]!
+        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Ethereum.shortCode]!
+        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Matic.shortCode]!
+        case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)[BlockchainType.Ethereum.shortCode]!
         default: throw JRPCError.unknownChain
         }
     }
