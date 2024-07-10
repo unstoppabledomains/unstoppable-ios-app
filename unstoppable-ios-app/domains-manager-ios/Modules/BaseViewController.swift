@@ -14,7 +14,6 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     
     var keyboardFrame: CGRect { KeyboardService.shared.keyboardFrame }
     var keyboardAnimationDuration: TimeInterval { KeyboardService.shared.keyboardAnimationDuration }
-    var keyboardAppeared: Bool { KeyboardService.shared.keyboardAppeared }
     var isKeyboardOpened: Bool { KeyboardService.shared.isKeyboardOpened }
     var isObservingKeyboard: Bool { false }
     

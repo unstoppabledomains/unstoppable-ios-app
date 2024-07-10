@@ -89,19 +89,6 @@ extension View {
         appContext.coreAppCoordinator.topVC?.view.allSubviewsOfType(type) ?? []
     }
     
-    var keyboardPublisher: AnyPublisher<Bool, Never> {
-        Publishers.Merge(
-            NotificationCenter.default
-                .publisher(for: UIResponder.keyboardWillShowNotification)
-                .map { _ in true },
-            
-            NotificationCenter.default
-                .publisher(for: UIResponder.keyboardWillHideNotification)
-                .map { _ in false }
-        )
-        .eraseToAnyPublisher()
-    }
-    
     var screenSize: CGSize { UIScreen.main.bounds.size }
     var isIPSE: Bool { deviceSize == .i4_7Inch }
 }
