@@ -14,11 +14,9 @@ protocol BlockchainProtocol: CaseIterable, Codable, Hashable {
 
 enum BlockchainType: BlockchainProtocol {
     
-    case Ethereum //= "ETH"
-    case Matic //= "MATIC"
-    case Base //= "BASE"
-    
-    static let cases = Self.allCases
+    case Ethereum
+    case Matic
+    case Base
     
     enum InitError: Error {
         case invalidBlockchainAbbreviation
