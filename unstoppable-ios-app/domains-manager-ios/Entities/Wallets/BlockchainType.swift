@@ -76,19 +76,19 @@ enum BlockchainType: BlockchainProtocol {
     }
 }
 
-enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
-    case Bitcoin = "BTC"
-    case Solana = "SOL"
-    case Base = "BASE"
-    
-    var fullName: String {
-        switch self {
-        case .Bitcoin:
-            return "Bitcoin"
-        case .Solana:
-            return "Solana"
-        case .Base:
-            return "Base"
-        }
-    }
-}
+//enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
+//    case Bitcoin = "BTC"
+//    case Solana = "SOL"
+//    case Base = "BASE"
+//    
+//    var fullName: String {
+//        switch self {
+//        case .Bitcoin:
+//            return "Bitcoin"
+//        case .Solana:
+//            return "Solana"
+//        case .Base:
+//            return "Base"
+//        }
+//    }
+//}

@@ -67,15 +67,15 @@ extension BlockchainType {
     }
 }
 
-extension SemiSupportedBlockchainType {
-    var chainIcon: UIImage {
-        switch self {
-        case .Bitcoin:
-                .bitcoinIcon
-        case .Solana:
-                .solanaIcon
-        case .Base:
-                .baseIcon
-        }
-    }
-}
+//extension SemiSupportedBlockchainType {
+//    var chainIcon: UIImage {
+//        switch self {
+//        case .Bitcoin:
+//                .bitcoinIcon
+//        case .Solana:
+//                .solanaIcon
+//        case .Base:
+//                .baseIcon
+//        }
+//    }
+//}
