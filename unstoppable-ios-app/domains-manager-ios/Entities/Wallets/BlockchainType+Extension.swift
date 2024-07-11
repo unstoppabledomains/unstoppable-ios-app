@@ -23,7 +23,12 @@ extension BlockchainType {
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
         case .Base:
-                    return UIImage(named: String.BlockChainIcons.base.rawValue)!
+            return .baseIcon
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
+            
         }
     }
     
@@ -35,6 +40,10 @@ extension BlockchainType {
             return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
         case .Base:
             return isTestNet ? BlockchainNetwork.baseSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
+        case .Bitcoin:
+            return 0 // TODO:
+        case .Solana:
+            return 0 // TODO:
         }
     }
     
@@ -50,6 +59,10 @@ extension BlockchainType {
                 .polygonIcon
         case .Base:
                 .baseIcon
+        case .Bitcoin:
+                .bitcoinIcon
+        case .Solana:
+                .solanaIcon
         }
     }
 }

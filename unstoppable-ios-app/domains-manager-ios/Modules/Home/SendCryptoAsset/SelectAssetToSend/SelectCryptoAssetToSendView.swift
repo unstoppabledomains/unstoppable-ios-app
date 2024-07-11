@@ -84,16 +84,17 @@ private extension SelectCryptoAssetToSendView {
         
         switch token.blockchainType {
         case .Ethereum, .Matic, .Base:
-            guard receiver.regexPattern == .ETH else { 
+            guard receiver.regexPattern == .ETH else {
                 Debugger.printFailure("Wrong regex pattern: \(receiver.regexPattern) for chain: \(String(describing: token.blockchainType?.fullName))")
                 return nil }
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-        case .none:
+        case .Bitcoin, .Solana: return nil // TODO: 
+        case .none: // TODO: why none? what chain is this? why this logic is in the View??
             if token.symbol == receiver.regexPattern.rawValue,
                token.parent == nil {
                 return BalanceTokenToSend(token: token, address: receiver.walletAddress)
             } /// As we don't currently support Base chain but MPC does
-            else if token.chain == Constants.baseChainSymbol,
+            else if token.chain == BlockchainType.Base.shortCode,
                     receiver.regexPattern == .ETH {
                 return BalanceTokenToSend(token: token, address: receiver.walletAddress)
             }

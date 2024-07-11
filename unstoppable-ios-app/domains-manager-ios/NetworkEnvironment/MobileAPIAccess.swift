@@ -114,7 +114,7 @@ extension NetworkService {
             
             switch blockchain {
             case .Ethereum, .Matic: return .UNS
-            case .Base: return nil
+            default: return nil
             }
         }
     }

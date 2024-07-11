@@ -42,9 +42,9 @@ extension FB_UD_MPC {
                 
                 /// Adjust appearance of Base coin specifically.
                 if blockchainAsset.symbol == BlockchainType.Ethereum.shortCode,
-                   blockchainAsset.blockchain.id == Constants.baseChainSymbol {
+                   blockchainAsset.blockchain.id == BlockchainType.Base.shortCode {
                     symbol = "BASE"
-                    name = "Base"
+                    name = "Base" // TODO: is this the name of the chain??
                 }
             } else {
                 chain = symbol // Coin

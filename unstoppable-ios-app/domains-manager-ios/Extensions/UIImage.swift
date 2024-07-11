@@ -248,6 +248,10 @@ extension UIImage {
             return .maticBGLarge
         case .Base:
             return .baseBGLarge
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
         }
     }
     
@@ -259,6 +263,10 @@ extension UIImage {
             return .maticBGSmall
         case .Base:
             return .baseBGSmall
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
         }
     }
     

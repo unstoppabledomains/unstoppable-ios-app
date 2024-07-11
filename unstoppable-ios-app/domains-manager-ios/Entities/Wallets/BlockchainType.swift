@@ -10,13 +10,17 @@ import UIKit
 protocol BlockchainProtocol: CaseIterable, Codable, Hashable {
     var fullName: String { get }
     var shortCode: String { get }
+//    var icon: UIImage { get }
 }
 
-enum BlockchainType: BlockchainProtocol {
+enum BlockchainType: BlockchainProtocol {    
     
     case Ethereum
     case Matic
     case Base
+    
+    case Bitcoin
+    case Solana
     
     enum InitError: Error {
         case invalidBlockchainAbbreviation
@@ -30,6 +34,11 @@ enum BlockchainType: BlockchainProtocol {
             return "MATIC"
         case .Base:
             return "BASE"
+            
+        case .Bitcoin:
+            return "BTC"
+        case .Solana:
+            return "SOL"
         }
     }
     
@@ -41,6 +50,11 @@ enum BlockchainType: BlockchainProtocol {
             return "Polygon"
         case .Base:
             return "Base"
+            
+        case .Bitcoin:
+            return "Bitcoin"
+        case .Solana:
+            return "Solana"
         }
     }
     
@@ -52,6 +66,11 @@ enum BlockchainType: BlockchainProtocol {
             return .Matic
         case "BASE":
             return .Base
+            
+        case "BTC":
+            return .Bitcoin
+        case "SOL":
+            return .Solana
         default: return nil
         }
     }
