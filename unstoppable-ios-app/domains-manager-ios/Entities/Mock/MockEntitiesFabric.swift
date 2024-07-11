@@ -303,7 +303,7 @@ extension MockEntitiesFabric {
                                       balance: 10,
                                       balanceUsd: 10,
                                       marketUsd: 1,
-                                      parent: .init(symbol: parent.rawValue,
+                                      parent: .init(symbol: parent.shortCode,
                                                     balance: 0,
                                                     marketUsd: 3900))
         }

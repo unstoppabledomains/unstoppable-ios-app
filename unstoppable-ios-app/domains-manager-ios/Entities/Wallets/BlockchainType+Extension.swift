@@ -10,8 +10,7 @@ import UIKit
 extension BlockchainType {
     static func getType(abbreviation: String?) throws -> Self {
         guard let abbreviation = abbreviation else { throw InitError.invalidBlockchainAbbreviation }
-        let sample = abbreviation.lowercased().trimmed
-        guard let result = Self.cases.first(where: {$0.rawValue.lowercased() == sample} ) else {
+        guard let result = Self.blockchainType(chainShortCode: abbreviation) else {
             throw InitError.invalidBlockchainAbbreviation
         }
         return result

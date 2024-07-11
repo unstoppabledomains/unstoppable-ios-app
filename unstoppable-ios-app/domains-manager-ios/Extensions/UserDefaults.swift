@@ -48,7 +48,7 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.isSendingCryptoForTheFirstTime, defaultValue: true) static var isSendingCryptoForTheFirstTime: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
-    @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
+    @UserDefaultsBlockchainTypeValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
     @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
     @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
@@ -105,7 +105,23 @@ struct UserDefaultsRawRepresentableValue<Value: RawRepresentable> {
         }
         set { UserDefaults.standard.setValue(newValue.rawValue, forKey: key.rawValue) }
     }
+}
+
+@propertyWrapper
+struct UserDefaultsBlockchainTypeValue {
+    let key: UserDefaultsKey
+    let defaultValue: BlockchainType
     
+    var wrappedValue: BlockchainType {
+        get {
+            if let shortCode = UserDefaults.standard.value(forKey: key.rawValue) as? String,
+               let chain = BlockchainType.blockchainType(chainShortCode: shortCode) {
+                return chain
+            }
+            return defaultValue
+        }
+        set { UserDefaults.standard.setValue(newValue.shortCode, forKey: key.rawValue) }
+    }
 }
 
 @propertyWrapper

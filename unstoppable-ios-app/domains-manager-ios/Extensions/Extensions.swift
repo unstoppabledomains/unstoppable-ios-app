@@ -74,10 +74,6 @@ extension HexAddress {
         self.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789.abcdefghijklmnopqrstuvwxyz-").inverted)
     }
     
-    var trimmedSpaces: String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-    
     var bytesArray: [UInt8]? {
         let cleanNumber = self.droppedHexPrefix
         var raw = [UInt8]()

@@ -19,7 +19,7 @@ struct MPCCryptoSender: UniversalCryptoSenderProtocol {
     }
     
     private func nativeChainSpecFor(chainDesc: CryptoSenderChainDescription) throws -> ChainSpec {
-        guard let chainType = BlockchainType(rawValue: chainDesc.chain) else {throw CryptoSender.Error.sendingNotSupported }
+        guard let chainType = BlockchainType.blockchainType(chainShortCode: chainDesc.chain) else { throw CryptoSender.Error.sendingNotSupported }
         let chain = ChainSpec(blockchainType: chainType,
                               env: chainDesc.env)
         return chain

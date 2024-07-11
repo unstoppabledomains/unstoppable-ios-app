@@ -23,7 +23,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     private(set) var isSkeleton: Bool = false
     
     var isEssentialTokenException: Bool {
-        chain == BlockchainType.Matic.rawValue && symbol == CryptoSender.SupportedToken.usdc.rawValue
+        chain == BlockchainType.Matic.shortCode && symbol == CryptoSender.SupportedToken.usdc.rawValue
     }
     
     struct ParentDetails: Hashable {
@@ -112,7 +112,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     }
 
     var blockchainType: BlockchainType? {
-        BlockchainType(rawValue: chain)
+        BlockchainType.blockchainType(chainShortCode: chain)
     }
 }
 

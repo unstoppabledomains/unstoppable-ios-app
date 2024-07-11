@@ -7,10 +7,16 @@
 
 import UIKit
 
-enum BlockchainType: String, CaseIterable, Codable, Hashable {
-    case Ethereum = "ETH"
-    case Matic = "MATIC"
-    case Base = "BASE"
+protocol BlockchainProtocol: CaseIterable, Codable, Hashable {
+    var fullName: String { get }
+    var shortCode: String { get }
+}
+
+enum BlockchainType: BlockchainProtocol {
+    
+    case Ethereum //= "ETH"
+    case Matic //= "MATIC"
+    case Base //= "BASE"
     
     static let cases = Self.allCases
     
@@ -18,7 +24,16 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
         case invalidBlockchainAbbreviation
     }
     
-    var shortCode: String { rawValue }
+    var shortCode: String {
+        switch self {
+        case .Ethereum:
+            return "ETH"
+        case .Matic:
+            return "MATIC"
+        case .Base:
+            return "BASE"
+        }
+    }
     
     var fullName: String {
         switch self {
@@ -28,6 +43,18 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Polygon"
         case .Base:
             return "Base"
+        }
+    }
+    
+    static func blockchainType(chainShortCode: String) -> BlockchainType? {
+        switch chainShortCode.uppercased().trimmedSpaces {
+        case "ETH":
+            return .Ethereum
+        case "MATIC":
+            return .Matic
+        case "BASE":
+            return .Base
+        default: return nil
         }
     }
 }

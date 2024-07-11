@@ -88,14 +88,14 @@ extension QRScannerViewController: QRScannerViewProtocol {
         button.setImage(.dotsCircleIcon, for: .normal)
         
         // Actions
-        let actions: [UIAction] = availableBlockchainTypes.map({ type in
-            let action = UIAction(title: type.rawValue,
-                                  image: type.icon,
+        let actions: [UIAction] = availableBlockchainTypes.map({ chain in
+            let action = UIAction(title: chain.shortCode,
+                                  image: chain.icon,
                                   identifier: .init(UUID().uuidString),
                                   handler: { [weak self] _ in
-                self?.didSelectBlockchainType(type)
+                self?.didSelectBlockchainType(chain)
             })
-            if type == selectedType {
+            if chain == selectedType {
                 action.state = .on
             }
             return action
@@ -137,7 +137,7 @@ private extension QRScannerViewController {
 private extension QRScannerViewController {
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
         logAnalytic(event: .didSelectChainNetwork,
-                    parameters: [.chainNetwork: blockchainType.rawValue])
+                    parameters: [.chainNetwork: blockchainType.shortCode])
         UDVibration.buttonTap.vibrate()
         presenter.didSelectBlockchainType(blockchainType)
     }
