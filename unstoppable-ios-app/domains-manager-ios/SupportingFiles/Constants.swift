@@ -182,63 +182,6 @@ struct Env {
     }()
 }
 
-enum BlockchainNetwork: Int, CaseIterable {
-    case ethMainnet = 1
-    case ethSepolia = 11155111
-    case polygonMainnet = 137
-    case polygonAmoy = 80002
-    
-    case baseMainnet = 8453
-    case baseSepolia = 84532
-    
-    var id: Int { rawValue }
-    
-    var name: String {
-        switch self {
-        case .ethMainnet:
-            return "mainnet"
-        case .ethSepolia:
-            return "sepolia"
-        case .polygonMainnet:
-            return "polygon-mainnet"
-        case .polygonAmoy:
-            return "polygon-amoy"
-        case .baseMainnet:
-            return "base-mainnet"
-        case .baseSepolia:
-            return "base-sepolia"
-        }
-    }
-    
-    var nameForClient: String {
-        switch self {
-        case .ethMainnet:
-            return "Ethereum"
-        case .ethSepolia:
-            return "Ethereum: Sepolia"
-        case .polygonMainnet:
-            return "Polygon"
-        case .polygonAmoy:
-            return "Polygon: Amoy"
-        case .baseMainnet:
-            return "Base: Mainnet"
-        case .baseSepolia:
-            return "Base: Sepolia"
-        }
-    }
-    
-    func identifyBlockchainType() -> BlockchainType {
-        switch self {
-        case .ethMainnet, .ethSepolia:
-            return .Ethereum
-        case .polygonMainnet, .polygonAmoy:
-            return .Matic
-        case .baseMainnet, .baseSepolia:
-            return .Base
-        }
-    }
-}
-
 struct Utilities {
     static func catchingFailureAsyncTask<T>(asyncCatching block: () async throws -> T, defaultValue: T) async -> T {
         do {

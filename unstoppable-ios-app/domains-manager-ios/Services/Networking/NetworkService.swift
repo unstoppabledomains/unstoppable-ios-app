@@ -292,7 +292,7 @@ extension NetworkService {
     }
     
     func getJRPCProviderUrl(chainId: Int) -> URL? {
-        guard let netName = BlockchainNetwork(rawValue: chainId)?.name else {
+        guard let netName = BlockchainType.Chain(rawValue: chainId)?.name else {
             return nil
         }
         return URL(string: "https://\(netName).infura.io/v3/\(NetworkService.chooseInfuraProjectId())")!
@@ -442,9 +442,9 @@ extension NetworkService {
 
     private func getStatusGasPrices(chainId: Int) async throws -> [String: Int] {
         switch chainId {
-        case BlockchainNetwork.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Ethereum.shortCode]!
-        case BlockchainNetwork.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Matic.shortCode]!
-        case BlockchainNetwork.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)[BlockchainType.Ethereum.shortCode]!
+        case BlockchainType.Chain.ethMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Ethereum.shortCode]!
+        case BlockchainType.Chain.polygonMainnet.rawValue: return try await getStatusGasPrices(env: .mainnet)[BlockchainType.Matic.shortCode]!
+        case BlockchainType.Chain.ethSepolia.rawValue: return try await getStatusGasPrices(env: .testnet)[BlockchainType.Ethereum.shortCode]!
         default: throw JRPCError.unknownChain
         }
     }

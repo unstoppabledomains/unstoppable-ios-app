@@ -153,7 +153,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     var sanitizedClientId: String?
 
     static let supportedNamespace = "eip155"
-    static let supportedReferences: Set<String> = Set(BlockchainNetwork.allCases.map({ String($0.id) }))
+    static let supportedReferences: Set<String> = Set(BlockchainType.Chain.allCases.map({ String($0.id) }))
     
     var appDisconnectedCallback: WCAppDisconnectedCallback?
     var willHandleRequestCallback: EmptyCallback?
@@ -825,7 +825,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     
     private func extractBlockchainTypeFrom(request: WalletConnectSign.Request) throws -> BlockchainType {
         guard let chainId = Int(request.chainId.reference),
-              let blockchainNetwork = BlockchainNetwork(rawValue: chainId) else {
+              let blockchainNetwork = BlockchainType.Chain(rawValue: chainId) else {
             throw WalletConnectRequestError.networkNotSupported
         }
         
