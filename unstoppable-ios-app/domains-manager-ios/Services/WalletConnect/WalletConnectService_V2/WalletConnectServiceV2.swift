@@ -829,7 +829,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             throw WalletConnectRequestError.networkNotSupported
         }
         
-        return blockchainNetwork.getBlockchainType()
+        return blockchainNetwork.identifyBlockchainType()
     }
     
     // complete TX helpers

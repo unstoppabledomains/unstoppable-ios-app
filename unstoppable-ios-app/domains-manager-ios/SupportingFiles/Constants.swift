@@ -227,7 +227,7 @@ enum BlockchainNetwork: Int, CaseIterable {
         }
     }
     
-    func getBlockchainType() -> BlockchainType {
+    func identifyBlockchainType() -> BlockchainType {
         switch self {
         case .ethMainnet, .ethSepolia:
             return .Ethereum
