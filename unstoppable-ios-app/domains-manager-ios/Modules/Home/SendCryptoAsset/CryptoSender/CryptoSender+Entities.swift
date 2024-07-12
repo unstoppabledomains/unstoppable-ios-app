@@ -91,16 +91,14 @@ struct EstimatedGasPrices {
 }
 
 struct ChainSpec {
-    let blockchainType: BlockchainType
-    let env: UnsConfigManager.BlockchainEnvironment
+    let chain: BlockchainType.Chain
     
     init(blockchainType: BlockchainType, env: UnsConfigManager.BlockchainEnvironment = .mainnet) {
-        self.blockchainType = blockchainType
-        self.env = env
+        self.chain = blockchainType.supportedChain(env: env)
     }
     
     var id: Int {
-        self.blockchainType.supportedChainId(env: self.env)
+        self.chain.id
     }
 }
 
@@ -182,11 +180,11 @@ extension CryptoSender {
             CryptoSender.SupportedToken(rawValue: symbol.uppercased())
         }
         
-        func getContractAddress(for chain: ChainSpec) throws -> HexAddress {
-            guard let addresses = Self.contractArray[self]?[chain.blockchainType] else {
+        func getContractAddress(for chainSpec: ChainSpec) throws -> HexAddress {
+            guard let addresses = Self.contractArray[self]?[chainSpec.chain.identifyBlockchainType()] else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
             }
-            guard let contract =  chain.env == .mainnet ? addresses.mainnet : addresses.testnet else {
+            guard let contract =  chainSpec.chain.identifyEnvironment() == .mainnet ? addresses.mainnet : addresses.testnet else {
                 throw CryptoSender.Error.tokenNotSupportedOnChain
             }
             return  contract

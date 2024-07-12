@@ -90,11 +90,11 @@ struct NativeCoinCryptoSender: ConcreteCryptoSenderProtocol, EVMCryptoSender {
     let defaultSendTxGasPrice: BigUInt = 21_000
     let wallet: UDWallet
     
-    func canSendCrypto(token: CryptoSender.SupportedToken, chain: ChainSpec) -> Bool {
+    func canSendCrypto(token: CryptoSender.SupportedToken, chainSpec: ChainSpec) -> Bool {
         // only native tokens supported
-        return (token == CryptoSender.SupportedToken.eth && chain.blockchainType == .Ethereum) ||
-        (token == CryptoSender.SupportedToken.matic && chain.blockchainType == .Matic) ||
-        (token == CryptoSender.SupportedToken.eth && chain.blockchainType == .Base)
+        return (token == CryptoSender.SupportedToken.eth && chainSpec.chain.identifyBlockchainType() == .Ethereum) ||
+        (token == CryptoSender.SupportedToken.matic && chainSpec.chain.identifyBlockchainType() == .Matic) ||
+        (token == CryptoSender.SupportedToken.eth && chainSpec.chain.identifyBlockchainType() == .Base)
     }
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,

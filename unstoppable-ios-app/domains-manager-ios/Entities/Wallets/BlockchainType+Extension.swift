@@ -12,11 +12,18 @@ extension BlockchainType {
     enum Chain: Int, CaseIterable {
         case ethMainnet = 1
         case ethSepolia = 11155111
+        
         case polygonMainnet = 137
         case polygonAmoy = 80002
         
         case baseMainnet = 8453
         case baseSepolia = 84532
+        
+        case solanaMainnet = 101
+        case solanaTestnet = 102
+        
+        case bitcoinMainnet = -1
+        case bitcoinTestnet = -2
         
         var id: Int { rawValue }
         
@@ -34,6 +41,16 @@ extension BlockchainType {
                 return "Base: Mainnet"
             case .baseSepolia:
                 return "Base: Sepolia"
+                
+            case .solanaMainnet:
+                return "Solana"
+            case .solanaTestnet:
+                return "Solana Testnet"
+                
+            case .bitcoinMainnet:
+                return "Bitcoin"
+            case .bitcoinTestnet:
+                return "Bitcoin Testnet"
             }
         }
         
@@ -51,6 +68,16 @@ extension BlockchainType {
                 return "base-mainnet"
             case .baseSepolia:
                 return "base-sepolia"
+                
+            case .solanaMainnet:
+                return "solana"
+            case .solanaTestnet:
+                return "solana-testnet"
+                
+            case .bitcoinMainnet:
+                return "bitcoin"
+            case .bitcoinTestnet:
+                return "bitcoin-testnet"
             }
         }
         
@@ -62,6 +89,21 @@ extension BlockchainType {
                 return .Matic
             case .baseMainnet, .baseSepolia:
                 return .Base
+            case .solanaMainnet, .solanaTestnet:
+                 return .Solana
+            case .bitcoinMainnet, .bitcoinTestnet:
+                 return .Bitcoin
+            }
+        }
+        
+        func identifyEnvironment() -> UnsConfigManager.BlockchainEnvironment {
+            switch self {
+            case .ethMainnet, .polygonMainnet, .baseMainnet, .solanaMainnet, .bitcoinMainnet:
+                 return .mainnet
+                
+                
+            case .ethSepolia, .polygonAmoy, .baseSepolia, .solanaTestnet, .bitcoinTestnet:
+                 return .testnet
             }
         }
     }
@@ -90,24 +132,33 @@ extension BlockchainType {
         }
     }
     
-    func supportedChainId(isTestNet: Bool) -> Int {
+    func supportedChain(isTestNet: Bool) -> Chain {
         switch self {
         case .Ethereum:
-            return isTestNet ? Chain.ethSepolia.id : Chain.ethMainnet.id // Sepolia or Mainnet
+            return isTestNet ? Chain.ethSepolia : Chain.ethMainnet // Sepolia or Mainnet
         case .Matic:
-            return isTestNet ? Chain.polygonAmoy.id : Chain.polygonMainnet.id // Amoy or Polygon
+            return isTestNet ? Chain.polygonAmoy : Chain.polygonMainnet // Amoy or Polygon
         case .Base:
-            return isTestNet ? Chain.baseSepolia.id : Chain.baseMainnet.id // Base Sepolia or Base Mainnet
+            return isTestNet ? Chain.baseSepolia : Chain.baseMainnet // Base Sepolia or Base Mainnet
         case .Bitcoin:
-            return 0 // TODO:
+            return isTestNet ? Chain.bitcoinTestnet : Chain.bitcoinMainnet
         case .Solana:
-            return 0 // TODO:
+            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet
         }
     }
     
-    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
-        supportedChainId(isTestNet: env == .testnet)
+    func supportedChain(env: UnsConfigManager.BlockchainEnvironment) -> Chain {
+        supportedChain(isTestNet: env == .testnet)
     }
+
+    func supportedChainId(isTestNet: Bool) -> Int {
+        supportedChain(isTestNet: isTestNet).id
+    }
+    
+    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
+        supportedChain(env: env).id
+    }
+    
     
     var chainIcon: UIImage {
         switch self {
