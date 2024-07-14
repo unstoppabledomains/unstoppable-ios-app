@@ -141,9 +141,9 @@ extension BlockchainType {
         case .Base:
             return isTestNet ? Chain.baseSepolia : Chain.baseMainnet // Base Sepolia or Base Mainnet
         case .Bitcoin:
-            return isTestNet ? Chain.bitcoinTestnet : Chain.bitcoinMainnet
+            return isTestNet ? Chain.bitcoinTestnet : Chain.bitcoinMainnet // TODO: throw
         case .Solana:
-            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet
+            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet // TODO: throw
         }
     }
     
