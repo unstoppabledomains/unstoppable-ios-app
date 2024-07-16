@@ -128,7 +128,9 @@ extension DomainItem {
     func doesRequirePayment() -> Bool {
         switch self.getBlockchainType() {
         case .Ethereum: return true
-        default: return false
+        
+        case .Matic, .Base, .Bitcoin, .Solana:
+            return false
         }
     }
 }
