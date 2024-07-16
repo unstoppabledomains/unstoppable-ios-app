@@ -811,6 +811,20 @@ extension Endpoint {
         )
     }
     
+    static func getProfileReverseResolution(for identifier: HexAddress,
+                                            supportedNameServices: [NetworkService.ProfilesSupportedNameServices]?) throws -> Endpoint {
+        var queryItems: [URLQueryItem] = []
+        if let supportedNameServices {
+            let services = supportedNameServices.map { $0.rawValue }.joined(separator: ",")
+            queryItems.append(URLQueryItem(name: "resolutionOrder", value: services))
+        }
+        return Endpoint(
+            host: NetworkConfig.baseAPIHost,
+            path: "/profile/resolve/\(identifier)",
+            queryItems: queryItems,
+            body: ""
+        )
+    }
 
     static func joinBadgeCommunity(body: String) -> Endpoint {
         return Endpoint(
