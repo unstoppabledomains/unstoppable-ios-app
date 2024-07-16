@@ -22,13 +22,13 @@ extension MockEntitiesFabric {
         
         static func createMockTxsResponses(canLoadMore: Bool = false,
                                           amount: Int = 20) -> [WalletTransactionsPerChainResponse] {
-            [createMockTxsResponse(chain: "ETH",
+            [createMockTxsResponse(chain: BlockchainType.Ethereum.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount),
-             createMockTxsResponse(chain: "MATIC",
+             createMockTxsResponse(chain: BlockchainType.Matic.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount),
-             createMockTxsResponse(chain: "BASE",
+             createMockTxsResponse(chain: BlockchainType.Base.shortCode,
                                    canLoadMore: canLoadMore,
                                    amount: amount)]
         }

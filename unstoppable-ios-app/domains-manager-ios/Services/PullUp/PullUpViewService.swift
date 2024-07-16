@@ -368,15 +368,15 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let selectionViewHeight: CGFloat
         let icon = UIImage.getNetworkLargeIcon(by: chain)!
         let description: String
-        switch chain {
+        switch chain { // TODO: logic in the View
         case .Ethereum:
             description = String.Constants.mintedOnEthereumDescription.localized()
             selectionViewHeight = 328
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
-        case .Base: Debugger.printFailure("Minting cannot be on Base", critical: true)
-            description = "Base should not be used for minting"
+        default: Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
+            description = "\(chain.fullName) should not be used for minting"
             selectionViewHeight = 304
 
         }
@@ -388,7 +388,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.rawValue], contentView: selectionView, height: selectionViewHeight)
+        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.shortCode], contentView: selectionView, height: selectionViewHeight)
     }
 
     func showRecentActivitiesInfoPullUp(in viewController: UIViewController, isGetNewDomain: Bool) async throws {

@@ -14,7 +14,7 @@ extension FB_UD_MPC {
         let assets: [WalletAccountAsset]
         
         func getAssetToSignWith(chain: BlockchainType) throws -> WalletAccountAsset {
-            try getAssetWith(symbol: chain.rawValue, chain: chain.rawValue)
+            try getAssetWith(symbol: chain.shortCode, chain: chain.shortCode)
         }
         
         func getAssetWith(symbol: String, chain: String) throws -> WalletAccountAsset {

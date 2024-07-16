@@ -93,7 +93,7 @@ private extension ConnectServerRequestConfirmationView {
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
         logAnalytic(event: .didSelectChainNetwork,
-                    parameters: [.chainNetwork: blockchainType.rawValue])
+                    parameters: [.chainNetwork: blockchainType.shortCode])
         UDVibration.buttonTap.vibrate()
         set(selectedChain: blockchainType)
     }

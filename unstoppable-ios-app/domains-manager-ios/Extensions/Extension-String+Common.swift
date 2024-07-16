@@ -67,6 +67,9 @@ extension String {
         return self.split(separator: " ").count == Seed.seedWordsCount && self.isAlphanumeric()
     }
     
+    var trimmedSpaces: String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
 
 typealias DomainName = String

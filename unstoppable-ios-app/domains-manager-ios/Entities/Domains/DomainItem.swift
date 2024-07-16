@@ -33,7 +33,7 @@ extension DomainItem {
     init(jsonResponse: NetworkService.DomainResponse) {
         self.name = jsonResponse.name
         self.ownerWallet = jsonResponse.ownerAddress
-        self.blockchain = try? BlockchainType.getType(abbreviation: jsonResponse.blockchain)
+        self.blockchain = try? BlockchainType.resolve(shortCode: jsonResponse.blockchain)
     }
 }
 
@@ -128,8 +128,9 @@ extension DomainItem {
     func doesRequirePayment() -> Bool {
         switch self.getBlockchainType() {
         case .Ethereum: return true
-        case .Matic: return false
-        case .Base: return false
+        
+        case .Matic, .Base, .Bitcoin, .Solana:
+            return false
         }
     }
 }

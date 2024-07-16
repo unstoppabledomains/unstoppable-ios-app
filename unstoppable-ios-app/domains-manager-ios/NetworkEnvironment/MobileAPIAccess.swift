@@ -108,13 +108,13 @@ extension NetworkService {
         let humanAddress: String
         
         func getNamingService() -> NamingService? {
-            guard let blockchain = try? BlockchainType.getType(abbreviation: self.blockchain) else {
+            guard let blockchain = try? BlockchainType.resolve(shortCode: self.blockchain) else {
                 return nil
             }
             
             switch blockchain {
             case .Ethereum, .Matic: return .UNS
-            case .Base: return nil
+            default: return nil
             }
         }
     }
@@ -550,7 +550,7 @@ extension NetworkService {
                                forDomain domain: DomainItem,
                                paymentConfirmationHandler: PaymentConfirmationHandler) async throws -> [ActionsTxInfo] {
         let actionsResponse = try await NetworkService().getActions(request: request)
-        let blockchain = try BlockchainType.getType(abbreviation: actionsResponse.domain.blockchain)
+        let blockchain = try BlockchainType.resolve(shortCode: actionsResponse.domain.blockchain)
         
         let payloadReturned: NetworkService.TxPayload
         if let paymentInfo = actionsResponse.paymentInfo {
