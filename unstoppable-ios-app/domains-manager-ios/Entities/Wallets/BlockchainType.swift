@@ -74,21 +74,22 @@ enum BlockchainType: BlockchainProtocol {
         default: return nil
         }
     }
+    
+    static func blockchainType(fullName: String) -> BlockchainType? {
+        switch fullName.trimmedSpaces {
+        case "Ethereum":
+            return .Ethereum
+        case "Polygon":
+            return .Matic
+        case "Base":
+            return .Base
+            
+        case "Bitcoin":
+            return .Bitcoin
+        case "Solana":
+            return .Solana
+        default: return nil
+        }
+    }
 }
 
-//enum SemiSupportedBlockchainType: String, CaseIterable, Codable, Hashable {
-//    case Bitcoin = "BTC"
-//    case Solana = "SOL"
-//    case Base = "BASE"
-//    
-//    var fullName: String {
-//        switch self {
-//        case .Bitcoin:
-//            return "Bitcoin"
-//        case .Solana:
-//            return "Solana"
-//        case .Base:
-//            return "Base"
-//        }
-//    }
-//}

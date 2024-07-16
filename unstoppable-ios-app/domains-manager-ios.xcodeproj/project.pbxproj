@@ -32,6 +32,9 @@
 		299713CD28F6931E00743003 /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713CC28F6931E00743003 /* Function.swift */; };
 		299713D228F6933F00743003 /* ABIEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713D128F6933F00743003 /* ABIEncoder.swift */; };
 		299713D728F693F600743003 /* EIP712TypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713D628F693F600743003 /* EIP712TypedData.swift */; };
+		29A42A572C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
+		29A42A582C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
+		29A42A592C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
 		29AA6AA42BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */; };
 		29AA6AA82BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
 		29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */; };
@@ -2674,6 +2677,7 @@
 		299713CC28F6931E00743003 /* Function.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Function.swift; sourceTree = "<group>"; };
 		299713D128F6933F00743003 /* ABIEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIEncoder.swift; sourceTree = "<group>"; };
 		299713D628F693F600743003 /* EIP712TypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712TypedData.swift; sourceTree = "<group>"; };
+		29A42A562C4658CB00CAEA70 /* supported-tokens.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "supported-tokens.json"; sourceTree = "<group>"; };
 		29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteCryptoSenderProtocol.swift; sourceTree = "<group>"; };
 		29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoSender.swift; sourceTree = "<group>"; };
 		29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurePersistedStorage.swift; sourceTree = "<group>"; };
@@ -4893,6 +4897,7 @@
 				C683EB542B3B0BFE0026CA41 /* hot-suggestions.json */,
 				303CB4B5273A894F0064495D /* resolver-keys.json */,
 				30A280362714217100FD3759 /* wallets-registry.json */,
+				29A42A562C4658CB00CAEA70 /* supported-tokens.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -8713,6 +8718,7 @@
 				C6FEA91B2BEB700F004FD740 /* SettingsCollectionViewCell.xib in Resources */,
 				C6D0F43C283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
 				C6C57C582869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
+				29A42A572C4658CB00CAEA70 /* supported-tokens.json in Resources */,
 				C683EB552B3B0BFE0026CA41 /* hot-suggestions.json in Resources */,
 				C664B6642914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
 				C6AD181328D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
@@ -8755,6 +8761,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29A42A582C4658CB00CAEA70 /* supported-tokens.json in Resources */,
 				C67B6D5E2AE7F8FB00F74B0B /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8803,6 +8810,7 @@
 				C683EB562B3B0BFE0026CA41 /* hot-suggestions.json in Resources */,
 				C6D646992B1ED14E00D724AC /* ManageDomainTopInfoCell.xib in Resources */,
 				C6D646B62B1ED18F00D724AC /* WallpaperDomainImagePreviewView.xib in Resources */,
+				29A42A592C4658CB00CAEA70 /* supported-tokens.json in Resources */,
 				C6C8F8DB2B21836400A9834D /* ParkedDomainsFoundViewController.xib in Resources */,
 				C6C8F91B2B2183A400A9834D /* LaunchViewController.xib in Resources */,
 				C6D647752B1EE08900D724AC /* DomainTransactionInProgressCell.xib in Resources */,

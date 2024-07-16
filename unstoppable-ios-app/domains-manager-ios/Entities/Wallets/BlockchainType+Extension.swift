@@ -27,7 +27,7 @@ extension BlockchainType {
         
         var id: Int { rawValue }
         
-        var nameForClient: String {
+        var fullName: String {
             switch self {
             case .ethMainnet:
                 return "Ethereum"
@@ -143,7 +143,7 @@ extension BlockchainType {
         case .Bitcoin:
             return isTestNet ? Chain.bitcoinTestnet : Chain.bitcoinMainnet // TODO: throw
         case .Solana:
-            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet // TODO: throw
+            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet
         }
     }
     

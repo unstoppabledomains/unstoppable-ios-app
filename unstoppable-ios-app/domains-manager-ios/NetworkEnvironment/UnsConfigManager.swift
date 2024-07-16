@@ -107,7 +107,7 @@ struct UnsConfigManager {
     }
     
     static func getBlockchainNameForClient(by id: Int) -> String {
-        BlockchainType.Chain(rawValue: id)?.nameForClient ?? "not defined by chainId:\(id)"
+        BlockchainType.Chain(rawValue: id)?.fullName ?? "not defined by chainId:\(id)"
     }
     
     enum BlockchainEnvironment {
