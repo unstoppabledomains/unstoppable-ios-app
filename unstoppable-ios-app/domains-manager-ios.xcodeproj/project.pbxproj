@@ -35,6 +35,7 @@
 		29A42A572C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
 		29A42A582C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
 		29A42A592C4658CB00CAEA70 /* supported-tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 29A42A562C4658CB00CAEA70 /* supported-tokens.json */; };
+		29A42A5B2C46727200CAEA70 /* SupportedTokensTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A42A5A2C46727200CAEA70 /* SupportedTokensTests.swift */; };
 		29AA6AA42BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */; };
 		29AA6AA82BAC389D00D24FB5 /* CryptoSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */; };
 		29AEA04B292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */; };
@@ -2678,6 +2679,7 @@
 		299713D128F6933F00743003 /* ABIEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIEncoder.swift; sourceTree = "<group>"; };
 		299713D628F693F600743003 /* EIP712TypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712TypedData.swift; sourceTree = "<group>"; };
 		29A42A562C4658CB00CAEA70 /* supported-tokens.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "supported-tokens.json"; sourceTree = "<group>"; };
+		29A42A5A2C46727200CAEA70 /* SupportedTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportedTokensTests.swift; sourceTree = "<group>"; };
 		29AA6AA32BAAE9F500D24FB5 /* ConcreteCryptoSenderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteCryptoSenderProtocol.swift; sourceTree = "<group>"; };
 		29AA6AA72BAC389D00D24FB5 /* CryptoSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoSender.swift; sourceTree = "<group>"; };
 		29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurePersistedStorage.swift; sourceTree = "<group>"; };
@@ -4310,6 +4312,7 @@
 		306486742527253700388026 = {
 			isa = PBXGroup;
 			children = (
+				29A42A5A2C46727200CAEA70 /* SupportedTokensTests.swift */,
 				C60C59B32B47FACC00A2522C /* unstoppable-preview.entitlements */,
 				304C928D25752625007A9F01 /* apple-app-site-association */,
 				3064867F2527253700388026 /* domains-manager-ios */,
@@ -10145,6 +10148,7 @@
 				C66FFD052B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift in Sources */,
 				C617CFA82B9EDA2F00663516 /* TestableWalletNFTsService.swift in Sources */,
 				C60610E829A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift in Sources */,
+				29A42A5B2C46727200CAEA70 /* SupportedTokensTests.swift in Sources */,
 				C6DF9875290F83020098733A /* UnsConfigManagerTests.swift in Sources */,
 				C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */,
 				C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */,
