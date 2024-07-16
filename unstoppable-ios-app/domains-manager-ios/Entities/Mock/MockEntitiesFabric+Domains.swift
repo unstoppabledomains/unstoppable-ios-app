@@ -142,7 +142,7 @@ extension MockEntitiesFabric {
         }
         
         static func createPublicDomainMetadata(domain: String, walletAddress: String) -> PublicDomainProfileMetaData {
-            PublicDomainProfileMetaData(domain: domain, blockchain: "MATIC", networkId: BlockchainType.Matic.supportedChainId(env: .testnet), owner: walletAddress)
+            PublicDomainProfileMetaData(domain: domain, blockchain: "MATIC", networkId: BlockchainType.Matic.resolveChainId(env: .testnet), owner: walletAddress)
         }
         
         static func createPublicProfileAttributes(displayName: String = "Oleg Kuplin",

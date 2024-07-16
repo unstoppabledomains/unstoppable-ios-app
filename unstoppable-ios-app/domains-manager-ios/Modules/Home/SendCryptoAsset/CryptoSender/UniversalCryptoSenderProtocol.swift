@@ -27,7 +27,7 @@ struct CryptoSenderChainDescription {
     }
     
     func getChain() throws -> ChainSpec {
-        guard let chainType = BlockchainType.blockchainType(chainShortCode: self.chain) else {
+        guard let chainType = BlockchainType(chainShortCode: self.chain) else {
             throw CryptoSender.Error.sendingNotSupported
         }
         let chain = ChainSpec(blockchainType: chainType, env: self.env)

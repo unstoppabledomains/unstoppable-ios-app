@@ -57,36 +57,36 @@ enum BlockchainType: BlockchainProtocol {
         }
     }
     
-    static func blockchainType(chainShortCode: String) -> BlockchainType? {
+    init?(chainShortCode: String) {
         switch chainShortCode.uppercased().trimmedSpaces {
         case "ETH":
-            return .Ethereum
+            self = .Ethereum
         case "MATIC":
-            return .Matic
+            self = .Matic
         case "BASE":
-            return .Base
+            self = .Base
             
         case "BTC":
-            return .Bitcoin
+            self = .Bitcoin
         case "SOL":
-            return .Solana
+            self = .Solana
         default: return nil
         }
     }
     
-    static func blockchainType(fullName: String) -> BlockchainType? {
+    init?(fullName: String) {
         switch fullName.trimmedSpaces {
         case "Ethereum":
-            return .Ethereum
+            self = .Ethereum
         case "Polygon":
-            return .Matic
+            self = .Matic
         case "Base":
-            return .Base
+            self = .Base
             
         case "Bitcoin":
-            return .Bitcoin
+            self = .Bitcoin
         case "Solana":
-            return .Solana
+            self = .Solana
         default: return nil
         }
     }

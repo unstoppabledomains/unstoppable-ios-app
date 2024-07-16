@@ -33,7 +33,7 @@ extension DomainItem {
     init(jsonResponse: NetworkService.DomainResponse) {
         self.name = jsonResponse.name
         self.ownerWallet = jsonResponse.ownerAddress
-        self.blockchain = try? BlockchainType.getType(abbreviation: jsonResponse.blockchain)
+        self.blockchain = try? BlockchainType.resolve(shortCode: jsonResponse.blockchain)
     }
 }
 

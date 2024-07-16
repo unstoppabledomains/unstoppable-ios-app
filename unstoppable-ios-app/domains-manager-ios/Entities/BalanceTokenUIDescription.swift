@@ -112,7 +112,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     }
 
     var blockchainType: BlockchainType? {
-        BlockchainType.blockchainType(chainShortCode: chain)
+        BlockchainType(chainShortCode: chain)
     }
 }
 

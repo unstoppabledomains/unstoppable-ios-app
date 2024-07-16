@@ -94,7 +94,7 @@ struct ChainSpec {
     let chain: BlockchainType.Chain
     
     init(blockchainType: BlockchainType, env: UnsConfigManager.BlockchainEnvironment = .mainnet) {
-        self.chain = blockchainType.supportedChain(env: env)
+        self.chain = blockchainType.resolveChain(env: env)
     }
     
     var id: Int {
@@ -215,7 +215,7 @@ extension CryptoSender {
                                                     testnet: String?,
                                                     decimals: UInt8)] = [:]
                     for chain in blockchainTypeData {
-                        guard let blockchainType = BlockchainType.blockchainType(fullName: chain.key) else {
+                        guard let blockchainType = BlockchainType(fullName: chain.key) else {
                             throw Error.invalidChainSymbol
                         }
                         guard let mainnet: String = chain.value["mainnet"] as? String,

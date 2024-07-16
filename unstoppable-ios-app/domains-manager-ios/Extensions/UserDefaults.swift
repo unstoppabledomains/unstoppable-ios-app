@@ -115,7 +115,7 @@ struct UserDefaultsBlockchainTypeValue {
     var wrappedValue: BlockchainType {
         get {
             if let shortCode = UserDefaults.standard.value(forKey: key.rawValue) as? String,
-               let chain = BlockchainType.blockchainType(chainShortCode: shortCode) {
+               let chain = BlockchainType(chainShortCode: shortCode) {
                 return chain
             }
             return defaultValue

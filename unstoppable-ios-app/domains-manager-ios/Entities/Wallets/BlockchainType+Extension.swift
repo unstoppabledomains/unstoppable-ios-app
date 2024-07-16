@@ -101,16 +101,15 @@ extension BlockchainType {
             case .ethMainnet, .polygonMainnet, .baseMainnet, .solanaMainnet, .bitcoinMainnet:
                  return .mainnet
                 
-                
             case .ethSepolia, .polygonAmoy, .baseSepolia, .solanaTestnet, .bitcoinTestnet:
                  return .testnet
             }
         }
     }
     
-    static func getType(abbreviation: String?) throws -> Self {
-        guard let abbreviation = abbreviation else { throw InitError.invalidBlockchainAbbreviation }
-        guard let result = Self.blockchainType(chainShortCode: abbreviation) else {
+    static func resolve(shortCode: String?) throws -> Self {
+        guard let abbreviation = shortCode else { throw InitError.invalidBlockchainAbbreviation }
+        guard let result = Self(chainShortCode: abbreviation) else {
             throw InitError.invalidBlockchainAbbreviation
         }
         return result
@@ -132,7 +131,7 @@ extension BlockchainType {
         }
     }
     
-    func supportedChain(isTestNet: Bool) -> Chain {
+    func resolveChain(isTestNet: Bool) -> Chain {
         switch self {
         case .Ethereum:
             return isTestNet ? Chain.ethSepolia : Chain.ethMainnet // Sepolia or Mainnet
@@ -147,16 +146,16 @@ extension BlockchainType {
         }
     }
     
-    func supportedChain(env: UnsConfigManager.BlockchainEnvironment) -> Chain {
-        supportedChain(isTestNet: env == .testnet)
+    func resolveChain(env: UnsConfigManager.BlockchainEnvironment) -> Chain {
+        resolveChain(isTestNet: env == .testnet)
     }
 
-    func supportedChainId(isTestNet: Bool) -> Int {
-        supportedChain(isTestNet: isTestNet).id
+    func resolveChainId(isTestNet: Bool) -> Int {
+        resolveChain(isTestNet: isTestNet).id
     }
     
-    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
-        supportedChain(env: env).id
+    func resolveChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
+        resolveChain(env: env).id
     }
     
     

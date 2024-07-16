@@ -308,7 +308,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                         .map { ChainToVerifyDesc(chain: $0.symbol,
                                                  fullName: $0.name,
                                                  address: $0.address,
-                                                 isCaseSensitive: BlockchainType.blockchainType(chainShortCode: $0.symbol) == nil) }
+                                                 isCaseSensitive: BlockchainType(chainShortCode: $0.symbol) == nil) }
                 }
                 
                 
