@@ -151,12 +151,12 @@ extension CryptoSender {
             self = created
         }
         
-        //        typealias BlockchainTypeData = (mainnet: String,
-        //                                        testnet: String?,
-        //                                        decimals: UInt8)
-        //        typealias BlockchainTypeEntries = [BlockchainType : (mainnet: String,
-        //                                                             testnet: String?,
-        //                                                             decimals: UInt8)]
+                typealias BlockchainTypeData = (mainnet: String,
+                                                testnet: String?,
+                                                decimals: UInt8)
+                typealias BlockchainTypeEntries = [BlockchainType : (mainnet: String,
+                                                                     testnet: String?,
+                                                                     decimals: UInt8)]
         
         static func getSupportedToken(by symbol: String) -> Self? {
             CryptoSender.SupportedToken(rawValue: symbol.uppercased())
@@ -185,15 +185,11 @@ extension CryptoSender {
         }
         
         static private var _contracts: [CryptoSender.SupportedToken :
-                                            [BlockchainType : (mainnet: String,
-                                                               testnet: String?,
-                                                               decimals: UInt8)]]?
+                                            BlockchainTypeEntries]?
         
         
         static func getContractArray(from data: Data? = nil) throws -> [CryptoSender.SupportedToken :
-                                                                                [BlockchainType : (mainnet: String,
-                                                                                                   testnet: String?,
-                                                                                                   decimals: UInt8)]] {
+                                                                            BlockchainTypeEntries] {
             @Sendable func fetch() async throws -> Data {
                 let request = try APIRequest(urlString: supportedTokensUrl,
                                              method: .get)
@@ -205,15 +201,11 @@ extension CryptoSender {
             }
             
             @Sendable func parse(data: Data) throws -> [CryptoSender.SupportedToken :
-                                                [BlockchainType : (mainnet: String,
-                                                                   testnet: String?,
-                                                                   decimals: UInt8)]] {
+                                                            BlockchainTypeEntries] {
                 let jsonReg = try! JSONSerialization.jsonObject(with: data) as! [String: [String: [String: Any]]]
                 
                 var res: [CryptoSender.SupportedToken :
-                            [BlockchainType : (mainnet: String,
-                                               testnet: String?,
-                                               decimals: UInt8)]] = [:]
+                            BlockchainTypeEntries] = [:]
                 
                 for entry in jsonReg {
                     let key = try SupportedToken(tokenSymbol: entry.key)
