@@ -31,7 +31,7 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
                 logAnalytic(event: .didPullToRefresh)
                 await viewModel.didPullToRefresh()
             }
-            .onReceive(keyboardPublisher) { value in
+            .onReceive(KeyboardService.shared.keyboardOpenedPublisher.receive(on: DispatchQueue.main)) { value in
                 viewModel.isKeyboardActive = value
                 if !value {
                     UDVibration.buttonTap.vibrate()

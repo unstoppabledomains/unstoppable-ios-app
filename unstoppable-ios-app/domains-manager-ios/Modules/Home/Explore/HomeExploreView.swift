@@ -33,7 +33,7 @@ struct HomeExploreView: View, ViewAnalyticsLogger {
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
-            .onReceive(keyboardPublisher) { value in
+            .onReceive(KeyboardService.shared.keyboardOpenedPublisher.receive(on: DispatchQueue.main)) { value in
                 viewModel.isKeyboardActive = value
                 if !value {
                     UDVibration.buttonTap.vibrate()

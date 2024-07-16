@@ -62,19 +62,6 @@ struct NetworkService {
         }
     }
     
-    static var authAPIKey: String {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        if isTestnetUsed {
-            return NetworkService.testnetMetadataAPIKey
-        } else {
-            return NetworkService.mainnetMetadataAPIKey
-        }
-    }
-    
-    static var authHeader: [String : String] {
-        return ["Authorization" : "Bearer \(authAPIKey)"]
-    }
-    
     static var currentProfilesAPIKey: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
@@ -464,28 +451,11 @@ extension NetworkService {
     }
     
     func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
-        let url = URL(string: "\(NetworkConfig.baseAPIUrl)/resolve/reverse/\(address)")!
-        let data = try await NetworkService().fetchData(for: url,
-                                                        method: .get,
-                                                        extraHeaders: NetworkService.authHeader)
-        let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
-        return response.meta.domain
+        try await fetchProfilesReverseResolution(for: address, supportedNameServices: [.ud])?.name
     }
     
-    /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for identifier: HexAddress) async throws -> GlobalRR? {
-        do {
-            guard let url = URL(string: "\(NetworkConfig.baseAPIUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
-            
-            let data = try await NetworkService().fetchData(for: url,
-                                                            method: .get)
-            let response = try JSONDecoder().decode(GlobalRR.self, from: data)
-            return response
-        } catch NetworkLayerError.badResponseOrStatusCode(let code, _, _) where code == 404 { // 404 means no RR domain or ENS domain
-            return nil
-        } catch {
-            throw error
-        }
+        try await fetchProfilesReverseResolution(for: identifier)
     }
 }
 

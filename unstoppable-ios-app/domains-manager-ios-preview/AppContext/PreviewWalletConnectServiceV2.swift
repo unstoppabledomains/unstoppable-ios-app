@@ -11,6 +11,8 @@ typealias ResponseV2 = String
 typealias SessionV2Proxy = String
 
 final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    static let supportedNetworks: [BlockchainType] = [.Ethereum, .Matic]
+
     func sendSignTx(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, tx: EthereumTransaction, address: HexAddress, in wallet: UDWallet) async throws -> ResponseV2 {
         throw NSError()
     }
