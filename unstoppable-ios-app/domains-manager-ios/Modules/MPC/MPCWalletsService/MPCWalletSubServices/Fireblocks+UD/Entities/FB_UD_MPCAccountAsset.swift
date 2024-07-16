@@ -44,7 +44,7 @@ extension FB_UD_MPC {
                 if blockchainAsset.symbol == BlockchainType.Ethereum.shortCode,
                    blockchainAsset.blockchain.id == BlockchainType.Base.shortCode {
                     symbol = "BASE"
-                    name = "Base" // TODO: is this the name of the chain??
+                    name = "Base"
                 }
             } else {
                 chain = symbol // Coin

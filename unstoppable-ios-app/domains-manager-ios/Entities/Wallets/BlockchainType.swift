@@ -10,7 +10,6 @@ import UIKit
 protocol BlockchainProtocol: CaseIterable, Codable, Hashable {
     var fullName: String { get }
     var shortCode: String { get }
-//    var icon: UIImage { get }
 }
 
 enum BlockchainType: BlockchainProtocol {    
