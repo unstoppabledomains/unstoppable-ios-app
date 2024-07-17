@@ -83,24 +83,12 @@ private extension SelectCryptoAssetToSendView {
         }
         
         // raw address
-        
-        guard let blockchainType = token.blockchainType else {
+        guard let blockchainType = token.blockchainType,
+              blockchainType.regexPattern == receiver.network.regexPattern else {
             return nil
         }
         
-        switch blockchainType {
-        case .Ethereum, .Matic, .Base: // EVM
-            guard receiver.regexPattern == .ETH else {
-                Debugger.printFailure("Wrong regex pattern: \(receiver.regexPattern) for chain: \(String(describing: token.blockchainType?.fullName))")
-                return nil }
-            return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-        case .Bitcoin, .Solana:
-            guard token.symbol == receiver.regexPattern.rawValue,
-                  token.parent == nil else { // native coin not a token
-                return nil
-            }
-            return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-        }
+        return BalanceTokenToSend(token: token, address: receiver.walletAddress)
     }
     
     struct BalanceTokenToSend: Identifiable {
@@ -126,7 +114,7 @@ private extension SelectCryptoAssetToSendView {
     
     @ViewBuilder
     func assetTypePickerView() -> some View {
-        if case .ETH = receiver.regexPattern {
+        if receiver.network.isEVMNetwork {
             VStack(alignment: .leading, spacing: 20) {
                 UDTabsPickerView(selectedTab: $selectedType,
                                  tabs: SendCryptoAsset.AssetType.allCases)

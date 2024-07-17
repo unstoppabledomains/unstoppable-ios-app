@@ -120,8 +120,6 @@
 		C6011AB628F4022300342666 /* DomainProfileCryptoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011AB528F4022300342666 /* DomainProfileCryptoSection.swift */; };
 		C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6011ABB28F4045000342666 /* DomainProfileTopInfoCell.swift */; };
 		C6011AC128F4045000342666 /* DomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */; };
-		C60319922C29775E00A77109 /* CoinRegexPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319912C29775E00A77109 /* CoinRegexPattern.swift */; };
-		C60319932C29775E00A77109 /* CoinRegexPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319912C29775E00A77109 /* CoinRegexPattern.swift */; };
 		C60319952C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319962C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */; };
 		C60319982C2C1F7400A77109 /* BlockchainType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */; };
@@ -2790,7 +2788,6 @@
 		C6011AB528F4022300342666 /* DomainProfileCryptoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileCryptoSection.swift; sourceTree = "<group>"; };
 		C6011ABB28F4045000342666 /* DomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6011ABC28F4045000342666 /* DomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
-		C60319912C29775E00A77109 /* CoinRegexPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRegexPattern.swift; sourceTree = "<group>"; };
 		C60319942C2B0ED100A77109 /* FB_UD_MPC_MessageSigningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FB_UD_MPC_MessageSigningType.swift; sourceTree = "<group>"; };
 		C60319972C2C1F7400A77109 /* BlockchainType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockchainType+Extension.swift"; sourceTree = "<group>"; };
 		C603A53528522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IgnoreFailureArrayElement+PropertyWrapper.swift"; sourceTree = "<group>"; };
@@ -7553,7 +7550,6 @@
 				C61DB10D2B95925C00CDA243 /* BalanceStringFormatter.swift */,
 				C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */,
 				C6EECE962833A3E400978ED5 /* CoinRecord.swift */,
-				C60319912C29775E00A77109 /* CoinRegexPattern.swift */,
 				C6C9DEAD2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift */,
 				C6D5DABB2836021300379C38 /* CryptoRecord.swift */,
 				C68017852886730300524712 /* CurrencyImageLoader.swift */,
@@ -9426,7 +9422,6 @@
 				C64939FC2B637DDB00457363 /* ReverseResolutionSelectionView.swift in Sources */,
 				C69F99412A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift in Sources */,
 				C69F99242A9F1264004B1958 /* ClearListBackground.swift in Sources */,
-				C60319922C29775E00A77109 /* CoinRegexPattern.swift in Sources */,
 				C6456F0B27FF299800A517D5 /* UIView.swift in Sources */,
 				C6FFBADE2B833C3600CB442D /* ChatListChatRowView.swift in Sources */,
 				C6D3B9D92A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */,
@@ -10974,7 +10969,6 @@
 				C6102FC82B6A339A0098AF75 /* HomeWebAccountView.swift in Sources */,
 				C6B761E02BB3D78F00773943 /* SerializedWalletTransaction.swift in Sources */,
 				C6BF6BDD2B8F11CC006CC2BD /* TaskWithDeadline.swift in Sources */,
-				C60319932C29775E00A77109 /* CoinRegexPattern.swift in Sources */,
 				C6534A922BBFBA10008EEBB5 /* HomeExploreFollowersSectionView.swift in Sources */,
 				C61807BE2B19A0CB0032E543 /* Extension-String+Preview.swift in Sources */,
 				C621A4402BB10EFD00CB5CB9 /* QRScannerPreviewView.swift in Sources */,
