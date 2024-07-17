@@ -754,6 +754,8 @@
 		C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */; };
 		C63F1D0D28AF31D5000A5C12 /* AnalyticsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */; };
 		C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */; };
+		C640D6122C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640D6112C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift */; };
+		C640D6132C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640D6112C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift */; };
 		C640F3552C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */; };
 		C640F3562C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */; };
 		C640F3582C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640F3572C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift */; };
@@ -3230,6 +3232,7 @@
 		C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceEnvironment.swift; sourceTree = "<group>"; };
 		C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceProtocol.swift; sourceTree = "<group>"; };
 		C63F1D0628AF31D5000A5C12 /* AnalyticsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		C640D6112C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedMPCWalletGridMask.swift; sourceTree = "<group>"; };
 		C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPasswordValidator.swift; sourceTree = "<group>"; };
 		C640F3572C06FCB6009EB0F9 /* MPCWalletPasswordValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCWalletPasswordValidatorTests.swift; sourceTree = "<group>"; };
 		C640F35B2C070718009EB0F9 /* MPCOnboardingPurchaseTakeoverRecoveryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCOnboardingPurchaseTakeoverRecoveryViewController.swift; sourceTree = "<group>"; };
@@ -7090,6 +7093,7 @@
 				C640F36B2C071266009EB0F9 /* MPCWalletTakeoverState.swift */,
 				C640F36E2C0712A8009EB0F9 /* MPCWalletTakeoverError.swift */,
 				C68F15752BD769830049BFA2 /* MPCWalletStateCardView.swift */,
+				C640D6112C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift */,
 				C640F3542C06FC66009EB0F9 /* MPCWalletPasswordValidator.swift */,
 				C66556682BF70B9900F0BD7A /* UDAuth */,
 				C66556722BF70F6400F0BD7A /* Checkout */,
@@ -9720,6 +9724,7 @@
 				C6FFBAE12B834EF700CB442D /* HomeChatNavigationDestination.swift in Sources */,
 				C688C1A12B8490F700BD233A /* ChatRequestsListViewModel.swift in Sources */,
 				C68BA7592BBD10AF00FF524C /* WalletTransactionTypeIndicatorView.swift in Sources */,
+				C640D6122C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */,
 				C6C9DEAE2834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C623967C2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift in Sources */,
 				C6C57C3D2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
@@ -10835,6 +10840,7 @@
 				C6D646342B1DC43D00D724AC /* TextTertiaryButton.swift in Sources */,
 				C61808322B19ADF10032E543 /* PreviewCoreAppCoordinator.swift in Sources */,
 				C6B2E2002B96C51B00CEA1F9 /* MessagingChatMessageUnsupportedTypeDisplayInfo.swift in Sources */,
+				C640D6132C48087C006B21C3 /* AnimatedMPCWalletGridMask.swift in Sources */,
 				C6D645AA2B1DBB3800D724AC /* UICollectionViewLayout.swift in Sources */,
 				C6C8F9372B2183D100A9834D /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6D6470D2B1ED7D000D724AC /* MessagingChatMessageDisplayInfo.swift in Sources */,
