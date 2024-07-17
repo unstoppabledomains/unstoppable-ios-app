@@ -39,6 +39,7 @@ public struct Debugger {
         case Messaging = "MS"
         case Debug = "DEBUG"
         case NFT = "NFT"
+        case mpc = "MPC"
     }
     
     enum DebugTopicsSet {
@@ -60,7 +61,7 @@ public struct Debugger {
             case .debugUI:
                 return [.Error, .Navigation, .UI, .Images, .Debug]
             case .debugNetwork:
-                return [.Network, .WebSockets, .Error, .Debug]
+                return [.Network, .WebSockets, .Error, .Debug, .mpc]
             case .custom(let topics):
                 return topics
             }

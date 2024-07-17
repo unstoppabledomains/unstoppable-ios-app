@@ -444,6 +444,7 @@ extension Analytics {
         case reEnterPasscode, reEnterPassword
         case useDifferentEmail, useRecovery, dontUseRecovery
         case contactSupport
+        case reconnect
     }
 }
 
