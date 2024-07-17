@@ -39,6 +39,8 @@ extension AppLaunchService: AppLaunchServiceProtocol {
         resolveInitialViewController()
         wakeUpServices(walletConnectServiceV2: walletConnectServiceV2)
         preparePopularPlaceholders()
+        
+        let _ = try? CryptoSender.SupportedToken.getContractArray() // initiate fetching
     }
     
     func addListener(_ listener: AppLaunchServiceListener) {

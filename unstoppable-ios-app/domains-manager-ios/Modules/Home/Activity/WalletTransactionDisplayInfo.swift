@@ -123,18 +123,14 @@ import UIKit
 
 extension WalletTransactionDisplayInfo {
     var chainFullName: String {
-        if let blockchainType = BlockchainType(rawValue: chainName) {
-            return blockchainType.fullName
-        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chainName) {
+        if let blockchainType = BlockchainType(chainShortCode: chainName) {
             return blockchainType.fullName
         }
         return chainName
     }
     
     var chainIcon: UIImage {
-        if let blockchainType = BlockchainType(rawValue: chainName) {
-            return blockchainType.chainIcon
-        } else if let blockchainType = SemiSupportedBlockchainType(rawValue: chainName) {
+        if let blockchainType = BlockchainType(chainShortCode: chainName) {
             return blockchainType.chainIcon
         }
         return .alertCircle

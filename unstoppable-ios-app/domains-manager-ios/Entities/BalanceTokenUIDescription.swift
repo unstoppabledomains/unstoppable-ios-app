@@ -23,7 +23,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     private(set) var isSkeleton: Bool = false
     
     var isEssentialTokenException: Bool {
-        chain == BlockchainType.Matic.rawValue && symbol == CryptoSender.SupportedToken.usdc.rawValue
+        chain == BlockchainType.Matic.shortCode && symbol == CryptoSender.SupportedToken.usdc.rawValue
     }
     
     struct ParentDetails: Hashable {
@@ -112,7 +112,7 @@ struct BalanceTokenUIDescription: Hashable, Identifiable {
     }
 
     var blockchainType: BlockchainType? {
-        BlockchainType(rawValue: chain)
+        BlockchainType(chainShortCode: chain)
     }
 }
 
@@ -184,7 +184,12 @@ extension BalanceTokenUIDescription {
 extension BalanceTokenUIDescription {
     static func createSkeletonEntity() -> BalanceTokenUIDescription {
         var token = BalanceTokenUIDescription(address: "",
-                                              chain: "ETH", symbol: "000", name: "0000000000000000", balance: 10000, balanceUsd: 10000, marketUsd: 1)
+                                              chain: BlockchainType.Ethereum.shortCode,
+                                              symbol: "000",
+                                              name: "0000000000000000",
+                                              balance: 10000,
+                                              balanceUsd: 10000,
+                                              marketUsd: 1)
         token.isSkeleton = true
         return token
     }

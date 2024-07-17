@@ -59,7 +59,6 @@ struct Constants {
     static let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
     static let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     static let additionalSupportedTokens = ["crypto.SOL.address", "crypto.BTC.address"]
-    static let baseChainSymbol: String = "BASE"
     static let ldApplicationIdentifier: String = "ud-ios-app" // Launch darkly id
     
     // Shake to find
@@ -181,63 +180,6 @@ struct Env {
         #endif
         // Intentionally let builds fail that are not explicitly described here
     }()
-}
-
-enum BlockchainNetwork: Int, CaseIterable {
-    case ethMainnet = 1
-    case ethSepolia = 11155111
-    case polygonMainnet = 137
-    case polygonAmoy = 80002
-    
-    case baseMainnet = 8453
-    case baseSepolia = 84532
-    
-    var id: Int { rawValue }
-    
-    var name: String {
-        switch self {
-        case .ethMainnet:
-            return "mainnet"
-        case .ethSepolia:
-            return "sepolia"
-        case .polygonMainnet:
-            return "polygon-mainnet"
-        case .polygonAmoy:
-            return "polygon-amoy"
-        case .baseMainnet:
-            return "base-mainnet"
-        case .baseSepolia:
-            return "base-sepolia"
-        }
-    }
-    
-    var nameForClient: String {
-        switch self {
-        case .ethMainnet:
-            return "Ethereum"
-        case .ethSepolia:
-            return "Ethereum: Sepolia"
-        case .polygonMainnet:
-            return "Polygon"
-        case .polygonAmoy:
-            return "Polygon: Amoy"
-        case .baseMainnet:
-            return "Base: Mainnet"
-        case .baseSepolia:
-            return "Base: Sepolia"
-        }
-    }
-    
-    func getBlockchainType() -> BlockchainType {
-        switch self {
-        case .ethMainnet, .ethSepolia:
-            return .Ethereum
-        case .polygonMainnet, .polygonAmoy:
-            return .Matic
-        case .baseMainnet, .baseSepolia:
-            return .Base
-        }
-    }
 }
 
 struct Utilities {

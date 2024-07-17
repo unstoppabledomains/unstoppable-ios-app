@@ -701,7 +701,7 @@ private extension ChatViewModel {
         func addCopyAddressActionFor(userInfo: MessagingChatUserDisplayInfo) {
             actions.append(.init(type: .copyAddress, callback: { [weak self] in
                                     self?.logButtonPressedAnalyticEvents(button: .copyWalletAddress)
-                CopyWalletAddressPullUpHandler.copyToClipboard(address: userInfo.wallet, ticker: BlockchainType.Ethereum.rawValue)
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: userInfo.wallet, ticker: BlockchainType.Ethereum.shortCode)
             }))
         }
         

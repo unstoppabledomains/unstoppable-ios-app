@@ -8,10 +8,108 @@
 import UIKit
 
 extension BlockchainType {
-    static func getType(abbreviation: String?) throws -> Self {
-        guard let abbreviation = abbreviation else { throw InitError.invalidBlockchainAbbreviation }
-        let sample = abbreviation.lowercased().trimmed
-        guard let result = Self.cases.first(where: {$0.rawValue.lowercased() == sample} ) else {
+    
+    enum Chain: Int, CaseIterable {
+        case ethMainnet = 1
+        case ethSepolia = 11155111
+        
+        case polygonMainnet = 137
+        case polygonAmoy = 80002
+        
+        case baseMainnet = 8453
+        case baseSepolia = 84532
+        
+        case solanaMainnet = 101
+        case solanaTestnet = 102
+        
+        case bitcoinMainnet = -1
+        case bitcoinTestnet = -2
+        
+        var id: Int { rawValue }
+        
+        var fullName: String {
+            switch self {
+            case .ethMainnet:
+                return "Ethereum"
+            case .ethSepolia:
+                return "Ethereum: Sepolia"
+            case .polygonMainnet:
+                return "Polygon"
+            case .polygonAmoy:
+                return "Polygon: Amoy"
+            case .baseMainnet:
+                return "Base: Mainnet"
+            case .baseSepolia:
+                return "Base: Sepolia"
+                
+            case .solanaMainnet:
+                return "Solana"
+            case .solanaTestnet:
+                return "Solana Testnet"
+                
+            case .bitcoinMainnet:
+                return "Bitcoin"
+            case .bitcoinTestnet:
+                return "Bitcoin Testnet"
+            }
+        }
+        
+        var name: String {
+            switch self {
+            case .ethMainnet:
+                return "mainnet"
+            case .ethSepolia:
+                return "sepolia"
+            case .polygonMainnet:
+                return "polygon-mainnet"
+            case .polygonAmoy:
+                return "polygon-amoy"
+            case .baseMainnet:
+                return "base-mainnet"
+            case .baseSepolia:
+                return "base-sepolia"
+                
+            case .solanaMainnet:
+                return "solana"
+            case .solanaTestnet:
+                return "solana-testnet"
+                
+            case .bitcoinMainnet:
+                return "bitcoin"
+            case .bitcoinTestnet:
+                return "bitcoin-testnet"
+            }
+        }
+        
+        func identifyBlockchainType() -> BlockchainType {
+            switch self {
+            case .ethMainnet, .ethSepolia:
+                return .Ethereum
+            case .polygonMainnet, .polygonAmoy:
+                return .Matic
+            case .baseMainnet, .baseSepolia:
+                return .Base
+            case .solanaMainnet, .solanaTestnet:
+                 return .Solana
+            case .bitcoinMainnet, .bitcoinTestnet:
+                 return .Bitcoin
+            }
+        }
+        
+        func identifyEnvironment() -> UnsConfigManager.BlockchainEnvironment {
+            switch self {
+            case .ethMainnet, .polygonMainnet, .baseMainnet, .solanaMainnet, .bitcoinMainnet:
+                 return .mainnet
+                
+            case .ethSepolia, .polygonAmoy, .baseSepolia, .solanaTestnet, .bitcoinTestnet:
+                 return .testnet
+            }
+        }
+    }
+    
+    static func resolve(shortCode: String?) throws -> Self {
+        guard let abbreviation = shortCode else { throw InitError.invalidBlockchainAbbreviation }
+        guard let result = Self(chainShortCode: abbreviation) else {
             throw InitError.invalidBlockchainAbbreviation
         }
         return result
@@ -24,24 +122,42 @@ extension BlockchainType {
         case .Matic:
             return UIImage(named: String.BlockChainIcons.matic.rawValue)!
         case .Base:
-                    return UIImage(named: String.BlockChainIcons.base.rawValue)!
+            return .baseIcon
+        case .Bitcoin:
+            return .bitcoinIcon
+        case .Solana:
+            return .solanaIcon
+            
         }
     }
     
-    func supportedChainId(isTestNet: Bool) -> Int {
+    func resolveChain(isTestNet: Bool) -> Chain {
         switch self {
         case .Ethereum:
-            return isTestNet ? BlockchainNetwork.ethSepolia.id : BlockchainNetwork.ethMainnet.id // Sepolia or Mainnet
+            return isTestNet ? Chain.ethSepolia : Chain.ethMainnet // Sepolia or Mainnet
         case .Matic:
-            return isTestNet ? BlockchainNetwork.polygonAmoy.id : BlockchainNetwork.polygonMainnet.id // Amoy or Polygon
+            return isTestNet ? Chain.polygonAmoy : Chain.polygonMainnet // Amoy or Polygon
         case .Base:
-            return isTestNet ? BlockchainNetwork.baseSepolia.id : BlockchainNetwork.baseMainnet.id // Base Sepolia or Base Mainnet
+            return isTestNet ? Chain.baseSepolia : Chain.baseMainnet // Base Sepolia or Base Mainnet
+        case .Bitcoin:
+            return isTestNet ? Chain.bitcoinTestnet : Chain.bitcoinMainnet
+        case .Solana:
+            return isTestNet ? Chain.solanaTestnet : Chain.solanaMainnet
         }
     }
     
-    func supportedChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
-        supportedChainId(isTestNet: env == .testnet)
+    func resolveChain(env: UnsConfigManager.BlockchainEnvironment) -> Chain {
+        resolveChain(isTestNet: env == .testnet)
     }
+
+    func resolveChainId(isTestNet: Bool) -> Int {
+        resolveChain(isTestNet: isTestNet).id
+    }
+    
+    func resolveChainId(env: UnsConfigManager.BlockchainEnvironment) -> Int {
+        resolveChain(env: env).id
+    }
+    
     
     var chainIcon: UIImage {
         switch self {
@@ -51,19 +167,10 @@ extension BlockchainType {
                 .polygonIcon
         case .Base:
                 .baseIcon
-        }
-    }
-}
-
-extension SemiSupportedBlockchainType {
-    var chainIcon: UIImage {
-        switch self {
         case .Bitcoin:
                 .bitcoinIcon
         case .Solana:
                 .solanaIcon
-        case .Base:
-                .baseIcon
         }
     }
 }

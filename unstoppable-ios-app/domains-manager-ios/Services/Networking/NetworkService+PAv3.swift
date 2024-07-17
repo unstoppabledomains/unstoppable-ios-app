@@ -82,7 +82,7 @@ extension NetworkService {
                                                     cursor: cursor)
             let domainsInResponse = response.data.map { DomainItem(name: $0.domain,
                                                                    ownerWallet: wallet,
-                                                                   blockchain: $0.blockchainType()) }
+                                                                   blockchain: $0.resolveBlockchainType()) }
             domains.append(contentsOf: domainsInResponse)
             cursor = response.cursor
             hasMore = response.hasMore
@@ -120,8 +120,8 @@ extension NetworkService {
             let domain: String
             let meta: Meta
             
-            func blockchainType() -> BlockchainType {
-                BlockchainType(rawValue: meta.blockchain) ?? .Matic
+            func resolveBlockchainType() -> BlockchainType? {
+                (try? BlockchainType.resolve(shortCode: meta.blockchain))
             }
             
             struct Meta: Codable {

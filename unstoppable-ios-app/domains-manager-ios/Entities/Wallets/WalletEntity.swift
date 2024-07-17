@@ -97,7 +97,7 @@ extension WalletEntity {
     var profileDomainName: String? { rrDomain?.name }
     
     func balanceFor(blockchainType: BlockchainType) -> WalletTokenPortfolio? {
-        balance.first(where: { $0.symbol == blockchainType.rawValue })
+        balance.first(where: { $0.symbol == blockchainType.shortCode })
     }
     var isAbleToSetRR: Bool { displayInfo.udDomainsCount > 0 }
     func isReverseResolutionChangeAllowed() -> Bool {
@@ -170,8 +170,8 @@ extension WalletEntity {
     private func getDefaultAssetType() -> AssetsType {
         let blockchain = BlockchainType.Ethereum
         return .singleChain(BalanceTokenUIDescription(address: ethFullAddress,
-                                                      chain: blockchain.rawValue,
-                                                      symbol: blockchain.rawValue,
+                                                      chain: blockchain.shortCode,
+                                                      symbol: blockchain.shortCode,
                                                       name: blockchain.fullName,
                                                       balance: 0,
                                                       balanceUsd: 0,

@@ -82,22 +82,24 @@ private extension SelectCryptoAssetToSendView {
             return BalanceTokenToSend(token: token, address: address)
         }
         
-        switch token.blockchainType {
-        case .Ethereum, .Matic, .Base:
-            guard receiver.regexPattern == .ETH else { 
+        // raw address
+        
+        guard let blockchainType = token.blockchainType else {
+            return nil
+        }
+        
+        switch blockchainType {
+        case .Ethereum, .Matic, .Base: // EVM
+            guard receiver.regexPattern == .ETH else {
                 Debugger.printFailure("Wrong regex pattern: \(receiver.regexPattern) for chain: \(String(describing: token.blockchainType?.fullName))")
                 return nil }
             return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-        case .none:
-            if token.symbol == receiver.regexPattern.rawValue,
-               token.parent == nil {
-                return BalanceTokenToSend(token: token, address: receiver.walletAddress)
-            } /// As we don't currently support Base chain but MPC does
-            else if token.chain == Constants.baseChainSymbol,
-                    receiver.regexPattern == .ETH {
-                return BalanceTokenToSend(token: token, address: receiver.walletAddress)
+        case .Bitcoin, .Solana:
+            guard token.symbol == receiver.regexPattern.rawValue,
+                  token.parent == nil else { // native coin not a token
+                return nil
             }
-            return nil
+            return BalanceTokenToSend(token: token, address: receiver.walletAddress)
         }
     }
     

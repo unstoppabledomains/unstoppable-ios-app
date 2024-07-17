@@ -296,7 +296,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                 let chainsToVerify: [ChainToVerifyDesc]
                 switch selectedWallet.getAssetsType() {
                 case .singleChain(let balanceTokenUIDescription):
-                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.rawValue,
+                    chainsToVerify = BlockchainType.allCases.map { ChainToVerifyDesc(chain: $0.shortCode,
                                                                                      fullName: $0.fullName,
                                                                                      address: balanceTokenUIDescription.address,
                                                                                      isCaseSensitive: false) }
@@ -308,7 +308,7 @@ fileprivate extension HomeWalletView.HomeWalletViewModel {
                         .map { ChainToVerifyDesc(chain: $0.symbol,
                                                  fullName: $0.name,
                                                  address: $0.address,
-                                                 isCaseSensitive: BlockchainType(rawValue: $0.symbol) == nil) }
+                                                 isCaseSensitive: BlockchainType(chainShortCode: $0.symbol) == nil) }
                 }
                 
                 

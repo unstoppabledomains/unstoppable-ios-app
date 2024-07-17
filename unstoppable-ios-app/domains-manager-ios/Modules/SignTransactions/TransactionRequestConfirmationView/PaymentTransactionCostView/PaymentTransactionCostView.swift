@@ -75,7 +75,7 @@ extension PaymentTransactionCostView: PaymentTransactionDisplayCostView {
         let coinQuantity = Double(cost.quantity).ethValue
         let usdPrice = coinQuantity * exchangeRate
         let cryptoPriceString = currencyNumberFormatter.string(from: coinQuantity as NSNumber) ?? "N/A"
-        transactionCryptoPriceLabel.setAttributedTextWith(text: "\(cryptoPriceString) \(blockchainType.rawValue)",
+        transactionCryptoPriceLabel.setAttributedTextWith(text: "\(cryptoPriceString) \(blockchainType.shortCode)",
                                             font: .currentFont(withSize: 16, weight: .medium),
                                             textColor: .foregroundSecondary,
                                             alignment: .center)
