@@ -21,19 +21,7 @@ struct NFTDetailsView: View, ViewAnalyticsLogger {
 
     var body: some View {
         NavigationViewWithCustomTitle(content: {
-            OffsetObservingScrollView(showsIndicators: false, offset: $scrollOffset) {
-                VStack(spacing: 20) {
-                    nftImageView()
-                    nftCollectionInfoView()
-                    separatorView()
-                    nftPriceInfoView()
-                    separatorView()
-                    nftDescriptionInfoView()
-                    nftTraitsSectionView()
-                    nftOtherDetailsSectionView()
-                }
-                .padding()
-            }
+            contentScrollView()
             .onChange(of: scrollOffset) { newValue in
                 withAnimation {
                     navigationState?.isTitleVisible = newValue.y > UIScreen.main.bounds.width + 60
@@ -104,6 +92,23 @@ private extension NFTDetailsView {
                     self.nftImage = nftImage
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    func contentScrollView() -> some View {
+        OffsetObservingScrollView(showsIndicators: false, offset: $scrollOffset) {
+            VStack(spacing: 20) {
+                nftImageView()
+                nftCollectionInfoView()
+                separatorView()
+                nftPriceInfoView()
+                separatorView()
+                nftDescriptionInfoView()
+                nftTraitsSectionView()
+                nftOtherDetailsSectionView()
+            }
+            .padding()
         }
     }
     
@@ -406,7 +411,7 @@ private extension NFTDetailsView {
         
         var analyticsName: Analytics.Button {
             switch self {
-            case .savePhoto(let uIImage):
+            case .savePhoto:
                 return .savePhoto
             case .refresh:
                 return .refresh

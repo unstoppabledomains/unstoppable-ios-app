@@ -659,7 +659,13 @@ struct WalletTokenPortfolio: Codable, Hashable {
     let logoUrl: String?
     
     var totalTokensBalance: Double {
-        (value.walletUsdAmt ?? 0) + (tokens?.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) }) ?? 0)
+        let coinAmount = value.walletUsdAmt ?? 0
+        if let tokens {
+            let tokensAmount = tokens.reduce(0.0, { $0 + ($1.value?.walletUsdAmt ?? 0) })
+            
+            return coinAmount + tokensAmount
+        }
+        return coinAmount
     }
     
     struct NFT: Codable, Hashable {

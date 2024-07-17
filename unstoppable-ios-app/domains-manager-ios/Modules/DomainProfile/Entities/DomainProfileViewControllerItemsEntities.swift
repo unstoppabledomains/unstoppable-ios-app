@@ -64,14 +64,16 @@ extension DomainProfileViewController {
         }
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.domain == rhs.domain &&
-            lhs.social == rhs.social &&
-            lhs.isEnabled == rhs.isEnabled &&
-            lhs.avatarImageState == rhs.avatarImageState &&
-            lhs.bannerImageState == rhs.bannerImageState &&
-            lhs.bannerImageActions == rhs.bannerImageActions &&
-            lhs.avatarImageActions == rhs.avatarImageActions
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.domain == rhs.domain else { return false }
+            guard lhs.social == rhs.social else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            guard lhs.avatarImageState == rhs.avatarImageState else { return false }
+            guard lhs.bannerImageState == rhs.bannerImageState else { return false }
+            guard lhs.bannerImageActions == rhs.bannerImageActions else { return false }
+            guard lhs.avatarImageActions == rhs.avatarImageActions else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {
@@ -102,13 +104,15 @@ extension DomainProfileViewController {
         let removeCoinCallback: MainActorAsyncCallback
 
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.coin == rhs.coin &&
-            lhs.address == rhs.address &&
-            lhs.multiChainAddressesCount == rhs.multiChainAddressesCount &&
-            lhs.isEnabled == rhs.isEnabled &&
-            lhs.error == rhs.error &&
-            lhs.mode == rhs.mode &&
-            lhs.availableActions == rhs.availableActions
+            guard lhs.coin == rhs.coin else { return false }
+            guard lhs.address == rhs.address else { return false }
+            guard lhs.multiChainAddressesCount == rhs.multiChainAddressesCount else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            guard lhs.error == rhs.error else { return false }
+            guard lhs.mode == rhs.mode else { return false }
+            guard lhs.availableActions == rhs.availableActions else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {
@@ -210,13 +214,15 @@ extension DomainProfileViewController {
         let lockButtonPressedCallback: MainActorAsyncCallback
 
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.type == rhs.type &&
-            lhs.isEnabled == rhs.isEnabled &&
-            lhs.isPublic == rhs.isPublic &&
-            lhs.error == rhs.error &&
-            lhs.mode == rhs.mode &&
-            lhs.availableActions == rhs.availableActions
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.type == rhs.type else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            guard lhs.isPublic == rhs.isPublic else { return false }
+            guard lhs.error == rhs.error else { return false }
+            guard lhs.mode == rhs.mode else { return false }
+            guard lhs.availableActions == rhs.availableActions else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {
@@ -241,10 +247,12 @@ extension DomainProfileViewController {
         let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.description == rhs.description &&
-            lhs.isEnabled == rhs.isEnabled &&
-            lhs.availableActions == rhs.availableActions
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.description == rhs.description else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            guard lhs.availableActions == rhs.availableActions else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {
@@ -278,9 +286,11 @@ extension DomainProfileViewController {
         let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.isEnabled == rhs.isEnabled &&
-            lhs.type == rhs.type
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.isEnabled == rhs.isEnabled else { return false }
+            guard lhs.type == rhs.type else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {
@@ -301,9 +311,11 @@ extension DomainProfileViewController {
         let actionButtonPressedCallback: MainActorAsyncCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.web3Url == rhs.web3Url &&
-            lhs.domainName == rhs.domainName
+            guard lhs.id == rhs.id else { return false }
+            guard lhs.web3Url == rhs.web3Url else { return false }
+            guard lhs.domainName == rhs.domainName else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {

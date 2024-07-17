@@ -56,15 +56,16 @@ private extension SelectCryptoAssetToSendView {
         Task {
             let currencies = await appContext.coinRecordsService.getCurrencies()
             
-            let tokens = viewModel.sourceWallet.balance
+            let balanceTokensDescriptions: [BalanceTokenUIDescription] = viewModel.sourceWallet.balance
                 .map { BalanceTokenUIDescription.extractFrom(walletBalance: $0) }
                 .flatMap({ $0 })
+            let filteredBalanceTokensDescriptions = balanceTokensDescriptions
                 .filter { viewModel.canSendToken($0) }
                 .filter { $0.balanceUsd > 0 }
                 .sorted(by: { lhs, rhs in
                     lhs.balanceUsd > rhs.balanceUsd
                 })
-                .compactMap { createTokenToSendFrom(token: $0, in: currencies) }
+            let tokens: [BalanceTokenToSend] = filteredBalanceTokensDescriptions.compactMap { createTokenToSendFrom(token: $0, in: currencies) }
             
             self.notAddedTokens = tokens.filter { $0.address == nil }
             self.tokens = tokens.filter { $0.address != nil }

@@ -92,9 +92,16 @@ struct NativeCoinCryptoSender: ConcreteCryptoSenderProtocol, EVMCryptoSender {
     
     func canSendCrypto(token: CryptoSender.SupportedToken, chain chainSpec: ChainSpec) -> Bool {
         // only native tokens supported
-        return (token == CryptoSender.SupportedToken.eth && chainSpec.chain.identifyBlockchainType() == .Ethereum) ||
-        (token == CryptoSender.SupportedToken.matic && chainSpec.chain.identifyBlockchainType() == .Matic) ||
-        (token == CryptoSender.SupportedToken.eth && chainSpec.chain.identifyBlockchainType() == .Base)
+        switch (token, chainSpec.chain.identifyBlockchainType()) {
+        case (.eth, .Ethereum):
+            return true
+        case (.matic, .Matic):
+            return true
+        case (.eth, .Base):
+            return true
+        default:
+            return false
+        }
     }
     
     internal func createSendTransaction(crypto: CryptoSendingSpec,

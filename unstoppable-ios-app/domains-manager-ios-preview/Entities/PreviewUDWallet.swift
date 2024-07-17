@@ -58,7 +58,7 @@ struct UDWallet: Codable, Hashable {
     }
     
     static func == (lhs: UDWallet, rhs: UDWallet) -> Bool {
-        let resultEth = (lhs.address == rhs.address) && lhs.address != nil
+        let resultEth = (lhs.address == rhs.address)
         return resultEth
     }
     
