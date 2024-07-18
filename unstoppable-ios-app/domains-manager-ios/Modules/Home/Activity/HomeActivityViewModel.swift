@@ -16,6 +16,9 @@ final class HomeActivityViewModel: ObservableObject, ViewAnalyticsLogger {
     @Published var searchKey: String = ""
     @Published var isKeyboardActive: Bool = false
     @Published var error: Error?
+    @Published var selectedChains: [BlockchainType] = []
+    @Published var selectedNature: [HomeActivity.TransactionNature] = []
+    @Published var selectedDestination: HomeActivity.TransactionDestination = .all
     
     @Published private var txsResponses: [WalletTransactionsResponse] = []
     @Published private(set) var isLoadingMore = false

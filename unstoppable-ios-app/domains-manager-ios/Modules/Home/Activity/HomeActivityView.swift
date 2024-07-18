@@ -16,6 +16,8 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
     var isOtherScreenPushed: Bool { !tabRouter.activityTabNavPath.isEmpty }
     var analyticsName: Analytics.ViewName { .homeActivity }
     
+    @State private var showingFiltersPopover = false
+
     var body: some View {
         NavigationViewWithCustomTitle(content: {
             contentList()
@@ -23,7 +25,6 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
             .background(Color.backgroundDefault)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .environmentObject(viewModel)
             .passViewAnalyticsDetails(logger: self)
             .displayError($viewModel.error)
             .background(Color.backgroundMuted2)
@@ -49,16 +50,17 @@ struct HomeActivityView: View, ViewAnalyticsLogger {
             }
             .navigationDestination(for: HomeActivityNavigationDestination.self) { destination in
                 HomeActivityLinkNavigationDestination.viewFor(navigationDestination: destination,
-                                                             tabRouter: tabRouter)
+                                                              tabRouter: tabRouter)
                 .environmentObject(navigationState!)
                 .environmentObject(viewModel)
             }
             .toolbar(content: {
                 // To keep nav bar background visible when scrolling
-                ToolbarItem(placement: .topBarLeading) {
-                    Color.clear
+                ToolbarItem(placement: .topBarTrailing) {
+                    filterButtonView()
                 }
             })
+            .environmentObject(viewModel)
         }, navigationStateProvider: { state in
             self.navigationState = state
         }, path: $tabRouter.activityTabNavPath)
@@ -107,6 +109,21 @@ private extension HomeActivityView {
         }.environment(\.defaultMinListRowHeight, 28)
             .listStyle(.plain)
             .listRowSpacing(0)
+    }
+    
+    @ViewBuilder
+    func filterButtonView() -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            showingFiltersPopover = true
+
+        } label: {
+            Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                .foregroundStyle(Color.foregroundDefault)
+        }
+        .alwaysPopover(isPresented: $showingFiltersPopover) {
+            HomeActivityFilterView()
+        }
     }
 }
 

@@ -57,3 +57,22 @@ extension HomeActivity {
         
     }
 }
+
+// MARK: - Filter options
+extension HomeActivity {
+    
+    enum TransactionNature: String, Hashable, CaseIterable, SelectionPopoverViewItem {
+        case transfer
+        case collectible
+        case domain
+        
+        var selectionTitle: String { rawValue }
+    }
+    
+    enum TransactionDestination: String, CaseIterable {
+        case all
+        case income
+        case outcome
+    }
+
+}
