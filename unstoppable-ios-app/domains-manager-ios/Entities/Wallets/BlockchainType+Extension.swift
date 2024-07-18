@@ -158,7 +158,6 @@ extension BlockchainType {
         resolveChain(env: env).id
     }
     
-    
     var chainIcon: UIImage {
         switch self {
         case .Ethereum:
@@ -172,5 +171,29 @@ extension BlockchainType {
         case .Solana:
                 .solanaIcon
         }
+    }
+}
+
+extension BlockchainType {
+    var isEVMNetwork: Bool {
+        switch self {
+        case .Ethereum, .Matic, .Base: true
+        case .Bitcoin: false
+        case .Solana: false
+        }
+    }
+    
+    var regexPattern: String {
+        switch self {
+        case .Ethereum, .Matic, .Base: "^0x[a-fA-F0-9]{40}$"
+        case .Bitcoin: "^bc1[ac-hj-np-z02-9]{6,87}$|^[13][a-km-zA-HJ-NP-Z1-9]{25,39}$"
+        case .Solana: "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+        }
+    }
+    
+    func isStringMatchingRegex(_ string: String) -> Bool {
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regexPattern)
+        
+        return predicate.evaluate(with: string)
     }
 }

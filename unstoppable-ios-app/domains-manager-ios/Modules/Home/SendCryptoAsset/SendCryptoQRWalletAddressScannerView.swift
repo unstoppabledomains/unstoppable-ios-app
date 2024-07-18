@@ -63,7 +63,7 @@ private extension SendCryptoQRWalletAddressScannerView {
         
         didRecognizeAddress = true
         logAnalytic(event: .didRecognizeQRWalletAddress, parameters: [.wallet: addressDetails.address,
-                                                                      .coin: addressDetails.regexPattern.rawValue])
+                                                                      .coin: addressDetails.network.shortCode])
         dismiss()
         Vibration.success.vibrate()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {

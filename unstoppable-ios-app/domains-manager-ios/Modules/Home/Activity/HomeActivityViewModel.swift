@@ -103,7 +103,7 @@ private extension HomeActivityViewModel {
     }
     
     func loadTxsForSelectedProfile(forceReload: Bool) async {
-        guard case .wallet(let wallet) = selectedProfile else { return }
+        guard case .wallet = selectedProfile else { return }
         
         isLoadingMore = true
         do {

@@ -21,6 +21,7 @@ struct MPCWalletStateCardView: View {
             Image.mpcWalletGridAccent
                 .resizable()
                 .foregroundStyle(stateBorderColor())
+                .mask(AnimatedMPCWalletGridMask())
             HStack(spacing: 100) {
                 mpcStateBlurLine()
                 mpcStateBlurLine()

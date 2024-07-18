@@ -242,7 +242,7 @@ private extension SendCryptoAssetSelectReceiverView {
                            rightViewStyle: nil)
         }, callback: {
             logAnalytic(event: .searchWalletAddressPressed, parameters: [.wallet : addressDetails.address,
-                                                                         .coin : addressDetails.regexPattern.rawValue])
+                                                                         .coin : addressDetails.network.shortCode])
             viewModel.handleAction(.globalWalletAddressSelected(addressDetails))
         })
     }

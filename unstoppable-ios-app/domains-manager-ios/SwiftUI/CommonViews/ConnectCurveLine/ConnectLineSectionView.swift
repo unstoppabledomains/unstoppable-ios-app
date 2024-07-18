@@ -142,9 +142,11 @@ extension ConnectLineSectionView {
         
         static func == (lhs: ConnectLineSectionView.InfoActionDescription,
                         rhs: ConnectLineSectionView.InfoActionDescription) -> Bool {
-            lhs.title == rhs.title &&
-            lhs.subtitle == rhs.subtitle &&
-            lhs.iconName == rhs.iconName
+            guard lhs.title == rhs.title else { return false }
+            guard lhs.subtitle == rhs.subtitle else { return false }
+            guard lhs.iconName == rhs.iconName else { return false }
+            
+            return true
         }
         
         func hash(into hasher: inout Hasher) {

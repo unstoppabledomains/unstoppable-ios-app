@@ -56,7 +56,7 @@ extension SendCryptoAsset {
 extension SendCryptoAsset {
     struct AssetReceiver: Hashable {
         let walletAddress: String
-        let regexPattern: CoinRegexPattern
+        let network: BlockchainType
         let domainName: DomainName?
         private(set) var pfpURL: URL?
         private var records: [String: String] = [:]
@@ -89,7 +89,7 @@ extension SendCryptoAsset {
             self.walletAddress = wallet.address
             self.domainName = wallet.rrDomain?.name
             self.pfpURL = wallet.rrDomain?.pfpSource.value.asURL
-            self.regexPattern = .ETH
+            self.network = .Ethereum
             try await loadRecords()
         }
         
@@ -97,7 +97,7 @@ extension SendCryptoAsset {
             self.walletAddress = profile.ownerWallet
             self.domainName = profile.domainName
             self.pfpURL = profile.pfpURL
-            self.regexPattern = .ETH
+            self.network = .Ethereum
             try await loadRecords()
         }
         
@@ -109,16 +109,16 @@ extension SendCryptoAsset {
             self.walletAddress = walletAddress
             self.domainName = globalProfile.name
             self.pfpURL = globalProfile.imagePath?.asURL
-            self.regexPattern = .ETH
+            self.network = .Ethereum
             try await loadRecords()
         }
         
         init(walletAddress: HexAddress,
-             regexPattern: CoinRegexPattern) {
+             network: BlockchainType) {
             self.walletAddress = walletAddress
             self.domainName = nil
             self.pfpURL = nil
-            self.regexPattern = regexPattern
+            self.network = network
         }
         
         mutating private func loadRecords() async throws {
@@ -203,7 +203,7 @@ extension SendCryptoAsset {
 extension SendCryptoAsset {
     struct WalletAddressDetails {
         let address: String
-        let regexPattern: CoinRegexPattern
+        let network: BlockchainType
     }
 }
 

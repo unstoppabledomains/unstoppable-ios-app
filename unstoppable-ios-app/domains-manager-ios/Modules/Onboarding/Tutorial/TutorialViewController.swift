@@ -291,7 +291,10 @@ private extension TutorialViewController {
     func setupNavProgressViewFrame() {
         guard let navBar = cNavigationBar else { return }
         
-        progressView.frame.origin.y = navBar.bounds.height - (navBar.navBarContentView.bounds.height / 2) - (progressView.frame.height / 2)
+        let navBarHeight: CGFloat = navBar.bounds.height
+        let contentHeightHalf: CGFloat = navBar.navBarContentView.bounds.height / 2
+        let progressViewHalf: CGFloat = progressView.frame.height / 2
+        progressView.frame.origin.y = navBarHeight - contentHeightHalf - progressViewHalf
     }
     
     func setupDisplayLink() {
