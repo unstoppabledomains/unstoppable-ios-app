@@ -116,6 +116,15 @@ extension WalletTransactionDisplayInfo {
                 false
             }
         }
+        
+        var isNFT: Bool {
+            switch self {
+            case .nftWithdrawal, .nftDeposit:
+                true
+            case .tokenWithdrawal, .tokenDeposit:
+                false
+            }
+        }
     }
 }
 

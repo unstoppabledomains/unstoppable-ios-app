@@ -52,10 +52,14 @@ extension HomeActivityViewModel {
     private var txsDisplayInfo: [WalletTransactionDisplayInfo] {
         switch selectedProfile {
         case .wallet(let wallet):
-            return txsResponses.flatMap { $0.txs }.map {
+            var txs: [WalletTransactionDisplayInfo] = txsResponses.flatMap { $0.txs }.map {
                 WalletTransactionDisplayInfo(serializedTransaction: $0,
                                              userWallet: wallet.address)
             }
+            filterTxsForSelectedNature(&txs)
+            filterTxsForSelectedDestination(&txs)
+            
+            return txs
         case .webAccount:
             return []
         }
@@ -90,11 +94,18 @@ private extension HomeActivityViewModel {
                 self?.didUpdateSelectedProfile()
             }
         }.store(in: &cancellables)
+        $selectedChains.sink { [weak self] _ in
+            self?.resetAndReloadTxs()
+        }.store(in: &cancellables)
         
         loadTxsForSelectedProfileNonBlocking(forceReload: true)
     }
     
     func didUpdateSelectedProfile() {
+        resetAndReloadTxs()
+    }
+    
+    func resetAndReloadTxs() {
         txsResponses = []
         loadTxsForSelectedProfileNonBlocking(forceReload: true)
     }
@@ -112,12 +123,14 @@ private extension HomeActivityViewModel {
         do {
             let tokens = getWalletTokens()
             let addresses = Set(tokens.map { $0.address })
-
+            let chainsToLoad: [BlockchainType]? = getChainsListToLoad()
+            
             var responses = [WalletTransactionsResponse]()
             try await withThrowingTaskGroup(of: WalletTransactionsResponse.self) { group in
                 for address in addresses {
                     group.addTask {
-                        try await self.walletTransactionsService.getTransactionsFor(wallet: address,
+                        try await self.walletTransactionsService.getTransactionsFor(wallet: address, 
+                                                                                    chains: chainsToLoad,
                                                                                     forceReload: forceReload)
                     }
                 }
@@ -142,6 +155,46 @@ private extension HomeActivityViewModel {
             return tokens
         case .singleChain(let token):
             return [token]
+        }
+    }
+    
+    func getChainsListToLoad() -> [BlockchainType]? {
+        if !selectedChains.isEmpty {
+            return selectedChains
+        } 
+        return nil
+    }
+    
+    func filterTxsForSelectedNature(_ txs: inout [WalletTransactionDisplayInfo]) {
+        guard !selectedNature.isEmpty else { return }
+        
+        txs = txs.filter({ tx in
+            let txNature: HomeActivity.TransactionNature = getNatureOfTx(tx)
+            let isTxNatureSelected: Bool = selectedNature.contains(txNature)
+            
+            return isTxNatureSelected
+        })
+    }
+    
+    func getNatureOfTx(_ tx: WalletTransactionDisplayInfo) -> HomeActivity.TransactionNature {
+        if tx.type.isNFT {
+            if tx.isDomainNFT {
+                return .domain
+            } else {
+                return .collectible
+            }
+        }
+        return .transfer
+    }
+    
+    func filterTxsForSelectedDestination(_ txs: inout [WalletTransactionDisplayInfo]) {
+        switch selectedDestination {
+        case .all:
+            return
+        case .income:
+            txs = txs.filter({ $0.type.isDeposit })
+        case .outcome:
+            txs = txs.filter({ !$0.type.isDeposit })
         }
     }
 }
