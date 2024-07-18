@@ -18,7 +18,8 @@ struct HomeActivityFilterView: View {
                                      selectedItems: $viewModel.selectedChains,
                                      isMultipleSelectionAllowed: true,
                                      label: {
-                    if viewModel.selectedChains.isEmpty {
+                    if viewModel.selectedChains.isEmpty || 
+                        viewModel.selectedChains.count == BlockchainType.allCases.count {
                         Text("All chains")
                     } else {
                         Text(viewModel.selectedChains.map { $0.shortCode }.joined(separator: ", "))
@@ -29,7 +30,8 @@ struct HomeActivityFilterView: View {
                                      selectedItems: $viewModel.selectedNature,
                                      isMultipleSelectionAllowed: true,
                                      label: {
-                    if viewModel.selectedNature.isEmpty {
+                    if viewModel.selectedNature.isEmpty || 
+                        viewModel.selectedNature.count == HomeActivity.TransactionNature.allCases.count {
                         Text("All natures")
                     } else {
                         Text(viewModel.selectedNature.map { $0.rawValue }.joined(separator: ", "))

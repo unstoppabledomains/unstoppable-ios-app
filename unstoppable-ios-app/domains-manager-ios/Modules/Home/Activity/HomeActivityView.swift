@@ -93,8 +93,14 @@ private extension HomeActivityView {
     func contentList() -> some View {
         if viewModel.groupedTxs.isEmpty,
            !viewModel.isLoadingMore {
-            HomeActivityEmptyView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            GeometryReader { geometry in
+                /// ScrollView needed to keep PTR functionality
+                ScrollView {
+                    HomeActivityEmptyView()
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+            }
         } else {
             txsList()
         }
@@ -116,7 +122,6 @@ private extension HomeActivityView {
         Button {
             UDVibration.buttonTap.vibrate()
             showingFiltersPopover = true
-
         } label: {
             Image(systemName: "line.3.horizontal.decrease.circle.fill")
                 .foregroundStyle(Color.foregroundDefault)

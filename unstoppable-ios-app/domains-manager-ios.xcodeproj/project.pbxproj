@@ -5702,6 +5702,15 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		C640D61D2C4944AB006B21C3 /* SelectionPopoverView */ = {
+			isa = PBXGroup;
+			children = (
+				C640D61A2C491E13006B21C3 /* SelectionPopoverViewItem.swift */,
+				C640D6172C491DFF006B21C3 /* SelectionPopoverView.swift */,
+			);
+			path = SelectionPopoverView;
+			sourceTree = "<group>";
+		};
 		C640F35A2C0706FF009EB0F9 /* TakeoverRecovery */ = {
 			isa = PBXGroup;
 			children = (
@@ -7139,12 +7148,13 @@
 				C639F39B2C32D133008CC1CB /* ConnectCurveLine */,
 				C639F3952C32B9C3008CC1CB /* ConnectTransactionSign.swift */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
+				C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */,
+				C63AD0992B95657C00BF8C83 /* LineView.swift */,
 				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
 				C63392FB2B7271E800941C9D /* OffsetObservingListView.swift */,
 				C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */,
 				C6E856282BBE983900AAFDE4 /* PresentAsModalPreviewView.swift */,
-				C6DA0B712B7BC1C1009920B5 /* ListVGrid.swift */,
-				C63AD0992B95657C00BF8C83 /* LineView.swift */,
+				C640D61D2C4944AB006B21C3 /* SelectionPopoverView */,
 				C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */,
 				C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */,
 				C655CA9A2B16E5BE00FDA063 /* UDListItemView.swift */,
@@ -7710,8 +7720,6 @@
 				C6B761FB2BB403F700773943 /* HomeActivity.swift */,
 				C6B761D12BB3C19800773943 /* HomeActivityViewModel.swift */,
 				C6B761CB2BB3BEB700773943 /* HomeActivityView.swift */,
-				C640D61A2C491E13006B21C3 /* SelectionPopoverViewItem.swift */,
-				C640D6172C491DFF006B21C3 /* SelectionPopoverView.swift */,
 				C640D6142C491B7B006B21C3 /* HomeActivityFilterView.swift */,
 				C6952A552BC6574200F4B475 /* HomeActivityEmptyView.swift */,
 				C6B762012BB4057400773943 /* HomeActivityTransactionsSectionView.swift */,
