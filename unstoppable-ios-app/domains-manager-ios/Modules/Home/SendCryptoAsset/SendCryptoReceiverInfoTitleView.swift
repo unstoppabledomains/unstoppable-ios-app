@@ -55,5 +55,5 @@ private extension SendCryptoReceiverInfoTitleView {
 
 #Preview {
     SendCryptoReceiverInfoTitleView(receiver: .init(walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
-                                                    regexPattern: .ETH))
+                                                    network: .Ethereum))
 }

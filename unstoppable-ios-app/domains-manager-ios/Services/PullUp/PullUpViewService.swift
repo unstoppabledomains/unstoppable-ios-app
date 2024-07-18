@@ -368,18 +368,19 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let selectionViewHeight: CGFloat
         let icon = UIImage.getNetworkLargeIcon(by: chain)!
         let description: String
-        switch chain { // TODO: logic in the View
+        switch chain {
         case .Ethereum:
             description = String.Constants.mintedOnEthereumDescription.localized()
             selectionViewHeight = 328
         case .Matic:
             description = String.Constants.mintedOnPolygonDescription.localized()
             selectionViewHeight = 304
-        default: Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
+        case .Base, .Bitcoin, .Solana:
+            Debugger.printFailure("Minting can be only on Ethereum and Polygon", critical: true)
             description = "\(chain.fullName) should not be used for minting"
             selectionViewHeight = 304
-
         }
+        
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(chain.fullName),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: icon,

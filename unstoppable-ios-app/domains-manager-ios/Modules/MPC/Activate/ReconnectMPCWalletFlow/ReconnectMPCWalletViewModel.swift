@@ -43,7 +43,7 @@ final class ReconnectMPCWalletViewModel: ObservableObject {
                     guard let credentials else { return }
                     
                     navPath.append(.activate(credentials: credentials, code: code))
-                case .didActivate(let wallet):
+                case .didActivate:
                     navigationState?.dismiss = true
                     reconnectResultCallback(.reconnected)
                 case .didRequestToChangeEmail:

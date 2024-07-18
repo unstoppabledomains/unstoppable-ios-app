@@ -244,6 +244,7 @@ extension String {
         static let confirmEmail = "CONFIRM_EMAIL"
         static let setup = "SETUP"
         static let networkFee = "NETWORK_FEE"
+        static let reconnect = "RECONNECT"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

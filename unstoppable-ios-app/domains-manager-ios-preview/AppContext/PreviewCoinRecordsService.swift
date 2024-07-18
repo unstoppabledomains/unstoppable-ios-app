@@ -13,17 +13,17 @@ final class CoinRecordsService: CoinRecordsServiceProtocol {
         [.init(ticker: "ETH",
                version: nil,
                expandedTicker: "crypto.ETH", 
-               regexPattern: CoinRegexPattern.ETH.regex,
+               regexPattern: BlockchainType.Ethereum.regexPattern,
                isDeprecated: false),
          .init(ticker: "MATIC",
                version: nil,
                expandedTicker: "crypto.MATIC",
-               regexPattern: CoinRegexPattern.ETH.regex,
+               regexPattern: BlockchainType.Matic.regexPattern,
                isDeprecated: false),
          .init(ticker: "BTC",
                version: nil,
                expandedTicker: "crypto.BTC.address",
-               regexPattern: CoinRegexPattern.BTC.regex,
+               regexPattern: BlockchainType.Bitcoin.regexPattern,
                isDeprecated: false)]
     }
     

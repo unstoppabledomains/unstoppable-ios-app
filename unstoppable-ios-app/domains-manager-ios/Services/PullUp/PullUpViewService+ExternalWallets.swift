@@ -262,10 +262,9 @@ extension PullUpViewService {
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: icon,
                                                                                      size: .large),
-                                                                         // TODO: - set title, icon, analytics name
-                                                                         actionButton: .main(content: .init(title: "Reconnect",
-                                                                                                            icon: .appleIcon,
-                                                                                                            analyticsName: .domainRecord,
+                                                                         actionButton: .main(content: .init(title: String.Constants.reconnect.localized(),
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .reconnect,
                                                                                                             action: { completion(true) })),
                                                                          cancelButton: .gotItButton()),
                                                     items: PullUpSelectionViewEmptyItem.allCases)

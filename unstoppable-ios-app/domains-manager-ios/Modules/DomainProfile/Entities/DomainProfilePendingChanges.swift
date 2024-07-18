@@ -17,12 +17,14 @@ struct DomainProfilePendingChanges: Codable, Hashable {
     var website: String? = nil
     
     var isEmpty: Bool {
-        avatarData == nil &&
-        bannerData == nil &&
-        name == nil &&
-        bio == nil &&
-        location == nil &&
-        website == nil
+        guard avatarData == nil else { return false }
+        guard bannerData == nil else { return false }
+        guard name == nil else { return false }
+        guard bio == nil else { return false }
+        guard location == nil else { return false }
+        guard website == nil else { return false }
+        
+        return true
     }
     
     var updateAttributes: ProfileUpdateRequest.AttributeSet {

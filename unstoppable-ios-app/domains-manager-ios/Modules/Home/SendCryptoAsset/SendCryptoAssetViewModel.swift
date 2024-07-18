@@ -46,7 +46,7 @@ final class SendCryptoAssetViewModel: ObservableObject {
                     navPath.append(.selectAssetToSend(receiver))
                 case .globalWalletAddressSelected(let addressDetails):
                     navPath.append(.selectAssetToSend(.init(walletAddress: addressDetails.address,
-                                                            regexPattern: addressDetails.regexPattern)))
+                                                            network: addressDetails.network)))
                     
                     // Send crypto
                 case .userTokenToSendSelected(let data):
@@ -176,15 +176,15 @@ final class SendCryptoAssetViewModel: ObservableObject {
     }
     
     func getWalletAddressDetailsFor(address: String) -> SendCryptoAsset.WalletAddressDetails? {
-        let availableCoins: [CoinRegexPattern]
+        let availableNetworks: [BlockchainType]
         if sourceWallet.displayInfo.source == .mpc {
-            availableCoins = CoinRegexPattern.allCases
+            availableNetworks = BlockchainType.allCases
         } else {
-            availableCoins = [.ETH]
+            availableNetworks = [.Ethereum]
         }
         
-        if let coin = availableCoins.first(where: { $0.isStringMatchingRegex(address) }) {
-            return .init(address: address, regexPattern: coin)
+        if let network = availableNetworks.first(where: { $0.isStringMatchingRegex(address) }) {
+            return .init(address: address, network: network)
         }
         return nil
     }
